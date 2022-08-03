@@ -1,0 +1,20 @@
+.sidebar {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.link {
+    cursor: pointer;
+    padding: 10px;
+}
+
+.link:hover{
+    background-color: lightgray;
+}
+
+@media screen and (max-width: 1440px) {
+    .logout-button {
+        display: none;
+    }
+}

@@ -1,0 +1,21 @@
+.navbar-text {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    text-align: center;
+    margin: auto;
+    padding-top: 10px;
+    color: #6c757d;
+}
+
+@media (max-width: 575.98px) {
+    .navbar-text {
+        margin-top: 50px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .navbar-text {
+        margin-top: 50px;
+    }
+}

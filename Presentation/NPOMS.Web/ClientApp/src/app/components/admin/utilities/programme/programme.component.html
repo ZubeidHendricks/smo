@@ -1,0 +1,110 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Programme">
+    <div class="p-grid">
+        <div class="p-col-fixed">
+            <button pButton pRipple type="button" label="Add" class="p-button-text black-button" icon="fa fa-plus" (click)="add()" *ngIf="IsAuthorized(PermissionsEnum.AddUtilities)"></button>
+            <button pButton pRipple type="button" label="Go Back" class="p-button-text black-button" icon="fa fa-step-backward" (click)="goBack()"></button>
+        </div>
+        <div class="p-col">
+            <div class="p-d-flex">
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="fa fa-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Search Keyword" />
+                </span>
+            </div>
+        </div>
+    </div>
+    <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="entities" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['name','systemName','department.name']">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th style="width: 5%;"></th>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" pSortableColumn="{{col.field}}">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        {{col.header}}
+                        <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width: 20%;" *ngIf="isSystemAdmin" pSortableColumn="department.name">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Department
+                        <p-sortIcon field="department.name"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="text-align: center; width:10%;">Inactive</th>
+                <th style="width: 5%;">Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td *ngFor="let col of columns">
+                    <span>{{getCellData(rowData, col)}}</span>
+                </td>
+                <td *ngIf="isSystemAdmin && rowData.department">{{rowData.department.name}}</td>
+                <td style="text-align: center;">
+                    <p-checkbox [ngModel]="!rowData.isActive" [binary]="true" disabled></p-checkbox>
+                </td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top" *ngIf="IsAuthorized(PermissionsEnum.EditUtilities)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr *ngIf="!isSystemAdmin">
+                <td colspan="5" style="text-align: center;">No results found</td>
+            </tr>
+            <tr *ngIf="isSystemAdmin">
+                <td colspan="6" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
+
+<p-dialog header="Programme" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="entity.name" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">System Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="entity.systemName" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="isSystemAdmin">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Department</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Inactive</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox id="inActive" [binary]="true" [(ngModel)]="inActive" [ngModelOptions]="{standalone: true}"></p-checkbox>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSave() (click)="save()"></button>
+    </ng-template>
+</p-dialog>

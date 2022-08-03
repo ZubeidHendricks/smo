@@ -1,0 +1,96 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+
+    <!-- Set this to true if you enable server-side prerendering -->
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\dist\**" />
+    <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\dist\**" />
+    <EmbeddedResource Remove="ClientApp\dist\**" />
+    <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\dist\**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\dist\3rdpartylicenses.txt" />
+    <None Remove="ClientApp\dist\assets\Images\11.png" />
+    <None Remove="ClientApp\dist\assets\Images\favicon.ico" />
+    <None Remove="ClientApp\dist\assets\Images\wc_logo.png" />
+    <None Remove="ClientApp\dist\assets\Images\zastavaafrika.png" />
+    <None Remove="ClientApp\dist\assets\wcg-css\all.css" />
+    <None Remove="ClientApp\dist\assets\wcg-css\stylesheet.css" />
+    <None Remove="ClientApp\dist\assets\wcg-css\wcg-body.css" />
+    <None Remove="ClientApp\dist\assets\wcg-css\wcg-footer.css" />
+    <None Remove="ClientApp\dist\assets\wcg-css\wcg-header.css" />
+    <None Remove="ClientApp\dist\assets\wcg-css\wcg-styles.css" />
+    <None Remove="ClientApp\dist\assets\wcg-css\wcg_common.css" />
+    <None Remove="ClientApp\dist\color.6441e63a57ccc5105bad.png" />
+    <None Remove="ClientApp\dist\fontawesome-webfont.1e59d2330b4c6deb84b3.ttf" />
+    <None Remove="ClientApp\dist\fontawesome-webfont.20fd1704ea223900efa9.woff2" />
+    <None Remove="ClientApp\dist\fontawesome-webfont.8b43027f47b20503057d.eot" />
+    <None Remove="ClientApp\dist\fontawesome-webfont.c1e38fd9e0e74ba58f7a.svg" />
+    <None Remove="ClientApp\dist\fontawesome-webfont.f691f37e57f04c152e23.woff" />
+    <None Remove="ClientApp\dist\hue.f8505bd4d6f3e3aa435b.png" />
+    <None Remove="ClientApp\dist\index.html" />
+    <None Remove="ClientApp\dist\polyfills-es5.15865118ee0e6a2a586c.js" />
+    <None Remove="ClientApp\dist\polyfills.88bc79ad1728b2dcb91d.js" />
+    <None Remove="ClientApp\dist\primeicons.3a0d4a58da62cf7c55bb.ttf" />
+    <None Remove="ClientApp\dist\primeicons.c55d94a248721abbd220.svg" />
+    <None Remove="ClientApp\dist\primeicons.dfbfef2de4bfb34e9722.eot" />
+    <None Remove="ClientApp\dist\primeicons.e61f3495a7ecd3d571a4.woff" />
+    <None Remove="ClientApp\dist\runtime.7b63b9fd40098a2e8207.js" />
+    <None Remove="ClientApp\dist\styles.910aeff0634e2c2e1ac6.css" />
+  </ItemGroup>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+  </Target>
+
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
+      <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+
+</Project>

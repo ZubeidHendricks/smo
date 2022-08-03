@@ -1,0 +1,10 @@
+<body id="inner-body">
+  <div id="container-wrapper" style="background-color: white !important;">
+    <app-header></app-header>
+    <div>
+      <router-outlet *ngIf="!isIframe"></router-outlet>
+      <router-outlet name="print"></router-outlet>
+    </div>
+  </div>
+</body>
+<app-footer></app-footer>

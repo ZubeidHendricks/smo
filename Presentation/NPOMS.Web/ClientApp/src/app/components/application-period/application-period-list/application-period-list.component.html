@@ -1,0 +1,87 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Programmes">
+    <div class="p-grid">
+        <div class="p-col-fixed">
+            <button pButton pRipple type="button" label="Add Programme" class="p-button-text" icon="fa fa-plus" (click)="add()" *ngIf="IsAuthorized(PermissionsEnum.AddApplicationPeriod)"></button>
+        </div>
+        <div class="p-col">
+          <div class="p-d-flex">
+            <span class="p-input-icon-left p-ml-auto">
+                <i class="fa fa-search"></i>
+                <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Search Keyword" />
+            </span>
+          </div>
+        </div>
+    </div>
+    <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="allApplicationPeriods" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['refNo','department.name','name','applicationType.name']">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th style="width: 5%;"></th>
+              <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                  {{col.header}}
+              </th>
+              <th style="width: 7%;">Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td *ngFor="let col of columns">
+                    <span>{{getCellData(rowData, col)}}</span>
+                </td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit Programme" tooltipPosition="top" *ngIf="IsAuthorized(PermissionsEnum.EditApplicationPeriod)"></button>
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-plus" (click)="onRowSelect(rowData)" *ngIf="IsAuthorized(PermissionsEnum.AddApplication) && rowData.status == 'Open'" pTooltip="Create Application" tooltipPosition="top"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="9" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
+
+<p-dialog header="Create application for:" 
+          [(visible)]="displayDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Organisation Selection</span>
+            </div>
+        </div>
+        <div class="p-col" *ngIf="hasAdminRole">
+            <p-autoComplete appendTo="body" id="selectedNPO"                      
+                [(ngModel)]="selectedNPO"
+                [style]="{'width':'100%'}"
+                [inputStyle]="{'width':'100%'}"
+                [suggestions]="allNpos"
+                field="name"
+                (completeMethod)="search($event)"
+                [size]="20"
+                placeholder="Find Organisation (type 4 letters)"
+                [forceSelection]="true"
+                [minLength]="4"
+                [showTransitionOptions]="'0ms'"
+                [hideTransitionOptions]="'0ms'"
+                emptyMessage="No results found"
+                name="npo"
+                [showEmptyMessage]="true">
+            </p-autoComplete>
+        </div>
+        <div class="p-col" *ngIf="!hasAdminRole">
+            <p-dropdown [options]="allNpos" placeholder="Select an Organisation" optionLabel="name" [(ngModel)]="selectedNPO" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Select" class="p-button-text" icon="fa fa-hand-o-up" [disabled]=disableSelect() (click)="selectNPO()"></button>
+    </ng-template>
+</p-dialog>

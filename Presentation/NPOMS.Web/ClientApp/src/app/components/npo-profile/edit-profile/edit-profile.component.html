@@ -1,0 +1,499 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Edit Organisation Profile" *ngIf="isDataAvailable">
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowProfileActions)"></p-menubar>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+    <app-view-npo
+        [npoId]="npoProfile.npoId"
+        (retrievedNpo)="updateNpo($event)">
+    </app-view-npo>
+    <div style="height: 10px;"></div>
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Address Information">
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Physical Address Lookup</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-autoComplete [(ngModel)]="physicalAddressLookup" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" [suggestions]="newAddress" (completeMethod)="filterCountrySingle($event)" field="text" [size]="20" placeholder="Find Address (type 4 letters)" [minLength]="4" [forceSelection]="true" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" (onSelect)="populateAddressField($event, 'physicalAddress')"></p-autoComplete>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Physical Address </span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="npoProfile.addressInformation.physicalAddress" [ngModelOptions]="{standalone: true}" #physicalAddress="ngModel" [ngClass]="{'ng-dirty': (physicalAddress.invalid && validated) || (physicalAddress.dirty && physicalAddress.invalid)}" required> 
+                <small *ngIf="(physicalAddress.invalid && validated) || (physicalAddress.dirty && physicalAddress.invalid)" class="p-error">Physical Address is required.</small>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Is Postal Address same as Physical Address?</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="npoProfile.addressInformation.postalSameAsPhysical" [ngModelOptions]="{standalone: true}" (onChange)="updatePostalAddress($event)" #postalSameAsPhysical="ngModel" [ngClass]="{'ng-dirty': (postalSameAsPhysical.invalid && validated) || (postalSameAsPhysical.dirty && postalSameAsPhysical.invalid)}" required></p-selectButton>
+                <small *ngIf="(postalSameAsPhysical.invalid && validated) || (postalSameAsPhysical.dirty && postalSameAsPhysical.invalid)" class="p-error">Is Postal Address same as Physical Address is required.</small>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Postal Address Lookup</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-autoComplete [(ngModel)]="postalAddressLookup" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" [suggestions]="newAddress" (completeMethod)="filterCountrySingle($event)" field="text" [size]="20" placeholder="Find Address (type 4 letters)" [minLength]="4" [forceSelection]="true" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" (onSelect)="populateAddressField($event, 'postalAddress')"></p-autoComplete>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Postal Address</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="npoProfile.addressInformation.postalAddress" [ngModelOptions]="{standalone: true}" #postalAddress="ngModel" [ngClass]="{'ng-dirty': (postalAddress.invalid && validated) || (postalAddress.dirty && postalAddress.invalid)}" required> 
+                <small *ngIf="(postalAddress.invalid && validated) || (postalAddress.dirty && postalAddress.invalid)" class="p-error">Postal Address is required.</small>
+            </div>
+        </div>
+    </p-panel>
+    <div style="height: 10px;"></div>
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
+
+    </p-panel>
+    <div style="height: 10px;"></div>
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
+        <p-table [columns]="facilityInfoCols" [value]="npoProfile.npoProfileFacilityLists" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                    <th style="width: 7%;">Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="heading">
+                    <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
+                        <span class="p-text-bold">{{rowData.facilityList.facilityType.name}}</span>
+                    </td>
+                </tr>
+                <tr>                    
+                    <td>{{rowData.facilityList.facilitySubDistrict.name}}</td>
+                    <td>{{rowData.facilityList.name}}</td>
+                    <td>{{rowData.facilityList.facilityClass.name}}</td>
+                    <td>{{rowData.facilityList.address}}</td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editFacilityInformation(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteFacilityInformation(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary" let-rowData>
+                <div style="text-align:left">
+                    <button pButton pRipple type="button" label="Add Facility or Community Place Information" class="p-button-text" icon="fa fa-plus" (click)="addFacilityInformation()"></button>
+                </div>
+            </ng-template>
+        </p-table>
+    </p-panel>
+    <div style="height: 10px;"></div>
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Supporting Documents">
+        <p-fileUpload name="demo[]" #form customUpload="true" (uploadHandler)="onUploadChange($event, form)" [showCancelButton]="false" chooseLabel="Browse">
+            <ng-template let-file pTemplate="file">
+                <div style="height: 10px;"></div>
+                <div class="p-grid">
+                    <div class="p-col-5">
+                        <div>{{file.name}}</div>
+                    </div>
+                    <div class="p-col-5">
+                        <div>
+                            <p-dropdown [options]="documentTypes" placeholder="Select a Document Type" optionLabel="name" [(ngModel)]="file.documentType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="p-col-2">
+                        <div class="pull-right">
+                            <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="remove($event, file, form)" pTooltip="Delete" tooltipPosition="top"></button>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <div style="height: 10px;"></div>
+                <p-table [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                {{col.header}}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
+                        <tr> 
+                            <td style="text-align: center;">{{rowIndex + 1}}</td>
+                            <td>{{document.name}}</td>
+                            <td>{{document.documentType.name}}</td>
+                            <td>{{document.fileSize}}</td>
+                            <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                            <td style="text-align: center;">
+                                <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
+                                <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="onDeleteDocument(document)" pTooltip="Delete" tooltipPosition="top"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" style="text-align: center;">There are no documents uploaded.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div *ngIf="compulsoryDocuments.length > 0">
+                    <div style="height: 20px;"></div>
+                    <div class="heading">Compulsory Documents</div>
+                    <p-table [value]="compulsoryDocuments" styleClass="p-datatable-sm" [columns]="documentTypeCols">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                    {{col.header}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                            <tr> 
+                                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                                <td>{{rowData.name}}</td>
+                                <td>{{rowData.description}}</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="3" style="text-align: center;">No results found.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div *ngIf="nonCompulsoryDocuments.length > 0">
+                    <div style="height: 20px;"></div>
+                    <div class="heading">Non-Compulsory Documents</div>
+                    <p-table [value]="nonCompulsoryDocuments" styleClass="p-datatable-sm" [columns]="documentTypeCols">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                    {{col.header}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                            <tr> 
+                                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                                <td>{{rowData.name}}</td>
+                                <td>{{rowData.description}}</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="3" style="text-align: center;">No results found.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </ng-template>
+        </p-fileUpload>
+    </p-panel>
+    <!-- <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Supporting Documents">
+        <input type="file" #filesToUpload placeholder="Browse" accept="*" (change)="onUploadChange(filesToUpload.files)" style="display:none;">
+        <div style="margin-bottom: 5px;">
+            <button pButton pRipple type="button" label="Add Document" class="p-button-text" icon="fa fa-plus" (click)="filesToUpload.click()"></button>
+        </div>
+        <p-table [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
+                <tr> 
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td>{{document.name}}</td>
+                    <td>
+                        <p-dropdown [options]="documentTypes" placeholder="Select a Document Type" optionLabel="name" [(ngModel)]="document.documentType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="documentTypeChange(document, $event.value)"></p-dropdown>
+                    </td>
+                    <td>{{document.fileSize}}</td>
+                    <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
+                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="onDeleteDocument(document)" pTooltip="Delete" tooltipPosition="top"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" style="text-align: center;">There are no documents uploaded.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div *ngIf="compulsoryDocuments.length > 0">
+            <div style="height: 20px;"></div>
+            <div class="heading">Compulsory Documents</div>
+            <p-table [value]="compulsoryDocuments" styleClass="p-datatable-sm" [columns]="documentTypeCols">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                    <tr> 
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td>{{rowData.name}}</td>
+                        <td>{{rowData.description}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="3" style="text-align: center;">No results found.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div *ngIf="nonCompulsoryDocuments.length > 0">
+            <div style="height: 20px;"></div>
+            <div class="heading">Non-Compulsory Documents</div>
+            <p-table [value]="nonCompulsoryDocuments" styleClass="p-datatable-sm" [columns]="documentTypeCols">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                    <tr> 
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td>{{rowData.name}}</td>
+                        <td>{{rowData.description}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="3" style="text-align: center;">No results found.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </p-panel> -->
+</p-panel>
+
+<p-dialog header="Facility or Community Place Information" 
+          [(visible)]="displayFacilityInformationDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="facilityTypes" placeholder="Select a Type" optionLabel="name" [(ngModel)]="selectedFacilityType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="facilityTypeChange($event.value)" [disabled]="!newFacilityInformation"></p-dropdown>
+        </div>
+    </div>
+    <div *ngIf="selectedFacilityType">            
+        <div *ngIf="selectedFacilityType.id == FacilityTypeEnum.Facility">
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Facility Lookup</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-autoComplete appendTo="body" id="selectedDenodoFacility"                      
+                        [(ngModel)]="selectedDenodoFacility"
+                        [style]="{'width':'100%'}"
+                        [inputStyle]="{'width':'100%'}"
+                        [suggestions]="denodoFacilities"
+                        field="name"
+                        (completeMethod)="search($event)"
+                        [size]="20"
+                        placeholder="Find Facility (type 4 letters)"
+                        [forceSelection]="true"
+                        [minLength]="4"
+                        [showTransitionOptions]="'0ms'"
+                        [hideTransitionOptions]="'0ms'"
+                        emptyMessage="No results found"
+                        name="facility"
+                        [showEmptyMessage]="true"
+                        (onSelect)="selectDenodoFacility($event, true)"
+                        [disabled]="!newFacilityInformation">
+                    </p-autoComplete>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Facility found?</span>
+                    </div>
+                </div>
+                <div class="p-col" *ngIf="mapping.facilityList">
+                    <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="mapping.facilityList.facilityFound" [ngModelOptions]="{standalone: true}" (onChange)="facilityFoundChange($event.value)" [disabled]="!newFacilityInformation"></p-selectButton>
+                </div>
+            </div>
+            <div *ngIf="mapping.facilityList.facilityFound == false">
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Facility Name</span>
+                        </div>
+                    </div>
+                    <div class="p-col" *ngIf="mapping.facilityList">
+                        <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.name" [ngModelOptions]="{standalone: true}" [disabled]="disableField">
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">District</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <p-dropdown [options]="facilityDistricts" placeholder="Select a District" optionLabel="name" [(ngModel)]="selectedDistrict" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="districtChange($event.value)" [disabled]="disableField"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Sub-District</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <p-dropdown [options]="facilitySubDistricts" placeholder="Select a Sub-District" optionLabel="name" [(ngModel)]="selectedSubDistrict" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableField"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Class</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <p-dropdown [options]="facilityClasses" placeholder="Select a Class" optionLabel="name" [(ngModel)]="selectedClass" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [filter]="true" filterBy="name" [disabled]="disableField"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="non-mandatory-content">Address Lookup</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <p-autoComplete [(ngModel)]="addressLookup" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" [suggestions]="newAddress" (completeMethod)="filterCountrySingle($event)" field="text" [size]="20" placeholder="Find Address (type 4 letters)" [minLength]="4" [forceSelection]="true" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" appendTo="body" [disabled]="disableField" (onSelect)="populateAddressField($event, 'facilityAddress')"></p-autoComplete>
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Address</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.address" [ngModelOptions]="{standalone: true}"> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedFacilityType.id == FacilityTypeEnum.Community">
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Community Place Name</span>
+                    </div>
+                </div>
+                <div class="p-col" *ngIf="mapping.facilityList">
+                    <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.name" [ngModelOptions]="{standalone: true}">
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">District</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-dropdown [options]="facilityDistricts" placeholder="Select a District" optionLabel="name" [(ngModel)]="selectedDistrict" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="districtChange($event.value)"></p-dropdown>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Sub-District</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-dropdown [options]="facilitySubDistricts" placeholder="Select a Sub-District" optionLabel="name" [(ngModel)]="selectedSubDistrict" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Class</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-dropdown [options]="facilityClasses" placeholder="Select a Class" optionLabel="name" [(ngModel)]="selectedClass" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [filter]="true" filterBy="name"></p-dropdown>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Address Lookup</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-autoComplete [(ngModel)]="addressLookup" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" [suggestions]="newAddress" (completeMethod)="filterCountrySingle($event)" field="text" [size]="20" placeholder="Find Address (type 4 letters)" [minLength]="4" [forceSelection]="true" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" appendTo="body" (onSelect)="populateAddressField($event, 'facilityAddress')"></p-autoComplete>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Address</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <!-- <p-autoComplete [(ngModel)]="addressLookup" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" [suggestions]="newAddress" (completeMethod)="filterCountrySingle($event)" field="text" [size]="20" placeholder="Find Address (type 4 letters)" [minLength]="4" [forceSelection]="true" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" appendTo="body"></p-autoComplete> -->
+                    <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.address" [ngModelOptions]="{standalone: true}"> 
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveFacilityInformation() (click)="saveFacilityInformation()"></button>
+    </ng-template>
+</p-dialog>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

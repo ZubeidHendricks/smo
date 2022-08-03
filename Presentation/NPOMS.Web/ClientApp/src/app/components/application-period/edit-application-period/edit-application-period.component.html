@@ -1,0 +1,57 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Edit Programme" *ngIf="isDataAvailable">
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationPeriodActions)"></p-menubar>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Programme Information">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Department</label>
+                <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="departmentChange($event.value)" #department="ngModel" [ngClass]="{'ng-dirty': (department.invalid && validated) || (department.dirty && department.invalid)}" required [disabled]="true"></p-dropdown>
+                <small *ngIf="(department.invalid && validated) || (department.dirty && department.invalid)" class="p-error">Department is required.</small>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Application Type</label>
+                <p-dropdown [options]="applicationTypes" placeholder="Select an Application Type" optionLabel="name" [(ngModel)]="selectedApplicationType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" #applicationType="ngModel" [ngClass]="{'ng-dirty': (applicationType.invalid && validated) || (applicationType.dirty && applicationType.invalid)}" required [disabled]="true"></p-dropdown>
+                <small *ngIf="(applicationType.invalid && validated) || (applicationType.dirty && applicationType.invalid)" class="p-error">Application Type is required.</small>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Programme</label>
+                <p-dropdown [options]="programmes" placeholder="Select a Programme" optionLabel="name" [(ngModel)]="selectedProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)" #programme="ngModel" [ngClass]="{'ng-dirty': (programme.invalid && validated) || (programme.dirty && programme.invalid)}" required [disabled]="true"></p-dropdown>
+                <small *ngIf="(programme.invalid && validated) || (programme.dirty && programme.invalid)" class="p-error">Programme is required.</small>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Financial Year</label>
+                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange($event.value)" #financialYear="ngModel" [ngClass]="{'ng-dirty': (financialYear.invalid && validated) || (financialYear.dirty && financialYear.invalid)}" required></p-dropdown>
+                <small *ngIf="(financialYear.invalid && validated) || (financialYear.dirty && financialYear.invalid)" class="p-error">Financial Year is required.</small>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Sub-Programme</label>
+                <p-dropdown [options]="subProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" #subProgramme="ngModel" [ngClass]="{'ng-dirty': (subProgramme.invalid && validated) || (subProgramme.dirty && subProgramme.invalid)}" required [disabled]="true"></p-dropdown>
+                <small *ngIf="(subProgramme.invalid && validated) || (subProgramme.dirty && subProgramme.invalid)" class="p-error">Sub-Programme is required.</small>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Opening Date</label>
+                <p-calendar [(ngModel)]="applicationPeriod.openingDate" [showTime]="true" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" (onSelect)="openingDateSelected($event)" [disabled]="disableOpeningDate" [minDate]="openingMinDate" #openingDate="ngModel" [ngClass]="{'ng-dirty': (openingDate.invalid && validated) || (openingDate.dirty && openingDate.invalid)}" required [monthNavigator]="true" [yearNavigator]="true" [yearRange]="finYearRange"></p-calendar>
+                <small *ngIf="(openingDate.invalid && validated) || (openingDate.dirty && openingDate.invalid)" class="p-error">Opening Date is required.</small>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Name</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="applicationPeriod.name" [ngModelOptions]="{standalone: true}" #applicationName="ngModel" [ngClass]="{'ng-dirty': (applicationName.invalid && validated) || (applicationName.dirty && applicationName.invalid)}" required>
+                <small *ngIf="(applicationName.invalid && validated) || (applicationName.dirty && applicationName.invalid)" class="p-error">Name is required.</small>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Closing Date</label>
+                <p-calendar [(ngModel)]="applicationPeriod.closingDate" [showTime]="true" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" (onSelect)="closingDateSelected($event)" [disabled]="disableClosingDate" [minDate]="closingMinDate" #closingDate="ngModel" [ngClass]="{'ng-dirty': (closingDate.invalid && validated) || (closingDate.dirty && closingDate.invalid)}" required [monthNavigator]="true" [yearNavigator]="true" [yearRange]="finYearRange"></p-calendar>                
+                <small *ngIf="(closingDate.invalid && validated) || (closingDate.dirty && closingDate.invalid)" class="p-error">Closing Date is required.</small>
+            </div>
+            <div class="p-field p-col-12">
+                <label class="mandatory-content">Description</label>
+                <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="applicationPeriod.description" [ngModelOptions]="{standalone: true}" #description="ngModel" [ngClass]="{'ng-dirty': (description.invalid && validated) || (description.dirty && description.invalid)}" required></textarea>
+                <small *ngIf="(description.invalid && validated) || (description.dirty && description.invalid)" class="p-error">Description is required.</small>
+            </div>
+        </div>
+    </p-panel>
+</p-panel>

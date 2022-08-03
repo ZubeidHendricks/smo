@@ -1,0 +1,227 @@
+<p-toast></p-toast>
+<p-panel [style]="{'font-size':'12px'}" header="Resourcing" *ngIf="isDataAvailable">
+    <p-table [columns]="resourceCols" [value]="resources" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+                <th style="width: 7%;">Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="heading">
+                <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="7">
+                    <span class="p-text-bold">Activity: {{rowData.activity.activityList.description}}</span>
+                </td>
+            </tr>
+            <tr [ngClass]="rowData.changesRequired === true ? 'red' : 'default' && rowData.changesRequired === false ? 'green' : 'default'">                
+                <td *ngFor="let col of columns">
+                    <span>{{getCellData(rowData, col)}}</span>
+                </td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editResource(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
+                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteResource(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                    <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
+            <div style="text-align:left">
+                <button pButton pRipple type="button" label="Add Resource" class="p-button-text" icon="fa fa-plus" (click)="addResource()"></button>
+            </div>
+        </ng-template>
+    </p-table>
+    <div style="height: 10px;"></div>
+    <div class="p-grid p-nogutter p-justify-between">
+        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+        <p-button *ngIf="reviewApplication && canReviewOrApprove" label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
+    </div> 
+</p-panel>
+
+<p-dialog header="Resource" 
+          [(visible)]="displayResourceDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="activities" placeholder="Select an Activity" optionLabel="activityList.name" [(ngModel)]="selectedActivity" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="selectedActivity">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedActivity.activityList.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Resource Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="resourceTypes" placeholder="Select a Resource Type" optionLabel="name" [(ngModel)]="selectedResourceType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit" (onChange)="resourceTypeChange($event.value)"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Service Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="serviceTypes" placeholder="Select a Service Type" optionLabel="name" [(ngModel)]="selectedServiceType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Allocation Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="allocationTypes" placeholder="Select an Allocation Type" optionLabel="name" [(ngModel)]="selectedAllocationType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Provided vs Required</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="provisionTypes" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedProvisionType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Resource</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="filteredResourceList" placeholder="Select a Resource" optionLabel="name" [(ngModel)]="selectedResource" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit" [filter]="true" filterBy="name" (onChange)="resourceListChange($event.value)"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Resource Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="resource.name" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" [maxlength]="maxChars">
+            <span *ngIf="canEdit">Characters Remaining: <span *ngIf="resource.name">{{resource.name.length}}</span>/{{maxChars}}</span>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Resource Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="resource.description" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Number of Resources</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="resource.numberOfResources" [ngModelOptions]="{standalone: true}" (keypress)="numberOnly($event)" [disabled]="!canEdit">
+        </div>
+    </div>
+    <ng-template pTemplate="footer" *ngIf="canAddComments">
+        <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveResource() (click)="saveResource()"></button>
+        <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Add Comment" 
+          [(visible)]="displayCommentDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Comment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="comment" [ngModelOptions]="{standalone: true}"></textarea>
+        </div>
+    </div>        
+    <ng-template pTemplate="footer">
+        <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
+        <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="View Comments" 
+          [(visible)]="displayAllCommentDialog" 
+          [style]="{width: '70vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="applicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr>
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.comment}}</td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
+            <div style="text-align:right">
+                <button pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

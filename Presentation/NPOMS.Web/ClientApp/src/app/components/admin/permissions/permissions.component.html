@@ -1,0 +1,30 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+  </ngx-spinner>
+  <p-toast></p-toast>
+  <p-panel header="Permission Management">
+    <ng-container *ngIf="featurePermissionRole$ | async as featurePermissionRoleMatrix">
+      <p-table [value]="featurePermissionRoleMatrix.availableFeaturePermissions" [(selection)]="selectedPermissionRoles" styleClass="p-datatable-striped" [rowHover]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%;"></th>
+            <th>Categories</th>
+            <th>Activities</th>
+            <th style="width: 130px;" *ngFor="let role of featurePermissionRoleMatrix.availableRoles">
+              {{role.name}}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-permission let-rowIndex="rowIndex">
+          <tr>
+            <td style="text-align: center;">{{rowIndex + 1}}</td>
+            <td>{{permission.categoryName}}</td>
+            <td>{{permission.name}}</td>
+            <td *ngFor="let role of featurePermissionRoleMatrix.availableRoles" style="text-align: center;">
+              <p-tableCheckbox *ngIf="IsAuthorized(PermissionsEnum.EditPermissions)" [value]="getTableRoleObj(role, permission)" (click)="onselectedChanged(role, permission)" [disabled]="canEdit()"></p-tableCheckbox>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-container>
+  </p-panel>

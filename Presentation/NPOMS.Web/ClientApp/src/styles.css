@@ -1,0 +1,8 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~font-awesome/css/font-awesome.css";
+
+@import 'assets/wcg-css/wcg_common.css';
+@import 'assets/wcg-css/wcg-body.css';
+@import 'assets/wcg-css/wcg-footer.css';
+@import 'assets/wcg-css/wcg-header.css';

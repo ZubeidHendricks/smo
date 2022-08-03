@@ -1,0 +1,108 @@
+.bold-text {
+    font-weight: bold;
+}
+
+.section1 {
+    text-align: center;
+    width: 100%;
+    font-size: large;
+    padding: 4%;
+    background-color: rgb(195, 214, 0);
+    color: rgb(3, 20, 141);
+}
+
+.section2 {
+    text-align: center;
+    width: 100%;
+    padding: 4%;
+    color: rgb(3, 20, 141);
+}
+
+.process {
+    background-color: rgb(3, 20, 141);
+    border-radius: 10px;
+    height: 100px;
+    text-transform: uppercase;
+    margin: 1%;
+    padding-top: 5px;
+}
+
+.process-number {
+    font-size: large;
+    color: rgb(250, 182, 29);
+}
+
+.process-description {
+    color: whitesmoke;
+    padding-top: 3%;
+}
+
+.branding-box {
+    background-color: rgb(3, 20, 141);
+    border-radius: 10px;
+    height: 100%;
+    text-transform: uppercase;
+    margin: 1%;
+    padding-top: 5px;
+}
+
+.branding {
+    background-image: url("../../../assets/Images/new-branding.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    height: 100%;
+}
+
+.contact-box, .calendar-box {
+    background-color: rgb(3, 20, 141);
+    border-radius: 10px;
+    margin: 1%;
+    color: whitesmoke;
+    text-align: left;
+    padding: 10%;
+}
+
+.contact-icon {
+    background-image: url("../../../assets/Images/Avatar.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.contact-heading {
+    color: rgb(250, 182, 29);
+}
+
+.email-icon {
+    background-image: url("../../../assets/Images/email.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.calendar-icon {
+    background-image: url("../../../assets/Images/calendar.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    height: 160px;
+}
+
+a:link, a:visited, a:hover, a:active {
+    color: whitesmoke;
+    text-decoration: none;
+}
+
+.home-body {
+    background-image: url('../../../assets/Images/background.jpg');
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.home-content {
+    background-color: white !important;
+    margin: 0 10%;
+}

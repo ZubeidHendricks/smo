@@ -1,0 +1,15 @@
+.tile {
+    padding: 2%;
+    width: 25%;
+    border: 1px solid #f4f4f4;
+}
+
+.heading {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+a:hover {
+    background: rgba(0, 51, 153, 0.1);
+    cursor: pointer;
+}

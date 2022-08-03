@@ -1,0 +1,127 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using NPOMS.Repository.Implementation.Core;
+using NPOMS.Repository.Implementation.Dropdown;
+using NPOMS.Repository.Implementation.Entities;
+using NPOMS.Repository.Implementation.Lookup;
+using NPOMS.Repository.Implementation.Mapping;
+using NPOMS.Repository.Interfaces.Core;
+using NPOMS.Repository.Interfaces.Dropdown;
+using NPOMS.Repository.Interfaces.Entities;
+using NPOMS.Repository.Interfaces.Lookup;
+using NPOMS.Repository.Interfaces.Mapping;
+using NPOMS.Services.DenodoAPI.Implementation;
+using NPOMS.Services.DenodoAPI.Interfaces;
+using NPOMS.Services.Implementation;
+using NPOMS.Services.Interfaces;
+using NPOMS.Services.PowerBI;
+
+namespace NPOMS.Services.Extensions
+{
+	public static class ServiceExtensions
+	{
+		public static void ConfigureIISIntegration(this IServiceCollection services)
+		{
+			services.Configure<IISOptions>(options =>
+			{
+
+			});
+		}
+
+		public static void ConfigureRepositoryWrapper(this IServiceCollection services)
+		{
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+			#region  Repositories 
+
+			/* Core */
+			services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+			services.AddScoped<IDocumentStoreRepository, DocumentStoreRepository>();
+			services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
+			services.AddScoped<IEmailAccountRepository, EmailAccountRepository>();
+			services.AddScoped<IEmailQueueRepository, EmailQueueRepository>();
+			services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>();
+			services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
+			services.AddScoped<IPermissionRepository, PermissionRepository>();
+			services.AddScoped<IRoleRepository, RoleRepository>();
+			services.AddScoped<IUserRepository, UserRepository>();
+			services.AddScoped<IUtilityRepository, UtilityRepository>();
+			services.AddScoped<IEmbeddedReportRepository, EmbeddedReportRepository>();
+
+			/* Dropdown */
+			services.AddScoped<IActivityTypeRepository, ActivityTypeRepository>();
+			services.AddScoped<IAllocationTypeRepository, AllocationTypeRepository>();
+			services.AddScoped<IApplicationTypeRepository, ApplicationTypeRepository>();
+			services.AddScoped<IFacilityClassRepository, FacilityClassRepository>();
+			services.AddScoped<IFacilityDistrictRepository, FacilityDistrictRepository>();
+			services.AddScoped<IFacilitySubDistrictRepository, FacilitySubDistrictRepository>();
+			services.AddScoped<IFacilityTypeRepository, FacilityTypeRepository>();
+			services.AddScoped<IOrganisationTypeRepository, OrganisationTypeRepository>();
+			services.AddScoped<IPositionRepository, PositionRepository>();
+			services.AddScoped<IProgrammeRepository, ProgrammeRepository>();
+			services.AddScoped<IProvisionTypeRepository, ProvisionTypeRepository>();
+			services.AddScoped<IRecipientTypeRepository, RecipientTypeRepository>();
+			services.AddScoped<IResourceTypeRepository, ResourceTypeRepository>();
+			services.AddScoped<IServiceTypeRepository, ServiceTypeRepository>();
+			services.AddScoped<ISubProgrammeRepository, SubProgrammeRepository>();
+			services.AddScoped<ITitleRepository, TitleRepository>();
+
+			/* Entities */
+			services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
+			services.AddScoped<IActivityRepository, ActivityRepository>();
+			services.AddScoped<IApplicationRepository, ApplicationRepository>();
+			services.AddScoped<IApplicationApprovalRepository, ApplicationApprovalRepository>();
+			services.AddScoped<IApplicationAuditRepository, ApplicationAuditRepository>();
+			services.AddScoped<IApplicationCommentRepository, ApplicationCommentRepository>();
+			services.AddScoped<IApplicationPeriodRepository, ApplicationPeriodRepository>();
+			services.AddScoped<IContactInformationRepository, ContactInformationRepository>();
+			services.AddScoped<INpoRepository, NpoRepository>();
+			services.AddScoped<INpoProfileRepository, NpoProfileRepository>();
+			services.AddScoped<IObjectiveRepository, ObjectiveRepository>();
+			services.AddScoped<IResourceRepository, ResourceRepository>();
+			services.AddScoped<IStatusRepository, StatusRepository>();
+			services.AddScoped<ISustainabilityPlanRepository, SustainabilityPlanRepository>();
+			services.AddScoped<ITrainingMaterialRepository, TrainingMaterialRepository>();
+
+			/* Lookup */
+			services.AddScoped<IActivityListRepository, ActivityListRepository>();
+			services.AddScoped<IFacilityListRepository, FacilityListRepository>();
+			services.AddScoped<IResourceListRepository, ResourceListRepository>();
+
+			/* Mapping */
+			services.AddScoped<IActivitySubProgrammeRepository, ActivitySubProgrammeRepository>();
+			services.AddScoped<INpoProfileFacilityListRepository, NpoProfileFacilityListRepository>();
+			services.AddScoped<IObjectiveProgrammeRepository, ObjectiveProgrammeRepository>();
+			services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
+			services.AddScoped<IUserNpoRepository, UserNpoRepository>();
+			services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+			services.AddScoped<IActivityFacilityListRepository, ActivityFacilityListRepository>();
+
+			#endregion
+
+			#region Services
+
+			services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IRolePermissionService, RolePermissionService>();
+			services.AddScoped<IEmailQueueService, EmailQueueService>();
+			services.AddScoped<IEmailService, EmailService>();
+			services.AddScoped<IEmailTemplateService, EmailTemplateService>();
+			services.AddScoped<IDropdownService, DropdownService>();
+			services.AddScoped<INpoProfileService, NpoProfileService>();
+			services.AddScoped<INpoService, NpoService>();
+			services.AddScoped<IUserNpoService, UserNpoService>();
+			services.AddScoped<IApplicationPeriodService, ApplicationPeriodService>();
+			services.AddScoped<IApplicationService, ApplicationService>();
+			services.AddScoped<IDenodoService, DenodoService>();
+			services.AddScoped<IDocumentStoreService, DocumentStoreService>();
+
+			//PowerBI
+			services.AddScoped(typeof(AadService))
+					.AddScoped(typeof(PbiEmbedService));
+			services.AddScoped<IEmbeddedReportService, EmbeddedReportService>();
+
+			#endregion
+		}
+	}
+}

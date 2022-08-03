@@ -1,0 +1,26 @@
+<header>
+    <p-menubar [model]="mainMenu" [style]="{'background-image': 'linear-gradient(var(--surface-f) 15%, var(--surface-d) 100%)', 'border-color': '#f7f7f7'}">
+        <ng-template pTemplate="start" *ngIf="profile">
+
+        </ng-template>
+        <ng-template pTemplate="end">
+            <ng-container *ngIf="IsLoggedIn">
+                <span pTooltip="{{rolesTooltip()}}" tooltipPosition="top" style="cursor: default;"><i class="pi pi-fw pi-user"></i> &nbsp; {{profileDetails}}</span> &nbsp;
+                <span><i class="pi pi-fw pi-ellipsis-v"></i></span>
+                <span class="link" (click)="logout()" pTooltip="LOGOUT" tooltipPosition="top"><i class="pi pi-fw pi-power-off"></i></span> &nbsp;
+            </ng-container>
+            <ng-container *ngIf="!IsLoggedIn">
+                <span><i class="pi pi-fw pi-ellipsis-v"></i></span>
+                <span class="link" (click)="login()"><i class="pi pi-fw pi-sign-in"></i> &nbsp;LOGIN</span> &nbsp;
+                <span class="link" (click)="signup()"><i class="pi pi-fw pi-user-plus"></i> &nbsp;SIGN UP</span> &nbsp;
+                <span class="link" (click)="passwordReset()"><i class="pi pi-fw pi-unlock"></i> &nbsp;FORGOT PASSWORD?</span> &nbsp;
+            </ng-container>
+        </ng-template>
+    </p-menubar>
+
+    <p-sidebar [(visible)]="displaySideMenu" [style]="{'width':'23%'}" [baseZIndex]="10000">
+        <h2 class="sidebar" (click)="displaySideMenu = false">Administration</h2>
+        <i style="vertical-align: middle; padding: 5px;"></i>
+        <p-panelMenu [model]="sideMenu" [style]="{'width':'100%'}" [multiple]="false"></p-panelMenu>
+    </p-sidebar>
+</header>

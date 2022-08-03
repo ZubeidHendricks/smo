@@ -1,0 +1,240 @@
+<div *ngIf="isDataAvailable">
+    <p-panel [style]="{'font-size':'12px'}" header="Address Information">
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Physical Address</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="npoProfile.addressInformation.physicalAddress" [ngModelOptions]="{standalone: true}" #physicalAddress="ngModel" [ngClass]="{'ng-dirty': (physicalAddress.invalid && validated) || (physicalAddress.dirty && npoName.invalid)}" [disabled]="true">
+                <small *ngIf="(physicalAddress.invalid && validated) || (physicalAddress.dirty && physicalAddress.invalid)" class="p-error">Physical Address is required.</small>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Is Postal Address same as Physical Address?</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="npoProfile.addressInformation.postalSameAsPhysical" [ngModelOptions]="{standalone: true}" (onChange)="updatePostalAddress($event)" #postalSameAsPhysical="ngModel" [ngClass]="{'ng-dirty': (postalSameAsPhysical.invalid && validated) || (postalSameAsPhysical.dirty && postalSameAsPhysical.invalid)}" [disabled]="true"></p-selectButton>
+                <small *ngIf="(postalSameAsPhysical.invalid && validated) || (postalSameAsPhysical.dirty && postalSameAsPhysical.invalid)" class="p-error">Is Postal Address same as Physical Address is required.</small>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Postal Address</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="npoProfile.addressInformation.postalAddress" [ngModelOptions]="{standalone: true}" #postalAddress="ngModel" [ngClass]="{'ng-dirty': (postalAddress.invalid && validated) || (postalAddress.dirty && npoName.invalid)}" [disabled]="true">
+                <small *ngIf="(postalAddress.invalid && validated) || (postalAddress.dirty && postalAddress.invalid)" class="p-error">Postal Address is required.</small>
+            </div>
+        </div>
+    </p-panel>
+    <div style="height: 10px;"></div>
+    <p-panel [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
+        <p-table [columns]="facilityInfoCols" [value]="npoProfile.npoProfileFacilityLists" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="heading">
+                    <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
+                        <span class="p-text-bold">{{rowData.facilityList.facilityType.name}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>{{rowData.facilityList.facilitySubDistrict.name}}</td>
+                    <td>{{rowData.facilityList.name}}</td>
+                    <td>{{rowData.facilityList.facilityClass.name}}</td>
+                    <td>{{rowData.facilityList.address}}</td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-info-circle" (click)="viewFacilityInformation(rowData)" pTooltip="View" tooltipPosition="top"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+    <div style="height: 10px;"></div>
+    <p-panel [style]="{'font-size':'12px'}" header="Supporting Documents">
+        <p-table [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
+                <tr> 
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td>{{document.name}}</td>
+                    <td>{{document.documentType.name}}</td>
+                    <td>{{document.fileSize}}</td>
+                    <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" style="text-align: center;">There are no documents uploaded.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div *ngIf="compulsoryDocuments.length > 0">
+            <div style="height: 20px;"></div>
+            <div class="heading">Compulsory Documents</div>
+            <p-table [value]="compulsoryDocuments" styleClass="p-datatable-sm" [columns]="documentTypeCols">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                    <tr> 
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td>{{rowData.name}}</td>
+                        <td>{{rowData.description}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="3" style="text-align: center;">No results found.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div *ngIf="nonCompulsoryDocuments.length > 0">
+            <div style="height: 20px;"></div>
+            <div class="heading">Non-Compulsory Documents</div>
+            <p-table [value]="nonCompulsoryDocuments" styleClass="p-datatable-sm" [columns]="documentTypeCols">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                    <tr> 
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td>{{rowData.name}}</td>
+                        <td>{{rowData.description}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="3" style="text-align: center;">No results found.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </p-panel>
+</div>
+
+<p-dialog header="Facility Information" 
+          [(visible)]="displayFacilityInformationDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true"
+          *ngIf="mapping.facilityList">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.facilityType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div *ngIf="mapping.facilityList.facilityType.id == FacilityTypeEnum.Facility">
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Facility found?</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="mapping.facilityList.facilityFound" [ngModelOptions]="{standalone: true}" (onChange)="facilityFoundChange($event.value)" [disabled]="true"></p-selectButton>
+            </div>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">District</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.facilitySubDistrict.facilityDistrict.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub-District</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.facilitySubDistrict.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Class</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.facilityClass.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Address</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.address" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+</p-dialog>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

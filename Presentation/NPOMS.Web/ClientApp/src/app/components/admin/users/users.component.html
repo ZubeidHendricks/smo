@@ -1,0 +1,164 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-toast></p-toast>
+<p-panel header="User Management">
+    <div class="p-grid">
+        <div class="p-col-fixed">
+            <button pButton pRipple type="button" label="Add User" class="p-button-text" icon="fa fa-plus"
+                (click)="add()" *ngIf="IsAuthorized(PermissionsEnum.AddUsers)"></button>
+        </div>
+        <div class="p-col">
+            <div class="p-d-flex">
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="fa fa-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')"
+                        placeholder="Search Keyword" />
+                </span>
+            </div>
+        </div>
+    </div>
+    <p-table #dt [value]="users" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['fullName','email']" *ngIf="users">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="fullName" style="width: 20%;">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Full name
+                        <p-sortIcon field="fullName"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="email" style="width: 28%;">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Email
+                        <p-sortIcon field="email"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width: 30%;">Role(s)</th>
+                <th style="width: 10%;">Department</th>
+                <th style="text-align: center; width: 7%;">Inactive</th>
+                <th style="text-align: center; width: 5%;"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
+            <tr>
+                <td>{{user.fullName}}</td>
+                <td>{{user.email}}</td>
+                <td><span *ngFor="let role of user.roles; let isLast=last">{{role.name}}{{isLast ? '' : ', '}}</span>
+                </td>
+                <td><span *ngIf="user.departments.length > 0">{{user.departments[0].abbreviation}}</span></td>
+                <td style="text-align: center;">
+                    <p-checkbox [ngModel]="!user.isActive" [binary]="true" disabled></p-checkbox>
+                </td>
+                <td style="text-align: center;">
+                    <button *ngIf="user.fullName != 'System User'" pButton pRipple type="button"
+                        class="p-button-text action-button" tooltipPosition="top" pTooltip="Edit User"
+                        icon="fa fa-pencil-square-o" (click)="openEditDialog(user)" [disabled]="canEdit()"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
+
+<p-dialog header="New User" [(visible)]="displayNewDialog" [modal]="true" [style]="{width: '50vw'}"
+    [maximizable]="false" [resizable]="false" *ngIf="newUserForm">
+    <form novalidate [formGroup]="newUserForm">
+        <div class="form-group">
+            <div class="p-fluid">
+                <div class="p-field p-grid">
+                    <label for="selectedUser" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+                        style="font-size: 13px; font-weight: bold;">Full Name</label>
+                    <div class="p-col-12 p-md-10">
+                        <p-autoComplete [style]="{'width':'100%'}" name="id" [(ngModel)]="selectedUser"
+                            [ngModelOptions]="{standalone: true}" [suggestions]="searchResult"
+                            (completeMethod)="searchUser($event)" field="fullName" [size]="20"
+                            placeholder="Find User (type 4 letters)" [minLength]="4" [forceSelection]="true"
+                            [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" appendTo="body">
+                        </p-autoComplete>
+                    </div>
+                </div>
+                <div class="p-field p-grid" *ngIf="isSystemAdmin">
+                    <label for="selectedDepartment" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+                        style="font-size: 13px; font-weight: bold;">Department</label>
+                    <div class="p-col-12 p-md-10">
+                        <p-dropdown [style]="{'width':'100%'}" [options]="departments" optionLabel="name"
+                            placeholder="Select a Department" [(ngModel)]="selectedDepartment"
+                            [ngModelOptions]="{standalone: true}" appendTo="body" [filter]="true" filterBy="name">
+                        </p-dropdown>
+                    </div>
+                </div>
+                <div class="p-field p-grid">
+                    <label for="selectedRole" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+                        style="font-size: 13px; font-weight: bold;">Role(s)</label>
+                    <div class="p-col-12 p-md-10">
+                        <p-multiSelect [options]="roles" [(ngModel)]="selectedRoles" defaultLabel="Select Role(s)"
+                            optionLabel="name" [ngModelOptions]="{standalone: true}" appendTo="body"
+                            selectedItemsLabel="{0} items selected"></p-multiSelect>
+                    </div>
+                </div>
+                <div class="p-field p-grid">
+                    <label for="inActive" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+                        style="font-size: 13px; font-weight: bold;">Inactive</label>
+                    <div class="p-col-12 p-md-10">
+                        <p-checkbox id="inActive" [binary]="true" [(ngModel)]="inActive"
+                            [ngModelOptions]="{standalone: true}"></p-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-footer *ngIf="IsAuthorized(PermissionsEnum.ShowUserActions)">
+        <button type="submit" [disabled]="disableSubmit()" pButton icon="fa fa-thumbs-o-up" (click)="submit()"
+            class="ui-button-success" label="Submit"></button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog header="Edit User" [(visible)]="displayEditDialog" [modal]="true" [style]="{width: '50vw'}"
+    [maximizable]="false" [resizable]="false" *ngIf="editUserForm">
+    <form novalidate [formGroup]="editUserForm">
+        <div class="form-group" *ngIf="selectedUser">
+            <div class="p-fluid">
+                <div class="p-field p-grid">
+                    <label for="selectedUser" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+                        style="font-size: 13px; font-weight: bold;">Full Name</label>
+                    <div class="p-col-12 p-md-10">
+                        <input [ngModelOptions]="{standalone: true}" type="text" style="width: 100%; height: 30px;"
+                            [disabled]="true" [(ngModel)]="selectedUser.fullName" pInputText />
+                    </div>
+                </div>
+                <div class="p-field p-grid" *ngIf="isSystemAdmin">
+                    <label for="selectedDepartment" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+                        style="font-size: 13px; font-weight: bold;">Department</label>
+                    <div class="p-col-12 p-md-10">
+                        <p-dropdown [style]="{'width':'100%'}" [options]="departments" optionLabel="name"
+                            placeholder="Select a Department" [(ngModel)]="selectedDepartment"
+                            [ngModelOptions]="{standalone: true}" appendTo="body" [filter]="true" filterBy="name">
+                        </p-dropdown>
+                    </div>
+                </div>
+                <div class="p-field p-grid">
+                    <label for="selectedRole" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+                        style="font-size: 13px; font-weight: bold;">Role(s)</label>
+                    <div class="p-col-12 p-md-10">
+                        <p-multiSelect [options]="roles" [(ngModel)]="selectedRoles" defaultLabel="Select Role(s)"
+                            optionLabel="name" [ngModelOptions]="{standalone: true}" appendTo="body"
+                            selectedItemsLabel="{0} items selected"></p-multiSelect>
+                    </div>
+                </div>
+                <div class="p-field p-grid">
+                    <label for="inActive" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+                        style="font-size: 13px; font-weight: bold;">Inactive</label>
+                    <div class="p-col-12 p-md-10">
+                        <p-checkbox id="inActive" [binary]="true" [(ngModel)]="inActive"
+                            [ngModelOptions]="{standalone: true}"></p-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-footer *ngIf="IsAuthorized(PermissionsEnum.ShowUserActions)">
+        <button type="submit" [disabled]="disableSubmit()" pButton icon="fa fa-thumbs-o-up" (click)="updateUser()"
+            class="ui-button-success" label="Submit"></button>
+    </p-footer>
+</p-dialog>
