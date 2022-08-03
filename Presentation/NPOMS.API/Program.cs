@@ -1,26 +1,96 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web;
+using NPOMS.Services.DenodoAPI;
+using NPOMS.Services.Extensions;
+using NPOMS.Services.PowerBI.Models;
+using System;
 
-namespace NPOMS.API
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.ConfigureRepositoryWrapper(builder);
+
+// Setting configuration for protected web api
+builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAdB2C");
+
+var blobConfig = builder.Configuration.GetSection("BlobStorageSettings").Get<BlobStorageSettings>();
+
+#if !DEBUG
+	blobConfig.StorageAccount = Environment.GetEnvironmentVariable("APPSETTING_Storage01");
+	blobConfig.SubFolderPath = Environment.GetEnvironmentVariable("APPSETTING_FolderPath01");
+#endif
+
+builder.Services.AddSingleton(blobConfig);
+
+builder.Services.AddConfiguration<DenodoAPIConfig>(builder.Configuration, "DenodoAPIConfiguration");
+builder.Services.AddConfiguration<MSGraphConfiguration>(builder.Configuration, "MicrosoftGraph");
+builder.Services.AddConfiguration<GeneralConfiguration>(builder.Configuration, "GeneralConfiguration");
+
+builder.Services.Configure<PowerBiAD>(builder.Configuration.GetSection("PowerBiAD"))
+				.Configure<PowerBI>(builder.Configuration.GetSection("PowerBI"));
+
+#if !DEBUG
+	builder.Services.Configure<PowerBiAD>(powerBIAD =>
+	{
+		powerBIAD.ClientId = Environment.GetEnvironmentVariable("APPSETTING_PowerBIAppID");
+		powerBIAD.ClientSecret = Environment.GetEnvironmentVariable("APPSETTING_PowerBISecret");
+		powerBIAD.TenantId = Environment.GetEnvironmentVariable("APPSETTING_TenantID");
+	});
+#endif
+
+//solves 413 errors
+builder.Services.Configure<FormOptions>(o =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+	o.ValueLengthLimit = int.MaxValue;
+	o.MultipartBodyLengthLimit = int.MaxValue;
+	o.MemoryBufferThreshold = int.MaxValue;
+});
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+builder.Services.AddControllers();
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddApplicationInsightsTelemetry();
+
+builder.Services.AddCors(o => o.AddPolicy("default", builder =>
+{
+	builder.AllowAnyOrigin()
+		   .AllowAnyMethod()
+		   .AllowAnyHeader();
+}));
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
+
+app.UseHsts();
+app.UseCors("default");
+
+app.UseAuthentication();
+
+app.UseHttpsRedirection();
+
+var options = new DefaultFilesOptions();
+options.DefaultFileNames.Clear();
+options.DefaultFileNames.Add("index.html");
+
+app.UseDefaultFiles(options);
+app.UseStaticFiles();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

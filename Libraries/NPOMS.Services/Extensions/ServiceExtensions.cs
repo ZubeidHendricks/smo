@@ -1,6 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using NPOMS.Repository;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Implementation.Dropdown;
 using NPOMS.Repository.Implementation.Entities;
@@ -14,7 +16,9 @@ using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Services.DenodoAPI.Implementation;
 using NPOMS.Services.DenodoAPI.Interfaces;
 using NPOMS.Services.Implementation;
+using NPOMS.Services.Infrastructure.Implementation;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Mappings;
 using NPOMS.Services.PowerBI;
 
 namespace NPOMS.Services.Extensions
@@ -29,8 +33,21 @@ namespace NPOMS.Services.Extensions
 			});
 		}
 
-		public static void ConfigureRepositoryWrapper(this IServiceCollection services)
+		public static void ConfigureRepositoryWrapper(this IServiceCollection services, WebApplicationBuilder builder)
 		{
+			// Take note of the IDBAuthTokenService service. This is how we provide support Managed Identity in app services
+			services.AddDbContext<RepositoryContext>();
+			services.AddTransient<IDBAuthTokenService, AzureSqlAuthTokenService>();
+
+			/* AutoMapper */
+			var mappingConfig = new MapperConfiguration(mc =>
+			{
+				mc.AddProfile(new MappingConfiguration());
+			});
+
+			IMapper mapper = mappingConfig.CreateMapper();
+			services.AddSingleton(mapper);
+
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 			#region  Repositories 
@@ -122,6 +139,9 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IEmbeddedReportService, EmbeddedReportService>();
 
 			#endregion
+
+			var engine = EngineContext.Create();
+			engine.ConfigureServices(services, builder.Configuration);
 		}
 	}
 }
