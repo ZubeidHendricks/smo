@@ -1,6 +1,6 @@
 
 trigger:
-- Non-Prod
+- Training
 
 variables:
   buildConfiguration: 'Release'
