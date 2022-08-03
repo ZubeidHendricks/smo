@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30406.217
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{008C381E-C513-4274-B9A3-14925F1AF85A}"
 EndProject
@@ -22,6 +22,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{DC355C50-6F05-416F-82B2-1EC286370A56}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NPOMS.Test", "Test\NPOMS.Test\NPOMS.Test.csproj", "{473917FD-0A6A-4B4A-96DB-EE6CADA937B4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A80CE981-46B3-4EEE-809D-17540135C98F}"
+	ProjectSection(SolutionItems) = preProject
+		pipeline-main.yml = pipeline-main.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,35 +124,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B47ABDE7-8DD8-4381-9E68-35F96F1E9BB0}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://dev.azure.com/tapsdevops
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Database\\NPOMS.Repository\\NPOMS.Repository.csproj
-		SccProjectTopLevelParentUniqueName1 = NPOMS.sln
-		SccProjectName1 = Database/NPOMS.Repository
-		SccLocalPath1 = Database\\NPOMS.Repository
-		SccProjectUniqueName2 = Libraries\\NPOMS.Domain\\NPOMS.Domain.csproj
-		SccProjectTopLevelParentUniqueName2 = NPOMS.sln
-		SccProjectName2 = Libraries/NPOMS.Domain
-		SccLocalPath2 = Libraries\\NPOMS.Domain
-		SccProjectUniqueName3 = Libraries\\NPOMS.Services\\NPOMS.Services.csproj
-		SccProjectTopLevelParentUniqueName3 = NPOMS.sln
-		SccProjectName3 = Libraries/NPOMS.Services
-		SccLocalPath3 = Libraries\\NPOMS.Services
-		SccProjectUniqueName4 = Presentation\\NPOMS.API\\NPOMS.API.csproj
-		SccProjectTopLevelParentUniqueName4 = NPOMS.sln
-		SccProjectName4 = Presentation/NPOMS.API
-		SccLocalPath4 = Presentation\\NPOMS.API
-		SccProjectUniqueName5 = Presentation\\NPOMS.Web\\NPOMS.Web.csproj
-		SccProjectTopLevelParentUniqueName5 = NPOMS.sln
-		SccProjectName5 = Presentation/NPOMS.Web
-		SccLocalPath5 = Presentation\\NPOMS.Web
-		SccProjectUniqueName6 = Test\\NPOMS.Test\\NPOMS.Test.csproj
-		SccProjectTopLevelParentUniqueName6 = NPOMS.sln
-		SccProjectName6 = Test/NPOMS.Test
-		SccLocalPath6 = Test\\NPOMS.Test
 	EndGlobalSection
 EndGlobal
