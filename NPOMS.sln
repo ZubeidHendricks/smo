@@ -24,6 +24,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A80CE981-46B3-4EEE-809D-17540135C98F}"
 	ProjectSection(SolutionItems) = preProject
 		pipeline-main.yml = pipeline-main.yml
+		pipeline-nonprod.yml = pipeline-nonprod.yml
+		pipeline-prod.yml = pipeline-prod.yml
+		pipeline-training.yml = pipeline-training.yml
 	EndProjectSection
 EndProject
 Global
