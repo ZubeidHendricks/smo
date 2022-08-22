@@ -47,6 +47,7 @@ namespace NPOMS.Repository.Implementation.Entities
 			return await FindByCondition(x => x.Id.Equals(id))
 							.Include(x => x.ActivitySubProgrammes)
 							.Include(x => x.ActivityFacilityLists)
+							.Include(x => x.ActivityList)
 							.AsNoTracking().FirstOrDefaultAsync();
 		}
 

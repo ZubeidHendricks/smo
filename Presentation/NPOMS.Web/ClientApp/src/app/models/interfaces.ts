@@ -206,6 +206,13 @@ export interface ITitle {
     isActive: boolean;
 }
 
+export interface IFrequency {
+    id: number;
+    name: string;
+    systemName: string;
+    isActive: boolean;
+}
+
 /* Entities */
 export interface IAccessStatus {
     id: number;
@@ -489,7 +496,7 @@ export interface IActivitySubProgramme {
     subProgrammeId: number;
     isActive: boolean;
 
-    activity: IActivity;
+    //activity: IActivity;
     subProgramme: ISubProgramme;
 }
 
@@ -547,7 +554,7 @@ export interface IActivityFacilityList {
     facilityListId: number;
     isActive: boolean;
 
-    activity: IActivity;
+    //activity: IActivity;
     facilityList: IFacilityList;
 }
 
@@ -615,4 +622,32 @@ export interface IDenodoFacility {
     metro_rural: string;
     open_days: string;
     open_time: string;
+}
+
+/* Indicator */
+export interface IWorkplanTarget {
+    id: number;
+    activityId: number;
+    financialYearId: number;
+    frequencyId: number;
+    annual: number;
+    apr: number;
+    may: number;
+    jun: number;
+    jul: number;
+    aug: number;
+    sep: number;
+    oct: number;
+    nov: number;
+    dec: number;
+    jan: number;
+    feb: number;
+    mar: number;
+    quarter1: number;
+    quarter2: number;
+    quarter3: number;
+    quarter4: number;
+
+    financialYear: IFinancialYear;
+    frequency: IFrequency;
 }

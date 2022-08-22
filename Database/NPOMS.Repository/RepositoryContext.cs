@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
+using NPOMS.Domain.Indicator;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Configurations.Core;
@@ -87,6 +88,7 @@ namespace NPOMS.Repository
 		public DbSet<ServiceType> ServiceTypes { get; set; }
 		public DbSet<SubProgramme> SubProgrammes { get; set; }
 		public DbSet<Title> Titles { get; set; }
+		public DbSet<Frequency> Frequencies { get; set; }
 
 		/* Entities */
 		public DbSet<AccessStatus> AccessStatuses { get; set; }
@@ -119,6 +121,9 @@ namespace NPOMS.Repository
 		public DbSet<UserNpo> UserNpos { get; set; }
 		public DbSet<UserRole> UserRoles { get; set; }
 		public DbSet<ActivityFacilityList> ActivityFacilityLists { get; set; }
+
+		/* Indicator */
+		public DbSet<WorkplanTarget> WorkplanTargets { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -177,6 +182,7 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new ServiceTypeConfiguration());
 			modelBuilder.ApplyConfiguration(new SubProgrammeConfiguration());
 			modelBuilder.ApplyConfiguration(new TitleConfiguration());
+			modelBuilder.ApplyConfiguration(new FrequencyConfiguration());
 
 			/* Entities */
 			modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());

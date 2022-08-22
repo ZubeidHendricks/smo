@@ -51,8 +51,8 @@ namespace NPOMS.Domain.Entities
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public virtual Title Title { get; set; }
+		public Title Title { get; set; }
 
-		public virtual Position Position { get; set; }
+		public Position Position { get; set; }
 	}
 }

@@ -27,6 +27,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<Activity>> GetAllActivitiesAsync(int NpoId, int applicationPeriodId);
 
+		Task<Activity> GetActivityById(int id);
+
 		Task CreateActivity(Activity model, string userIdentifier);
 
 		Task UpdateActivity(Activity model, string userIdentifier);

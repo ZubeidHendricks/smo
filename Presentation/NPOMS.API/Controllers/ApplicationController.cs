@@ -288,6 +288,21 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+		[HttpGet("activityId/{activityId}", Name = "GetActivityById")]
+		public async Task<IActionResult> GetActivityById(int activityId)
+		{
+			try
+			{
+				var results = await _applicationService.GetActivityById(activityId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetActivityById action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
 		[HttpPost("activities/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateActivity")]
 		public async Task<IActionResult> CreateActivity([FromBody] Activity model, int NpoId, int applicationPeriodId)
 		{

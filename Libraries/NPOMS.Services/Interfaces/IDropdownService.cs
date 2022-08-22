@@ -164,5 +164,11 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateUtility(Utility model, string userIdentifier);
 
 		Task<IEnumerable<TrainingMaterial>> GetAllTrainingMaterials(bool returnInactive);
+
+		Task<IEnumerable<Frequency>> GetFrequencies(bool returnInactive);
+
+		Task CreateFrequency(Frequency model, string userIdentifier);
+
+		Task UpdateFrequency(Frequency model, string userIdentifier);
 	}
 }

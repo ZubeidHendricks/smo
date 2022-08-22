@@ -64,6 +64,11 @@ export class ApplicationService {
     return this._http.get<IActivity[]>(url, httpOptions);
   }
 
+  public getActivityById(activityId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/activityId/${activityId}`;
+    return this._http.get<IActivity>(url, httpOptions);
+  }
+
   public createActivity(activity: IActivity, application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/activities/npoId/${application.npoId}/applicationPeriodId/${application.applicationPeriodId}`;
     return this._http.post<IActivity>(url, activity, httpOptions);

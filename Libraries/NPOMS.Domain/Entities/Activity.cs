@@ -42,14 +42,14 @@ namespace NPOMS.Domain.Entities
 
 		public bool? ChangesRequired { get; set; }
 
-		public virtual Objective Objective { get; set; }
+		public Objective Objective { get; set; }
 
-		public virtual ActivityType ActivityType { get; set; }
+		public ActivityType ActivityType { get; set; }
 
-		public virtual List<ActivitySubProgramme> ActivitySubProgrammes { get; set; } = new List<ActivitySubProgramme>();
+		public List<ActivitySubProgramme> ActivitySubProgrammes { get; set; } = new List<ActivitySubProgramme>();
 
-		public virtual ActivityList ActivityList { get; set; }
+		public ActivityList ActivityList { get; set; }
 
-		public virtual List<ActivityFacilityList> ActivityFacilityLists { get; set; } = new List<ActivityFacilityList>();
+		public List<ActivityFacilityList> ActivityFacilityLists { get; set; } = new List<ActivityFacilityList>();
 	}
 }

@@ -13,8 +13,8 @@ namespace NPOMS.Domain.Mapping
 
 		public bool IsActive { get; set; }
 
-		public virtual Activity Activity { get; set; }
+		//public Activity Activity { get; set; }
 
-		public virtual SubProgramme SubProgramme { get; set; }
+		public SubProgramme SubProgramme { get; set; }
 	}
 }

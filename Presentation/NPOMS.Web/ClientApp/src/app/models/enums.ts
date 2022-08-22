@@ -43,7 +43,8 @@ export enum DropdownTypeEnum {
     ResourceList = 24,
     ProvisionTypes = 25,
     Utilities = 26,
-    TrainingMaterial = 27
+    TrainingMaterial = 27,
+    Frequencies = 28
 }
 
 export enum EntityTypeEnum {
@@ -171,4 +172,10 @@ export enum PermissionsEnum {
 
 export enum ReportTypeEnum {
     PowerBIDashboard = 1
+}
+
+export enum FrequencyEnum {
+    Annually = 1,
+    Monthly = 2,
+    Quarterly = 3
 }

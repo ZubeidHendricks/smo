@@ -45,6 +45,6 @@ namespace NPOMS.Domain.Core
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public virtual DocumentType DocumentType { get; set; }
+		public DocumentType DocumentType { get; set; }
 	}
 }

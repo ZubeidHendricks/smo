@@ -27,9 +27,15 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { TooltipModule } from 'primeng/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StepsModule } from 'primeng/steps';
-import { DatePipe } from '@angular/common';
+import { DatePipe, LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FileUploadModule } from 'primeng/fileupload';
+import { MegaMenuModule } from 'primeng/megamenu';
+import { CardModule } from 'primeng/card';
+
+// B2B / B2C
+import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
+import { MsalInterceptor, MsalBroadcastService, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from "./app.component";
@@ -92,13 +98,12 @@ import { ServiceTypeComponent } from './components/admin/utilities/service-type/
 import { SubProgrammeComponent } from './components/admin/utilities/sub-programme/sub-programme.component';
 import { TitleComponent } from './components/admin/utilities/title/title.component';
 import { UtilityManagementComponent } from './components/admin/utilities/utility-management/utility-management.component';
-
-// B2B / B2C
-import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
-import { MsalInterceptor, MsalBroadcastService, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { PowerbiDashboardComponent } from './components/powerbi-dashboard/powerbi-dashboard.component';
 import { HomeComponent } from './components/home/home.component';
 import { TrainingMaterialComponent } from './components/training-material/training-material.component';
+import { ManageComponent } from './components/indicators/workplan/manage/manage.component';
+import { ActualsComponent } from './components/indicators/workplan/actuals/actuals.component';
+import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -202,7 +207,10 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     UtilityManagementComponent,
     PowerbiDashboardComponent,
     HomeComponent,
-    TrainingMaterialComponent
+    TrainingMaterialComponent,
+    ManageComponent,
+    ActualsComponent,
+    TargetsComponent
   ],
   imports: [
     BrowserModule,
@@ -236,9 +244,15 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     MsalModule,
     HttpClientModule,
     StepsModule,
-    FileUploadModule
+    FileUploadModule,
+    MegaMenuModule,
+    CardModule
   ],
   providers: [
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
+    },
     DatePipe,
     {
       provide: HTTP_INTERCEPTORS,

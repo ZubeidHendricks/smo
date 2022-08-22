@@ -33,6 +33,6 @@ namespace NPOMS.Domain.Entities
 
 		public bool? ChangesRequired { get; set; }
 
-		public virtual Activity Activity { get; set; }
+		public Activity Activity { get; set; }
 	}
 }

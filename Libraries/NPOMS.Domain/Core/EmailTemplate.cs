@@ -25,6 +25,6 @@ namespace NPOMS.Domain.Core
 
         public bool IsActive { get; set; }
 
-        public virtual EmailAccount EmailAccount { get; set; }
+        public EmailAccount EmailAccount { get; set; }
     }
 }

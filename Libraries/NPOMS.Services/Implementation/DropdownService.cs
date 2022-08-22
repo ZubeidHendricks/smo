@@ -47,6 +47,7 @@ namespace NPOMS.Services.Implementation
 		private IProvisionTypeRepository _provisionTypeRepository;
 		private IUtilityRepository _utilityRepository;
 		private ITrainingMaterialRepository _trainingMaterialRepository;
+		private IFrequencyRepository _frequencyRepository;
 
 		#endregion
 
@@ -81,7 +82,8 @@ namespace NPOMS.Services.Implementation
 			IResourceListRepository resourceListRepository,
 			IProvisionTypeRepository provisionTypeRepository,
 			IUtilityRepository utilityRepository,
-			ITrainingMaterialRepository trainingMaterialRepository)
+			ITrainingMaterialRepository trainingMaterialRepository,
+			IFrequencyRepository frequencyRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -112,6 +114,7 @@ namespace NPOMS.Services.Implementation
 			_provisionTypeRepository = provisionTypeRepository;
 			_utilityRepository = utilityRepository;
 			_trainingMaterialRepository = trainingMaterialRepository;
+			_frequencyRepository = frequencyRepository;
 		}
 
 		#endregion
@@ -902,6 +905,35 @@ namespace NPOMS.Services.Implementation
 		public async Task<IEnumerable<TrainingMaterial>> GetAllTrainingMaterials(bool returnInactive)
 		{
 			return await _trainingMaterialRepository.GetEntities(returnInactive);
+		}
+
+		#endregion
+
+		#region Frequency
+
+		public async Task<IEnumerable<Frequency>> GetFrequencies(bool returnInactive)
+		{
+			return await _frequencyRepository.GetEntities(returnInactive);
+		}
+
+		public async Task CreateFrequency(Frequency model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _frequencyRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateFrequency(Frequency model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _frequencyRepository.UpdateAsync(model);
 		}
 
 		#endregion

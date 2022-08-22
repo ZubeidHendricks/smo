@@ -126,6 +126,9 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.TrainingMaterial:
 						var trainingMaterials = await _dropdownService.GetAllTrainingMaterials(returnInactive);
 						return Ok(trainingMaterials);
+					case DropdownTypeEnum.Frequencies:
+						var frequencies = await _dropdownService.GetFrequencies(returnInactive);
+						return Ok(frequencies);
 				}
 
 				return Ok();
@@ -236,6 +239,10 @@ namespace NPOMS.API.Controllers
 						var utility = JsonConvert.DeserializeObject<Utility>(Convert.ToString(entity));
 						await _dropdownService.CreateUtility(utility, base.GetUserIdentifier());
 						break;
+					case DropdownTypeEnum.Frequencies:
+						var frequency = JsonConvert.DeserializeObject<Frequency>(Convert.ToString(entity));
+						await _dropdownService.CreateFrequency(frequency, base.GetUserIdentifier());
+						break;
 				}
 
 				return Ok();
@@ -345,6 +352,10 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.Utilities:
 						var utility = JsonConvert.DeserializeObject<Utility>(Convert.ToString(entity));
 						await _dropdownService.UpdateUtility(utility, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.Frequencies:
+						var frequency = JsonConvert.DeserializeObject<Frequency>(Convert.ToString(entity));
+						await _dropdownService.UpdateFrequency(frequency, base.GetUserIdentifier());
 						break;
 				}
 

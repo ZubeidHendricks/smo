@@ -12,8 +12,8 @@ namespace NPOMS.Domain.Mapping
 
 		public int SubProgrammeId { get; set; }
 
-		public virtual Programme Programme { get; set; }
+		public Programme Programme { get; set; }
 
-		public virtual SubProgramme SubProgramme { get; set; }
+		public SubProgramme SubProgramme { get; set; }
 	}
 }

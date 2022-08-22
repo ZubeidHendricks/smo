@@ -31,6 +31,6 @@ namespace NPOMS.Domain.Core
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public virtual List<RolePermission> Roles { get; set; } = new List<RolePermission>();
+		public List<RolePermission> Roles { get; set; } = new List<RolePermission>();
 	}
 }

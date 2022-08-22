@@ -25,10 +25,10 @@ namespace NPOMS.Domain.Entities
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public virtual Npo Npo { get; set; }
+		public Npo Npo { get; set; }
 
-		public virtual ApplicationPeriod ApplicationPeriod { get; set; }
+		public ApplicationPeriod ApplicationPeriod { get; set; }
 
-		public virtual Status Status { get; set; }
+		public Status Status { get; set; }
 	}
 }

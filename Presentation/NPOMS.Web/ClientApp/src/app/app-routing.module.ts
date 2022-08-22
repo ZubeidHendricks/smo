@@ -50,6 +50,9 @@ import { PowerbiDashboardComponent } from './components/powerbi-dashboard/powerb
 import { AccessRequestComponent } from './components/user-access/access-request/access-request.component';
 import { AccessReviewComponent } from './components/user-access/access-review/access-review.component';
 import { TrainingMaterialComponent } from './components/training-material/training-material.component';
+import { ManageComponent } from './components/indicators/workplan/manage/manage.component';
+import { ActualsComponent } from './components/indicators/workplan/actuals/actuals.component';
+import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -111,7 +114,12 @@ const routes: Routes = [
 
   // Error Pages
   { path: '401', component: Page401Component },
-  { path: '403', component: Page403Component }
+  { path: '403', component: Page403Component },
+
+  // Workplan Indicators
+  { path: 'workplan-indicator/manage/:id', component: ManageComponent },
+  { path: 'workplan-indicator/actuals/:id', component: ActualsComponent },
+  { path: 'workplan-indicator/targets/:id', component: TargetsComponent }
 ];
 
 @NgModule({

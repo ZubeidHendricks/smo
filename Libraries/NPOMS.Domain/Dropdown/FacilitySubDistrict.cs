@@ -24,6 +24,6 @@ namespace NPOMS.Domain.Dropdown
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public virtual FacilityDistrict FacilityDistrict { get; set; }
+		public FacilityDistrict FacilityDistrict { get; set; }
 	}
 }
