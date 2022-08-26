@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MenuItem } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { AccessStatusEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IApplicationPeriod, INpo, IUser } from 'src/app/models/interfaces';
@@ -35,11 +36,16 @@ export class ApplicationListComponent implements OnInit {
   cols: any[];
   allApplications: IApplication[];
 
+  // This is the selected application when clicking on ellipsis ...
+  selectedApplication: IApplication;
+
   isSystemAdmin: boolean = true;
   isAdmin: boolean = false;
   hasAdminRole: boolean = false;
 
   allNpos: INpo[];
+
+  buttonItems: MenuItem[];
 
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
@@ -68,12 +74,13 @@ export class ApplicationListComponent implements OnInit {
 
         this.loadNpos();
         this.loadApplications();
+        this.buildButtonItems();
       }
     });
 
     this.cols = [
       { field: 'refNo', header: 'Ref. No.', width: '15%' },
-      { field: 'npo.name', header: 'Organisation', width: '34%' },
+      { field: 'npo.name', header: 'Organisation', width: '30%' },
       { field: 'applicationPeriod.applicationType.name', header: 'Type', width: '15%' },
       { field: 'applicationPeriod.closingDate', header: 'Closing Date', width: '15%' },
       { field: 'status.name', header: 'Application Status', width: '10%' }
@@ -117,6 +124,38 @@ export class ApplicationListComponent implements OnInit {
       applicationPeriod.status = 'Closed';
   }
 
+  private buildButtonItems() {
+    this.buttonItems = [];
+
+    if (this.profile) {
+
+      this.buttonItems = [{
+        label: 'Options',
+        items: []
+      }];
+
+      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Manage Indicators',
+          icon: 'fa fa-tags wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('workplan-indicator/manage/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Summary',
+          icon: 'fa fa-tasks wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.id);
+          }
+        });
+      }
+    }
+  }
+
   getCellData(row: any, col: any): any {
     const nestedProperties: string[] = col.field.split('.');
     let value: any = row;
@@ -150,9 +189,5 @@ export class ApplicationListComponent implements OnInit {
 
   view(application: IApplication) {
     this._router.navigateByUrl('application/view/' + application.id);
-  }
-
-  manageWorkplanIndicators(application: IApplication) {
-    this._router.navigateByUrl('workplan-indicator/manage/' + application.id);
   }
 }

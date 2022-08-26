@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220823133322_AddWorkplanActuals")]
+    partial class AddWorkplanActuals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -5388,60 +5390,6 @@ namespace NPOMS.Repository.Migrations
                         });
                 });
 
-            modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanActual", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Action")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Actual")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DeviationReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FinancialYearId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FrequencyPeriodId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Statement")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkplanTargetId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FrequencyPeriodId");
-
-                    b.ToTable("WorkplanActuals", "indicator");
-                });
-
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanTarget", b =>
                 {
                     b.Property<int>("Id")
@@ -8832,17 +8780,6 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("Activity");
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanActual", b =>
-                {
-                    b.HasOne("NPOMS.Domain.Dropdown.FrequencyPeriod", "FrequencyPeriod")
-                        .WithMany()
-                        .HasForeignKey("FrequencyPeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FrequencyPeriod");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanTarget", b =>

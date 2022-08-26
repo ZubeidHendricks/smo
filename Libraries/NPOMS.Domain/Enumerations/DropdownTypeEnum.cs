@@ -29,6 +29,7 @@
 		ProvisionTypes = 25,
 		Utilities = 26,
 		TrainingMaterial = 27,
-		Frequencies = 28
+		Frequencies = 28,
+		FrequencyPeriods = 29
 	}
 }

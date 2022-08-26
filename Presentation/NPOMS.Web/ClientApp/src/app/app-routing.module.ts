@@ -53,6 +53,7 @@ import { TrainingMaterialComponent } from './components/training-material/traini
 import { ManageComponent } from './components/indicators/workplan/manage/manage.component';
 import { ActualsComponent } from './components/indicators/workplan/actuals/actuals.component';
 import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
+import { SummaryComponent } from './components/indicators/workplan/summary/summary.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -119,7 +120,8 @@ const routes: Routes = [
   // Workplan Indicators
   { path: 'workplan-indicator/manage/:id', component: ManageComponent },
   { path: 'workplan-indicator/actuals/:id', component: ActualsComponent },
-  { path: 'workplan-indicator/targets/:id', component: TargetsComponent }
+  { path: 'workplan-indicator/targets/:id', component: TargetsComponent },
+  { path: 'workplan-indicator/summary/:id', component: SummaryComponent }
 ];
 
 @NgModule({

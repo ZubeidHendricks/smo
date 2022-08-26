@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220823084930_AddedFrequencyPeriod")]
+    partial class AddedFrequencyPeriod
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3197,9 +3199,6 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("int")
                         .HasDefaultValueSql("1");
 
-                    b.Property<int>("FrequencyId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -3229,7 +3228,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 1,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 1,
                             IsActive = false,
                             Name = "Annual",
                             SystemName = "Annual"
@@ -3239,7 +3237,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 2,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "April",
                             SystemName = "Apr"
@@ -3249,7 +3246,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 3,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "May",
                             SystemName = "May"
@@ -3259,7 +3255,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 4,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "June",
                             SystemName = "Jun"
@@ -3269,7 +3264,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 5,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "July",
                             SystemName = "Jul"
@@ -3279,7 +3273,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 6,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "August",
                             SystemName = "Aug"
@@ -3289,7 +3282,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 7,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "September",
                             SystemName = "Sep"
@@ -3299,7 +3291,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 8,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "October",
                             SystemName = "Oct"
@@ -3309,7 +3300,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 9,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "November",
                             SystemName = "Nov"
@@ -3319,7 +3309,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 10,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "December",
                             SystemName = "Dec"
@@ -3329,7 +3318,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 11,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "January",
                             SystemName = "Jan"
@@ -3339,7 +3327,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 12,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "February",
                             SystemName = "Feb"
@@ -3349,7 +3336,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 13,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 2,
                             IsActive = false,
                             Name = "March",
                             SystemName = "Mar"
@@ -3359,7 +3345,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 14,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 3,
                             IsActive = false,
                             Name = "Quarter1",
                             SystemName = "Q1"
@@ -3369,7 +3354,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 15,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 3,
                             IsActive = false,
                             Name = "Quarter2",
                             SystemName = "Q2"
@@ -3379,7 +3363,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 16,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 3,
                             IsActive = false,
                             Name = "Quarter3",
                             SystemName = "Q3"
@@ -3389,7 +3372,6 @@ namespace NPOMS.Repository.Migrations
                             Id = 17,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            FrequencyId = 3,
                             IsActive = false,
                             Name = "Quarter4",
                             SystemName = "Q4"
@@ -5386,60 +5368,6 @@ namespace NPOMS.Repository.Migrations
                             Link = "https://www.westerncape.gov.za/dept/health",
                             Name = "Reviewer Guide"
                         });
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanActual", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Action")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Actual")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DeviationReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FinancialYearId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FrequencyPeriodId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Statement")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkplanTargetId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FrequencyPeriodId");
-
-                    b.ToTable("WorkplanActuals", "indicator");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanTarget", b =>
@@ -8832,17 +8760,6 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("Activity");
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanActual", b =>
-                {
-                    b.HasOne("NPOMS.Domain.Dropdown.FrequencyPeriod", "FrequencyPeriod")
-                        .WithMany()
-                        .HasForeignKey("FrequencyPeriodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FrequencyPeriod");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanTarget", b =>

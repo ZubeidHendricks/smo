@@ -89,6 +89,7 @@ namespace NPOMS.Repository
 		public DbSet<SubProgramme> SubProgrammes { get; set; }
 		public DbSet<Title> Titles { get; set; }
 		public DbSet<Frequency> Frequencies { get; set; }
+		public DbSet<FrequencyPeriod> FrequencyPeriods { get; set; }
 
 		/* Entities */
 		public DbSet<AccessStatus> AccessStatuses { get; set; }
@@ -124,6 +125,7 @@ namespace NPOMS.Repository
 
 		/* Indicator */
 		public DbSet<WorkplanTarget> WorkplanTargets { get; set; }
+		public DbSet<WorkplanActual> WorkplanActuals { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -183,6 +185,7 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new SubProgrammeConfiguration());
 			modelBuilder.ApplyConfiguration(new TitleConfiguration());
 			modelBuilder.ApplyConfiguration(new FrequencyConfiguration());
+			modelBuilder.ApplyConfiguration(new FrequencyPeriodConfiguration());
 
 			/* Entities */
 			modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());

@@ -4,8 +4,6 @@ using NPOMS.Repository.Interfaces.Indicator;
 using NPOMS.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NPOMS.Services.Implementation
@@ -16,6 +14,7 @@ namespace NPOMS.Services.Implementation
 
 		private IWorkplanTargetRepository _workplanTargetRepository;
 		private IUserRepository _userRepository;
+		private IWorkplanActualRepository _workplanActualRepository;
 
 		#endregion
 
@@ -23,11 +22,13 @@ namespace NPOMS.Services.Implementation
 
 		public IndicatorService(
 			IWorkplanTargetRepository workplanTargetRepository,
-			IUserRepository userRepository
+			IUserRepository userRepository,
+			IWorkplanActualRepository workplanActualRepository
 			)
 		{
 			_workplanTargetRepository = workplanTargetRepository;
 			_userRepository = userRepository;
+			_workplanActualRepository = workplanActualRepository;
 		}
 
 		#endregion
@@ -48,6 +49,7 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
+			model.Frequency = null;
 			model.CreatedUserId = loggedInUser.Id;
 			model.CreatedDateTime = DateTime.Now;
 
@@ -58,10 +60,42 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
+			model.Frequency = null;
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
 			await _workplanTargetRepository.UpdateAsync(model);
+		}
+
+		public async Task<IEnumerable<WorkplanActual>> GetActualsByActivityId(int activityId)
+		{
+			return await _workplanActualRepository.GetByActivityId(activityId);
+		}
+
+		public async Task<WorkplanActual> GetActualsByIds(WorkplanActual model)
+		{
+			return await _workplanActualRepository.GetByIds(model);
+		}
+
+		public async Task CreateActual(WorkplanActual model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _workplanActualRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateActual(WorkplanActual model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.FrequencyPeriod = null;
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _workplanActualRepository.UpdateAsync(model);
 		}
 
 		#endregion

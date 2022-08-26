@@ -213,6 +213,14 @@ export interface IFrequency {
     isActive: boolean;
 }
 
+export interface IFrequencyPeriod {
+    id: number;
+    frequencyId: number;
+    name: string;
+    systemName: string;
+    isActive: boolean;
+}
+
 /* Entities */
 export interface IAccessStatus {
     id: number;
@@ -647,7 +655,27 @@ export interface IWorkplanTarget {
     quarter2: number;
     quarter3: number;
     quarter4: number;
+}
 
-    financialYear: IFinancialYear;
-    frequency: IFrequency;
+export interface IWorkplanActual {
+    id: number;
+    activityId: number;
+    financialYearId: number;
+    frequencyPeriodId: number;
+    statusId: number;
+    actual: number;
+    statement: string;
+    deviationReason: string;
+    action: string;
+    workplanTargetId: number;
+
+    isUpdated: boolean;
+    documents: IDocumentStore[];
+    frequencyPeriod: IFrequencyPeriod;
+}
+
+export interface IWorkplanIndicator {
+    activity: IActivity;
+    workplanTarget: IWorkplanTarget;
+    workplanActuals: IWorkplanActual[];
 }

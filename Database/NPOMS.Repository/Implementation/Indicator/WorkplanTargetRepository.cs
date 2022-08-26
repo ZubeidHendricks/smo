@@ -22,15 +22,15 @@ namespace NPOMS.Repository.Implementation.Indicator
 
 		public async Task<IEnumerable<WorkplanTarget>> GetByActivityId(int activityId)
 		{
-			return await FindByCondition(x => x.ActivityId.Equals(activityId)).AsNoTracking().ToListAsync();
+			return await FindByCondition(x => x.ActivityId.Equals(activityId)).Include(x => x.Frequency).AsNoTracking().ToListAsync();
 		}
 
 		public async Task<WorkplanTarget> GetByIds(WorkplanTarget model)
 		{
 			return await FindByCondition(x => x.ActivityId.Equals(model.ActivityId) && 
-										x.FinancialYearId.Equals(model.FinancialYearId) && 
-										x.FrequencyId.Equals(model.FrequencyId))
-					.AsNoTracking().FirstOrDefaultAsync();
+											  x.FinancialYearId.Equals(model.FinancialYearId) && 
+											  x.FrequencyId.Equals(model.FrequencyId))
+							.AsNoTracking().FirstOrDefaultAsync();
 		}
 
 		#endregion

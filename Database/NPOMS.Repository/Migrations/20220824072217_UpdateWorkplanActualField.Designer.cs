@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220824072217_UpdateWorkplanActualField")]
+    partial class UpdateWorkplanActualField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -5430,9 +5432,6 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkplanTargetId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

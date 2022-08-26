@@ -92,7 +92,6 @@ export class TargetsComponent implements OnInit {
       (results) => {
         this.activity = results;
         this.loadTargets();
-        this.isDataAvailable = true;
       },
       (err) => this._spinner.hide()
     );
@@ -103,6 +102,7 @@ export class TargetsComponent implements OnInit {
       (results) => {
         this.workplanTargets = results;
         this._spinner.hide();
+        this.isDataAvailable = true;
       },
       (error) => this._spinner.hide()
     );
@@ -110,7 +110,7 @@ export class TargetsComponent implements OnInit {
 
   private loadFinancialYears() {
     this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
+    this._dropdownRepo.getFromCurrentFinYear().subscribe(
       (results) => {
         this.financialYears = results;
         this._spinner.hide();
@@ -170,7 +170,7 @@ export class TargetsComponent implements OnInit {
       this._indicatorRepo.manageTarget(this.selectedWorkplanTarget).subscribe(resp => {
         this.loadTargets();
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-      });      
+      });
     }
   }
 

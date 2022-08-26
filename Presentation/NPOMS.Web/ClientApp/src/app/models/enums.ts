@@ -44,17 +44,20 @@ export enum DropdownTypeEnum {
     ProvisionTypes = 25,
     Utilities = 26,
     TrainingMaterial = 27,
-    Frequencies = 28
+    Frequencies = 28,
+    FrequencyPeriods = 29
 }
 
 export enum EntityTypeEnum {
     SupportingDocuments = 1,
-    SLA = 2
+    SLA = 2,
+    WorkplanActuals = 3
 }
 
 export enum EntityEnum {
     NpoProfile = 'NpoProfile',
-    Application = 'Application'
+    Application = 'Application',
+    WorkplanIndicators = 'WorkplanIndicators'
 }
 
 export enum FacilityTypeEnum {
@@ -178,4 +181,24 @@ export enum FrequencyEnum {
     Annually = 1,
     Monthly = 2,
     Quarterly = 3
+}
+
+export enum FrequencyPeriodEnum {
+    Annual = 1,
+    Apr = 2,
+    May = 3,
+    Jun = 4,
+    Jul = 5,
+    Aug = 6,
+    Sep = 7,
+    Oct = 8,
+    Nov = 9,
+    Dec = 10,
+    Jan = 11,
+    Feb = 12,
+    Mar = 13,
+    Q1 = 14,
+    Q2 = 15,
+    Q3 = 16,
+    Q4 = 17
 }

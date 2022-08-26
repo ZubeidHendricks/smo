@@ -32,6 +32,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FileUploadModule } from 'primeng/fileupload';
 import { MegaMenuModule } from 'primeng/megamenu';
 import { CardModule } from 'primeng/card';
+import { AccordionModule } from 'primeng/accordion';
+import { MenuModule } from 'primeng/menu';
 
 // B2B / B2C
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
@@ -104,6 +106,7 @@ import { TrainingMaterialComponent } from './components/training-material/traini
 import { ManageComponent } from './components/indicators/workplan/manage/manage.component';
 import { ActualsComponent } from './components/indicators/workplan/actuals/actuals.component';
 import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
+import { SummaryComponent } from './components/indicators/workplan/summary/summary.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -210,7 +213,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     TrainingMaterialComponent,
     ManageComponent,
     ActualsComponent,
-    TargetsComponent
+    TargetsComponent,
+    SummaryComponent
   ],
   imports: [
     BrowserModule,
@@ -246,7 +250,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     StepsModule,
     FileUploadModule,
     MegaMenuModule,
-    CardModule
+    CardModule,
+    AccordionModule,
+    MenuModule
   ],
   providers: [
     {

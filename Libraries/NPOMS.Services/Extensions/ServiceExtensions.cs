@@ -86,6 +86,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<ISubProgrammeRepository, SubProgrammeRepository>();
 			services.AddScoped<ITitleRepository, TitleRepository>();
 			services.AddScoped<IFrequencyRepository, FrequencyRepository>();
+			services.AddScoped<IFrequencyPeriodRepository, FrequencyPeriodRepository>();
 
 			/* Entities */
 			services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
@@ -120,6 +121,7 @@ namespace NPOMS.Services.Extensions
 
 			/* Indicator */
 			services.AddScoped<IWorkplanTargetRepository, WorkplanTargetRepository>();
+			services.AddScoped<IWorkplanActualRepository, WorkplanActualRepository>();
 
 			#endregion
 

@@ -23,6 +23,12 @@ namespace NPOMS.Repository.Configurations.Core
 					Id = 2,
 					Name = "SLA",
 					SystemName = "SLA"
+				},
+				new EntityType
+				{
+					Id = 3,
+					Name = "Workplan Actuals",
+					SystemName = "WorkplanActuals"
 				}
 			);
 		}
