@@ -1,12 +1,11 @@
 import { HttpEventType } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { FileUpload } from 'primeng/fileupload';
 import { Subscription } from 'rxjs';
-import { DropdownTypeEnum, EntityEnum, EntityTypeEnum, FrequencyEnum, FrequencyPeriodEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IDocumentStore, IDocumentType, IFinancialYear, IFrequency, IFrequencyPeriod, IUser, IWorkplanActual, IWorkplanTarget } from 'src/app/models/interfaces';
+import { DropdownTypeEnum, EntityEnum, EntityTypeEnum, FrequencyPeriodEnum, PermissionsEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IDocumentType, IFinancialYear, IFrequency, IUser, IWorkplanActual, IWorkplanTarget } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
@@ -36,6 +35,11 @@ export class ActualsComponent implements OnInit {
     return FrequencyPeriodEnum;
   }
 
+  private _disableEditButton: boolean;
+  @Input()
+  get disableEditButton(): boolean { return this._disableEditButton; }
+  set disableEditButton(disableEditButton: boolean) { this._disableEditButton = disableEditButton; }
+
   profile: IUser;
   validationErrors: Message[];
 
@@ -47,6 +51,7 @@ export class ActualsComponent implements OnInit {
   activity: IActivity;
   isDataAvailable: boolean;
 
+  cols: any[];
   documentCols: any[];
 
   financialYears: IFinancialYear[];
@@ -60,6 +65,7 @@ export class ActualsComponent implements OnInit {
   target: IWorkplanTarget;
 
   workplanActuals: IWorkplanActual[];
+  workplanActual = {} as IWorkplanActual;
   filteredWorkplanActuals: IWorkplanActual[];
 
   documentTypes: IDocumentType[] = [];
@@ -69,6 +75,10 @@ export class ActualsComponent implements OnInit {
 
   // Highlight required fields on save/submit click
   validated: boolean = false;
+
+  // Document upload element
+  @ViewChild('addDoc') element: ElementRef;
+  displayUploadedFilesDialog: boolean;
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -102,6 +112,16 @@ export class ActualsComponent implements OnInit {
         this.buildMenu();
       }
     });
+
+    this.cols = [
+      { header: 'Frequency', width: '10%' },
+      { header: 'Captured Target', width: '10%' },
+      { header: 'Actual', width: '10%' },
+      { header: 'Statement', width: '19%' },
+      { header: 'Deviation Reason', width: '19%' },
+      { header: 'Action', width: '19%' },
+      { header: 'Evidence', width: '8%' }
+    ];
 
     this.documentCols = [
       { header: '', width: '5%' },
@@ -315,28 +335,21 @@ export class ActualsComponent implements OnInit {
   private formValidate() {
     this.validated = true;
     this.validationErrors = [];
-
-    let hasActualsErrors: boolean[] = [];
-    let locationOfErrors: string[] = [];
+    let hasTableErrors: boolean[] = [];
 
     if (!this.selectedFinancialYear || !this.selectedFrequency)
-      hasActualsErrors.push(true);
+      this.validationErrors.push({ severity: 'error', summary: "Actuals:", detail: "Missing detail required." });
 
     if (this.selectedFinancialYear && this.selectedFrequency) {
       this.filteredWorkplanActuals.forEach(item => {
         if (item.actual == null || !item.statement || !item.deviationReason || !item.action) {
-          hasActualsErrors.push(true);
-          locationOfErrors.push(item.frequencyPeriod.name + ' Actuals');
+          hasTableErrors.push(true);
         }
       });
     }
 
-    if (hasActualsErrors.includes(true)) {
-      if (locationOfErrors.length > 0)
-        this.validationErrors.push({ severity: 'error', summary: "Actuals:", detail: "Missing detail required on " + locationOfErrors.join(', ') });
-      else
-        this.validationErrors.push({ severity: 'error', summary: "Actuals:", detail: "Missing detail required." });
-    }
+    if (hasTableErrors.includes(true))
+      this.validationErrors.push({ severity: 'warn', summary: "Actuals:", detail: "Ensure each block contains a value." });
 
     if (this.validationErrors.length == 0)
       this.menuActions[0].visible = false;
@@ -345,6 +358,7 @@ export class ActualsComponent implements OnInit {
   }
 
   financialYearChange() {
+    this.filteredWorkplanActuals = [];
     this.target = this.workplanTargets.find(x => x.activityId == this.activity.id && x.financialYearId == this.selectedFinancialYear.id);
     this.selectedFrequency = this.frequencies.find(x => x.id == this.target.frequencyId);
     this.filteredWorkplanActuals = this.workplanActuals.filter(x => x.financialYearId == this.target.financialYearId && x.frequencyPeriod.frequencyId == this.target.frequencyId);
@@ -357,27 +371,33 @@ export class ActualsComponent implements OnInit {
     workplanActual.isUpdated = true;
   }
 
-  public onUploadChange = (event, form, workplanActual) => {
-    event.files[0].documentType = this.documentTypes.find(x => x.name == 'Evidence');
+  public uploadDocument(rowData) {
+    this.element.nativeElement.click();
+  }
 
-    this._documentStore.upload(event.files, EntityTypeEnum.WorkplanActuals, Number(workplanActual.id), EntityEnum.WorkplanIndicators, this.application.refNo, event.files[0].documentType.id).subscribe(
+  public onUploadChange = (event, files, workplanActual) => {
+    files[0].documentType = this.documentTypes.find(x => x.name == 'Evidence');
+
+    this._documentStore.upload(event.files, EntityTypeEnum.WorkplanActuals, Number(workplanActual.id), EntityEnum.WorkplanIndicators, this.application.refNo, files[0].documentType.id).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress)
           this._spinner.show();
         else if (event.type === HttpEventType.Response) {
           this._spinner.hide();
           this.getDocuments(workplanActual);
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
         }
       },
       (error) => this._spinner.hide()
     );
 
-    form.clear();
+    files.clear();
   }
 
-  remove(event, file: File, uploader: FileUpload) {
-    const index = uploader.files.indexOf(file);
-    uploader.remove(event, index);
+  public uploadedFiles(workplanActual: IWorkplanActual) {
+    this.workplanActual = workplanActual;
+    this.getDocuments(this.workplanActual);
+    this.displayUploadedFilesDialog = true;
   }
 
   onDownloadDocument(doc: any) {

@@ -655,6 +655,8 @@ export interface IWorkplanTarget {
     quarter2: number;
     quarter3: number;
     quarter4: number;
+
+    frequency: IFrequency;
 }
 
 export interface IWorkplanActual {

@@ -85,6 +85,90 @@
         </p-card>
         <div style="height: 10px;" *ngIf="selectedFinancialYear"></div>
         <div *ngIf="selectedFinancialYear">
+            <p-card subheader="{{selectedFrequency.name}} Performance Information" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+                <p-table [columns]="cols" [value]="filteredWorkplanActuals" styleClass="p-datatable-sm" dataKey="id" editMode="row">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width, 'text-align': 'center'}">
+                                {{col.header}}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData>
+                        <tr>
+                            <td style="text-align: center;">{{rowData.frequencyPeriod.name}}</td>
+                            <td style="text-align: center;">
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Annual">{{target.annual}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Apr">{{target.apr}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.May">{{target.may}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Jun">{{target.jun}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Jul">{{target.jul}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Aug">{{target.aug}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Sep">{{target.sep}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Oct">{{target.oct}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Nov">{{target.nov}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Dec">{{target.dec}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Jan">{{target.jan}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Feb">{{target.feb}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Mar">{{target.mar}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Q1">{{target.quarter1}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Q2">{{target.quarter2}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Q3">{{target.quarter3}}</span>
+                                <span *ngIf="rowData.frequencyPeriodId == FrequencyPeriodEnum.Q4">{{target.quarter4}}</span>
+                            </td>
+                            <td pEditableColumn style="text-align: center;">
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <p-inputNumber [(ngModel)]="rowData.actual" inputId="integeronly" [inputStyle]="{'width':'10%'}" (onInput)="valueChanged(rowData)" [disabled]="isPreviousFinancialYear"></p-inputNumber>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{rowData.actual}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.statement" autoResize="autoResize" (change)="valueChanged(rowData)" [disabled]="isPreviousFinancialYear"></textarea>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{rowData.statement}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.deviationReason" autoResize="autoResize" (change)="valueChanged(rowData)" [disabled]="isPreviousFinancialYear"></textarea>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{rowData.deviationReason}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td pEditableColumn>
+                                <p-cellEditor>
+                                    <ng-template pTemplate="input">
+                                        <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.action" autoResize="autoResize" (change)="valueChanged(rowData)" [disabled]="isPreviousFinancialYear"></textarea>
+                                    </ng-template>
+                                    <ng-template pTemplate="output">
+                                        {{rowData.action}}
+                                    </ng-template>
+                                </p-cellEditor>
+                            </td>
+                            <td style="text-align: center;">
+                                <button *ngIf="rowData.documents.length === 0" pButton pRipple type="button" class="p-button-text p-button-info action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" [disabled]="true"></button>
+                                <button *ngIf="rowData.documents.length > 0" pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" [disabled]="isPreviousFinancialYear" (click)="uploadDocument(rowData)"></button>
+
+                                <input type="file" #addDoc (change)="onUploadChange($event, addDoc.files, rowData)" placeholder="Browse" accept="*" style="display:none;">
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-card>
+        </div>
+        <!-- <div *ngIf="selectedFinancialYear">
             <div *ngFor="let workplanActual of filteredWorkplanActuals">
                 <p-accordion [multiple]="true">
                     <p-accordionTab header="{{workplanActual.frequencyPeriod.name}} Actuals">
@@ -178,11 +262,6 @@
                                                     <div class="p-col-10">
                                                         <div>{{file.name}}</div>
                                                     </div>
-                                                    <!-- <div class="p-col-5">
-                                                        <div>
-                                                            <p-dropdown [options]="documentTypes" placeholder="Select a Document Type" optionLabel="name" [(ngModel)]="file.documentType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
-                                                        </div>
-                                                    </div> -->
                                                     <div class="p-col-2">
                                                         <div class="pull-right">
                                                             <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="remove($event, file, form)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -228,11 +307,44 @@
                     </p-accordionTab>
                 </p-accordion>
             </div>
-        </div>
+        </div> -->
         <div style="height: 10px;"></div>
         <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"></p-menubar>
     </p-panel>
 </p-panel>
+
+<p-dialog header="Uploaded Files" 
+          [(visible)]="displayUploadedFilesDialog" 
+          [style]="{width: '70vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true"
+          [maximizable]="false"
+          [draggable]="false"
+          [resizable]="false">
+        <p-table [value]="workplanActual.documents" styleClass="p-datatable-sm" [columns]="documentCols" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
+                <tr> 
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td>{{document.name}}</td>
+                    <td>{{document.fileSize}}</td>
+                    <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
+                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="onDeleteDocument(document, workplanActual)" pTooltip="Delete" tooltipPosition="top" [disabled]="isPreviousFinancialYear"></button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+</p-dialog>
 
 <div class="content-section implementation">
     <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
