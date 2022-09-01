@@ -146,7 +146,10 @@ export class UploadSLAComponent implements OnInit {
 
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -164,7 +167,10 @@ export class UploadSLAComponent implements OnInit {
       (results) => {
         this.documentTypes = results.filter(x => x.name.indexOf('SLA') !== -1);
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -195,6 +201,10 @@ export class UploadSLAComponent implements OnInit {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -203,6 +213,10 @@ export class UploadSLAComponent implements OnInit {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -211,6 +225,10 @@ export class UploadSLAComponent implements OnInit {
     this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
       (results) => {
         this.sustainabilityPlans = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -219,6 +237,10 @@ export class UploadSLAComponent implements OnInit {
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
         this.resources = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -295,7 +317,10 @@ export class UploadSLAComponent implements OnInit {
             this.getDocuments();
           }
         },
-        (error) => this._spinner.hide()
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
       );
       form.clear();
     }
@@ -314,7 +339,10 @@ export class UploadSLAComponent implements OnInit {
       res => {
         this.documents = res;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -344,7 +372,10 @@ export class UploadSLAComponent implements OnInit {
             this.getDocuments();
             this._spinner.hide();
           },
-          (error) => this._spinner.hide()
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
         );
       },
       reject: () => {
@@ -367,7 +398,10 @@ export class UploadSLAComponent implements OnInit {
         this.applicationAudits = results;
         this.displayHistory = true;
       },
-      (err) => this._loggerService.logException(err)
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -415,10 +449,16 @@ export class UploadSLAComponent implements OnInit {
       this._spinner.show();
       this.application.statusId = status;
 
-      this._applicationRepo.updateApplication(this.application).subscribe(resp => {
-        this._spinner.hide();
-        this._router.navigateByUrl('applications');
-      });
+      this._applicationRepo.updateApplication(this.application).subscribe(
+        (resp) => {
+          this._spinner.hide();
+          this._router.navigateByUrl('applications');
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
     }
   }
 
@@ -446,7 +486,10 @@ export class UploadSLAComponent implements OnInit {
         this.applicationComments = results;
         this.displayAllCommentDialog = true;
       },
-      (err) => this._loggerService.logException(err)
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -470,10 +513,16 @@ export class UploadSLAComponent implements OnInit {
       comment: this.comment
     } as IApplicationComment;
 
-    this._applicationRepo.createApplicationComment(model, false).subscribe(resp => {
-      this.viewComments();
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-      this.displayCommentDialog = false;
-    });
+    this._applicationRepo.createApplicationComment(model, false).subscribe(
+      (resp) => {
+        this.viewComments();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this.displayCommentDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 }

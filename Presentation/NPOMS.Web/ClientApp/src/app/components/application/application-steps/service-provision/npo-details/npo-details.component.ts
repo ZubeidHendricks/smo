@@ -4,6 +4,7 @@ import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { StatusEnum } from 'src/app/models/enums';
 import { IApplication, INpo, INpoProfile } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-npo-details',
@@ -33,7 +34,8 @@ export class NpoDetailsComponent implements OnInit {
   constructor(
     private _messageService: MessageService,
     private _applicationRepo: ApplicationService,
-    private _spinner: NgxSpinnerService
+    private _spinner: NgxSpinnerService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -61,7 +63,10 @@ export class NpoDetailsComponent implements OnInit {
 
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 

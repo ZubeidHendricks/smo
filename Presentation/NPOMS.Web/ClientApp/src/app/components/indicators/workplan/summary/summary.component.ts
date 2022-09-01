@@ -5,12 +5,13 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MegaMenuItem, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { DropdownTypeEnum, FrequencyEnum, FrequencyPeriodEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IFinancialYear, IWorkplanActual, IWorkplanIndicator, IWorkplanTarget } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IFinancialYear, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import * as xlsx from 'xlsx';
 import * as fileSaver from 'file-saver';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-summary',
@@ -35,16 +36,11 @@ export class SummaryComponent implements OnInit {
 
   menuActions: MegaMenuItem[];
 
-  workplanTargets: IWorkplanTarget[];
-  filteredWorkplanTarget: IWorkplanTarget;
-
-  workplanActuals: IWorkplanActual[];
-  filteredWorkplanActuals: IWorkplanActual[];
-
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
 
   workplanIndicators: IWorkplanIndicator[];
+  filteredWorkplanIndicators: IWorkplanIndicator[];
 
   scrollableCols: any[];
   frozenCols: any[];
@@ -57,7 +53,8 @@ export class SummaryComponent implements OnInit {
     private _indicatorRepo: IndicatorService,
     private _dropdownRepo: DropdownService,
     private _datePipe: DatePipe,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -81,7 +78,10 @@ export class SummaryComponent implements OnInit {
 
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -90,38 +90,53 @@ export class SummaryComponent implements OnInit {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results;
-
-        this.workplanTargets = [];
-        this.workplanActuals = [];
+        this.workplanIndicators = [];
 
         this.activities.forEach(activity => {
-          this.loadTargets(activity.id);
-          this.loadActuals(activity.id);
+          this.workplanIndicators.push({
+            activity: activity,
+            workplanTargets: [],
+            workplanActuals: []
+          } as IWorkplanIndicator);
+
+          this.loadTargets(activity);
+          this.loadActuals(activity);
         });
 
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
-  private loadTargets(activityId: number) {
-    this._indicatorRepo.getTargetsByActivityId(activityId).subscribe(
+  private loadTargets(activity: IActivity) {
+    this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
       (results) => {
-        // Add or merge retrieved targets with already retrieved targets...
-        this.workplanTargets = this.workplanTargets.concat(results);
+        // Add WorkplanTargets to WorkplanIndicators at index of activity
+        var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
+        this.workplanIndicators[index].workplanTargets = results;
       },
-      (error) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
-  private loadActuals(activityId: number) {
-    this._indicatorRepo.getActualsByActivityId(activityId).subscribe(
+  private loadActuals(activity: IActivity) {
+    this._indicatorRepo.getActualsByActivityId(activity.id).subscribe(
       (results) => {
-        // Add or merge retrieved actuals with already retrieved actuals...
-        this.workplanActuals = this.workplanActuals.concat(results);
+        // Add WorkplanActuals to WorkplanIndicators at index of activity
+        var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
+        this.workplanIndicators[index].workplanActuals = results;
       },
-      (error) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -132,7 +147,10 @@ export class SummaryComponent implements OnInit {
         this.financialYears = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -170,7 +188,7 @@ export class SummaryComponent implements OnInit {
   private exportSummary() {
     let exportedWorkplanIndicators = [];
 
-    this.workplanIndicators.forEach(indicator => {
+    this.filteredWorkplanIndicators.forEach(indicator => {
 
       let aprilTarget = null;
       let mayTarget = null;
@@ -199,29 +217,29 @@ export class SummaryComponent implements OnInit {
       let marchActual = null;
 
       /* Get target values */
-      switch (indicator.workplanTarget.frequencyId) {
+      switch (indicator.workplanTargets[0].frequencyId) {
         case FrequencyEnum.Annually:
-          marchTarget = indicator.workplanTarget.annual;
+          marchTarget = indicator.workplanTargets[0].annual;
           break;
         case FrequencyEnum.Monthly:
-          aprilTarget = indicator.workplanTarget.apr;
-          mayTarget = indicator.workplanTarget.may;
-          juneTarget = indicator.workplanTarget.jun;
-          julyTarget = indicator.workplanTarget.jul;
-          augustTarget = indicator.workplanTarget.aug;
-          septemberTarget = indicator.workplanTarget.sep;
-          octoberTarget = indicator.workplanTarget.oct;
-          novemberTarget = indicator.workplanTarget.nov;
-          decemberTarget = indicator.workplanTarget.dec;
-          januaryTarget = indicator.workplanTarget.jan;
-          februarytarget = indicator.workplanTarget.feb;
-          marchTarget = indicator.workplanTarget.mar;
+          aprilTarget = indicator.workplanTargets[0].apr;
+          mayTarget = indicator.workplanTargets[0].may;
+          juneTarget = indicator.workplanTargets[0].jun;
+          julyTarget = indicator.workplanTargets[0].jul;
+          augustTarget = indicator.workplanTargets[0].aug;
+          septemberTarget = indicator.workplanTargets[0].sep;
+          octoberTarget = indicator.workplanTargets[0].oct;
+          novemberTarget = indicator.workplanTargets[0].nov;
+          decemberTarget = indicator.workplanTargets[0].dec;
+          januaryTarget = indicator.workplanTargets[0].jan;
+          februarytarget = indicator.workplanTargets[0].feb;
+          marchTarget = indicator.workplanTargets[0].mar;
           break;
         case FrequencyEnum.Quarterly:
-          juneTarget = indicator.workplanTarget.quarter1;
-          septemberTarget = indicator.workplanTarget.quarter2;
-          decemberTarget = indicator.workplanTarget.quarter3;
-          marchTarget = indicator.workplanTarget.quarter4;
+          juneTarget = indicator.workplanTargets[0].quarter1;
+          septemberTarget = indicator.workplanTargets[0].quarter2;
+          decemberTarget = indicator.workplanTargets[0].quarter3;
+          marchTarget = indicator.workplanTargets[0].quarter4;
           break;
       }
 
@@ -282,7 +300,6 @@ export class SummaryComponent implements OnInit {
 
       exportedWorkplanIndicators.push({
         Financial_Year: this.selectedFinancialYear.name,
-        Frequency: indicator.workplanTarget.frequency.name,
         Activity: indicator.activity.activityList.description,
         Indicator: indicator.activity.successIndicator,
         Apr_Target: aprilTarget,
@@ -330,21 +347,32 @@ export class SummaryComponent implements OnInit {
   }
 
   financialYearChange() {
-    this.workplanIndicators = [];
+    if (this.selectedFinancialYear) {
+      this.filteredWorkplanIndicators = [];
 
-    this.filteredWorkplanTarget = this.workplanTargets.find(x => x.financialYearId == this.selectedFinancialYear.id);
-    this.filteredWorkplanActuals = this.workplanActuals.filter(x => x.financialYearId == this.selectedFinancialYear.id);
+      this.workplanIndicators.forEach(indicator => {
 
-    let activity = this.activities.find(x => x.id == this.filteredWorkplanActuals[0].activityId);
+        // Filter WorkplanTargets on activity, financial year and monthly frequency
+        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyId == FrequencyEnum.Monthly);
 
-    let workplanIndicator = {
-      activity: activity,
-      workplanTarget: this.filteredWorkplanTarget,
-      workplanActuals: this.filteredWorkplanActuals
-    } as IWorkplanIndicator;
+        // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
+        // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
+        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id);
+        let filteredWorkplanActuals = workplanActuals.filter((el) => {
+          return workplanTargets.some((f) => {
+            return f.id === el.workplanTargetId;
+          });
+        });
 
-    this.workplanIndicators.push(workplanIndicator);
-    this.makeRowsSameHeight();
+        this.filteredWorkplanIndicators.push({
+          activity: indicator.activity,
+          workplanTargets: workplanTargets,
+          workplanActuals: filteredWorkplanActuals
+        } as IWorkplanIndicator);
+      });
+
+      this.makeRowsSameHeight();
+    }
   }
 
   // Found at https://stackoverflow.com/questions/54057545/properly-use-primeng-table-with-scrollable-width-and-height-and-frozen-columns/54060117#54060117

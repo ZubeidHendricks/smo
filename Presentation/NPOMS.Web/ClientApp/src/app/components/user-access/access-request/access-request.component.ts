@@ -9,6 +9,7 @@ import { INpo, IUser, IUserNpo } from 'src/app/models/interfaces';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { UserAccessService } from 'src/app/services/api-services/user-access/user-access.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-access-request',
@@ -47,7 +48,8 @@ export class AccessRequestComponent implements OnInit {
     private _userAccessRepo: UserAccessService,
     private _npoRepo: NpoService,
     private _messageService: MessageService,
-    private _datepipe: DatePipe
+    private _datepipe: DatePipe,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -95,7 +97,10 @@ export class AccessRequestComponent implements OnInit {
         this.accessRequests = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -121,10 +126,16 @@ export class AccessRequestComponent implements OnInit {
       accessStatusId: 1
     } as IUserNpo;
 
-    this._userAccessRepo.createUserNpo(mapping).subscribe(resp => {
-      this.loadUserRequests();
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Access Request submitted.' });
-    });
+    this._userAccessRepo.createUserNpo(mapping).subscribe(
+      (resp) => {
+        this.loadUserRequests();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Access Request submitted.' });
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   applyFilterGlobal($event: any, stringVal: any) {
@@ -133,8 +144,14 @@ export class AccessRequestComponent implements OnInit {
 
   search(event) {
     let query = event.query;
-    this._npoRepo.getNpoByName(query).subscribe((results) => {
-      this.npos = results;
-    });
+    this._npoRepo.getNpoByName(query).subscribe(
+      (results) => {
+        this.npos = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 }

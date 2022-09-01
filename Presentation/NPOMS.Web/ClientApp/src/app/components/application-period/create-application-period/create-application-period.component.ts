@@ -7,6 +7,7 @@ import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IPro
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-create-application-period',
@@ -60,7 +61,8 @@ export class CreateApplicationPeriodComponent implements OnInit {
     private _authService: AuthService,
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
-    private _applicationPeriodRepo: ApplicationPeriodService
+    private _applicationPeriodRepo: ApplicationPeriodService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -153,10 +155,16 @@ export class CreateApplicationPeriodComponent implements OnInit {
       data.openingDate = this.addTwoHours(data.openingDate);
       data.closingDate = this.addTwoHours(data.closingDate);
 
-      this._applicationPeriodRepo.createApplicationPeriod(data).subscribe(resp => {
-        this._spinner.hide();
-        this._router.navigateByUrl('application-periods');
-      });
+      this._applicationPeriodRepo.createApplicationPeriod(data).subscribe(
+        (resp) => {
+          this._spinner.hide();
+          this._router.navigateByUrl('application-periods');
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
     }
   }
 
@@ -184,7 +192,10 @@ export class CreateApplicationPeriodComponent implements OnInit {
         this.financialYears = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -195,7 +206,10 @@ export class CreateApplicationPeriodComponent implements OnInit {
         this.departments = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -206,7 +220,10 @@ export class CreateApplicationPeriodComponent implements OnInit {
         this.allProgrammes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -217,7 +234,10 @@ export class CreateApplicationPeriodComponent implements OnInit {
         this.allSubProgrammes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -228,7 +248,10 @@ export class CreateApplicationPeriodComponent implements OnInit {
         this.applicationTypes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 

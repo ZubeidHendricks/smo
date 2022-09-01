@@ -9,6 +9,7 @@ import { ApplicationService } from 'src/app/services/api-services/application/ap
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-targets',
@@ -63,7 +64,8 @@ export class TargetsComponent implements OnInit {
     private _authService: AuthService,
     private _dropdownRepo: DropdownService,
     private _indicatorRepo: IndicatorService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -93,7 +95,10 @@ export class TargetsComponent implements OnInit {
         this.activity = results;
         this.loadTargets();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -104,7 +109,10 @@ export class TargetsComponent implements OnInit {
         this._spinner.hide();
         this.isDataAvailable = true;
       },
-      (error) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -115,7 +123,10 @@ export class TargetsComponent implements OnInit {
         this.financialYears = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -126,7 +137,10 @@ export class TargetsComponent implements OnInit {
         this.frequencies = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -167,10 +181,24 @@ export class TargetsComponent implements OnInit {
     if (this.canContinue()) {
       this._spinner.show();
 
-      this._indicatorRepo.manageTarget(this.selectedWorkplanTarget).subscribe(resp => {
-        this.loadTargets();
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-      });
+      let sumOfMonthlyTargets = (this.selectedWorkplanTarget.apr + this.selectedWorkplanTarget.may + this.selectedWorkplanTarget.jun + this.selectedWorkplanTarget.jul + this.selectedWorkplanTarget.aug + this.selectedWorkplanTarget.sep + this.selectedWorkplanTarget.oct + this.selectedWorkplanTarget.nov + this.selectedWorkplanTarget.dec + this.selectedWorkplanTarget.jan + this.selectedWorkplanTarget.feb + this.selectedWorkplanTarget.mar);
+
+      if (this.activity.target == sumOfMonthlyTargets) {
+        this._indicatorRepo.manageTarget(this.selectedWorkplanTarget).subscribe(
+          (resp) => {
+            this.loadTargets();
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      }
+      else {
+        this._spinner.hide();
+        this._messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Sum of Monthly Targets not equal to Activity Target.' });
+      }
     }
   }
 

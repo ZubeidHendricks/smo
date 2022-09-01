@@ -7,6 +7,7 @@ import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IFacilityDistrict, IFacilitySubDistrict, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-facility-sub-district',
@@ -49,7 +50,8 @@ export class FacilitySubDistrictComponent implements OnInit {
     private _authService: AuthService,
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -79,7 +81,10 @@ export class FacilitySubDistrictComponent implements OnInit {
         this.updateFacilityDistrict();
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -90,7 +95,10 @@ export class FacilitySubDistrictComponent implements OnInit {
         this.updateFacilityDistrict();
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -159,17 +167,29 @@ export class FacilitySubDistrictComponent implements OnInit {
   }
 
   private createEntity() {
-    this._dropdownRepo.createEntity(this.entity, DropdownTypeEnum.FacilitySubDistricts).subscribe(resp => {
-      this.loadEntities();
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Facility Sub-District successfully added.' });
-    });
+    this._dropdownRepo.createEntity(this.entity, DropdownTypeEnum.FacilitySubDistricts).subscribe(
+      (resp) => {
+        this.loadEntities();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Facility Sub-District successfully added.' });
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private updateEntity() {
-    this._dropdownRepo.updateEntity(this.entity, DropdownTypeEnum.FacilitySubDistricts).subscribe(resp => {
-      this.loadEntities();
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Facility Sub-District successfully updated.' });
-    });
+    this._dropdownRepo.updateEntity(this.entity, DropdownTypeEnum.FacilitySubDistricts).subscribe(
+      (resp) => {
+        this.loadEntities();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Facility Sub-District successfully updated.' });
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   goBack() {

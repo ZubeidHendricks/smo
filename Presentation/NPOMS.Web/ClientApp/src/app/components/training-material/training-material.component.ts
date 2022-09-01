@@ -6,6 +6,7 @@ import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
 import { ITrainingMaterial, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-training-material',
@@ -37,7 +38,8 @@ export class TrainingMaterialComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _dropdownService: DropdownService,
     private _authService: AuthService,
-    private _router: Router
+    private _router: Router,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -72,10 +74,16 @@ export class TrainingMaterialComponent implements OnInit {
   private loadTrainingMaterials() {
     this._spinner.show();
 
-    this._dropdownService.getEntities(DropdownTypeEnum.TrainingMaterial, false).subscribe((results) => {
-      this.trainingMaterials = results;
-      this._spinner.hide();
-    });
+    this._dropdownService.getEntities(DropdownTypeEnum.TrainingMaterial, false).subscribe(
+      (results) => {
+        this.trainingMaterials = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   applyFilterGlobal($event: any, stringVal: any) {

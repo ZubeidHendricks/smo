@@ -1,10 +1,14 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MegaMenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { IActivity, IApplication } from 'src/app/models/interfaces';
+import { DropdownTypeEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IFinancialYear, IFrequencyPeriod, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
+import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-manage',
@@ -22,11 +26,18 @@ export class ManageComponent implements OnInit {
   cols: any[];
   menuActions: MegaMenuItem[];
 
+  workplanIndicators: IWorkplanIndicator[];
+  financialYears: IFinancialYear[];
+  frequencyPeriods: IFrequencyPeriod[];
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _applicationRepo: ApplicationService,
     private _activeRouter: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
+    private _dropdownRepo: DropdownService,
+    private _indicatorRepo: IndicatorService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -36,6 +47,8 @@ export class ManageComponent implements OnInit {
     });
 
     this.buildMenu();
+    this.loadFinancialYears();
+    this.loadFrequencyPeriods();
 
     this.cols = [
       { field: 'activityList.description', header: 'Activity', width: '50%' },
@@ -66,7 +79,10 @@ export class ManageComponent implements OnInit {
 
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -75,52 +91,29 @@ export class ManageComponent implements OnInit {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results;
+        this.workplanIndicators = [];
+
+        this.activities.forEach(item => {
+          this.workplanIndicators.push({
+            activity: item,
+            workplanTargets: [],
+            workplanActuals: []
+          } as IWorkplanIndicator);
+        });
+
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
+
+
   private buildMenu() {
     this.menuActions = [
-      /*{
-        label: 'Export',
-        icon: 'fa fa-file-o',
-        items: [
-          [
-            {
-              label: 'Quarter 1',
-              items: [
-                { label: 'April', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(4) } },
-                { label: 'May', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(5) } },
-                { label: 'June', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(6) } }]
-            },
-            {
-              label: 'Quarter 3',
-              items: [
-                { label: 'October', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(10) } },
-                { label: 'November', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(11) } },
-                { label: 'December', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(12) } }]
-            }
-          ],
-          [
-            {
-              label: 'Quarter 2',
-              items: [
-                { label: 'July', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(7) } },
-                { label: 'August', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(8) } },
-                { label: 'September', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(9) } }]
-            },
-            {
-              label: 'Quarter 4',
-              items: [
-                { label: 'January', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(1) } },
-                { label: 'February', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(2) } },
-                { label: 'March', icon: 'fa fa-file-excel-o', command: () => { this.exportExcelDetails(3) } }]
-            }
-          ]
-        ]
-      },*/
       {
         label: 'Go Back',
         icon: 'fa fa-step-backward',
@@ -131,8 +124,33 @@ export class ManageComponent implements OnInit {
     ];
   }
 
-  private exportExcelDetails(month: number) {
+  private loadFinancialYears() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
+      (results) => {
+        this.financialYears = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
+  private loadFrequencyPeriods() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FrequencyPeriods, false).subscribe(
+      (results) => {
+        results = results.sort((a, b) => a.id - b.id);
+        this.frequencyPeriods = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   captureActuals(activity) {

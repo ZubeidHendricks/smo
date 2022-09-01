@@ -106,7 +106,10 @@ export class ObjectivesComponent implements OnInit {
         this.loadProgrammesForDepartment(results.department);
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -118,7 +121,10 @@ export class ObjectivesComponent implements OnInit {
         this.loadApplicationPeriod();
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -142,7 +148,10 @@ export class ObjectivesComponent implements OnInit {
         this.allSubProgrammes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -153,7 +162,10 @@ export class ObjectivesComponent implements OnInit {
         this.recipientTypes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -164,7 +176,10 @@ export class ObjectivesComponent implements OnInit {
         this.objectives = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -294,17 +309,29 @@ export class ObjectivesComponent implements OnInit {
   }
 
   private createObjective() {
-    this._applicationRepo.createObjective(this.objective, this.application).subscribe(resp => {
-      this.loadObjectives();
-      this.objectiveChange.emit(this.objective);
-    });
+    this._applicationRepo.createObjective(this.objective, this.application).subscribe(
+      (resp) => {
+        this.loadObjectives();
+        this.objectiveChange.emit(this.objective);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private updateObjective() {
-    this._applicationRepo.updateObjective(this.objective).subscribe(resp => {
-      this.loadObjectives();
-      this.objectiveChange.emit(this.objective);
-    });
+    this._applicationRepo.updateObjective(this.objective).subscribe(
+      (resp) => {
+        this.loadObjectives();
+        this.objectiveChange.emit(this.objective);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   programmeChange(programmes: IProgramme[]) {
@@ -349,7 +376,10 @@ export class ObjectivesComponent implements OnInit {
         if (origin === 'allComments')
           this.displayAllCommentDialog = true;
       },
-      (err) => this._loggerService.logException(err)
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -368,16 +398,22 @@ export class ObjectivesComponent implements OnInit {
       comment: this.comment
     } as IApplicationComment;
 
-    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(resp => {
-      this.loadObjectives();
+    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
+      (resp) => {
+        this.loadObjectives();
 
-      let entity = {
-        id: model.entityId
-      } as IObjective;
-      this.viewComments(entity, origin);
+        let entity = {
+          id: model.entityId
+        } as IObjective;
+        this.viewComments(entity, origin);
 
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-      this.displayCommentDialog = false;
-    });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this.displayCommentDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 }

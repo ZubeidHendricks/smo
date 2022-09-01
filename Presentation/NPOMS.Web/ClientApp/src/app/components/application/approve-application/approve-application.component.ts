@@ -7,6 +7,7 @@ import { ApplicationTypeEnum, PermissionsEnum, RoleEnum, ServiceProvisionStepsEn
 import { IActivity, IApplication, IApplicationApproval, IApplicationPeriod, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-approve-application',
@@ -66,7 +67,8 @@ export class ApproveApplicationComponent implements OnInit {
     private _authService: AuthService,
     private _spinner: NgxSpinnerService,
     private _activeRouter: ActivatedRoute,
-    private _applicationRepo: ApplicationService
+    private _applicationRepo: ApplicationService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -104,7 +106,10 @@ export class ApproveApplicationComponent implements OnInit {
 
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -150,6 +155,10 @@ export class ApproveApplicationComponent implements OnInit {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -158,6 +167,10 @@ export class ApproveApplicationComponent implements OnInit {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -166,6 +179,10 @@ export class ApproveApplicationComponent implements OnInit {
     this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
       (results) => {
         this.sustainabilityPlans = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -174,6 +191,10 @@ export class ApproveApplicationComponent implements OnInit {
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
         this.resources = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -258,18 +279,30 @@ export class ApproveApplicationComponent implements OnInit {
         isActive: status === StatusEnum.PendingSLA ? true : false
       } as IApplicationApproval;
 
-      this._applicationRepo.createApplicationApproval(applicationApproval).subscribe(resp => {
-        let approvedByCoCT = resp.some(function (approval) { return approval.approvedFrom === 'CoCT' });
-        let approvedByDoH = resp.some(function (approval) { return approval.approvedFrom === 'DoH' });
+      this._applicationRepo.createApplicationApproval(applicationApproval).subscribe(
+        (resp) => {
+          let approvedByCoCT = resp.some(function (approval) { return approval.approvedFrom === 'CoCT' });
+          let approvedByDoH = resp.some(function (approval) { return approval.approvedFrom === 'DoH' });
 
-        if (approvedByCoCT && approvedByDoH)
-          this.application.statusId = StatusEnum.PendingSLA;
+          if (approvedByCoCT && approvedByDoH)
+            this.application.statusId = StatusEnum.PendingSLA;
 
-        this._applicationRepo.updateApplication(this.application).subscribe(resp => {
+          this._applicationRepo.updateApplication(this.application).subscribe(
+            (resp) => {
+              this._spinner.hide();
+              this._router.navigateByUrl('applications');
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        },
+        (err) => {
+          this._loggerService.logException(err);
           this._spinner.hide();
-          this._router.navigateByUrl('applications');
-        });
-      });
+        }
+      );
     }
   }
 

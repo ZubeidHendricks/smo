@@ -5,6 +5,7 @@ import { DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enum
 import { IUser, IUtility } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-utilities',
@@ -34,7 +35,8 @@ export class UtilitiesComponent implements OnInit {
     private _router: Router,
     private _authService: AuthService,
     private _dropdownRepo: DropdownService,
-    private _spinner: NgxSpinnerService
+    private _spinner: NgxSpinnerService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -60,7 +62,10 @@ export class UtilitiesComponent implements OnInit {
         this.utilities = results.filter(x => x.systemAdminUtility === false);
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 

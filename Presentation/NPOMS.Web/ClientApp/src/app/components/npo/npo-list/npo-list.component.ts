@@ -6,6 +6,7 @@ import { AccessStatusEnum, PermissionsEnum } from 'src/app/models/enums';
 import { INpo, IUser } from 'src/app/models/interfaces';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-npo-list',
@@ -36,7 +37,8 @@ export class NpoListComponent implements OnInit {
     private _router: Router,
     private _authService: AuthService,
     private _npoRepo: NpoService,
-    private _spinner: NgxSpinnerService
+    private _spinner: NgxSpinnerService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -66,7 +68,10 @@ export class NpoListComponent implements OnInit {
         this.allNPOs = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 

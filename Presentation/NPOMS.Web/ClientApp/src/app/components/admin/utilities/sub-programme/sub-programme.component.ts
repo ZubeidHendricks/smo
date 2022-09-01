@@ -7,6 +7,7 @@ import { DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enum
 import { IProgramme, ISubProgramme, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-sub-programme',
@@ -50,7 +51,8 @@ export class SubProgrammeComponent implements OnInit {
     private _authService: AuthService,
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -86,7 +88,10 @@ export class SubProgrammeComponent implements OnInit {
         this.updateProgramme();
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -97,7 +102,10 @@ export class SubProgrammeComponent implements OnInit {
         this.updateProgramme();
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -165,23 +173,35 @@ export class SubProgrammeComponent implements OnInit {
     this.entity.isActive = !this.inActive;
     this.entity.programmeId = this.selectedProgramme.id;
     this.entity.programme = null;
-    
+
     this.isNew ? this.createEntity() : this.updateEntity();
     this.showDialog = false;
   }
 
   private createEntity() {
-    this._dropdownRepo.createEntity(this.entity, DropdownTypeEnum.SubProgramme).subscribe(resp => {
-      this.loadEntities();
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Sub-Programme successfully added.' });
-    });
+    this._dropdownRepo.createEntity(this.entity, DropdownTypeEnum.SubProgramme).subscribe(
+      (resp) => {
+        this.loadEntities();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Sub-Programme successfully added.' });
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private updateEntity() {
-    this._dropdownRepo.updateEntity(this.entity, DropdownTypeEnum.SubProgramme).subscribe(resp => {
-      this.loadEntities();
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Sub-Programme successfully updated.' });
-    });
+    this._dropdownRepo.updateEntity(this.entity, DropdownTypeEnum.SubProgramme).subscribe(
+      (resp) => {
+        this.loadEntities();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Sub-Programme successfully updated.' });
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   goBack() {

@@ -7,6 +7,7 @@ import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IPosition, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-position',
@@ -46,7 +47,8 @@ export class PositionComponent implements OnInit {
     private _authService: AuthService,
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -74,7 +76,10 @@ export class PositionComponent implements OnInit {
         this.entities = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -130,17 +135,29 @@ export class PositionComponent implements OnInit {
   }
 
   private createEntity() {
-    this._dropdownRepo.createEntity(this.entity, DropdownTypeEnum.Positions).subscribe(resp => {
-      this.loadEntities();
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Position successfully added.' });
-    });
+    this._dropdownRepo.createEntity(this.entity, DropdownTypeEnum.Positions).subscribe(
+      (resp) => {
+        this.loadEntities();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Position successfully added.' });
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private updateEntity() {
-    this._dropdownRepo.updateEntity(this.entity, DropdownTypeEnum.Positions).subscribe(resp => {
-      this.loadEntities();
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Position successfully updated.' });
-    });
+    this._dropdownRepo.updateEntity(this.entity, DropdownTypeEnum.Positions).subscribe(
+      (resp) => {
+        this.loadEntities();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Position successfully updated.' });
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   goBack() {

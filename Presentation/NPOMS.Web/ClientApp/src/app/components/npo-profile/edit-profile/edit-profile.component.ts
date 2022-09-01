@@ -13,6 +13,7 @@ import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -102,7 +103,8 @@ export class EditProfileComponent implements OnInit {
     private _activeRouter: ActivatedRoute,
     private _documentStore: DocumentStoreService,
     private _npoRepo: NpoService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -167,7 +169,10 @@ export class EditProfileComponent implements OnInit {
       (results) => {
         this.facilityDistricts = results;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -176,7 +181,10 @@ export class EditProfileComponent implements OnInit {
       (results) => {
         this.allFacilitySubDistricts = results;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -185,7 +193,10 @@ export class EditProfileComponent implements OnInit {
       (results) => {
         this.facilityClasses = results;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -194,7 +205,10 @@ export class EditProfileComponent implements OnInit {
       (results) => {
         this.facilityTypes = results;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -205,7 +219,10 @@ export class EditProfileComponent implements OnInit {
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false);
         this.documentTypes = results.filter(x => x.name.indexOf('SLA') === -1);
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -223,7 +240,10 @@ export class EditProfileComponent implements OnInit {
           this.getDocuments();
           this._spinner.hide();
         },
-        (err) => this._spinner.hide()
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
       );
     }
   }
@@ -270,7 +290,10 @@ export class EditProfileComponent implements OnInit {
       res => {
         this.documents = res;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -345,19 +368,37 @@ export class EditProfileComponent implements OnInit {
         item.facilityList.facilityClassId = item.facilityList.facilityClass.id;
       });
 
-      this._dropdownRepo.createFacilityList(this.facilityList).subscribe(resp => {
+      this._dropdownRepo.createFacilityList(this.facilityList).subscribe(
+        (resp) => {
 
-        this.npo.approvalStatusId = AccessStatusEnum.Pending;
-        this.npo.approvalUserId = null;
-        this.npo.approvalDateTime = null;
+          this.npo.approvalStatusId = AccessStatusEnum.Pending;
+          this.npo.approvalUserId = null;
+          this.npo.approvalDateTime = null;
 
-        this._npoRepo.updateNpo(this.npo).subscribe(resp => {
-          this._npoProfileRepo.updateNpoProfile(data).subscribe(resp => {
-            this._spinner.hide();
-            this._router.navigateByUrl('npo-profiles');
-          });
-        });
-      });
+          this._npoRepo.updateNpo(this.npo).subscribe(
+            (resp) => {
+              this._npoProfileRepo.updateNpoProfile(data).subscribe(
+                (resp) => {
+                  this._spinner.hide();
+                  this._router.navigateByUrl('npo-profiles');
+                },
+                (err) => {
+                  this._loggerService.logException(err);
+                  this._spinner.hide();
+                }
+              );
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
     }
   }
 
@@ -373,9 +414,15 @@ export class EditProfileComponent implements OnInit {
   filterCountrySingle(event) {
     let query = event.query;
 
-    this._addressLookupService.getAddress(query).subscribe((d) => {
-      this.newAddress = d['suggestions'];
-    });
+    this._addressLookupService.getAddress(query).subscribe(
+      (d) => {
+        this.newAddress = d['suggestions'];
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   updatePostalAddress(event) {
@@ -516,9 +563,15 @@ export class EditProfileComponent implements OnInit {
 
   search(event) {
     let query = event.query;
-    this._dropdownRepo.getFacilityByName(query).subscribe((results) => {
-      this.denodoFacilities = results.elements;
-    });
+    this._dropdownRepo.getFacilityByName(query).subscribe(
+      (results) => {
+        this.denodoFacilities = results.elements;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   selectDenodoFacility(denodoFacility: IDenodoFacility, initialSelect: boolean) {
@@ -594,7 +647,10 @@ export class EditProfileComponent implements OnInit {
             this.getDocuments();
           }
         },
-        (error) => this._spinner.hide()
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
       );
       form.clear();
     }
@@ -643,7 +699,10 @@ export class EditProfileComponent implements OnInit {
             this.getDocuments();
             this._spinner.hide();
           },
-          (error) => this._spinner.hide()
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
         );
       },
       reject: () => {

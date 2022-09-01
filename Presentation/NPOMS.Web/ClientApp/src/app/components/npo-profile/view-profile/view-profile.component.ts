@@ -6,6 +6,7 @@ import { IAddressInformation, IDocumentStore, IDocumentType, INpoProfile, INpoPr
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-view-profile',
@@ -48,7 +49,8 @@ export class ViewProfileComponent implements OnInit {
     private _npoProfileRepo: NpoProfileService,
     private _documentStore: DocumentStoreService,
     private _dropdownRepo: DropdownService,
-    private _confirmationService: ConfirmationService
+    private _confirmationService: ConfirmationService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -102,7 +104,10 @@ export class ViewProfileComponent implements OnInit {
           this.getDocuments();
           this._spinner.hide();
         },
-        (err) => this._spinner.hide()
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
       );
     }
   }
@@ -112,7 +117,10 @@ export class ViewProfileComponent implements OnInit {
       res => {
         this.documents = res;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -122,7 +130,10 @@ export class ViewProfileComponent implements OnInit {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.name.indexOf('SLA') === -1);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false);
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 

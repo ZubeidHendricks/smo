@@ -7,6 +7,7 @@ import { ApplicationTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, Status
 import { IActivity, IApplication, IApplicationPeriod, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-edit-application',
@@ -59,7 +60,8 @@ export class EditApplicationComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -96,7 +98,10 @@ export class EditApplicationComponent implements OnInit {
 
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -124,6 +129,10 @@ export class EditApplicationComponent implements OnInit {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -132,6 +141,10 @@ export class EditApplicationComponent implements OnInit {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -140,6 +153,10 @@ export class EditApplicationComponent implements OnInit {
     this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
       (results) => {
         this.sustainabilityPlans = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -148,6 +165,10 @@ export class EditApplicationComponent implements OnInit {
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
         this.resources = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -288,18 +309,24 @@ export class EditApplicationComponent implements OnInit {
       this._spinner.show();
       this.application.statusId = status;
 
-      this._applicationRepo.updateApplication(this.application).subscribe(resp => {
-        if (resp.statusId === StatusEnum.Saved) {
-          this._spinner.hide();
-          this.menuActions[1].visible = false;
-          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-        }
+      this._applicationRepo.updateApplication(this.application).subscribe(
+        (resp) => {
+          if (resp.statusId === StatusEnum.Saved) {
+            this._spinner.hide();
+            this.menuActions[1].visible = false;
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          }
 
-        if (resp.statusId === StatusEnum.PendingReview) {
+          if (resp.statusId === StatusEnum.PendingReview) {
+            this._spinner.hide();
+            this._router.navigateByUrl('applications');
+          }
+        },
+        (err) => {
+          this._loggerService.logException(err);
           this._spinner.hide();
-          this._router.navigateByUrl('applications');
         }
-      });
+      );
     }
   }
 
