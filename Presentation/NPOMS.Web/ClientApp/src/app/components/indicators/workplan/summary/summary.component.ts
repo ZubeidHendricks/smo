@@ -37,6 +37,7 @@ export class SummaryComponent implements OnInit {
   menuActions: MegaMenuItem[];
 
   financialYears: IFinancialYear[];
+  filtererdFinancialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
 
   workplanIndicators: IWorkplanIndicator[];
@@ -118,6 +119,8 @@ export class SummaryComponent implements OnInit {
         // Add WorkplanTargets to WorkplanIndicators at index of activity
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanTargets = results;
+
+        this.populateFilteredFinancialYears();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -152,6 +155,20 @@ export class SummaryComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  private populateFilteredFinancialYears() {
+    if (this.financialYears && this.financialYears.length > 0) {
+      let financialYears = [];
+
+      this.workplanIndicators.forEach(indicator => {
+        indicator.workplanTargets.forEach(target => {
+          financialYears.push(this.financialYears.find(x => x.id === target.financialYearId));
+        });
+      });
+
+      this.filtererdFinancialYears = financialYears.filter((element, index) => index === financialYears.indexOf(element));
+    }
   }
 
   private buildMenu() {
@@ -302,30 +319,32 @@ export class SummaryComponent implements OnInit {
         Financial_Year: this.selectedFinancialYear.name,
         Activity: indicator.activity.activityList.description,
         Indicator: indicator.activity.successIndicator,
-        Apr_Target: aprilTarget,
-        Apr_Actual: aprilActual,
+        April_Target: aprilTarget,
+        April_Actual: aprilActual,
         May_Target: mayTarget,
         May_Actual: mayActual,
-        Jun_Target: juneTarget,
-        Jun_Actual: juneActual,
-        Jul_Target: julyTarget,
-        Jul_Actual: julyActual,
-        Aug_Target: augustTarget,
-        Aug_Actual: augustActual,
-        Sep_Target: septemberTarget,
-        Sep_Actual: septemberActual,
-        Oct_Target: octoberTarget,
-        Oct_Actual: octoberActual,
-        Nov_Target: novemberTarget,
-        Nov_Actual: novemberActual,
-        Dec_Target: decemberTarget,
-        Dec_Actual: decemberActual,
-        Jan_Target: januaryTarget,
-        Jan_Actual: januaryActual,
-        Feb_Target: februarytarget,
-        Feb_Actual: februaryActual,
-        Mar_Target: marchTarget,
-        Mar_Actual: marchActual
+        June_Target: juneTarget,
+        June_Actual: juneActual,
+        July_Target: julyTarget,
+        July_Actual: julyActual,
+        August_Target: augustTarget,
+        August_Actual: augustActual,
+        September_Target: septemberTarget,
+        September_Actual: septemberActual,
+        October_Target: octoberTarget,
+        October_Actual: octoberActual,
+        November_Target: novemberTarget,
+        November_Actual: novemberActual,
+        December_Target: decemberTarget,
+        December_Actual: decemberActual,
+        January_Target: januaryTarget,
+        Janaury_Actual: januaryActual,
+        February_Target: februarytarget,
+        February_Actual: februaryActual,
+        March_Target: marchTarget,
+        March_Actual: marchActual,
+        Total_Target: indicator.totalTargets,
+        Total_Actual: indicator.totalActuals
       });
     });
 
@@ -355,6 +374,9 @@ export class SummaryComponent implements OnInit {
         // Filter WorkplanTargets on activity, financial year and monthly frequency
         let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyId == FrequencyEnum.Monthly);
 
+        // Calculate total targets
+        let targetTotal = (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar);
+
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
         // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
         let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id);
@@ -364,10 +386,18 @@ export class SummaryComponent implements OnInit {
           });
         });
 
+        // Calculate total actuals
+        let actualTotal = filteredWorkplanActuals.reduce((sum, object) => {
+          let actual = object.actual == null ? 0 : object.actual;
+          return sum + actual;
+        }, 0);
+
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
           workplanTargets: workplanTargets,
-          workplanActuals: filteredWorkplanActuals
+          workplanActuals: filteredWorkplanActuals,
+          totalTargets: targetTotal,
+          totalActuals: actualTotal
         } as IWorkplanIndicator);
       });
 

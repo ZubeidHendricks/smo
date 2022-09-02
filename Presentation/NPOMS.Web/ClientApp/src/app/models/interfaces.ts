@@ -680,4 +680,6 @@ export interface IWorkplanIndicator {
     activity: IActivity;
     workplanTargets: IWorkplanTarget[];
     workplanActuals: IWorkplanActual[];
+    totalTargets: number;
+    totalActuals: number;
 }
