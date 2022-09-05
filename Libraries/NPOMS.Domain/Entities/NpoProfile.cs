@@ -23,10 +23,10 @@ namespace NPOMS.Domain.Entities
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public virtual Npo Npo { get; set; }
+		public Npo Npo { get; set; }
 
-		public virtual AddressInformation AddressInformation { get; set; }
+		public AddressInformation AddressInformation { get; set; }
 
-		public virtual List<NpoProfileFacilityList> NpoProfileFacilityLists { get; set; } = new List<NpoProfileFacilityList>();
+		public List<NpoProfileFacilityList> NpoProfileFacilityLists { get; set; } = new List<NpoProfileFacilityList>();
 	}
 }

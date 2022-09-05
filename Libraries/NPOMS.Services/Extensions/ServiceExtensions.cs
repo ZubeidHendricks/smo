@@ -6,11 +6,13 @@ using NPOMS.Repository;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Implementation.Dropdown;
 using NPOMS.Repository.Implementation.Entities;
+using NPOMS.Repository.Implementation.Indicator;
 using NPOMS.Repository.Implementation.Lookup;
 using NPOMS.Repository.Implementation.Mapping;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
+using NPOMS.Repository.Interfaces.Indicator;
 using NPOMS.Repository.Interfaces.Lookup;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Services.DenodoAPI.Implementation;
@@ -83,6 +85,8 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IServiceTypeRepository, ServiceTypeRepository>();
 			services.AddScoped<ISubProgrammeRepository, SubProgrammeRepository>();
 			services.AddScoped<ITitleRepository, TitleRepository>();
+			services.AddScoped<IFrequencyRepository, FrequencyRepository>();
+			services.AddScoped<IFrequencyPeriodRepository, FrequencyPeriodRepository>();
 
 			/* Entities */
 			services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
@@ -115,6 +119,10 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 			services.AddScoped<IActivityFacilityListRepository, ActivityFacilityListRepository>();
 
+			/* Indicator */
+			services.AddScoped<IWorkplanTargetRepository, WorkplanTargetRepository>();
+			services.AddScoped<IWorkplanActualRepository, WorkplanActualRepository>();
+
 			#endregion
 
 			#region Services
@@ -132,6 +140,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IApplicationService, ApplicationService>();
 			services.AddScoped<IDenodoService, DenodoService>();
 			services.AddScoped<IDocumentStoreService, DocumentStoreService>();
+			services.AddScoped<IIndicatorService, IndicatorService>();
 
 			//PowerBI
 			services.AddScoped(typeof(AadService))

@@ -39,10 +39,10 @@ namespace NPOMS.Domain.Lookup
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public virtual FacilityType FacilityType { get; set; }
+		public FacilityType FacilityType { get; set; }
 
-		public virtual FacilitySubDistrict FacilitySubDistrict { get; set; }
+		public FacilitySubDistrict FacilitySubDistrict { get; set; }
 
-		public virtual FacilityClass FacilityClass { get; set; }
+		public FacilityClass FacilityClass { get; set; }
 	}
 }

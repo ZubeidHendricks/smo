@@ -30,6 +30,6 @@ namespace NPOMS.Domain.Dropdown
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public virtual List<ObjectiveProgramme> Programmes { get; set; } = new List<ObjectiveProgramme>();
+		public List<ObjectiveProgramme> Programmes { get; set; } = new List<ObjectiveProgramme>();
 	}
 }

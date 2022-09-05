@@ -38,6 +38,6 @@ namespace NPOMS.Domain.Core
 
         public DateTime? SentDateTime { get; set; }
 
-        public virtual EmailTemplate EmailTemplate { get; set; }
+        public EmailTemplate EmailTemplate { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Core;
 using NPOMS.Repository.Interfaces.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,6 +39,13 @@ namespace NPOMS.Repository.Implementation.Core
 								.OrderBy(x => x.Name)
 								.ToListAsync();
 			}
+		}
+
+		public async Task<IEnumerable<FinancialYear>> GetFromCurrentFinancialYear()
+		{
+			var currentDate = DateTime.Now;
+			var currentFinancialYear = await FindAll().Where(x => x.StartDate <= currentDate && x.EndDate >= currentDate && x.IsActive).AsNoTracking().OrderBy(x => x.Name).FirstOrDefaultAsync();
+			return await FindByCondition(x => x.Id >= currentFinancialYear.Id).AsNoTracking().OrderBy(x => x.Name).ToListAsync();
 		}
 
 		#endregion

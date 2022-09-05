@@ -43,8 +43,8 @@ namespace NPOMS.Domain.Entities
 
 		public bool? ChangesRequired { get; set; }
 
-		public virtual RecipientType RecipientType { get; set; }
+		public RecipientType RecipientType { get; set; }
 
-		public virtual List<ObjectiveProgramme> ObjectiveProgrammes { get; set; } = new List<ObjectiveProgramme>();
+		public List<ObjectiveProgramme> ObjectiveProgrammes { get; set; } = new List<ObjectiveProgramme>();
 	}
 }

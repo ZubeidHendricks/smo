@@ -9,6 +9,7 @@ import { IAccessStatus, IUser, IUserNpo } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { UserAccessService } from 'src/app/services/api-services/user-access/user-access.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-access-review',
@@ -51,7 +52,8 @@ export class AccessReviewComponent implements OnInit {
     private _dropdownRepo: DropdownService,
     private _userAccessRepo: UserAccessService,
     private _messageService: MessageService,
-    private _datepipe: DatePipe
+    private _datepipe: DatePipe,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -102,7 +104,10 @@ export class AccessReviewComponent implements OnInit {
         this.accessRequests = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -113,7 +118,10 @@ export class AccessReviewComponent implements OnInit {
         this.accessStatuses = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -147,10 +155,16 @@ export class AccessReviewComponent implements OnInit {
       createdDateTime: this.selectedMapping.createdDateTime
     } as IUserNpo;
 
-    this._userAccessRepo.updateUserNpo(mapping).subscribe(resp => {
-      this.loadUserRequests();
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Access Request reviewed.' });
-    });
+    this._userAccessRepo.updateUserNpo(mapping).subscribe(
+      (resp) => {
+        this.loadUserRequests();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Access Request reviewed.' });
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   applyFilterGlobal($event: any, stringVal: any) {

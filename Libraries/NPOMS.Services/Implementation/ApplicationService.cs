@@ -245,6 +245,11 @@ namespace NPOMS.Services.Implementation
 			return activities;
 		}
 
+		public async Task<Activity> GetActivityById(int id)
+		{
+			return await _activityRepository.GetById(id);
+		}
+
 		public async Task CreateActivity(Activity model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);

@@ -8,6 +8,7 @@ import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IPro
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-edit-application-period',
@@ -66,7 +67,8 @@ export class EditApplicationPeriodComponent implements OnInit {
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
     private _applicationPeriodRepo: ApplicationPeriodService,
-    private _activeRouter: ActivatedRoute
+    private _activeRouter: ActivatedRoute,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -162,10 +164,16 @@ export class EditApplicationPeriodComponent implements OnInit {
       data.openingDate = this.addTwoHours(data.openingDate);
       data.closingDate = this.addTwoHours(data.closingDate);
 
-      this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(resp => {
-        this._spinner.hide();
-        this._router.navigateByUrl('application-periods');
-      });
+      this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
+        (resp) => {
+          this._spinner.hide();
+          this._router.navigateByUrl('application-periods');
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
     }
   }
 
@@ -192,7 +200,10 @@ export class EditApplicationPeriodComponent implements OnInit {
         this.financialYears = results;
         this.getFinancialYearRange(financialYear);
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -201,7 +212,10 @@ export class EditApplicationPeriodComponent implements OnInit {
       (results) => {
         this.departments = results;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -210,7 +224,10 @@ export class EditApplicationPeriodComponent implements OnInit {
       (results) => {
         this.applicationTypes = results;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -221,7 +238,10 @@ export class EditApplicationPeriodComponent implements OnInit {
           this.allProgrammes = results;
           this.programmes = results.filter(x => x.departmentId === departmentId);
         },
-        (err) => this._spinner.hide()
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
       );
     }
   }
@@ -233,7 +253,10 @@ export class EditApplicationPeriodComponent implements OnInit {
           this.allSubProgrammes = results;
           this.subProgrammes = results.filter(x => x.programmeId === programmeId);
         },
-        (err) => this._spinner.hide()
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
       );
     }
   }
@@ -265,7 +288,10 @@ export class EditApplicationPeriodComponent implements OnInit {
           this.isDataAvailable = true;
           this._spinner.hide();
         },
-        (err) => this._spinner.hide()
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
       );
     }
   }

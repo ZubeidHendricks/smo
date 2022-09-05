@@ -12,6 +12,6 @@ namespace NPOMS.Domain.Mapping
 
         public bool IsActive { get; set; }
 
-        public virtual Role Role { get; set; }
+        public Role Role { get; set; }
     }
 }

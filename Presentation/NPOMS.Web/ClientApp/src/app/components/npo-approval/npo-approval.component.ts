@@ -9,6 +9,7 @@ import { IAccessStatus, INpo, INpoProfile, IUser } from 'src/app/models/interfac
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-npo-approval',
@@ -57,7 +58,8 @@ export class NpoApprovalComponent implements OnInit {
     private _dropdownRepo: DropdownService,
     private _npoRepo: NpoService,
     private _datepipe: DatePipe,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -108,7 +110,10 @@ export class NpoApprovalComponent implements OnInit {
         this.accessStatuses = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -120,7 +125,10 @@ export class NpoApprovalComponent implements OnInit {
         this.npos = this.npos.sort((a, b) => a.approvalStatusId - b.approvalStatusId);
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -136,10 +144,16 @@ export class NpoApprovalComponent implements OnInit {
     this.showDialog = false;
     this.npo.approvalStatusId = approvalStatusId;
 
-    this._npoRepo.updateNpoApprovalStatus(this.npo).subscribe(resp => {
-      this.loadNPOs();
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Organisation reviewed.' });
-    });
+    this._npoRepo.updateNpoApprovalStatus(this.npo).subscribe(
+      (resp) => {
+        this.loadNPOs();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Organisation reviewed.' });
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   applyFilterGlobal($event: any, stringVal: any) {

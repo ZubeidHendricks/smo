@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { PermissionsEnum, ReportTypeEnum } from 'src/app/models/enums';
 import { IUser } from 'src/app/models/interfaces';
 import { AuthService } from 'src/app/services/auth/auth.service';

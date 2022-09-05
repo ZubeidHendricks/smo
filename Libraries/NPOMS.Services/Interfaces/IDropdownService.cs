@@ -59,6 +59,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<FinancialYear>> GetFinancialYears(bool returnInactive);
 
+		Task<IEnumerable<FinancialYear>> GetFromCurrentFinancialYear();
+
 		Task CreateFinancialYear(FinancialYear model, string userIdentifier);
 
 		Task UpdateFinancialYear(FinancialYear model, string userIdentifier);
@@ -164,5 +166,19 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateUtility(Utility model, string userIdentifier);
 
 		Task<IEnumerable<TrainingMaterial>> GetAllTrainingMaterials(bool returnInactive);
+
+		Task<IEnumerable<Frequency>> GetFrequencies(bool returnInactive);
+
+		Task CreateFrequency(Frequency model, string userIdentifier);
+
+		Task UpdateFrequency(Frequency model, string userIdentifier);
+
+		Task<IEnumerable<FrequencyPeriod>> GetFrequencyPeriods(bool returnInactive);
+
+		Task<IEnumerable<FrequencyPeriod>> GetFrequencyPeriodsByFrequencyId(int frequencyId);
+
+		Task CreateFrequencyPeriod(FrequencyPeriod model, string userIdentifier);
+
+		Task UpdateFrequencyPeriod(FrequencyPeriod model, string userIdentifier);
 	}
 }

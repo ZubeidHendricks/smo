@@ -7,6 +7,7 @@ import { PermissionsEnum } from 'src/app/models/enums';
 import { IPermission, IRole, IRolePermissionMatrix, IUser } from 'src/app/models/interfaces';
 import { PermissionService } from 'src/app/services/api-services/permission/permission.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-permissions',
@@ -55,7 +56,8 @@ export class PermissionsComponent implements OnInit {
     private _authService: AuthService,
     private _messageService: MessageService,
     private _router: Router,
-    private _spinner: NgxSpinnerService
+    private _spinner: NgxSpinnerService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -79,7 +81,10 @@ export class PermissionsComponent implements OnInit {
         this.featurePermissionRoleSubject$.next(x);
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -127,14 +132,24 @@ export class PermissionsComponent implements OnInit {
     });
 
     if (isSelected) {
-      this._repo.deleteFeaturePermissionFromRole(permission.id, role.id).subscribe(x => {
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Permission successfully updated.' });
-      });
+      this._repo.deleteFeaturePermissionFromRole(permission.id, role.id).subscribe(
+        (resp) => {
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Permission successfully updated.' });
+        },
+        (err) => {
+          this._loggerService.logException(err);
+        }
+      );
     }
     else {
-      this._repo.addAddFeaturePermissionToRole(permission.id, role.id).subscribe(x => {
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Permission successfully updated.' });
-      });
+      this._repo.addAddFeaturePermissionToRole(permission.id, role.id).subscribe(
+        (resp) => {
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Permission successfully updated.' });
+        },
+        (err) => {
+          this._loggerService.logException(err);
+        }
+      );
     }
   }
 

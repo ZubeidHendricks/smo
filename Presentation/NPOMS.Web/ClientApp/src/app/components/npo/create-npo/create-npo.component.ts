@@ -8,6 +8,7 @@ import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-create-npo',
@@ -67,7 +68,8 @@ export class CreateNpoComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _confirmationService: ConfirmationService,
     private _npoRepo: NpoService,
-    private _npoProfileRepo: NpoProfileService
+    private _npoProfileRepo: NpoProfileService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -148,7 +150,10 @@ export class CreateNpoComponent implements OnInit {
         this.organisationTypes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -159,7 +164,10 @@ export class CreateNpoComponent implements OnInit {
         this.titles = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -170,7 +178,10 @@ export class CreateNpoComponent implements OnInit {
         this.positions = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -214,14 +225,24 @@ export class CreateNpoComponent implements OnInit {
         item.positionId = item.position.id;
       });
 
-      this._npoRepo.createNpo(data).subscribe(resp => {
-        this._npoProfileRepo.getNpoProfileByNpoId(Number(resp.id)).subscribe(
-          (results) => {
-            this._spinner.hide();
-            this._router.navigateByUrl('npo-profile/edit/' + results.id);
-          }
-        );
-      });
+      this._npoRepo.createNpo(data).subscribe(
+        (resp) => {
+          this._npoProfileRepo.getNpoProfileByNpoId(Number(resp.id)).subscribe(
+            (results) => {
+              this._spinner.hide();
+              this._router.navigateByUrl('npo-profile/edit/' + results.id);
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
     }
   }
 

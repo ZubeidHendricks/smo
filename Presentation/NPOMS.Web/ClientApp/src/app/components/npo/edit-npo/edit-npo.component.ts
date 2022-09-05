@@ -8,6 +8,7 @@ import { IContactInformation, INpo, IOrganisationType, IPosition, ITitle, IUser 
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-edit-npo',
@@ -69,7 +70,8 @@ export class EditNpoComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _confirmationService: ConfirmationService,
     private _npoRepo: NpoService,
-    private _activeRouter: ActivatedRoute
+    private _activeRouter: ActivatedRoute,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -154,7 +156,10 @@ export class EditNpoComponent implements OnInit {
       (results) => {
         this.organisationTypes = results;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -163,7 +168,10 @@ export class EditNpoComponent implements OnInit {
       (results) => {
         this.titles = results;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -172,7 +180,10 @@ export class EditNpoComponent implements OnInit {
       (results) => {
         this.positions = results;
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -185,7 +196,10 @@ export class EditNpoComponent implements OnInit {
           this.isDataAvailable = true;
           this._spinner.hide();
         },
-        (err) => this._spinner.hide()
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
       );
     }
   }
@@ -229,10 +243,16 @@ export class EditNpoComponent implements OnInit {
         item.positionId = item.position.id;
       });
 
-      this._npoRepo.updateNpo(data).subscribe(resp => {
-        this._spinner.hide();
-        this._router.navigateByUrl('npos');
-      });
+      this._npoRepo.updateNpo(data).subscribe(
+        (resp) => {
+          this._spinner.hide();
+          this._router.navigateByUrl('npos');
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
     }
   }
 

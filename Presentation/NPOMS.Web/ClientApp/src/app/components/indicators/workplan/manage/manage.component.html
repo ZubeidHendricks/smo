@@ -1,0 +1,48 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Manage Indicators">
+    <p-megaMenu [model]="menuActions" [style]="{'font-size':'14px'}"></p-megaMenu>    
+    <div style="height: 10px;"></div>    
+    <p-card [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+        <div style="margin-top: 0px;" class="p-grid">
+            <span style="font-weight: bold;">Please note</span>: Targets need to be captured before capturing Actuals.
+        </div>
+    </p-card>
+    <div style="height: 10px;"></div>
+    <p-tabView>
+        <p-tabPanel header="Targets">
+            <p-table [columns]="cols" [value]="activities" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="width: 5%;"></th>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                        <th style="width: 6%;">Actions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                    <tr class="default-font">
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td *ngFor="let col of columns">
+                            <span>{{getCellData(rowData, col)}}</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-plus" (click)="captureTargets(rowData)" pTooltip="Capture Targets" tooltipPosition="top"></button>
+                            <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="captureActuals(rowData)" pTooltip="Capture Actuals" tooltipPosition="left"></button> -->
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="5" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="Actuals">
+            <app-actuals [application]="application" [workplanIndicators]="workplanIndicators" [financialYears]="financialYears" [frequencyPeriods]="frequencyPeriods"></app-actuals>
+        </p-tabPanel>
+    </p-tabView>
+</p-panel>

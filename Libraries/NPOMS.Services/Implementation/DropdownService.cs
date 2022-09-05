@@ -47,6 +47,8 @@ namespace NPOMS.Services.Implementation
 		private IProvisionTypeRepository _provisionTypeRepository;
 		private IUtilityRepository _utilityRepository;
 		private ITrainingMaterialRepository _trainingMaterialRepository;
+		private IFrequencyRepository _frequencyRepository;
+		private IFrequencyPeriodRepository _frequencyPeriodRepository;
 
 		#endregion
 
@@ -81,7 +83,9 @@ namespace NPOMS.Services.Implementation
 			IResourceListRepository resourceListRepository,
 			IProvisionTypeRepository provisionTypeRepository,
 			IUtilityRepository utilityRepository,
-			ITrainingMaterialRepository trainingMaterialRepository)
+			ITrainingMaterialRepository trainingMaterialRepository,
+			IFrequencyRepository frequencyRepository,
+			IFrequencyPeriodRepository frequencyPeriodRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -112,6 +116,8 @@ namespace NPOMS.Services.Implementation
 			_provisionTypeRepository = provisionTypeRepository;
 			_utilityRepository = utilityRepository;
 			_trainingMaterialRepository = trainingMaterialRepository;
+			_frequencyRepository = frequencyRepository;
+			_frequencyPeriodRepository = frequencyPeriodRepository;
 		}
 
 		#endregion
@@ -355,6 +361,11 @@ namespace NPOMS.Services.Implementation
 		public async Task<IEnumerable<FinancialYear>> GetFinancialYears(bool returnInactive)
 		{
 			return await _financialYearRepository.GetEntities(returnInactive);
+		}
+
+		public async Task<IEnumerable<FinancialYear>> GetFromCurrentFinancialYear()
+		{
+			return await _financialYearRepository.GetFromCurrentFinancialYear();
 		}
 
 		public async Task CreateFinancialYear(FinancialYear model, string userIdentifier)
@@ -902,6 +913,69 @@ namespace NPOMS.Services.Implementation
 		public async Task<IEnumerable<TrainingMaterial>> GetAllTrainingMaterials(bool returnInactive)
 		{
 			return await _trainingMaterialRepository.GetEntities(returnInactive);
+		}
+
+		#endregion
+
+		#region Frequency
+
+		public async Task<IEnumerable<Frequency>> GetFrequencies(bool returnInactive)
+		{
+			return await _frequencyRepository.GetEntities(returnInactive);
+		}
+
+		public async Task CreateFrequency(Frequency model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _frequencyRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateFrequency(Frequency model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _frequencyRepository.UpdateAsync(model);
+		}
+
+		#endregion
+
+		#region Frequency Period
+
+		public async Task<IEnumerable<FrequencyPeriod>> GetFrequencyPeriods(bool returnInactive)
+		{
+			return await _frequencyPeriodRepository.GetEntities(returnInactive);
+		}
+
+		public async Task<IEnumerable<FrequencyPeriod>> GetFrequencyPeriodsByFrequencyId(int frequencyId)
+		{
+			return await _frequencyPeriodRepository.GetByFrequencyId(frequencyId);
+		}
+
+		public async Task CreateFrequencyPeriod(FrequencyPeriod model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _frequencyPeriodRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateFrequencyPeriod(FrequencyPeriod model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _frequencyPeriodRepository.UpdateAsync(model);
 		}
 
 		#endregion

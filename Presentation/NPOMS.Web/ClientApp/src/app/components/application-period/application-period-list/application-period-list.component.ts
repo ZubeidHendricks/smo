@@ -9,6 +9,7 @@ import { ApplicationPeriodService } from 'src/app/services/api-services/applicat
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-application-period-list',
@@ -54,7 +55,8 @@ export class ApplicationPeriodListComponent implements OnInit {
     private _applicationPeriodRepo: ApplicationPeriodService,
     private _npoRepo: NpoService,
     private _datepipe: DatePipe,
-    private _applicationRepo: ApplicationService
+    private _applicationRepo: ApplicationService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -94,7 +96,10 @@ export class ApplicationPeriodListComponent implements OnInit {
         this.allNpos = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -110,7 +115,10 @@ export class ApplicationPeriodListComponent implements OnInit {
         this.allApplicationPeriods = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -173,9 +181,15 @@ export class ApplicationPeriodListComponent implements OnInit {
     this.application.applicationPeriodId = this.applicationPeriodId;
     this.application.statusId = StatusEnum.New;
 
-    this._applicationRepo.createApplication(this.application).subscribe(resp => {
-      this._router.navigateByUrl('application/create/' + resp.id);
-    });
+    this._applicationRepo.createApplication(this.application).subscribe(
+      (resp) => {
+        this._router.navigateByUrl('application/create/' + resp.id);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   search(event) {

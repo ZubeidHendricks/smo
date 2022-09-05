@@ -113,7 +113,10 @@ export class ResourcingComponent implements OnInit {
         this.resourceTypes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -124,7 +127,10 @@ export class ResourcingComponent implements OnInit {
         this.serviceTypes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -135,7 +141,10 @@ export class ResourcingComponent implements OnInit {
         this.allocationTypes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -146,7 +155,10 @@ export class ResourcingComponent implements OnInit {
         this.activities = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -159,7 +171,10 @@ export class ResourcingComponent implements OnInit {
         this.isDataAvailable = true;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -170,7 +185,10 @@ export class ResourcingComponent implements OnInit {
         this.resourceList = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -181,7 +199,10 @@ export class ResourcingComponent implements OnInit {
         this.provisionTypes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -268,26 +289,44 @@ export class ResourcingComponent implements OnInit {
     this.resource.allocationTypeId = this.selectedAllocationType.id;
     this.resource.provisionTypeId = this.selectedProvisionType.id;
 
-    this._dropdownRepo.createResourceList({ name: this.resource.name, description: this.resource.description, resourceTypeId: this.selectedResourceType.id, isActive: true } as IResourceList).subscribe(resp => {
-      this.resource.resourceListId = resp.id;
-      this.newResource ? this.createResource() : this.updateResource();
-      this.loadResourceList();
-      this.displayResourceDialog = false;
-    });
+    this._dropdownRepo.createResourceList({ name: this.resource.name, description: this.resource.description, resourceTypeId: this.selectedResourceType.id, isActive: true } as IResourceList).subscribe(
+      (resp) => {
+        this.resource.resourceListId = resp.id;
+        this.newResource ? this.createResource() : this.updateResource();
+        this.loadResourceList();
+        this.displayResourceDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private createResource() {
-    this._applicationRepo.createResource(this.resource, this.application).subscribe(resp => {
-      this.loadResources();
-      this.resourceChange.emit(this.resource);
-    });
+    this._applicationRepo.createResource(this.resource, this.application).subscribe(
+      (resp) => {
+        this.loadResources();
+        this.resourceChange.emit(this.resource);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private updateResource() {
-    this._applicationRepo.updateResource(this.resource).subscribe(resp => {
-      this.loadResources();
-      this.resourceChange.emit(this.resource);
-    });
+    this._applicationRepo.updateResource(this.resource).subscribe(
+      (resp) => {
+        this.loadResources();
+        this.resourceChange.emit(this.resource);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private updateRowGroupMetaData() {
@@ -341,7 +380,10 @@ export class ResourcingComponent implements OnInit {
         if (origin === 'allComments')
           this.displayAllCommentDialog = true;
       },
-      (err) => this._loggerService.logException(err)
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -360,17 +402,23 @@ export class ResourcingComponent implements OnInit {
       comment: this.comment
     } as IApplicationComment;
 
-    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(resp => {
-      this.loadResources();
+    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
+      (resp) => {
+        this.loadResources();
 
-      let entity = {
-        id: model.entityId
-      } as IResource;
-      this.viewComments(entity, origin);
+        let entity = {
+          id: model.entityId
+        } as IResource;
+        this.viewComments(entity, origin);
 
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-      this.displayCommentDialog = false;
-    });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this.displayCommentDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   resourceTypeChange(value: IResourceType) {

@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, FacilityTypeEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityFacilityList, IActivityList, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IFacilityList, IFacilityType, IObjective, ISubProgramme } from 'src/app/models/interfaces';
+import { IActivity, IActivityFacilityList, IActivityList, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IFacilityList, IObjective, ISubProgramme } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -116,7 +116,10 @@ export class ActivitiesComponent implements OnInit {
         this.activityTypes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -127,7 +130,10 @@ export class ActivitiesComponent implements OnInit {
         this.objectives = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -140,7 +146,10 @@ export class ActivitiesComponent implements OnInit {
         this.updateRowGroupMetaData();
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -163,7 +172,10 @@ export class ActivitiesComponent implements OnInit {
         this.facilities = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -182,7 +194,10 @@ export class ActivitiesComponent implements OnInit {
         this.allSubProgrammes = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -332,25 +347,43 @@ export class ActivitiesComponent implements OnInit {
       this.activity.activityFacilityLists.push(activityFacilityList);
     });
 
-    this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(resp => {
-      this.activity.activityListId = resp.id;
-      this.newActivity ? this.createActivity() : this.updateActivity();
-      this.displayActivityDialog = false;
-    });
+    this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(
+      (resp) => {
+        this.activity.activityListId = resp.id;
+        this.newActivity ? this.createActivity() : this.updateActivity();
+        this.displayActivityDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private createActivity() {
-    this._applicationRepo.createActivity(this.activity, this.application).subscribe(resp => {
-      this.loadActivities();
-      this.activityChange.emit(this.activity);
-    });
+    this._applicationRepo.createActivity(this.activity, this.application).subscribe(
+      (resp) => {
+        this.loadActivities();
+        this.activityChange.emit(this.activity);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private updateActivity() {
-    this._applicationRepo.updateActivity(this.activity).subscribe(resp => {
-      this.loadActivities();
-      this.activityChange.emit(this.activity);
-    });
+    this._applicationRepo.updateActivity(this.activity).subscribe(
+      (resp) => {
+        this.loadActivities();
+        this.activityChange.emit(this.activity);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private updateRowGroupMetaData() {
@@ -407,7 +440,10 @@ export class ActivitiesComponent implements OnInit {
         if (origin === 'allComments')
           this.displayAllCommentDialog = true;
       },
-      (err) => this._loggerService.logException(err)
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -426,17 +462,23 @@ export class ActivitiesComponent implements OnInit {
       comment: this.comment
     } as IApplicationComment;
 
-    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(resp => {
-      this.loadActivities();
+    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
+      (resp) => {
+        this.loadActivities();
 
-      let entity = {
-        id: model.entityId
-      } as IActivity;
-      this.viewComments(entity, origin);
+        let entity = {
+          id: model.entityId
+        } as IActivity;
+        this.viewComments(entity, origin);
 
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-      this.displayCommentDialog = false;
-    });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this.displayCommentDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   search(event) {

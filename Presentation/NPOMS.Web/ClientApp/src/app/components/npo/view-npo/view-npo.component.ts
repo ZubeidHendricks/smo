@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { IContactInformation, INpo } from 'src/app/models/interfaces';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-view-npo',
@@ -29,7 +30,8 @@ export class ViewNpoComponent implements OnInit {
 
   constructor(
     private _npoRepo: NpoService,
-    private _spinner: NgxSpinnerService
+    private _spinner: NgxSpinnerService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -64,7 +66,10 @@ export class ViewNpoComponent implements OnInit {
           this.isDataAvailable = true;
           this._spinner.hide();
         },
-        (err) => this._spinner.hide()
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
       );
     }
   }

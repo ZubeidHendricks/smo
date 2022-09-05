@@ -9,6 +9,7 @@ import { IDepartment, IRole, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-users',
@@ -60,7 +61,8 @@ export class UsersComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private _authService: AuthService,
     private _dropdownRepo: DropdownService,
-    private _router: Router
+    private _router: Router,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -81,7 +83,6 @@ export class UsersComponent implements OnInit {
     });
 
     this.newUserForm = this._formBuilder.group({});
-
     this.editUserForm = this._formBuilder.group({});
   }
 
@@ -92,7 +93,10 @@ export class UsersComponent implements OnInit {
         this.users = users;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -111,7 +115,10 @@ export class UsersComponent implements OnInit {
           this.roles = results;
           this._spinner.hide();
         },
-        (err) => this._spinner.hide()
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
       );
     }
   }
@@ -123,7 +130,10 @@ export class UsersComponent implements OnInit {
         this.departments = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -204,6 +214,7 @@ export class UsersComponent implements OnInit {
           //do something
           //this.errorMessage = err;
           this._messageService.add({ severity: 'error', summary: 'Error', detail: 'User could not be created.' });
+          this._loggerService.logException(err);
           this._spinner.hide();
         }
       });
@@ -238,6 +249,7 @@ export class UsersComponent implements OnInit {
           //do something
           //this.errorMessage = err;
           this._messageService.add({ severity: 'error', summary: 'Error', detail: 'User could not be updated.' });
+          this._loggerService.logException(err);
           this._spinner.hide();
         }
       });

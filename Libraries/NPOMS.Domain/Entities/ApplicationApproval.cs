@@ -19,6 +19,6 @@ namespace NPOMS.Domain.Entities
 
 		public DateTime CreatedDateTime { get; set; }
 
-		public virtual User CreatedUser { get; set; }
+		public User CreatedUser { get; set; }
 	}
 }

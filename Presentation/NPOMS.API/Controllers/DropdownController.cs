@@ -126,6 +126,12 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.TrainingMaterial:
 						var trainingMaterials = await _dropdownService.GetAllTrainingMaterials(returnInactive);
 						return Ok(trainingMaterials);
+					case DropdownTypeEnum.Frequencies:
+						var frequencies = await _dropdownService.GetFrequencies(returnInactive);
+						return Ok(frequencies);
+					case DropdownTypeEnum.FrequencyPeriods:
+						var frequencyPeriods = await _dropdownService.GetFrequencyPeriods(returnInactive);
+						return Ok(frequencyPeriods);
 				}
 
 				return Ok();
@@ -235,6 +241,14 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.Utilities:
 						var utility = JsonConvert.DeserializeObject<Utility>(Convert.ToString(entity));
 						await _dropdownService.CreateUtility(utility, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.Frequencies:
+						var frequency = JsonConvert.DeserializeObject<Frequency>(Convert.ToString(entity));
+						await _dropdownService.CreateFrequency(frequency, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.FrequencyPeriods:
+						var frequencyPeriod = JsonConvert.DeserializeObject<FrequencyPeriod>(Convert.ToString(entity));
+						await _dropdownService.CreateFrequencyPeriod(frequencyPeriod, base.GetUserIdentifier());
 						break;
 				}
 
@@ -346,6 +360,14 @@ namespace NPOMS.API.Controllers
 						var utility = JsonConvert.DeserializeObject<Utility>(Convert.ToString(entity));
 						await _dropdownService.UpdateUtility(utility, base.GetUserIdentifier());
 						break;
+					case DropdownTypeEnum.Frequencies:
+						var frequency = JsonConvert.DeserializeObject<Frequency>(Convert.ToString(entity));
+						await _dropdownService.UpdateFrequency(frequency, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.FrequencyPeriods:
+						var frequencyPeriod = JsonConvert.DeserializeObject<FrequencyPeriod>(Convert.ToString(entity));
+						await _dropdownService.UpdateFrequencyPeriod(frequencyPeriod, base.GetUserIdentifier());
+						break;
 				}
 
 				return Ok();
@@ -421,6 +443,21 @@ namespace NPOMS.API.Controllers
 			catch (Exception ex)
 			{
 				_logger.LogError($"Something went wrong inside CreateResourceList action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("financial-year", Name = "GetFromCurrentFinancialYear")]
+		public async Task<IActionResult> GetFromCurrentFinancialYear()
+		{
+			try
+			{
+				var results = await _dropdownService.GetFromCurrentFinancialYear();
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetFromCurrentFinancialYear action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}

@@ -40,8 +40,8 @@ namespace NPOMS.Domain.Core
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public virtual List<UserDepartment> Departments { get; set; } = new List<UserDepartment>();
+		public List<UserDepartment> Departments { get; set; } = new List<UserDepartment>();
 
-		public virtual List<UserRole> Roles { get; set; } = new List<UserRole>();
+		public List<UserRole> Roles { get; set; } = new List<UserRole>();
 	}
 }

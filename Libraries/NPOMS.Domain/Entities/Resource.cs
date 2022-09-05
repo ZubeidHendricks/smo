@@ -41,16 +41,16 @@ namespace NPOMS.Domain.Entities
 
 		public bool? ChangesRequired { get; set; }
 
-		public virtual Activity Activity { get; set; }
+		public Activity Activity { get; set; }
 
-		public virtual ResourceType ResourceType { get; set; }
+		public ResourceType ResourceType { get; set; }
 
-		public virtual ServiceType ServiceType { get; set; }
+		public ServiceType ServiceType { get; set; }
 
-		public virtual AllocationType AllocationType { get; set; }
+		public AllocationType AllocationType { get; set; }
 
-		public virtual ProvisionType ProvisionType { get; set; }
+		public ProvisionType ProvisionType { get; set; }
 
-		public virtual ResourceList ResourceList { get; set; }
+		public ResourceList ResourceList { get; set; }
 	}
 }

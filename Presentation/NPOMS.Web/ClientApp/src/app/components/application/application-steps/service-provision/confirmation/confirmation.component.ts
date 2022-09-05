@@ -63,7 +63,9 @@ export class ConfirmationComponent implements OnInit {
           });
         }
       },
-      (err) => this._loggerService.logException(err)
+      (err) => {
+        this._loggerService.logException(err);
+      }
     );
   }
 
@@ -98,7 +100,9 @@ export class ConfirmationComponent implements OnInit {
         this.applicationAudits = results;
         this.displayHistory = true;
       },
-      (err) => this._loggerService.logException(err)
+      (err) => {
+        this._loggerService.logException(err);
+      }
     );
   }
 }

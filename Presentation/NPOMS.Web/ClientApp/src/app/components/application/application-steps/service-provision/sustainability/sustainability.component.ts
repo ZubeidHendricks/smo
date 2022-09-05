@@ -83,7 +83,10 @@ export class SustainabilityComponent implements OnInit {
         this.activities = results;
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -95,7 +98,10 @@ export class SustainabilityComponent implements OnInit {
         this.updateRowGroupMetaData();
         this._spinner.hide();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -183,17 +189,29 @@ export class SustainabilityComponent implements OnInit {
   }
 
   private createSustainabilityPlan() {
-    this._applicationRepo.createSustainabilityPlan(this.sustainabilityPlan, this.application).subscribe(resp => {
-      this.loadSustainabilityPlans();
-      this.sustainabilityPlanChange.emit(this.sustainabilityPlan);
-    });
+    this._applicationRepo.createSustainabilityPlan(this.sustainabilityPlan, this.application).subscribe(
+      (resp) => {
+        this.loadSustainabilityPlans();
+        this.sustainabilityPlanChange.emit(this.sustainabilityPlan);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private updateSustainabilityPlan() {
-    this._applicationRepo.updateSustainabilityPlan(this.sustainabilityPlan).subscribe(resp => {
-      this.loadSustainabilityPlans();
-      this.sustainabilityPlanChange.emit(this.sustainabilityPlan);
-    });
+    this._applicationRepo.updateSustainabilityPlan(this.sustainabilityPlan).subscribe(
+      (resp) => {
+        this.loadSustainabilityPlans();
+        this.sustainabilityPlanChange.emit(this.sustainabilityPlan);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private updateRowGroupMetaData() {
@@ -236,7 +254,10 @@ export class SustainabilityComponent implements OnInit {
         if (origin === 'allComments')
           this.displayAllCommentDialog = true;
       },
-      (err) => this._loggerService.logException(err)
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -255,16 +276,22 @@ export class SustainabilityComponent implements OnInit {
       comment: this.comment
     } as IApplicationComment;
 
-    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(resp => {
-      this.loadSustainabilityPlans();
+    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
+      (resp) => {
+        this.loadSustainabilityPlans();
 
-      let entity = {
-        id: model.entityId
-      } as ISustainabilityPlan;
-      this.viewComments(entity, origin);
+        let entity = {
+          id: model.entityId
+        } as ISustainabilityPlan;
+        this.viewComments(entity, origin);
 
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-      this.displayCommentDialog = false;
-    });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this.displayCommentDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 }

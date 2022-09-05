@@ -23,13 +23,13 @@ namespace NPOMS.Domain.Mapping
 		public DateTime? UpdatedDateTime { get; set; }
 
 		//[NotMapped]
-		public virtual Npo Npo { get; set; }
+		public Npo Npo { get; set; }
 
-		public virtual AccessStatus AccessStatus { get; set; }
+		public AccessStatus AccessStatus { get; set; }
 
-		public virtual User CreatedUser { get; set; }
+		public User CreatedUser { get; set; }
 
-		public virtual User UpdatedUser { get; set; }
+		public User UpdatedUser { get; set; }
 
 		/// <summary>
 		/// This is the user that will receive the access

@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityType, IAllocationType, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IDepartment, IDocumentStore, IFacilityList, IFacilityType, INpo, INpoProfile, IObjective, IProgramme, IProvisionType, IRecipientType, IResource, IResourceType, IServiceType, ISubProgramme, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IDepartment, IDocumentStore, IFacilityList, INpo, INpoProfile, IObjective, IProgramme, IResource, ISubProgramme, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -216,7 +216,10 @@ export class ViewApplicationComponent implements OnInit {
         this.getAuditHistory();
         this.loadApplicationApprovals();
       },
-      (err) => this._spinner.hide()
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -233,6 +236,10 @@ export class ViewApplicationComponent implements OnInit {
         this.objectives = results;
         this.isObjectivesAvailable = true;
         this.allDataLoaded();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -244,6 +251,10 @@ export class ViewApplicationComponent implements OnInit {
         this.getFacilityListText(results);
         this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Activities);
         this.isActivitiesAvailable = true;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -266,6 +277,10 @@ export class ViewApplicationComponent implements OnInit {
         this.sustainabilityPlans = results;
         this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Sustainability);
         this.isSustainabilityAvailable = true;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -276,6 +291,10 @@ export class ViewApplicationComponent implements OnInit {
         this.resources = results;
         this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Resourcing);
         this.isResourcesAvailable = true;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -285,6 +304,10 @@ export class ViewApplicationComponent implements OnInit {
       (results) => {
         this.allProgrammes = results;
         this.loadApplicationPeriod();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -293,6 +316,10 @@ export class ViewApplicationComponent implements OnInit {
     this._applicationPeriodRepo.getApplicationPeriodById(Number(this.application.applicationPeriodId)).subscribe(
       (results) => {
         this.loadProgrammesForDepartment(results.department);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -317,6 +344,10 @@ export class ViewApplicationComponent implements OnInit {
       (results) => {
         this.allSubProgrammes = results;
         this.allDataLoaded();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -325,6 +356,10 @@ export class ViewApplicationComponent implements OnInit {
     this._applicationRepo.getAllApplicationComments(this.application.id).subscribe(
       (results) => {
         this.allApplicationComments = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -334,6 +369,10 @@ export class ViewApplicationComponent implements OnInit {
       (results) => {
         this.allAssignedFacilities = results;
         this.allDataLoaded();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -559,8 +598,12 @@ export class ViewApplicationComponent implements OnInit {
 
   private getDocuments() {
     this._documentStore.get(Number(this.application.id), EntityTypeEnum.SLA).subscribe(
-      res => {
+      (res) => {
         this.documents = res;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -571,7 +614,10 @@ export class ViewApplicationComponent implements OnInit {
         this.applicationAudits = results;
         this.mainReview = results.filter(x => x.statusId === StatusEnum.PendingApproval)[0];
       },
-      (err) => this._loggerService.logException(err)
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -594,7 +640,10 @@ export class ViewApplicationComponent implements OnInit {
         this.approveFromCoCT = results.filter(x => x.approvedFrom === 'CoCT')[0];
         this.approveFromDoH = results.filter(x => x.approvedFrom === 'DoH')[0];
       },
-      (err) => this._loggerService.logException(err)
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 }

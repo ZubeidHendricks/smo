@@ -39,14 +39,14 @@ namespace NPOMS.Domain.Entities
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public virtual Department Department { get; set; }
+		public Department Department { get; set; }
 
-		public virtual Programme Programme { get; set; }
+		public Programme Programme { get; set; }
 
-		public virtual SubProgramme SubProgramme { get; set; }
+		public SubProgramme SubProgramme { get; set; }
 
-		public virtual FinancialYear FinancialYear { get; set; }
+		public FinancialYear FinancialYear { get; set; }
 
-		public virtual ApplicationType ApplicationType { get; set; }
+		public ApplicationType ApplicationType { get; set; }
 	}
 }

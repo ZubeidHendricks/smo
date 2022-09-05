@@ -44,14 +44,14 @@ namespace NPOMS.Domain.Entities
 
 		public DateTime? ApprovalDateTime { get; set; }
 
-		public virtual OrganisationType OrganisationType { get; set; }
+		public OrganisationType OrganisationType { get; set; }
 
-		public virtual List<ContactInformation> ContactInformation { get; set; } = new List<ContactInformation>();
+		public List<ContactInformation> ContactInformation { get; set; } = new List<ContactInformation>();
 
-		public virtual User CreatedUser { get; set; }
+		public User CreatedUser { get; set; }
 
-		public virtual AccessStatus ApprovalStatus { get; set; }
+		public AccessStatus ApprovalStatus { get; set; }
 
-		public virtual User ApprovalUser { get; set; }
+		public User ApprovalUser { get; set; }
 	}
 }
