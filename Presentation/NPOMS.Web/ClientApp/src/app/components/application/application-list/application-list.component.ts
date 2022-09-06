@@ -37,7 +37,7 @@ export class ApplicationListComponent implements OnInit {
   cols: any[];
   allApplications: IApplication[];
 
-  // This is the selected application when clicking on ellipsis ...
+  // This is the selected application when clicking on option buttons...
   selectedApplication: IApplication;
 
   isSystemAdmin: boolean = true;
