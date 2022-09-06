@@ -1,7 +1,7 @@
 import { HttpEventType } from '@angular/common/http';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, EntityEnum, EntityTypeEnum, FrequencyPeriodEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IDocumentType, IFinancialYear, IFrequencyPeriod, IUser, IWorkplanActual, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -54,6 +54,7 @@ export class ActualsComponent implements OnInit {
 
   cols: any[];
   documentCols: any[];
+  buttonItems: MenuItem[];
 
   filtererdFinancialYears: IFinancialYear[] = [];
   selectedFinancialYear: IFinancialYear;
@@ -76,6 +77,9 @@ export class ActualsComponent implements OnInit {
   displayAllCommentDialog: boolean;
   displayCommentDialog: boolean;
 
+  // This is the selected indicator when clicking on option buttons...
+  selectedIndicator: IWorkplanIndicator;
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _authService: AuthService,
@@ -96,12 +100,13 @@ export class ActualsComponent implements OnInit {
           this._router.navigate(['401']);*/
 
         this.loadDocumentTypes();
+        this.buildButtonItems();
       }
     });
 
     this.cols = [
-      { header: '', width: '3%' },
-      { header: 'Activity', width: '14%' },
+      { header: '', width: '5%' },
+      { header: 'Activity', width: '16%' },
       { header: 'Indicator', width: '10%' },
       { header: 'Target', width: '5%' },
       { header: 'Actual', width: '5%' },
@@ -110,7 +115,7 @@ export class ActualsComponent implements OnInit {
       { header: 'Action', width: '14%' },
       { header: 'Evidence', width: '6%' },
       { header: 'Status', width: '6%' },
-      { header: '', width: '9%' }
+      { header: 'Actions', width: '5%' }
     ];
 
     this.documentCols = [
@@ -183,6 +188,54 @@ export class ActualsComponent implements OnInit {
     );
   }
 
+  private buildButtonItems() {
+    this.buttonItems = [];
+
+    if (this.profile) {
+
+      this.buttonItems = [{
+        label: 'Options',
+        items: []
+      }];
+
+      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Save Actual',
+          icon: 'fa fa-floppy-o',
+          command: () => {
+            // this._router.navigateByUrl('workplan-indicator/manage/' + this.selectedApplication.id);
+            this.saveActual(this.selectedIndicator);
+          },
+          disabled: this.isPreviousFinancialYear
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Submit Actual',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            // this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.id);
+            this.submitActual(this.selectedIndicator);
+          },
+          disabled: this.isPreviousFinancialYear
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Comments',
+          icon: 'fa fa-comments-o',
+          command: () => {
+            // this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.id);
+            this.viewComments(this.selectedIndicator);
+          },
+          disabled: this.isPreviousFinancialYear
+        });
+      }
+    }
+  }
+
   saveActual(workplanIndicator: IWorkplanIndicator) {
     // Only 1 WorkplanActual will be saved/submitted at a time
     this.updateWorkplanActual(workplanIndicator.workplanActuals[0], 1);
@@ -194,22 +247,26 @@ export class ActualsComponent implements OnInit {
   }
 
   private updateWorkplanActual(workplanActual: IWorkplanActual, status: number) {
-    this._indicatorRepo.updateActual(workplanActual).subscribe(
-      (resp) => {
-        if (status == 1)
-          this._messageService.add({ severity: 'info', summary: 'Successful', detail: 'Information successfully saved.' });
+    if (workplanActual && status) {
+      this._indicatorRepo.updateActual(workplanActual).subscribe(
+        (resp) => {
+          if (status == 1)
+            this._messageService.add({ severity: 'info', summary: 'Successful', detail: 'Information successfully saved.' });
 
-        if (status == 2)
-          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully submitted.' });
-      },
-      (err) => {
-        this._loggerService.logException(err);
-      }
-    );
+          if (status == 2)
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully submitted.' });
+        },
+        (err) => {
+          this._loggerService.logException(err);
+        }
+      );
+    }
+    else {
+      this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Target not captured.' });
+    }
   }
 
   viewComments(workplanIndicator: IWorkplanIndicator) {
-    console.log(workplanIndicator);
     this.displayAllCommentDialog = true;
   }
 

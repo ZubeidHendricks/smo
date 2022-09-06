@@ -344,7 +344,7 @@ export class SummaryComponent implements OnInit {
         March_Target: marchTarget,
         March_Actual: marchActual,
         Total_Target: indicator.totalTargets,
-        Total_Actual: indicator.totalActuals
+        Total_Actual_YTD: indicator.totalActuals
       });
     });
 
