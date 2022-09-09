@@ -133,6 +133,36 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+		[HttpGet("workplan-comments/workplanActualId/{workplanActualId}", Name = "GetWorkplanComments")]
+		public async Task<IActionResult> GetWorkplanComments(int workplanActualId)
+		{
+			try
+			{
+				var results = await _indicatorService.GetWorkplanComments(workplanActualId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetWorkplanActualComments action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("workplan-comments", Name = "CreateWorkplanComment")]
+		public async Task<IActionResult> CreateWorkplanComment([FromBody] WorkplanComment model)
+		{
+			try
+			{
+				await _indicatorService.CreateWorkplanComment(model, base.GetUserIdentifier());
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateWorkplanComment action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
 		#endregion
 	}
 }

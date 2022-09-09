@@ -10,7 +10,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
-            <tr [ngClass]="rowData.changesRequired === true ? 'red' : 'default' && rowData.changesRequired === false ? 'green' : 'default'">
+            <tr [ngClass]="rowData.changesRequired === true ? 'red' : 'default' && rowData.changesRequired === false ? 'green' : 'default'" class="default-font">
                 <td>{{rowData.name}}</td>
                 <td>{{rowData.fundingSource}}</td>
                 <td>{{rowData.fundingPeriodStartDate}} to {{rowData.fundingPeriodEndDate}}</td>
@@ -24,7 +24,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
-            <tr>
+            <tr class="default-font">
                 <td colspan="6" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>
@@ -182,7 +182,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-            <tr>
+            <tr class="default-font">
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
                 <td>{{rowData.comment}}</td>
                 <td>{{rowData.createdUser.fullName}}</td>
@@ -190,7 +190,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
-            <tr>
+            <tr class="default-font">
                 <td colspan="4" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>

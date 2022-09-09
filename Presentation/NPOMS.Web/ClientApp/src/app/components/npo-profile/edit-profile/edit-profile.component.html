@@ -68,7 +68,37 @@
     </p-panel>
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
-
+        <p-table [columns]="serviceRenderedCols" [value]="npoProfile.servicesRendered" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                    <th style="width: 7%;">Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr class="default-font">
+                    <td *ngIf="rowData.programme">{{rowData.programme.name}}</td>
+                    <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</td>
+                    <td *ngIf="rowData.subProgrammeType">{{rowData.subProgrammeType.name}}</td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editServicesRendered(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteServicesRendered(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="4" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary" let-rowData>
+                <div style="text-align:left">
+                    <button pButton pRipple type="button" label="Add Services Rendered" class="p-button-text" icon="fa fa-plus" (click)="addServicesRendered()"></button>
+                </div>
+            </ng-template>
+        </p-table>
     </p-panel>
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
@@ -87,7 +117,7 @@
                         <span class="p-text-bold">{{rowData.facilityList.facilityType.name}}</span>
                     </td>
                 </tr>
-                <tr>                    
+                <tr class="default-font">                    
                     <td>{{rowData.facilityList.facilitySubDistrict.name}}</td>
                     <td>{{rowData.facilityList.name}}</td>
                     <td>{{rowData.facilityList.facilityClass.name}}</td>
@@ -99,7 +129,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
-                <tr>
+                <tr class="default-font">
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
@@ -142,7 +172,7 @@
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
-                        <tr> 
+                        <tr class="default-font"> 
                             <td style="text-align: center;">{{rowIndex + 1}}</td>
                             <td>{{document.name}}</td>
                             <td>{{document.documentType.name}}</td>
@@ -155,7 +185,7 @@
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="emptymessage">
-                        <tr>
+                        <tr class="default-font">
                             <td colspan="6" style="text-align: center;">There are no documents uploaded.</td>
                         </tr>
                     </ng-template>
@@ -172,14 +202,14 @@
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
-                            <tr> 
+                            <tr class="default-font"> 
                                 <td style="text-align: center;">{{rowIndex + 1}}</td>
                                 <td>{{rowData.name}}</td>
                                 <td>{{rowData.description}}</td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
-                            <tr>
+                            <tr class="default-font">
                                 <td colspan="3" style="text-align: center;">No results found.</td>
                             </tr>
                         </ng-template>
@@ -197,14 +227,14 @@
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
-                            <tr> 
+                            <tr class="default-font"> 
                                 <td style="text-align: center;">{{rowIndex + 1}}</td>
                                 <td>{{rowData.name}}</td>
                                 <td>{{rowData.description}}</td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
-                            <tr>
+                            <tr class="default-font">
                                 <td colspan="3" style="text-align: center;">No results found.</td>
                             </tr>
                         </ng-template>
@@ -213,91 +243,6 @@
             </ng-template>
         </p-fileUpload>
     </p-panel>
-    <!-- <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Supporting Documents">
-        <input type="file" #filesToUpload placeholder="Browse" accept="*" (change)="onUploadChange(filesToUpload.files)" style="display:none;">
-        <div style="margin-bottom: 5px;">
-            <button pButton pRipple type="button" label="Add Document" class="p-button-text" icon="fa fa-plus" (click)="filesToUpload.click()"></button>
-        </div>
-        <p-table [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
-            <ng-template pTemplate="header" let-columns>
-                <tr>
-                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                        {{col.header}}
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
-                <tr> 
-                    <td style="text-align: center;">{{rowIndex + 1}}</td>
-                    <td>{{document.name}}</td>
-                    <td>
-                        <p-dropdown [options]="documentTypes" placeholder="Select a Document Type" optionLabel="name" [(ngModel)]="document.documentType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="documentTypeChange(document, $event.value)"></p-dropdown>
-                    </td>
-                    <td>{{document.fileSize}}</td>
-                    <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
-                    <td style="text-align: center;">
-                        <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
-                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="onDeleteDocument(document)" pTooltip="Delete" tooltipPosition="top"></button>
-                    </td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td colspan="6" style="text-align: center;">There are no documents uploaded.</td>
-                </tr>
-            </ng-template>
-        </p-table>
-        <div *ngIf="compulsoryDocuments.length > 0">
-            <div style="height: 20px;"></div>
-            <div class="heading">Compulsory Documents</div>
-            <p-table [value]="compulsoryDocuments" styleClass="p-datatable-sm" [columns]="documentTypeCols">
-                <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                            {{col.header}}
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
-                    <tr> 
-                        <td style="text-align: center;">{{rowIndex + 1}}</td>
-                        <td>{{rowData.name}}</td>
-                        <td>{{rowData.description}}</td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="3" style="text-align: center;">No results found.</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-        <div *ngIf="nonCompulsoryDocuments.length > 0">
-            <div style="height: 20px;"></div>
-            <div class="heading">Non-Compulsory Documents</div>
-            <p-table [value]="nonCompulsoryDocuments" styleClass="p-datatable-sm" [columns]="documentTypeCols">
-                <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                            {{col.header}}
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
-                    <tr> 
-                        <td style="text-align: center;">{{rowIndex + 1}}</td>
-                        <td>{{rowData.name}}</td>
-                        <td>{{rowData.description}}</td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="3" style="text-align: center;">No results found.</td>
-                    </tr>
-                </ng-template>
-            </p-table>
-        </div>
-    </p-panel> -->
 </p-panel>
 
 <p-dialog header="Facility or Community Place Information" 
@@ -487,6 +432,48 @@
     <ng-template pTemplate="footer">
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveFacilityInformation() (click)="saveFacilityInformation()"></button>
     </ng-template>
+</p-dialog>
+
+<p-dialog header="Services Rendered" 
+          [(visible)]="displayServicesRenderedDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Programme</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="filteredProgrammes" placeholder="Select a Programme" optionLabel="name" [(ngModel)]="selectedProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub-Programme</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="filteredSubProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="subProgrammeChange($event.value)" [disabled]="disableSubProgramme()"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub-Programme Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveServicesRendered() (click)="saveServicesRendered()"></button>
+        </ng-template>
 </p-dialog>
 
 <div class="content-section implementation">

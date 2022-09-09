@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DropdownTypeEnum } from 'src/app/models/enums';
-import { IAccessStatus, IActivityList, IActivityType, IAllocationType, IApplicationType, IDenodoFacilityWrapper, IDepartment, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod, IOrganisationType, IPosition, IProgramme, IProvisionType, IRecipientType, IResourceList, IResourceType, IRole, IServiceType, IStatus, ISubProgramme, ITitle, ITrainingMaterial, IUtility } from 'src/app/models/interfaces';
+import { IAccessStatus, IActivityList, IActivityType, IAllocationType, IApplicationType, IDenodoFacilityWrapper, IDepartment, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod, IOrganisationType, IPosition, IProgramme, IProvisionType, IRecipientType, IResourceList, IResourceType, IRole, IServiceType, IStatus, ISubProgramme, ISubProgrammeType, ITitle, ITrainingMaterial, IUtility } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -112,6 +112,9 @@ export class DropdownService {
       case DropdownTypeEnum.FrequencyPeriods:
         data = this._http.get<IFrequencyPeriod[]>(url, httpOptions);
         break;
+      case DropdownTypeEnum.SubProgrammeTypes:
+        data = this._http.get<ISubProgrammeType[]>(url, httpOptions);
+        break;
     }
 
     return data;
@@ -171,6 +174,8 @@ export class DropdownService {
         return this._http.post<IFrequency>(url, data, httpOptions);
       case DropdownTypeEnum.FrequencyPeriods:
         return this._http.post<IFrequencyPeriod>(url, data, httpOptions);
+      case DropdownTypeEnum.SubProgrammeTypes:
+        return this._http.post<ISubProgrammeType>(url, data, httpOptions);
     }
   }
 
@@ -228,6 +233,8 @@ export class DropdownService {
         return this._http.put<IFrequency>(url, data, httpOptions);
       case DropdownTypeEnum.FrequencyPeriods:
         return this._http.put<IFrequencyPeriod>(url, data, httpOptions);
+      case DropdownTypeEnum.SubProgrammeTypes:
+        return this._http.put<ISubProgrammeType>(url, data, httpOptions);
     }
   }
 

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum } from 'src/app/models/enums';
-import { IAddressInformation, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList } from 'src/app/models/interfaces';
+import { IAddressInformation, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList, IProgramme, ISubProgramme, ISubProgrammeType } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
@@ -27,6 +27,7 @@ export class ViewProfileComponent implements OnInit {
   facilityInfoCols: any[];
   documentCols: any[];
   documentTypeCols: any[];
+  serviceRenderedCols: any[];
 
   mapping: INpoProfileFacilityList = {} as INpoProfileFacilityList;
   displayFacilityInformationDialog: boolean;
@@ -44,6 +45,10 @@ export class ViewProfileComponent implements OnInit {
   // Highlight required fields on validate click
   validated: boolean = true;
 
+  programmes: IProgramme[];
+  subProgrammes: ISubProgramme[];
+  subProgrammeTypes: ISubProgrammeType[];
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _npoProfileRepo: NpoProfileService,
@@ -55,6 +60,9 @@ export class ViewProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDocumentTypes();
+    this.loadProgrammes();
+    this.loadSubProgrammes();
+    this.loadSubProgrammeTypes();
     this.loadNpoProfile();
 
     this.stateOptions = [
@@ -90,6 +98,12 @@ export class ViewProfileComponent implements OnInit {
       { header: 'Document Type', width: '20%' },
       { header: 'Document Type Description', width: '75%' }
     ];
+
+    this.serviceRenderedCols = [
+      { header: 'Programme', width: '34%' },
+      { header: 'Sub-Programme', width: '33%' },
+      { header: 'Sub-Programme Type', width: '33%' }
+    ];
   }
 
   private loadNpoProfile() {
@@ -97,8 +111,12 @@ export class ViewProfileComponent implements OnInit {
       this._npoProfileRepo.getNpoProfileByNpoId(Number(this.npoId)).subscribe(
         (results) => {
           results.addressInformation = results.addressInformation != null ? results.addressInformation : {} as IAddressInformation;
-          this.retrievedNpoProfile.emit(results);
+
           this.npoProfile = results;
+          this.updateNpoProfile();
+
+          this.retrievedNpoProfile.emit(this.npoProfile);
+
           this.isDataAvailable = true;
           this.updateRowGroupMetaData();
           this.getDocuments();
@@ -127,14 +145,65 @@ export class ViewProfileComponent implements OnInit {
   private loadDocumentTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
-        this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.name.indexOf('SLA') === -1);
-        this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false);
+        this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.name.indexOf('SLA') === -1 && x.name.indexOf('Evidence') === -1);
+        this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.name.indexOf('SLA') === -1 && x.name.indexOf('Evidence') === -1);
       },
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
     );
+  }
+
+  private loadProgrammes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
+      (results) => {
+        this.programmes = results;
+        this.updateNpoProfile();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadSubProgrammes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
+      (results) => {
+        this.subProgrammes = results;
+        this.updateNpoProfile();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadSubProgrammeTypes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.subProgrammeTypes = results;
+        this.updateNpoProfile();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateNpoProfile() {
+    if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes) {
+      this.npoProfile.servicesRendered.forEach(item => {
+        item.programme = this.programmes.find(x => x.id === item.programmeId);
+        item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
+        item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
+      });
+
+      this.npoProfile.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
+    }
   }
 
   viewFacilityInformation(data: INpoProfileFacilityList) {

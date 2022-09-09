@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-    <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="entities" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['name','systemName','department.name']">
+    <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="entities" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['name','description','department.name']">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th style="width: 5%;"></th>
@@ -53,10 +53,10 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
-            <tr *ngIf="!isSystemAdmin">
+            <tr *ngIf="!isSystemAdmin" class="default-font">
                 <td colspan="5" style="text-align: center;">No results found</td>
             </tr>
-            <tr *ngIf="isSystemAdmin">
+            <tr *ngIf="isSystemAdmin" class="default-font">
                 <td colspan="6" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>
@@ -77,11 +77,11 @@
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
-                <span class="mandatory-content">System Name</span>
+                <span class="mandatory-content">Description</span>
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="entity.systemName" [ngModelOptions]="{standalone: true}">
+            <input type="text" class="form-text" pInputText [(ngModel)]="entity.description" [ngModelOptions]="{standalone: true}">
         </div>
     </div>
     <div class="p-grid" *ngIf="isSystemAdmin">

@@ -2,6 +2,7 @@
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
+using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Lookup;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
@@ -49,6 +50,7 @@ namespace NPOMS.Services.Implementation
 		private ITrainingMaterialRepository _trainingMaterialRepository;
 		private IFrequencyRepository _frequencyRepository;
 		private IFrequencyPeriodRepository _frequencyPeriodRepository;
+		private ISubProgrammeTypeRepository _subProgrammeTypeRepository;
 
 		#endregion
 
@@ -85,7 +87,8 @@ namespace NPOMS.Services.Implementation
 			IUtilityRepository utilityRepository,
 			ITrainingMaterialRepository trainingMaterialRepository,
 			IFrequencyRepository frequencyRepository,
-			IFrequencyPeriodRepository frequencyPeriodRepository)
+			IFrequencyPeriodRepository frequencyPeriodRepository,
+			ISubProgrammeTypeRepository subProgrammeTypeRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -118,6 +121,7 @@ namespace NPOMS.Services.Implementation
 			_trainingMaterialRepository = trainingMaterialRepository;
 			_frequencyRepository = frequencyRepository;
 			_frequencyPeriodRepository = frequencyPeriodRepository;
+			_subProgrammeTypeRepository = subProgrammeTypeRepository;
 		}
 
 		#endregion
@@ -342,6 +346,22 @@ namespace NPOMS.Services.Implementation
 			model.CreatedDateTime = DateTime.Now;
 
 			await _subProgrammeRepository.CreateAsync(model);
+
+			var programme = await _programmeRepository.GetById(model.ProgrammeId);
+
+			// If Department is DoH, create sub-programme type with same details as sub-programme
+			if (programme.DepartmentId == (int)DepartmentEnum.DoH)
+			{
+				await _subProgrammeTypeRepository.CreateAsync(new SubProgrammeType
+				{
+					Name = model.Name,
+					Description = model.Description,
+					SubProgrammeId = model.Id,
+					IsActive = true,
+					CreatedUserId = model.CreatedUserId,
+					CreatedDateTime = model.CreatedDateTime
+				});
+			}
 		}
 
 		public async Task UpdateSubProgramme(SubProgramme model, string userIdentifier)
@@ -976,6 +996,35 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			await _frequencyPeriodRepository.UpdateAsync(model);
+		}
+
+		#endregion
+
+		#region Sub-Programme Type
+
+		public async Task<IEnumerable<SubProgrammeType>> GetSubProgrammeTypes(bool returnInactive)
+		{
+			return await _subProgrammeTypeRepository.GetEntities(returnInactive);
+		}
+
+		public async Task CreateSubProgrammeType(SubProgrammeType model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _subProgrammeTypeRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateSubProgrammeType(SubProgrammeType model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _subProgrammeTypeRepository.UpdateAsync(model);
 		}
 
 		#endregion

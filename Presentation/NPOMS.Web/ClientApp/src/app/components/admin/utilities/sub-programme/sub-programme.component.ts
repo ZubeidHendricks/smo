@@ -72,8 +72,8 @@ export class SubProgrammeComponent implements OnInit {
     });
 
     this.cols = [
-      { field: 'name', header: 'Sub-Programme Name', width: '35%' },
-      { field: 'systemName', header: 'System Name', width: '15%' }
+      { field: 'name', header: 'Sub-Programme Name', width: '27%' },
+      { field: 'description', header: 'Description', width: '27%' }
     ];
   }
 
@@ -99,6 +99,7 @@ export class SubProgrammeComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, true).subscribe(
       (results) => {
         this.entities = results;
+        
         this.updateProgramme();
         this._spinner.hide();
       },
@@ -163,7 +164,7 @@ export class SubProgrammeComponent implements OnInit {
   }
 
   disableSave() {
-    if (!this.entity.name || !this.entity.systemName || !this.selectedProgramme)
+    if (!this.entity.name || !this.entity.description || !this.selectedProgramme)
       return true;
 
     return false;
