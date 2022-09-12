@@ -30,6 +30,7 @@
 		Utilities = 26,
 		TrainingMaterial = 27,
 		Frequencies = 28,
-		FrequencyPeriods = 29
+		FrequencyPeriods = 29,
+		SubProgrammeTypes = 30
 	}
 }

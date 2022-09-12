@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IWorkplanActual, IWorkplanTarget, } from 'src/app/models/interfaces';
+import { IWorkplanActual, IWorkplanComment, IWorkplanTarget, } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -37,5 +37,15 @@ export class IndicatorService {
   public updateActual(actual: IWorkplanActual) {
     const url = `${this._envUrl.urlAddress}/api/indicators/workplan-actual`;
     return this._http.put<IWorkplanActual>(url, actual, httpOptions);
+  }
+
+  public getWorkplanComments(workplanActualId: number) {
+    const url = `${this._envUrl.urlAddress}/api/indicators/workplan-comments/workplanActualId/${workplanActualId}`;
+    return this._http.get<IWorkplanComment[]>(url, httpOptions);
+  }
+
+  public createWorkplanComment(model: IWorkplanComment) {
+    const url = `${this._envUrl.urlAddress}/api/indicators/workplan-comments`;
+    return this._http.post<IWorkplanComment>(url, model, httpOptions);
   }
 }

@@ -17,11 +17,11 @@
             </div>
         </div>
     </div>
-    <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="entities" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['programme.name','name','systemName']">
+    <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="entities" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['programme.name','name','description']">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th style="width: 5%;"></th>
-                <th style="width: 30%;" pSortableColumn="programme.name">
+                <th style="width: 27%;" pSortableColumn="programme.name">
                     <div class="p-d-flex p-jc-between p-ai-center">
                         Programme Name
                         <p-sortIcon field="programme.name"></p-sortIcon>
@@ -33,7 +33,7 @@
                         <p-sortIcon field="{{col.field}}"></p-sortIcon>
                     </div>
                 </th>
-                <th style="text-align: center; width:10%;">Inactive</th>
+                <th style="text-align: center; width:9%;">Inactive</th>
                 <th style="width: 5%;">Actions</th>
             </tr>
         </ng-template>
@@ -53,7 +53,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
-            <tr>
+            <tr class="default-font">
                 <td colspan="6" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>
@@ -84,11 +84,11 @@
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
-                <span class="mandatory-content">System Name</span>
+                <span class="mandatory-content">Description</span>
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="entity.systemName" [ngModelOptions]="{standalone: true}">
+            <input type="text" class="form-text" pInputText [(ngModel)]="entity.description" [ngModelOptions]="{standalone: true}">
         </div>
     </div>
     <div class="p-grid">

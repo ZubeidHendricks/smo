@@ -157,7 +157,7 @@ export interface IPosition {
 export interface IProgramme {
     id: number;
     name: string;
-    systemName: string;
+    description: string;
     departmentId: number;
     isActive: boolean;
     department: IDepartment;
@@ -194,7 +194,7 @@ export interface IServiceType {
 export interface ISubProgramme {
     id: number;
     name: string;
-    systemName: string;
+    description: string;
     programmeId: number;
     isActive: boolean;
     programme: IProgramme;
@@ -219,6 +219,15 @@ export interface IFrequencyPeriod {
     name: string;
     systemName: string;
     isActive: boolean;
+}
+
+export interface ISubProgrammeType {
+    id: number;
+    name: string;
+    description: string;
+    subProgrammeId: number;
+    isActive: boolean;
+    subProgramme: ISubProgramme;
 }
 
 /* Entities */
@@ -384,6 +393,7 @@ export interface INpoProfile {
 
     addressInformation: IAddressInformation;
     npoProfileFacilityLists: INpoProfileFacilityList[];
+    servicesRendered: IServicesRendered[];
 }
 
 export interface IObjective {
@@ -456,6 +466,19 @@ export interface ITrainingMaterial {
     createdDateTime: Date;
     updatedUserId: number;
     updatedDateTime: Date;
+}
+
+export interface IServicesRendered {
+    id: number;
+    npoProfileId: number;
+    programmeId: number;
+    subProgrammeId: number;
+    subProgrammeTypeId: number;
+    isActive: boolean;
+
+    programme: IProgramme;
+    subProgramme: ISubProgramme;
+    subProgrammeType: ISubProgrammeType;
 }
 
 /* Lookup */
@@ -682,4 +705,14 @@ export interface IWorkplanIndicator {
     workplanActuals: IWorkplanActual[];
     totalTargets: number;
     totalActuals: number;
+}
+
+export interface IWorkplanComment {
+    id: number;
+    workplanActualId: number;
+    comment: string;
+    createdUserId: number;
+    createdDateTime: Date;
+
+    createdUser: IUser;
 }

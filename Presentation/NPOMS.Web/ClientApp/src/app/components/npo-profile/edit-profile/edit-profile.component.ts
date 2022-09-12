@@ -6,7 +6,7 @@ import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/
 import { FileUpload } from 'primeng/fileupload';
 import { Subscription } from 'rxjs';
 import { AccessStatusEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IAddressInformation, IAddressLookup, IDenodoFacility, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, INpo, INpoProfile, INpoProfileFacilityList, IUser } from 'src/app/models/interfaces';
+import { IAddressInformation, IAddressLookup, IDenodoFacility, IDepartment, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, INpo, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
@@ -92,6 +92,25 @@ export class EditProfileComponent implements OnInit {
   // Highlight required fields on validate click
   validated: boolean = false;
 
+  serviceRenderedCols: any[];
+  displayServicesRenderedDialog: boolean;
+  isServicesRenderedEdit: boolean;
+  newServicesRendered: boolean;
+  servicesRendered: IServicesRendered = {} as IServicesRendered;
+  selectedServicesRendered: IServicesRendered;
+
+  programmes: IProgramme[];
+  filteredProgrammes: IProgramme[] = [];
+  selectedProgramme: IProgramme;
+  subProgrammes: ISubProgramme[];
+  filteredSubProgrammes: ISubProgramme[] = [];
+  selectedSubProgramme: ISubProgramme;
+  subProgrammeTypes: ISubProgrammeType[];
+  filteredSubProgrammeTypes: ISubProgrammeType[] = [];
+  selectedSubProgrammeType: ISubProgrammeType;
+
+  departments: IDepartment[];
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -125,6 +144,10 @@ export class EditProfileComponent implements OnInit {
         this.loadFacilityClasses();
         this.loadFacilityTypes();
         this.loadDocumentTypes();
+        this.loadProgrammes();
+        this.loadSubProgrammes();
+        this.loadSubProgrammeTypes();
+        this.loadDepartments();
         this.loadNpoProfile();
         this.buildMenu();
       }
@@ -161,6 +184,12 @@ export class EditProfileComponent implements OnInit {
       { header: '', width: '5%' },
       { header: 'Document Type', width: '20%' },
       { header: 'Document Type Description', width: '75%' }
+    ];
+
+    this.serviceRenderedCols = [
+      { header: 'Programme', width: '31%' },
+      { header: 'Sub-Programme', width: '31%' },
+      { header: 'Sub-Programme Type', width: '31%' }
     ];
   }
 
@@ -215,9 +244,72 @@ export class EditProfileComponent implements OnInit {
   private loadDocumentTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
-        this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.name.indexOf('SLA') === -1);
-        this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false);
-        this.documentTypes = results.filter(x => x.name.indexOf('SLA') === -1);
+        this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.name.indexOf('SLA') === -1 && x.name.indexOf('Evidence') === -1);
+        this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.name.indexOf('SLA') === -1 && x.name.indexOf('Evidence') === -1);
+        this.documentTypes = results.filter(x => x.name.indexOf('SLA') === -1 && x.name.indexOf('Evidence') === -1);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadDepartments() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, true).subscribe(
+      (results) => {
+        this.departments = results;
+        this.updateDepartments();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadProgrammes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
+      (results) => {
+        this.programmes = results;
+        this.updateDepartments();
+        this.updateNpoProfile();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateDepartments() {
+    if (this.departments && this.programmes) {
+      this.programmes.forEach(item => {
+        item.department = this.departments.find(x => x.id === item.departmentId);
+      });
+
+      this.filteredProgrammes = this.programmes.filter(x => x.department.isActive == true);
+    }
+  }
+
+  private loadSubProgrammes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
+      (results) => {
+        this.subProgrammes = results;
+        this.updateNpoProfile();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadSubProgrammeTypes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.subProgrammeTypes = results;
+        this.updateNpoProfile();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -231,10 +323,10 @@ export class EditProfileComponent implements OnInit {
       this._npoProfileRepo.getNpoProfileById(Number(this.npoProfileId)).subscribe(
         (results) => {
           results.addressInformation = results.addressInformation != null ? results.addressInformation : {} as IAddressInformation;
-          /*this.physicalAddressLookup = { text: results.addressInformation.physicalAddress, magicKey: null };
-          this.postalAddressLookup = { text: results.addressInformation.postalAddress, magicKey: null };*/
 
           this.npoProfile = results;
+          this.updateNpoProfile();
+
           this.isDataAvailable = true;
           this.updateRowGroupMetaData();
           this.getDocuments();
@@ -245,6 +337,18 @@ export class EditProfileComponent implements OnInit {
           this._spinner.hide();
         }
       );
+    }
+  }
+
+  private updateNpoProfile() {
+    if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes) {
+      this.npoProfile.servicesRendered.forEach(item => {
+        item.programme = this.programmes.find(x => x.id === item.programmeId);
+        item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
+        item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
+      });
+
+      this.npoProfile.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
     }
   }
 
@@ -366,6 +470,13 @@ export class EditProfileComponent implements OnInit {
       data.npoProfileFacilityLists.forEach(item => {
         item.facilityList.facilitySubDistrictId = item.facilityList.facilitySubDistrict.id;
         item.facilityList.facilityClassId = item.facilityList.facilityClass.id;
+      });
+
+      data.servicesRendered.forEach(item => {
+        item.programmeId = item.programme.id;
+        item.subProgrammeId = item.subProgramme.id;
+        item.subProgrammeTypeId = item.subProgrammeType.id;
+        item.isActive = true;
       });
 
       this._dropdownRepo.createFacilityList(this.facilityList).subscribe(
@@ -667,7 +778,7 @@ export class EditProfileComponent implements OnInit {
   /*documentTypeChange(document: IDocumentStore, documentType: IDocumentType) {
     document.documentType = null;
     document.documentTypeId = documentType.id;
-
+  
     this._documentStore.update(document).subscribe(resp => {
       this.getDocuments();
     });
@@ -756,5 +867,116 @@ export class EditProfileComponent implements OnInit {
 
     if (field === 'facilityAddress')
       this.mapping.facilityList.address = event.text;
+  }
+
+  addServicesRendered() {
+    this.isServicesRenderedEdit = false;
+    this.newServicesRendered = true;
+    this.servicesRendered = {} as IServicesRendered;
+
+    this.selectedProgramme = null;
+    this.selectedSubProgramme = null;
+    this.selectedSubProgrammeType = null;
+
+    this.filteredSubProgrammes = [];
+    this.filteredSubProgrammeTypes = [];
+
+    this.displayServicesRenderedDialog = true;
+  }
+
+  saveServicesRendered() {
+    this.servicesRendered.programme = this.selectedProgramme;
+    this.servicesRendered.subProgramme = this.selectedSubProgramme;
+    this.servicesRendered.subProgrammeType = this.selectedSubProgrammeType;
+
+    if (this.newServicesRendered)
+      this.npoProfile.servicesRendered.push(this.servicesRendered);
+    else
+      this.npoProfile.servicesRendered[this.npoProfile.servicesRendered.indexOf(this.selectedServicesRendered)] = this.servicesRendered;
+
+    this.displayServicesRenderedDialog = false;
+  }
+
+  disableSaveServicesRendered() {
+    if (!this.selectedProgramme || !this.selectedSubProgramme || !this.selectedSubProgrammeType)
+      return true;
+
+    return false;
+  }
+
+  editServicesRendered(data: IServicesRendered) {
+    this.selectedServicesRendered = data;
+    this.isServicesRenderedEdit = true;
+    this.newServicesRendered = false;
+    this.servicesRendered = this.cloneServicesRendered(data);
+    this.displayServicesRenderedDialog = true;
+  }
+
+  private cloneServicesRendered(data: IServicesRendered): IServicesRendered {
+    let servicesRendered = {} as IServicesRendered;
+
+    for (let prop in data)
+      servicesRendered[prop] = data[prop];
+
+    this.selectedProgramme = data.programme;
+    this.programmeChange(this.selectedProgramme);
+
+    this.selectedSubProgramme = data.subProgramme;
+    this.subProgrammeChange(this.selectedSubProgramme);
+
+    this.selectedSubProgrammeType = data.subProgrammeType;
+
+    return servicesRendered;
+  }
+
+  deleteServicesRendered(data: IServicesRendered) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.npoProfile.servicesRendered.forEach(function (item, index, object) {
+          if (data === item)
+            object.splice(index, 1);
+        });
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  programmeChange(programme: IProgramme) {
+    this.selectedSubProgramme = null;
+    this.selectedSubProgrammeType = null;
+
+    this.filteredSubProgrammes = [];
+    this.filteredSubProgrammeTypes = [];
+
+    if (programme.id != null) {
+      this.filteredSubProgrammes = this.subProgrammes.filter(x => x.programmeId === programme.id);
+    }
+  }
+
+  subProgrammeChange(subProgramme: ISubProgramme) {
+    this.selectedSubProgrammeType = null;
+    this.filteredSubProgrammeTypes = [];
+
+    if (subProgramme.id != null) {
+      this.filteredSubProgrammeTypes = this.subProgrammeTypes.filter(x => x.subProgrammeId === subProgramme.id);
+    }
+  }
+
+  disableSubProgramme(): boolean {
+    if (this.filteredSubProgrammes.length > 0)
+      return false;
+
+    return true;
+  }
+
+  disableSubProgrammeType(): boolean {
+    if (this.filteredSubProgrammeTypes.length > 0)
+      return false;
+
+    return true;
   }
 }

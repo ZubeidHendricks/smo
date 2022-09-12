@@ -73,7 +73,7 @@ export class ProgrammeComponent implements OnInit {
 
     this.cols = [
       { field: 'name', header: 'Name', width: '40%' },
-      { field: 'systemName', header: 'System Name', width: '20%' }
+      { field: 'description', header: 'Description', width: '20%' }
     ];
   }
 
@@ -159,7 +159,7 @@ export class ProgrammeComponent implements OnInit {
   }
 
   disableSave() {
-    if (!this.entity.name || !this.entity.systemName)
+    if (!this.entity.name || !this.entity.description)
       return true;
 
     if (this.isSystemAdmin && !this.selectedDepartment)

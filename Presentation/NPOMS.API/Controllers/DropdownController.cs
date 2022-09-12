@@ -67,8 +67,8 @@ namespace NPOMS.API.Controllers
 						var programmes = await _dropdownService.GetProgrammes(returnInactive);
 						return Ok(programmes);
 					case DropdownTypeEnum.SubProgramme:
-						var results = await _dropdownService.GetSubProgrammes(returnInactive);
-						return Ok(results);
+						var subProgrammes = await _dropdownService.GetSubProgrammes(returnInactive);
+						return Ok(subProgrammes);
 					case DropdownTypeEnum.FinancialYears:
 						var financialYears = await _dropdownService.GetFinancialYears(returnInactive);
 						return Ok(financialYears);
@@ -132,6 +132,9 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.FrequencyPeriods:
 						var frequencyPeriods = await _dropdownService.GetFrequencyPeriods(returnInactive);
 						return Ok(frequencyPeriods);
+					case DropdownTypeEnum.SubProgrammeTypes:
+						var subProgrammeTypes = await _dropdownService.GetSubProgrammeTypes(returnInactive);
+						return Ok(subProgrammeTypes);
 				}
 
 				return Ok();
@@ -250,6 +253,10 @@ namespace NPOMS.API.Controllers
 						var frequencyPeriod = JsonConvert.DeserializeObject<FrequencyPeriod>(Convert.ToString(entity));
 						await _dropdownService.CreateFrequencyPeriod(frequencyPeriod, base.GetUserIdentifier());
 						break;
+					case DropdownTypeEnum.SubProgrammeTypes:
+						var subProgrammeType = JsonConvert.DeserializeObject<SubProgrammeType>(Convert.ToString(entity));
+						await _dropdownService.CreateSubProgrammeType(subProgrammeType, base.GetUserIdentifier());
+						break;
 				}
 
 				return Ok();
@@ -367,6 +374,10 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.FrequencyPeriods:
 						var frequencyPeriod = JsonConvert.DeserializeObject<FrequencyPeriod>(Convert.ToString(entity));
 						await _dropdownService.UpdateFrequencyPeriod(frequencyPeriod, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.SubProgrammeTypes:
+						var subProgrammeType = JsonConvert.DeserializeObject<SubProgrammeType>(Convert.ToString(entity));
+						await _dropdownService.UpdateSubProgrammeType(subProgrammeType, base.GetUserIdentifier());
 						break;
 				}
 

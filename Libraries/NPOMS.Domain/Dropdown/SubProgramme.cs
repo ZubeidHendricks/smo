@@ -14,8 +14,8 @@ namespace NPOMS.Domain.Dropdown
 		public string Name { get; set; }
 
 		[Required]
-		[Column(TypeName = "nvarchar(255)")]
-		public string SystemName { get; set; }
+		[Column(TypeName = "nvarchar(1000)")]
+		public string Description { get; set; }
 
 		[Required]
 		public int ProgrammeId { get; set; }
