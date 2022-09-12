@@ -78,7 +78,7 @@ export class ProgrammeComponent implements OnInit {
   }
 
   private loadDepartments() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, true).subscribe(
       (results) => {
         this.departments = results;
         this.updateDepartment();

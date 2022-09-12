@@ -43,7 +43,9 @@
                 <td *ngFor="let col of columns">
                     <span>{{getCellData(rowData, col)}}</span>
                 </td>
-                <td *ngIf="isSystemAdmin && rowData.department">{{rowData.department.name}}</td>
+                <td *ngIf="isSystemAdmin">
+                    <span *ngIf="rowData.department">{{rowData.department.name}}</span>
+                </td>
                 <td style="text-align: center;">
                     <p-checkbox [ngModel]="!rowData.isActive" [binary]="true" disabled></p-checkbox>
                 </td>
