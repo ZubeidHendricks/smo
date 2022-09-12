@@ -3,7 +3,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, EntityEnum, EntityTypeEnum, FrequencyPeriodEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IDocumentType, IFinancialYear, IFrequencyPeriod, IUser, IWorkplanActual, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IDocumentType, IFinancialYear, IFrequencyPeriod, IUser, IWorkplanActual, IWorkplanComment, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
@@ -80,6 +80,10 @@ export class ActualsComponent implements OnInit {
   // This is the selected indicator when clicking on option buttons...
   selectedIndicator: IWorkplanIndicator;
 
+  workplanComments: IWorkplanComment[];
+  commentCols: any[];
+  comment: string;
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _authService: AuthService,
@@ -124,6 +128,13 @@ export class ActualsComponent implements OnInit {
       { header: 'Size', width: '10%' },
       { header: 'Uploaded Date', width: '15%' },
       { header: 'Actions', width: '10%' }
+    ];
+
+    this.commentCols = [
+      { header: '', width: '5%' },
+      { header: 'Comment', width: '55%' },
+      { header: 'Created User', width: '20%' },
+      { header: 'Created Date', width: '20%' }
     ];
   }
 
@@ -203,10 +214,8 @@ export class ActualsComponent implements OnInit {
           label: 'Save Actual',
           icon: 'fa fa-floppy-o',
           command: () => {
-            // this._router.navigateByUrl('workplan-indicator/manage/' + this.selectedApplication.id);
             this.saveActual(this.selectedIndicator);
-          },
-          disabled: this.isPreviousFinancialYear
+          }
         });
       }
 
@@ -215,10 +224,8 @@ export class ActualsComponent implements OnInit {
           label: 'Submit Actual',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            // this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.id);
             this.submitActual(this.selectedIndicator);
-          },
-          disabled: this.isPreviousFinancialYear
+          }
         });
       }
 
@@ -227,21 +234,30 @@ export class ActualsComponent implements OnInit {
           label: 'Comments',
           icon: 'fa fa-comments-o',
           command: () => {
-            // this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.id);
             this.viewComments(this.selectedIndicator);
-          },
-          disabled: this.isPreviousFinancialYear
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'View History',
+          icon: 'fa fa-history',
+          command: () => {
+            this.viewAuditHistory(this.selectedIndicator);
+            this._messageService.add({ severity: 'info', summary: 'Information', detail: 'View History under construction.' });
+          }
         });
       }
     }
   }
 
-  saveActual(workplanIndicator: IWorkplanIndicator) {
+  private saveActual(workplanIndicator: IWorkplanIndicator) {
     // Only 1 WorkplanActual will be saved/submitted at a time
     this.updateWorkplanActual(workplanIndicator.workplanActuals[0], 1);
   }
 
-  submitActual(workplanIndicator: IWorkplanIndicator) {
+  private submitActual(workplanIndicator: IWorkplanIndicator) {
     // Only 1 WorkplanActual will be saved/submitted at a time
     this.updateWorkplanActual(workplanIndicator.workplanActuals[0], 2);
   }
@@ -266,13 +282,55 @@ export class ActualsComponent implements OnInit {
     }
   }
 
-  viewComments(workplanIndicator: IWorkplanIndicator) {
-    this.displayAllCommentDialog = true;
+  private viewComments(workplanIndicator: IWorkplanIndicator) {
+    this._spinner.show();
+    this._indicatorRepo.getWorkplanComments(workplanIndicator.workplanActuals[0].id).subscribe(
+      (results) => {
+        this.workplanComments = results;
+        this._spinner.hide();
+        this.displayAllCommentDialog = true;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   addComment() {
-    // this.comment = null;
+    this.comment = null;
     this.displayCommentDialog = true;
+  }
+
+  disableSaveComment() {
+    if (!this.comment)
+      return true;
+
+    return false;
+  }
+
+  saveComment() {
+    let model = {
+      workplanActualId: this.selectedIndicator.workplanActuals[0].id,
+      comment: this.comment
+    } as IWorkplanComment;
+
+    this._indicatorRepo.createWorkplanComment(model).subscribe(
+      (resp) => {
+        this.viewComments(this.selectedIndicator);
+
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this.displayCommentDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private viewAuditHistory(workplanIndicator: IWorkplanIndicator) {
+
   }
 
   private getDocuments(workplanActual: IWorkplanActual) {
@@ -292,6 +350,12 @@ export class ActualsComponent implements OnInit {
     this.getFilteredWorkplanIndicators();
     let currentYear = new Date().getFullYear();
     this.isPreviousFinancialYear = this.selectedFinancialYear.year >= currentYear ? false : true;
+
+    // Disable Save and Submit buttons if previous financial year
+    this.buttonItems.forEach(option => {
+      option.items[0].disabled = this.isPreviousFinancialYear;
+      option.items[1].disabled = this.isPreviousFinancialYear;
+    });
   }
 
   frequencyPeriodChange() {
@@ -319,10 +383,10 @@ export class ActualsComponent implements OnInit {
     this.element.nativeElement.click();
   }
 
-  public onUploadChange = (event, files, workplanIndicator) => {
+  public onUploadChange = (files, workplanIndicator) => {
     files[0].documentType = this.documentTypes.find(x => x.name == 'Evidence');
 
-    this._documentStore.upload(event.files, EntityTypeEnum.WorkplanActuals, Number(workplanIndicator.workplanActuals[0].id), EntityEnum.WorkplanIndicators, this.application.refNo, files[0].documentType.id).subscribe(
+    this._documentStore.upload(files, EntityTypeEnum.WorkplanActuals, Number(workplanIndicator.workplanActuals[0].id), EntityEnum.WorkplanIndicators, this.application.refNo, files[0].documentType.id).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress)
           this._spinner.show();
@@ -337,8 +401,6 @@ export class ActualsComponent implements OnInit {
         this._spinner.hide();
       }
     );
-
-    files.clear();
   }
 
   public uploadedFiles(workplanIndicator: IWorkplanIndicator) {
@@ -361,7 +423,7 @@ export class ActualsComponent implements OnInit {
     });
   }
 
-  onDeleteDocument(doc: any, workplanIndicator: IWorkplanIndicator) {
+  onDeleteDocument(doc: any, workplanActuals: IWorkplanActual) {
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this document?',
       header: 'Confirmation',
@@ -371,7 +433,7 @@ export class ActualsComponent implements OnInit {
 
         this._documentStore.delete(doc.resourceId).subscribe(
           (event) => {
-            this.getDocuments(workplanIndicator.workplanActuals[0]);
+            this.getDocuments(workplanActuals);
             this._spinner.hide();
           },
           (err) => {

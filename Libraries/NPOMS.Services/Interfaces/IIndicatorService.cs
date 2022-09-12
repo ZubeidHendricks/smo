@@ -31,5 +31,9 @@ namespace NPOMS.Services.Interfaces
 		Task CreateActual(WorkplanActual model, string userIdentifier);
 
 		Task UpdateActual(WorkplanActual model, string userIdentifier);
+
+		Task<IEnumerable<WorkplanComment>> GetWorkplanComments(int workplanActualId);
+
+		Task CreateWorkplanComment(WorkplanComment model, string userIdentifier);
 	}
 }

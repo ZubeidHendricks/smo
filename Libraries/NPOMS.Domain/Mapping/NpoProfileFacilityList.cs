@@ -13,7 +13,7 @@ namespace NPOMS.Domain.Mapping
 
 		public bool IsActive { get; set; }
 
-		public NpoProfile NpoProfile { get; set; }
+		//public NpoProfile NpoProfile { get; set; }
 
 		public FacilityList FacilityList { get; set; }
 	}

@@ -107,6 +107,7 @@ import { ManageComponent } from './components/indicators/workplan/manage/manage.
 import { ActualsComponent } from './components/indicators/workplan/actuals/actuals.component';
 import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
 import { SummaryComponent } from './components/indicators/workplan/summary/summary.component';
+import { SubProgrammeTypeComponent } from './components/admin/utilities/sub-programme-type/sub-programme-type.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -214,7 +215,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ManageComponent,
     ActualsComponent,
     TargetsComponent,
-    SummaryComponent
+    SummaryComponent,
+    SubProgrammeTypeComponent
   ],
   imports: [
     BrowserModule,

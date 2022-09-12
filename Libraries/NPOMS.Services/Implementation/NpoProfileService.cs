@@ -22,6 +22,7 @@ namespace NPOMS.Services.Implementation
 		private IUserNpoRepository _userNpoRepository;
 		private INpoProfileFacilityListRepository _npoProfileFacilityListRepository;
 		private IFacilityListRepository _facilityListRepository;
+		private IServicesRenderedRepository _servicesRenderedRepository;
 
 		#endregion
 
@@ -33,7 +34,8 @@ namespace NPOMS.Services.Implementation
 			INpoRepository npoRepository,
 			IUserNpoRepository userNpoRepository,
 			INpoProfileFacilityListRepository npoProfileFacilityListRepository,
-			IFacilityListRepository facilityListRepository
+			IFacilityListRepository facilityListRepository,
+			IServicesRenderedRepository servicesRenderedRepository
 			)
 		{
 			_npoProfileRepository = npoProfileRepository;
@@ -42,6 +44,7 @@ namespace NPOMS.Services.Implementation
 			_userNpoRepository = userNpoRepository;
 			_npoProfileFacilityListRepository = npoProfileFacilityListRepository;
 			_facilityListRepository = facilityListRepository;
+			_servicesRenderedRepository = servicesRenderedRepository;
 		}
 
 		#endregion
@@ -74,6 +77,9 @@ namespace NPOMS.Services.Implementation
 			var mappings = await _npoProfileFacilityListRepository.GetByNpoProfileId(result.Id);
 			result.NpoProfileFacilityLists = mappings.ToList();
 
+			var servicesRendered = await _servicesRenderedRepository.GetByNpoProfileId(result.Id);
+			result.ServicesRendered = servicesRendered.ToList();
+
 			return result;
 		}
 
@@ -91,7 +97,7 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			await GetMappedFacilityIds(profile);
+			await GetMappedObjects(profile);
 			ClearObjects(profile);
 			await UpdateMappings(profile);
 
@@ -109,13 +115,29 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
-		private async Task GetMappedFacilityIds(NpoProfile model)
+		private async Task GetMappedObjects(NpoProfile model)
 		{
 			foreach (var item in model.NpoProfileFacilityLists)
 			{
 				var facility = await _facilityListRepository.GetByProperties(item.FacilityList);
-				item.FacilityListId = facility.Id;
-				item.IsActive = true;
+
+				if (facility != null)
+				{
+					item.FacilityListId = facility.Id;
+					item.IsActive = true;
+				}
+			}
+
+			foreach (var item in model.ServicesRendered)
+			{
+				var service = await _servicesRenderedRepository.GetByProperties(item);
+
+				if (service != null)
+				{
+					item.Id = service.Id;
+					item.NpoProfileId = service.NpoProfileId;
+					item.IsActive = true;
+				}
 			}
 		}
 
@@ -137,6 +159,23 @@ namespace NPOMS.Services.Implementation
 					}
 				}
 			}
+
+			if (model.ServicesRendered != null)
+			{
+				var mappings = await _servicesRenderedRepository.GetByNpoProfileId(model.Id);
+
+				if (mappings.Count() > 0)
+				{
+					var existingIds = mappings.Select(x => x.Id);
+					var newIds = model.ServicesRendered.Select(x => x.Id);
+
+					foreach (var id in existingIds)
+					{
+						if (!newIds.Contains(id))
+							await _servicesRenderedRepository.DeleteEntity(id);
+					}
+				}
+			}
 		}
 
 		public async Task<NpoProfile> GetByNpoId(int NpoId)
@@ -145,6 +184,9 @@ namespace NPOMS.Services.Implementation
 
 			var mappings = await _npoProfileFacilityListRepository.GetByNpoProfileId(result.Id);
 			result.NpoProfileFacilityLists = mappings.ToList();
+
+			var servicesRendered = await _servicesRenderedRepository.GetByNpoProfileId(result.Id);
+			result.ServicesRendered = servicesRendered.ToList();
 
 			return result;
 		}

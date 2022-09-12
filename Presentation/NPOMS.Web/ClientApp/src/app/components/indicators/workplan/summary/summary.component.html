@@ -25,7 +25,7 @@
             </div>
         </p-card>
         <div style="height: 10px;"></div>        
-        <p-table [value]="filteredWorkplanIndicators" styleClass="p-datatable-sm" [columns]="scrollableCols" [frozenColumns]="frozenCols" [scrollable]="true" scrollHeight="flex" frozenWidth="55%">
+        <p-table [value]="filteredWorkplanIndicators" styleClass="p-datatable-sm" [columns]="scrollableCols" [frozenColumns]="frozenCols" [scrollable]="true" frozenWidth="55%">
             <ng-template pTemplate="frozencolgroup" let-columns>
                 <colgroup>
                     <col style="width: 5%;">
@@ -121,14 +121,14 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="frozenbody" let-rowData let-rowIndex="rowIndex">
-                <tr>
+                <tr class="default-font">
                     <td style="text-align: center;">{{rowIndex + 1}}</td>
                     <td>{{rowData.activity.activityList.description}}</td>
                     <td>{{rowData.activity.successIndicator}}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr>
+                <tr class="default-font">
                     <!-- April targets and actuals -->
                     <td style="text-align: center;">
                         <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
@@ -307,7 +307,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
-                <tr>
+                <tr class="default-font">
                     <td colspan="28" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>

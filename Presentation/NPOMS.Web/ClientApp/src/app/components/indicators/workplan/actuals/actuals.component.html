@@ -106,7 +106,7 @@
                         <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
                         <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" [disabled]="isPreviousFinancialYear" (click)="uploadDocument(rowData)"></button>
 
-                        <input type="file" #addDoc (change)="onUploadChange($event, addDoc.files, rowData)" placeholder="Browse" accept="*" style="display:none;">
+                        <input type="file" #addDoc (change)="onUploadChange(addDoc.files, rowData)" placeholder="Browse" accept="*" style="display:none;">
                     </td>
                     <td style="text-align: center;">Pending</td>
                     <td style="text-align: center;">
@@ -150,7 +150,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
-                <tr>
+                <tr class="default-font">
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
@@ -164,7 +164,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <!-- <p-table [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="applicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <p-table [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="workplanComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -173,7 +173,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-            <tr>
+            <tr class="default-font">
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
                 <td>{{rowData.comment}}</td>
                 <td>{{rowData.createdUser.fullName}}</td>
@@ -181,17 +181,12 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
-            <tr>
+            <tr class="default-font">
                 <td colspan="4" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>
-        <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
-            <div style="text-align:right">
-                <button pButton pRipple type="button" label="Add Comment" class="p-button-text p-button-info" icon="fa fa-comment-o" (click)="addComment()" [disabled]="isPreviousFinancialYear"></button>
-            </div>
-        </ng-template>
-    </p-table> -->
-    <button pButton pRipple type="button" label="Add Comment" class="p-button-text p-button-info" icon="fa fa-comment-o" (click)="addComment()" [disabled]="isPreviousFinancialYear"></button>
+    </p-table>
+    <button pButton pRipple type="button" label="Add Comment" class="p-button-text p-button-info pull-right" icon="fa fa-comment-o" (click)="addComment()" [disabled]="isPreviousFinancialYear"></button>
 </p-dialog>
 
 <p-dialog header="Add Comment" 
@@ -201,7 +196,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <!-- <div class="p-grid">
+    <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="mandatory-content">Comment</span>
@@ -212,9 +207,8 @@
         </div>
     </div>        
     <ng-template pTemplate="footer">
-        <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
-        <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button>
-    </ng-template> -->
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment()"></button>
+    </ng-template>
 </p-dialog>
 
 <div class="content-section implementation">

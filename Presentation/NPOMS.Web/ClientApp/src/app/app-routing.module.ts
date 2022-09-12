@@ -54,6 +54,7 @@ import { ManageComponent } from './components/indicators/workplan/manage/manage.
 import { ActualsComponent } from './components/indicators/workplan/actuals/actuals.component';
 import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
 import { SummaryComponent } from './components/indicators/workplan/summary/summary.component';
+import { SubProgrammeTypeComponent } from './components/admin/utilities/sub-programme-type/sub-programme-type.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -112,6 +113,7 @@ const routes: Routes = [
   { path: 'utilities/sub-programme', component: SubProgrammeComponent },
   { path: 'utilities/title', component: TitleComponent },
   { path: 'utilities/management', component: UtilityManagementComponent },
+  { path: 'utilities/sub-programme-type', component: SubProgrammeTypeComponent },
 
   // Error Pages
   { path: '401', component: Page401Component },

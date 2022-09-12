@@ -15,6 +15,7 @@ namespace NPOMS.Services.Implementation
 		private IWorkplanTargetRepository _workplanTargetRepository;
 		private IUserRepository _userRepository;
 		private IWorkplanActualRepository _workplanActualRepository;
+		private IWorkplanCommentRepository _workplanCommentRepository;
 
 		#endregion
 
@@ -23,12 +24,14 @@ namespace NPOMS.Services.Implementation
 		public IndicatorService(
 			IWorkplanTargetRepository workplanTargetRepository,
 			IUserRepository userRepository,
-			IWorkplanActualRepository workplanActualRepository
+			IWorkplanActualRepository workplanActualRepository,
+			IWorkplanCommentRepository workplanCommentRepository
 			)
 		{
 			_workplanTargetRepository = workplanTargetRepository;
 			_userRepository = userRepository;
 			_workplanActualRepository = workplanActualRepository;
+			_workplanCommentRepository = workplanCommentRepository;
 		}
 
 		#endregion
@@ -96,6 +99,21 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			await _workplanActualRepository.UpdateAsync(model);
+		}
+
+		public async Task<IEnumerable<WorkplanComment>> GetWorkplanComments(int workplanActualId)
+		{
+			return await _workplanCommentRepository.GetByWorkplanActualId(workplanActualId);
+		}
+
+		public async Task CreateWorkplanComment(WorkplanComment model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _workplanCommentRepository.CreateEntity(model);
 		}
 
 		#endregion

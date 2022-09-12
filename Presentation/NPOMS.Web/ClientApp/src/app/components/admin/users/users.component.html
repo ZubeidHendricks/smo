@@ -42,7 +42,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-user let-rowIndex="rowIndex">
-            <tr>
+            <tr class="default-font">
                 <td>{{user.fullName}}</td>
                 <td>{{user.email}}</td>
                 <td><span *ngFor="let role of user.roles; let isLast=last">{{role.name}}{{isLast ? '' : ', '}}</span>

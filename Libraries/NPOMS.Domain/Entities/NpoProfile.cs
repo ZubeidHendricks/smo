@@ -28,5 +28,7 @@ namespace NPOMS.Domain.Entities
 		public AddressInformation AddressInformation { get; set; }
 
 		public List<NpoProfileFacilityList> NpoProfileFacilityLists { get; set; } = new List<NpoProfileFacilityList>();
+
+		public List<ServicesRendered> ServicesRendered { get; set; } = new List<ServicesRendered>();
 	}
 }

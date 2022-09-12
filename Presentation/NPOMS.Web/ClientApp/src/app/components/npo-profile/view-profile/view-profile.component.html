@@ -35,6 +35,30 @@
         </div>
     </p-panel>
     <div style="height: 10px;"></div>
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
+        <p-table [columns]="serviceRenderedCols" [value]="npoProfile.servicesRendered" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData>
+                <tr class="default-font">
+                    <td *ngIf="rowData.programme">{{rowData.programme.name}}</td>
+                    <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</td>
+                    <td *ngIf="rowData.subProgrammeType">{{rowData.subProgrammeType.name}}</td>
+                </tr>                
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="3" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+    <div style="height: 10px;"></div>
     <p-panel [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
         <p-table [columns]="facilityInfoCols" [value]="npoProfile.npoProfileFacilityLists" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
@@ -50,7 +74,7 @@
                         <span class="p-text-bold">{{rowData.facilityList.facilityType.name}}</span>
                     </td>
                 </tr>
-                <tr>
+                <tr class="default-font">
                     <td>{{rowData.facilityList.facilitySubDistrict.name}}</td>
                     <td>{{rowData.facilityList.name}}</td>
                     <td>{{rowData.facilityList.facilityClass.name}}</td>
@@ -61,7 +85,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
-                <tr>
+                <tr class="default-font">
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
@@ -78,7 +102,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
-                <tr> 
+                <tr class="default-font"> 
                     <td style="text-align: center;">{{rowIndex + 1}}</td>
                     <td>{{document.name}}</td>
                     <td>{{document.documentType.name}}</td>
@@ -90,7 +114,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
-                <tr>
+                <tr class="default-font">
                     <td colspan="6" style="text-align: center;">There are no documents uploaded.</td>
                 </tr>
             </ng-template>
@@ -107,14 +131,14 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
-                    <tr> 
+                    <tr class="default-font"> 
                         <td style="text-align: center;">{{rowIndex + 1}}</td>
                         <td>{{rowData.name}}</td>
                         <td>{{rowData.description}}</td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
-                    <tr>
+                    <tr class="default-font">
                         <td colspan="3" style="text-align: center;">No results found.</td>
                     </tr>
                 </ng-template>
@@ -132,14 +156,14 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
-                    <tr> 
+                    <tr class="default-font"> 
                         <td style="text-align: center;">{{rowIndex + 1}}</td>
                         <td>{{rowData.name}}</td>
                         <td>{{rowData.description}}</td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
-                    <tr>
+                    <tr class="default-font">
                         <td colspan="3" style="text-align: center;">No results found.</td>
                     </tr>
                 </ng-template>

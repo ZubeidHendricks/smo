@@ -30,7 +30,7 @@
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-rowData let-columns="columns">
-                        <tr>
+                        <tr class="default-font">
                             <td>{{rowData.name}}</td>
                             <td>{{rowData.fundingSource}}</td>
                             <td>{{rowData.fundingPeriodStartDate}} to {{rowData.fundingPeriodEndDate}}</td>
@@ -61,7 +61,7 @@
                                 <span class="p-text-bold">Objective: {{rowData.objective.description}}</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="default-font">
                             <td>{{rowData.activityList.name}}</td>
                             <td>{{rowData.activityType.name}}</td>
                             <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date: 'yyyy-MM-dd'}}</td>
@@ -92,7 +92,7 @@
                                 <span class="p-text-bold">Activity: {{rowData.activity.activityList.description}}</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="default-font">
                             <td>{{rowData.risk}}</td>
                             <td>{{rowData.mitigation}}</td>
                             <td style="text-align: center;">
@@ -120,7 +120,7 @@
                                 <span class="p-text-bold">Activity: {{rowData.activity.activityList.description}}</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="default-font">
                             <td *ngFor="let col of columns">
                                 <span>{{getCellData(rowData, col)}}</span>
                             </td>
@@ -250,7 +250,7 @@
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
-                        <tr> 
+                        <tr class="default-font"> 
                             <td style="text-align: center;">{{rowIndex + 1}}</td>
                             <td>{{document.name}}</td>
                             <td>{{document.documentType.name}}</td>
@@ -643,7 +643,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-            <tr>
+            <tr class="default-font">
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
                 <td>{{rowData.comment}}</td>
                 <td>{{rowData.createdUser.fullName}}</td>
@@ -669,7 +669,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-            <tr>
+            <tr class="default-font">
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
                 <td>{{rowData.status.name}}</td>
                 <td>{{rowData.createdUser.fullName}}</td>

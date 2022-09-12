@@ -87,6 +87,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<ITitleRepository, TitleRepository>();
 			services.AddScoped<IFrequencyRepository, FrequencyRepository>();
 			services.AddScoped<IFrequencyPeriodRepository, FrequencyPeriodRepository>();
+			services.AddScoped<ISubProgrammeTypeRepository, SubProgrammeTypeRepository>();
 
 			/* Entities */
 			services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
@@ -104,6 +105,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IStatusRepository, StatusRepository>();
 			services.AddScoped<ISustainabilityPlanRepository, SustainabilityPlanRepository>();
 			services.AddScoped<ITrainingMaterialRepository, TrainingMaterialRepository>();
+			services.AddScoped<IServicesRenderedRepository, ServicesRenderedRepository>();
 
 			/* Lookup */
 			services.AddScoped<IActivityListRepository, ActivityListRepository>();
@@ -122,6 +124,7 @@ namespace NPOMS.Services.Extensions
 			/* Indicator */
 			services.AddScoped<IWorkplanTargetRepository, WorkplanTargetRepository>();
 			services.AddScoped<IWorkplanActualRepository, WorkplanActualRepository>();
+			services.AddScoped<IWorkplanCommentRepository, WorkplanCommentRepository>();
 
 			#endregion
 

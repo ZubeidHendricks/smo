@@ -773,6 +773,14 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             Name = "SLA",
                             SystemName = "SLA"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Name = "Workplan Actuals",
+                            SystemName = "WorkplanActuals"
                         });
                 });
 
@@ -1922,6 +1930,17 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "Utility Management",
                             SystemAdminUtility = true
+                        },
+                        new
+                        {
+                            Id = 25,
+                            AngularRedirectUrl = "utilities/sub-programme-type",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Add and/or Update sub-programme types",
+                            IsActive = false,
+                            Name = "Sub-Programme Type",
+                            SystemAdminUtility = false
                         });
                 });
 
@@ -3801,16 +3820,16 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValueSql("1");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("SystemName")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
 
@@ -3831,9 +3850,9 @@ namespace NPOMS.Repository.Migrations
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             DepartmentId = 1,
+                            Description = "All Programmes",
                             IsActive = false,
-                            Name = "All Programmes",
-                            SystemName = "All"
+                            Name = "All Programmes"
                         },
                         new
                         {
@@ -3841,9 +3860,9 @@ namespace NPOMS.Repository.Migrations
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             DepartmentId = 11,
+                            Description = "Chronic Diseases and Non-Communicable Diseases",
                             IsActive = false,
-                            Name = "Chronic Diseases and Non-Communicable Diseases",
-                            SystemName = "CNCD"
+                            Name = "Chronic Diseases and Non-Communicable Diseases"
                         },
                         new
                         {
@@ -3851,9 +3870,9 @@ namespace NPOMS.Repository.Migrations
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             DepartmentId = 11,
+                            Description = "HIV/AIDS, TB, STI",
                             IsActive = false,
-                            Name = "HIV/AIDS, TB, STI",
-                            SystemName = "HTS"
+                            Name = "HIV/AIDS, TB, STI"
                         },
                         new
                         {
@@ -3861,9 +3880,9 @@ namespace NPOMS.Repository.Migrations
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             DepartmentId = 11,
+                            Description = "Maternal, Women and Child Health",
                             IsActive = false,
-                            Name = "Maternal,Women and Child Health",
-                            SystemName = "MWCH"
+                            Name = "Maternal, Women and Child Health"
                         },
                         new
                         {
@@ -3871,9 +3890,9 @@ namespace NPOMS.Repository.Migrations
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             DepartmentId = 11,
+                            Description = "Theatre, Surgery and Aneasthetics",
                             IsActive = false,
-                            Name = "Theatre, Surgery and Aneasthetics",
-                            SystemName = "TSA"
+                            Name = "Theatre, Surgery and Aneasthetics"
                         },
                         new
                         {
@@ -3881,9 +3900,9 @@ namespace NPOMS.Repository.Migrations
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             DepartmentId = 11,
+                            Description = "Mental Health",
                             IsActive = false,
-                            Name = "Mental Health",
-                            SystemName = "MH"
+                            Name = "Mental Health"
                         },
                         new
                         {
@@ -3891,9 +3910,159 @@ namespace NPOMS.Repository.Migrations
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             DepartmentId = 11,
+                            Description = "Emergency Centre Presures",
                             IsActive = false,
-                            Name = "Emergency Centre Presures",
-                            SystemName = "ECP"
+                            Name = "Emergency Centre Presures"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Care and Support to Families",
+                            IsActive = false,
+                            Name = "Care and Support to Families"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Child Care and Protection Services",
+                            IsActive = false,
+                            Name = "Child Care and Protection Services"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Crime Prevention",
+                            IsActive = false,
+                            Name = "Crime Prevention"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "ECD & Partial Care",
+                            IsActive = false,
+                            Name = "ECD & Partial Care"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "EPWP",
+                            IsActive = false,
+                            Name = "EPWP"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Facility Managment",
+                            IsActive = false,
+                            Name = "Facility Managment"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Institutional Capacity Building",
+                            IsActive = false,
+                            Name = "Institutional Capacity Building"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Care and Services to Older Persons",
+                            IsActive = false,
+                            Name = "Care and Services to Older Persons"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Services to persons with Disabilities",
+                            IsActive = false,
+                            Name = "Services to persons with Disabilities"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Substance Abuse",
+                            IsActive = false,
+                            Name = "Substance Abuse"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Sustainable Livelihood",
+                            IsActive = false,
+                            Name = "Sustainable Livelihood"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Victim Empowerment",
+                            IsActive = false,
+                            Name = "Victim Empowerment"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Youth Development",
+                            IsActive = false,
+                            Name = "Youth Development"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "Child and Youth Care Centres",
+                            IsActive = false,
+                            Name = "Child and Youth Care Centres"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            Description = "ECD Conditional Grant",
+                            IsActive = false,
+                            Name = "ECD Conditional Grant"
                         });
                 });
 
@@ -4163,6 +4332,10 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("int")
                         .HasDefaultValueSql("1");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -4174,10 +4347,6 @@ namespace NPOMS.Repository.Migrations
 
                     b.Property<int>("ProgrammeId")
                         .HasColumnType("int");
-
-                    b.Property<string>("SystemName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime?>("UpdatedDateTime")
                         .HasColumnType("datetime2");
@@ -4195,140 +4364,1407 @@ namespace NPOMS.Repository.Migrations
                             Id = 1,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "All Sub-Programmes",
                             IsActive = false,
                             Name = "All Sub-Programmes",
-                            ProgrammeId = 1,
-                            SystemName = "ALL"
+                            ProgrammeId = 1
                         },
                         new
                         {
                             Id = 2,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "Chronic Diseases",
                             IsActive = false,
                             Name = "Chronic Diseases",
-                            ProgrammeId = 2,
-                            SystemName = "CD"
+                            ProgrammeId = 2
                         },
                         new
                         {
                             Id = 3,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "NCDs",
                             IsActive = false,
                             Name = "NCDs",
-                            ProgrammeId = 2,
-                            SystemName = "NCDs"
+                            ProgrammeId = 2
                         },
                         new
                         {
                             Id = 4,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "HIV/AIDS",
                             IsActive = false,
                             Name = "HIV/AIDS",
-                            ProgrammeId = 3,
-                            SystemName = "HIV"
+                            ProgrammeId = 3
                         },
                         new
                         {
                             Id = 5,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "TB",
                             IsActive = false,
                             Name = "TB",
-                            ProgrammeId = 3,
-                            SystemName = "TB"
+                            ProgrammeId = 3
                         },
                         new
                         {
                             Id = 6,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "STI",
                             IsActive = false,
                             Name = "STI",
-                            ProgrammeId = 3,
-                            SystemName = "STI"
+                            ProgrammeId = 3
                         },
                         new
                         {
                             Id = 7,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "Maternal Health",
                             IsActive = false,
                             Name = "Maternal Health",
-                            ProgrammeId = 4,
-                            SystemName = "MH"
+                            ProgrammeId = 4
                         },
                         new
                         {
                             Id = 8,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "Women's Health",
                             IsActive = false,
                             Name = "Women's Health",
-                            ProgrammeId = 4,
-                            SystemName = "WH"
+                            ProgrammeId = 4
                         },
                         new
                         {
                             Id = 9,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "Child and Adolescent Health",
                             IsActive = false,
-                            Name = "Child and Adolescent Helath",
-                            ProgrammeId = 4,
-                            SystemName = "CAH"
+                            Name = "Child and Adolescent Health",
+                            ProgrammeId = 4
                         },
                         new
                         {
                             Id = 10,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "Theatre",
                             IsActive = false,
                             Name = "Theatre",
-                            ProgrammeId = 5,
-                            SystemName = "Theatre"
+                            ProgrammeId = 5
                         },
                         new
                         {
                             Id = 11,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "Surgery",
                             IsActive = false,
                             Name = "Surgery",
-                            ProgrammeId = 5,
-                            SystemName = "Surgery"
+                            ProgrammeId = 5
                         },
                         new
                         {
                             Id = 12,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "Anaethetics",
                             IsActive = false,
                             Name = "Anaethetics",
-                            ProgrammeId = 5,
-                            SystemName = "Anaethetics"
+                            ProgrammeId = 5
                         },
                         new
                         {
                             Id = 13,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "Mental Health",
                             IsActive = false,
                             Name = "Mental Health",
-                            ProgrammeId = 6,
-                            SystemName = "MH"
+                            ProgrammeId = 6
                         },
                         new
                         {
                             Id = 14,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
+                            Description = "Emerency Centre Pressures",
                             IsActive = false,
                             Name = "Emerency Centre Pressures",
-                            ProgrammeId = 7,
-                            SystemName = "ECP"
+                            ProgrammeId = 7
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 8
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Shelter For Adults",
+                            IsActive = false,
+                            Name = "Shelter For Adults",
+                            ProgrammeId = 8
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 8
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Drop In Centres",
+                            IsActive = false,
+                            Name = "Drop In Centres",
+                            ProgrammeId = 9
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 9
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 9
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Shelter for Children",
+                            IsActive = false,
+                            Name = "Shelter for Children",
+                            ProgrammeId = 9
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "HIV - Aids",
+                            IsActive = false,
+                            Name = "HIV - Aids",
+                            ProgrammeId = 9
+                        },
+                        new
+                        {
+                            Id = 23,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 10
+                        },
+                        new
+                        {
+                            Id = 24,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 10
+                        },
+                        new
+                        {
+                            Id = 25,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "After School Centres",
+                            IsActive = false,
+                            Name = "After School Centres",
+                            ProgrammeId = 11
+                        },
+                        new
+                        {
+                            Id = 26,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Creches",
+                            IsActive = false,
+                            Name = "Creches",
+                            ProgrammeId = 11
+                        },
+                        new
+                        {
+                            Id = 27,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 11
+                        },
+                        new
+                        {
+                            Id = 28,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 11
+                        },
+                        new
+                        {
+                            Id = 29,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 12
+                        },
+                        new
+                        {
+                            Id = 30,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "EPWP - Conditional Grant",
+                            IsActive = false,
+                            Name = "EPWP - Conditional Grant",
+                            ProgrammeId = 12
+                        },
+                        new
+                        {
+                            Id = 31,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 12
+                        },
+                        new
+                        {
+                            Id = 32,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Child and Youth Care Centres",
+                            IsActive = false,
+                            Name = "Child and Youth Care Centres",
+                            ProgrammeId = 13
+                        },
+                        new
+                        {
+                            Id = 33,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 13
+                        },
+                        new
+                        {
+                            Id = 34,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Shelter for Childen",
+                            IsActive = false,
+                            Name = "Shelter for Childen",
+                            ProgrammeId = 13
+                        },
+                        new
+                        {
+                            Id = 35,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 14
+                        },
+                        new
+                        {
+                            Id = 36,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 14
+                        },
+                        new
+                        {
+                            Id = 37,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Assisted Living",
+                            IsActive = false,
+                            Name = "Assisted Living",
+                            ProgrammeId = 15
+                        },
+                        new
+                        {
+                            Id = 38,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Homes for the Aged",
+                            IsActive = false,
+                            Name = "Homes for the Aged",
+                            ProgrammeId = 15
+                        },
+                        new
+                        {
+                            Id = 39,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 15
+                        },
+                        new
+                        {
+                            Id = 40,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 15
+                        },
+                        new
+                        {
+                            Id = 41,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Service Centres",
+                            IsActive = false,
+                            Name = "Service Centres",
+                            ProgrammeId = 15
+                        },
+                        new
+                        {
+                            Id = 42,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Independent Living",
+                            IsActive = false,
+                            Name = "Independent Living",
+                            ProgrammeId = 15
+                        },
+                        new
+                        {
+                            Id = 43,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Community Based Care and Support Services",
+                            IsActive = false,
+                            Name = "Community Based Care and Support Services",
+                            ProgrammeId = 15
+                        },
+                        new
+                        {
+                            Id = 44,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Homes for the Disabled",
+                            IsActive = false,
+                            Name = "Homes for the Disabled",
+                            ProgrammeId = 16
+                        },
+                        new
+                        {
+                            Id = 45,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 16
+                        },
+                        new
+                        {
+                            Id = 46,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Protective Workshops",
+                            IsActive = false,
+                            Name = "Protective Workshops",
+                            ProgrammeId = 16
+                        },
+                        new
+                        {
+                            Id = 47,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 16
+                        },
+                        new
+                        {
+                            Id = 48,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Special Day Care Centres",
+                            IsActive = false,
+                            Name = "Special Day Care Centres",
+                            ProgrammeId = 16
+                        },
+                        new
+                        {
+                            Id = 49,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Day Care Centre",
+                            IsActive = false,
+                            Name = "Day Care Centre",
+                            ProgrammeId = 16
+                        },
+                        new
+                        {
+                            Id = 50,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Homes for the Aged",
+                            IsActive = false,
+                            Name = "Homes for the Aged",
+                            ProgrammeId = 16
+                        },
+                        new
+                        {
+                            Id = 51,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Aftercare",
+                            IsActive = false,
+                            Name = "Aftercare",
+                            ProgrammeId = 17
+                        },
+                        new
+                        {
+                            Id = 52,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Awareness",
+                            IsActive = false,
+                            Name = "Awareness",
+                            ProgrammeId = 17
+                        },
+                        new
+                        {
+                            Id = 53,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Community Based Treatment",
+                            IsActive = false,
+                            Name = "Community Based Treatment",
+                            ProgrammeId = 17
+                        },
+                        new
+                        {
+                            Id = 54,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Early Intervention",
+                            IsActive = false,
+                            Name = "Early Intervention",
+                            ProgrammeId = 17
+                        },
+                        new
+                        {
+                            Id = 55,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 17
+                        },
+                        new
+                        {
+                            Id = 56,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 17
+                        },
+                        new
+                        {
+                            Id = 57,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Treatment Centres",
+                            IsActive = false,
+                            Name = "Treatment Centres",
+                            ProgrammeId = 17
+                        },
+                        new
+                        {
+                            Id = 58,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 18
+                        },
+                        new
+                        {
+                            Id = 59,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 19
+                        },
+                        new
+                        {
+                            Id = 60,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Shelter For Victims of Violence",
+                            IsActive = false,
+                            Name = "Shelter For Victims of Violence",
+                            ProgrammeId = 19
+                        },
+                        new
+                        {
+                            Id = 61,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 19
+                        },
+                        new
+                        {
+                            Id = 62,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            ProgrammeId = 20
+                        },
+                        new
+                        {
+                            Id = 63,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            ProgrammeId = 20
+                        },
+                        new
+                        {
+                            Id = 64,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Youth Cafe",
+                            IsActive = false,
+                            Name = "Youth Cafe",
+                            ProgrammeId = 20
+                        },
+                        new
+                        {
+                            Id = 65,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Childrens Homes",
+                            IsActive = false,
+                            Name = "Childrens Homes",
+                            ProgrammeId = 21
+                        });
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.SubProgrammeType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
+
+                    b.Property<int>("CreatedUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("SubProgrammeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SubProgrammeTypes", "dropdown");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "All Sub-Programme Types",
+                            IsActive = false,
+                            Name = "All Sub-Programme Types",
+                            SubProgrammeId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Chronic Diseases",
+                            IsActive = false,
+                            Name = "Chronic Diseases",
+                            SubProgrammeId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "NCDs",
+                            IsActive = false,
+                            Name = "NCDs",
+                            SubProgrammeId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "HIV/AIDS",
+                            IsActive = false,
+                            Name = "HIV/AIDS",
+                            SubProgrammeId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "TB",
+                            IsActive = false,
+                            Name = "TB",
+                            SubProgrammeId = 5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "STI",
+                            IsActive = false,
+                            Name = "STI",
+                            SubProgrammeId = 6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Maternal Health",
+                            IsActive = false,
+                            Name = "Maternal Health",
+                            SubProgrammeId = 7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Women's Health",
+                            IsActive = false,
+                            Name = "Women's Health",
+                            SubProgrammeId = 8
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Child and Adolescent Health",
+                            IsActive = false,
+                            Name = "Child and Adolescent Health",
+                            SubProgrammeId = 9
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Theatre",
+                            IsActive = false,
+                            Name = "Theatre",
+                            SubProgrammeId = 10
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Surgery",
+                            IsActive = false,
+                            Name = "Surgery",
+                            SubProgrammeId = 11
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Anaethetics",
+                            IsActive = false,
+                            Name = "Anaethetics",
+                            SubProgrammeId = 12
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Mental Health",
+                            IsActive = false,
+                            Name = "Mental Health",
+                            SubProgrammeId = 13
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Emerency Centre Pressures",
+                            IsActive = false,
+                            Name = "Emerency Centre Pressures",
+                            SubProgrammeId = 14
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Shelter For Adults",
+                            IsActive = false,
+                            Name = "Shelter For Adults",
+                            SubProgrammeId = 16
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 17
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "HIV",
+                            IsActive = false,
+                            Name = "HIV",
+                            SubProgrammeId = 20
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 20
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Childrens Homes",
+                            IsActive = false,
+                            Name = "Childrens Homes",
+                            SubProgrammeId = 21
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Drop In Centre",
+                            IsActive = false,
+                            Name = "Drop In Centre",
+                            SubProgrammeId = 21
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Organisation",
+                            IsActive = false,
+                            Name = "Organisation",
+                            SubProgrammeId = 21
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Shelter for Children",
+                            IsActive = false,
+                            Name = "Shelter for Children",
+                            SubProgrammeId = 21
+                        },
+                        new
+                        {
+                            Id = 23,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Organisations",
+                            IsActive = false,
+                            Name = "Organisations",
+                            SubProgrammeId = 22
+                        },
+                        new
+                        {
+                            Id = 24,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            SubProgrammeId = 24
+                        },
+                        new
+                        {
+                            Id = 25,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 24
+                        },
+                        new
+                        {
+                            Id = 26,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "After School Centres",
+                            IsActive = false,
+                            Name = "After School Centres",
+                            SubProgrammeId = 25
+                        },
+                        new
+                        {
+                            Id = 27,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Creches",
+                            IsActive = false,
+                            Name = "Creches",
+                            SubProgrammeId = 26
+                        },
+                        new
+                        {
+                            Id = 28,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 28
+                        },
+                        new
+                        {
+                            Id = 29,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 29
+                        },
+                        new
+                        {
+                            Id = 30,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "EPWP",
+                            IsActive = false,
+                            Name = "EPWP",
+                            SubProgrammeId = 30
+                        },
+                        new
+                        {
+                            Id = 31,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 31
+                        },
+                        new
+                        {
+                            Id = 32,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 36
+                        },
+                        new
+                        {
+                            Id = 33,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Assisted Living",
+                            IsActive = false,
+                            Name = "Assisted Living",
+                            SubProgrammeId = 38
+                        },
+                        new
+                        {
+                            Id = 34,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Independant Living",
+                            IsActive = false,
+                            Name = "Independant Living",
+                            SubProgrammeId = 38
+                        },
+                        new
+                        {
+                            Id = 35,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Residential Facilities",
+                            IsActive = false,
+                            Name = "Residential Facilities",
+                            SubProgrammeId = 38
+                        },
+                        new
+                        {
+                            Id = 36,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 40
+                        },
+                        new
+                        {
+                            Id = 37,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Service Centre",
+                            IsActive = false,
+                            Name = "Service Centre",
+                            SubProgrammeId = 41
+                        },
+                        new
+                        {
+                            Id = 38,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Home Based Care Services",
+                            IsActive = false,
+                            Name = "Home Based Care Services",
+                            SubProgrammeId = 43
+                        },
+                        new
+                        {
+                            Id = 39,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Service Centre",
+                            IsActive = false,
+                            Name = "Service Centre",
+                            SubProgrammeId = 43
+                        },
+                        new
+                        {
+                            Id = 40,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Residential Facilities",
+                            IsActive = false,
+                            Name = "Residential Facilities",
+                            SubProgrammeId = 44
+                        },
+                        new
+                        {
+                            Id = 41,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Protective Workshop",
+                            IsActive = false,
+                            Name = "Protective Workshop",
+                            SubProgrammeId = 46
+                        },
+                        new
+                        {
+                            Id = 42,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Day Care Centre",
+                            IsActive = false,
+                            Name = "Day Care Centre",
+                            SubProgrammeId = 47
+                        },
+                        new
+                        {
+                            Id = 43,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 47
+                        },
+                        new
+                        {
+                            Id = 44,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Special Day Care Centre",
+                            IsActive = false,
+                            Name = "Special Day Care Centre",
+                            SubProgrammeId = 47
+                        },
+                        new
+                        {
+                            Id = 45,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Special Day Care Centres",
+                            IsActive = false,
+                            Name = "Special Day Care Centres",
+                            SubProgrammeId = 48
+                        },
+                        new
+                        {
+                            Id = 46,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Day Care Centre",
+                            IsActive = false,
+                            Name = "Day Care Centre",
+                            SubProgrammeId = 49
+                        },
+                        new
+                        {
+                            Id = 47,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Residential Facilities",
+                            IsActive = false,
+                            Name = "Residential Facilities",
+                            SubProgrammeId = 50
+                        },
+                        new
+                        {
+                            Id = 48,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            SubProgrammeId = 55
+                        },
+                        new
+                        {
+                            Id = 49,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Aftercare",
+                            IsActive = false,
+                            Name = "Aftercare",
+                            SubProgrammeId = 56
+                        },
+                        new
+                        {
+                            Id = 50,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Awareness & Prevention",
+                            IsActive = false,
+                            Name = "Awareness & Prevention",
+                            SubProgrammeId = 56
+                        },
+                        new
+                        {
+                            Id = 51,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Community based treatment",
+                            IsActive = false,
+                            Name = "Community based treatment",
+                            SubProgrammeId = 56
+                        },
+                        new
+                        {
+                            Id = 52,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Early Intervention",
+                            IsActive = false,
+                            Name = "Early Intervention",
+                            SubProgrammeId = 56
+                        },
+                        new
+                        {
+                            Id = 53,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 56
+                        },
+                        new
+                        {
+                            Id = 54,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Youth Programmes",
+                            IsActive = false,
+                            Name = "Youth Programmes",
+                            SubProgrammeId = 56
+                        },
+                        new
+                        {
+                            Id = 55,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Community based treatment",
+                            IsActive = false,
+                            Name = "Community based treatment",
+                            SubProgrammeId = 57
+                        },
+                        new
+                        {
+                            Id = 56,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "In patient",
+                            IsActive = false,
+                            Name = "In patient",
+                            SubProgrammeId = 57
+                        },
+                        new
+                        {
+                            Id = 57,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Out Patient",
+                            IsActive = false,
+                            Name = "Out Patient",
+                            SubProgrammeId = 57
+                        },
+                        new
+                        {
+                            Id = 58,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Earmarked Funding",
+                            IsActive = false,
+                            Name = "Earmarked Funding",
+                            SubProgrammeId = 58
+                        },
+                        new
+                        {
+                            Id = 59,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Equitable Share",
+                            IsActive = false,
+                            Name = "Equitable Share",
+                            SubProgrammeId = 58
+                        },
+                        new
+                        {
+                            Id = 60,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 58
+                        },
+                        new
+                        {
+                            Id = 61,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "SRD",
+                            IsActive = false,
+                            Name = "SRD",
+                            SubProgrammeId = 58
+                        },
+                        new
+                        {
+                            Id = 62,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Targetted Feeding",
+                            IsActive = false,
+                            Name = "Targetted Feeding",
+                            SubProgrammeId = 58
+                        },
+                        new
+                        {
+                            Id = 63,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Programme focus",
+                            IsActive = false,
+                            Name = "Programme focus",
+                            SubProgrammeId = 59
+                        },
+                        new
+                        {
+                            Id = 64,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Shelter for Women and Children",
+                            IsActive = false,
+                            Name = "Shelter for Women and Children",
+                            SubProgrammeId = 60
+                        },
+                        new
+                        {
+                            Id = 65,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Victims of Crime/Violence/Fam members/significant",
+                            IsActive = false,
+                            Name = "Victims of Crime/Violence/Fam members/significant",
+                            SubProgrammeId = 60
+                        },
+                        new
+                        {
+                            Id = 66,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Service Provider",
+                            IsActive = false,
+                            Name = "Service Provider",
+                            SubProgrammeId = 61
+                        },
+                        new
+                        {
+                            Id = 67,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 61
+                        },
+                        new
+                        {
+                            Id = 68,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Projects",
+                            IsActive = false,
+                            Name = "Projects",
+                            SubProgrammeId = 62
+                        },
+                        new
+                        {
+                            Id = 69,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Social Service Organisation",
+                            IsActive = false,
+                            Name = "Social Service Organisation",
+                            SubProgrammeId = 63
+                        },
+                        new
+                        {
+                            Id = 70,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Youth Cafe",
+                            IsActive = false,
+                            Name = "Youth Cafe",
+                            SubProgrammeId = 63
+                        },
+                        new
+                        {
+                            Id = 71,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Childrens Homes",
+                            IsActive = false,
+                            Name = "Childrens Homes",
+                            SubProgrammeId = 65
                         });
                 });
 
@@ -5118,6 +6554,36 @@ namespace NPOMS.Repository.Migrations
                     b.ToTable("Resources", "dbo");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Entities.ServicesRendered", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NpoProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProgrammeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubProgrammeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubProgrammeTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NpoProfileId");
+
+                    b.ToTable("ServicesRendered", "dbo");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Entities.Status", b =>
                 {
                     b.Property<int>("Id")
@@ -5440,6 +6906,34 @@ namespace NPOMS.Repository.Migrations
                     b.HasIndex("FrequencyPeriodId");
 
                     b.ToTable("WorkplanActuals", "indicator");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkplanActualId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedUserId");
+
+                    b.ToTable("WorkplanComments", "indicator");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanTarget", b =>
@@ -8823,6 +10317,15 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("ServiceType");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Entities.ServicesRendered", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Entities.NpoProfile", null)
+                        .WithMany("ServicesRendered")
+                        .HasForeignKey("NpoProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Entities.SustainabilityPlan", b =>
                 {
                     b.HasOne("NPOMS.Domain.Entities.Activity", "Activity")
@@ -8843,6 +10346,17 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("FrequencyPeriod");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanComment", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Core.User", "CreatedUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedUser");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanTarget", b =>
@@ -8933,15 +10447,13 @@ namespace NPOMS.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NPOMS.Domain.Entities.NpoProfile", "NpoProfile")
+                    b.HasOne("NPOMS.Domain.Entities.NpoProfile", null)
                         .WithMany("NpoProfileFacilityLists")
                         .HasForeignKey("NpoProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("FacilityList");
-
-                    b.Navigation("NpoProfile");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Mapping.ObjectiveProgramme", b =>
@@ -9107,6 +10619,8 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("AddressInformation");
 
                     b.Navigation("NpoProfileFacilityLists");
+
+                    b.Navigation("ServicesRendered");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.Objective", b =>

@@ -180,5 +180,11 @@ namespace NPOMS.Services.Interfaces
 		Task CreateFrequencyPeriod(FrequencyPeriod model, string userIdentifier);
 
 		Task UpdateFrequencyPeriod(FrequencyPeriod model, string userIdentifier);
+
+		Task<IEnumerable<SubProgrammeType>> GetSubProgrammeTypes(bool returnInactive);
+
+		Task CreateSubProgrammeType(SubProgrammeType model, string userIdentifier);
+
+		Task UpdateSubProgrammeType(SubProgrammeType model, string userIdentifier);
 	}
 }

@@ -204,6 +204,14 @@ namespace NPOMS.Repository.Configurations.Core
 					Description = "Add and/or Update utility management",
 					AngularRedirectUrl = "utilities/management",
 					SystemAdminUtility = true
+				},
+				new Utility
+				{
+					Id = 25,
+					Name = "Sub-Programme Type",
+					Description = "Add and/or Update sub-programme types",
+					AngularRedirectUrl = "utilities/sub-programme-type",
+					SystemAdminUtility = false
 				}
 			);
 		}
