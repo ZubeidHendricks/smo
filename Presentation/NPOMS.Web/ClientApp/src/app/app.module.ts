@@ -108,6 +108,10 @@ import { ActualsComponent } from './components/indicators/workplan/actuals/actua
 import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
 import { SummaryComponent } from './components/indicators/workplan/summary/summary.component';
 import { SubProgrammeTypeComponent } from './components/admin/utilities/sub-programme-type/sub-programme-type.component';
+import { DepartmentBudgetComponent } from './components/admin/budgets/department-budget/department-budget.component';
+import { DirectorateBudgetComponent } from './components/admin/budgets/directorate-budget/directorate-budget.component';
+import { ProgrammeBudgetComponent } from './components/admin/budgets/programme-budget/programme-budget.component';
+import { DirectorateComponent } from './components/admin/utilities/directorate/directorate.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -216,7 +220,11 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ActualsComponent,
     TargetsComponent,
     SummaryComponent,
-    SubProgrammeTypeComponent
+    SubProgrammeTypeComponent,
+    DirectorateBudgetComponent,
+    DepartmentBudgetComponent,
+    ProgrammeBudgetComponent,
+    DirectorateComponent
   ],
   imports: [
     BrowserModule,

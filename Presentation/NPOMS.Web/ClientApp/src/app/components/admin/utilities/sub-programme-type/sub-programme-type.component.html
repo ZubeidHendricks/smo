@@ -46,8 +46,12 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
-                <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.programme.name}}</td>
-                <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</td>
+                <td>
+                    <span *ngIf="rowData.subProgramme">{{rowData.subProgramme.programme.name}}</span>
+                </td>
+                <td>
+                    <span *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</span>
+                </td>
                 <td *ngFor="let col of columns">
                     <span>{{getCellData(rowData, col)}}</span>
                 </td>
@@ -105,7 +109,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="entity.description" [ngModelOptions]="{standalone: true}">
+            <textarea rows="2" cols="30" pInputTextarea autoResize="autoResize" class="form-text" [(ngModel)]="entity.description"></textarea>
         </div>
     </div>
     <div class="p-grid">

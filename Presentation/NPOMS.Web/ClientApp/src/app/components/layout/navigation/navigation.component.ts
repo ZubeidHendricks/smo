@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
-import { PermissionsEnum } from 'src/app/models/enums';
+import { DepartmentEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IUser } from 'src/app/models/interfaces';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
@@ -379,6 +379,45 @@ export class NavigationComponent implements OnInit {
               disabled: !this.IsAuthorized(PermissionsEnum.ViewUtilities),
               command: () => {
                 this._router.navigateByUrl('admin/utilities');
+                this.displaySideMenu = false;
+              }
+            }
+          ]
+        }
+      );
+    }
+
+    if (this.profile.departments[0].id === DepartmentEnum.ALL || this.profile.departments[0].id === DepartmentEnum.DSD) {
+      //budgets
+      this.sideMenu.push(
+        {
+          label: 'Budgets',
+          icon: 'fa fa-credit-card-alt',
+          items: [
+            {
+              label: 'Department Budget',
+              icon: 'fa fa-sliders',
+              disabled: !this.IsAuthorized(PermissionsEnum.ViewDepartmentBudget),
+              command: () => {
+                this._router.navigateByUrl('admin/department-budget');
+                this.displaySideMenu = false;
+              }
+            },
+            {
+              label: 'Directorate Budget',
+              icon: 'fa fa-sliders',
+              disabled: !this.IsAuthorized(PermissionsEnum.ViewDirectorateBudget),
+              command: () => {
+                this._router.navigateByUrl('admin/directorate-budget');
+                this.displaySideMenu = false;
+              }
+            },
+            {
+              label: 'Programme Budget',
+              icon: 'fa fa-sliders',
+              disabled: !this.IsAuthorized(PermissionsEnum.ViewProgrammeBudget),
+              command: () => {
+                this._router.navigateByUrl('admin/programme-budget');
                 this.displaySideMenu = false;
               }
             }

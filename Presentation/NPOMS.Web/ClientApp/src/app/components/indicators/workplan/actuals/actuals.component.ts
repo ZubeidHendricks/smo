@@ -347,9 +347,13 @@ export class ActualsComponent implements OnInit {
   }
 
   financialYearChange() {
-    this.getFilteredWorkplanIndicators();
-    let currentYear = new Date().getFullYear();
-    this.isPreviousFinancialYear = this.selectedFinancialYear.year >= currentYear ? false : true;
+    this.getFilteredWorkplanIndicators();    
+    
+    let currentDate = new Date();
+    let startDate = new Date(this.selectedFinancialYear.startDate);
+    let endDate = new Date(this.selectedFinancialYear.endDate);
+
+    this.isPreviousFinancialYear = (startDate <= currentDate && endDate >= currentDate) ? false : true;
 
     // Disable Save and Submit buttons if previous financial year
     this.buttonItems.forEach(option => {

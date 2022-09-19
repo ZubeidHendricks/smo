@@ -55,7 +55,16 @@ namespace NPOMS.Repository.Configurations.Mapping
 				new RolePermission { RoleId = 1, PermissionId = 44 },
 				new RolePermission { RoleId = 1, PermissionId = 45 },
 				new RolePermission { RoleId = 1, PermissionId = 46 },
-				new RolePermission { RoleId = 1, PermissionId = 47 }
+				new RolePermission { RoleId = 1, PermissionId = 47 },
+				new RolePermission { RoleId = 1, PermissionId = 48 },
+				new RolePermission { RoleId = 1, PermissionId = 49 },
+				new RolePermission { RoleId = 1, PermissionId = 50 },
+				new RolePermission { RoleId = 1, PermissionId = 51 },
+				new RolePermission { RoleId = 1, PermissionId = 52 },
+				new RolePermission { RoleId = 1, PermissionId = 53 },
+				new RolePermission { RoleId = 1, PermissionId = 54 },
+				new RolePermission { RoleId = 1, PermissionId = 55 },
+				new RolePermission { RoleId = 1, PermissionId = 56 }
 			);
 		}
 	}

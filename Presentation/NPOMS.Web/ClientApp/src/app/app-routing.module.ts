@@ -55,6 +55,10 @@ import { ActualsComponent } from './components/indicators/workplan/actuals/actua
 import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
 import { SummaryComponent } from './components/indicators/workplan/summary/summary.component';
 import { SubProgrammeTypeComponent } from './components/admin/utilities/sub-programme-type/sub-programme-type.component';
+import { DepartmentBudgetComponent } from './components/admin/budgets/department-budget/department-budget.component';
+import { DirectorateBudgetComponent } from './components/admin/budgets/directorate-budget/directorate-budget.component';
+import { ProgrammeBudgetComponent } from './components/admin/budgets/programme-budget/programme-budget.component';
+import { DirectorateComponent } from './components/admin/utilities/directorate/directorate.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -114,6 +118,7 @@ const routes: Routes = [
   { path: 'utilities/title', component: TitleComponent },
   { path: 'utilities/management', component: UtilityManagementComponent },
   { path: 'utilities/sub-programme-type', component: SubProgrammeTypeComponent },
+  { path: 'utilities/directorate', component: DirectorateComponent },
 
   // Error Pages
   { path: '401', component: Page401Component },
@@ -123,7 +128,12 @@ const routes: Routes = [
   { path: 'workplan-indicator/manage/:id', component: ManageComponent },
   { path: 'workplan-indicator/actuals/:id', component: ActualsComponent },
   { path: 'workplan-indicator/targets/:id', component: TargetsComponent },
-  { path: 'workplan-indicator/summary/:id', component: SummaryComponent }
+  { path: 'workplan-indicator/summary/:id', component: SummaryComponent },
+
+  // Budgets
+  { path: 'admin/department-budget', component: DepartmentBudgetComponent },
+  { path: 'admin/directorate-budget', component: DirectorateBudgetComponent },
+  { path: 'admin/programme-budget', component: ProgrammeBudgetComponent }
 ];
 
 @NgModule({

@@ -159,8 +159,10 @@ export interface IProgramme {
     name: string;
     description: string;
     departmentId: number;
+    directorateId: number;
     isActive: boolean;
     department: IDepartment;
+    directorate: IDirectorate;
 }
 
 export interface IProvisionType {
@@ -228,6 +230,13 @@ export interface ISubProgrammeType {
     subProgrammeId: number;
     isActive: boolean;
     subProgramme: ISubProgramme;
+}
+
+export interface IDirectorate {
+    id: number;
+    name: string;
+    description: string;
+    isActive: boolean;
 }
 
 /* Entities */
@@ -715,4 +724,44 @@ export interface IWorkplanComment {
     createdDateTime: Date;
 
     createdUser: IUser;
+}
+
+/* Budget */
+export interface IDepartmentBudget {
+    id: number;
+    departmentId: number;
+    financialYearId:number;
+    amount: number;
+    isActive: boolean;
+
+    financialYear: IFinancialYear;
+}
+
+export interface IDirectorateBudget {
+    id: number;
+    departmentId: number;
+    financialYearId:number;
+    departmentBudgetId: number;
+    directorateId: number;
+    amount: number;
+    description: string;
+    isActive: boolean;
+
+    financialYear: IFinancialYear;
+    directorate: IDirectorate;
+}
+
+export interface IProgrammeBudget {
+    id: number;
+    departmentId: number;
+    financialYearId:number;
+    directorateBudgetId: number;
+    programmeId: number;
+    amount: number;
+    description: string;
+    isActive: boolean;
+
+    financialYear: IFinancialYear;
+    directorate: IDirectorate;
+    programme: IProgramme;
 }

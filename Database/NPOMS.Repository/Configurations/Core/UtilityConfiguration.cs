@@ -212,6 +212,14 @@ namespace NPOMS.Repository.Configurations.Core
 					Description = "Add and/or Update sub-programme types",
 					AngularRedirectUrl = "utilities/sub-programme-type",
 					SystemAdminUtility = false
+				},
+				new Utility
+				{
+					Id = 65,
+					Name = "Directorate",
+					Description = "Add and/or Update directorates",
+					AngularRedirectUrl = "utilities/directorate",
+					SystemAdminUtility = false
 				}
 			);
 		}

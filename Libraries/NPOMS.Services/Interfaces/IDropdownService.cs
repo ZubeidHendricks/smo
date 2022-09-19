@@ -186,5 +186,11 @@ namespace NPOMS.Services.Interfaces
 		Task CreateSubProgrammeType(SubProgrammeType model, string userIdentifier);
 
 		Task UpdateSubProgrammeType(SubProgrammeType model, string userIdentifier);
+
+		Task<IEnumerable<Directorate>> GetDirectorates(bool returnInactive);
+
+		Task CreateDirectorate(Directorate model, string userIdentifier);
+
+		Task UpdateDirectorate(Directorate model, string userIdentifier);
 	}
 }

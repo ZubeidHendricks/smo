@@ -51,6 +51,7 @@ namespace NPOMS.Services.Implementation
 		private IFrequencyRepository _frequencyRepository;
 		private IFrequencyPeriodRepository _frequencyPeriodRepository;
 		private ISubProgrammeTypeRepository _subProgrammeTypeRepository;
+		private IDirectorateRepository _directorateRepository;
 
 		#endregion
 
@@ -88,7 +89,8 @@ namespace NPOMS.Services.Implementation
 			ITrainingMaterialRepository trainingMaterialRepository,
 			IFrequencyRepository frequencyRepository,
 			IFrequencyPeriodRepository frequencyPeriodRepository,
-			ISubProgrammeTypeRepository subProgrammeTypeRepository)
+			ISubProgrammeTypeRepository subProgrammeTypeRepository,
+			IDirectorateRepository directorateRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -122,6 +124,7 @@ namespace NPOMS.Services.Implementation
 			_frequencyRepository = frequencyRepository;
 			_frequencyPeriodRepository = frequencyPeriodRepository;
 			_subProgrammeTypeRepository = subProgrammeTypeRepository;
+			_directorateRepository = directorateRepository;
 		}
 
 		#endregion
@@ -1025,6 +1028,35 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			await _subProgrammeTypeRepository.UpdateAsync(model);
+		}
+
+		#endregion
+
+		#region Directorate
+
+		public async Task<IEnumerable<Directorate>> GetDirectorates(bool returnInactive)
+		{
+			return await _directorateRepository.GetEntities(returnInactive);
+		}
+
+		public async Task CreateDirectorate(Directorate model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _directorateRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateDirectorate(Directorate model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _directorateRepository.UpdateAsync(model);
 		}
 
 		#endregion

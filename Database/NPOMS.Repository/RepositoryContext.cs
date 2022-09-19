@@ -1,6 +1,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using NPOMS.Domain.Budget;
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
@@ -91,6 +92,7 @@ namespace NPOMS.Repository
 		public DbSet<Frequency> Frequencies { get; set; }
 		public DbSet<FrequencyPeriod> FrequencyPeriods { get; set; }
 		public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
+		public DbSet<Directorate> Directorates { get; set; }
 
 		/* Entities */
 		public DbSet<AccessStatus> AccessStatuses { get; set; }
@@ -129,6 +131,11 @@ namespace NPOMS.Repository
 		public DbSet<WorkplanTarget> WorkplanTargets { get; set; }
 		public DbSet<WorkplanActual> WorkplanActuals { get; set; }
 		public DbSet<WorkplanComment> WorkplanComments { get; set; }
+
+		/* Budget */
+		public DbSet<DepartmentBudget> DepartmentBudgets { get; set; }
+		public DbSet<DirectorateBudget> DirectorateBudgets { get; set; }
+		public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -190,6 +197,7 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new FrequencyConfiguration());
 			modelBuilder.ApplyConfiguration(new FrequencyPeriodConfiguration());
 			modelBuilder.ApplyConfiguration(new SubProgrammeTypeConfiguration());
+			modelBuilder.ApplyConfiguration(new DirectorateConfiguration());
 
 			/* Entities */
 			modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());

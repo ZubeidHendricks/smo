@@ -135,6 +135,9 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.SubProgrammeTypes:
 						var subProgrammeTypes = await _dropdownService.GetSubProgrammeTypes(returnInactive);
 						return Ok(subProgrammeTypes);
+					case DropdownTypeEnum.Directorates:
+						var directorates = await _dropdownService.GetDirectorates(returnInactive);
+						return Ok(directorates);
 				}
 
 				return Ok();
@@ -257,6 +260,10 @@ namespace NPOMS.API.Controllers
 						var subProgrammeType = JsonConvert.DeserializeObject<SubProgrammeType>(Convert.ToString(entity));
 						await _dropdownService.CreateSubProgrammeType(subProgrammeType, base.GetUserIdentifier());
 						break;
+					case DropdownTypeEnum.Directorates:
+						var directorate = JsonConvert.DeserializeObject<Directorate>(Convert.ToString(entity));
+						await _dropdownService.CreateDirectorate(directorate, base.GetUserIdentifier());
+						break;
 				}
 
 				return Ok();
@@ -378,6 +385,10 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.SubProgrammeTypes:
 						var subProgrammeType = JsonConvert.DeserializeObject<SubProgrammeType>(Convert.ToString(entity));
 						await _dropdownService.UpdateSubProgrammeType(subProgrammeType, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.Directorates:
+						var directorate = JsonConvert.DeserializeObject<Directorate>(Convert.ToString(entity));
+						await _dropdownService.UpdateDirectorate(directorate, base.GetUserIdentifier());
 						break;
 				}
 

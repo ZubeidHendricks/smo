@@ -22,6 +22,135 @@ namespace NPOMS.Repository.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("NPOMS.Domain.Budget.DepartmentBudget", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DepartmentBudgets", "budget");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Budget.DirectorateBudget", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentBudgetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("DirectorateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DirectorateBudgets", "budget");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Budget.ProgrammeBudget", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("DirectorateBudgetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProgrammeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProgrammeBudgets", "budget");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Core.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -1436,6 +1565,96 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "View List of Training Materials",
                             SystemName = "TM.VTM"
+                        },
+                        new
+                        {
+                            Id = 48,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Add Department Budget",
+                            SystemName = "Bud.Add"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Edit Department Budget",
+                            SystemName = "Bud.Edit"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View List of Department Budgets",
+                            SystemName = "Bud.View"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Add Directorate Budget",
+                            SystemName = "Bud.ADB"
+                        },
+                        new
+                        {
+                            Id = 52,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Edit Directorate Budget",
+                            SystemName = "Bud.EDB"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View List of Directorate Budgets",
+                            SystemName = "Bud.VDB"
+                        },
+                        new
+                        {
+                            Id = 54,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Add Programme Budget",
+                            SystemName = "Bud.APB"
+                        },
+                        new
+                        {
+                            Id = 55,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Edit Programme Budget",
+                            SystemName = "Bud.EPB"
+                        },
+                        new
+                        {
+                            Id = 56,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View List of Programme Budgets",
+                            SystemName = "Bud.VPB"
                         });
                 });
 
@@ -1941,6 +2160,17 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "Sub-Programme Type",
                             SystemAdminUtility = false
+                        },
+                        new
+                        {
+                            Id = 65,
+                            AngularRedirectUrl = "utilities/directorate",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Add and/or Update directorates",
+                            IsActive = false,
+                            Name = "Directorate",
+                            SystemAdminUtility = false
                         });
                 });
 
@@ -2127,6 +2357,121 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "Service Provision",
                             SystemName = "SP"
+                        });
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.Directorate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
+
+                    b.Property<int>("CreatedUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Directorates", "dropdown");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Children and Families"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Community Development"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "ECD & Partial Care"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Facility Management"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Partnership Development"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Restorative Services new 2021 VEP, CP, SA",
+                            IsActive = false,
+                            Name = "Restorative Services"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Social Crime Prevention"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Special Programmes"
                         });
                 });
 
@@ -3824,6 +4169,9 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<int?>("DirectorateId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -3921,6 +4269,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Care and Support to Families",
+                            DirectorateId = 1,
                             IsActive = false,
                             Name = "Care and Support to Families"
                         },
@@ -3931,6 +4280,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Child Care and Protection Services",
+                            DirectorateId = 1,
                             IsActive = false,
                             Name = "Child Care and Protection Services"
                         },
@@ -3941,6 +4291,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Crime Prevention",
+                            DirectorateId = 7,
                             IsActive = false,
                             Name = "Crime Prevention"
                         },
@@ -3951,6 +4302,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "ECD & Partial Care",
+                            DirectorateId = 3,
                             IsActive = false,
                             Name = "ECD & Partial Care"
                         },
@@ -3961,6 +4313,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "EPWP",
+                            DirectorateId = 2,
                             IsActive = false,
                             Name = "EPWP"
                         },
@@ -3971,6 +4324,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Facility Managment",
+                            DirectorateId = 4,
                             IsActive = false,
                             Name = "Facility Managment"
                         },
@@ -3981,6 +4335,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Institutional Capacity Building",
+                            DirectorateId = 5,
                             IsActive = false,
                             Name = "Institutional Capacity Building"
                         },
@@ -3991,6 +4346,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Care and Services to Older Persons",
+                            DirectorateId = 8,
                             IsActive = false,
                             Name = "Care and Services to Older Persons"
                         },
@@ -4001,6 +4357,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Services to persons with Disabilities",
+                            DirectorateId = 8,
                             IsActive = false,
                             Name = "Services to persons with Disabilities"
                         },
@@ -4011,6 +4368,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Substance Abuse",
+                            DirectorateId = 8,
                             IsActive = false,
                             Name = "Substance Abuse"
                         },
@@ -4021,6 +4379,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Sustainable Livelihood",
+                            DirectorateId = 2,
                             IsActive = false,
                             Name = "Sustainable Livelihood"
                         },
@@ -4031,6 +4390,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Victim Empowerment",
+                            DirectorateId = 7,
                             IsActive = false,
                             Name = "Victim Empowerment"
                         },
@@ -4041,6 +4401,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Youth Development",
+                            DirectorateId = 2,
                             IsActive = false,
                             Name = "Youth Development"
                         },
@@ -4051,6 +4412,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Child and Youth Care Centres",
+                            DirectorateId = 4,
                             IsActive = false,
                             Name = "Child and Youth Care Centres"
                         },
@@ -4061,6 +4423,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "ECD Conditional Grant",
+                            DirectorateId = 3,
                             IsActive = false,
                             Name = "ECD Conditional Grant"
                         });
@@ -9869,6 +10232,51 @@ namespace NPOMS.Repository.Migrations
                         {
                             RoleId = 1,
                             PermissionId = 47
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 48
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 49
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 50
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 51
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 52
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 53
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 54
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 55
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 56
                         });
                 });
 

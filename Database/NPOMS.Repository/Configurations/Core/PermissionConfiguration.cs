@@ -341,6 +341,69 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "View List of Training Materials",
 					SystemName = "TM.VTM",
 					CategoryName = "Training Material"
+				},
+				new Permission
+				{
+					Id = 48,
+					Name = "Add Department Budget",
+					SystemName = "Bud.Add",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 49,
+					Name = "Edit Department Budget",
+					SystemName = "Bud.Edit",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 50,
+					Name = "View List of Department Budgets",
+					SystemName = "Bud.View",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 51,
+					Name = "Add Directorate Budget",
+					SystemName = "Bud.ADB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 52,
+					Name = "Edit Directorate Budget",
+					SystemName = "Bud.EDB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 53,
+					Name = "View List of Directorate Budgets",
+					SystemName = "Bud.VDB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 54,
+					Name = "Add Programme Budget",
+					SystemName = "Bud.APB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 55,
+					Name = "Edit Programme Budget",
+					SystemName = "Bud.EPB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 56,
+					Name = "View List of Programme Budgets",
+					SystemName = "Bud.VPB",
+					CategoryName = "Budgets"
 				}
 			);
 		}

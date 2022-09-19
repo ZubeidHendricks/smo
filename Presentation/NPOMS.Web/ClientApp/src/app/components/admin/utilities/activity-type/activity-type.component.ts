@@ -139,7 +139,7 @@ export class ActivityTypeComponent implements OnInit {
     this._dropdownRepo.createEntity(this.entity, DropdownTypeEnum.ActivityTypes).subscribe(
       (resp) => {
         this.loadEntities();
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Activity Type Status successfully added.' });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Activity Type successfully added.' });
       },
       (err) => {
         this._loggerService.logException(err);

@@ -78,7 +78,7 @@ export class SubProgrammeComponent implements OnInit {
   }
 
   private loadProgrammes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, true).subscribe(
       (results) => {
         if (this.isSystemAdmin)
           this.programmes = results;
