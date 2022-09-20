@@ -448,7 +448,7 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="filteredProgrammes" placeholder="Select a Programme" optionLabel="name" [(ngModel)]="selectedProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)"></p-dropdown>
+                <p-dropdown [options]="filteredProgrammes" placeholder="Select a Programme" optionLabel="name" [(ngModel)]="selectedProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)" [filter]="true" filterBy="name"></p-dropdown>
             </div>
         </div>
         <div class="p-grid">

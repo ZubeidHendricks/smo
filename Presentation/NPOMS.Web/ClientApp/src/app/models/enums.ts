@@ -183,8 +183,20 @@ export enum PermissionsEnum {
     ViewDirectorateBudget = "Bud.VDB",
     AddProgrammeBudget = "Bud.APB",
     EditProgrammeBudget = "Bud.EPB",
-    ViewProgrammeBudget = "Bud.VPB"
+    ViewProgrammeBudget = "Bud.VPB",
 
+    /* Side Navigation */
+    ViewSecurityMenu = "SN.Security",
+    ViewUsersSubMenu = "SN.Users",
+    ViewPermissionsSubMenu = "SN.Permissions",
+
+    ViewSettingsMenu = "SN.Settings",
+    ViewUtilitiesSubMenu = "SN.Utilities",
+
+    ViewBudgetsMenu = "SN.Budgets",
+    ViewDepartmentBudgetSubMenu = "SN.DeptBudget",
+    ViewDirectorateBudgetSubMenu = "SN.DirectorateBudget",
+    ViewProgrammeBudgetSubMenu = "SN.ProgBudget"
 }
 
 export enum ReportTypeEnum {

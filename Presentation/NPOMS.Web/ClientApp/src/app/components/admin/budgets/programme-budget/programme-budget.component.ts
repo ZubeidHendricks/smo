@@ -180,14 +180,13 @@ export class ProgrammeBudgetComponent implements OnInit {
     this.selectedFinancialYear = null;
     this.selectedDepartment = this.isSystemAdmin ? null : this.departments.find(x => x.id === this.profile.departments[0].id);
     this.selectedDirectorate = null;
-    this.filteredDirectorates = [];
     this.selectedProgramme = null;
-    this.filteredProgrammes = [];
+    this.departmentChange();
     this.displayNewDialog = true;
   }
 
   disableSave() {
-    if (!this.selectedFinancialYear || !this.selectedDirectorate || !this.selectedDepartment || !this.programmeBudget.amount)
+    if (!this.selectedFinancialYear || !this.selectedDirectorate || !this.selectedProgramme || !this.programmeBudget.amount)
       return true;
 
     if (this.isSystemAdmin && !this.selectedDepartment)
@@ -282,6 +281,9 @@ export class ProgrammeBudgetComponent implements OnInit {
               this._spinner.hide();
             }
           );
+        }
+        else {
+          this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Directorate Budget for the selected financial year does not exist.' });
         }
       },
       (err) => {
@@ -448,12 +450,14 @@ export class ProgrammeBudgetComponent implements OnInit {
   }
 
   directorateChange() {
+    this.selectedProgramme = null;
     this.populateFilteredProgrammes();
   }
 
   // Get filtered programmes based on selected department and selected directorate
   private populateFilteredProgrammes() {
     if (this.selectedDepartment && this.selectedDirectorate) {
+      this.filteredProgrammes = [];
       this.filteredProgrammes = this.programmes.filter(x => x.departmentId === this.selectedDepartment.id && x.directorateId === this.selectedDirectorate.id);
     }
   }

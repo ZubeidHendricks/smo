@@ -172,7 +172,7 @@ export class DirectorateBudgetComponent implements OnInit {
     this.selectedFinancialYear = null;
     this.selectedDepartment = this.isSystemAdmin ? null : this.departments.find(x => x.id === this.profile.departments[0].id);
     this.selectedDirectorate = null;
-    this.filteredDirectorates = [];
+    this.departmentChange();
     this.displayNewDialog = true;
   }
 

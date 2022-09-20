@@ -404,6 +404,69 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "View List of Programme Budgets",
 					SystemName = "Bud.VPB",
 					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 57,
+					Name = "View Settings Side Menu",
+					SystemName = "SN.Security",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 58,
+					Name = "View Users Side Menu",
+					SystemName = "SN.Users",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 59,
+					Name = "View Permissions Side Menu",
+					SystemName = "SN.Permissions",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 60,
+					Name = "View Settings Side Menu",
+					SystemName = "SN.Settings",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 61,
+					Name = "View Utilities Sub Menu",
+					SystemName = "SN.Utilities",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 62,
+					Name = "View Budgets Sub Menu",
+					SystemName = "SN.Budgets",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 63,
+					Name = "View Department Budget Sub Menu",
+					SystemName = "SN.DeptBudget",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 64,
+					Name = "View Directorate Budget Sub Menu",
+					SystemName = "SN.DirectorateBudget",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 65,
+					Name = "View Programme Budget Sub Menu",
+					SystemName = "SN.ProgBudget",
+					CategoryName = "Administration - Side Navigation"
 				}
 			);
 		}
