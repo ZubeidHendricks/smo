@@ -391,14 +391,16 @@ export class DirectorateBudgetComponent implements OnInit {
   departmentChange() {
     this.filteredDirectorates = [];
 
-    // Filter programmes based on selected department
-    let filteredProgrammes = this.programmes.filter(x => x.departmentId === this.selectedDepartment.id);
+    if (this.selectedDepartment) {
+      // Filter programmes based on selected department
+      let filteredProgrammes = this.programmes.filter(x => x.departmentId === this.selectedDepartment.id);
 
-    // Get Directorate Ids from programmes filtered by Department Id
-    let directorateIds = filteredProgrammes.map(programme => programme.directorateId);
+      // Get Directorate Ids from programmes filtered by Department Id
+      let directorateIds = filteredProgrammes.map(programme => programme.directorateId);
 
-    // Filter directorates based on directorate ids obtained above
-    this.filteredDirectorates = this.directorates.filter(x => directorateIds.includes(x.id));
+      // Filter directorates based on directorate ids obtained above
+      this.filteredDirectorates = this.directorates.filter(x => directorateIds.includes(x.id));
+    }
   }
 
   applyFilterGlobal($event: any, stringVal: any) {
