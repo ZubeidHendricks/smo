@@ -15,13 +15,5 @@ namespace NPOMS.Domain.Entities
 
 		[Column(TypeName = "nvarchar(255)")]
 		public string PostalAddress { get; set; }
-
-		public int CreatedUserId { get; set; }
-
-		public DateTime CreatedDateTime { get; set; }
-
-		public int? UpdatedUserId { get; set; }
-
-		public DateTime? UpdatedDateTime { get; set; }
 	}
 }

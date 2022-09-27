@@ -30,6 +30,7 @@ export interface IDocumentType {
     description: string,
     isCompulsory: boolean;
     isActive: boolean;
+    location: string;
 }
 
 export interface IFinancialYear {
@@ -159,8 +160,10 @@ export interface IProgramme {
     name: string;
     description: string;
     departmentId: number;
+    directorateId: number;
     isActive: boolean;
     department: IDepartment;
+    directorate: IDirectorate;
 }
 
 export interface IProvisionType {
@@ -230,6 +233,37 @@ export interface ISubProgrammeType {
     subProgramme: ISubProgramme;
 }
 
+export interface IDirectorate {
+    id: number;
+    name: string;
+    description: string;
+    isActive: boolean;
+}
+
+export interface IBank {
+    id: number;
+    name: string;
+    code: string;
+    isActive: boolean;
+}
+
+export interface IBranch {
+    id: number;
+    name: string;
+    branchCode: string;
+    bankId: number;
+    isActive: boolean;
+
+    bank: IBank;
+}
+
+export interface IAccountType {
+    id: number;
+    name: string;
+    systemName: string;
+    isActive: boolean;
+}
+
 /* Entities */
 export interface IAccessStatus {
     id: number;
@@ -267,8 +301,6 @@ export interface IAddressInformation {
     physicalAddress: string;
     postalSameAsPhysical: boolean;
     postalAddress: string;
-    createdUserId: number;
-    createdDateTime: Date;
 }
 
 export interface IApplication {
@@ -392,8 +424,9 @@ export interface INpoProfile {
     refNo: string;
 
     addressInformation: IAddressInformation;
-    npoProfileFacilityLists: INpoProfileFacilityList[];
+    /*npoProfileFacilityLists: INpoProfileFacilityList[];
     servicesRendered: IServicesRendered[];
+    bankDetails: IBankDetail[];*/
 }
 
 export interface IObjective {
@@ -479,6 +512,21 @@ export interface IServicesRendered {
     programme: IProgramme;
     subProgramme: ISubProgramme;
     subProgrammeType: ISubProgrammeType;
+}
+
+export interface IBankDetail {
+    id: number;
+    npoProfileId: number;
+    bankId: number;
+    branchId: number;
+    accountTypeId: number;
+    accountNumber: string;
+    isActive: boolean;
+    branchCode: string;
+
+    bank: IBank;
+    branch: IBranch;
+    accountType: IAccountType;
 }
 
 /* Lookup */
@@ -715,4 +763,44 @@ export interface IWorkplanComment {
     createdDateTime: Date;
 
     createdUser: IUser;
+}
+
+/* Budget */
+export interface IDepartmentBudget {
+    id: number;
+    departmentId: number;
+    financialYearId: number;
+    amount: number;
+    isActive: boolean;
+
+    financialYear: IFinancialYear;
+}
+
+export interface IDirectorateBudget {
+    id: number;
+    departmentId: number;
+    financialYearId: number;
+    departmentBudgetId: number;
+    directorateId: number;
+    amount: number;
+    description: string;
+    isActive: boolean;
+
+    financialYear: IFinancialYear;
+    directorate: IDirectorate;
+}
+
+export interface IProgrammeBudget {
+    id: number;
+    departmentId: number;
+    financialYearId: number;
+    directorateBudgetId: number;
+    programmeId: number;
+    amount: number;
+    description: string;
+    isActive: boolean;
+
+    financialYear: IFinancialYear;
+    directorate: IDirectorate;
+    programme: IProgramme;
 }

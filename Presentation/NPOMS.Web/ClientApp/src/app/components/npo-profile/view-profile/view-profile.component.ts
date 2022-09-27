@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum } from 'src/app/models/enums';
-import { IAddressInformation, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList, IProgramme, ISubProgramme, ISubProgrammeType } from 'src/app/models/interfaces';
+import { DocumentUploadLocationsEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum } from 'src/app/models/enums';
+import { IAccountType, IAddressInformation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, ISubProgramme, ISubProgrammeType } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
@@ -28,6 +28,7 @@ export class ViewProfileComponent implements OnInit {
   documentCols: any[];
   documentTypeCols: any[];
   serviceRenderedCols: any[];
+  bankDetailCols: any[];
 
   mapping: INpoProfileFacilityList = {} as INpoProfileFacilityList;
   displayFacilityInformationDialog: boolean;
@@ -49,6 +50,14 @@ export class ViewProfileComponent implements OnInit {
   subProgrammes: ISubProgramme[];
   subProgrammeTypes: ISubProgrammeType[];
 
+  npoProfileFacilityLists: INpoProfileFacilityList[];
+  servicesRendered: IServicesRendered[];
+  bankDetails: IBankDetail[];
+
+  banks: IBank[];
+  branches: IBranch[];
+  accountTypes: IAccountType[];
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _npoProfileRepo: NpoProfileService,
@@ -63,6 +72,8 @@ export class ViewProfileComponent implements OnInit {
     this.loadProgrammes();
     this.loadSubProgrammes();
     this.loadSubProgrammeTypes();
+    this.loadBanks();
+    this.loadAccountTypes();
     this.loadNpoProfile();
 
     this.stateOptions = [
@@ -104,6 +115,14 @@ export class ViewProfileComponent implements OnInit {
       { header: 'Sub-Programme', width: '33%' },
       { header: 'Sub-Programme Type', width: '33%' }
     ];
+
+    this.bankDetailCols = [
+      { header: 'Bank', width: '20%' },
+      { header: 'Branch', width: '20%' },
+      { header: 'Code', width: '20%' },
+      { header: 'Account Type', width: '20%' },
+      { header: 'Account Number', width: '20%' }
+    ];
   }
 
   private loadNpoProfile() {
@@ -113,12 +132,13 @@ export class ViewProfileComponent implements OnInit {
           results.addressInformation = results.addressInformation != null ? results.addressInformation : {} as IAddressInformation;
 
           this.npoProfile = results;
-          this.updateNpoProfile();
-
           this.retrievedNpoProfile.emit(this.npoProfile);
 
+          this.loadFacilities(this.npoProfile.id);
+          this.loadServicesRendered(this.npoProfile.id);
+          this.loadBankDetails(this.npoProfile.id);
+
           this.isDataAvailable = true;
-          this.updateRowGroupMetaData();
           this.getDocuments();
           this._spinner.hide();
         },
@@ -128,6 +148,80 @@ export class ViewProfileComponent implements OnInit {
         }
       );
     }
+  }
+
+  private loadFacilities(npoProfileId: number) {
+    this._npoProfileRepo.getFacilitiesByNpoProfileId(npoProfileId).subscribe(
+      (results) => {
+        this.npoProfileFacilityLists = results;
+        this.updateRowGroupMetaData();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadServicesRendered(npoProfileId: number) {
+    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId).subscribe(
+      (results) => {
+        this.servicesRendered = results;
+        this.updateServicesRenderedObjects();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadBankDetails(npoProfileId: number) {
+    this._npoProfileRepo.getBankDetailByNpoProfileId(npoProfileId).subscribe(
+      (results) => {
+        this.bankDetails = results;
+        this.updateBankDetailObjects();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateServicesRenderedObjects() {
+    if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
+      this.servicesRendered.forEach(item => {
+        item.programme = this.programmes.find(x => x.id === item.programmeId);
+        item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
+        item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
+      });
+
+      this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
+    }
+  }
+
+  private updateBankDetailObjects() {
+    if (this.npoProfile && this.banks && this.accountTypes && this.bankDetails) {
+      this.bankDetails.forEach(item => {
+        item.bank = this.banks.find(x => x.id === item.bankId);
+        this.loadBranch(item);
+        item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
+      });
+    }
+  }
+
+  private loadBranch(bankDetail: IBankDetail) {
+    this._dropdownRepo.getBranchById(bankDetail.branchId).subscribe(
+      (results) => {
+        bankDetail.branch = results;
+        bankDetail.branchCode = bankDetail.branch.branchCode != null ? bankDetail.branch.branchCode : bankDetail.bank.code;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private getDocuments() {
@@ -145,8 +239,8 @@ export class ViewProfileComponent implements OnInit {
   private loadDocumentTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
-        this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.name.indexOf('SLA') === -1 && x.name.indexOf('Evidence') === -1);
-        this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.name.indexOf('SLA') === -1 && x.name.indexOf('Evidence') === -1);
+        this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
+        this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -159,7 +253,7 @@ export class ViewProfileComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
       (results) => {
         this.programmes = results;
-        this.updateNpoProfile();
+        this.updateServicesRenderedObjects();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -172,7 +266,7 @@ export class ViewProfileComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
       (results) => {
         this.subProgrammes = results;
-        this.updateNpoProfile();
+        this.updateServicesRenderedObjects();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -185,7 +279,7 @@ export class ViewProfileComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
       (results) => {
         this.subProgrammeTypes = results;
-        this.updateNpoProfile();
+        this.updateServicesRenderedObjects();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -194,16 +288,30 @@ export class ViewProfileComponent implements OnInit {
     );
   }
 
-  private updateNpoProfile() {
-    if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes) {
-      this.npoProfile.servicesRendered.forEach(item => {
-        item.programme = this.programmes.find(x => x.id === item.programmeId);
-        item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
-        item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
-      });
+  private loadBanks() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Banks, false).subscribe(
+      (results) => {
+        this.banks = results;
+        this.updateBankDetailObjects();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
-      this.npoProfile.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
-    }
+  private loadAccountTypes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.AccountTypes, false).subscribe(
+      (results) => {
+        this.accountTypes = results;
+        this.updateBankDetailObjects();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   viewFacilityInformation(data: INpoProfileFacilityList) {
@@ -228,11 +336,11 @@ export class ViewProfileComponent implements OnInit {
   private updateRowGroupMetaData() {
     this.rowGroupMetadata = [];
 
-    this.npoProfile.npoProfileFacilityLists = this.npoProfile.npoProfileFacilityLists.sort((a, b) => a.facilityList.facilityTypeId - b.facilityList.facilityTypeId);
+    this.npoProfileFacilityLists = this.npoProfileFacilityLists.sort((a, b) => a.facilityList.facilityType.id - b.facilityList.facilityType.id);
 
-    if (this.npoProfile.npoProfileFacilityLists) {
+    if (this.npoProfileFacilityLists) {
 
-      this.npoProfile.npoProfileFacilityLists.forEach(element => {
+      this.npoProfileFacilityLists.forEach(element => {
 
         var itemExists = this.rowGroupMetadata.some(function (data) { return data.itemName === element.facilityList.facilityType.name });
 

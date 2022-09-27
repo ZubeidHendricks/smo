@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DropdownTypeEnum } from 'src/app/models/enums';
-import { IAccessStatus, IActivityList, IActivityType, IAllocationType, IApplicationType, IDenodoFacilityWrapper, IDepartment, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod, IOrganisationType, IPosition, IProgramme, IProvisionType, IRecipientType, IResourceList, IResourceType, IRole, IServiceType, IStatus, ISubProgramme, ISubProgrammeType, ITitle, ITrainingMaterial, IUtility } from 'src/app/models/interfaces';
+import { IAccessStatus, IAccountType, IActivityList, IActivityType, IAllocationType, IApplicationType, IBank, IBranch, IDenodoFacilityWrapper, IDepartment, IDirectorate, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod, IOrganisationType, IPosition, IProgramme, IProvisionType, IRecipientType, IResourceList, IResourceType, IRole, IServiceType, IStatus, ISubProgramme, ISubProgrammeType, ITitle, ITrainingMaterial, IUtility } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -115,6 +115,18 @@ export class DropdownService {
       case DropdownTypeEnum.SubProgrammeTypes:
         data = this._http.get<ISubProgrammeType[]>(url, httpOptions);
         break;
+      case DropdownTypeEnum.Directorates:
+        data = this._http.get<IDirectorate[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Banks:
+        data = this._http.get<IBank[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Branches:
+        data = this._http.get<IBranch[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.AccountTypes:
+        data = this._http.get<IAccountType[]>(url, httpOptions);
+        break;
     }
 
     return data;
@@ -176,6 +188,14 @@ export class DropdownService {
         return this._http.post<IFrequencyPeriod>(url, data, httpOptions);
       case DropdownTypeEnum.SubProgrammeTypes:
         return this._http.post<ISubProgrammeType>(url, data, httpOptions);
+      case DropdownTypeEnum.Directorates:
+        return this._http.post<IDirectorate>(url, data, httpOptions);
+      case DropdownTypeEnum.Banks:
+        return this._http.post<IBank>(url, data, httpOptions);
+      case DropdownTypeEnum.Branches:
+        return this._http.post<IBranch>(url, data, httpOptions);
+      case DropdownTypeEnum.AccountTypes:
+        return this._http.post<IAccountType>(url, data, httpOptions);
     }
   }
 
@@ -235,6 +255,14 @@ export class DropdownService {
         return this._http.put<IFrequencyPeriod>(url, data, httpOptions);
       case DropdownTypeEnum.SubProgrammeTypes:
         return this._http.put<ISubProgrammeType>(url, data, httpOptions);
+      case DropdownTypeEnum.Directorates:
+        return this._http.put<IDirectorate>(url, data, httpOptions);
+      case DropdownTypeEnum.Banks:
+        return this._http.put<IBank>(url, data, httpOptions);
+      case DropdownTypeEnum.Branches:
+        return this._http.put<IBranch>(url, data, httpOptions);
+      case DropdownTypeEnum.AccountTypes:
+        return this._http.put<IAccountType>(url, data, httpOptions);
     }
   }
 
@@ -243,7 +271,12 @@ export class DropdownService {
     return this._http.get<IDenodoFacilityWrapper>(url, httpOptions);
   }
 
-  public createFacilityList(facilityList: IFacilityList[]) {
+  public getFacilityList(facilityList: IFacilityList) {
+    const url = `${this._envUrl.urlAddress}/api/dropdown/facility/facilityTypeId/${facilityList.facilityTypeId}/facilitySubDistrictId/${facilityList.facilitySubDistrictId}/facilityClassId/${facilityList.facilityClassId}/name/${facilityList.name}`;
+    return this._http.get<IFacilityList>(url, httpOptions);
+  }
+
+  public createFacilityList(facilityList: IFacilityList) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/facility`;
     return this._http.post<IFacilityList>(url, facilityList, httpOptions);
   }
@@ -266,5 +299,34 @@ export class DropdownService {
   public getFromCurrentFinYear() {
     const url = `${this._envUrl.urlAddress}/api/dropdown/financial-year`;
     return this._http.get<IFinancialYear[]>(url, httpOptions);
+  }
+
+  public getEntitiesByEntityId(dropdownType: DropdownTypeEnum, entityId: number) {
+    const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}/entityId/${entityId}`;
+    var data;
+
+    switch (dropdownType) {
+      case DropdownTypeEnum.SubProgramme:
+        data = this._http.get<ISubProgramme[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.SubProgrammeTypes:
+        data = this._http.get<ISubProgrammeType[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Branches:
+        data = this._http.get<IBranch[]>(url, httpOptions);
+        break;
+    }
+
+    return data;
+  }
+
+  public getBranchById(branchId: number) {
+    const url = `${this._envUrl.urlAddress}/api/dropdown/branch/branchId/${branchId}`;
+    return this._http.get<IBranch>(url, httpOptions);
+  }
+
+  public getAccountTypeById(accountTypeId: number) {
+    const url = `${this._envUrl.urlAddress}/api/dropdown/account-type/accountTypeId/${accountTypeId}`;
+    return this._http.get<IAccountType>(url, httpOptions);
   }
 }

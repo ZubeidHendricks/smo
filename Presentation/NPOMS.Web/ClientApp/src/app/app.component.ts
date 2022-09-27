@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
     this.isIframe = window !== window.parent && !window.opener;
 
     this._primengConfig.ripple = true;
-    document.documentElement.style.fontSize = 13 + 'px';
+    document.documentElement.style.fontSize = 12 + 'px';
 
     this._msalService.instance.handleRedirectPromise().then(x => {
       if (x !== null && x.account !== null) {

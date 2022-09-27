@@ -17,20 +17,26 @@
             </div>
         </div>
     </div>
-    <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="entities" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['name','description','department.name']">
+    <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="entities" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['name','description','department.name','directorate.name']">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th style="width: 5%;"></th>
-                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" pSortableColumn="{{col.field}}">
-                    <div class="p-d-flex p-jc-between p-ai-center">
-                        {{col.header}}
-                        <p-sortIcon field="{{col.field}}"></p-sortIcon>
-                    </div>
-                </th>
                 <th style="width: 20%;" *ngIf="isSystemAdmin" pSortableColumn="department.name">
                     <div class="p-d-flex p-jc-between p-ai-center">
                         Department
                         <p-sortIcon field="department.name"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width: 20%;" pSortableColumn="directorate.name">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        Directorate
+                        <p-sortIcon field="directorate.name"></p-sortIcon>
+                    </div>
+                </th>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" pSortableColumn="{{col.field}}">
+                    <div class="p-d-flex p-jc-between p-ai-center">
+                        {{col.header}}
+                        <p-sortIcon field="{{col.field}}"></p-sortIcon>
                     </div>
                 </th>
                 <th style="text-align: center; width:10%;">Inactive</th>
@@ -40,11 +46,14 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
-                <td *ngFor="let col of columns">
-                    <span>{{getCellData(rowData, col)}}</span>
-                </td>
                 <td *ngIf="isSystemAdmin">
                     <span *ngIf="rowData.department">{{rowData.department.name}}</span>
+                </td>
+                <td>
+                    <span *ngIf="rowData.directorate">{{rowData.directorate.name}}</span>
+                </td>
+                <td *ngFor="let col of columns">
+                    <span>{{getCellData(rowData, col)}}</span>
                 </td>
                 <td style="text-align: center;">
                     <p-checkbox [ngModel]="!rowData.isActive" [binary]="true" disabled></p-checkbox>
@@ -66,6 +75,26 @@
 </p-panel>
 
 <p-dialog header="Programme" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}">
+    <div class="p-grid" *ngIf="isSystemAdmin">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Department</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Directorate</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="directorates" placeholder="Select a Directorate" optionLabel="name" [(ngModel)]="selectedDirectorate" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -83,17 +112,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="entity.description" [ngModelOptions]="{standalone: true}">
-        </div>
-    </div>
-    <div class="p-grid" *ngIf="isSystemAdmin">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Department</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+            <textarea rows="2" cols="30" pInputTextarea autoResize="autoResize" class="form-text" [(ngModel)]="entity.description"></textarea>
         </div>
     </div>
     <div class="p-grid">

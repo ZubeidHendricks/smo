@@ -46,7 +46,11 @@ export enum DropdownTypeEnum {
     TrainingMaterial = 27,
     Frequencies = 28,
     FrequencyPeriods = 29,
-    SubProgrammeTypes = 30
+    SubProgrammeTypes = 30,
+    Directorates = 31,
+    Banks = 32,
+    Branches = 33,
+    AccountTypes = 34
 }
 
 export enum EntityTypeEnum {
@@ -113,6 +117,7 @@ export enum PermissionsEnum {
     ViewNpoApprovalMenu = "TN.VNA",
     ViewDashboardMenu = "TN.VDM",
     ViewTrainingMenu = "TN.VTM",
+    ViewFundingMenu = "TN.VFM",
 
     /* USER ADMINISTRATION */
     AddUsers = "UA.AU",
@@ -171,7 +176,40 @@ export enum PermissionsEnum {
     ViewDashboard = "PBI.VD",
 
     /* Training Material */
-    ViewTrainingMaterial = "TM.VTM"
+    ViewTrainingMaterial = "TM.VTM",
+
+    /* BUDGETS */
+    AddDepartmentBudget = "Bud.Add",
+    EditDepartmentBudget = "Bud.Edit",
+    ViewDepartmentBudget = "Bud.View",
+    AddDirectorateBudget = "Bud.ADB",
+    EditDirectorateBudget = "Bud.EDB",
+    ViewDirectorateBudget = "Bud.VDB",
+    AddProgrammeBudget = "Bud.APB",
+    EditProgrammeBudget = "Bud.EPB",
+    ViewProgrammeBudget = "Bud.VPB",
+
+    /* Side Navigation */
+    ViewSecurityMenu = "SN.Security",
+    ViewUsersSubMenu = "SN.Users",
+    ViewPermissionsSubMenu = "SN.Permissions",
+
+    ViewSettingsMenu = "SN.Settings",
+    ViewUtilitiesSubMenu = "SN.Utilities",
+
+    ViewBudgetsMenu = "SN.Budgets",
+    ViewDepartmentBudgetSubMenu = "SN.DeptBudget",
+    ViewDirectorateBudgetSubMenu = "SN.DirectorateBudget",
+    ViewProgrammeBudgetSubMenu = "SN.ProgBudget",
+
+    /* Funding */
+    AddNpoFunding = "Fund.ANF",
+    EditNpoFunding = "Fund.ENF",
+    ViewNpoFunding = "Fund.VNF",
+    DeleteNpoFunding = "Fund.DNF",
+    ViewPaymentSchedule = "Fund.VPS",
+    ComplianceCheck = "Fund.CC",
+    ShowNpoFundingActions = "Fund.SNFA"
 }
 
 export enum ReportTypeEnum {
@@ -181,7 +219,8 @@ export enum ReportTypeEnum {
 export enum FrequencyEnum {
     Annually = 1,
     Monthly = 2,
-    Quarterly = 3
+    Quarterly = 3,
+    Adhoc = 4
 }
 
 export enum FrequencyPeriodEnum {
@@ -202,4 +241,37 @@ export enum FrequencyPeriodEnum {
     Q2 = 15,
     Q3 = 16,
     Q4 = 17
+}
+
+export enum DepartmentEnum {
+    ALL = 1,
+    DEDAT = 2,
+    DTPW = 3,
+    WCED = 4,
+    DotP = 5,
+    PT = 6,
+    DSD = 7,
+    DoA = 8,
+    DCS = 9,
+    DCAS = 10,
+    DoH = 11,
+    DHS = 12,
+    DLG = 13,
+    WCPP = 14,
+    DEADP = 15,
+    NONE = 16
+}
+
+export enum FundingStepsEnum {
+    FundingDetail = 0,
+    ServiceDeliveryArea = 1,
+    PaymentSchedule = 2,
+    BankDetails = 3,
+    Documents = 4
+}
+
+export enum DocumentUploadLocationsEnum {
+    NpoProfile = 'NpoProfile',
+    Workplan = 'Workplan',
+    WorkplanActuals = 'WorkplanActuals'
 }

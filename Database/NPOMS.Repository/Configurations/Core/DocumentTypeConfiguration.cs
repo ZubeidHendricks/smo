@@ -17,12 +17,14 @@ namespace NPOMS.Repository.Configurations.Core
 				new DocumentType
 				{
 					Id = 1,
-					Name = "SLA"
+					Name = "SLA",
+					Location = "Workplan"
 				},
 				new DocumentType
 				{
 					Id = 2,
-					Name = "Signed SLA"
+					Name = "Signed SLA",
+					Location = "Workplan"
 				}
 			);
 		}

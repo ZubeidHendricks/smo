@@ -82,7 +82,7 @@ export class SubProgrammeTypeComponent implements OnInit {
   }
 
   private loadProgrammes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, true).subscribe(
       (results) => {
         if (this.isSystemAdmin)
           this.programmes = results;
@@ -99,7 +99,7 @@ export class SubProgrammeTypeComponent implements OnInit {
   }
 
   private loadSubProgrammes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, true).subscribe(
       (results) => {
         if (this.isSystemAdmin)
           this.subProgrammes = results;

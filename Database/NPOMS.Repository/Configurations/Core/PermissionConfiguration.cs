@@ -341,6 +341,188 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "View List of Training Materials",
 					SystemName = "TM.VTM",
 					CategoryName = "Training Material"
+				},
+				new Permission
+				{
+					Id = 48,
+					Name = "Add Department Budget",
+					SystemName = "Bud.Add",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 49,
+					Name = "Edit Department Budget",
+					SystemName = "Bud.Edit",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 50,
+					Name = "View List of Department Budgets",
+					SystemName = "Bud.View",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 51,
+					Name = "Add Directorate Budget",
+					SystemName = "Bud.ADB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 52,
+					Name = "Edit Directorate Budget",
+					SystemName = "Bud.EDB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 53,
+					Name = "View List of Directorate Budgets",
+					SystemName = "Bud.VDB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 54,
+					Name = "Add Programme Budget",
+					SystemName = "Bud.APB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 55,
+					Name = "Edit Programme Budget",
+					SystemName = "Bud.EPB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 56,
+					Name = "View List of Programme Budgets",
+					SystemName = "Bud.VPB",
+					CategoryName = "Budgets"
+				},
+				new Permission
+				{
+					Id = 57,
+					Name = "View Settings Side Menu",
+					SystemName = "SN.Security",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 58,
+					Name = "View Users Side Menu",
+					SystemName = "SN.Users",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 59,
+					Name = "View Permissions Side Menu",
+					SystemName = "SN.Permissions",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 60,
+					Name = "View Settings Side Menu",
+					SystemName = "SN.Settings",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 61,
+					Name = "View Utilities Sub Menu",
+					SystemName = "SN.Utilities",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 62,
+					Name = "View Budgets Sub Menu",
+					SystemName = "SN.Budgets",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 63,
+					Name = "View Department Budget Sub Menu",
+					SystemName = "SN.DeptBudget",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 64,
+					Name = "View Directorate Budget Sub Menu",
+					SystemName = "SN.DirectorateBudget",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 65,
+					Name = "View Programme Budget Sub Menu",
+					SystemName = "SN.ProgBudget",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 66,
+					Name = "View Funding Menu",
+					SystemName = "TN.VFM",
+					CategoryName = "Top Navigation"
+				},
+				new Permission
+				{
+					Id = 67,
+					Name = "Add NPO/Organisation Funding",
+					SystemName = "Fund.ANF",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 68,
+					Name = "Edit NPO/Organisation Funding",
+					SystemName = "Fund.ENF",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 69,
+					Name = "View NPO/Organisation Funding",
+					SystemName = "Fund.VNF",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 70,
+					Name = "Delete NPO/Organisation Funding",
+					SystemName = "Fund.DNF",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 71,
+					Name = "View Payment Schedule",
+					SystemName = "Fund.VPS",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 72,
+					Name = "View Compliance Check",
+					SystemName = "Fund.CC",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 73,
+					Name = "Show NPO/Organisation Funding Action Buttons",
+					SystemName = "Fund.SNFA",
+					CategoryName = "Funding"
 				}
 			);
 		}

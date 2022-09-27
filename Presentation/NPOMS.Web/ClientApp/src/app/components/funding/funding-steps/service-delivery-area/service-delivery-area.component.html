@@ -1,0 +1,38 @@
+<p-toast></p-toast>
+<p-panel [style]="{'font-size':'12px'}" header="Service Delivery Area">
+    <div class="p-grid">
+        <div class="p-col-6">
+            <div class="p-fluid">
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Service Delivery Area</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <!-- <p-dropdown [options]="filteredProgrammes" placeholder="Select a Programme" optionLabel="name" [(ngModel)]="selectedProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange()"></p-dropdown> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-6">
+            <div class="p-fluid">
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Place</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <!-- <p-dropdown [options]="filteredProgrammes" placeholder="Select a Programme" optionLabel="name" [(ngModel)]="selectedProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange()"></p-dropdown> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="p-grid p-nogutter p-justify-between">
+        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+        <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
+    </div>
+</p-panel>

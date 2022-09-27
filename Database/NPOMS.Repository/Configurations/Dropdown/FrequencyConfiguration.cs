@@ -30,6 +30,12 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Id = 3,
 					Name = "Quarterly",
 					SystemName = "Quarterly"
+				},
+				new Frequency
+				{
+					Id = 4,
+					Name = "Adhoc",
+					SystemName = "Adhoc"
 				}
 			);
 		}

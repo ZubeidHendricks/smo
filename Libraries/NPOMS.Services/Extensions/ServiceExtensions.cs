@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using NPOMS.Repository;
+using NPOMS.Repository.Implementation.Budget;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Implementation.Dropdown;
 using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Implementation.Indicator;
 using NPOMS.Repository.Implementation.Lookup;
 using NPOMS.Repository.Implementation.Mapping;
+using NPOMS.Repository.Interfaces.Budget;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
@@ -88,6 +90,10 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IFrequencyRepository, FrequencyRepository>();
 			services.AddScoped<IFrequencyPeriodRepository, FrequencyPeriodRepository>();
 			services.AddScoped<ISubProgrammeTypeRepository, SubProgrammeTypeRepository>();
+			services.AddScoped<IDirectorateRepository, DirectorateRepository>();
+			services.AddScoped<IBankRepository, BankRepository>();
+			services.AddScoped<IBranchRepository, BranchRepository>();
+			services.AddScoped<IAccountTypeRepository, AccountTypeRepository>();
 
 			/* Entities */
 			services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
@@ -106,6 +112,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<ISustainabilityPlanRepository, SustainabilityPlanRepository>();
 			services.AddScoped<ITrainingMaterialRepository, TrainingMaterialRepository>();
 			services.AddScoped<IServicesRenderedRepository, ServicesRenderedRepository>();
+			services.AddScoped<IBankDetailRepository, BankDetailRepository>();
 
 			/* Lookup */
 			services.AddScoped<IActivityListRepository, ActivityListRepository>();
@@ -126,6 +133,11 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IWorkplanActualRepository, WorkplanActualRepository>();
 			services.AddScoped<IWorkplanCommentRepository, WorkplanCommentRepository>();
 
+			/* Budget */
+			services.AddScoped<IDepartmentBudgetRepository, DepartmentBudgetRepository>();
+			services.AddScoped<IDirectorateBudgetRepository, DirectorateBudgetRepository>();
+			services.AddScoped<IProgrammeBudgetRepository, ProgrammeBudgetRepository>();
+
 			#endregion
 
 			#region Services
@@ -144,6 +156,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IDenodoService, DenodoService>();
 			services.AddScoped<IDocumentStoreService, DocumentStoreService>();
 			services.AddScoped<IIndicatorService, IndicatorService>();
+			services.AddScoped<IBudgetService, BudgetService>();
 
 			//PowerBI
 			services.AddScoped(typeof(AadService))

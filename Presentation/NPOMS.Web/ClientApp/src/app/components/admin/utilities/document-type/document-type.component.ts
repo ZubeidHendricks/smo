@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { DocumentUploadLocationsEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IDocumentType, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -40,6 +40,9 @@ export class DocumentTypeComponent implements OnInit {
   inActive: boolean;
   isCompulsory: boolean;
 
+  locations: any[];
+  selectedLocation: any;
+
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -68,8 +71,24 @@ export class DocumentTypeComponent implements OnInit {
 
     this.cols = [
       { field: 'name', header: 'Name', width: '20%' },
-      { field: 'description', header: 'Description', width: '50%' }
+      { field: 'description', header: 'Description', width: '40%' },
+      { field: 'location', header: 'Location', width: '10%' }
     ];
+
+    this.locations = [
+      {
+        name: DocumentUploadLocationsEnum.NpoProfile,
+        value: DocumentUploadLocationsEnum.NpoProfile
+      },
+      {
+        name: DocumentUploadLocationsEnum.Workplan,
+        value: DocumentUploadLocationsEnum.Workplan
+      },
+      {
+        name: DocumentUploadLocationsEnum.WorkplanActuals,
+        value: DocumentUploadLocationsEnum.WorkplanActuals
+      }
+    ]
   }
 
   private loadEntities() {
@@ -121,20 +140,22 @@ export class DocumentTypeComponent implements OnInit {
 
     this.inActive = !entity.isActive;
     this.isCompulsory = entity.isCompulsory;
+    this.selectedLocation = this.locations.find(x => x.value === entity.location);
 
     return entity;
   }
 
   disableSave() {
-    if (!this.entity.name || !this.entity.description)
+    if (!this.entity.name || !this.entity.description || !this.selectedLocation)
       return true;
 
     return false;
   }
 
-  save() {
+  save() {    
     this.entity.isActive = !this.inActive;
     this.entity.isCompulsory = this.isCompulsory ? true : false;
+    this.entity.location = this.selectedLocation.value;
     this.isNew ? this.createEntity() : this.updateEntity();
     this.showDialog = false;
   }

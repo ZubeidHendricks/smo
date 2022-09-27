@@ -135,6 +135,18 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.SubProgrammeTypes:
 						var subProgrammeTypes = await _dropdownService.GetSubProgrammeTypes(returnInactive);
 						return Ok(subProgrammeTypes);
+					case DropdownTypeEnum.Directorates:
+						var directorates = await _dropdownService.GetDirectorates(returnInactive);
+						return Ok(directorates);
+					case DropdownTypeEnum.Banks:
+						var banks = await _dropdownService.GetBanks(returnInactive);
+						return Ok(banks);
+					case DropdownTypeEnum.Branches:
+						var branches = await _dropdownService.GetBranches(returnInactive);
+						return Ok(branches);
+					case DropdownTypeEnum.AccountTypes:
+						var accountTypes = await _dropdownService.GetAccountTypes(returnInactive);
+						return Ok(accountTypes);
 				}
 
 				return Ok();
@@ -256,6 +268,22 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.SubProgrammeTypes:
 						var subProgrammeType = JsonConvert.DeserializeObject<SubProgrammeType>(Convert.ToString(entity));
 						await _dropdownService.CreateSubProgrammeType(subProgrammeType, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.Directorates:
+						var directorate = JsonConvert.DeserializeObject<Directorate>(Convert.ToString(entity));
+						await _dropdownService.CreateDirectorate(directorate, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.Banks:
+						var bank = JsonConvert.DeserializeObject<Bank>(Convert.ToString(entity));
+						await _dropdownService.CreateBank(bank, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.Branches:
+						var branch = JsonConvert.DeserializeObject<Branch>(Convert.ToString(entity));
+						await _dropdownService.CreateBranch(branch, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.AccountTypes:
+						var accountType = JsonConvert.DeserializeObject<AccountType>(Convert.ToString(entity));
+						await _dropdownService.CreateAccountType(accountType, base.GetUserIdentifier());
 						break;
 				}
 
@@ -379,6 +407,22 @@ namespace NPOMS.API.Controllers
 						var subProgrammeType = JsonConvert.DeserializeObject<SubProgrammeType>(Convert.ToString(entity));
 						await _dropdownService.UpdateSubProgrammeType(subProgrammeType, base.GetUserIdentifier());
 						break;
+					case DropdownTypeEnum.Directorates:
+						var directorate = JsonConvert.DeserializeObject<Directorate>(Convert.ToString(entity));
+						await _dropdownService.UpdateDirectorate(directorate, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.Banks:
+						var bank = JsonConvert.DeserializeObject<Bank>(Convert.ToString(entity));
+						await _dropdownService.UpdateBank(bank, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.Branches:
+						var branch = JsonConvert.DeserializeObject<Branch>(Convert.ToString(entity));
+						await _dropdownService.UpdateBranch(branch, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.AccountTypes:
+						var accountType = JsonConvert.DeserializeObject<AccountType>(Convert.ToString(entity));
+						await _dropdownService.UpdateAccountType(accountType, base.GetUserIdentifier());
+						break;
 				}
 
 				return Ok();
@@ -405,21 +449,28 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpPost("facility", Name = "CreateFacilityList")]
-		public async Task<IActionResult> Create([FromBody] FacilityList[] model)
+		[HttpGet("facility/facilityTypeId/{facilityTypeId}/facilitySubDistrictId/{facilitySubDistrictId}/facilityClassId/{facilityClassId}/name/{name}", Name = "GetFacilityListByModel")]
+		public async Task<IActionResult> GetFacilityListByModel(int facilityTypeId, int facilitySubDistrictId, int facilityClassId, string name)
 		{
 			try
 			{
-				foreach (var item in model)
-				{
-					item.FacilityType = null;
-					item.FacilitySubDistrict = null;
-					item.FacilityClass = null;
+				var results = await _dropdownService.GetFacilityListByModel(new FacilityList { FacilityTypeId = facilityTypeId, FacilitySubDistrictId = facilitySubDistrictId, FacilityClassId = facilityClassId, Name = name });
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetFacilityListByModel action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
 
-					await _dropdownService.CreateFacility(item, base.GetUserIdentifier());
-				}
-
-				return Ok();
+		[HttpPost("facility", Name = "CreateFacilityList")]
+		public async Task<IActionResult> Create([FromBody] FacilityList model)
+		{
+			try
+			{
+				await _dropdownService.CreateFacility(model, base.GetUserIdentifier());
+				return Ok(model);
 			}
 			catch (Exception ex)
 			{
@@ -469,6 +520,69 @@ namespace NPOMS.API.Controllers
 			catch (Exception ex)
 			{
 				_logger.LogError($"Something went wrong inside GetFromCurrentFinancialYear action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		/// <summary>
+		/// Get dropdown entities by another dropdown's id
+		/// </summary>
+		/// <param name="dropdownType"></param>
+		/// <param name="entityId"></param>
+		/// <returns></returns>
+		[HttpGet("dropdownTypeEnum/{dropdownType}/entityId/{entityId}", Name = "GetEntitiesByEntityId")]
+		public async Task<IActionResult> GetEntitiesByEntityId(DropdownTypeEnum dropdownType, int entityId)
+		{
+			try
+			{
+				switch (dropdownType)
+				{
+					case DropdownTypeEnum.SubProgramme:
+						var subProgrammes = await _dropdownService.GetSubProgrammesByProgrammeId(entityId);
+						return Ok(subProgrammes);
+					case DropdownTypeEnum.SubProgrammeTypes:
+						var subProgrammeTypes = await _dropdownService.GetSubProgrammeTypesBySubProgrammeId(entityId);
+						return Ok(subProgrammeTypes);
+					case DropdownTypeEnum.Branches:
+						var branches = await _dropdownService.GetBranchesByBankId(entityId);
+						return Ok(branches);
+				}
+
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetEntitiesByEntityId action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("branch/branchId/{branchId}", Name = "GetBranchById")]
+		public async Task<IActionResult> GetBranchById(int branchId)
+		{
+			try
+			{
+				var results = await _dropdownService.GetBranchById(branchId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetBranchById action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("account-type/accountTypeId/{accountTypeId}", Name = "GetAccountTypeById")]
+		public async Task<IActionResult> GetAccountTypeById(int accountTypeId)
+		{
+			try
+			{
+				var results = await _dropdownService.GetAccountTypeById(accountTypeId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetAccountTypeById action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
