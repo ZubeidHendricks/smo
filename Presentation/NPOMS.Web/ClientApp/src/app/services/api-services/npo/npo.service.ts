@@ -35,6 +35,11 @@ export class NpoService {
     return this._http.get<INpo[]>(url, httpOptions);
   }
 
+  public getApprovedNpoByName(name: string) {
+    const url = `${this._envUrl.urlAddress}/api/npos/approved-npo/name/${name}`;
+    return this._http.get<INpo[]>(url, httpOptions);
+  }
+
   public createNpo(npo: INpo) {
     const url = `${this._envUrl.urlAddress}/api/npos`;
     return this._http.post<INpo>(url, npo, httpOptions);

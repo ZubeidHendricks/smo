@@ -1,0 +1,57 @@
+<p-toast></p-toast>
+<p-panel [style]="{'font-size':'12px'}" header="Bank Details">
+    <div class="p-grid">
+        <div class="p-col-6">
+            <div class="p-fluid">
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Bank</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <p-dropdown [options]="banks" placeholder="Select a Bank" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="bankChange()"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Branch</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <p-dropdown [options]="branches" placeholder="Select a Branch" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="branchChange()"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-6">
+            <div class="p-fluid">
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Account Type</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <p-dropdown [options]="accountTypes" placeholder="Select an Account Type" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="accountTypeChange()"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Account Number</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <p-dropdown [options]="accountNumbers" placeholder="Select an Account Number" optionLabel="name" [(ngModel)]="selectedAccountNumber" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="p-grid p-nogutter p-justify-between">
+        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+    </div>
+</p-panel>

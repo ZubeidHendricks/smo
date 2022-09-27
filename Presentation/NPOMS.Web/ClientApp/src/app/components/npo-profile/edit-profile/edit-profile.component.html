@@ -68,7 +68,7 @@
     </p-panel>
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
-        <p-table [columns]="serviceRenderedCols" [value]="npoProfile.servicesRendered" styleClass="p-datatable-sm">
+        <p-table [columns]="serviceRenderedCols" [value]="servicesRendered" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -102,7 +102,7 @@
     </p-panel>
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
-        <p-table [columns]="facilityInfoCols" [value]="npoProfile.npoProfileFacilityLists" styleClass="p-datatable-sm">
+        <p-table [columns]="facilityInfoCols" [value]="npoProfileFacilityLists" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -140,6 +140,42 @@
             </ng-template>
         </p-table>
     </p-panel>
+    <div style="height: 10px;"></div>
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Bank Details">
+        <p-table [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                    <th style="width: 7%;">Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr class="default-font">
+                    <td *ngIf="rowData.bank">{{rowData.bank.name}}</td>
+                    <td *ngIf="rowData.branch">{{rowData.branch.name}}</td>
+                    <td>{{rowData.branchCode}}</td>
+                    <td *ngIf="rowData.accountType">{{rowData.accountType.name}}</td>
+                    <td>{{rowData.accountNumber}}</td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editBankDetail(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteBankDetail(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="6" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary" let-rowData>
+                <div style="text-align:left">
+                    <button pButton pRipple type="button" label="Add Bank Detail" class="p-button-text" icon="fa fa-plus" (click)="addBankDetail()"></button>
+                </div>
+            </ng-template>
+        </p-table>
+    </p-panel>    
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Supporting Documents">
         <p-fileUpload name="demo[]" #form customUpload="true" (uploadHandler)="onUploadChange($event, form)" [showCancelButton]="false" chooseLabel="Browse">
@@ -270,7 +306,7 @@
                         <span class="mandatory-content">Facility Lookup</span>
                     </div>
                 </div>
-                <div class="p-col">
+                <div class="p-col" *ngIf="newFacilityInformation">
                     <p-autoComplete appendTo="body" id="selectedDenodoFacility"                      
                         [(ngModel)]="selectedDenodoFacility"
                         [style]="{'width':'100%'}"
@@ -287,9 +323,11 @@
                         emptyMessage="No results found"
                         name="facility"
                         [showEmptyMessage]="true"
-                        (onSelect)="selectDenodoFacility($event, true)"
-                        [disabled]="!newFacilityInformation">
+                        (onSelect)="selectDenodoFacility($event, true)">
                     </p-autoComplete>
+                </div>
+                <div class="p-col" *ngIf="mapping.facilityList && isFacilityInformationEdit">
+                    <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.name" [ngModelOptions]="{standalone: true}" [disabled]="disableField">
                 </div>
             </div>
             <div class="p-grid">
@@ -435,7 +473,7 @@
 </p-dialog>
 
 <p-dialog header="Services Rendered" 
-          [(visible)]="displayServicesRenderedDialog" 
+          [(visible)]="displayServiceRenderedDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
           showEffect="fade"
@@ -473,6 +511,68 @@
         </div>
         <ng-template pTemplate="footer">
             <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveServicesRendered() (click)="saveServicesRendered()"></button>
+        </ng-template>
+</p-dialog>
+
+<p-dialog header="Bank Detail" 
+          [(visible)]="displayBankDetailDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Bank</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="banks" placeholder="Select a Bank" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="bankChange()" [filter]="true" filterBy="name"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Branch</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="branches" placeholder="Select a branch" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="branchChange()" [filter]="true" filterBy="name"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Branch Code</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" name="branchCode" class="form-text" pInputText [(ngModel)]="bankDetail.branchCode" [ngModelOptions]="{standalone: true}" [disabled]="true"> 
+            </div>
+        </div>        
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Account Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="accountTypes" placeholder="Select an Account Type" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+            </div>
+        </div>        
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Account Number</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" name="accountNUmber" class="form-text" pInputText [(ngModel)]="bankDetail.accountNumber" [ngModelOptions]="{standalone: true}" (keypress)="numberOnly($event)"> 
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveBankDetail() (click)="saveBankDetail()"></button>
         </ng-template>
 </p-dialog>
 

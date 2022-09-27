@@ -54,6 +54,11 @@ export class BudgetService {
     return this._http.get<IProgrammeBudget[]>(url, httpOptions);
   }
 
+  public getProgrammeBudgetByProgrammeId(programmeId: number, financialYearId: number) {
+    const url = `${this._envUrl.urlAddress}/api/budgets/programme-budgets/programmeId/${programmeId}/financialYearId/${financialYearId}`;
+    return this._http.get<IProgrammeBudget>(url, httpOptions);
+  }
+
   public createProgrammeBudget(programmeBudget: IProgrammeBudget) {
     const url = `${this._envUrl.urlAddress}/api/budgets/programme-budgets`;
     return this._http.post<IProgrammeBudget>(url, programmeBudget, httpOptions);

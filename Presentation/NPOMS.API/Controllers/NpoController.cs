@@ -91,6 +91,21 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+		[HttpGet("approved-npo/name/{name}", Name = "GetApprovedNpoByName")]
+		public async Task<IActionResult> GetApprovedNpoByName(string name)
+		{
+			try
+			{
+				var results = await _npoService.SearchApprovedNpo(name);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetApprovedNpoByName action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
 		[HttpPost(Name = "CreateNpo")]
 		public async Task<IActionResult> CreateNpo([FromBody] Npo model)
 		{

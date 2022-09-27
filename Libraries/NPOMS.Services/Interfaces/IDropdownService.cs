@@ -121,6 +121,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<FacilityList>> GetFacilityList(bool returnInactive);
 
+		Task<FacilityList> GetFacilityListByModel(FacilityList model);
+
 		Task<IEnumerable<FacilityList>> SearchFacilityByName(string name);
 
 		Task CreateFacility(FacilityList model, string userIdentifier);
@@ -192,5 +194,33 @@ namespace NPOMS.Services.Interfaces
 		Task CreateDirectorate(Directorate model, string userIdentifier);
 
 		Task UpdateDirectorate(Directorate model, string userIdentifier);
+
+		Task<IEnumerable<SubProgramme>> GetSubProgrammesByProgrammeId(int programmeId);
+
+		Task<IEnumerable<SubProgrammeType>> GetSubProgrammeTypesBySubProgrammeId(int subProgrammeId);
+
+		Task<IEnumerable<Bank>> GetBanks(bool returnInactive);
+
+		Task CreateBank(Bank model, string userIdentifier);
+
+		Task UpdateBank(Bank model, string userIdentifier);
+
+		Task<IEnumerable<Branch>> GetBranches(bool returnInactive);
+
+		Task<IEnumerable<Branch>> GetBranchesByBankId(int bankId);
+
+		Task<Branch> GetBranchById(int id);
+
+		Task CreateBranch(Branch model, string userIdentifier);
+
+		Task UpdateBranch(Branch model, string userIdentifier);
+
+		Task<IEnumerable<AccountType>> GetAccountTypes(bool returnInactive);
+
+		Task<AccountType> GetAccountTypeById(int id);
+
+		Task CreateAccountType(AccountType model, string userIdentifier);
+
+		Task UpdateAccountType(AccountType model, string userIdentifier);
 	}
 }

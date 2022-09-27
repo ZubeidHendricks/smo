@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Entities;
+using NPOMS.Domain.Enumerations;
 using NPOMS.Repository.Extensions;
 using NPOMS.Repository.Interfaces.Entities;
 using System.Collections.Generic;
@@ -38,6 +39,11 @@ namespace NPOMS.Repository.Implementation.Entities
 		public async Task<IEnumerable<Npo>> SearchByName(string name)
 		{
 			return await FindByCondition(x => x.Name.Contains(name)).Where(x => x.IsActive).AsNoTracking().ToListAsync();
+		}
+
+		public async Task<IEnumerable<Npo>> SearchApprovedNpoByName(string name)
+		{
+			return await FindByCondition(x => x.Name.Contains(name) && x.IsActive && x.ApprovalStatusId.Equals((int)AccessStatusEnum.Approved)).AsNoTracking().ToListAsync();
 		}
 
 		public async Task<Npo> GetByNameAndOrgTypeId(string name, int organisationTypeId)

@@ -215,10 +215,34 @@ namespace NPOMS.Repository.Configurations.Core
 				},
 				new Utility
 				{
-					Id = 65,
+					Id = 26,
 					Name = "Directorate",
 					Description = "Add and/or Update directorates",
 					AngularRedirectUrl = "utilities/directorate",
+					SystemAdminUtility = false
+				},
+				new Utility
+				{
+					Id = 27,
+					Name = "Bank",
+					Description = "Add and/or Update banks",
+					AngularRedirectUrl = "utilities/bank",
+					SystemAdminUtility = false
+				},
+				new Utility
+				{
+					Id = 28,
+					Name = "Branch",
+					Description = "Add and/or Update branches",
+					AngularRedirectUrl = "utilities/branch",
+					SystemAdminUtility = false
+				},
+				new Utility
+				{
+					Id = 29,
+					Name = "Account Type",
+					Description = "Add and/or Update account types",
+					AngularRedirectUrl = "utilities/account-type",
 					SystemAdminUtility = false
 				}
 			);

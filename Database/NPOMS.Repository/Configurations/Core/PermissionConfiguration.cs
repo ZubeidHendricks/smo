@@ -467,6 +467,62 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "View Programme Budget Sub Menu",
 					SystemName = "SN.ProgBudget",
 					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 66,
+					Name = "View Funding Menu",
+					SystemName = "TN.VFM",
+					CategoryName = "Top Navigation"
+				},
+				new Permission
+				{
+					Id = 67,
+					Name = "Add NPO/Organisation Funding",
+					SystemName = "Fund.ANF",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 68,
+					Name = "Edit NPO/Organisation Funding",
+					SystemName = "Fund.ENF",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 69,
+					Name = "View NPO/Organisation Funding",
+					SystemName = "Fund.VNF",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 70,
+					Name = "Delete NPO/Organisation Funding",
+					SystemName = "Fund.DNF",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 71,
+					Name = "View Payment Schedule",
+					SystemName = "Fund.VPS",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 72,
+					Name = "View Compliance Check",
+					SystemName = "Fund.CC",
+					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 73,
+					Name = "Show NPO/Organisation Funding Action Buttons",
+					SystemName = "Fund.SNFA",
+					CategoryName = "Funding"
 				}
 			);
 		}

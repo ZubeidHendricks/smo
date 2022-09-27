@@ -91,6 +91,9 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IFrequencyPeriodRepository, FrequencyPeriodRepository>();
 			services.AddScoped<ISubProgrammeTypeRepository, SubProgrammeTypeRepository>();
 			services.AddScoped<IDirectorateRepository, DirectorateRepository>();
+			services.AddScoped<IBankRepository, BankRepository>();
+			services.AddScoped<IBranchRepository, BranchRepository>();
+			services.AddScoped<IAccountTypeRepository, AccountTypeRepository>();
 
 			/* Entities */
 			services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
@@ -109,6 +112,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<ISustainabilityPlanRepository, SustainabilityPlanRepository>();
 			services.AddScoped<ITrainingMaterialRepository, TrainingMaterialRepository>();
 			services.AddScoped<IServicesRenderedRepository, ServicesRenderedRepository>();
+			services.AddScoped<IBankDetailRepository, BankDetailRepository>();
 
 			/* Lookup */
 			services.AddScoped<IActivityListRepository, ActivityListRepository>();

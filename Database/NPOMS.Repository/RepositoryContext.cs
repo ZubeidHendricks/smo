@@ -93,6 +93,9 @@ namespace NPOMS.Repository
 		public DbSet<FrequencyPeriod> FrequencyPeriods { get; set; }
 		public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
 		public DbSet<Directorate> Directorates { get; set; }
+		public DbSet<Bank> Banks { get; set; }
+		public DbSet<Branch> Branches { get; set; }
+		public DbSet<AccountType> AccountTypes { get; set; }
 
 		/* Entities */
 		public DbSet<AccessStatus> AccessStatuses { get; set; }
@@ -111,6 +114,7 @@ namespace NPOMS.Repository
 		public DbSet<Status> Statuses { get; set; }
 		public DbSet<SustainabilityPlan> SustainabilityPlans { get; set; }
 		public DbSet<ServicesRendered> ServicesRendered { get; set; }
+		public DbSet<BankDetail> BankDetails { get; set; }
 
 		/* Lookup */
 		public DbSet<FacilityList> ActivityList { get; set; }
@@ -198,6 +202,9 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new FrequencyPeriodConfiguration());
 			modelBuilder.ApplyConfiguration(new SubProgrammeTypeConfiguration());
 			modelBuilder.ApplyConfiguration(new DirectorateConfiguration());
+			modelBuilder.ApplyConfiguration(new BankConfiguration());
+			modelBuilder.ApplyConfiguration(new BranchConfiguration());
+			modelBuilder.ApplyConfiguration(new AccountTypeConfiguration());
 
 			/* Entities */
 			modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());

@@ -134,7 +134,7 @@ export class TargetsComponent implements OnInit {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Frequencies, false).subscribe(
       (results) => {
-        this.frequencies = results;
+        this.frequencies = results.filter(x => x.id === FrequencyEnum.Monthly);
         this._spinner.hide();
       },
       (err) => {

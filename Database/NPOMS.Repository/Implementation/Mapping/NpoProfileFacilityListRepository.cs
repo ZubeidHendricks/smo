@@ -33,6 +33,12 @@ namespace NPOMS.Repository.Implementation.Mapping
 							.AsNoTracking().ToListAsync();
 		}
 
+		public async Task<NpoProfileFacilityList> GetByModel(NpoProfileFacilityList model)
+		{
+			return await FindByCondition(x => x.NpoProfileId.Equals(model.NpoProfileId) && x.FacilityListId.Equals(model.FacilityListId))
+							.AsNoTracking().FirstOrDefaultAsync();
+		}
+
 		public async Task DeleteEntity(int id)
 		{
 			var model = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();

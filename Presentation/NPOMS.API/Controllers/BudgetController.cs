@@ -137,6 +137,21 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+		[HttpGet("programme-budgets/programmeId/{programmeId}/financialYearId/{financialYearId}", Name = "GetProgrammeBudgetByProgrammeId")]
+		public async Task<IActionResult> GetProgrammeBudgetByProgrammeId(int programmeId, int financialYearId)
+		{
+			try
+			{
+				var results = await _budgetService.GetProgrammeBudgetByProgrammeId(programmeId, financialYearId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetProgrammeBudgetByProgrammeId action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
 		[HttpPost("programme-budgets", Name = "CreateProgrammeBudget")]
 		public async Task<IActionResult> CreateProgrammeBudget([FromBody] ProgrammeBudget model)
 		{

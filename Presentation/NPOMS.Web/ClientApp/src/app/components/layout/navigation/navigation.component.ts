@@ -151,6 +151,16 @@ export class NavigationComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.ViewFundingMenu)) {
+        this.mainMenu.push({
+          label: 'Funding',
+          icon: 'fa fa-money wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('npo-funding');
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.ViewDashboardMenu)) {
         this.mainMenu.push({
           label: 'Dashboard',

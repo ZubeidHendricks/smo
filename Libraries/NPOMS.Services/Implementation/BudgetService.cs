@@ -92,6 +92,11 @@ namespace NPOMS.Services.Implementation
 			return await _programmeBudgetRepository.GetProgrammeBudgetsByIds(departmentId, financialYearId);
 		}
 
+		public async Task<ProgrammeBudget> GetProgrammeBudgetByProgrammeId(int programmeId, int financialYearId)
+		{
+			return await _programmeBudgetRepository.GetProgrammeBudgetByProgrammeId(programmeId, financialYearId);
+		}
+
 		public async Task Create(ProgrammeBudget model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);

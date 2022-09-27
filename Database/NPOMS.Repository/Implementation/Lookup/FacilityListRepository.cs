@@ -67,7 +67,8 @@ namespace NPOMS.Repository.Implementation.Lookup
 		{
 			return await FindByCondition(x => x.Name.Equals(model.Name) &&
 							x.FacilitySubDistrictId.Equals(model.FacilitySubDistrictId) &&
-							x.FacilityClassId.Equals(model.FacilityClassId))
+							x.FacilityClassId.Equals(model.FacilityClassId) &&
+							x.FacilityTypeId.Equals(model.FacilityTypeId))
 								.AsNoTracking().FirstOrDefaultAsync();
 		}
 

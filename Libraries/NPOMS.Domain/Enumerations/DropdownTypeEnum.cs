@@ -32,6 +32,9 @@
 		Frequencies = 28,
 		FrequencyPeriods = 29,
 		SubProgrammeTypes = 30,
-		Directorates = 31
+		Directorates = 31,
+		Banks = 32,
+		Branches = 33,
+		AccountTypes = 34
 	}
 }

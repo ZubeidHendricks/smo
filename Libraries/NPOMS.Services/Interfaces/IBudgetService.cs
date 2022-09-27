@@ -20,6 +20,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<ProgrammeBudget>> GetProgrammeBudgetsByIds(int departmentId, int financialYearId);
 
+		Task<ProgrammeBudget> GetProgrammeBudgetByProgrammeId(int programmeId, int financialYearId);
+
 		Task Create(ProgrammeBudget model, string userIdentifier);
 
 		Task Update(ProgrammeBudget model, string userIdentifier);

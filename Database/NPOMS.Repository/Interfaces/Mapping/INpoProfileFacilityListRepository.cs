@@ -8,6 +8,8 @@ namespace NPOMS.Repository.Interfaces.Mapping
 	{
 		Task<IEnumerable<NpoProfileFacilityList>> GetByNpoProfileId(int npoProfileId);
 
+		Task<NpoProfileFacilityList> GetByModel(NpoProfileFacilityList model);
+
 		Task DeleteEntity(int id);
 	}
 }

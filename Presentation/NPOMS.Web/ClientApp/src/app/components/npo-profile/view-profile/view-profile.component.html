@@ -36,7 +36,7 @@
     </p-panel>
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
-        <p-table [columns]="serviceRenderedCols" [value]="npoProfile.servicesRendered" styleClass="p-datatable-sm">
+        <p-table [columns]="serviceRenderedCols" [value]="servicesRendered" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -60,7 +60,7 @@
     </p-panel>
     <div style="height: 10px;"></div>
     <p-panel [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
-        <p-table [columns]="facilityInfoCols" [value]="npoProfile.npoProfileFacilityLists" styleClass="p-datatable-sm">
+        <p-table [columns]="facilityInfoCols" [value]="npoProfileFacilityLists" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -91,6 +91,32 @@
             </ng-template>
         </p-table>
     </p-panel>
+    <div style="height: 10px;"></div>
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Bank Details">
+        <p-table [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr class="default-font">
+                    <td *ngIf="rowData.bank">{{rowData.bank.name}}</td>
+                    <td *ngIf="rowData.branch">{{rowData.branch.name}}</td>
+                    <td>{{rowData.branchCode}}</td>
+                    <td *ngIf="rowData.accountType">{{rowData.accountType.name}}</td>
+                    <td>{{rowData.accountNumber}}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>    
     <div style="height: 10px;"></div>
     <p-panel [style]="{'font-size':'12px'}" header="Supporting Documents">
         <p-table [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
@@ -172,7 +198,7 @@
     </p-panel>
 </div>
 
-<p-dialog header="Facility Information" 
+<p-dialog header="Facility or Community Place Information" 
           [(visible)]="displayFacilityInformationDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"

@@ -2,7 +2,7 @@ import { HttpEventType } from '@angular/common/http';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { DropdownTypeEnum, EntityEnum, EntityTypeEnum, FrequencyPeriodEnum, PermissionsEnum } from 'src/app/models/enums';
+import { DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FrequencyPeriodEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IDocumentType, IFinancialYear, IFrequencyPeriod, IUser, IWorkplanActual, IWorkplanComment, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
@@ -190,7 +190,7 @@ export class ActualsComponent implements OnInit {
   private loadDocumentTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
-        this.documentTypes = results;
+        this.documentTypes = results.find(x => x.location === DocumentUploadLocationsEnum.WorkplanActuals);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -388,7 +388,7 @@ export class ActualsComponent implements OnInit {
   }
 
   public onUploadChange = (files, workplanIndicator) => {
-    files[0].documentType = this.documentTypes.find(x => x.name == 'Evidence');
+    files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.WorkplanActuals);
 
     this._documentStore.upload(files, EntityTypeEnum.WorkplanActuals, Number(workplanIndicator.workplanActuals[0].id), EntityEnum.WorkplanIndicators, this.application.refNo, files[0].documentType.id).subscribe(
       event => {

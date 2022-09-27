@@ -52,6 +52,9 @@ namespace NPOMS.Services.Implementation
 		private IFrequencyPeriodRepository _frequencyPeriodRepository;
 		private ISubProgrammeTypeRepository _subProgrammeTypeRepository;
 		private IDirectorateRepository _directorateRepository;
+		private IBankRepository _bankRepository;
+		private IBranchRepository _branchRepository;
+		private IAccountTypeRepository _accountTypeRepository;
 
 		#endregion
 
@@ -90,7 +93,10 @@ namespace NPOMS.Services.Implementation
 			IFrequencyRepository frequencyRepository,
 			IFrequencyPeriodRepository frequencyPeriodRepository,
 			ISubProgrammeTypeRepository subProgrammeTypeRepository,
-			IDirectorateRepository directorateRepository)
+			IDirectorateRepository directorateRepository,
+			IBankRepository bankRepository,
+			IBranchRepository branchRepository,
+			IAccountTypeRepository accountTypeRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -125,6 +131,9 @@ namespace NPOMS.Services.Implementation
 			_frequencyPeriodRepository = frequencyPeriodRepository;
 			_subProgrammeTypeRepository = subProgrammeTypeRepository;
 			_directorateRepository = directorateRepository;
+			_bankRepository = bankRepository;
+			_branchRepository = branchRepository;
+			_accountTypeRepository = accountTypeRepository;
 		}
 
 		#endregion
@@ -375,6 +384,11 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			await _subProgrammeRepository.UpdateAsync(model);
+		}
+
+		public async Task<IEnumerable<SubProgramme>> GetSubProgrammesByProgrammeId(int programmeId)
+		{
+			return await _subProgrammeRepository.GetByProgrammeId(programmeId);
 		}
 
 		#endregion
@@ -687,6 +701,11 @@ namespace NPOMS.Services.Implementation
 			return await _facilityListRepository.GetEntities(returnInactive);
 		}
 
+		public async Task<FacilityList> GetFacilityListByModel(FacilityList model)
+		{
+			return await _facilityListRepository.GetByProperties(model);
+		}
+
 		public async Task<IEnumerable<FacilityList>> SearchFacilityByName(string name)
 		{
 			return await _facilityListRepository.SearchByName(name);
@@ -694,6 +713,10 @@ namespace NPOMS.Services.Implementation
 
 		public async Task CreateFacility(FacilityList model, string userIdentifier)
 		{
+			model.FacilityType = null;
+			model.FacilitySubDistrict = null;
+			model.FacilityClass = null;
+
 			var facility = await _facilityListRepository.GetByProperties(model);
 
 			if (facility == null)
@@ -1030,6 +1053,11 @@ namespace NPOMS.Services.Implementation
 			await _subProgrammeTypeRepository.UpdateAsync(model);
 		}
 
+		public async Task<IEnumerable<SubProgrammeType>> GetSubProgrammeTypesBySubProgrammeId(int subProgrammeId)
+		{
+			return await _subProgrammeTypeRepository.GetBySubProgrammeId(subProgrammeId);
+		}
+
 		#endregion
 
 		#region Directorate
@@ -1057,6 +1085,108 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			await _directorateRepository.UpdateAsync(model);
+		}
+
+		#endregion
+
+		#region Bank
+
+		public async Task<IEnumerable<Bank>> GetBanks(bool returnInactive)
+		{
+			return await _bankRepository.GetEntities(returnInactive);
+		}
+
+		public async Task CreateBank(Bank model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _bankRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateBank(Bank model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _bankRepository.UpdateAsync(model);
+		}
+
+		#endregion
+
+		#region Branch
+
+		public async Task<IEnumerable<Branch>> GetBranches(bool returnInactive)
+		{
+			return await _branchRepository.GetEntities(returnInactive);
+		}
+
+		public async Task<IEnumerable<Branch>> GetBranchesByBankId(int bankId)
+		{
+			return await _branchRepository.GetByBankId(bankId);
+		}
+
+		public async Task<Branch> GetBranchById(int id)
+		{
+			return await _branchRepository.GetById(id);
+		}
+
+		public async Task CreateBranch(Branch model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _branchRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateBranch(Branch model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _branchRepository.UpdateAsync(model);
+		}
+
+		#endregion
+
+		#region Account Type
+
+		public async Task<IEnumerable<AccountType>> GetAccountTypes(bool returnInactive)
+		{
+			return await _accountTypeRepository.GetEntities(returnInactive);
+		}
+
+		public async Task<AccountType> GetAccountTypeById(int id)
+		{
+			return await _accountTypeRepository.GetById(id);
+		}
+
+		public async Task CreateAccountType(AccountType model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _accountTypeRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateAccountType(AccountType model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _accountTypeRepository.UpdateAsync(model);
 		}
 
 		#endregion
