@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220928081230_AddCompliantCycleRuleConfiguration")]
+    partial class AddCompliantCycleRuleConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -11646,8 +11648,6 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompliantCycleId");
-
                     b.ToTable("PaymentSchedules", "dbo");
                 });
 
@@ -15619,17 +15619,6 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("RecipientType");
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Entities.PaymentSchedule", b =>
-                {
-                    b.HasOne("NPOMS.Domain.Entities.CompliantCycle", "CompliantCycle")
-                        .WithMany()
-                        .HasForeignKey("CompliantCycleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CompliantCycle");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.Resource", b =>

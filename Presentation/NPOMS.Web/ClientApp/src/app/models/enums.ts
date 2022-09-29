@@ -50,7 +50,8 @@ export enum DropdownTypeEnum {
     Directorates = 31,
     Banks = 32,
     Branches = 33,
-    AccountTypes = 34
+    AccountTypes = 34,
+    CompliantCycleRules = 35
 }
 
 export enum EntityTypeEnum {
@@ -196,6 +197,8 @@ export enum PermissionsEnum {
 
     ViewSettingsMenu = "SN.Settings",
     ViewUtilitiesSubMenu = "SN.Utilities",
+    ViewCompliantCycleSubMenu = "SN.CompliantCycle",
+    ViewPaymentScheduleSubMenu = "SN.PaymentSchedule",
 
     ViewBudgetsMenu = "SN.Budgets",
     ViewDepartmentBudgetSubMenu = "SN.DeptBudget",
@@ -209,7 +212,19 @@ export enum PermissionsEnum {
     DeleteNpoFunding = "Fund.DNF",
     ViewPaymentSchedule = "Fund.VPS",
     ComplianceCheck = "Fund.CC",
-    ShowNpoFundingActions = "Fund.SNFA"
+    ShowNpoFundingActions = "Fund.SNFA",
+
+    /* Compliant Cycle */
+    AddCompliantCycles = "CC.Add",
+    ViewCompliantCycles = "CC.View",
+    EditCompliantCycles = "CC.Edit",
+    DeleteCompliantCycles = "CC.Delete",
+
+    /* Payment Schedule */
+    AddPaymentSchedules = "PS.Add",
+    ViewPaymentSchedules = "PS.View",
+    EditPaymentSchedules = "PS.Edit",
+    DeletePaymentSchedules = "PS.Delete"
 }
 
 export enum ReportTypeEnum {

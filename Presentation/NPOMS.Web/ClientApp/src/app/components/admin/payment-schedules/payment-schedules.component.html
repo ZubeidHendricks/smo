@@ -1,0 +1,202 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Payment Schedule">
+    <div style="height: 10px;"></div>
+    <p-card subheader="Search Filters" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+        <div style="margin-top: 0px;" class="p-grid" *ngIf="isSystemAdmin">
+            <div class="p-col-4">
+                <div class="p-fluid">
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Department</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="departmentChange()"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-4">
+                <div class="p-fluid">
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Financial Year</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange()"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-4">
+                <div class="p-fluid">
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Compliant Cycle</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-dropdown [options]="compliantCycles" placeholder="Select a Compliant Cycle" optionLabel="name" [(ngModel)]="selectedCompliantCycleFilter" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="compliantCycleFilterChange()"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 0px;" class="p-grid" *ngIf="!isSystemAdmin">
+            <div class="p-col-6">
+                <div class="p-fluid">
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Financial Year</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange()"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-6">
+                <div class="p-fluid">
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Compliant Cycle</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-dropdown [options]="compliantCycles" placeholder="Select a Compliant Cycle" optionLabel="name" [(ngModel)]="selectedCompliantCycleFilter" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="compliantCycleFilterChange()"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </p-card>
+    <div style="height: 20px;"></div>
+    <div class="p-grid" *ngIf="selectedDepartment && selectedFinancialYear">
+        <div class="p-col-fixed">
+            <button pButton pRipple type="button" label="Add Payment Schedule" class="p-button-text" icon="fa fa-plus" (click)="add()" *ngIf="IsAuthorized(PermissionsEnum.AddPaymentSchedules)"></button>
+        </div>
+        <div class="p-col">
+            <div class="p-d-flex">
+
+            </div>
+        </div>
+    </div>
+    <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="filteredPaymentSchedules" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="[]">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr class="default-font">
+                <td><span *ngIf="rowData.compliantCycle">{{rowData.compliantCycle.financialYear.name}}</span></td>
+                <td><span *ngIf="rowData.compliantCycle">{{rowData.compliantCycle.startDate | date: 'yyyy-MM-dd'}} to {{rowData.compliantCycle.endDate | date: 'yyyy-MM-dd'}}</span></td>
+                <td>{{rowData.startDate | date: 'yyyy-MM-dd'}}</td>
+                <td>{{rowData.releaseDate | date: 'yyyy-MM-dd'}}</td>
+                <td>{{rowData.paymentDate | date: 'yyyy-MM-dd'}}</td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                    <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="delete(rowData)" pTooltip="Delete" tooltipPosition="left"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="6" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
+
+<p-dialog header="Compliant Cycle" 
+          [(visible)]="displayDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+        <div class="p-grid"  *ngIf="isSystemAdmin">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Department</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Financial Year</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Compliant Cycle</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="compliantCycles" placeholder="Select a Compliant Cycle" optionLabel="name" [(ngModel)]="selectedCompliantCycle" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="compliantCycleChange()"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Start Date</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-calendar [minDate]="minDate" [maxDate]="maxDate" [disabled]="disableDate" [(ngModel)]="paymentSchedule.startDate" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [style]="{'width': '50%'}" inputId="time" appendTo="body"></p-calendar>
+            </div>
+        </div>        
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Release Date</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-calendar [minDate]="minDate" [maxDate]="maxDate" [disabled]="disableDate" [(ngModel)]="paymentSchedule.releaseDate" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [style]="{'width': '50%'}" inputId="time" appendTo="body"></p-calendar>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Payment Date</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-calendar [minDate]="minDate" [maxDate]="maxDate" [disabled]="disableDate" [(ngModel)]="paymentSchedule.paymentDate" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [style]="{'width': '50%'}" inputId="time" appendTo="body"></p-calendar>
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSave() (click)="save()"></button>
+        </ng-template>
+</p-dialog>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>
