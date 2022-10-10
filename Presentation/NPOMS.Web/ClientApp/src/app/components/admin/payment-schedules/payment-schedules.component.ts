@@ -39,7 +39,7 @@ export class PaymentSchedulesComponent implements OnInit {
   selectedFinancialYear: IFinancialYear;
 
   compliantCycles: ICompliantCycle[];
-  selectedCompliantCycleFilter: ICompliantCycle;
+  selectedCompliantCycles: ICompliantCycle[] = [];
   selectedCompliantCycle: ICompliantCycle;
 
   paymentSchedules: IPaymentSchedule[];
@@ -148,6 +148,7 @@ export class PaymentSchedulesComponent implements OnInit {
 
           this.paymentSchedules = results;
           this.filteredPaymentSchedules = results;
+          this.compliantCycleFilterChange();
 
           this._spinner.hide();
         },
@@ -168,8 +169,12 @@ export class PaymentSchedulesComponent implements OnInit {
   }
 
   compliantCycleFilterChange() {
-    if (this.selectedCompliantCycleFilter) {
-      this.filteredPaymentSchedules = this.paymentSchedules.filter(x => x.compliantCycleId === this.selectedCompliantCycleFilter.id);
+    if (this.selectedCompliantCycles.length > 0) {
+      // Get selected compliant cycle ids
+      let compliantCycleIds = this.selectedCompliantCycles.map(x => x.id);
+
+      // Filter payment schedules on selected compliant cycle ids
+      this.filteredPaymentSchedules = this.paymentSchedules.filter(x => compliantCycleIds.includes(x.compliantCycleId));
     }
   }
 

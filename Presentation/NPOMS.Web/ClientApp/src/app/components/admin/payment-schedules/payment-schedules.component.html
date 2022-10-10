@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="p-col">
-                            <p-dropdown [options]="compliantCycles" placeholder="Select a Compliant Cycle" optionLabel="name" [(ngModel)]="selectedCompliantCycleFilter" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="compliantCycleFilterChange()"></p-dropdown>
+                            <p-multiSelect [options]="compliantCycles" [(ngModel)]="selectedCompliantCycles" defaultLabel="Select option(s)" optionLabel="name" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" (onChange)="compliantCycleFilterChange()" maxSelectedLabels="2" selectedItemsLabel="{0} items selected"></p-multiSelect>
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                             </div>
                         </div>
                         <div class="p-col">
-                            <p-dropdown [options]="compliantCycles" placeholder="Select a Compliant Cycle" optionLabel="name" [(ngModel)]="selectedCompliantCycleFilter" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="compliantCycleFilterChange()"></p-dropdown>
+                            <p-multiSelect [options]="compliantCycles" [(ngModel)]="selectedCompliantCycles" defaultLabel="Select option(s)" optionLabel="name" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" (onChange)="compliantCycleFilterChange()" maxSelectedLabels="2" selectedItemsLabel="{0} items selected"></p-multiSelect>
                         </div>
                     </div>
                 </div>

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IFinancialYear, INpo, IProgramme, IUser } from 'src/app/models/interfaces';
+import { IFinancialYear, INpo, INpoProfile, IProgramme, IUser } from 'src/app/models/interfaces';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -72,7 +72,6 @@ export class FundingListComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.ViewNpoFunding))
           this._router.navigate(['401']);
 
-        // this.loadNPOs();
         this.loadFinancialYears();
         this.loadProgrammes();
         this.buildButtonItems();
@@ -90,25 +89,6 @@ export class FundingListComponent implements OnInit {
     ];
   }
 
-  /*private loadNPOs() {
-    this._spinner.show();
-    this._npoRepo.getAllNpos(AccessStatusEnum.Approved).subscribe(
-      (results) => {
-        this.npos = results;
-        this.loadFunding();
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }*/
-
-  private loadFunding() {
-
-  }
-
   private loadFinancialYears() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
@@ -117,6 +97,10 @@ export class FundingListComponent implements OnInit {
         let currentDate = new Date();
         let currentFinancialYear = results.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
         this.financialYears = results.filter(x => x.id <= currentFinancialYear.id);
+
+        // Select last financial year in list
+        this.selectedFinancialYear = this.financialYears[this.financialYears.length - 1];
+
         this._spinner.hide();
       },
       (err) => {
@@ -216,22 +200,8 @@ export class FundingListComponent implements OnInit {
     if (this.selectedNpo) {
       this._npoProfileRepo.getNpoProfileByNpoId(this.selectedNpo.id).subscribe(
         (profile) => {
-          this._npoProfileRepo.getServicesRenderedByNpoProfileId(profile.id).subscribe(
-            (services) => {
-              // Populate filtered programmes based on npo profile services rendered programmes
-              this.filteredProgrammes = this.programmes.filter(programme => {
-                return services.find(service => {
-                  return programme.id === service.programmeId;
-                });
-              });
-
-              this._spinner.hide();
-            },
-            (err) => {
-              this._loggerService.logException(err);
-              this._spinner.hide();
-            }
-          );
+          this.getServicesRendered(profile);
+          this.getFunding(profile.npoId);
         },
         (err) => {
           this._loggerService.logException(err);
@@ -239,6 +209,30 @@ export class FundingListComponent implements OnInit {
         }
       );
     }
+  }
+
+  private getServicesRendered(npoProfile: INpoProfile) {
+    this._spinner.show();
+    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfile.id).subscribe(
+      (services) => {
+        // Populate filtered programmes based on npo profile services rendered programmes
+        this.filteredProgrammes = this.programmes.filter(programme => {
+          return services.find(service => {
+            return programme.id === service.programmeId;
+          });
+        });
+
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private getFunding(npoId: number) {
+    console.log('npoId', npoId);
   }
 
   private filterFunding() {
