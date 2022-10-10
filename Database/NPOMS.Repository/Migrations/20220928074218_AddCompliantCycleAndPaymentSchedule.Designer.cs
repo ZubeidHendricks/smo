@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220928074218_AddCompliantCycleAndPaymentSchedule")]
+    partial class AddCompliantCycleAndPaymentSchedule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -11315,22 +11317,16 @@ namespace NPOMS.Repository.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GetDate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("CreatedUserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValueSql("1");
+                        .HasColumnType("int");
 
                     b.Property<int>("CycleNumber")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("1");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedDateTime")
                         .HasColumnType("datetime2");
@@ -11341,40 +11337,6 @@ namespace NPOMS.Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CompliantCycleRules", "dbo");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            CycleNumber = 1,
-                            IsActive = false
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            CycleNumber = 2,
-                            IsActive = false
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            CycleNumber = 3,
-                            IsActive = false
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            CycleNumber = 4,
-                            IsActive = false
-                        });
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.ContactInformation", b =>
@@ -11645,8 +11607,6 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompliantCycleId");
 
                     b.ToTable("PaymentSchedules", "dbo");
                 });
@@ -15619,17 +15579,6 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("RecipientType");
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Entities.PaymentSchedule", b =>
-                {
-                    b.HasOne("NPOMS.Domain.Entities.CompliantCycle", "CompliantCycle")
-                        .WithMany()
-                        .HasForeignKey("CompliantCycleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CompliantCycle");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.Resource", b =>

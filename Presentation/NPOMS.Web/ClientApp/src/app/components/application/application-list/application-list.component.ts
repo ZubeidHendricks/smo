@@ -82,7 +82,8 @@ export class ApplicationListComponent implements OnInit {
 
     this.cols = [
       { field: 'refNo', header: 'Ref. No.', width: '15%' },
-      { field: 'npo.name', header: 'Organisation', width: '30%' },
+      // { field: 'npo.name', header: 'Organisation', width: '30%' },
+      { field: 'npo.name', header: 'Organisation', width: '35%' },
       { field: 'applicationPeriod.applicationType.name', header: 'Type', width: '15%' },
       { field: 'applicationPeriod.closingDate', header: 'Closing Date', width: '15%' },
       { field: 'status.name', header: 'Application Status', width: '10%' }

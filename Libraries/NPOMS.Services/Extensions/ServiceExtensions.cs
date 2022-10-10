@@ -113,6 +113,9 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<ITrainingMaterialRepository, TrainingMaterialRepository>();
 			services.AddScoped<IServicesRenderedRepository, ServicesRenderedRepository>();
 			services.AddScoped<IBankDetailRepository, BankDetailRepository>();
+			services.AddScoped<ICompliantCycleRuleRepository, CompliantCycleRuleRepository>();
+			services.AddScoped<ICompliantCycleRepository, CompliantCycleRepository>();
+			services.AddScoped<IPaymentScheduleRepository, PaymentScheduleRepository>();
 
 			/* Lookup */
 			services.AddScoped<IActivityListRepository, ActivityListRepository>();
@@ -157,6 +160,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IDocumentStoreService, DocumentStoreService>();
 			services.AddScoped<IIndicatorService, IndicatorService>();
 			services.AddScoped<IBudgetService, BudgetService>();
+			services.AddScoped<IAdminService, AdminService>();
 
 			//PowerBI
 			services.AddScoped(typeof(AadService))

@@ -147,6 +147,9 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.AccountTypes:
 						var accountTypes = await _dropdownService.GetAccountTypes(returnInactive);
 						return Ok(accountTypes);
+					case DropdownTypeEnum.CompliantCycleRules:
+						var compliantCycleRules = await _dropdownService.GetCompliantCycleRules(returnInactive);
+						return Ok(compliantCycleRules);
 				}
 
 				return Ok();
@@ -285,6 +288,10 @@ namespace NPOMS.API.Controllers
 						var accountType = JsonConvert.DeserializeObject<AccountType>(Convert.ToString(entity));
 						await _dropdownService.CreateAccountType(accountType, base.GetUserIdentifier());
 						break;
+					case DropdownTypeEnum.CompliantCycleRules:
+						var rule = JsonConvert.DeserializeObject<CompliantCycleRule>(Convert.ToString(entity));
+						await _dropdownService.CreateCompliantCycleRule(rule, base.GetUserIdentifier());
+						break;
 				}
 
 				return Ok();
@@ -422,6 +429,10 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.AccountTypes:
 						var accountType = JsonConvert.DeserializeObject<AccountType>(Convert.ToString(entity));
 						await _dropdownService.UpdateAccountType(accountType, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.CompliantCycleRules:
+						var rule = JsonConvert.DeserializeObject<CompliantCycleRule>(Convert.ToString(entity));
+						await _dropdownService.UpdateCompliantCycleRule(rule, base.GetUserIdentifier());
 						break;
 				}
 

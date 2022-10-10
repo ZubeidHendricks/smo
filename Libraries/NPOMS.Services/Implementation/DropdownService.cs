@@ -55,6 +55,7 @@ namespace NPOMS.Services.Implementation
 		private IBankRepository _bankRepository;
 		private IBranchRepository _branchRepository;
 		private IAccountTypeRepository _accountTypeRepository;
+		private ICompliantCycleRuleRepository _compliantCycleRuleRepository;
 
 		#endregion
 
@@ -96,7 +97,8 @@ namespace NPOMS.Services.Implementation
 			IDirectorateRepository directorateRepository,
 			IBankRepository bankRepository,
 			IBranchRepository branchRepository,
-			IAccountTypeRepository accountTypeRepository)
+			IAccountTypeRepository accountTypeRepository,
+			ICompliantCycleRuleRepository compliantCycleRuleRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -134,6 +136,7 @@ namespace NPOMS.Services.Implementation
 			_bankRepository = bankRepository;
 			_branchRepository = branchRepository;
 			_accountTypeRepository = accountTypeRepository;
+			_compliantCycleRuleRepository = compliantCycleRuleRepository;
 		}
 
 		#endregion
@@ -1187,6 +1190,40 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			await _accountTypeRepository.UpdateAsync(model);
+		}
+
+		#endregion
+
+		#region Compliant Cycle Rule
+
+		public async Task<IEnumerable<CompliantCycleRule>> GetCompliantCycleRules(bool returnInactive)
+		{
+			return await _compliantCycleRuleRepository.GetEntities(returnInactive);
+		}
+
+		public async Task<CompliantCycleRule> GetCompliantCycleRuleById(int id)
+		{
+			return await _compliantCycleRuleRepository.GetById(id);
+		}
+
+		public async Task CreateCompliantCycleRule(CompliantCycleRule model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _compliantCycleRuleRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateCompliantCycleRule(CompliantCycleRule model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _compliantCycleRuleRepository.UpdateAsync(model);
 		}
 
 		#endregion

@@ -123,6 +123,8 @@ import { DocumentsComponent } from './components/funding/funding-steps/documents
 import { BankComponent } from './components/admin/utilities/bank/bank.component';
 import { BranchComponent } from './components/admin/utilities/branch/branch.component';
 import { AccountTypeComponent } from './components/admin/utilities/account-type/account-type.component';
+import { PaymentSchedulesComponent } from './components/admin/payment-schedules/payment-schedules.component';
+import { CompliantCyclesComponent } from './components/admin/compliant-cycles/compliant-cycles.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -246,7 +248,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     DocumentsComponent,
     BankComponent,
     BranchComponent,
-    AccountTypeComponent
+    AccountTypeComponent,
+    PaymentSchedulesComponent,
+    CompliantCyclesComponent
   ],
   imports: [
     BrowserModule,

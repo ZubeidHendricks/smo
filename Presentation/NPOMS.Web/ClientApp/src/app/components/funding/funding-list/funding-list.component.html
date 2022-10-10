@@ -6,7 +6,7 @@
     <div style="height: 10px;"></div>    
     <p-card subheader="Funding Filters" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
         <div style="margin-top: 0px;" class="p-grid">
-            <div class="p-col-6">
+            <div class="p-col-4">
                 <div class="p-fluid">
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
@@ -34,7 +34,11 @@
                                 (onSelect)="npoChange()">
                             </p-autoComplete>
                         </div>
-                    </div>
+                    </div>                    
+                </div>
+            </div>
+            <div class="p-col-4">
+                <div class="p-fluid">
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
@@ -47,7 +51,7 @@
                     </div>
                 </div>
             </div>
-            <div class="p-col-6">
+            <div class="p-col-4">
                 <div class="p-fluid">
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
@@ -64,7 +68,7 @@
         </div>
     </p-card>
     <div style="height: 20px;"></div>
-    <div class="p-grid">
+    <div class="p-grid" *ngIf="selectedNpo && selectedFinancialYear">
         <div class="p-col-fixed">
             <button pButton pRipple type="button" label="Add Funding" class="p-button-text" icon="fa fa-plus" (click)="add()" *ngIf="IsAuthorized(PermissionsEnum.AddNpoFunding)"></button>
         </div>

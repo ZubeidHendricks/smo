@@ -259,6 +259,30 @@ export class NavigationComponent implements OnInit {
             }
           });
         }
+
+        if (this.IsAuthorized(PermissionsEnum.ViewCompliantCycleSubMenu)) {
+          this.sideMenu[1].items.push({
+            label: 'Compliant Cycle',
+            icon: 'fa fa-check-circle',
+            disabled: !this.IsAuthorized(PermissionsEnum.ViewCompliantCycles),
+            command: () => {
+              this._router.navigateByUrl('admin/compliant-cycle');
+              this.displaySideMenu = false;
+            }
+          });
+        }
+
+        if (this.IsAuthorized(PermissionsEnum.ViewPaymentScheduleSubMenu)) {
+          this.sideMenu[1].items.push({
+            label: 'Payment Schedule',
+            icon: 'fa fa-calendar',
+            disabled: !this.IsAuthorized(PermissionsEnum.ViewPaymentSchedules),
+            command: () => {
+              this._router.navigateByUrl('admin/payment-schedule');
+              this.displaySideMenu = false;
+            }
+          });
+        }
       }
 
       //budgets

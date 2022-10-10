@@ -222,5 +222,13 @@ namespace NPOMS.Services.Interfaces
 		Task CreateAccountType(AccountType model, string userIdentifier);
 
 		Task UpdateAccountType(AccountType model, string userIdentifier);
+
+		Task<IEnumerable<CompliantCycleRule>> GetCompliantCycleRules(bool returnInactive);
+
+		Task<CompliantCycleRule> GetCompliantCycleRuleById(int id);
+
+		Task CreateCompliantCycleRule(CompliantCycleRule model, string userIdentifier);
+
+		Task UpdateCompliantCycleRule(CompliantCycleRule model, string userIdentifier);
 	}
 }

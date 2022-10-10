@@ -529,6 +529,39 @@ export interface IBankDetail {
     accountType: IAccountType;
 }
 
+export interface ICompliantCycleRule {
+    id: number;
+    cycleNumber: number;
+    isActive: boolean;
+}
+
+export interface ICompliantCycle {
+    id: number;
+    compliantCycleRuleId: number;
+    departmentId: number;
+    financialYearId: number;
+    startDate: Date;
+    endDate: Date;
+    hasSignedTPA: boolean;
+    hasProgressReport: boolean;
+    hasFinancialStatement: boolean;
+    isActive: boolean;
+    name: string;
+
+    financialYear: IFinancialYear;
+}
+
+export interface IPaymentSchedule {
+    id: number;
+    compliantCycleId: number;
+    startDate: Date;
+    releaseDate: Date;
+    paymentDate: Date;
+    isActive: boolean;
+
+    compliantCycle: ICompliantCycle;
+}
+
 /* Lookup */
 export interface IActivityList {
     id: number;

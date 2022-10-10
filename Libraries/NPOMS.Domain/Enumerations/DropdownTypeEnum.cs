@@ -35,6 +35,7 @@
 		Directorates = 31,
 		Banks = 32,
 		Branches = 33,
-		AccountTypes = 34
+		AccountTypes = 34,
+		CompliantCycleRules = 35
 	}
 }

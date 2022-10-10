@@ -115,6 +115,9 @@ namespace NPOMS.Repository
 		public DbSet<SustainabilityPlan> SustainabilityPlans { get; set; }
 		public DbSet<ServicesRendered> ServicesRendered { get; set; }
 		public DbSet<BankDetail> BankDetails { get; set; }
+		public DbSet<CompliantCycleRule> CompliantCycleRules { get; set; }
+		public DbSet<CompliantCycle> CompliantCycles { get; set; }
+		public DbSet<PaymentSchedule> PaymentSchedules { get; set; }
 
 		/* Lookup */
 		public DbSet<FacilityList> ActivityList { get; set; }
@@ -210,6 +213,7 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());
 			modelBuilder.ApplyConfiguration(new StatusConfiguration());
 			modelBuilder.ApplyConfiguration(new TrainingMaterialConfiguration());
+			modelBuilder.ApplyConfiguration(new CompliantCycleRuleConfiguration());
 
 			/* Lookup */
 			modelBuilder.ApplyConfiguration(new ActivityListConfiguration());

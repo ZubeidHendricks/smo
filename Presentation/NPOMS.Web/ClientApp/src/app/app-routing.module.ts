@@ -65,6 +65,8 @@ import { EditFundingComponent } from './components/funding/edit-funding/edit-fun
 import { BankComponent } from './components/admin/utilities/bank/bank.component';
 import { BranchComponent } from './components/admin/utilities/branch/branch.component';
 import { AccountTypeComponent } from './components/admin/utilities/account-type/account-type.component';
+import { CompliantCyclesComponent } from './components/admin/compliant-cycles/compliant-cycles.component';
+import { PaymentSchedulesComponent } from './components/admin/payment-schedules/payment-schedules.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -147,7 +149,13 @@ const routes: Routes = [
   // Funding
   { path: 'npo-funding', component: FundingListComponent },
   { path: 'npo-funding/create', component: CreateFundingComponent },
-  { path: 'npo-funding/edit/:id', component: EditFundingComponent }
+  { path: 'npo-funding/edit/:id', component: EditFundingComponent },
+
+  // Compliant Cycle
+  { path: 'admin/compliant-cycle', component: CompliantCyclesComponent },
+
+  // Payment Schedule
+  { path: 'admin/payment-schedule', component: PaymentSchedulesComponent }
 ];
 
 @NgModule({

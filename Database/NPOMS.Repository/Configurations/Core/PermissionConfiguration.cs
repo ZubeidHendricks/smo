@@ -523,6 +523,76 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "Show NPO/Organisation Funding Action Buttons",
 					SystemName = "Fund.SNFA",
 					CategoryName = "Funding"
+				},
+				new Permission
+				{
+					Id = 74,
+					Name = "View Compliant Cycle Sub Menu",
+					SystemName = "SN.CompliantCycle",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 75,
+					Name = "View Payment Schedule Sub Menu",
+					SystemName = "SN.PaymentSchedule",
+					CategoryName = "Administration - Side Navigation"
+				},
+				new Permission
+				{
+					Id = 76,
+					Name = "Add Compliant Cycle",
+					SystemName = "CC.Add",
+					CategoryName = "Compliant Cycle"
+				},
+				new Permission
+				{
+					Id = 77,
+					Name = "View Compliant Cycle",
+					SystemName = "CC.View",
+					CategoryName = "Compliant Cycle"
+				},
+				new Permission
+				{
+					Id = 78,
+					Name = "Edit Compliant Cycle",
+					SystemName = "CC.Edit",
+					CategoryName = "Compliant Cycle"
+				},
+				new Permission
+				{
+					Id = 79,
+					Name = "Delete Compliant Cycle",
+					SystemName = "CC.Delete",
+					CategoryName = "Compliant Cycle"
+				},
+				new Permission
+				{
+					Id = 80,
+					Name = "Add Payment Schedule",
+					SystemName = "PS.Add",
+					CategoryName = "Payment Schedule"
+				},
+				new Permission
+				{
+					Id = 81,
+					Name = "View Payment Schedule",
+					SystemName = "PS.View",
+					CategoryName = "Payment Schedule"
+				},
+				new Permission
+				{
+					Id = 82,
+					Name = "Edit Payment Schedule",
+					SystemName = "PS.Edit",
+					CategoryName = "Payment Schedule"
+				},
+				new Permission
+				{
+					Id = 83,
+					Name = "Delete Payment Schedule",
+					SystemName = "PS.Delete",
+					CategoryName = "Payment Schedule"
 				}
 			);
 		}
