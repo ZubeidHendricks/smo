@@ -490,6 +490,21 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+		[HttpPut("facility", Name = "UpdateFacilityList")]
+		public async Task<IActionResult> UpdateFacilityList([FromBody] FacilityList model)
+		{
+			try
+			{
+				await _dropdownService.UpdateFacility(model, base.GetUserIdentifier());
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside UpdateFacilityList action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
 		[HttpPost("activity", Name = "CreateActivityList")]
 		public async Task<IActionResult> Create([FromBody] ActivityList model)
 		{

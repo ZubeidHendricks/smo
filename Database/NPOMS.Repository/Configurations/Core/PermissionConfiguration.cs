@@ -408,7 +408,7 @@ namespace NPOMS.Repository.Configurations.Core
 				new Permission
 				{
 					Id = 57,
-					Name = "View Settings Side Menu",
+					Name = "View Security Side Menu",
 					SystemName = "SN.Security",
 					CategoryName = "Administration - Side Navigation"
 				},

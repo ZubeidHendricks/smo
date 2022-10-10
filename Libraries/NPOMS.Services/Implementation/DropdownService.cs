@@ -733,6 +733,16 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
+		public async Task UpdateFacility(FacilityList model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _facilityListRepository.UpdateEntity(model);
+		}
+
 		#endregion
 
 		#region Document Type

@@ -127,6 +127,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task CreateFacility(FacilityList model, string userIdentifier);
 
+		Task UpdateFacility(FacilityList model, string userIdentifier);
+
 		Task<IEnumerable<DocumentType>> GetDocumentTypes(bool returnInactive);
 
 		Task CreateDocumentType(DocumentType model, string userIdentifier);

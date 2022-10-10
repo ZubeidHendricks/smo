@@ -76,7 +76,7 @@ export class EditProfileComponent implements OnInit {
 
   denodoFacilities: IDenodoFacility[];
   selectedDenodoFacility: IDenodoFacility;
-  facilityList: IFacilityList[] = [];
+  facilityList: IFacilityList;
 
   disableField: boolean = true;
 
@@ -681,63 +681,70 @@ export class EditProfileComponent implements OnInit {
   }
 
   saveFacilityInformation() {
-    this.mapping.facilityList.facilityType = this.selectedFacilityType;
-
-    this.mapping.facilityList.facilityType = this.selectedFacilityType;
-    this.mapping.facilityList.facilitySubDistrict = this.selectedSubDistrict;
-    this.mapping.facilityList.facilitySubDistrict.facilityDistrict = this.selectedDistrict;
-    this.mapping.facilityList.facilityClass = this.selectedClass;
-
     let facilityList = {
-      facilityType: this.mapping.facilityList.facilityType,
       facilityTypeId: this.mapping.facilityList.facilityType.id,
-      facilitySubDistrict: this.mapping.facilityList.facilitySubDistrict,
       facilitySubDistrictId: this.mapping.facilityList.facilitySubDistrict.id,
       name: this.mapping.facilityList.name,
-      facilityClass: this.mapping.facilityList.facilityClass,
       facilityClassId: this.mapping.facilityList.facilityClass.id,
-      latitude: this.mapping.facilityList.facilityFound ? this.facilityList[0].latitude : this.mapping.facilityList.latitude,
-      longitude: this.mapping.facilityList.facilityFound ? this.facilityList[0].longitude : this.mapping.facilityList.longitude,
-      address: this.mapping.facilityList.facilityFound ? this.facilityList[0].address : this.mapping.facilityList.address,
+      latitude: this.mapping.facilityList.facilityFound ? this.facilityList.latitude : this.mapping.facilityList.latitude,
+      longitude: this.mapping.facilityList.facilityFound ? this.facilityList.longitude : this.mapping.facilityList.longitude,
+      address: this.mapping.facilityList.facilityFound ? this.facilityList.address : this.mapping.facilityList.address,
       isNew: this.mapping.facilityList.facilityFound ? false : true,
       isActive: true
     } as IFacilityList;
 
-    if (!this.mapping.facilityList.facilityFound) {
+    this._dropdownRepo.getFacilityList(facilityList).subscribe(
+      (facility) => {
+        if (facility == null) {
+          if (this.newFacilityInformation) {
+            this._dropdownRepo.createFacilityList(facilityList).subscribe(
+              (newFacility) => {
+                let mapping = {
+                  npoProfileId: Number(this.npoProfileId),
+                  facilityListId: newFacility.id,
+                  isActive: true
+                } as INpoProfileFacilityList;
 
-      this._dropdownRepo.createFacilityList(facilityList).subscribe(
-        (resp) => {
-          let mapping = {
-            npoProfileId: Number(this.npoProfileId),
-            facilityListId: resp.id,
-            isActive: true
-          } as INpoProfileFacilityList;
+                this.createFacility(mapping);
+              },
+              (err) => {
+                this._loggerService.logException(err);
+                this._spinner.hide();
+              }
+            );
+          }
 
-          this.createFacility(mapping);
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
+          if (this.isFacilityInformationEdit) {
+            this.selectedMapping.facilityList.facilityType = null;
+            this.selectedMapping.facilityList.facilitySubDistrict = null;
+            this.selectedMapping.facilityList.facilityClass = null;
+
+            this._dropdownRepo.updateFacilityList(this.selectedMapping.facilityList).subscribe(
+              (editFacility) => {
+
+              },
+              (err) => {
+                this._loggerService.logException(err);
+                this._spinner.hide();
+              }
+            );
+          }
         }
-      );
-    }
-    else {
-      this._dropdownRepo.getFacilityList(facilityList).subscribe(
-        (resp) => {
+        else {
           let mapping = {
             npoProfileId: Number(this.npoProfileId),
-            facilityListId: resp.id,
+            facilityListId: facility.id,
             isActive: true
           } as INpoProfileFacilityList;
 
           this.newFacilityInformation ? this.createFacility(mapping) : this.updateFacility(mapping);
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
         }
-      );
-    }
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
 
     this.displayFacilityInformationDialog = false;
   }
@@ -833,7 +840,7 @@ export class EditProfileComponent implements OnInit {
     //this.mapping.facilityList.address = this.addressLookup ? this.addressLookup.text : "";
 
     if (initialSelect) {
-      this.facilityList.push({
+      this.facilityList = {
         facilityType: this.selectedFacilityType,
         facilityTypeId: this.selectedFacilityType.id,
         facilitySubDistrict: this.selectedSubDistrict,
@@ -846,7 +853,7 @@ export class EditProfileComponent implements OnInit {
         address: null,
         isNew: false,
         isActive: true
-      } as IFacilityList);
+      } as IFacilityList;
     }
   }
 

@@ -356,6 +356,11 @@ export class DropdownService {
     return this._http.post<IFacilityList>(url, facilityList, httpOptions);
   }
 
+  public updateFacilityList(facilityList: IFacilityList) {
+    const url = `${this._envUrl.urlAddress}/api/dropdown/facility`;
+    return this._http.put<IFacilityList>(url, facilityList, httpOptions);
+  }
+
   public getActivityByName(searchText: string) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/activity/name/${searchText}`;
     return this._http.get<IActivityList[]>(url, httpOptions);
