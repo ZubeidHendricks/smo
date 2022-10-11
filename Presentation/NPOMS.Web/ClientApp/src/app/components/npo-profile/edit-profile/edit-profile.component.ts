@@ -681,6 +681,11 @@ export class EditProfileComponent implements OnInit {
   }
 
   saveFacilityInformation() {
+    this.mapping.facilityList.facilityType = this.selectedFacilityType;
+    this.mapping.facilityList.facilitySubDistrict = this.selectedSubDistrict;
+    this.mapping.facilityList.facilitySubDistrict.facilityDistrict = this.selectedDistrict;
+    this.mapping.facilityList.facilityClass = this.selectedClass;
+
     let facilityList = {
       facilityTypeId: this.mapping.facilityList.facilityType.id,
       facilitySubDistrictId: this.mapping.facilityList.facilitySubDistrict.id,
@@ -695,43 +700,23 @@ export class EditProfileComponent implements OnInit {
 
     this._dropdownRepo.getFacilityList(facilityList).subscribe(
       (facility) => {
+
+        if (this.isFacilityInformationEdit) {
+          /*this.selectedMapping.facilityList.facilityType = null;
+          this.selectedMapping.facilityList.facilitySubDistrict = null;
+          this.selectedMapping.facilityList.facilityClass = null;*/
+
+          this.updateFacilityList(this.selectedMapping.facilityList);
+        }
+
         if (facility == null) {
           if (this.newFacilityInformation) {
-            this._dropdownRepo.createFacilityList(facilityList).subscribe(
-              (newFacility) => {
-                let mapping = {
-                  npoProfileId: Number(this.npoProfileId),
-                  facilityListId: newFacility.id,
-                  isActive: true
-                } as INpoProfileFacilityList;
-
-                this.createFacility(mapping);
-              },
-              (err) => {
-                this._loggerService.logException(err);
-                this._spinner.hide();
-              }
-            );
-          }
-
-          if (this.isFacilityInformationEdit) {
-            this.selectedMapping.facilityList.facilityType = null;
-            this.selectedMapping.facilityList.facilitySubDistrict = null;
-            this.selectedMapping.facilityList.facilityClass = null;
-
-            this._dropdownRepo.updateFacilityList(this.selectedMapping.facilityList).subscribe(
-              (editFacility) => {
-
-              },
-              (err) => {
-                this._loggerService.logException(err);
-                this._spinner.hide();
-              }
-            );
+            this.createFacilityList(facilityList);
           }
         }
         else {
           let mapping = {
+            id: this.newFacilityInformation ? 0 : this.selectedMapping.id,
             npoProfileId: Number(this.npoProfileId),
             facilityListId: facility.id,
             isActive: true
@@ -747,6 +732,36 @@ export class EditProfileComponent implements OnInit {
     );
 
     this.displayFacilityInformationDialog = false;
+  }
+
+  private createFacilityList(facilityList: IFacilityList) {
+    this._dropdownRepo.createFacilityList(facilityList).subscribe(
+      (newFacility) => {
+        let mapping = {
+          npoProfileId: Number(this.npoProfileId),
+          facilityListId: newFacility.id,
+          isActive: true
+        } as INpoProfileFacilityList;
+
+        this.createFacility(mapping);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateFacilityList(facilityList: IFacilityList) {
+    this._dropdownRepo.updateFacilityList(facilityList).subscribe(
+      (editFacility) => {
+        this.loadFacilities(Number(this.npoProfileId));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private createFacility(mapping: INpoProfileFacilityList) {
