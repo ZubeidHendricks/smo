@@ -141,7 +141,7 @@
         </p-table>
     </p-panel>
     <div style="height: 10px;"></div>
-    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Bank Details">
+    <!-- <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Bank Details">
         <p-table [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
                 <tr>
@@ -176,7 +176,7 @@
             </ng-template>
         </p-table>
     </p-panel>    
-    <div style="height: 10px;"></div>
+    <div style="height: 10px;"></div> -->
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Supporting Documents">
         <p-fileUpload name="demo[]" #form customUpload="true" (uploadHandler)="onUploadChange($event, form)" [showCancelButton]="false" chooseLabel="Browse">
             <ng-template let-file pTemplate="file">
