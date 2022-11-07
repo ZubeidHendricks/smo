@@ -16,6 +16,7 @@ namespace NPOMS.Services.Implementation
 		private IUserRepository _userRepository;
 		private IWorkplanActualRepository _workplanActualRepository;
 		private IWorkplanCommentRepository _workplanCommentRepository;
+		private IWorkplanActualAuditRepository _workplanActualAuditRepository;
 
 		#endregion
 
@@ -25,13 +26,15 @@ namespace NPOMS.Services.Implementation
 			IWorkplanTargetRepository workplanTargetRepository,
 			IUserRepository userRepository,
 			IWorkplanActualRepository workplanActualRepository,
-			IWorkplanCommentRepository workplanCommentRepository
+			IWorkplanCommentRepository workplanCommentRepository,
+			IWorkplanActualAuditRepository workplanActualAuditRepository
 			)
 		{
 			_workplanTargetRepository = workplanTargetRepository;
 			_userRepository = userRepository;
 			_workplanActualRepository = workplanActualRepository;
 			_workplanCommentRepository = workplanCommentRepository;
+			_workplanActualAuditRepository = workplanActualAuditRepository;
 		}
 
 		#endregion
@@ -114,6 +117,26 @@ namespace NPOMS.Services.Implementation
 			model.CreatedDateTime = DateTime.Now;
 
 			await _workplanCommentRepository.CreateEntity(model);
+		}
+
+		public async Task CreateWorkplanActualAudit(WorkplanActualAudit model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _workplanActualAuditRepository.CreateEntity(model);
+		}
+
+		public async Task<IEnumerable<WorkplanActualAudit>> GetWorkplanActualAudits(int workplanActualId)
+		{
+			return await _workplanActualAuditRepository.GetByWorkplanActualId(workplanActualId);
+		}
+
+		public async Task<IEnumerable<WorkplanActual>> GetWorkplanActualsByIds(List<int> activityIds, int financialYearId, int frequencyPeriodId)
+		{
+			return await _workplanActualRepository.GetByIds(activityIds, financialYearId, frequencyPeriodId);
 		}
 
 		#endregion

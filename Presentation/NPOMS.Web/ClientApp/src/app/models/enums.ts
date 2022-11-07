@@ -101,7 +101,8 @@ export enum StatusEnum {
     AcceptedSLA = 9,
     ApprovalInProgress = 10,
     DeptComments = 11,
-    OrgComments = 12
+    OrgComments = 12,
+    Approved = 13
 }
 
 export enum PermissionsEnum {
@@ -224,7 +225,21 @@ export enum PermissionsEnum {
     AddPaymentSchedules = "PS.Add",
     ViewPaymentSchedules = "PS.View",
     EditPaymentSchedules = "PS.Edit",
-    DeletePaymentSchedules = "PS.Delete"
+    DeletePaymentSchedules = "PS.Delete",
+
+    /* Workplan Indicators */
+    ViewOptions = "Indicators.Options",
+
+    ViewManageIndicatorsOption = "Indicators.Manage",
+    CaptureWorkplanTarget = "Indicators.CaptureTarget",
+    ShowWorkplanTargetActions = "Indicators.SWTA",
+
+    CaptureWorkplanActual = "Indicators.CaptureActual",
+    ReviewWorkplanActual = "Indicators.ReviewActual",
+    ApproveWorkplanActual = "Indicators.ApproveActual",
+
+    ViewSummaryOption = "Indicators.Summary",
+    ExportSummary = "Indicators.ExportSummary"
 }
 
 export enum ReportTypeEnum {

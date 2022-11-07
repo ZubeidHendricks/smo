@@ -1,9 +1,10 @@
 import { HttpEventType } from '@angular/common/http';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FrequencyPeriodEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IDocumentType, IFinancialYear, IFrequencyPeriod, IUser, IWorkplanActual, IWorkplanComment, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FrequencyPeriodEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IDocumentType, IFinancialYear, IFrequencyPeriod, IStatus, IUser, IWorkplanActual, IWorkplanActualAudit, IWorkplanComment, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
@@ -50,6 +51,10 @@ export class ActualsComponent implements OnInit {
     return FrequencyPeriodEnum;
   }
 
+  public get StatusEnum(): typeof StatusEnum {
+    return StatusEnum;
+  }
+
   profile: IUser;
 
   cols: any[];
@@ -84,6 +89,12 @@ export class ActualsComponent implements OnInit {
   commentCols: any[];
   comment: string;
 
+  statuses: IStatus[];
+  auditCols: any[];
+
+  workplanActualAudits: IWorkplanActualAudit[];
+  displayHistory: boolean;
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _authService: AuthService,
@@ -92,7 +103,8 @@ export class ActualsComponent implements OnInit {
     private _messageService: MessageService,
     private _documentStore: DocumentStoreService,
     private _confirmationService: ConfirmationService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _router: Router
   ) { }
 
   ngOnInit(): void {
@@ -100,10 +112,11 @@ export class ActualsComponent implements OnInit {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
-        /*if (!this.IsAuthorized(PermissionsEnum.AddApplicationPeriod))
-          this._router.navigate(['401']);*/
+        if (!this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption))
+          this._router.navigate(['401']);
 
         this.loadDocumentTypes();
+        this.loadStatuses();
         this.buildButtonItems();
       }
     });
@@ -133,6 +146,13 @@ export class ActualsComponent implements OnInit {
     this.commentCols = [
       { header: '', width: '5%' },
       { header: 'Comment', width: '55%' },
+      { header: 'Created User', width: '20%' },
+      { header: 'Created Date', width: '20%' }
+    ];
+
+    this.auditCols = [
+      { header: '', width: '5%' },
+      { header: 'Status', width: '55%' },
       { header: 'Created User', width: '20%' },
       { header: 'Created Date', width: '20%' }
     ];
@@ -199,6 +219,18 @@ export class ActualsComponent implements OnInit {
     );
   }
 
+  private loadStatuses() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Statuses, false).subscribe(
+      (results) => {
+        this.statuses = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private buildButtonItems() {
     this.buttonItems = [];
 
@@ -209,27 +241,55 @@ export class ActualsComponent implements OnInit {
         items: []
       }];
 
-      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
         this.buttonItems[0].items.push({
           label: 'Save Actual',
           icon: 'fa fa-floppy-o',
           command: () => {
-            this.saveActual(this.selectedIndicator);
+            this.updateIndicator(this.selectedIndicator, StatusEnum.Saved);
           }
         });
-      }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
         this.buttonItems[0].items.push({
           label: 'Submit Actual',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.submitActual(this.selectedIndicator);
+            this.updateIndicator(this.selectedIndicator, StatusEnum.PendingReview);
           }
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+      if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Verify Actual',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateIndicator(this.selectedIndicator, StatusEnum.PendingApproval);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Approve Actual',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateIndicator(this.selectedIndicator, StatusEnum.Approved);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual) || this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Amendments Required',
+          icon: 'fa fa-hand-o-left',
+          command: () => {
+            this.updateIndicator(this.selectedIndicator, StatusEnum.AmendmentsRequired);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
         this.buttonItems[0].items.push({
           label: 'Comments',
           icon: 'fa fa-comments-o',
@@ -239,38 +299,32 @@ export class ActualsComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+      if (this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
         this.buttonItems[0].items.push({
           label: 'View History',
           icon: 'fa fa-history',
           command: () => {
             this.viewAuditHistory(this.selectedIndicator);
-            this._messageService.add({ severity: 'info', summary: 'Information', detail: 'View History under construction.' });
           }
         });
       }
     }
   }
 
-  private saveActual(workplanIndicator: IWorkplanIndicator) {
-    // Only 1 WorkplanActual will be saved/submitted at a time
-    this.updateWorkplanActual(workplanIndicator.workplanActuals[0], 1);
-  }
-
-  private submitActual(workplanIndicator: IWorkplanIndicator) {
-    // Only 1 WorkplanActual will be saved/submitted at a time
-    this.updateWorkplanActual(workplanIndicator.workplanActuals[0], 2);
+  private updateIndicator(workplanIndicator: IWorkplanIndicator, status: number) {
+    // Only 1 WorkplanActual will be updated at a time
+    this.updateWorkplanActual(workplanIndicator.workplanActuals[0], status);
   }
 
   private updateWorkplanActual(workplanActual: IWorkplanActual, status: number) {
     if (workplanActual && status) {
+
+      workplanActual.statusId = status;
+
       this._indicatorRepo.updateActual(workplanActual).subscribe(
         (resp) => {
-          if (status == 1)
-            this._messageService.add({ severity: 'info', summary: 'Successful', detail: 'Information successfully saved.' });
-
-          if (status == 2)
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully submitted.' });
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully updated.' });
+          this.getFilteredWorkplanIndicators();
         },
         (err) => {
           this._loggerService.logException(err);
@@ -281,6 +335,8 @@ export class ActualsComponent implements OnInit {
       this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Target not captured.' });
     }
   }
+
+  
 
   private viewComments(workplanIndicator: IWorkplanIndicator) {
     this._spinner.show();
@@ -330,7 +386,18 @@ export class ActualsComponent implements OnInit {
   }
 
   private viewAuditHistory(workplanIndicator: IWorkplanIndicator) {
-
+    this._spinner.show();
+    this._indicatorRepo.getWorkplanActualAudits(workplanIndicator.workplanActuals[0].id).subscribe(
+      (results) => {
+        this.workplanActualAudits = results;
+        this._spinner.hide();
+        this.displayHistory = true;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private getDocuments(workplanActual: IWorkplanActual) {
@@ -347,19 +414,18 @@ export class ActualsComponent implements OnInit {
   }
 
   financialYearChange() {
-    this.getFilteredWorkplanIndicators();    
-    
+    this.getFilteredWorkplanIndicators();
+
     let currentDate = new Date();
     let startDate = new Date(this.selectedFinancialYear.startDate);
     let endDate = new Date(this.selectedFinancialYear.endDate);
 
     this.isPreviousFinancialYear = (startDate <= currentDate && endDate >= currentDate) ? false : true;
 
-    // Disable Save and Submit buttons if previous financial year
-    this.buttonItems.forEach(option => {
-      option.items[0].disabled = this.isPreviousFinancialYear;
-      option.items[1].disabled = this.isPreviousFinancialYear;
-    });
+    // If previous financial year, disable all buttons besides comments and view history
+    for (let i = 0; i < this.buttonItems[0].items.length - 2; i++) {
+      this.buttonItems[0].items[i].disabled = this.isPreviousFinancialYear;
+    }
   }
 
   frequencyPeriodChange() {
@@ -373,6 +439,13 @@ export class ActualsComponent implements OnInit {
       this._workplanIndicators.forEach(indicator => {
         let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyId == this.selectedFrequencyPeriod.frequencyId);
         let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyPeriodId == this.selectedFrequencyPeriod.id);
+
+        workplanActuals.forEach(item => {
+          item.status = this.statuses.find(x => x.id === item.statusId);
+
+          // Disable fields if WorkplanActual is not in a New, Saved or AmendmentsRequired state
+          item.isSubmitted = item.statusId == StatusEnum.New || item.statusId == StatusEnum.Saved || item.statusId == StatusEnum.AmendmentsRequired ? false : true;
+        });
 
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
@@ -449,5 +522,44 @@ export class ActualsComponent implements OnInit {
       reject: () => {
       }
     });
+  }
+
+  updateButtonItems() {
+    // Show all buttons
+    this.buttonItems[0].items.forEach(option => {
+      option.visible = true;
+    });
+
+    // Hide buttons based on status
+    switch (this.selectedIndicator.workplanActuals[0].statusId) {
+      case StatusEnum.New:
+      case StatusEnum.Saved:
+      case StatusEnum.AmendmentsRequired: {
+        this.buttonItems[0].items[2].visible = false;
+        this.buttonItems[0].items[3].visible = false;
+        this.buttonItems[0].items[4].visible = false;
+        break;
+      }
+      case StatusEnum.PendingReview: {
+        this.buttonItems[0].items[0].visible = false;
+        this.buttonItems[0].items[1].visible = false;
+        this.buttonItems[0].items[3].visible = false;
+        break;
+      }
+      case StatusEnum.PendingApproval: {
+        this.buttonItems[0].items[0].visible = false;
+        this.buttonItems[0].items[1].visible = false;
+        this.buttonItems[0].items[2].visible = false;
+        break;
+      }
+      case StatusEnum.Approved: {
+        this.buttonItems[0].items[0].visible = false;
+        this.buttonItems[0].items[1].visible = false;
+        this.buttonItems[0].items[2].visible = false;
+        this.buttonItems[0].items[3].visible = false;
+        this.buttonItems[0].items[4].visible = false;
+        break;
+      }
+    }
   }
 }

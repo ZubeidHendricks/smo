@@ -100,6 +100,11 @@ namespace NPOMS.Repository.Implementation.Core
 							.Where(x => x.IsActive).ToListAsync();
 		}
 
+		public async Task<IEnumerable<User>> GetByUserIds(List<int> userIds)
+		{
+			return await FindByCondition(x => userIds.Contains(x.Id)).AsNoTracking().ToListAsync();
+		}
+
 		#endregion
 	}
 }

@@ -9,5 +9,7 @@ namespace NPOMS.Repository.Interfaces.Dropdown
 		Task<IEnumerable<FrequencyPeriod>> GetEntities(bool returnInactive);
 
 		Task<IEnumerable<FrequencyPeriod>> GetByFrequencyId(int frequencyId);
+
+		Task<FrequencyPeriod> GetById(int id);
 	}
 }

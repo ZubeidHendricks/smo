@@ -84,6 +84,12 @@ namespace NPOMS.Repository.Configurations.Entities
 					Id = 12,
 					Name = "SLA: Comments Submitted (Org)",
 					SystemName = "OrgComments"
+				},
+				new Status
+				{
+					Id = 13,
+					Name = "Approved",
+					SystemName = "Approved"
 				}
 			);
 		}

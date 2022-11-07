@@ -26,6 +26,14 @@ namespace NPOMS.Repository.Implementation.Indicator
 							.Include(x => x.FrequencyPeriod).AsNoTracking().ToListAsync();
 		}
 
+		public async Task<IEnumerable<WorkplanActual>> GetByIds(List<int> activityIds, int financialYearId, int frequencyPeriodId)
+		{
+			return await FindByCondition(x => activityIds.Contains(x.ActivityId) && 
+											  x.FinancialYearId.Equals(financialYearId) &&
+											  x.FrequencyPeriodId.Equals(frequencyPeriodId))
+										.AsNoTracking().ToListAsync();
+		}
+
 		public async Task<WorkplanActual> GetByIds(WorkplanActual model)
 		{
 			return await FindByCondition(x => x.ActivityId.Equals(model.ActivityId) &&

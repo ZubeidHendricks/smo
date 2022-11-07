@@ -19,6 +19,9 @@
 		NewOrganisationApproval = 15,
 		PendingOrganisationApproval = 16,
 		ApprovedOrganisationApproval = 17,
-		RejectedOrganisationApproval = 18
+		RejectedOrganisationApproval = 18,
+		WorkplanActualStatusChanged = 19,
+		WorkplanActualPendingReview = 20,
+		WorkplanActualPendingApproval = 21
 	}
 }

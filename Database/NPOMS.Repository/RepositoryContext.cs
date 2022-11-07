@@ -138,6 +138,7 @@ namespace NPOMS.Repository
 		public DbSet<WorkplanTarget> WorkplanTargets { get; set; }
 		public DbSet<WorkplanActual> WorkplanActuals { get; set; }
 		public DbSet<WorkplanComment> WorkplanComments { get; set; }
+		public DbSet<WorkplanActualAudit> WorkplanActualAudits { get; set; }
 
 		/* Budget */
 		public DbSet<DepartmentBudget> DepartmentBudgets { get; set; }

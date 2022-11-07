@@ -91,7 +91,16 @@ namespace NPOMS.Repository.Configurations.Mapping
 				new RolePermission { RoleId = 1, PermissionId = 80 },
 				new RolePermission { RoleId = 1, PermissionId = 81 },
 				new RolePermission { RoleId = 1, PermissionId = 82 },
-				new RolePermission { RoleId = 1, PermissionId = 83 }
+				new RolePermission { RoleId = 1, PermissionId = 83 },
+				new RolePermission { RoleId = 1, PermissionId = 84 },
+				new RolePermission { RoleId = 1, PermissionId = 85 },
+				new RolePermission { RoleId = 1, PermissionId = 86 },
+				new RolePermission { RoleId = 1, PermissionId = 87 },
+				new RolePermission { RoleId = 1, PermissionId = 88 },
+				new RolePermission { RoleId = 1, PermissionId = 89 },
+				new RolePermission { RoleId = 1, PermissionId = 90 },
+				new RolePermission { RoleId = 1, PermissionId = 91 },
+				new RolePermission { RoleId = 1, PermissionId = 92 }
 			);
 		}
 	}
