@@ -41,7 +41,7 @@ namespace NPOMS.Repository.Implementation.Mapping
 
 		public async Task<IEnumerable<UserRole>> GetByRoleIds(List<int> roleIds)
 		{
-			return await FindByCondition(x => roleIds.Contains(x.RoleId)).AsNoTracking().ToListAsync();
+			return await FindByCondition(x => roleIds.Contains(x.RoleId) && x.IsActive).AsNoTracking().ToListAsync();
 		}
 
 		#endregion

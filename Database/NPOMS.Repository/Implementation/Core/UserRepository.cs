@@ -102,7 +102,7 @@ namespace NPOMS.Repository.Implementation.Core
 
 		public async Task<IEnumerable<User>> GetByUserIds(List<int> userIds)
 		{
-			return await FindByCondition(x => userIds.Contains(x.Id)).AsNoTracking().ToListAsync();
+			return await FindByCondition(x => userIds.Contains(x.Id) && x.IsActive).AsNoTracking().ToListAsync();
 		}
 
 		#endregion
