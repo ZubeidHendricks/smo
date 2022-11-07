@@ -48,6 +48,11 @@ namespace NPOMS.Repository.Implementation.Core
 			return await FindByCondition(x => x.Id >= currentFinancialYear.Id).AsNoTracking().OrderBy(x => x.Name).ToListAsync();
 		}
 
+		public async Task<FinancialYear> GetById(int id)
+		{
+			return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+		}
+
 		#endregion
 	}
 }

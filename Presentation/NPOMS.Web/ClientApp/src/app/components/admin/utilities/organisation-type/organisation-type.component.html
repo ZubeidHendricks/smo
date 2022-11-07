@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="entity.description" [ngModelOptions]="{standalone: true}">
+            <textarea rows="2" cols="30" pInputTextarea autoResize="autoResize" class="form-text" [(ngModel)]="entity.description"></textarea>
         </div>
     </div>
     <div class="p-grid">

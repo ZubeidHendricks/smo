@@ -18,6 +18,10 @@ namespace NPOMS.Domain.Core
 
 		public bool IsActive { get; set; }
 
+		[Required]
+		[Column(TypeName = "nvarchar(255)")]
+		public string Location { get; set; }
+
 		public int CreatedUserId { get; set; }
 
 		public DateTime CreatedDateTime { get; set; }

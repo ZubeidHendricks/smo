@@ -13,6 +13,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<Npo>> Search(string name);
 
+		Task<IEnumerable<Npo>> SearchApprovedNpo(string name);
+
 		Task<Npo> GetByNameAndOrgTypeId(string name, int organisationTypeId);
 
 		Task Create(Npo npo, string userIdentifier);

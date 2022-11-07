@@ -3,11 +3,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MegaMenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { DropdownTypeEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IFinancialYear, IFrequencyPeriod, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IFinancialYear, IFrequencyPeriod, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
@@ -17,8 +18,21 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class ManageComponent implements OnInit {
 
+  /* Permission logic */
+  public IsAuthorized(permission: PermissionsEnum): boolean {
+    if (this.profile != null && this.profile.permissions.length > 0) {
+      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    }
+  }
+
+  public get PermissionsEnum(): typeof PermissionsEnum {
+    return PermissionsEnum;
+  }
+
   paramSubcriptions: Subscription;
   id: string;
+
+  profile: IUser;
 
   application: IApplication;
   activities: IActivity[];
@@ -37,18 +51,28 @@ export class ManageComponent implements OnInit {
     private _router: Router,
     private _dropdownRepo: DropdownService,
     private _indicatorRepo: IndicatorService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _authService: AuthService
   ) { }
 
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
-      this.loadApplication();
     });
 
-    this.buildMenu();
-    this.loadFinancialYears();
-    this.loadFrequencyPeriods();
+    this._authService.profile$.subscribe(profile => {
+      if (profile != null && profile.isActive) {
+        this.profile = profile;
+
+        if (!this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption))
+          this._router.navigate(['401']);
+
+        this.loadApplication();
+        this.buildMenu();
+        this.loadFinancialYears();
+        this.loadFrequencyPeriods();
+      }
+    });
 
     this.cols = [
       { field: 'activityList.description', header: 'Activity', width: '50%' },

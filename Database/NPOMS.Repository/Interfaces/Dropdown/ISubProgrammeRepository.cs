@@ -7,5 +7,7 @@ namespace NPOMS.Repository.Interfaces.Dropdown
 	public interface ISubProgrammeRepository : IBaseRepository<SubProgramme>
 	{
 		Task<IEnumerable<SubProgramme>> GetEntities(bool returnInactive);
+
+		Task<IEnumerable<SubProgramme>> GetByProgrammeId(int programmeId);
 	}
 }

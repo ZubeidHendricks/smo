@@ -18,7 +18,7 @@
     <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="allApplications" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['refNo','npo.name','applicationPeriod.applicationType.name','status.name']">
         <ng-template pTemplate="header" let-columns>
             <tr>
-              <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewAcceptedApplication)"></th>
+              <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions)">Options</th>
               <th style="width: 5%;"></th>
               <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                   {{col.header}}
@@ -28,8 +28,8 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
-                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewAcceptedApplication)">
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedApplication=rowData; menu.toggle($event)" pTooltip="Options" tooltipPosition="right" *ngIf="IsAuthorized(PermissionsEnum.ViewAcceptedApplication) && rowData.statusId === StatusEnum.AcceptedSLA"></button>
+                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions)">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedApplication=rowData; menu.toggle($event)" pTooltip="Options" tooltipPosition="right" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && rowData.statusId === StatusEnum.AcceptedSLA"></button>
                     <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
                 </td>
                 <td style="text-align: center;">{{rowIndex + 1}}</td>

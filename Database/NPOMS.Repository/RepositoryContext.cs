@@ -1,6 +1,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using NPOMS.Domain.Budget;
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
@@ -91,6 +92,10 @@ namespace NPOMS.Repository
 		public DbSet<Frequency> Frequencies { get; set; }
 		public DbSet<FrequencyPeriod> FrequencyPeriods { get; set; }
 		public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
+		public DbSet<Directorate> Directorates { get; set; }
+		public DbSet<Bank> Banks { get; set; }
+		public DbSet<Branch> Branches { get; set; }
+		public DbSet<AccountType> AccountTypes { get; set; }
 
 		/* Entities */
 		public DbSet<AccessStatus> AccessStatuses { get; set; }
@@ -109,6 +114,10 @@ namespace NPOMS.Repository
 		public DbSet<Status> Statuses { get; set; }
 		public DbSet<SustainabilityPlan> SustainabilityPlans { get; set; }
 		public DbSet<ServicesRendered> ServicesRendered { get; set; }
+		public DbSet<BankDetail> BankDetails { get; set; }
+		public DbSet<CompliantCycleRule> CompliantCycleRules { get; set; }
+		public DbSet<CompliantCycle> CompliantCycles { get; set; }
+		public DbSet<PaymentSchedule> PaymentSchedules { get; set; }
 
 		/* Lookup */
 		public DbSet<FacilityList> ActivityList { get; set; }
@@ -129,6 +138,12 @@ namespace NPOMS.Repository
 		public DbSet<WorkplanTarget> WorkplanTargets { get; set; }
 		public DbSet<WorkplanActual> WorkplanActuals { get; set; }
 		public DbSet<WorkplanComment> WorkplanComments { get; set; }
+		public DbSet<WorkplanActualAudit> WorkplanActualAudits { get; set; }
+
+		/* Budget */
+		public DbSet<DepartmentBudget> DepartmentBudgets { get; set; }
+		public DbSet<DirectorateBudget> DirectorateBudgets { get; set; }
+		public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -190,11 +205,16 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new FrequencyConfiguration());
 			modelBuilder.ApplyConfiguration(new FrequencyPeriodConfiguration());
 			modelBuilder.ApplyConfiguration(new SubProgrammeTypeConfiguration());
+			modelBuilder.ApplyConfiguration(new DirectorateConfiguration());
+			modelBuilder.ApplyConfiguration(new BankConfiguration());
+			modelBuilder.ApplyConfiguration(new BranchConfiguration());
+			modelBuilder.ApplyConfiguration(new AccountTypeConfiguration());
 
 			/* Entities */
 			modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());
 			modelBuilder.ApplyConfiguration(new StatusConfiguration());
 			modelBuilder.ApplyConfiguration(new TrainingMaterialConfiguration());
+			modelBuilder.ApplyConfiguration(new CompliantCycleRuleConfiguration());
 
 			/* Lookup */
 			modelBuilder.ApplyConfiguration(new ActivityListConfiguration());

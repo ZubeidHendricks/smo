@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
+using NPOMS.Domain.Mapping;
 using NPOMS.Services.Email;
 using NPOMS.Services.Email.EmailTemplates;
 using NPOMS.Services.Interfaces;
@@ -148,6 +149,141 @@ namespace NPOMS.API.Controllers
 			catch (Exception ex)
 			{
 				_logger.LogError($"Something went wrong inside NpoProfileConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+			}
+		}
+
+		[HttpGet("facilities/npoProfileId/{npoProfileId}", Name = "GetFacilitiesByNpoProfileId")]
+		public async Task<IActionResult> GetFacilitiesByNpoProfileId(int npoProfileId)
+		{
+			try
+			{
+				var results = await _npoProfileService.GetFacilitiesByNpoProfileId(npoProfileId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetFacilitiesByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("facilities", Name = "CreateFacilityMapping")]
+		public async Task<IActionResult> CreateFacilityMapping([FromBody] NpoProfileFacilityList model)
+		{
+			try
+			{
+				await _npoProfileService.Create(model);
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateFacilityMapping action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPut("facilities", Name = "UpdateFacilityMapping")]
+		public async Task<IActionResult> UpdateFacilityMapping([FromBody] NpoProfileFacilityList model)
+		{
+			try
+			{
+				await _npoProfileService.Update(model);
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside UpdateFacilityMapping action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("services-rendered/npoProfileId/{npoProfileId}", Name = "GetServicesRenderedByNpoProfileId")]
+		public async Task<IActionResult> GetServicesRenderedByNpoProfileId(int npoProfileId)
+		{
+			try
+			{
+				var results = await _npoProfileService.GetServicesRenderedByNpoProfileId(npoProfileId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetServicesRenderedByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("services-rendered", Name = "CreateServicesRendered")]
+		public async Task<IActionResult> CreateServicesRendered([FromBody] ServicesRendered model)
+		{
+			try
+			{
+				await _npoProfileService.Create(model, base.GetUserIdentifier());
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateServicesRendered action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPut("services-rendered", Name = "UpdateServicesRendered")]
+		public async Task<IActionResult> UpdateServicesRendered([FromBody] ServicesRendered model)
+		{
+			try
+			{
+				await _npoProfileService.Update(model, base.GetUserIdentifier());
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside UpdateServicesRendered action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("bank-detail/npoProfileId/{npoProfileId}", Name = "GetBankDetailsByNpoProfileId")]
+		public async Task<IActionResult> GetBankDetailsByNpoProfileId(int npoProfileId)
+		{
+			try
+			{
+				var results = await _npoProfileService.GetBankDetailsByNpoProfileId(npoProfileId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetBankDetailsByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("bank-detail", Name = "CreateBankDetail")]
+		public async Task<IActionResult> CreateBankDetail([FromBody] BankDetail model)
+		{
+			try
+			{
+				await _npoProfileService.Create(model, base.GetUserIdentifier());
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateBankDetail action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPut("bank-detail", Name = "UpdateBankDetail")]
+		public async Task<IActionResult> UpdateBankDetail([FromBody] BankDetail model)
+		{
+			try
+			{
+				await _npoProfileService.Update(model, base.GetUserIdentifier());
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside UpdateBankDetail action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
 

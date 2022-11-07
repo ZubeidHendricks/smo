@@ -4,14 +4,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MegaMenuItem, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { DropdownTypeEnum, FrequencyEnum, FrequencyPeriodEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IFinancialYear, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { DropdownTypeEnum, FrequencyEnum, FrequencyPeriodEnum, PermissionsEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IFinancialYear, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import * as xlsx from 'xlsx';
 import * as fileSaver from 'file-saver';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-summary',
@@ -19,6 +20,17 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   styleUrls: ['./summary.component.css']
 })
 export class SummaryComponent implements OnInit {
+
+  /* Permission logic */
+  public IsAuthorized(permission: PermissionsEnum): boolean {
+    if (this.profile != null && this.profile.permissions.length > 0) {
+      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    }
+  }
+
+  public get PermissionsEnum(): typeof PermissionsEnum {
+    return PermissionsEnum;
+  }
 
   public get FrequencyEnum(): typeof FrequencyEnum {
     return FrequencyEnum;
@@ -30,6 +42,8 @@ export class SummaryComponent implements OnInit {
 
   paramSubcriptions: Subscription;
   id: string;
+
+  profile: IUser;
 
   application: IApplication;
   activities: IActivity[];
@@ -55,17 +69,27 @@ export class SummaryComponent implements OnInit {
     private _dropdownRepo: DropdownService,
     private _datePipe: DatePipe,
     private _messageService: MessageService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _authService: AuthService
   ) { }
 
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
-      this.loadApplication();
-      this.loadFinancialYears();
     });
 
-    this.buildMenu();
+    this._authService.profile$.subscribe(profile => {
+      if (profile != null && profile.isActive) {
+        this.profile = profile;
+
+        // if (!this.IsAuthorized(PermissionsEnum.ViewSummaryOption))
+        //   this._router.navigate(['401']);
+
+        this.loadApplication();
+        this.loadFinancialYears();
+        this.buildMenu();
+      }
+    });
   }
 
   private loadApplication() {
@@ -172,10 +196,12 @@ export class SummaryComponent implements OnInit {
   }
 
   private buildMenu() {
+
     this.menuActions = [
       {
         label: 'Export',
         icon: 'fa fa-download',
+        disabled: !this.IsAuthorized(PermissionsEnum.ExportSummary),
         command: () => {
           if (this.selectedFinancialYear) {
             this._spinner.show();
@@ -183,7 +209,7 @@ export class SummaryComponent implements OnInit {
           }
           else
             this._messageService.add({ severity: 'info', summary: 'Information', detail: 'Please select a Financial Year.' });
-        }
+        }        
       },
       {
         label: 'Go Back',

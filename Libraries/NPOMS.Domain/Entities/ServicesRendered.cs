@@ -15,5 +15,13 @@ namespace NPOMS.Domain.Entities
 		public int SubProgrammeTypeId { get; set; }
 
 		public bool IsActive { get; set; }
+
+		public int CreatedUserId { get; set; }
+
+		public DateTime CreatedDateTime { get; set; }
+
+		public int? UpdatedUserId { get; set; }
+
+		public DateTime? UpdatedDateTime { get; set; }
 	}
 }

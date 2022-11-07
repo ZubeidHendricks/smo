@@ -108,6 +108,23 @@ import { ActualsComponent } from './components/indicators/workplan/actuals/actua
 import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
 import { SummaryComponent } from './components/indicators/workplan/summary/summary.component';
 import { SubProgrammeTypeComponent } from './components/admin/utilities/sub-programme-type/sub-programme-type.component';
+import { DepartmentBudgetComponent } from './components/admin/budgets/department-budget/department-budget.component';
+import { DirectorateBudgetComponent } from './components/admin/budgets/directorate-budget/directorate-budget.component';
+import { ProgrammeBudgetComponent } from './components/admin/budgets/programme-budget/programme-budget.component';
+import { DirectorateComponent } from './components/admin/utilities/directorate/directorate.component';
+import { FundingListComponent } from './components/funding/funding-list/funding-list.component';
+import { CreateFundingComponent } from './components/funding/create-funding/create-funding.component';
+import { EditFundingComponent } from './components/funding/edit-funding/edit-funding.component';
+import { FundingDetailComponent } from './components/funding/funding-steps/funding-detail/funding-detail.component';
+import { ServiceDeliveryAreaComponent } from './components/funding/funding-steps/service-delivery-area/service-delivery-area.component';
+import { PaymentScheduleComponent } from './components/funding/funding-steps/payment-schedule/payment-schedule.component';
+import { BankDetailComponent } from './components/funding/funding-steps/bank-detail/bank-detail.component';
+import { DocumentsComponent } from './components/funding/funding-steps/documents/documents.component';
+import { BankComponent } from './components/admin/utilities/bank/bank.component';
+import { BranchComponent } from './components/admin/utilities/branch/branch.component';
+import { AccountTypeComponent } from './components/admin/utilities/account-type/account-type.component';
+import { PaymentSchedulesComponent } from './components/admin/payment-schedules/payment-schedules.component';
+import { CompliantCyclesComponent } from './components/admin/compliant-cycles/compliant-cycles.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -216,7 +233,24 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ActualsComponent,
     TargetsComponent,
     SummaryComponent,
-    SubProgrammeTypeComponent
+    SubProgrammeTypeComponent,
+    DirectorateBudgetComponent,
+    DepartmentBudgetComponent,
+    ProgrammeBudgetComponent,
+    DirectorateComponent,
+    FundingListComponent,
+    CreateFundingComponent,
+    EditFundingComponent,
+    FundingDetailComponent,
+    ServiceDeliveryAreaComponent,
+    PaymentScheduleComponent,
+    BankDetailComponent,
+    DocumentsComponent,
+    BankComponent,
+    BranchComponent,
+    AccountTypeComponent,
+    PaymentSchedulesComponent,
+    CompliantCyclesComponent
   ],
   imports: [
     BrowserModule,

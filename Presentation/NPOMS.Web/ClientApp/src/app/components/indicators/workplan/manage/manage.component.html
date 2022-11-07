@@ -29,7 +29,7 @@
                             <span>{{getCellData(rowData, col)}}</span>
                         </td>
                         <td style="text-align: center;">
-                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-plus" (click)="captureTargets(rowData)" pTooltip="Capture Targets" tooltipPosition="top"></button>
+                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-plus" (click)="captureTargets(rowData)" pTooltip="Capture Targets" tooltipPosition="top" *ngIf="IsAuthorized(PermissionsEnum.CaptureWorkplanTarget)"></button>
                             <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="captureActuals(rowData)" pTooltip="Capture Actuals" tooltipPosition="left"></button> -->
                         </td>
                     </tr>

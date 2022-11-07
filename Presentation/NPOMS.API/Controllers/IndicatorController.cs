@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Indicator;
+using NPOMS.Services.Email;
+using NPOMS.Services.Email.EmailTemplates;
 using NPOMS.Services.Interfaces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NPOMS.API.Controllers
@@ -18,6 +20,8 @@ namespace NPOMS.API.Controllers
 		private ILogger<IndicatorController> _logger;
 		private IIndicatorService _indicatorService;
 		private IDropdownService _dropdownService;
+		private IApplicationService _applicationService;
+		private IEmailService _emailService;
 
 		#endregion
 
@@ -26,12 +30,15 @@ namespace NPOMS.API.Controllers
 		public IndicatorController(
 			ILogger<IndicatorController> logger,
 			IIndicatorService indicatorService,
-			IDropdownService dropdownService
-			)
+			IDropdownService dropdownService,
+			IApplicationService applicationService,
+			IEmailService emailService)
 		{
 			_logger = logger;
 			_indicatorService = indicatorService;
 			_dropdownService = dropdownService;
+			_applicationService = applicationService;
+			_emailService = emailService;
 		}
 
 		#endregion
@@ -99,7 +106,10 @@ namespace NPOMS.API.Controllers
 				var workplanActualExists = await _indicatorService.GetActualsByIds(workplanActual);
 
 				if (workplanActualExists == null)
+				{
 					await _indicatorService.CreateActual(workplanActual, base.GetUserIdentifier());
+					await CreateWorkplanActualAudit(workplanActual);
+				}
 			}
 		}
 
@@ -124,11 +134,131 @@ namespace NPOMS.API.Controllers
 			try
 			{
 				await _indicatorService.UpdateActual(model, base.GetUserIdentifier());
+				await CreateWorkplanActualAudit(model);
+				await ConfigureEmail(model);
+
 				return Ok(model);
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError($"Something went wrong inside UpdateActual action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		private async Task ConfigureEmail(WorkplanActual model)
+		{
+			try
+			{
+				var activity = await _applicationService.GetActivityById(model.ActivityId);
+				var application = await _applicationService.GetApplicationById(activity.ApplicationId);
+				var activities = await _applicationService.GetAllActivitiesAsync(application.NpoId, application.ApplicationPeriodId);
+				var activityIds = activities.Select(x => x.Id).ToList();
+				var workplanActuals = await _indicatorService.GetWorkplanActualsByIds(activityIds, model.FinancialYearId, model.FrequencyPeriodId);
+
+				StatusEnum status = (StatusEnum)model.StatusId;
+
+				switch (status)
+				{
+					case StatusEnum.PendingReview:
+						
+						if (!workplanActuals.Any(x => x.StatusId == (int)StatusEnum.New ||
+												 x.StatusId == (int)StatusEnum.Saved ||
+												 x.StatusId == (int)StatusEnum.AmendmentsRequired))
+						{
+							var statusChangedSubmitted = EmailTemplateFactory
+								.Create(EmailTemplateTypeEnum.WorkplanActualStatusChanged)
+								.Get<WorkplanActualStatusChangedEmailTemplate>()
+								.Init(model, application);
+
+							var workplanActualPendingReview = EmailTemplateFactory
+								.Create(EmailTemplateTypeEnum.WorkplanActualPendingReview)
+								.Get<WorkplanActualPendingReviewEmailTemplate>()
+								.Init(model, application);
+
+							await statusChangedSubmitted.SubmitToQueue();
+							await workplanActualPendingReview.SubmitToQueue();
+						}
+
+						break;
+					case StatusEnum.PendingApproval:
+
+						if (!workplanActuals.Any(x => x.StatusId == (int)StatusEnum.New ||
+												 x.StatusId == (int)StatusEnum.Saved ||
+												 x.StatusId == (int)StatusEnum.AmendmentsRequired ||
+												 x.StatusId == (int)StatusEnum.PendingReview))
+						{
+							var statusChangedReviewed = EmailTemplateFactory
+								.Create(EmailTemplateTypeEnum.WorkplanActualStatusChanged)
+								.Get<WorkplanActualStatusChangedEmailTemplate>()
+								.Init(model, application);
+
+							var workplanActualPendingApproval = EmailTemplateFactory
+								.Create(EmailTemplateTypeEnum.WorkplanActualPendingApproval)
+								.Get<WorkplanActualPendingApprovalEmailTemplate>()
+								.Init(model, application);
+
+							await statusChangedReviewed.SubmitToQueue();
+							await workplanActualPendingApproval.SubmitToQueue();
+						}
+
+							break;
+					case StatusEnum.Approved:
+
+						if (!workplanActuals.Any(x => x.StatusId != (int)StatusEnum.Approved))
+						{
+							var statusChangedApproved = EmailTemplateFactory
+								.Create(EmailTemplateTypeEnum.WorkplanActualStatusChanged)
+								.Get<WorkplanActualStatusChangedEmailTemplate>()
+								.Init(model, application);
+
+							await statusChangedApproved.SubmitToQueue();
+						}
+
+						break;
+					case StatusEnum.AmendmentsRequired:
+						
+						var statusChangedAmendmentsRequired = EmailTemplateFactory
+								.Create(EmailTemplateTypeEnum.WorkplanActualStatusChanged)
+								.Get<WorkplanActualStatusChangedEmailTemplate>()
+								.Init(model, application);
+
+						await statusChangedAmendmentsRequired.SubmitToQueue();
+						break;
+				}
+
+				await _emailService.SendEmailFromQueue();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside IndicatorConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+			}
+		}
+
+		private async Task CreateWorkplanActualAudit(WorkplanActual model)
+		{
+			try
+			{
+				var workplanActualAudit = new WorkplanActualAudit { WorkplanActualId = model.Id, StatusId = model.StatusId };
+				await _indicatorService.CreateWorkplanActualAudit(workplanActualAudit, base.GetUserIdentifier());
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateWorkplanActualAudit action: {ex.Message} Inner Exception: {ex.InnerException}");
+			}
+		}
+
+		[HttpGet("workplan-actual-audits/workplanActualId/{workplanActualId}", Name = "GetWorkplanActualAudits")]
+		public async Task<IActionResult> GetWorkplanActualAudits(int workplanActualId)
+		{
+			try
+			{
+				var results = await _indicatorService.GetWorkplanActualAudits(workplanActualId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetWorkplanActualAudits action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}

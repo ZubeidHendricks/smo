@@ -22,6 +22,135 @@ namespace NPOMS.Repository.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("NPOMS.Domain.Budget.DepartmentBudget", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DepartmentBudgets", "budget");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Budget.DirectorateBudget", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentBudgetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("DirectorateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DirectorateBudgets", "budget");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Budget.ProgrammeBudget", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("DirectorateBudgetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProgrammeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProgrammeBudgets", "budget");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Core.Department", b =>
                 {
                     b.Property<int>("Id")
@@ -300,6 +429,10 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValueSql("1");
 
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
@@ -322,6 +455,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             IsActive = false,
                             IsCompulsory = false,
+                            Location = "Workplan",
                             Name = "SLA"
                         },
                         new
@@ -331,6 +465,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             IsActive = false,
                             IsCompulsory = false,
+                            Location = "Workplan",
                             Name = "Signed SLA"
                         });
                 });
@@ -654,6 +789,33 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "RejectedOrganisationApproval",
                             Subject = "Organisation Rejected - {NpoName}"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been updated with a status of <span style=\"font-weight: bold;\">{status}</span>.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{applicationId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                            EmailAccountId = 0,
+                            IsActive = false,
+                            Name = "WorkplanActualStatusChanged",
+                            Subject = "Indicator Actuals {status} - {NPO}"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been submitted for you to review.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{applicationId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                            EmailAccountId = 0,
+                            IsActive = false,
+                            Name = "WorkplanActualPendingReview",
+                            Subject = "Indicator Actuals Pending Review - {NPO}"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been sent for you to approve.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{applicationId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                            EmailAccountId = 0,
+                            IsActive = false,
+                            Name = "WorkplanActualPendingApproval",
+                            Subject = "Indicator Actuals Pending Approval - {NPO}"
                         });
                 });
 
@@ -1436,6 +1598,456 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "View List of Training Materials",
                             SystemName = "TM.VTM"
+                        },
+                        new
+                        {
+                            Id = 48,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Add Department Budget",
+                            SystemName = "Bud.Add"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Edit Department Budget",
+                            SystemName = "Bud.Edit"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View List of Department Budgets",
+                            SystemName = "Bud.View"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Add Directorate Budget",
+                            SystemName = "Bud.ADB"
+                        },
+                        new
+                        {
+                            Id = 52,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Edit Directorate Budget",
+                            SystemName = "Bud.EDB"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View List of Directorate Budgets",
+                            SystemName = "Bud.VDB"
+                        },
+                        new
+                        {
+                            Id = 54,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Add Programme Budget",
+                            SystemName = "Bud.APB"
+                        },
+                        new
+                        {
+                            Id = 55,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Edit Programme Budget",
+                            SystemName = "Bud.EPB"
+                        },
+                        new
+                        {
+                            Id = 56,
+                            CategoryName = "Budgets",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View List of Programme Budgets",
+                            SystemName = "Bud.VPB"
+                        },
+                        new
+                        {
+                            Id = 57,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Security Side Menu",
+                            SystemName = "SN.Security"
+                        },
+                        new
+                        {
+                            Id = 58,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Users Side Menu",
+                            SystemName = "SN.Users"
+                        },
+                        new
+                        {
+                            Id = 59,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Permissions Side Menu",
+                            SystemName = "SN.Permissions"
+                        },
+                        new
+                        {
+                            Id = 60,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Settings Side Menu",
+                            SystemName = "SN.Settings"
+                        },
+                        new
+                        {
+                            Id = 61,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Utilities Sub Menu",
+                            SystemName = "SN.Utilities"
+                        },
+                        new
+                        {
+                            Id = 62,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Budgets Sub Menu",
+                            SystemName = "SN.Budgets"
+                        },
+                        new
+                        {
+                            Id = 63,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Department Budget Sub Menu",
+                            SystemName = "SN.DeptBudget"
+                        },
+                        new
+                        {
+                            Id = 64,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Directorate Budget Sub Menu",
+                            SystemName = "SN.DirectorateBudget"
+                        },
+                        new
+                        {
+                            Id = 65,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Programme Budget Sub Menu",
+                            SystemName = "SN.ProgBudget"
+                        },
+                        new
+                        {
+                            Id = 66,
+                            CategoryName = "Top Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Funding Menu",
+                            SystemName = "TN.VFM"
+                        },
+                        new
+                        {
+                            Id = 67,
+                            CategoryName = "Funding",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Add NPO/Organisation Funding",
+                            SystemName = "Fund.ANF"
+                        },
+                        new
+                        {
+                            Id = 68,
+                            CategoryName = "Funding",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Edit NPO/Organisation Funding",
+                            SystemName = "Fund.ENF"
+                        },
+                        new
+                        {
+                            Id = 69,
+                            CategoryName = "Funding",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View NPO/Organisation Funding",
+                            SystemName = "Fund.VNF"
+                        },
+                        new
+                        {
+                            Id = 70,
+                            CategoryName = "Funding",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Delete NPO/Organisation Funding",
+                            SystemName = "Fund.DNF"
+                        },
+                        new
+                        {
+                            Id = 71,
+                            CategoryName = "Funding",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Payment Schedule",
+                            SystemName = "Fund.VPS"
+                        },
+                        new
+                        {
+                            Id = 72,
+                            CategoryName = "Funding",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Compliance Check",
+                            SystemName = "Fund.CC"
+                        },
+                        new
+                        {
+                            Id = 73,
+                            CategoryName = "Funding",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Show NPO/Organisation Funding Action Buttons",
+                            SystemName = "Fund.SNFA"
+                        },
+                        new
+                        {
+                            Id = 74,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Compliant Cycle Sub Menu",
+                            SystemName = "SN.CompliantCycle"
+                        },
+                        new
+                        {
+                            Id = 75,
+                            CategoryName = "Administration - Side Navigation",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Payment Schedule Sub Menu",
+                            SystemName = "SN.PaymentSchedule"
+                        },
+                        new
+                        {
+                            Id = 76,
+                            CategoryName = "Compliant Cycle",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Add Compliant Cycle",
+                            SystemName = "CC.Add"
+                        },
+                        new
+                        {
+                            Id = 77,
+                            CategoryName = "Compliant Cycle",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Compliant Cycle",
+                            SystemName = "CC.View"
+                        },
+                        new
+                        {
+                            Id = 78,
+                            CategoryName = "Compliant Cycle",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Edit Compliant Cycle",
+                            SystemName = "CC.Edit"
+                        },
+                        new
+                        {
+                            Id = 79,
+                            CategoryName = "Compliant Cycle",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Delete Compliant Cycle",
+                            SystemName = "CC.Delete"
+                        },
+                        new
+                        {
+                            Id = 80,
+                            CategoryName = "Payment Schedule",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Add Payment Schedule",
+                            SystemName = "PS.Add"
+                        },
+                        new
+                        {
+                            Id = 81,
+                            CategoryName = "Payment Schedule",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Payment Schedule",
+                            SystemName = "PS.View"
+                        },
+                        new
+                        {
+                            Id = 82,
+                            CategoryName = "Payment Schedule",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Edit Payment Schedule",
+                            SystemName = "PS.Edit"
+                        },
+                        new
+                        {
+                            Id = 83,
+                            CategoryName = "Payment Schedule",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Delete Payment Schedule",
+                            SystemName = "PS.Delete"
+                        },
+                        new
+                        {
+                            Id = 84,
+                            CategoryName = "Workplan Indicators",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Workplan Indicator Options",
+                            SystemName = "Indicators.Options"
+                        },
+                        new
+                        {
+                            Id = 85,
+                            CategoryName = "Workplan Indicators",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Manage Indicators Option",
+                            SystemName = "Indicators.Manage"
+                        },
+                        new
+                        {
+                            Id = 86,
+                            CategoryName = "Workplan Indicators",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Capture Workplan Target",
+                            SystemName = "Indicators.CaptureTarget"
+                        },
+                        new
+                        {
+                            Id = 87,
+                            CategoryName = "Workplan Indicators",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Show Workplan Target Action Buttons",
+                            SystemName = "Indicators.SWTA"
+                        },
+                        new
+                        {
+                            Id = 88,
+                            CategoryName = "Workplan Indicators",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Capture Workplan Actual",
+                            SystemName = "Indicators.CaptureActual"
+                        },
+                        new
+                        {
+                            Id = 89,
+                            CategoryName = "Workplan Indicators",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Review or Verify Workplan Actual",
+                            SystemName = "Indicators.ReviewActual"
+                        },
+                        new
+                        {
+                            Id = 90,
+                            CategoryName = "Workplan Indicators",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Approve Workplan Actual",
+                            SystemName = "Indicators.ApproveActual"
+                        },
+                        new
+                        {
+                            Id = 91,
+                            CategoryName = "Workplan Indicators",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "View Summary Option",
+                            SystemName = "Indicators.Summary"
+                        },
+                        new
+                        {
+                            Id = 92,
+                            CategoryName = "Workplan Indicators",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Export Summary",
+                            SystemName = "Indicators.ExportSummary"
                         });
                 });
 
@@ -1941,6 +2553,133 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "Sub-Programme Type",
                             SystemAdminUtility = false
+                        },
+                        new
+                        {
+                            Id = 26,
+                            AngularRedirectUrl = "utilities/directorate",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Add and/or Update directorates",
+                            IsActive = false,
+                            Name = "Directorate",
+                            SystemAdminUtility = false
+                        },
+                        new
+                        {
+                            Id = 27,
+                            AngularRedirectUrl = "utilities/bank",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Add and/or Update banks",
+                            IsActive = false,
+                            Name = "Bank",
+                            SystemAdminUtility = false
+                        },
+                        new
+                        {
+                            Id = 28,
+                            AngularRedirectUrl = "utilities/branch",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Add and/or Update branches",
+                            IsActive = false,
+                            Name = "Branch",
+                            SystemAdminUtility = false
+                        },
+                        new
+                        {
+                            Id = 29,
+                            AngularRedirectUrl = "utilities/account-type",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Add and/or Update account types",
+                            IsActive = false,
+                            Name = "Account Type",
+                            SystemAdminUtility = false
+                        });
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.AccountType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
+
+                    b.Property<int>("CreatedUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("SystemName")
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AccountTypes", "dropdown");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "SAVINGS"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "CURRENT"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "TRANSMISSION"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Subscription Share"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "BOND"
                         });
                 });
 
@@ -2127,6 +2866,4328 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "Service Provision",
                             SystemName = "SP"
+                        });
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.Bank", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
+
+                    b.Property<int>("CreatedUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Banks", "dropdown");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "632005",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "ABSA Bank"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "470010",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Capitec Bank"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "250655",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "First National Bank"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "198675",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "NedBank"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Code = "051001",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Standard Bank"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "International Bank"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Code = "580105",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Investec Bank"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Code = "460005",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Post Bank"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Code = "000000",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Default"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bidvest"
+                        });
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.Branch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("BankId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BranchCode")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
+
+                    b.Property<int>("CreatedUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Branches", "dropdown");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "All Branches"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Barrydale"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Beaufort West"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bellville"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bonnievale"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Brackenfell"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bredasdorp"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Caledon"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Gate"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Centurion"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Century City"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Ceres"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Citrusdal"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Clanwilliam"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Claremont"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "De Doorns"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Durbanville"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "George"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Helderberg"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Hermanus"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kenilworth"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kraaifontein"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kuilsriver"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Malmesbury"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Montagu"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mossel Bay"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mountain Mill"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mowbray"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Oudtshoorn"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Paarl"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Parow"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Phillipi"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Plein Street"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Plettenberg Bay"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Porterville"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Promenade"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Riebeek Road"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Riviersonderend"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Robertson"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Santyger"
+                        },
+                        new
+                        {
+                            Id = 41,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Somerset mall"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Stellenbosch"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Strand"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Swellendam"
+                        },
+                        new
+                        {
+                            Id = 45,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tulbagh"
+                        },
+                        new
+                        {
+                            Id = 46,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tyger Manor"
+                        },
+                        new
+                        {
+                            Id = 47,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Uniondale"
+                        },
+                        new
+                        {
+                            Id = 48,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Villiersdorp"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vredendal"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Wellington"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Worcester"
+                        },
+                        new
+                        {
+                            Id = 52,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Wynberg"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Zevenwacht"
+                        },
+                        new
+                        {
+                            Id = 54,
+                            BankId = 1,
+                            BranchCode = "631309",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Athlone"
+                        },
+                        new
+                        {
+                            Id = 55,
+                            BankId = 1,
+                            BranchCode = "505210",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Boston Street"
+                        },
+                        new
+                        {
+                            Id = 56,
+                            BankId = 1,
+                            BranchCode = "630126",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Durban City"
+                        },
+                        new
+                        {
+                            Id = 57,
+                            BankId = 1,
+                            BranchCode = "334708",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Prince Albert"
+                        },
+                        new
+                        {
+                            Id = 58,
+                            BankId = 1,
+                            BranchCode = "421109",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Rondebosch"
+                        },
+                        new
+                        {
+                            Id = 59,
+                            BankId = 1,
+                            BranchCode = "503107",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Stockenstroom Street"
+                        },
+                        new
+                        {
+                            Id = 60,
+                            BankId = 1,
+                            BranchCode = "334507",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Wolseley"
+                        },
+                        new
+                        {
+                            Id = 61,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Knysna"
+                        },
+                        new
+                        {
+                            Id = 62,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Town Adderley Street"
+                        },
+                        new
+                        {
+                            Id = 63,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "KUILSRIVIER"
+                        },
+                        new
+                        {
+                            Id = 64,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "McTyre Street, Parow"
+                        },
+                        new
+                        {
+                            Id = 65,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "plettenburg"
+                        },
+                        new
+                        {
+                            Id = 66,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "RIEBEECKWEG KUILSRIVIER"
+                        },
+                        new
+                        {
+                            Id = 67,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "SOMERSET WEST"
+                        },
+                        new
+                        {
+                            Id = 68,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "TYGER MALL"
+                        },
+                        new
+                        {
+                            Id = 69,
+                            BankId = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "ZEVENWACHT MALL"
+                        },
+                        new
+                        {
+                            Id = 70,
+                            BankId = 1,
+                            BranchCode = "632005",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Riversdal"
+                        },
+                        new
+                        {
+                            Id = 71,
+                            BankId = 1,
+                            BranchCode = "000000",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Default"
+                        },
+                        new
+                        {
+                            Id = 72,
+                            BankId = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bellville"
+                        },
+                        new
+                        {
+                            Id = 73,
+                            BankId = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Khayelitsha KBD"
+                        },
+                        new
+                        {
+                            Id = 74,
+                            BankId = 2,
+                            BranchCode = "200712",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Villiersdorp"
+                        },
+                        new
+                        {
+                            Id = 75,
+                            BankId = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "All Branches"
+                        },
+                        new
+                        {
+                            Id = 76,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Beaufort West"
+                        },
+                        new
+                        {
+                            Id = 77,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Khayelitsha"
+                        },
+                        new
+                        {
+                            Id = 78,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Langeberg Mall"
+                        },
+                        new
+                        {
+                            Id = 79,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Lansdowne"
+                        },
+                        new
+                        {
+                            Id = 80,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mossel Bay"
+                        },
+                        new
+                        {
+                            Id = 81,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "N1 City"
+                        },
+                        new
+                        {
+                            Id = 82,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Paarl"
+                        },
+                        new
+                        {
+                            Id = 83,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Plumstead"
+                        },
+                        new
+                        {
+                            Id = 84,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Promenade"
+                        },
+                        new
+                        {
+                            Id = 85,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Symphony Walk"
+                        },
+                        new
+                        {
+                            Id = 86,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vangate Mall"
+                        },
+                        new
+                        {
+                            Id = 87,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vineyard"
+                        },
+                        new
+                        {
+                            Id = 88,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Wellington"
+                        },
+                        new
+                        {
+                            Id = 89,
+                            BankId = 3,
+                            BranchCode = "200206",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Clanwilliam"
+                        },
+                        new
+                        {
+                            Id = 90,
+                            BankId = 3,
+                            BranchCode = "210554",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Commercial Account Services"
+                        },
+                        new
+                        {
+                            Id = 91,
+                            BankId = 3,
+                            BranchCode = "200406",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Garies"
+                        },
+                        new
+                        {
+                            Id = 92,
+                            BankId = 3,
+                            BranchCode = "201409",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Gugulethu"
+                        },
+                        new
+                        {
+                            Id = 93,
+                            BankId = 3,
+                            BranchCode = "260557",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Gugulethu Mall"
+                        },
+                        new
+                        {
+                            Id = 94,
+                            BankId = 3,
+                            BranchCode = "260557",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Gugulethu Square"
+                        },
+                        new
+                        {
+                            Id = 95,
+                            BankId = 3,
+                            BranchCode = "200809",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Heerengracth"
+                        },
+                        new
+                        {
+                            Id = 96,
+                            BankId = 3,
+                            BranchCode = "200113",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Heidelberg"
+                        },
+                        new
+                        {
+                            Id = 97,
+                            BankId = 3,
+                            BranchCode = "271344",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Helderberg"
+                        },
+                        new
+                        {
+                            Id = 98,
+                            BankId = 3,
+                            BranchCode = "200109",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kenilworth"
+                        },
+                        new
+                        {
+                            Id = 99,
+                            BankId = 3,
+                            BranchCode = "200512",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "MAIN STREET"
+                        },
+                        new
+                        {
+                            Id = 100,
+                            BankId = 3,
+                            BranchCode = "200209",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Maitland"
+                        },
+                        new
+                        {
+                            Id = 101,
+                            BankId = 3,
+                            BranchCode = "200507",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Malmesbury"
+                        },
+                        new
+                        {
+                            Id = 102,
+                            BankId = 3,
+                            BranchCode = "250040",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mitchell Plain"
+                        },
+                        new
+                        {
+                            Id = 103,
+                            BankId = 3,
+                            BranchCode = "204709",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Montagu"
+                        },
+                        new
+                        {
+                            Id = 104,
+                            BankId = 3,
+                            BranchCode = "200111",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Moorreesburg"
+                        },
+                        new
+                        {
+                            Id = 105,
+                            BankId = 3,
+                            BranchCode = "250937",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Neelsie"
+                        },
+                        new
+                        {
+                            Id = 106,
+                            BankId = 3,
+                            BranchCode = "260209",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Pinelands"
+                        },
+                        new
+                        {
+                            Id = 107,
+                            BankId = 3,
+                            BranchCode = "261251",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Sandton Square"
+                        },
+                        new
+                        {
+                            Id = 108,
+                            BankId = 3,
+                            BranchCode = "201809",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Sea Point"
+                        },
+                        new
+                        {
+                            Id = 109,
+                            BankId = 3,
+                            BranchCode = "210229",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Sedgefield"
+                        },
+                        new
+                        {
+                            Id = 110,
+                            BankId = 3,
+                            BranchCode = "202309",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Simons Town"
+                        },
+                        new
+                        {
+                            Id = 111,
+                            BankId = 3,
+                            BranchCode = "202509",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Thibault Sqaure"
+                        },
+                        new
+                        {
+                            Id = 112,
+                            BankId = 3,
+                            BranchCode = "201410",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tygerberg"
+                        },
+                        new
+                        {
+                            Id = 113,
+                            BankId = 3,
+                            BranchCode = "210655",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Willowbridge"
+                        },
+                        new
+                        {
+                            Id = 114,
+                            BankId = 3,
+                            BranchCode = "210114",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "York Street"
+                        },
+                        new
+                        {
+                            Id = 115,
+                            BankId = 3,
+                            BranchCode = "201409",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Adderley Street"
+                        },
+                        new
+                        {
+                            Id = 116,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "All Branches"
+                        },
+                        new
+                        {
+                            Id = 117,
+                            BankId = 3,
+                            BranchCode = "202409",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Athlone"
+                        },
+                        new
+                        {
+                            Id = 118,
+                            BankId = 3,
+                            BranchCode = "200409",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Blue Route"
+                        },
+                        new
+                        {
+                            Id = 119,
+                            BankId = 3,
+                            BranchCode = "200212",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Caledon"
+                        },
+                        new
+                        {
+                            Id = 120,
+                            BankId = 3,
+                            BranchCode = "201409",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Town"
+                        },
+                        new
+                        {
+                            Id = 121,
+                            BankId = 3,
+                            BranchCode = "200107",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Ceres"
+                        },
+                        new
+                        {
+                            Id = 122,
+                            BankId = 3,
+                            BranchCode = "200109",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Claremont"
+                        },
+                        new
+                        {
+                            Id = 123,
+                            BankId = 3,
+                            BranchCode = "200207",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "De Doorns"
+                        },
+                        new
+                        {
+                            Id = 124,
+                            BankId = 3,
+                            BranchCode = "200810",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Epping"
+                        },
+                        new
+                        {
+                            Id = 125,
+                            BankId = 3,
+                            BranchCode = "202309",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Fish Hoek"
+                        },
+                        new
+                        {
+                            Id = 126,
+                            BankId = 3,
+                            BranchCode = "210114",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "george"
+                        },
+                        new
+                        {
+                            Id = 127,
+                            BankId = 3,
+                            BranchCode = "200312",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Grabouw"
+                        },
+                        new
+                        {
+                            Id = 128,
+                            BankId = 3,
+                            BranchCode = "203109",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Grassy Park"
+                        },
+                        new
+                        {
+                            Id = 129,
+                            BankId = 3,
+                            BranchCode = "200412",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Hermanus"
+                        },
+                        new
+                        {
+                            Id = 130,
+                            BankId = 3,
+                            BranchCode = "204009",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Hout Bay"
+                        },
+                        new
+                        {
+                            Id = 131,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Klawer"
+                        },
+                        new
+                        {
+                            Id = 132,
+                            BankId = 3,
+                            BranchCode = "210214",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "knysna"
+                        },
+                        new
+                        {
+                            Id = 133,
+                            BankId = 3,
+                            BranchCode = "201110",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kuilsriver"
+                        },
+                        new
+                        {
+                            Id = 134,
+                            BankId = 3,
+                            BranchCode = "200213",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Ladismith"
+                        },
+                        new
+                        {
+                            Id = 135,
+                            BankId = 3,
+                            BranchCode = "210754",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Makhaza"
+                        },
+                        new
+                        {
+                            Id = 136,
+                            BankId = 3,
+                            BranchCode = "203309",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Milnerton"
+                        },
+                        new
+                        {
+                            Id = 137,
+                            BankId = 3,
+                            BranchCode = "204709",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Montague Gardens"
+                        },
+                        new
+                        {
+                            Id = 138,
+                            BankId = 3,
+                            BranchCode = "200309",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mowbray"
+                        },
+                        new
+                        {
+                            Id = 139,
+                            BankId = 3,
+                            BranchCode = "202709",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Newlands"
+                        },
+                        new
+                        {
+                            Id = 140,
+                            BankId = 3,
+                            BranchCode = "210414",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Oudtshoorn"
+                        },
+                        new
+                        {
+                            Id = 141,
+                            BankId = 3,
+                            BranchCode = "200510",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Parow"
+                        },
+                        new
+                        {
+                            Id = 142,
+                            BankId = 3,
+                            BranchCode = "200211",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Piketberg"
+                        },
+                        new
+                        {
+                            Id = 143,
+                            BankId = 3,
+                            BranchCode = "210514",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Plettenberg Bay"
+                        },
+                        new
+                        {
+                            Id = 144,
+                            BankId = 3,
+                            BranchCode = "200413",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Robertson"
+                        },
+                        new
+                        {
+                            Id = 145,
+                            BankId = 3,
+                            BranchCode = "201509",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Rondebosch"
+                        },
+                        new
+                        {
+                            Id = 146,
+                            BankId = 3,
+                            BranchCode = "200411",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Saldanha"
+                        },
+                        new
+                        {
+                            Id = 147,
+                            BankId = 3,
+                            BranchCode = "200912",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Somerset mall"
+                        },
+                        new
+                        {
+                            Id = 148,
+                            BankId = 3,
+                            BranchCode = "200610",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Stellenbosch"
+                        },
+                        new
+                        {
+                            Id = 149,
+                            BankId = 3,
+                            BranchCode = "200612",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Strand"
+                        },
+                        new
+                        {
+                            Id = 150,
+                            BankId = 3,
+                            BranchCode = "200513",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Swellendam"
+                        },
+                        new
+                        {
+                            Id = 151,
+                            BankId = 3,
+                            BranchCode = "203809",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Table View"
+                        },
+                        new
+                        {
+                            Id = 152,
+                            BankId = 3,
+                            BranchCode = "202509",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Thibault Square"
+                        },
+                        new
+                        {
+                            Id = 153,
+                            BankId = 3,
+                            BranchCode = "200409",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tokai"
+                        },
+                        new
+                        {
+                            Id = 154,
+                            BankId = 3,
+                            BranchCode = "250040",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Town Centre Mitchell's Plain"
+                        },
+                        new
+                        {
+                            Id = 155,
+                            BankId = 3,
+                            BranchCode = "200307",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tulbagh"
+                        },
+                        new
+                        {
+                            Id = 156,
+                            BankId = 3,
+                            BranchCode = "220323",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tygervalley"
+                        },
+                        new
+                        {
+                            Id = 157,
+                            BankId = 3,
+                            BranchCode = "200712",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Villiersdorp"
+                        },
+                        new
+                        {
+                            Id = 158,
+                            BankId = 3,
+                            BranchCode = "200311",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vredenburg"
+                        },
+                        new
+                        {
+                            Id = 159,
+                            BankId = 3,
+                            BranchCode = "200406",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vredendal"
+                        },
+                        new
+                        {
+                            Id = 160,
+                            BankId = 3,
+                            BranchCode = "201909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Woodstock"
+                        },
+                        new
+                        {
+                            Id = 161,
+                            BankId = 3,
+                            BranchCode = "200407",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Worcester"
+                        },
+                        new
+                        {
+                            Id = 162,
+                            BankId = 3,
+                            BranchCode = "202209",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Wynberg"
+                        },
+                        new
+                        {
+                            Id = 163,
+                            BankId = 3,
+                            BranchCode = "260214",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Zevenwacht"
+                        },
+                        new
+                        {
+                            Id = 164,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Town Centre"
+                        },
+                        new
+                        {
+                            Id = 165,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Durbanville"
+                        },
+                        new
+                        {
+                            Id = 166,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "250555"
+                        },
+                        new
+                        {
+                            Id = 167,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Adderley Str. Cape Town"
+                        },
+                        new
+                        {
+                            Id = 168,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Adderley Street Cape Town"
+                        },
+                        new
+                        {
+                            Id = 169,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Adderley Street, Cape Town"
+                        },
+                        new
+                        {
+                            Id = 170,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Adderley Street,Cape Town"
+                        },
+                        new
+                        {
+                            Id = 171,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "ADDERLY STREET"
+                        },
+                        new
+                        {
+                            Id = 172,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "BLUE ROUTE MALL"
+                        },
+                        new
+                        {
+                            Id = 173,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "BLUE ROUTE TOKAI"
+                        },
+                        new
+                        {
+                            Id = 174,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "EPPINDUST"
+                        },
+                        new
+                        {
+                            Id = 175,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "EPPINGDUST"
+                        },
+                        new
+                        {
+                            Id = 176,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Eppingindust"
+                        },
+                        new
+                        {
+                            Id = 177,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "GRASSY PARK CAPE TOWN"
+                        },
+                        new
+                        {
+                            Id = 178,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Grassy Park, Cape Town"
+                        },
+                        new
+                        {
+                            Id = 179,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "KLAWER SERVICE BRANCHE"
+                        },
+                        new
+                        {
+                            Id = 180,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kuilsrivier"
+                        },
+                        new
+                        {
+                            Id = 181,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "ladiesmith"
+                        },
+                        new
+                        {
+                            Id = 182,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Makhaza Shopping Centre"
+                        },
+                        new
+                        {
+                            Id = 183,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mlnerton"
+                        },
+                        new
+                        {
+                            Id = 184,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mobray"
+                        },
+                        new
+                        {
+                            Id = 185,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "montague"
+                        },
+                        new
+                        {
+                            Id = 186,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mosselbay"
+                        },
+                        new
+                        {
+                            Id = 187,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "PAROW 002"
+                        },
+                        new
+                        {
+                            Id = 188,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "SALDAHNA"
+                        },
+                        new
+                        {
+                            Id = 189,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "SANDTON"
+                        },
+                        new
+                        {
+                            Id = 190,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "SANDTON SQUARE CRAIGHALL"
+                        },
+                        new
+                        {
+                            Id = 191,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "SOMERSET WEST"
+                        },
+                        new
+                        {
+                            Id = 192,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Somerset West Mall"
+                        },
+                        new
+                        {
+                            Id = 193,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Stellenbosch C.P"
+                        },
+                        new
+                        {
+                            Id = 194,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Symphony"
+                        },
+                        new
+                        {
+                            Id = 195,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "TYGERVALIE"
+                        },
+                        new
+                        {
+                            Id = 196,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "VANGATE"
+                        },
+                        new
+                        {
+                            Id = 197,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vangate Mall Athlone"
+                        },
+                        new
+                        {
+                            Id = 198,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "VILLIERSDORD"
+                        },
+                        new
+                        {
+                            Id = 199,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "villierssdorp"
+                        },
+                        new
+                        {
+                            Id = 200,
+                            BankId = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Zevenwacht Mall"
+                        },
+                        new
+                        {
+                            Id = 201,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Ceres"
+                        },
+                        new
+                        {
+                            Id = 202,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Avonwood"
+                        },
+                        new
+                        {
+                            Id = 203,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Beaufort West"
+                        },
+                        new
+                        {
+                            Id = 204,
+                            BankId = 4,
+                            BranchCode = "103210",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bellville East"
+                        },
+                        new
+                        {
+                            Id = 205,
+                            BankId = 4,
+                            BranchCode = "103310",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Brackenfell"
+                        },
+                        new
+                        {
+                            Id = 206,
+                            BankId = 4,
+                            BranchCode = "149821",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "BUSINESS WINELANDS"
+                        },
+                        new
+                        {
+                            Id = 207,
+                            BankId = 4,
+                            BranchCode = "441010",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Commercial"
+                        },
+                        new
+                        {
+                            Id = 208,
+                            BankId = 4,
+                            BranchCode = "145209",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cavendish Square"
+                        },
+                        new
+                        {
+                            Id = 209,
+                            BankId = 4,
+                            BranchCode = "167005",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Franschhoek"
+                        },
+                        new
+                        {
+                            Id = 210,
+                            BankId = 4,
+                            BranchCode = "101009",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Gardens"
+                        },
+                        new
+                        {
+                            Id = 211,
+                            BankId = 4,
+                            BranchCode = "100909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Gardens Centre"
+                        },
+                        new
+                        {
+                            Id = 212,
+                            BankId = 4,
+                            BranchCode = "122005",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "GRAHAMSTOWN"
+                        },
+                        new
+                        {
+                            Id = 213,
+                            BankId = 4,
+                            BranchCode = "103109",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Heerengracht"
+                        },
+                        new
+                        {
+                            Id = 214,
+                            BankId = 4,
+                            BranchCode = "441012",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Helderberg Commercial"
+                        },
+                        new
+                        {
+                            Id = 215,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Inland Garden Route Paarl"
+                        },
+                        new
+                        {
+                            Id = 216,
+                            BankId = 4,
+                            BranchCode = "198760",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kenilworth"
+                        },
+                        new
+                        {
+                            Id = 217,
+                            BankId = 4,
+                            BranchCode = "172305",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Khayaelitsha Mall"
+                        },
+                        new
+                        {
+                            Id = 218,
+                            BankId = 4,
+                            BranchCode = "155405",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Makhaza"
+                        },
+                        new
+                        {
+                            Id = 219,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mbekweni"
+                        },
+                        new
+                        {
+                            Id = 220,
+                            BankId = 4,
+                            BranchCode = "107909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mitchell Plain"
+                        },
+                        new
+                        {
+                            Id = 221,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Montague Gardens"
+                        },
+                        new
+                        {
+                            Id = 222,
+                            BankId = 4,
+                            BranchCode = "128505",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Moorreesburg"
+                        },
+                        new
+                        {
+                            Id = 223,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Nomzamo"
+                        },
+                        new
+                        {
+                            Id = 224,
+                            BankId = 4,
+                            BranchCode = "118602",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Northern Peninsula"
+                        },
+                        new
+                        {
+                            Id = 225,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Paarl Mall"
+                        },
+                        new
+                        {
+                            Id = 226,
+                            BankId = 4,
+                            BranchCode = "115909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Peoples Athlone"
+                        },
+                        new
+                        {
+                            Id = 227,
+                            BankId = 4,
+                            BranchCode = "107909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Promenade"
+                        },
+                        new
+                        {
+                            Id = 228,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Robertson"
+                        },
+                        new
+                        {
+                            Id = 229,
+                            BankId = 4,
+                            BranchCode = "106909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Sea Point"
+                        },
+                        new
+                        {
+                            Id = 230,
+                            BankId = 4,
+                            BranchCode = "123209",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Southern Peninsula"
+                        },
+                        new
+                        {
+                            Id = 231,
+                            BankId = 4,
+                            BranchCode = "184705",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Stilbaai"
+                        },
+                        new
+                        {
+                            Id = 232,
+                            BankId = 4,
+                            BranchCode = "128505",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Swartland"
+                        },
+                        new
+                        {
+                            Id = 233,
+                            BankId = 4,
+                            BranchCode = "118602",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The Bridge"
+                        },
+                        new
+                        {
+                            Id = 234,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tokai"
+                        },
+                        new
+                        {
+                            Id = 235,
+                            BankId = 4,
+                            BranchCode = "103910",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tygervalley"
+                        },
+                        new
+                        {
+                            Id = 236,
+                            BankId = 4,
+                            BranchCode = "128505",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vredenburg"
+                        },
+                        new
+                        {
+                            Id = 237,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vredendal"
+                        },
+                        new
+                        {
+                            Id = 238,
+                            BankId = 4,
+                            BranchCode = "102905",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Wellington"
+                        },
+                        new
+                        {
+                            Id = 239,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "All Branches"
+                        },
+                        new
+                        {
+                            Id = 240,
+                            BankId = 4,
+                            BranchCode = "193765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Atlantis"
+                        },
+                        new
+                        {
+                            Id = 241,
+                            BankId = 4,
+                            BranchCode = "120405",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Belhar"
+                        },
+                        new
+                        {
+                            Id = 242,
+                            BankId = 4,
+                            BranchCode = "108110",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bellville"
+                        },
+                        new
+                        {
+                            Id = 243,
+                            BankId = 4,
+                            BranchCode = "125142",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bredasdorp"
+                        },
+                        new
+                        {
+                            Id = 244,
+                            BankId = 4,
+                            BranchCode = "196005",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Caledon"
+                        },
+                        new
+                        {
+                            Id = 245,
+                            BankId = 4,
+                            BranchCode = "100909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Town"
+                        },
+                        new
+                        {
+                            Id = 246,
+                            BankId = 4,
+                            BranchCode = "100989",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Town Station"
+                        },
+                        new
+                        {
+                            Id = 247,
+                            BankId = 4,
+                            BranchCode = "153305",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Clanwilliam"
+                        },
+                        new
+                        {
+                            Id = 248,
+                            BankId = 4,
+                            BranchCode = "104609",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Claremont"
+                        },
+                        new
+                        {
+                            Id = 249,
+                            BankId = 4,
+                            BranchCode = "101109",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Constantia"
+                        },
+                        new
+                        {
+                            Id = 250,
+                            BankId = 4,
+                            BranchCode = "103710",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Durbanville"
+                        },
+                        new
+                        {
+                            Id = 251,
+                            BankId = 4,
+                            BranchCode = "153614",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Garden Route"
+                        },
+                        new
+                        {
+                            Id = 252,
+                            BankId = 4,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Garden Route Mall"
+                        },
+                        new
+                        {
+                            Id = 253,
+                            BankId = 4,
+                            BranchCode = "109114",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "George"
+                        },
+                        new
+                        {
+                            Id = 254,
+                            BankId = 4,
+                            BranchCode = "134512",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Hermanus"
+                        },
+                        new
+                        {
+                            Id = 255,
+                            BankId = 4,
+                            BranchCode = "187505",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Inland Garden Route"
+                        },
+                        new
+                        {
+                            Id = 256,
+                            BankId = 4,
+                            BranchCode = "172305",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Khayelitsha"
+                        },
+                        new
+                        {
+                            Id = 257,
+                            BankId = 4,
+                            BranchCode = "172305",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Khayelitsha Mall"
+                        },
+                        new
+                        {
+                            Id = 258,
+                            BankId = 4,
+                            BranchCode = "108914",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Knysna"
+                        },
+                        new
+                        {
+                            Id = 259,
+                            BankId = 4,
+                            BranchCode = "112305",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kraaifontein"
+                        },
+                        new
+                        {
+                            Id = 260,
+                            BankId = 4,
+                            BranchCode = "115310",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kuilsriver"
+                        },
+                        new
+                        {
+                            Id = 261,
+                            BankId = 4,
+                            BranchCode = "154605",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Malmesbury"
+                        },
+                        new
+                        {
+                            Id = 262,
+                            BankId = 4,
+                            BranchCode = "144905",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mitchells Plain"
+                        },
+                        new
+                        {
+                            Id = 263,
+                            BankId = 4,
+                            BranchCode = "144905",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mitchell's Plain"
+                        },
+                        new
+                        {
+                            Id = 264,
+                            BankId = 4,
+                            BranchCode = "168905",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mossel Bay"
+                        },
+                        new
+                        {
+                            Id = 265,
+                            BankId = 4,
+                            BranchCode = "110634",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Nonqubela"
+                        },
+                        new
+                        {
+                            Id = 266,
+                            BankId = 4,
+                            BranchCode = "175205",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Oudtshoorn"
+                        },
+                        new
+                        {
+                            Id = 267,
+                            BankId = 4,
+                            BranchCode = "102210",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Paarl"
+                        },
+                        new
+                        {
+                            Id = 268,
+                            BankId = 4,
+                            BranchCode = "114810",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Paarl Lady Grey St"
+                        },
+                        new
+                        {
+                            Id = 269,
+                            BankId = 4,
+                            BranchCode = "102510",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Parow"
+                        },
+                        new
+                        {
+                            Id = 270,
+                            BankId = 4,
+                            BranchCode = "107510",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Phillipi"
+                        },
+                        new
+                        {
+                            Id = 271,
+                            BankId = 4,
+                            BranchCode = "104709",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Pinelands"
+                        },
+                        new
+                        {
+                            Id = 272,
+                            BankId = 4,
+                            BranchCode = "107909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Promenade Mall"
+                        },
+                        new
+                        {
+                            Id = 273,
+                            BankId = 4,
+                            BranchCode = "162645",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Riversdal"
+                        },
+                        new
+                        {
+                            Id = 274,
+                            BankId = 4,
+                            BranchCode = "104809",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Rondebosch"
+                        },
+                        new
+                        {
+                            Id = 275,
+                            BankId = 4,
+                            BranchCode = "114145",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Somerset mall"
+                        },
+                        new
+                        {
+                            Id = 276,
+                            BankId = 4,
+                            BranchCode = "107110",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Stellenbosch"
+                        },
+                        new
+                        {
+                            Id = 277,
+                            BankId = 4,
+                            BranchCode = "132105",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Swellendam"
+                        },
+                        new
+                        {
+                            Id = 278,
+                            BankId = 4,
+                            BranchCode = "144905",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Town Centre"
+                        },
+                        new
+                        {
+                            Id = 279,
+                            BankId = 4,
+                            BranchCode = "118602",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tygerberg"
+                        },
+                        new
+                        {
+                            Id = 280,
+                            BankId = 4,
+                            BranchCode = "149821",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Winelands Stellenbosch"
+                        },
+                        new
+                        {
+                            Id = 281,
+                            BankId = 4,
+                            BranchCode = "101507",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Worcester"
+                        },
+                        new
+                        {
+                            Id = 282,
+                            BankId = 4,
+                            BranchCode = "109114",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "York Street"
+                        },
+                        new
+                        {
+                            Id = 283,
+                            BankId = 4,
+                            BranchCode = "147005",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Zomelust Estate Paarl"
+                        },
+                        new
+                        {
+                            Id = 284,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "147005"
+                        },
+                        new
+                        {
+                            Id = 285,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "ANTIANTIC"
+                        },
+                        new
+                        {
+                            Id = 286,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "ANTLANTIS"
+                        },
+                        new
+                        {
+                            Id = 287,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Beaufort - West"
+                        },
+                        new
+                        {
+                            Id = 288,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bellville CBD"
+                        },
+                        new
+                        {
+                            Id = 289,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "BELLVILLE CDB"
+                        },
+                        new
+                        {
+                            Id = 290,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "caldeon"
+                        },
+                        new
+                        {
+                            Id = 291,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "CAVENDISH"
+                        },
+                        new
+                        {
+                            Id = 292,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "CHURCH SQUARE  KUILS RIVIER"
+                        },
+                        new
+                        {
+                            Id = 293,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "HELDERBERG KOMMERSIELE"
+                        },
+                        new
+                        {
+                            Id = 294,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "KAAP KOMMERSIEEL"
+                        },
+                        new
+                        {
+                            Id = 295,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "KUILSRIVIER"
+                        },
+                        new
+                        {
+                            Id = 296,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mitchells Plain Town Centre"
+                        },
+                        new
+                        {
+                            Id = 297,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mitchell's Plain, Promenade Mall"
+                        },
+                        new
+                        {
+                            Id = 298,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Montaque Gardens"
+                        },
+                        new
+                        {
+                            Id = 299,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mosselbay"
+                        },
+                        new
+                        {
+                            Id = 300,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "PROMINADE"
+                        },
+                        new
+                        {
+                            Id = 301,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Seapoint"
+                        },
+                        new
+                        {
+                            Id = 302,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Somerset"
+                        },
+                        new
+                        {
+                            Id = 303,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Somerset Wesr"
+                        },
+                        new
+                        {
+                            Id = 304,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "SOMERSET WEST"
+                        },
+                        new
+                        {
+                            Id = 305,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "TYGERBERG WINELANDS"
+                        },
+                        new
+                        {
+                            Id = 306,
+                            BankId = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Winelands"
+                        },
+                        new
+                        {
+                            Id = 307,
+                            BankId = 4,
+                            BranchCode = "50212",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "grabouw"
+                        },
+                        new
+                        {
+                            Id = 308,
+                            BankId = 5,
+                            BranchCode = "26609",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Athlone"
+                        },
+                        new
+                        {
+                            Id = 309,
+                            BankId = 5,
+                            BranchCode = "51001",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bayside"
+                        },
+                        new
+                        {
+                            Id = 310,
+                            BankId = 5,
+                            BranchCode = "4805",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Braamfontein"
+                        },
+                        new
+                        {
+                            Id = 311,
+                            BankId = 5,
+                            BranchCode = "30310",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Brackenfell"
+                        },
+                        new
+                        {
+                            Id = 312,
+                            BankId = 5,
+                            BranchCode = "50011",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Citrusdal"
+                        },
+                        new
+                        {
+                            Id = 313,
+                            BankId = 5,
+                            BranchCode = "50106",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Clanwilliam"
+                        },
+                        new
+                        {
+                            Id = 314,
+                            BankId = 5,
+                            BranchCode = "31010",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Goodwood"
+                        },
+                        new
+                        {
+                            Id = 315,
+                            BankId = 5,
+                            BranchCode = "51108",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Lainsburg"
+                        },
+                        new
+                        {
+                            Id = 316,
+                            BankId = 5,
+                            BranchCode = "51001",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "LYNNWOOD RIDGE"
+                        },
+                        new
+                        {
+                            Id = 317,
+                            BankId = 5,
+                            BranchCode = "6105",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mellville"
+                        },
+                        new
+                        {
+                            Id = 318,
+                            BankId = 5,
+                            BranchCode = "6305",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Northcliff"
+                        },
+                        new
+                        {
+                            Id = 319,
+                            BankId = 5,
+                            BranchCode = "51001",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Parow West"
+                        },
+                        new
+                        {
+                            Id = 320,
+                            BankId = 5,
+                            BranchCode = "25309",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Plumstead"
+                        },
+                        new
+                        {
+                            Id = 321,
+                            BankId = 5,
+                            BranchCode = "25009",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Rondeboch"
+                        },
+                        new
+                        {
+                            Id = 322,
+                            BankId = 5,
+                            BranchCode = "24109",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Sea Point"
+                        },
+                        new
+                        {
+                            Id = 323,
+                            BankId = 5,
+                            BranchCode = "33112",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Strand"
+                        },
+                        new
+                        {
+                            Id = 324,
+                            BankId = 5,
+                            BranchCode = "51001",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Thembalethu George"
+                        },
+                        new
+                        {
+                            Id = 325,
+                            BankId = 5,
+                            BranchCode = "20909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Thibault Sqaure"
+                        },
+                        new
+                        {
+                            Id = 326,
+                            BankId = 5,
+                            BranchCode = "50307",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tulbagh"
+                        },
+                        new
+                        {
+                            Id = 327,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "All Branches"
+                        },
+                        new
+                        {
+                            Id = 328,
+                            BankId = 5,
+                            BranchCode = "50008",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Beaufort West"
+                        },
+                        new
+                        {
+                            Id = 329,
+                            BankId = 5,
+                            BranchCode = "51001",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bellville"
+                        },
+                        new
+                        {
+                            Id = 330,
+                            BankId = 5,
+                            BranchCode = "25609",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Blue Route"
+                        },
+                        new
+                        {
+                            Id = 331,
+                            BankId = 5,
+                            BranchCode = "50112",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Caledon"
+                        },
+                        new
+                        {
+                            Id = 332,
+                            BankId = 5,
+                            BranchCode = "50014",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Calitzdorp"
+                        },
+                        new
+                        {
+                            Id = 333,
+                            BankId = 5,
+                            BranchCode = "23910",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Gate"
+                        },
+                        new
+                        {
+                            Id = 334,
+                            BankId = 5,
+                            BranchCode = "20009",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Town"
+                        },
+                        new
+                        {
+                            Id = 335,
+                            BankId = 5,
+                            BranchCode = "50007",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Ceres"
+                        },
+                        new
+                        {
+                            Id = 336,
+                            BankId = 5,
+                            BranchCode = "25109",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Claremont"
+                        },
+                        new
+                        {
+                            Id = 337,
+                            BankId = 5,
+                            BranchCode = "25309",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Constantia"
+                        },
+                        new
+                        {
+                            Id = 338,
+                            BankId = 5,
+                            BranchCode = "50111",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Darling"
+                        },
+                        new
+                        {
+                            Id = 339,
+                            BankId = 5,
+                            BranchCode = "50107",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "De Doorns"
+                        },
+                        new
+                        {
+                            Id = 340,
+                            BankId = 5,
+                            BranchCode = "50114",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "De rust"
+                        },
+                        new
+                        {
+                            Id = 341,
+                            BankId = 5,
+                            BranchCode = "36009",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Fish Hoek"
+                        },
+                        new
+                        {
+                            Id = 342,
+                            BankId = 5,
+                            BranchCode = "25909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Gatesville"
+                        },
+                        new
+                        {
+                            Id = 343,
+                            BankId = 5,
+                            BranchCode = "50214",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "George"
+                        },
+                        new
+                        {
+                            Id = 344,
+                            BankId = 5,
+                            BranchCode = "50212",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Grabouw"
+                        },
+                        new
+                        {
+                            Id = 345,
+                            BankId = 5,
+                            BranchCode = "33012",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Helderberg"
+                        },
+                        new
+                        {
+                            Id = 346,
+                            BankId = 5,
+                            BranchCode = "50312",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Hermanus"
+                        },
+                        new
+                        {
+                            Id = 347,
+                            BankId = 5,
+                            BranchCode = "25909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Khayelitsha"
+                        },
+                        new
+                        {
+                            Id = 348,
+                            BankId = 5,
+                            BranchCode = "50314",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Knysna"
+                        },
+                        new
+                        {
+                            Id = 349,
+                            BankId = 5,
+                            BranchCode = "26209",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kromboom"
+                        },
+                        new
+                        {
+                            Id = 350,
+                            BankId = 5,
+                            BranchCode = "50611",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Laaiplek"
+                        },
+                        new
+                        {
+                            Id = 351,
+                            BankId = 5,
+                            BranchCode = "50113",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Ladismith"
+                        },
+                        new
+                        {
+                            Id = 352,
+                            BankId = 5,
+                            BranchCode = "50206",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Lamberts Bay"
+                        },
+                        new
+                        {
+                            Id = 353,
+                            BankId = 5,
+                            BranchCode = "50507",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Malmesbury"
+                        },
+                        new
+                        {
+                            Id = 354,
+                            BankId = 5,
+                            BranchCode = "26509",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Milnerton"
+                        },
+                        new
+                        {
+                            Id = 355,
+                            BankId = 5,
+                            BranchCode = "50213",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Montagu"
+                        },
+                        new
+                        {
+                            Id = 356,
+                            BankId = 5,
+                            BranchCode = "50414",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mossel Bay"
+                        },
+                        new
+                        {
+                            Id = 357,
+                            BankId = 5,
+                            BranchCode = "24909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mowbray"
+                        },
+                        new
+                        {
+                            Id = 358,
+                            BankId = 5,
+                            BranchCode = "50514",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Oudtshoorn"
+                        },
+                        new
+                        {
+                            Id = 359,
+                            BankId = 5,
+                            BranchCode = "50210",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Paarl"
+                        },
+                        new
+                        {
+                            Id = 360,
+                            BankId = 5,
+                            BranchCode = "31110",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Parow"
+                        },
+                        new
+                        {
+                            Id = 361,
+                            BankId = 5,
+                            BranchCode = "50411",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Piketberg"
+                        },
+                        new
+                        {
+                            Id = 362,
+                            BankId = 5,
+                            BranchCode = "36309",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Pinelands"
+                        },
+                        new
+                        {
+                            Id = 363,
+                            BankId = 5,
+                            BranchCode = "50714",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Plettenberg Bay"
+                        },
+                        new
+                        {
+                            Id = 364,
+                            BankId = 5,
+                            BranchCode = "50207",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Porterville"
+                        },
+                        new
+                        {
+                            Id = 365,
+                            BankId = 5,
+                            BranchCode = "26609",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Promenade"
+                        },
+                        new
+                        {
+                            Id = 366,
+                            BankId = 5,
+                            BranchCode = "50413",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Robertson"
+                        },
+                        new
+                        {
+                            Id = 367,
+                            BankId = 5,
+                            BranchCode = "25009",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Rondebosch"
+                        },
+                        new
+                        {
+                            Id = 368,
+                            BankId = 5,
+                            BranchCode = "33012",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Somerset mall"
+                        },
+                        new
+                        {
+                            Id = 369,
+                            BankId = 5,
+                            BranchCode = "50610",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Stellenbosch"
+                        },
+                        new
+                        {
+                            Id = 370,
+                            BankId = 5,
+                            BranchCode = "50513",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Swellendam"
+                        },
+                        new
+                        {
+                            Id = 371,
+                            BankId = 5,
+                            BranchCode = "102510",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Thibault Square"
+                        },
+                        new
+                        {
+                            Id = 372,
+                            BankId = 5,
+                            BranchCode = "50410",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tyger Manor"
+                        },
+                        new
+                        {
+                            Id = 373,
+                            BankId = 5,
+                            BranchCode = "50215",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Uniondale"
+                        },
+                        new
+                        {
+                            Id = 374,
+                            BankId = 5,
+                            BranchCode = "25909",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vangate Mall"
+                        },
+                        new
+                        {
+                            Id = 375,
+                            BankId = 5,
+                            BranchCode = "50511",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vredenburg"
+                        },
+                        new
+                        {
+                            Id = 376,
+                            BankId = 5,
+                            BranchCode = "50706",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Vredendal"
+                        },
+                        new
+                        {
+                            Id = 377,
+                            BankId = 5,
+                            BranchCode = "50710",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Wellington"
+                        },
+                        new
+                        {
+                            Id = 378,
+                            BankId = 5,
+                            BranchCode = "50407",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Worcester"
+                        },
+                        new
+                        {
+                            Id = 379,
+                            BankId = 5,
+                            BranchCode = "25309",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Wynberg"
+                        },
+                        new
+                        {
+                            Id = 380,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Beaufort- West"
+                        },
+                        new
+                        {
+                            Id = 381,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Blue Route Centre"
+                        },
+                        new
+                        {
+                            Id = 382,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "BLUE ROUTE MALL, TOKAI"
+                        },
+                        new
+                        {
+                            Id = 383,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Hyde Park"
+                        },
+                        new
+                        {
+                            Id = 384,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Johannesburg"
+                        },
+                        new
+                        {
+                            Id = 385,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kroomboom"
+                        },
+                        new
+                        {
+                            Id = 386,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "LAMBERSBAAI"
+                        },
+                        new
+                        {
+                            Id = 387,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "LAMBERTSBAAI"
+                        },
+                        new
+                        {
+                            Id = 388,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Lambertsbay"
+                        },
+                        new
+                        {
+                            Id = 389,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "MISGUND"
+                        },
+                        new
+                        {
+                            Id = 390,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mobray"
+                        },
+                        new
+                        {
+                            Id = 391,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mosselbaai"
+                        },
+                        new
+                        {
+                            Id = 392,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mosselbay"
+                        },
+                        new
+                        {
+                            Id = 393,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mowbray Cape Town"
+                        },
+                        new
+                        {
+                            Id = 394,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Parow centre"
+                        },
+                        new
+                        {
+                            Id = 395,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "PORTVILLE"
+                        },
+                        new
+                        {
+                            Id = 396,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Promenade 1"
+                        },
+                        new
+                        {
+                            Id = 397,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Prominade"
+                        },
+                        new
+                        {
+                            Id = 398,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "PROMINADE 1"
+                        },
+                        new
+                        {
+                            Id = 399,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Somerset West"
+                        },
+                        new
+                        {
+                            Id = 400,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Thibaullt Square"
+                        },
+                        new
+                        {
+                            Id = 401,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Tygar Manor"
+                        },
+                        new
+                        {
+                            Id = 402,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "TYGER MINOR"
+                        },
+                        new
+                        {
+                            Id = 403,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "tyger minor duplicate"
+                        },
+                        new
+                        {
+                            Id = 404,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "TYGERMINOR"
+                        },
+                        new
+                        {
+                            Id = 405,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "TYGOR MINOR"
+                        },
+                        new
+                        {
+                            Id = 406,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Universal Code"
+                        },
+                        new
+                        {
+                            Id = 407,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Van Rhynsdorp"
+                        },
+                        new
+                        {
+                            Id = 408,
+                            BankId = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "VANGATE"
+                        },
+                        new
+                        {
+                            Id = 409,
+                            BankId = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Walvis Bay"
+                        },
+                        new
+                        {
+                            Id = 410,
+                            BankId = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "All Branches"
+                        },
+                        new
+                        {
+                            Id = 411,
+                            BankId = 7,
+                            BranchCode = "450109",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Town"
+                        },
+                        new
+                        {
+                            Id = 412,
+                            BankId = 7,
+                            BranchCode = "198765",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Oudtshoorn"
+                        },
+                        new
+                        {
+                            Id = 413,
+                            BankId = 7,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "All Branches"
+                        },
+                        new
+                        {
+                            Id = 414,
+                            BankId = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bloemfontein"
+                        },
+                        new
+                        {
+                            Id = 415,
+                            BankId = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "LANGA"
+                        },
+                        new
+                        {
+                            Id = 416,
+                            BankId = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Phillipi Post Office"
+                        },
+                        new
+                        {
+                            Id = 417,
+                            BankId = 8,
+                            BranchCode = "26209",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kromboom"
+                        },
+                        new
+                        {
+                            Id = 418,
+                            BankId = 8,
+                            BranchCode = "51001",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Oudtshoorn"
+                        },
+                        new
+                        {
+                            Id = 419,
+                            BankId = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "All Branches"
+                        },
+                        new
+                        {
+                            Id = 420,
+                            BankId = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kroomboom"
+                        },
+                        new
+                        {
+                            Id = 421,
+                            BankId = 9,
+                            BranchCode = "000000",
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Default"
+                        });
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.Directorate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
+
+                    b.Property<int>("CreatedUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Directorates", "dropdown");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Children and Families"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Community Development"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "ECD & Partial Care"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Facility Management"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Partnership Development"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Restorative Services new 2021 VEP, CP, SA",
+                            IsActive = false,
+                            Name = "Restorative Services"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Social Crime Prevention"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "",
+                            IsActive = false,
+                            Name = "Special Programmes"
                         });
                 });
 
@@ -3195,6 +8256,15 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "Quarterly",
                             SystemName = "Quarterly"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Adhoc",
+                            SystemName = "Adhoc"
                         });
                 });
 
@@ -3824,6 +8894,9 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<int?>("DirectorateId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -3921,6 +8994,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Care and Support to Families",
+                            DirectorateId = 1,
                             IsActive = false,
                             Name = "Care and Support to Families"
                         },
@@ -3931,6 +9005,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Child Care and Protection Services",
+                            DirectorateId = 1,
                             IsActive = false,
                             Name = "Child Care and Protection Services"
                         },
@@ -3941,6 +9016,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Crime Prevention",
+                            DirectorateId = 7,
                             IsActive = false,
                             Name = "Crime Prevention"
                         },
@@ -3951,6 +9027,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "ECD & Partial Care",
+                            DirectorateId = 3,
                             IsActive = false,
                             Name = "ECD & Partial Care"
                         },
@@ -3961,6 +9038,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "EPWP",
+                            DirectorateId = 2,
                             IsActive = false,
                             Name = "EPWP"
                         },
@@ -3971,6 +9049,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Facility Managment",
+                            DirectorateId = 4,
                             IsActive = false,
                             Name = "Facility Managment"
                         },
@@ -3981,6 +9060,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Institutional Capacity Building",
+                            DirectorateId = 5,
                             IsActive = false,
                             Name = "Institutional Capacity Building"
                         },
@@ -3991,6 +9071,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Care and Services to Older Persons",
+                            DirectorateId = 8,
                             IsActive = false,
                             Name = "Care and Services to Older Persons"
                         },
@@ -4001,6 +9082,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Services to persons with Disabilities",
+                            DirectorateId = 8,
                             IsActive = false,
                             Name = "Services to persons with Disabilities"
                         },
@@ -4011,6 +9093,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Substance Abuse",
+                            DirectorateId = 8,
                             IsActive = false,
                             Name = "Substance Abuse"
                         },
@@ -4021,6 +9104,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Sustainable Livelihood",
+                            DirectorateId = 2,
                             IsActive = false,
                             Name = "Sustainable Livelihood"
                         },
@@ -4031,6 +9115,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Victim Empowerment",
+                            DirectorateId = 7,
                             IsActive = false,
                             Name = "Victim Empowerment"
                         },
@@ -4041,6 +9126,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Youth Development",
+                            DirectorateId = 2,
                             IsActive = false,
                             Name = "Youth Development"
                         },
@@ -4051,6 +9137,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "Child and Youth Care Centres",
+                            DirectorateId = 4,
                             IsActive = false,
                             Name = "Child and Youth Care Centres"
                         },
@@ -4061,6 +9148,7 @@ namespace NPOMS.Repository.Migrations
                             CreatedUserId = 0,
                             DepartmentId = 7,
                             Description = "ECD Conditional Grant",
+                            DirectorateId = 3,
                             IsActive = false,
                             Name = "ECD Conditional Grant"
                         });
@@ -6013,12 +11101,6 @@ namespace NPOMS.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("NpoProfileId")
                         .HasColumnType("int");
 
@@ -6030,12 +11112,6 @@ namespace NPOMS.Repository.Migrations
 
                     b.Property<bool?>("PostalSameAsPhysical")
                         .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -6250,6 +11326,172 @@ namespace NPOMS.Repository.Migrations
                     b.HasIndex("SubProgrammeId");
 
                     b.ToTable("ApplicationPeriods", "dbo");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.BankDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("AccountTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BankId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("NpoProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BankDetails", "dbo");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.CompliantCycle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CompliantCycleRuleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("HasFinancialStatement")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasProgressReport")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasSignedTPA")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompliantCycles", "dbo");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.CompliantCycleRule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
+
+                    b.Property<int>("CreatedUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<int>("CycleNumber")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompliantCycleRules", "dbo");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            CycleNumber = 1,
+                            IsActive = false
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            CycleNumber = 2,
+                            IsActive = false
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            CycleNumber = 3,
+                            IsActive = false
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            CycleNumber = 4,
+                            IsActive = false
+                        });
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.ContactInformation", b =>
@@ -6484,6 +11726,48 @@ namespace NPOMS.Repository.Migrations
                     b.ToTable("Objectives", "dbo");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Entities.PaymentSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CompliantCycleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ReleaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompliantCycleId");
+
+                    b.ToTable("PaymentSchedules", "dbo");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Entities.Resource", b =>
                 {
                     b.Property<int>("Id")
@@ -6562,6 +11846,12 @@ namespace NPOMS.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -6577,9 +11867,13 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int>("SubProgrammeTypeId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("NpoProfileId");
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.ToTable("ServicesRendered", "dbo");
                 });
@@ -6733,6 +12027,15 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "SLA: Comments Submitted (Org)",
                             SystemName = "OrgComments"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Approved",
+                            SystemName = "Approved"
                         });
                 });
 
@@ -6906,6 +12209,35 @@ namespace NPOMS.Repository.Migrations
                     b.HasIndex("FrequencyPeriodId");
 
                     b.ToTable("WorkplanActuals", "indicator");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanActualAudit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkplanActualId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedUserId");
+
+                    b.HasIndex("StatusId");
+
+                    b.ToTable("WorkplanActualAudits", "indicator");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanComment", b =>
@@ -9595,8 +14927,6 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasIndex("FacilityListId");
 
-                    b.HasIndex("NpoProfileId");
-
                     b.ToTable("NpoProfiles_FacilityLists", "mapping");
                 });
 
@@ -9869,6 +15199,231 @@ namespace NPOMS.Repository.Migrations
                         {
                             RoleId = 1,
                             PermissionId = 47
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 48
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 49
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 50
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 51
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 52
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 53
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 54
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 55
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 56
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 57
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 58
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 59
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 60
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 61
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 62
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 63
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 64
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 65
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 66
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 67
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 68
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 69
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 70
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 71
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 72
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 73
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 74
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 75
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 76
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 77
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 78
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 79
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 80
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 81
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 82
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 83
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 84
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 85
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 86
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 87
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 88
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 89
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 90
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 91
+                        },
+                        new
+                        {
+                            RoleId = 1,
+                            PermissionId = 92
                         });
                 });
 
@@ -10266,6 +15821,17 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("RecipientType");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Entities.PaymentSchedule", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Entities.CompliantCycle", "CompliantCycle")
+                        .WithMany()
+                        .HasForeignKey("CompliantCycleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CompliantCycle");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Entities.Resource", b =>
                 {
                     b.HasOne("NPOMS.Domain.Entities.Activity", "Activity")
@@ -10317,15 +15883,6 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("ServiceType");
                 });
 
-            modelBuilder.Entity("NPOMS.Domain.Entities.ServicesRendered", b =>
-                {
-                    b.HasOne("NPOMS.Domain.Entities.NpoProfile", null)
-                        .WithMany("ServicesRendered")
-                        .HasForeignKey("NpoProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("NPOMS.Domain.Entities.SustainabilityPlan", b =>
                 {
                     b.HasOne("NPOMS.Domain.Entities.Activity", "Activity")
@@ -10346,6 +15903,25 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("FrequencyPeriod");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanActualAudit", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Core.User", "CreatedUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NPOMS.Domain.Entities.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedUser");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanComment", b =>
@@ -10444,12 +16020,6 @@ namespace NPOMS.Repository.Migrations
                     b.HasOne("NPOMS.Domain.Lookup.FacilityList", "FacilityList")
                         .WithMany()
                         .HasForeignKey("FacilityListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NPOMS.Domain.Entities.NpoProfile", null)
-                        .WithMany("NpoProfileFacilityLists")
-                        .HasForeignKey("NpoProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -10617,10 +16187,6 @@ namespace NPOMS.Repository.Migrations
             modelBuilder.Entity("NPOMS.Domain.Entities.NpoProfile", b =>
                 {
                     b.Navigation("AddressInformation");
-
-                    b.Navigation("NpoProfileFacilityLists");
-
-                    b.Navigation("ServicesRendered");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.Objective", b =>

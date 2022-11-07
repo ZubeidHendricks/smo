@@ -5,7 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { Subscription } from 'rxjs';
-import { ApplicationTypeEnum, DocumentTypeEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { ApplicationTypeEnum, DocumentTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationAudit, IApplicationComment, IApplicationPeriod, IDocumentStore, IDocumentType, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -165,7 +165,7 @@ export class UploadSLAComponent implements OnInit {
   private loadDocumentTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
-        this.documentTypes = results.filter(x => x.name.indexOf('SLA') !== -1);
+        this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.Workplan);
       },
       (err) => {
         this._loggerService.logException(err);

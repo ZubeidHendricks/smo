@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
-import { IDepartment, IProgramme, IUser } from 'src/app/models/interfaces';
+import { IDepartment, IDirectorate, IProgramme, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -43,6 +43,9 @@ export class ProgrammeComponent implements OnInit {
   departments: IDepartment[];
   selectedDepartment: IDepartment;
 
+  directorates: IDirectorate[];
+  selectedDirectorate: IDirectorate;
+
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -67,13 +70,14 @@ export class ProgrammeComponent implements OnInit {
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.loadDepartments();
+        this.loadDirectorates();
         this.loadEntities();
       }
     });
 
     this.cols = [
-      { field: 'name', header: 'Name', width: '40%' },
-      { field: 'description', header: 'Description', width: '20%' }
+      { field: 'name', header: 'Programme Name', width: '15%' },
+      { field: 'description', header: 'Programme Description', width: '25%' }
     ];
   }
 
@@ -81,7 +85,21 @@ export class ProgrammeComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, true).subscribe(
       (results) => {
         this.departments = results;
-        this.updateDepartment();
+        this.updateObjects();
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadDirectorates() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Directorates, true).subscribe(
+      (results) => {
+        this.directorates = results;
+        this.updateObjects();
         this._spinner.hide();
       },
       (err) => {
@@ -96,7 +114,7 @@ export class ProgrammeComponent implements OnInit {
       (results) => {
         if (this.isSystemAdmin) {
           this.entities = results;
-          this.updateDepartment();
+          this.updateObjects();
         }
         else
           this.entities = results.filter(x => this.profile.departments[0].id === x.departmentId);
@@ -110,10 +128,12 @@ export class ProgrammeComponent implements OnInit {
     );
   }
 
-  private updateDepartment() {
-    if (this.departments && this.entities) {
+  // Update the department and directorate for each programme
+  private updateObjects() {
+    if (this.departments && this.entities && this.directorates) {
       this.entities.forEach(item => {
         item.department = this.departments.find(x => x.id === item.departmentId);
+        item.directorate = this.directorates.find(x => x.id === item.directorateId);
       });
     }
   }
@@ -135,6 +155,7 @@ export class ProgrammeComponent implements OnInit {
     this.entity = {} as IProgramme;
     this.inActive = null;
     this.selectedDepartment = null;
+    this.selectedDirectorate = null;
     this.showDialog = true;
   }
 
@@ -154,12 +175,13 @@ export class ProgrammeComponent implements OnInit {
 
     this.inActive = !entity.isActive;
     this.selectedDepartment = this.departments.find(x => x.id === entity.departmentId);
+    this.selectedDirectorate = this.directorates.find(x => x.id === entity.directorateId);
 
     return entity;
   }
 
   disableSave() {
-    if (!this.entity.name || !this.entity.description)
+    if (!this.selectedDirectorate || !this.entity.name || !this.entity.description)
       return true;
 
     if (this.isSystemAdmin && !this.selectedDepartment)
@@ -178,6 +200,7 @@ export class ProgrammeComponent implements OnInit {
     else
       this.entity.departmentId = this.profile.departments[0].id;
 
+    this.entity.directorateId = this.selectedDirectorate.id;
     this.isNew ? this.createEntity() : this.updateEntity();
     this.showDialog = false;
   }

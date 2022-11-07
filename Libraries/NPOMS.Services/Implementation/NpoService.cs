@@ -89,6 +89,11 @@ namespace NPOMS.Services.Implementation
 			return await _npoRepository.SearchByName(name);
 		}
 
+		public async Task<IEnumerable<Npo>> SearchApprovedNpo(string name)
+		{
+			return await _npoRepository.SearchApprovedNpoByName(name);
+		}
+
 		public async Task<Npo> GetByNameAndOrgTypeId(string name, int organisationTypeId)
 		{
 			return await _npoRepository.GetByNameAndOrgTypeId(name, organisationTypeId);

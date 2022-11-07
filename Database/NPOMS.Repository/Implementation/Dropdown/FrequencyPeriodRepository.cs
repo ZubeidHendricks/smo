@@ -46,6 +46,11 @@ namespace NPOMS.Repository.Implementation.Dropdown
 							.OrderBy(x => x.Id).AsNoTracking().ToListAsync();
 		}
 
+		public async Task<FrequencyPeriod> GetById(int id)
+		{
+			return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+		}
+
 		#endregion
 	}
 }

@@ -3,7 +3,7 @@
 </ngx-spinner>
 <p-toast></p-toast>
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Capture Targets">
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"></p-menubar>
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowWorkplanTargetActions)"></p-menubar>
     <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>
     <p-panel [style]="{'font-size':'12px'}" header="Targets" *ngIf="isDataAvailable">
@@ -197,6 +197,6 @@
             </div>
         </div>
         <div style="height: 10px;"></div>
-        <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"></p-menubar>        
+        <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowWorkplanTargetActions)"></p-menubar>        
     </p-panel>
 </p-panel>

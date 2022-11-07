@@ -95,10 +95,10 @@ export class NpoDetailsComponent implements OnInit {
       this._messageService.add({ severity: 'error', summary: "Address Information:", detail: "Missing detail required. This can be updated on the Profiles tab." });
     }
 
-    if (this.npoProfile.npoProfileFacilityLists.length === 0) {
+    /*if (this.npoProfile.npoProfileFacilityLists.length === 0) {
       validationErrors.push('Errors in Facility Information');
       this._messageService.add({ severity: 'error', summary: "Facility Information:", detail: "The Facility Information table cannot be empty. This can be updated on the Profiles tab." });
-    }
+    }*/
 
     if (validationErrors.length == 0)
       return true;

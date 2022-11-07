@@ -78,8 +78,8 @@ export class TargetsComponent implements OnInit {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
-        /*if (!this.IsAuthorized(PermissionsEnum.AddApplicationPeriod))
-          this._router.navigate(['401']);*/
+        if (!this.IsAuthorized(PermissionsEnum.CaptureWorkplanTarget))
+          this._router.navigate(['401']);
 
         this.loadFinancialYears();
         this.loadFrequencies();
@@ -134,7 +134,7 @@ export class TargetsComponent implements OnInit {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Frequencies, false).subscribe(
       (results) => {
-        this.frequencies = results;
+        this.frequencies = results.filter(x => x.id === FrequencyEnum.Monthly);
         this._spinner.hide();
       },
       (err) => {

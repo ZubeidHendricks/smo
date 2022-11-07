@@ -7,5 +7,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 	public interface IStatusRepository : IBaseRepository<Status>
 	{
 		Task<IEnumerable<Status>> GetEntities(bool returnInactive);
+
+		Task<Status> GetById(int id);
 	}
 }

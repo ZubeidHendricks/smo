@@ -142,7 +142,7 @@ export class ApplicationListComponent implements OnInit {
         items: []
       }];
 
-      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
         this.buttonItems[0].items.push({
           label: 'Manage Indicators',
           icon: 'fa fa-tags wcg-icon',
@@ -152,7 +152,7 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
         this.buttonItems[0].items.push({
           label: 'Summary',
           icon: 'fa fa-tasks wcg-icon',

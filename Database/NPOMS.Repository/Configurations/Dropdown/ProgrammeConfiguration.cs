@@ -67,105 +67,120 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Id = 8,
 					Name = "Care and Support to Families",
 					Description = "Care and Support to Families",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 1
 				},
 				new Programme
 				{
 					Id = 9,
 					Name = "Child Care and Protection Services",
 					Description = "Child Care and Protection Services",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 1
 				},
 				new Programme
 				{
 					Id = 10,
 					Name = "Crime Prevention",
 					Description = "Crime Prevention",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 7
 				},
 				new Programme
 				{
 					Id = 11,
 					Name = "ECD & Partial Care",
 					Description = "ECD & Partial Care",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 3
 				},
 				new Programme
 				{
 					Id = 12,
 					Name = "EPWP",
 					Description = "EPWP",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 2
 				},
 				new Programme
 				{
 					Id = 13,
 					Name = "Facility Managment",
 					Description = "Facility Managment",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 4
 				},
 				new Programme
 				{
 					Id = 14,
 					Name = "Institutional Capacity Building",
 					Description = "Institutional Capacity Building",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 5
 				},
 				new Programme
 				{
 					Id = 15,
 					Name = "Care and Services to Older Persons",
 					Description = "Care and Services to Older Persons",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 8
 				},
 				new Programme
 				{
 					Id = 16,
 					Name = "Services to persons with Disabilities",
 					Description = "Services to persons with Disabilities",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 8
 				},
 				new Programme
 				{
 					Id = 17,
 					Name = "Substance Abuse",
 					Description = "Substance Abuse",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 8
 				},
 				new Programme
 				{
 					Id = 18,
 					Name = "Sustainable Livelihood",
 					Description = "Sustainable Livelihood",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 2
 				},
 				new Programme
 				{
 					Id = 19,
 					Name = "Victim Empowerment",
 					Description = "Victim Empowerment",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 7
 				},
 				new Programme
 				{
 					Id = 20,
 					Name = "Youth Development",
 					Description = "Youth Development",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 2
 				},
 				new Programme
 				{
 					Id = 21,
 					Name = "Child and Youth Care Centres",
 					Description = "Child and Youth Care Centres",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 4
 				},
 				new Programme
 				{
 					Id = 22,
 					Name = "ECD Conditional Grant",
 					Description = "ECD Conditional Grant",
-					DepartmentId = 7
+					DepartmentId = 7,
+					DirectorateId = 3
 				}
 			);
 		}
