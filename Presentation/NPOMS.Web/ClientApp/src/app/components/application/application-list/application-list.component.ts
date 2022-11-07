@@ -51,6 +51,8 @@ export class ApplicationListComponent implements OnInit {
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
+  canShowOptions: boolean = false;
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -112,6 +114,7 @@ export class ApplicationListComponent implements OnInit {
         });
 
         this.allApplications = results;
+        this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA });
         this._spinner.hide();
       },
       (err) => {
