@@ -65,7 +65,7 @@
                     <td pEditableColumn style="text-align: center;">
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <p-inputNumber [(ngModel)]="rowData.workplanActuals[0].actual" inputId="integeronly" [inputStyle]="{'width':'100%'}" [disabled]="isPreviousFinancialYear"></p-inputNumber>
+                                <p-inputNumber [(ngModel)]="rowData.workplanActuals[0].actual" inputId="integeronly" [inputStyle]="{'width':'100%'}" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></p-inputNumber>
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].actual}}</span>
@@ -75,7 +75,7 @@
                     <td pEditableColumn>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].statement" autoResize="autoResize" [disabled]="isPreviousFinancialYear"></textarea>
+                                <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].statement" autoResize="autoResize" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></textarea>
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].statement}}</span>
@@ -85,7 +85,7 @@
                     <td pEditableColumn>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].deviationReason" autoResize="autoResize" [disabled]="isPreviousFinancialYear"></textarea>
+                                <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].deviationReason" autoResize="autoResize" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></textarea>
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].deviationReason}}</span>
@@ -95,7 +95,7 @@
                     <td pEditableColumn>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].action" autoResize="autoResize" [disabled]="isPreviousFinancialYear"></textarea>
+                                <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].action" autoResize="autoResize" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></textarea>
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].action}}</span>
@@ -104,13 +104,15 @@
                     </td>
                     <td style="text-align: center;">
                         <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
-                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" [disabled]="isPreviousFinancialYear" (click)="uploadDocument(rowData)"></button>
+                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted" (click)="uploadDocument(rowData)"></button>
 
                         <input type="file" #addDoc (change)="onUploadChange(addDoc.files, rowData)" placeholder="Browse" accept="*" style="display:none;">
                     </td>
-                    <td style="text-align: center;">Pending</td>
                     <td style="text-align: center;">
-                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedIndicator=rowData; menu.toggle($event)" pTooltip="Options" tooltipPosition="top"></button>
+                        <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].status.name}}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedIndicator=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
                         <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
                     </td>
                 </tr>
@@ -145,7 +147,7 @@
                     <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
                     <td style="text-align: center;">
                         <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
-                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="onDeleteDocument(document, workplanActual)" pTooltip="Delete" tooltipPosition="top" [disabled]="isPreviousFinancialYear"></button>
+                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="onDeleteDocument(document, workplanActual)" pTooltip="Delete" tooltipPosition="top" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></button>
                     </td>
                 </tr>
             </ng-template>
@@ -209,6 +211,32 @@
     <ng-template pTemplate="footer">
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment()"></button>
     </ng-template>
+</p-dialog>
+
+<p-dialog header="Audit History" 
+          [(visible)]="displayHistory" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="workplanActualAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.status.name}}</td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
 </p-dialog>
 
 <div class="content-section implementation">

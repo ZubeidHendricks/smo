@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IWorkplanActual, IWorkplanComment, IWorkplanTarget, } from 'src/app/models/interfaces';
+import { IApplication } from '@microsoft/applicationinsights-common';
+import { IWorkplanActual, IWorkplanActualAudit, IWorkplanComment, IWorkplanTarget, } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -47,5 +48,10 @@ export class IndicatorService {
   public createWorkplanComment(model: IWorkplanComment) {
     const url = `${this._envUrl.urlAddress}/api/indicators/workplan-comments`;
     return this._http.post<IWorkplanComment>(url, model, httpOptions);
+  }
+
+  public getWorkplanActualAudits(workplanActualId: number) {
+    const url = `${this._envUrl.urlAddress}/api/indicators/workplan-actual-audits/workplanActualId/${workplanActualId}`;
+    return this._http.get<IWorkplanActualAudit[]>(url, httpOptions);
   }
 }

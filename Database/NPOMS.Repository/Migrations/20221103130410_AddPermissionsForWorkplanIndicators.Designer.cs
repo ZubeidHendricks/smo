@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20221103130410_AddPermissionsForWorkplanIndicators")]
+    partial class AddPermissionsForWorkplanIndicators
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -789,33 +791,6 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "RejectedOrganisationApproval",
                             Subject = "Organisation Rejected - {NpoName}"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been updated with a status of <span style=\"font-weight: bold;\">{status}</span>.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{applicationId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
-                            EmailAccountId = 0,
-                            IsActive = false,
-                            Name = "WorkplanActualStatusChanged",
-                            Subject = "Indicator Actuals {status} - {NPO}"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been submitted for you to review.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{applicationId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
-                            EmailAccountId = 0,
-                            IsActive = false,
-                            Name = "WorkplanActualPendingReview",
-                            Subject = "Indicator Actuals Pending Review - {NPO}"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been sent for you to approve.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{applicationId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
-                            EmailAccountId = 0,
-                            IsActive = false,
-                            Name = "WorkplanActualPendingApproval",
-                            Subject = "Indicator Actuals Pending Approval - {NPO}"
                         });
                 });
 
@@ -12027,15 +12002,6 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "SLA: Comments Submitted (Org)",
                             SystemName = "OrgComments"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Approved",
-                            SystemName = "Approved"
                         });
                 });
 
@@ -12209,35 +12175,6 @@ namespace NPOMS.Repository.Migrations
                     b.HasIndex("FrequencyPeriodId");
 
                     b.ToTable("WorkplanActuals", "indicator");
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanActualAudit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkplanActualId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedUserId");
-
-                    b.HasIndex("StatusId");
-
-                    b.ToTable("WorkplanActualAudits", "indicator");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanComment", b =>
@@ -15903,25 +15840,6 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("FrequencyPeriod");
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanActualAudit", b =>
-                {
-                    b.HasOne("NPOMS.Domain.Core.User", "CreatedUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NPOMS.Domain.Entities.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedUser");
-
-                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanComment", b =>

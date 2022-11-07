@@ -135,6 +135,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IWorkplanTargetRepository, WorkplanTargetRepository>();
 			services.AddScoped<IWorkplanActualRepository, WorkplanActualRepository>();
 			services.AddScoped<IWorkplanCommentRepository, WorkplanCommentRepository>();
+			services.AddScoped<IWorkplanActualAuditRepository, WorkplanActualAuditRepository>();
 
 			/* Budget */
 			services.AddScoped<IDepartmentBudgetRepository, DepartmentBudgetRepository>();

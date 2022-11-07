@@ -778,6 +778,8 @@ export interface IWorkplanActual {
     isUpdated: boolean;
     documents: IDocumentStore[];
     frequencyPeriod: IFrequencyPeriod;
+    status: IStatus;
+    isSubmitted: boolean; // Used for enabling/disabling fields
 }
 
 export interface IWorkplanIndicator {
@@ -795,6 +797,17 @@ export interface IWorkplanComment {
     createdUserId: number;
     createdDateTime: Date;
 
+    createdUser: IUser;
+}
+
+export interface IWorkplanActualAudit {
+    id: number;
+    workplanActualId: number;
+    statusId: number;
+    createdUserId: number;
+    createdDateTime: Date;
+
+    status: IStatus;
     createdUser: IUser;
 }
 

@@ -40,6 +40,11 @@ namespace NPOMS.Repository.Implementation.Entities
 			}
 		}
 
+		public async Task<Status> GetById(int id)
+		{
+			return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+		}
+
 		#endregion
 	}
 }

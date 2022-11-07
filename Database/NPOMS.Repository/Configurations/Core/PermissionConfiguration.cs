@@ -593,6 +593,69 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "Delete Payment Schedule",
 					SystemName = "PS.Delete",
 					CategoryName = "Payment Schedule"
+				},
+				new Permission
+				{
+					Id = 84,
+					Name = "View Workplan Indicator Options",
+					SystemName = "Indicators.Options",
+					CategoryName = "Workplan Indicators"
+				},
+				new Permission
+				{
+					Id = 85,
+					Name = "View Manage Indicators Option",
+					SystemName = "Indicators.Manage",
+					CategoryName = "Workplan Indicators"
+				},
+				new Permission
+				{
+					Id = 86,
+					Name = "Capture Workplan Target",
+					SystemName = "Indicators.CaptureTarget",
+					CategoryName = "Workplan Indicators"
+				},
+				new Permission
+				{
+					Id = 87,
+					Name = "Show Workplan Target Action Buttons",
+					SystemName = "Indicators.SWTA",
+					CategoryName = "Workplan Indicators"
+				},
+				new Permission
+				{
+					Id = 88,
+					Name = "Capture Workplan Actual",
+					SystemName = "Indicators.CaptureActual",
+					CategoryName = "Workplan Indicators"
+				},
+				new Permission
+				{
+					Id = 89,
+					Name = "Review or Verify Workplan Actual",
+					SystemName = "Indicators.ReviewActual",
+					CategoryName = "Workplan Indicators"
+				},
+				new Permission
+				{
+					Id = 90,
+					Name = "Approve Workplan Actual",
+					SystemName = "Indicators.ApproveActual",
+					CategoryName = "Workplan Indicators"
+				},
+				new Permission
+				{
+					Id = 91,
+					Name = "View Summary Option",
+					SystemName = "Indicators.Summary",
+					CategoryName = "Workplan Indicators"
+				},
+				new Permission
+				{
+					Id = 92,
+					Name = "Export Summary",
+					SystemName = "Indicators.ExportSummary",
+					CategoryName = "Workplan Indicators"
 				}
 			);
 		}

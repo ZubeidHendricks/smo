@@ -13,6 +13,7 @@
 		AcceptedSLA = 9,
 		ApprovalInProgress = 10,
 		DeptComments = 11,
-		OrgComments = 12
+		OrgComments = 12,
+		Approved = 13
 	}
 }

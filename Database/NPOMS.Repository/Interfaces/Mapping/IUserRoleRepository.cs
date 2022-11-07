@@ -11,5 +11,12 @@ namespace NPOMS.Repository.Interfaces.Mapping
 		IEnumerable<UserRole> GetUserRoles();
 
 		Task<UserRole> GetByUserIdAndRoleId(int userId, int roleId);
+
+		/// <summary>
+		/// Get UserRoles by RoleIds
+		/// </summary>
+		/// <param name="roleIds"></param>
+		/// <returns></returns>
+		Task<IEnumerable<UserRole>> GetByRoleIds(List<int> roleIds);
 	}
 }

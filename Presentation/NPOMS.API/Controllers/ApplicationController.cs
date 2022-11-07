@@ -94,9 +94,7 @@ namespace NPOMS.API.Controllers
 				if (application == null)
 				{
 					await _applicationService.CreateApplication(model, base.GetUserIdentifier());
-
-					var applicationAudit = new ApplicationAudit { ApplicationId = model.Id, StatusId = model.StatusId };
-					await _applicationService.CreateApplicationAudit(applicationAudit, base.GetUserIdentifier());
+					await CreateApplicationAudit(model);
 				}
 
 				var modelToReturn = application == null ? model : application;
@@ -115,9 +113,7 @@ namespace NPOMS.API.Controllers
 			try
 			{
 				await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
-
-				var applicationAudit = new ApplicationAudit { ApplicationId = model.Id, StatusId = model.StatusId };
-				await _applicationService.CreateApplicationAudit(applicationAudit, base.GetUserIdentifier());
+				await CreateApplicationAudit(model);
 
 				await ConfigureEmail(model);
 				return Ok(model);
@@ -126,6 +122,19 @@ namespace NPOMS.API.Controllers
 			{
 				_logger.LogError($"Something went wrong inside UpdateApplication action: {ex.Message} Inner Exception: { ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		private async Task CreateApplicationAudit(Application model)
+		{
+			try
+			{
+				var applicationAudit = new ApplicationAudit { ApplicationId = model.Id, StatusId = model.StatusId };
+				await _applicationService.CreateApplicationAudit(applicationAudit, base.GetUserIdentifier());
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateApplicationAudit action: {ex.Message} Inner Exception: {ex.InnerException}");
 			}
 		}
 

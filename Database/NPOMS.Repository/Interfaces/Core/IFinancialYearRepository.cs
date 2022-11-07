@@ -10,5 +10,7 @@ namespace NPOMS.Repository.Interfaces.Core
 		Task<IEnumerable<FinancialYear>> GetEntities(bool returnInactive);
 
 		Task<IEnumerable<FinancialYear>> GetFromCurrentFinancialYear();
+
+		Task<FinancialYear> GetById(int id);
 	}
 }

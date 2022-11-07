@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Interfaces.Mapping;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Implementation.Mapping
@@ -22,6 +24,11 @@ namespace NPOMS.Repository.Implementation.Mapping
 		public async Task<RolePermission> GetByIds(int permissionId, int roleId)
 		{
 			return await FindByCondition(x => x.PermissionId == permissionId && x.RoleId == roleId).FirstOrDefaultAsync();
+		}
+
+		public async Task<IEnumerable<RolePermission>> GetByPermissionId(int permissionId)
+		{
+			return await FindByCondition(x => x.PermissionId.Equals(permissionId) && x.RoleId != (int)RoleEnum.SystemAdmin).AsNoTracking().ToListAsync();
 		}
 
 		public async Task CreateEntity(RolePermission entity)

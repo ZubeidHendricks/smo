@@ -78,8 +78,8 @@ export class TargetsComponent implements OnInit {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
-        /*if (!this.IsAuthorized(PermissionsEnum.AddApplicationPeriod))
-          this._router.navigate(['401']);*/
+        if (!this.IsAuthorized(PermissionsEnum.CaptureWorkplanTarget))
+          this._router.navigate(['401']);
 
         this.loadFinancialYears();
         this.loadFrequencies();

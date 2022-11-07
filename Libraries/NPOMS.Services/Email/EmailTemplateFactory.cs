@@ -64,6 +64,15 @@ namespace NPOMS.Services.Email
 				case EmailTemplateTypeEnum.RejectedOrganisationApproval:
 					_template = new RejectedOrganisationApprovalEmailTemplate();
 					break;
+				case EmailTemplateTypeEnum.WorkplanActualStatusChanged:
+					_template = new WorkplanActualStatusChangedEmailTemplate();
+					break;
+				case EmailTemplateTypeEnum.WorkplanActualPendingReview:
+					_template = new WorkplanActualPendingReviewEmailTemplate();
+					break;
+				case EmailTemplateTypeEnum.WorkplanActualPendingApproval:
+					_template = new WorkplanActualPendingApprovalEmailTemplate();
+					break;
 				default:
 					_template = null;
 					break;
