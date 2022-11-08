@@ -37,11 +37,11 @@ namespace NPOMS.Services.Email.EmailTemplates
 			var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
 
 			var users = new List<User>();
-			users.Add(await userRepository.GetById(npo.CreatedUserId)); //Get NPO created user and add to list
+			users.Add(await userRepository.GetActiveUserById(npo.CreatedUserId)); //Get NPO created user and add to list
 
 			// If NPO was updated and updated user is not equal to created user, add user to list
 			if (npo.UpdatedUserId != null && npo.CreatedUserId != npo.UpdatedUserId)
-				users.Add(await userRepository.GetById(Convert.ToInt32(npo.UpdatedUserId)));
+				users.Add(await userRepository.GetActiveUserById(Convert.ToInt32(npo.UpdatedUserId)));
 
 			try
 			{

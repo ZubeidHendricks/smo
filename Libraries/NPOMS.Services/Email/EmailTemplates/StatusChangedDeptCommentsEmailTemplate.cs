@@ -36,7 +36,7 @@ namespace NPOMS.Services.Email.EmailTemplates
 			var application = await applicationRepository.GetById(this._application.Id);
 			var npo = await npoRepository.GetById(application.NpoId);
 			var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
-			var createdUser = await userRepository.GetById(application.CreatedUserId);
+			var createdUser = await userRepository.GetActiveUserById(application.CreatedUserId);
 
 			try
 			{
