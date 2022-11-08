@@ -47,12 +47,12 @@ namespace NPOMS.Services.Email.EmailTemplates
 			var npo = await npoRepository.GetById(this._application.NpoId);
 
 			var users = new List<User>();
-			users.Add(await userRepository.GetById(this._workplanActual.CreatedUserId));
+			users.Add(await userRepository.GetActiveUserById(this._workplanActual.CreatedUserId));
 
 			if (this._workplanActual.StatusId == (int)StatusEnum.PendingReview)
 			{
 				if (this._workplanActual.UpdatedUserId != null && this._workplanActual.CreatedUserId != this._workplanActual.UpdatedUserId)
-					users.Add(await userRepository.GetById(Convert.ToInt32(this._workplanActual.UpdatedUserId)));
+					users.Add(await userRepository.GetActiveUserById(Convert.ToInt32(this._workplanActual.UpdatedUserId)));
 			}
 
 			try

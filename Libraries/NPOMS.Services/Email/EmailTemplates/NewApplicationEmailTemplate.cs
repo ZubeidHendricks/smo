@@ -39,10 +39,10 @@ namespace NPOMS.Services.Email.EmailTemplates
 			var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
 
 			var users = new List<User>();
-			users.Add(await userRepository.GetById(application.CreatedUserId));
+			users.Add(await userRepository.GetActiveUserById(application.CreatedUserId));
 
 			if (application.UpdatedUserId != null && application.CreatedUserId != application.UpdatedUserId)
-				users.Add(await userRepository.GetById(Convert.ToInt32(application.UpdatedUserId)));
+				users.Add(await userRepository.GetActiveUserById(Convert.ToInt32(application.UpdatedUserId)));
 
 			try
 			{
