@@ -8,6 +8,8 @@ namespace NPOMS.Repository.Interfaces.Core
 	{
 		Task<User> GetById(int id);
 
+		Task<User> GetActiveUserById(int id);
+
 		Task<IEnumerable<User>> GetEntities();
 
 		IEnumerable<User> GetUsers();

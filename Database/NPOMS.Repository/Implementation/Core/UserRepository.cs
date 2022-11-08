@@ -26,6 +26,11 @@ namespace NPOMS.Repository.Implementation.Core
 			return await FindByCondition(sp => sp.Id.Equals(id)).FirstOrDefaultAsync();
 		}
 
+		public async Task<User> GetActiveUserById(int id)
+		{
+			return await FindByCondition(sp => sp.Id.Equals(id) && sp.IsActive).FirstOrDefaultAsync();
+		}
+
 		public async Task<IEnumerable<User>> GetEntities()
 		{
 			return await FindAll().AsNoTracking()
