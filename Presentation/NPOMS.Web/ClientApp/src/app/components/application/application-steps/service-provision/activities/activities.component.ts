@@ -2,8 +2,8 @@ import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DropdownTypeEnum, FacilityTypeEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityFacilityList, IActivityList, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IFacilityList, IObjective, ISubProgramme } from 'src/app/models/interfaces';
+import { DropdownTypeEnum, FacilityTypeEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IActivityFacilityList, IActivityList, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IObjective, ISubProgramme } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -14,6 +14,10 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   styleUrls: ['./activities.component.css']
 })
 export class ActivitiesComponent implements OnInit {
+
+  public get RoleEnum(): typeof RoleEnum {
+    return RoleEnum;
+  }
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
@@ -60,6 +64,11 @@ export class ActivitiesComponent implements OnInit {
 
   maxChars = 50;
 
+  showReviewerSatisfaction: boolean;
+  applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[] = [];
+  displayReviewerSatisfactionDialog: boolean;
+  reviewerSatisfactionCols: any;
+
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
@@ -84,6 +93,7 @@ export class ActivitiesComponent implements OnInit {
       this.application.statusId === StatusEnum.OrgComments)
       ? false : true;
 
+    this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
     this.loadActivityTypes();
@@ -106,6 +116,13 @@ export class ActivitiesComponent implements OnInit {
       { header: 'Comment', width: '55%' },
       { header: 'Created User', width: '20%' },
       { header: 'Created Date', width: '20%' }
+    ];
+
+    this.reviewerSatisfactionCols = [
+      { header: '', width: '5%' },
+      { header: 'Is Satisfied', width: '25%' },
+      { header: 'Created User', width: '35%' },
+      { header: 'Created Date', width: '35%' }
     ];
   }
 
@@ -491,5 +508,63 @@ export class ActivitiesComponent implements OnInit {
   selectActivity(item: IActivityList) {
     this.activity.name = item.name;
     this.activity.description = item.description;
+  }
+
+  viewReviewerSatisfaction(data: IActivity) {
+    this.activity = data;
+
+    let model = {
+      applicationId: this.application.id,
+      serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
+      entityId: data.id
+    } as IApplicationReviewerSatisfaction;
+
+    this._applicationRepo.getApplicationReviewerSatisfactions(model).subscribe(
+      (results) => {
+        this.applicationReviewerSatisfaction = results;
+        this.displayReviewerSatisfactionDialog = true;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  createReviewerSatisfaction(isSatisfied: boolean) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you selected the correct option?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+
+        let model = {
+          applicationId: this.application.id,
+          serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
+          entityId: this.activity.id,
+          isSatisfied: isSatisfied
+        } as IApplicationReviewerSatisfaction;
+
+        this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+          (resp) => {
+            this.loadActivities();
+
+            let entity = {
+              id: model.entityId
+            } as IActivity;
+            this.viewReviewerSatisfaction(entity);
+
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Item successfully added.' });
+            this.displayReviewerSatisfactionDialog = false;
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      },
+      reject: () => {
+      }
+    });
   }
 }

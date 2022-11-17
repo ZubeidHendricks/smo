@@ -106,6 +106,7 @@ namespace NPOMS.Repository
 		public DbSet<ApplicationAudit> ApplicationAudits { get; set; }
 		public DbSet<ApplicationComment> ApplicationComments { get; set; }
 		public DbSet<ApplicationPeriod> ApplicationPeriods { get; set; }
+		public DbSet<ApplicationReviewerSatisfaction> ApplicationReviewerSatisfactions { get; set; }
 		public DbSet<ContactInformation> ContactInformation { get; set; }
 		public DbSet<Npo> Npos { get; set; }
 		public DbSet<NpoProfile> NpoProfiles { get; set; }

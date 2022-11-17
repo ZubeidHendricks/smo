@@ -318,25 +318,35 @@ export class ActualsComponent implements OnInit {
 
   private updateWorkplanActual(workplanActual: IWorkplanActual, status: number) {
     if (workplanActual && status) {
+      if (this.canContinue(workplanActual)) {
 
-      workplanActual.statusId = status;
+        workplanActual.statusId = status;
 
-      this._indicatorRepo.updateActual(workplanActual).subscribe(
-        (resp) => {
-          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully updated.' });
-          this.getFilteredWorkplanIndicators();
-        },
-        (err) => {
-          this._loggerService.logException(err);
-        }
-      );
+        this._indicatorRepo.updateActual(workplanActual).subscribe(
+          (resp) => {
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully updated.' });
+            this.getFilteredWorkplanIndicators();
+          },
+          (err) => {
+            this._loggerService.logException(err);
+          }
+        );
+      }
     }
     else {
       this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Target not captured.' });
     }
   }
 
-  
+  private canContinue(workplanActual: IWorkplanActual) {
+
+    if (workplanActual.actual) {
+      return true;
+    }
+
+    this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Actual not captured.' });
+    return false;
+  }
 
   private viewComments(workplanIndicator: IWorkplanIndicator) {
     this._spinner.show();
@@ -447,10 +457,61 @@ export class ActualsComponent implements OnInit {
           item.isSubmitted = item.statusId == StatusEnum.New || item.statusId == StatusEnum.Saved || item.statusId == StatusEnum.AmendmentsRequired ? false : true;
         });
 
+        let capturedTarget = 0;
+        let targetMet = null;
+        let attentionRequired = null;
+
+        if (workplanActuals.length > 0) {
+
+          switch (workplanActuals[0].frequencyPeriodId) {
+            case FrequencyPeriodEnum.Apr:
+              capturedTarget = workplanTargets[0].apr;
+              break;
+            case FrequencyPeriodEnum.May:
+              capturedTarget = workplanTargets[0].may;
+              break;
+            case FrequencyPeriodEnum.Jun:
+              capturedTarget = workplanTargets[0].jun;
+              break;
+            case FrequencyPeriodEnum.Jul:
+              capturedTarget = workplanTargets[0].jul;
+              break;
+            case FrequencyPeriodEnum.Aug:
+              capturedTarget = workplanTargets[0].aug;
+              break;
+            case FrequencyPeriodEnum.Sep:
+              capturedTarget = workplanTargets[0].sep;
+              break;
+            case FrequencyPeriodEnum.Oct:
+              capturedTarget = workplanTargets[0].oct;
+              break;
+            case FrequencyPeriodEnum.Nov:
+              capturedTarget = workplanTargets[0].nov;
+              break;
+            case FrequencyPeriodEnum.Dec:
+              capturedTarget = workplanTargets[0].dec;
+              break;
+            case FrequencyPeriodEnum.Jan:
+              capturedTarget = workplanTargets[0].jan;
+              break;
+            case FrequencyPeriodEnum.Feb:
+              capturedTarget = workplanTargets[0].feb;
+              break;
+            case FrequencyPeriodEnum.Mar:
+              capturedTarget = workplanTargets[0].mar;
+              break;
+          }
+
+          targetMet = !workplanActuals[0].actual ? null : workplanActuals[0].actual >= capturedTarget;
+          attentionRequired = workplanActuals[0].statement || workplanActuals[0].deviationReason || workplanActuals[0].action ? true : false;
+        }
+
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
           workplanTargets: workplanTargets,
-          workplanActuals: workplanActuals
+          workplanActuals: workplanActuals,
+          targetMet: targetMet,
+          attentionRequired: attentionRequired
         } as IWorkplanIndicator);
       });
     }

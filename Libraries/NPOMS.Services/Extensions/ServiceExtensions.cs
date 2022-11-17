@@ -103,6 +103,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IApplicationAuditRepository, ApplicationAuditRepository>();
 			services.AddScoped<IApplicationCommentRepository, ApplicationCommentRepository>();
 			services.AddScoped<IApplicationPeriodRepository, ApplicationPeriodRepository>();
+			services.AddScoped<IApplicationReviewerSatisfactionRepository, ApplicationReviewerSatisfactionRepository>();
 			services.AddScoped<IContactInformationRepository, ContactInformationRepository>();
 			services.AddScoped<INpoRepository, NpoRepository>();
 			services.AddScoped<INpoProfileRepository, NpoProfileRepository>();

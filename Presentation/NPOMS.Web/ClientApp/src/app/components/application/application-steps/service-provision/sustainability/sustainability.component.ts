@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationComment, ISustainabilityPlan } from 'src/app/models/interfaces';
+import { RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, ISustainabilityPlan } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
@@ -13,6 +13,10 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   providers: [MessageService, ConfirmationService]
 })
 export class SustainabilityComponent implements OnInit {
+
+  public get RoleEnum(): typeof RoleEnum {
+    return RoleEnum;
+  }
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
@@ -40,6 +44,11 @@ export class SustainabilityComponent implements OnInit {
 
   tooltip: string;
 
+  showReviewerSatisfaction: boolean;
+  applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[] = [];
+  displayReviewerSatisfactionDialog: boolean;
+  reviewerSatisfactionCols: any;
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _applicationRepo: ApplicationService,
@@ -58,6 +67,7 @@ export class SustainabilityComponent implements OnInit {
       this.application.statusId === StatusEnum.OrgComments)
       ? false : true;
 
+    this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
     this.loadActivities();
@@ -73,6 +83,13 @@ export class SustainabilityComponent implements OnInit {
       { header: 'Comment', width: '55%' },
       { header: 'Created User', width: '20%' },
       { header: 'Created Date', width: '20%' }
+    ];
+
+    this.reviewerSatisfactionCols = [
+      { header: '', width: '5%' },
+      { header: 'Is Satisfied', width: '25%' },
+      { header: 'Created User', width: '35%' },
+      { header: 'Created Date', width: '35%' }
     ];
   }
 
@@ -293,5 +310,63 @@ export class SustainabilityComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  viewReviewerSatisfaction(data: ISustainabilityPlan) {
+    this.sustainabilityPlan = data;
+
+    let model = {
+      applicationId: this.application.id,
+      serviceProvisionStepId: ServiceProvisionStepsEnum.Sustainability,
+      entityId: data.id
+    } as IApplicationReviewerSatisfaction;
+
+    this._applicationRepo.getApplicationReviewerSatisfactions(model).subscribe(
+      (results) => {
+        this.applicationReviewerSatisfaction = results;
+        this.displayReviewerSatisfactionDialog = true;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  createReviewerSatisfaction(isSatisfied: boolean) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you selected the correct option?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        
+        let model = {
+          applicationId: this.application.id,
+          serviceProvisionStepId: ServiceProvisionStepsEnum.Sustainability,
+          entityId: this.sustainabilityPlan.id,
+          isSatisfied: isSatisfied
+        } as IApplicationReviewerSatisfaction;
+
+        this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+          (resp) => {
+            this.loadSustainabilityPlans();
+
+            let entity = {
+              id: model.entityId
+            } as ISustainabilityPlan;
+            this.viewReviewerSatisfaction(entity);
+
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Item successfully added.' });
+            this.displayReviewerSatisfactionDialog = false;
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      },
+      reject: () => {
+      }
+    });
   }
 }
