@@ -256,6 +256,8 @@ export class TargetsComponent implements OnInit {
   }
 
   private findTarget() {
+    this.validated = false;
+    
     if (this.selectedFinancialYear && this.selectedFrequency) {
       this.selectedWorkplanTarget = this.getSelectedTarget();
 

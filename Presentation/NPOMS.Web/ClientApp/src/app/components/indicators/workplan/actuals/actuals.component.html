@@ -44,7 +44,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
-                <tr class="default-font">
+                <tr [ngClass]="rowData.targetMet === false ? 'red' : 'default' && rowData.attentionRequired === true ? 'red' : 'default'" class="default-font">
                     <td style="text-align: center;">{{rowIndex + 1}}</td>
                     <td>{{rowData.activity.activityList.description}}</td>
                     <td>{{rowData.activity.successIndicator}}</td>
@@ -65,7 +65,7 @@
                     <td pEditableColumn style="text-align: center;">
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <p-inputNumber [(ngModel)]="rowData.workplanActuals[0].actual" inputId="integeronly" [inputStyle]="{'width':'100%'}" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></p-inputNumber>
+                                <p-inputNumber *ngIf="rowData.workplanActuals[0]" [(ngModel)]="rowData.workplanActuals[0].actual" inputId="integeronly" [inputStyle]="{'width':'100%'}" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></p-inputNumber>
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].actual}}</span>
@@ -75,7 +75,7 @@
                     <td pEditableColumn>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].statement" autoResize="autoResize" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></textarea>
+                                <textarea *ngIf="rowData.workplanActuals[0]" class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].statement" autoResize="autoResize" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></textarea>
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].statement}}</span>
@@ -85,7 +85,7 @@
                     <td pEditableColumn>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].deviationReason" autoResize="autoResize" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></textarea>
+                                <textarea *ngIf="rowData.workplanActuals[0]" class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].deviationReason" autoResize="autoResize" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></textarea>
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].deviationReason}}</span>
@@ -95,7 +95,7 @@
                     <td pEditableColumn>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <textarea class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].action" autoResize="autoResize" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></textarea>
+                                <textarea *ngIf="rowData.workplanActuals[0]" class="form-text" rows="2" cols="30" pInputTextarea [(ngModel)]="rowData.workplanActuals[0].action" autoResize="autoResize" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></textarea>
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].action}}</span>
@@ -103,17 +103,19 @@
                         </p-cellEditor>
                     </td>
                     <td style="text-align: center;">
-                        <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
-                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted" (click)="uploadDocument(rowData)"></button>
+                        <button *ngIf="rowData.workplanActuals[0]" pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
+                        <button *ngIf="rowData.workplanActuals[0]" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted" (click)="uploadDocument(rowData)"></button>
 
-                        <input type="file" #addDoc (change)="onUploadChange(addDoc.files, rowData)" placeholder="Browse" accept="*" style="display:none;">
+                        <input *ngIf="rowData.workplanActuals[0]" type="file" #addDoc (change)="onUploadChange(addDoc.files, rowData)" placeholder="Browse" accept="*" style="display:none;">
                     </td>
                     <td style="text-align: center;">
                         <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].status.name}}</span>
                     </td>
                     <td style="text-align: center;">
-                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedIndicator=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
-                        <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
+                        <span *ngIf="rowData.workplanActuals[0]">
+                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedIndicator=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+                            <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
+                        </span>                        
                     </td>
                 </tr>
             </ng-template>

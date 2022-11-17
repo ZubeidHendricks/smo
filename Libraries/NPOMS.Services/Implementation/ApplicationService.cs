@@ -35,6 +35,7 @@ namespace NPOMS.Services.Implementation
 		private IApplicationApprovalRepository _applicationApprovalRepository;
 		private IActivityFacilityListRepository _activityFacilityListRepository;
 		private IUserNpoRepository _userNpoRepository;
+		private IApplicationReviewerSatisfactionRepository _applicationReviewerSatisfactionRepository;
 
 		#endregion
 
@@ -56,7 +57,8 @@ namespace NPOMS.Services.Implementation
 			IMapper mapper,
 			IApplicationApprovalRepository applicationApprovalRepository,
 			IActivityFacilityListRepository activityFacilityListRepository,
-			IUserNpoRepository userNpoRepository
+			IUserNpoRepository userNpoRepository,
+			IApplicationReviewerSatisfactionRepository applicationReviewerSatisfactionRepository
 			)
 		{
 			_applicationRepository = applicationRepository;
@@ -75,6 +77,7 @@ namespace NPOMS.Services.Implementation
 			_applicationApprovalRepository = applicationApprovalRepository;
 			_activityFacilityListRepository = activityFacilityListRepository;
 			_userNpoRepository = userNpoRepository;
+			_applicationReviewerSatisfactionRepository = applicationReviewerSatisfactionRepository;
 		}
 
 		#endregion
@@ -483,6 +486,21 @@ namespace NPOMS.Services.Implementation
 			model.CreatedDateTime = DateTime.Now;
 
 			await _applicationApprovalRepository.UpdateEntity(model);
+		}
+
+		public async Task<IEnumerable<ApplicationReviewerSatisfaction>> GetApplicationReviewerSatisfactions(int applicationId, int serviceProvisionStepId, int entityId)
+		{
+			return await _applicationReviewerSatisfactionRepository.GetByIds(applicationId, serviceProvisionStepId, entityId);
+		}
+
+		public async Task CreateApplicationReviewerSatisfaction(ApplicationReviewerSatisfaction model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _applicationReviewerSatisfactionRepository.CreateEntity(model);
 		}
 
 		#endregion

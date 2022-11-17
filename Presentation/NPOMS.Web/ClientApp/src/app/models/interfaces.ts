@@ -371,6 +371,18 @@ export interface IApplicationPeriod {
     applicationType: IApplicationType;
 }
 
+export interface IApplicationReviewerSatisfaction {
+    id: number;
+    applicationId: number;
+    serviceProvisionStepId: number;
+    entityId: number;
+    isSatisfied: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+
+    createdUser: IUser;
+}
+
 export interface IContactInformation {
     id: number;
     npoId: number;
@@ -788,6 +800,8 @@ export interface IWorkplanIndicator {
     workplanActuals: IWorkplanActual[];
     totalTargets: number;
     totalActuals: number;
+    targetMet: boolean;
+    attentionRequired: boolean;
 }
 
 export interface IWorkplanComment {

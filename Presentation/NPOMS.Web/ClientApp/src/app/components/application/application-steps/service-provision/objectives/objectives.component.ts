@@ -2,8 +2,8 @@ import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DropdownTypeEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationComment, IDepartment, IObjective, IObjectiveProgramme, IProgramme, IRecipientType, ISubProgramme } from 'src/app/models/interfaces';
+import { DropdownTypeEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IDepartment, IObjective, IObjectiveProgramme, IProgramme, IRecipientType, ISubProgramme } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
@@ -16,6 +16,10 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   providers: [MessageService, ConfirmationService]
 })
 export class ObjectivesComponent implements OnInit {
+
+  public get RoleEnum(): typeof RoleEnum {
+    return RoleEnum;
+  }
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
@@ -54,6 +58,11 @@ export class ObjectivesComponent implements OnInit {
   tooltip: string;
   maxChars = 50;
 
+  showReviewerSatisfaction: boolean;
+  applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[] = [];
+  displayReviewerSatisfactionDialog: boolean;
+  reviewerSatisfactionCols: any;
+
   constructor(
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
@@ -75,6 +84,7 @@ export class ObjectivesComponent implements OnInit {
       this.application.statusId === StatusEnum.OrgComments)
       ? false : true;
 
+    this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
     this.loadAllProgrammes();
@@ -96,6 +106,13 @@ export class ObjectivesComponent implements OnInit {
       { header: 'Comment', width: '55%' },
       { header: 'Created User', width: '20%' },
       { header: 'Created Date', width: '20%' }
+    ];
+
+    this.reviewerSatisfactionCols = [
+      { header: '', width: '5%' },
+      { header: 'Is Satisfied', width: '25%' },
+      { header: 'Created User', width: '35%' },
+      { header: 'Created Date', width: '35%' }
     ];
   }
 
@@ -415,5 +432,63 @@ export class ObjectivesComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  viewReviewerSatisfaction(data: IObjective) {
+    this.objective = data;
+
+    let model = {
+      applicationId: this.application.id,
+      serviceProvisionStepId: ServiceProvisionStepsEnum.Objectives,
+      entityId: data.id
+    } as IApplicationReviewerSatisfaction;
+
+    this._applicationRepo.getApplicationReviewerSatisfactions(model).subscribe(
+      (results) => {
+        this.applicationReviewerSatisfaction = results;
+        this.displayReviewerSatisfactionDialog = true;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  createReviewerSatisfaction(isSatisfied: boolean) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you selected the correct option?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        
+        let model = {
+          applicationId: this.application.id,
+          serviceProvisionStepId: ServiceProvisionStepsEnum.Objectives,
+          entityId: this.objective.id,
+          isSatisfied: isSatisfied
+        } as IApplicationReviewerSatisfaction;
+
+        this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+          (resp) => {
+            this.loadObjectives();
+
+            let entity = {
+              id: model.entityId
+            } as IObjective;
+            this.viewReviewerSatisfaction(entity);
+
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Item successfully added.' });
+            this.displayReviewerSatisfactionDialog = false;
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      },
+      reject: () => {
+      }
+    });
   }
 }

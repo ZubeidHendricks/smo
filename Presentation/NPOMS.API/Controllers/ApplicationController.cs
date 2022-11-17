@@ -572,6 +572,36 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+		[HttpGet("application-reviewer-satisfaction/applicationId/{applicationId}/serviceProvisionStepId/{serviceProvisionStepId}/entityId/{entityId}", Name = "GetApplicationReviewerSatisfactions")]
+		public async Task<IActionResult> GetApplicationReviewerSatisfactions(int applicationId, int serviceProvisionStepId, int entityId)
+		{
+			try
+			{
+				var results = await _applicationService.GetApplicationReviewerSatisfactions(applicationId, serviceProvisionStepId, entityId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetApplicationReviewerSatisfactions action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("application-reviewer-satisfaction", Name = "CreateApplicationReviewerSatisfaction")]
+		public async Task<IActionResult> CreateApplicationReviewerSatisfaction([FromBody] ApplicationReviewerSatisfaction model)
+		{
+			try
+			{
+				await _applicationService.CreateApplicationReviewerSatisfaction(model, base.GetUserIdentifier());
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateApplicationReviewerSatisfaction action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
 		#endregion
 	}
 }

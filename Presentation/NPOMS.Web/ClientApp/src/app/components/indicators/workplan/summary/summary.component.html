@@ -131,7 +131,7 @@
                 <tr class="default-font">
                     <!-- April targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].apr}}
                         </span>
                     </td>
@@ -143,7 +143,7 @@
 
                     <!-- May targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].may}}
                         </span>
                     </td>
@@ -155,7 +155,7 @@
 
                     <!-- June and Quarter 1 targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].jun}}
                         </span>
                         <!-- <span *ngIf="rowData.workplanTarget.frequency.id === FrequencyEnum.Quarterly">
@@ -173,7 +173,7 @@
 
                     <!-- July targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].jul}}
                         </span>
                     </td>
@@ -185,7 +185,7 @@
 
                     <!-- August targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].aug}}
                         </span>
                     </td>
@@ -197,7 +197,7 @@
 
                     <!-- September and Quarter 2 targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].sep}}
                         </span>
                         <!-- <span *ngIf="rowData.workplanTarget.frequency.id === FrequencyEnum.Quarterly">
@@ -215,7 +215,7 @@
 
                     <!-- October targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].oct}}
                         </span>
                     </td>
@@ -227,7 +227,7 @@
 
                     <!-- November targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].nov}}
                         </span>
                     </td>
@@ -239,7 +239,7 @@
 
                     <!-- December and Quarter 3 targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].dec}}
                         </span>
                         <!-- <span *ngIf="rowData.workplanTarget.frequency.id === FrequencyEnum.Quarterly">
@@ -257,7 +257,7 @@
 
                     <!-- January targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].jan}}
                         </span>
                     </td>
@@ -269,7 +269,7 @@
 
                     <!-- February targets and actuals -->
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].feb}}
                         </span>
                     </td>
@@ -284,7 +284,7 @@
                         <!-- <span *ngIf="rowData.workplanTarget.frequency.id === FrequencyEnum.Annually">
                             {{rowData.workplanTarget.annual}}
                         </span> -->
-                        <span *ngIf="rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
+                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
                             {{rowData.workplanTargets[0].mar}}
                         </span>
                         <!-- <span *ngIf="rowData.workplanTarget.frequency.id === FrequencyEnum.Quarterly">

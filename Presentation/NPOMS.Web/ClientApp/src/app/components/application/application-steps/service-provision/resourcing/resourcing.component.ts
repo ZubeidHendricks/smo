@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DropdownTypeEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IAllocationType, IApplication, IApplicationComment, IProvisionType, IResource, IResourceList, IResourceType, IServiceType } from 'src/app/models/interfaces';
+import { DropdownTypeEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IAllocationType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IProvisionType, IResource, IResourceList, IResourceType, IServiceType } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -14,6 +14,10 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   providers: [MessageService, ConfirmationService]
 })
 export class ResourcingComponent implements OnInit {
+
+  public get RoleEnum(): typeof RoleEnum {
+    return RoleEnum;
+  }
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
@@ -60,6 +64,11 @@ export class ResourcingComponent implements OnInit {
 
   maxChars = 50;
 
+  showReviewerSatisfaction: boolean;
+  applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[] = [];
+  displayReviewerSatisfactionDialog: boolean;
+  reviewerSatisfactionCols: any;
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _applicationRepo: ApplicationService,
@@ -79,6 +88,7 @@ export class ResourcingComponent implements OnInit {
       this.application.statusId === StatusEnum.OrgComments)
       ? false : true;
 
+    this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
     this.loadResourceTypes();
@@ -103,6 +113,13 @@ export class ResourcingComponent implements OnInit {
       { header: 'Comment', width: '55%' },
       { header: 'Created User', width: '20%' },
       { header: 'Created Date', width: '20%' }
+    ];
+
+    this.reviewerSatisfactionCols = [
+      { header: '', width: '5%' },
+      { header: 'Is Satisfied', width: '25%' },
+      { header: 'Created User', width: '35%' },
+      { header: 'Created Date', width: '35%' }
     ];
   }
 
@@ -440,5 +457,63 @@ export class ResourcingComponent implements OnInit {
   resourceListChange(entity: IResourceList) {
     this.resource.name = entity.name;
     this.resource.description = entity.description;
+  }
+
+  viewReviewerSatisfaction(data: IResource) {
+    this.resource = data;
+
+    let model = {
+      applicationId: this.application.id,
+      serviceProvisionStepId: ServiceProvisionStepsEnum.Resourcing,
+      entityId: data.id
+    } as IApplicationReviewerSatisfaction;
+
+    this._applicationRepo.getApplicationReviewerSatisfactions(model).subscribe(
+      (results) => {
+        this.applicationReviewerSatisfaction = results;
+        this.displayReviewerSatisfactionDialog = true;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  createReviewerSatisfaction(isSatisfied: boolean) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you selected the correct option?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        
+        let model = {
+          applicationId: this.application.id,
+          serviceProvisionStepId: ServiceProvisionStepsEnum.Resourcing,
+          entityId: this.resource.id,
+          isSatisfied: isSatisfied
+        } as IApplicationReviewerSatisfaction;
+
+        this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+          (resp) => {
+            this.loadResources();
+
+            let entity = {
+              id: model.entityId
+            } as IResource;
+            this.viewReviewerSatisfaction(entity);
+
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Item successfully added.' });
+            this.displayReviewerSatisfactionDialog = false;
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      },
+      reject: () => {
+      }
+    });
   }
 }
