@@ -26,3 +26,11 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 11px !important;
 }
+
+.default {
+    background-color: none!important;
+}
+
+.red {
+    background-color: rgb(255, 204, 203)!important;
+}

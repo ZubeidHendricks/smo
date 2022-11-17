@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IFacilityList, IObjective, IResource, ISustainabilityPlan } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IObjective, IResource, ISustainabilityPlan } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -147,5 +147,15 @@ export class ApplicationService {
   public updateApplicationApproval(applicationApproval: IApplicationApproval) {
     const url = `${this._envUrl.urlAddress}/api/applications/approval`;
     return this._http.put<IApplicationApproval>(url, applicationApproval, httpOptions);
+  }
+
+  public getApplicationReviewerSatisfactions(model: IApplicationReviewerSatisfaction) {
+    const url = `${this._envUrl.urlAddress}/api/applications/application-reviewer-satisfaction/applicationId/${model.applicationId}/serviceProvisionStepId/${model.serviceProvisionStepId}/entityId/${model.entityId}`;
+    return this._http.get<IApplicationReviewerSatisfaction[]>(url, httpOptions);
+  }
+
+  public createApplicationReviewerSatisfaction(model: IApplicationReviewerSatisfaction) {
+    const url = `${this._envUrl.urlAddress}/api/applications/application-reviewer-satisfaction`;
+    return this._http.post<IApplicationReviewerSatisfaction>(url, model, httpOptions);
   }
 }

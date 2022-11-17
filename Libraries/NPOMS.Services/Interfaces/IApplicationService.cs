@@ -64,5 +64,9 @@ namespace NPOMS.Services.Interfaces
 		Task CreateApplicationApproval(ApplicationApproval model, string userIdentifier);
 
 		Task UpdateApplicationApproval(ApplicationApproval model, string userIdentifier);
+
+		Task<IEnumerable<ApplicationReviewerSatisfaction>> GetApplicationReviewerSatisfactions(int applicationId, int serviceProvisionStepId, int entityId);
+
+		Task CreateApplicationReviewerSatisfaction(ApplicationReviewerSatisfaction model, string userIdentifier);
 	}
 }
