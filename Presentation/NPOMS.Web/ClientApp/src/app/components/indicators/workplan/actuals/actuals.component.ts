@@ -210,7 +210,7 @@ export class ActualsComponent implements OnInit {
   private loadDocumentTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
-        this.documentTypes = results.find(x => x.location === DocumentUploadLocationsEnum.WorkplanActuals);
+        this.documentTypes = results;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -427,10 +427,9 @@ export class ActualsComponent implements OnInit {
     this.getFilteredWorkplanIndicators();
 
     let currentDate = new Date();
-    let startDate = new Date(this.selectedFinancialYear.startDate);
-    let endDate = new Date(this.selectedFinancialYear.endDate);
 
-    this.isPreviousFinancialYear = (startDate <= currentDate && endDate >= currentDate) ? false : true;
+    let currentFinancialYear = this.financialYears.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
+    this.isPreviousFinancialYear = this.selectedFinancialYear.id >= currentFinancialYear.id ? false : true;
 
     // If previous financial year, disable all buttons besides comments and view history
     for (let i = 0; i < this.buttonItems[0].items.length - 2; i++) {
