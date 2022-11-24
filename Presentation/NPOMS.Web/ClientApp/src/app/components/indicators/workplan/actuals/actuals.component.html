@@ -149,7 +149,7 @@
                     <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
                     <td style="text-align: center;">
                         <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
-                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="onDeleteDocument(document, workplanActual)" pTooltip="Delete" tooltipPosition="top" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted"></button>
+                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="onDeleteDocument(document, workplanActual)" pTooltip="Delete" tooltipPosition="top" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || workplanActual.isSubmitted"></button>
                     </td>
                 </tr>
             </ng-template>
