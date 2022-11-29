@@ -44,7 +44,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
-                <tr [ngClass]="rowData.targetMet === false ? 'red' : 'default' && rowData.attentionRequired === true ? 'red' : 'default'" class="default-font">
+                <tr [ngClass]="getRowColour(rowData)" class="default-font">
                     <td style="text-align: center;">{{rowIndex + 1}}</td>
                     <td>{{rowData.activity.activityList.description}}</td>
                     <td>{{rowData.activity.successIndicator}}</td>

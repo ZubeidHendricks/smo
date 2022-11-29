@@ -622,4 +622,16 @@ export class ActualsComponent implements OnInit {
       }
     }
   }
+
+  getRowColour(data: IWorkplanIndicator) {
+    if (data.workplanActuals[0].statusId !== StatusEnum.Approved) {
+      if ((data.targetMet != null && !data.targetMet) || (data.attentionRequired != null && data.attentionRequired === true))
+        return 'red';
+    }
+
+    if (data.workplanActuals[0].statusId === StatusEnum.Approved)
+      return 'green';
+
+    return 'default';
+  }
 }
