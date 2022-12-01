@@ -203,7 +203,8 @@ export class ActualsComponent implements OnInit {
         });
       });
 
-      this.filtererdFinancialYears = financialYears.filter((element, index) => index === financialYears.indexOf(element));
+      let filtererdFinancialYears = financialYears.filter((element, index) => index === financialYears.indexOf(element));
+      this.filtererdFinancialYears = filtererdFinancialYears.sort((a, b) => a.id - b.id);
     }
   }
 
@@ -624,12 +625,12 @@ export class ActualsComponent implements OnInit {
   }
 
   getRowColour(data: IWorkplanIndicator) {
-    if (data.workplanActuals[0].statusId !== StatusEnum.Approved) {
+    if (data.workplanActuals[0] && data.workplanActuals[0].statusId !== StatusEnum.Approved) {
       if ((data.targetMet != null && !data.targetMet) || (data.attentionRequired != null && data.attentionRequired === true))
         return 'red';
     }
 
-    if (data.workplanActuals[0].statusId === StatusEnum.Approved)
+    if (data.workplanActuals[0] && data.workplanActuals[0].statusId === StatusEnum.Approved)
       return 'green';
 
     return 'default';
