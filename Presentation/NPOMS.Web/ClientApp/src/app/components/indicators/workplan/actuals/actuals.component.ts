@@ -318,6 +318,8 @@ export class ActualsComponent implements OnInit {
   }
 
   private updateWorkplanActual(workplanActual: IWorkplanActual, status: number) {
+    this._spinner.show();
+
     if (workplanActual && status) {
       if (this.canContinue(workplanActual)) {
 
@@ -330,11 +332,13 @@ export class ActualsComponent implements OnInit {
           },
           (err) => {
             this._loggerService.logException(err);
+            this._spinner.hide();
           }
         );
       }
     }
     else {
+      this._spinner.hide();
       this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Target not captured.' });
     }
   }
@@ -514,23 +518,28 @@ export class ActualsComponent implements OnInit {
           attentionRequired: attentionRequired
         } as IWorkplanIndicator);
       });
+
+      this._spinner.hide();
     }
+
+    this._spinner.hide();
   }
 
-  public uploadDocument(rowData) {
+  public uploadDocument(workplanIndicator: IWorkplanIndicator) {
+    this.selectedIndicator = workplanIndicator;
     this.element.nativeElement.click();
   }
 
-  public onUploadChange = (files, workplanIndicator) => {
+  public onUploadChange = (files) => {
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.WorkplanActuals);
 
-    this._documentStore.upload(files, EntityTypeEnum.WorkplanActuals, Number(workplanIndicator.workplanActuals[0].id), EntityEnum.WorkplanIndicators, this.application.refNo, files[0].documentType.id).subscribe(
+    this._documentStore.upload(files, EntityTypeEnum.WorkplanActuals, Number(this.selectedIndicator.workplanActuals[0].id), EntityEnum.WorkplanIndicators, this.application.refNo, files[0].documentType.id).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress)
           this._spinner.show();
         else if (event.type === HttpEventType.Response) {
           this._spinner.hide();
-          this.getDocuments(workplanIndicator.workplanActuals[0]);
+          this.getDocuments(this.selectedIndicator.workplanActuals[0]);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
         }
       },
