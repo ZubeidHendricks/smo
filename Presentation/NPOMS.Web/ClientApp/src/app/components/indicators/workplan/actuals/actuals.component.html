@@ -1,6 +1,3 @@
-<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
-    <p style="font-size: 20px; color: white">Loading...</p>
-</ngx-spinner>
 <p-toast></p-toast>
 <p-card [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
     <div style="margin-top: 0px;" class="p-grid">
@@ -106,7 +103,7 @@
                         <button *ngIf="rowData.workplanActuals[0]" pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
                         <button *ngIf="rowData.workplanActuals[0]" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" [disabled]="isPreviousFinancialYear || !IsAuthorized(PermissionsEnum.CaptureWorkplanActual) || rowData.workplanActuals[0].isSubmitted" (click)="uploadDocument(rowData)"></button>
 
-                        <input *ngIf="rowData.workplanActuals[0]" type="file" #addDoc (change)="onUploadChange(addDoc.files, rowData)" placeholder="Browse" accept="*" style="display:none;">
+                        <input *ngIf="rowData.workplanActuals[0]" type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;">
                     </td>
                     <td style="text-align: center;">
                         <span *ngIf="rowData.workplanActuals[0]">{{rowData.workplanActuals[0].status.name}}</span>
