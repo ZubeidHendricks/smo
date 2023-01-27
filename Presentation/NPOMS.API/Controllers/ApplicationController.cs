@@ -49,7 +49,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetAllApplications action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetAllApplications action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -64,7 +64,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetApplicationById action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetApplicationById action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -79,13 +79,28 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetApplicationByNpoIdAndPeriodId action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetApplicationByNpoIdAndPeriodId action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
 
-		[HttpPost(Name = "CreateApplication")]
-		public async Task<IActionResult> CreateApplication([FromBody] Application model)
+		[HttpGet("npoId/{npoId}", Name = "GetApplicationsByNpoId")]
+		public async Task<IActionResult> GetApplicationsByNpoId(int npoId)
+		{
+			try
+			{
+				var results = await _applicationService.GetApplicationsByNpoId(npoId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetApplicationsByNpoId action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("createNew/{createNew}/financialYearId/{financialYearId}", Name = "CreateApplication")]
+		public async Task<IActionResult> CreateApplication([FromBody] Application model, bool createNew, int financialYearId)
 		{
 			try
 			{
@@ -95,6 +110,9 @@ namespace NPOMS.API.Controllers
 				{
 					await _applicationService.CreateApplication(model, base.GetUserIdentifier());
 					await CreateApplicationAudit(model);
+
+					if (!createNew)
+						await _applicationService.CloneWorkplan(model, financialYearId, base.GetUserIdentifier());
 				}
 
 				var modelToReturn = application == null ? model : application;
@@ -102,7 +120,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside CreateApplication action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside CreateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -120,7 +138,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside UpdateApplication action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside UpdateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -230,7 +248,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside ApplicationConfigureEmail action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside ApplicationConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
 			}
 		}
 
@@ -244,7 +262,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetAllObjectives action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetAllObjectives action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -262,7 +280,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside CreateObjective action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside CreateObjective action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -277,7 +295,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside UpdateObjective action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside UpdateObjective action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -292,7 +310,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetAllActivities action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetAllActivities action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -325,7 +343,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside CreateActivity action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside CreateActivity action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -340,7 +358,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside UpdateActivity action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside UpdateActivity action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -355,7 +373,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetAllResources action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetAllResources action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -373,7 +391,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside CreateResource action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside CreateResource action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -388,7 +406,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside UpdateResource action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside UpdateResource action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -403,7 +421,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetAllSustainabilityPlans action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetAllSustainabilityPlans action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -421,7 +439,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside CreateSustainabilityPlan action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside CreateSustainabilityPlan action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -436,7 +454,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside UpdateSustainabilityPlan action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside UpdateSustainabilityPlan action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -451,7 +469,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetAssignedFacilities action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetAssignedFacilities action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -466,7 +484,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetAllApplicationComments action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetAllApplicationComments action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -481,7 +499,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetApplicationComments action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetApplicationComments action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -500,7 +518,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside CreateApplicationComment action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside CreateApplicationComment action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -515,7 +533,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetApplicationAudits action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetApplicationAudits action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -530,7 +548,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetApplicationApprovals action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetApplicationApprovals action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -546,7 +564,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside CreateApplicationApproval action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside CreateApplicationApproval action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -567,7 +585,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside UpdateApplicationApproval action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside UpdateApplicationApproval action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}

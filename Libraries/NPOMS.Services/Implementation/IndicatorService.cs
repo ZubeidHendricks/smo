@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Indicator;
+using NPOMS.Repository;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Indicator;
 using NPOMS.Services.Interfaces;
@@ -18,6 +19,8 @@ namespace NPOMS.Services.Implementation
 		private IWorkplanCommentRepository _workplanCommentRepository;
 		private IWorkplanActualAuditRepository _workplanActualAuditRepository;
 
+		private RepositoryContext _repositoryContext;
+
 		#endregion
 
 		#region Constructors
@@ -27,7 +30,8 @@ namespace NPOMS.Services.Implementation
 			IUserRepository userRepository,
 			IWorkplanActualRepository workplanActualRepository,
 			IWorkplanCommentRepository workplanCommentRepository,
-			IWorkplanActualAuditRepository workplanActualAuditRepository
+			IWorkplanActualAuditRepository workplanActualAuditRepository,
+			RepositoryContext repositoryContext
 			)
 		{
 			_workplanTargetRepository = workplanTargetRepository;
@@ -35,6 +39,7 @@ namespace NPOMS.Services.Implementation
 			_workplanActualRepository = workplanActualRepository;
 			_workplanCommentRepository = workplanCommentRepository;
 			_workplanActualAuditRepository = workplanActualAuditRepository;
+			_repositoryContext = repositoryContext;
 		}
 
 		#endregion
@@ -70,7 +75,8 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _workplanTargetRepository.UpdateAsync(model);
+			var oldEntity = await this._repositoryContext.WorkplanTargets.FindAsync(model.Id);
+			await _workplanTargetRepository.UpdateAsync(oldEntity, model, true);
 		}
 
 		public async Task<IEnumerable<WorkplanActual>> GetActualsByActivityId(int activityId)
@@ -101,7 +107,8 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _workplanActualRepository.UpdateAsync(model);
+			var oldEntity = await this._repositoryContext.WorkplanActuals.FindAsync(model.Id);
+			await _workplanActualRepository.UpdateAsync(oldEntity, model, true);
 		}
 
 		public async Task<IEnumerable<WorkplanComment>> GetWorkplanComments(int workplanActualId)

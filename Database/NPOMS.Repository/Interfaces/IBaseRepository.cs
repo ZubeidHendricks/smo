@@ -21,7 +21,7 @@ namespace NPOMS.Repository.Interfaces
 
 		Task CreateAsync(T entity);
 
-		Task UpdateAsync(T entity);
+		Task UpdateAsync(T oldEntity, T newEntity, bool trackChanges);
 
 		Task DeleteAsync(T entity);
 

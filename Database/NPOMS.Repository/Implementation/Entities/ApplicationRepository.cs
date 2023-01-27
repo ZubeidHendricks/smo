@@ -27,6 +27,8 @@ namespace NPOMS.Repository.Implementation.Entities
 			return await FindByCondition(x => x.IsActive).Include(x => x.Npo)
 							.Include(x => x.ApplicationPeriod)
 								.ThenInclude(x => x.ApplicationType)
+							.Include(x => x.ApplicationPeriod)
+								.ThenInclude(x => x.FinancialYear)
 							.Include(x => x.Status)
 							.Where(x => x.Npo.IsActive).AsNoTracking().ToListAsync();
 		}
@@ -42,6 +44,20 @@ namespace NPOMS.Repository.Implementation.Entities
 							.AsNoTracking().FirstOrDefaultAsync();
 		}
 
+		public async Task<IEnumerable<Application>> GetByNpoId(int npoId)
+		{
+			return await FindByCondition(x => x.NpoId.Equals(npoId) && x.IsActive)
+							.Include(x => x.ApplicationPeriod)
+								.ThenInclude(x => x.FinancialYear)
+							.AsNoTracking().ToListAsync();
+		}
+
+		public async Task<Application> GetByIds(int npoId, int financialYearId, int applicationTypeId)
+		{
+			return await FindByCondition(x => x.NpoId.Equals(npoId) && x.ApplicationPeriod.FinancialYearId.Equals(financialYearId) && x.ApplicationPeriod.ApplicationTypeId.Equals(applicationTypeId))
+							.AsNoTracking().FirstOrDefaultAsync();
+		}
+
 		public async Task CreateEntity(Application model)
 		{
 			model.RefNo = StringExtensions.GenerateNewCode("APP");
@@ -50,7 +66,8 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task UpdateEntity(Application model)
 		{
-			await UpdateAsync(model);
+			var oldEntity = await this.RepositoryContext.Applications.FindAsync(model.Id);
+			await UpdateAsync(oldEntity, model, true);
 		}
 
 		#endregion

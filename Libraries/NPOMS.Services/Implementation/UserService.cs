@@ -15,6 +15,7 @@ using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Mapping;
 using NPOMS.Domain.Enumerations;
+using NPOMS.Repository;
 
 namespace NPOMS.Services.Implementation
 {
@@ -32,6 +33,8 @@ namespace NPOMS.Services.Implementation
 		private IUserNpoRepository _userNpoRepository;
 		private INpoRepository _npoRepository;
 
+		private RepositoryContext _repositoryContext;
+
 		#endregion
 
 		#region Constructors
@@ -45,7 +48,8 @@ namespace NPOMS.Services.Implementation
 			IRoleRepository roleRepository,
 			IDepartmentRepository departmentRepository,
 			IUserNpoRepository userNpoRepository,
-			INpoRepository npoRepository
+			INpoRepository npoRepository,
+			RepositoryContext repositoryContext
 			)
 		{
 			_mapper = mapper;
@@ -57,6 +61,7 @@ namespace NPOMS.Services.Implementation
 			_departmentRepository = departmentRepository;
 			_userNpoRepository = userNpoRepository;
 			_npoRepository = npoRepository;
+			_repositoryContext = repositoryContext;
 		}
 
 		#endregion
@@ -228,7 +233,8 @@ namespace NPOMS.Services.Implementation
 			existingUser.Departments.FirstOrDefault().Department = null;
 
 			await UpdateUserRoles(user, existingUser);
-			await _userRepository.UpdateAsync(existingUser);
+			var oldEntity = await this._repositoryContext.Users.FindAsync(user.Id);
+			await _userRepository.UpdateAsync(oldEntity, existingUser, true);
 			return _mapper.Map<UserViewModel>(existingUser);
 		}
 

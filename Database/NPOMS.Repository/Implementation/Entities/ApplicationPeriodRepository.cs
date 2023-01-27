@@ -23,7 +23,11 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task<IEnumerable<ApplicationPeriod>> GetEntities()
 		{
-			return await FindAll().Include(x => x.ApplicationType).Include(x => x.Department).AsNoTracking().ToListAsync();
+			return await FindAll().Include(x => x.ApplicationType)
+								  .Include(x => x.Department)
+								  .Include(x => x.FinancialYear)
+								  .AsNoTracking()
+								  .ToListAsync();
 		}
 
 		public async Task<ApplicationPeriod> GetById(int id)
@@ -46,7 +50,8 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task UpdateEntity(ApplicationPeriod model)
 		{
-			await UpdateAsync(model);
+			var oldEntity = await this.RepositoryContext.ApplicationPeriods.FindAsync(model.Id);
+			await UpdateAsync(oldEntity, model, true);
 		}
 
 		#endregion

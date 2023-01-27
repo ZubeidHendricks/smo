@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Budget;
+using NPOMS.Repository;
 using NPOMS.Repository.Interfaces.Budget;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Services.Interfaces;
@@ -17,6 +18,8 @@ namespace NPOMS.Services.Implementation
 		private IDirectorateBudgetRepository _directorateBudgetRepository;
 		private IProgrammeBudgetRepository _programmeBudgetRepository;
 
+		private RepositoryContext _repositoryContext;
+
 		#endregion
 
 		#region Constructors
@@ -25,12 +28,14 @@ namespace NPOMS.Services.Implementation
 			IDepartmentBudgetRepository departmentBudgetRepository,
 			IUserRepository userRepository,
 			IDirectorateBudgetRepository directorateBudgetRepository,
-			IProgrammeBudgetRepository programmeBudgetRepository)
+			IProgrammeBudgetRepository programmeBudgetRepository,
+			RepositoryContext repositoryContext)
 		{
 			_departmentBudgetRepository = departmentBudgetRepository;
 			_userRepository = userRepository;
 			_directorateBudgetRepository = directorateBudgetRepository;
 			_programmeBudgetRepository = programmeBudgetRepository;
+			_repositoryContext = repositoryContext;
 		}
 
 		#endregion
@@ -59,7 +64,8 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _departmentBudgetRepository.UpdateAsync(model);
+			var oldEntity = await this._repositoryContext.DepartmentBudgets.FindAsync(model.Id);
+			await _departmentBudgetRepository.UpdateAsync(oldEntity, model, true);
 		}
 
 		public async Task<IEnumerable<DirectorateBudget>> GetDirectorateBudgetsByIds(int departmentId, int financialYearId)
@@ -84,7 +90,8 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _directorateBudgetRepository.UpdateAsync(model);
+			var oldEntity = await this._repositoryContext.DirectorateBudgets.FindAsync(model.Id);
+			await _directorateBudgetRepository.UpdateAsync(oldEntity, model, true);
 		}
 
 		public async Task<IEnumerable<ProgrammeBudget>> GetProgrammeBudgetsByIds(int departmentId, int financialYearId)
@@ -114,7 +121,8 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _programmeBudgetRepository.UpdateAsync(model);
+			var oldEntity = await this._repositoryContext.ProgrammeBudgets.FindAsync(model.Id);
+			await _programmeBudgetRepository.UpdateAsync(oldEntity, model, true);
 		}
 
 		#endregion

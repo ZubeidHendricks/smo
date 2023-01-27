@@ -45,7 +45,8 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task UpdateEntity(NpoProfile model)
 		{
-			await UpdateAsync(model);
+			var oldEntity = await this.RepositoryContext.NpoProfiles.FindAsync(model.Id);
+			await UpdateAsync(oldEntity, model, true);
 		}
 
 		public async Task<NpoProfile> GetByNpoId(int NpoId)

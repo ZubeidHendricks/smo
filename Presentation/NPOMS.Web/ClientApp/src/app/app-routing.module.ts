@@ -136,10 +136,10 @@ const routes: Routes = [
   { path: '403', component: Page403Component },
 
   // Workplan Indicators
-  { path: 'workplan-indicator/manage/:id', component: ManageComponent },
+  { path: 'workplan-indicator/manage/:npoId', component: ManageComponent },
   { path: 'workplan-indicator/actuals/:id', component: ActualsComponent },
-  { path: 'workplan-indicator/targets/:id', component: TargetsComponent },
-  { path: 'workplan-indicator/summary/:id', component: SummaryComponent },
+  { path: 'workplan-indicator/targets/:id/financial-year/:financialYearId', component: TargetsComponent },
+  { path: 'workplan-indicator/summary/:npoId', component: SummaryComponent },
 
   // Budgets
   { path: 'admin/department-budget', component: DepartmentBudgetComponent },

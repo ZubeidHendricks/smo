@@ -36,6 +36,11 @@ export class ActualsComponent implements OnInit {
   get frequencyPeriods(): IFrequencyPeriod[] { return this._frequencyPeriods; }
   set frequencyPeriods(frequencyPeriods: IFrequencyPeriod[]) { this._frequencyPeriods = frequencyPeriods; }
 
+  private _selectedFinancialYear: IFinancialYear;
+  @Input()
+  get selectedFinancialYear(): IFinancialYear { return this._selectedFinancialYear; }
+  set selectedFinancialYear(selectedFinancialYear: IFinancialYear) { this._selectedFinancialYear = selectedFinancialYear; this.financialYearChange(); }
+
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -60,9 +65,6 @@ export class ActualsComponent implements OnInit {
   cols: any[];
   documentCols: any[];
   buttonItems: MenuItem[];
-
-  filtererdFinancialYears: IFinancialYear[] = [];
-  selectedFinancialYear: IFinancialYear;
 
   selectedFrequencyPeriod: IFrequencyPeriod;
 
@@ -172,8 +174,6 @@ export class ActualsComponent implements OnInit {
       (results) => {
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanTargets = results;
-
-        this.populateFilteredFinancialYears();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -191,21 +191,6 @@ export class ActualsComponent implements OnInit {
         this._loggerService.logException(err);
       }
     );
-  }
-
-  private populateFilteredFinancialYears() {
-    if (this._financialYears && this._financialYears.length > 0) {
-      let financialYears = [];
-
-      this._workplanIndicators.forEach(indicator => {
-        indicator.workplanTargets.forEach(target => {
-          financialYears.push(this._financialYears.find(x => x.id === target.financialYearId));
-        });
-      });
-
-      let filtererdFinancialYears = financialYears.filter((element, index) => index === financialYears.indexOf(element));
-      this.filtererdFinancialYears = filtererdFinancialYears.sort((a, b) => a.id - b.id);
-    }
   }
 
   private loadDocumentTypes() {
@@ -428,17 +413,19 @@ export class ActualsComponent implements OnInit {
     );
   }
 
-  financialYearChange() {
-    this.getFilteredWorkplanIndicators();
+  private financialYearChange() {
+    if (this.selectedFinancialYear) {
+      this.getFilteredWorkplanIndicators();
 
-    let currentDate = new Date();
+      let currentDate = new Date();
 
-    let currentFinancialYear = this.financialYears.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
-    this.isPreviousFinancialYear = this.selectedFinancialYear.id >= currentFinancialYear.id ? false : true;
+      let currentFinancialYear = this.financialYears.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
+      this.isPreviousFinancialYear = this.selectedFinancialYear.id >= currentFinancialYear.id ? false : true;
 
-    // If previous financial year, disable all buttons besides comments and view history
-    for (let i = 0; i < this.buttonItems[0].items.length - 2; i++) {
-      this.buttonItems[0].items[i].disabled = this.isPreviousFinancialYear;
+      // If previous financial year, disable all buttons besides comments and view history
+      for (let i = 0; i < this.buttonItems[0].items.length - 2; i++) {
+        this.buttonItems[0].items[i].disabled = this.isPreviousFinancialYear;
+      }
     }
   }
 

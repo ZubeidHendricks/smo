@@ -46,7 +46,7 @@ namespace NPOMS.Repository.Implementation.Core
 
 		public async Task UpdateEntity(EmailTemplate entity)
 		{
-			await UpdateAsync(entity);
+			await UpdateAsync(null, entity, false);
 		}
 
 		public async Task DeleteEntity(EmailTemplate entity)
