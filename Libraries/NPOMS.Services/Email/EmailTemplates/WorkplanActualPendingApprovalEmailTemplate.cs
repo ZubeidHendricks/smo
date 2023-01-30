@@ -83,7 +83,7 @@ namespace NPOMS.Services.Email.EmailTemplates
 		{
 			var returnResult = value.Replace("{ToUserFullName}", user.FullName)
 									.Replace("{url}", requestOrigin)
-									.Replace("{applicationId}", Convert.ToString(application.Id))
+									.Replace("{npoId}", Convert.ToString(application.NpoId))
 									.Replace("{ApplicationRefNo}", application.RefNo)
 									.Replace("{financialYear}", financialYear)
 									.Replace("{frequencyPeriod}", frequencyPeriod)
