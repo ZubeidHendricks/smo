@@ -85,8 +85,9 @@ export class ApplicationListComponent implements OnInit {
     this.cols = [
       { field: 'refNo', header: 'Ref. No.', width: '15%' },
       { field: 'npo.name', header: 'Organisation', width: '30%' },
-      { field: 'applicationPeriod.applicationType.name', header: 'Type', width: '15%' },
-      { field: 'applicationPeriod.closingDate', header: 'Closing Date', width: '15%' },
+      { field: 'applicationPeriod.applicationType.name', header: 'Type', width: '10%' },
+      { field: 'applicationPeriod.financialYear.name', header: 'Financial Year', width: '10%' },
+      { field: 'applicationPeriod.closingDate', header: 'Closing Date', width: '10%' },
       { field: 'status.name', header: 'Application Status', width: '10%' }
     ];
   }
@@ -150,7 +151,7 @@ export class ApplicationListComponent implements OnInit {
           label: 'Manage Indicators',
           icon: 'fa fa-tags wcg-icon',
           command: () => {
-            this._router.navigateByUrl('workplan-indicator/manage/' + this.selectedApplication.id);
+            this._router.navigateByUrl('workplan-indicator/manage/' + this.selectedApplication.npoId);
           }
         });
       }
@@ -160,7 +161,7 @@ export class ApplicationListComponent implements OnInit {
           label: 'Summary',
           icon: 'fa fa-tasks wcg-icon',
           command: () => {
-            this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.id);
+            this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.npoId);
           }
         });
       }

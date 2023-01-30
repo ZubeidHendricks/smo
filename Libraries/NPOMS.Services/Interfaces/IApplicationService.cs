@@ -13,6 +13,12 @@ namespace NPOMS.Services.Interfaces
 
 		Task<Application> GetApplicationByNpoIdAndPeriodId(int NpoId, int applicationPeriodId);
 
+		Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId);
+
+		Task<Application> GetByIds(int npoId, int financialYearId, int applicationTypeId);
+
+		Task CloneWorkplan(Application model, int financialYearId, string userIdentifier);
+
 		Task CreateApplication(Application model, string userIdentifier);
 
 		Task UpdateApplicationStatus(Application model);

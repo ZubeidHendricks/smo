@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IObjective, IResource, ISustainabilityPlan } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IFinancialYear, IObjective, IResource, ISustainabilityPlan } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -34,8 +34,16 @@ export class ApplicationService {
     return this._http.get<IApplication>(url, httpOptions);
   }
 
-  public createApplication(application: IApplication) {
-    const url = `${this._envUrl.urlAddress}/api/applications`;
+  public getApplicationsByNpoId(npoId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/npoId/${npoId}`;
+    return this._http.get<IApplication[]>(url, httpOptions);
+  }
+
+  public createApplication(application: IApplication, createNew: boolean, financialYear: IFinancialYear) {
+    // Set default value for financial year id as it would be null when createNew is true
+    let financialYearId = financialYear != null ? financialYear.id : 0;
+    
+    const url = `${this._envUrl.urlAddress}/api/applications/createNew/${createNew}/financialYearId/${financialYearId}`;
     return this._http.post<IApplication>(url, application, httpOptions);
   }
 

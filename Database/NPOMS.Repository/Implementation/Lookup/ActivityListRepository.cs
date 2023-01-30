@@ -52,7 +52,7 @@ namespace NPOMS.Repository.Implementation.Lookup
 
 		public async Task UpdateEntity(ActivityList model)
 		{
-			await UpdateAsync(model);
+			await UpdateAsync(null, model, false);
 		}
 
 		public async Task DeleteEntity(int id)
@@ -60,7 +60,7 @@ namespace NPOMS.Repository.Implementation.Lookup
 			var model = await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
 			model.IsActive = false;
 
-			await UpdateAsync(model);
+			await UpdateAsync(null, model, false);
 		}
 
 		public async Task<ActivityList> GetByName(string name)

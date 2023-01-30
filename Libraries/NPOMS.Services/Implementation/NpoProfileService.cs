@@ -121,13 +121,13 @@ namespace NPOMS.Services.Implementation
 			else
 			{
 				mapping.IsActive = true;
-				await _npoProfileFacilityListRepository.UpdateAsync(mapping);
+				await _npoProfileFacilityListRepository.UpdateAsync(null, mapping, false);
 			}
 		}
 
 		public async Task Update(NpoProfileFacilityList model)
 		{
-			await _npoProfileFacilityListRepository.UpdateAsync(model);
+			await _npoProfileFacilityListRepository.UpdateAsync(null, model, false);
 		}
 
 		public async Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(int npoProfileId)
@@ -152,7 +152,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _servicesRenderedRepository.UpdateAsync(model);
+			await _servicesRenderedRepository.UpdateAsync(null, model, false);
 		}
 
 		public async Task<IEnumerable<BankDetail>> GetBankDetailsByNpoProfileId(int npoProfileId)
@@ -177,7 +177,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _bankDetailRepository.UpdateAsync(model);
+			await _bankDetailRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion

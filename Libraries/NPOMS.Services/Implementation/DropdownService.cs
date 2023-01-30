@@ -167,7 +167,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _roleRepository.UpdateAsync(model);
+			await _roleRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -196,7 +196,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _departmentRepository.UpdateAsync(model);
+			await _departmentRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -225,7 +225,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _organisationTypeRepository.UpdateAsync(model);
+			await _organisationTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -254,7 +254,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _titleRepository.UpdateAsync(model);
+			await _titleRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -283,7 +283,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _positionRepository.UpdateAsync(model);
+			await _positionRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -312,7 +312,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _accessStatusRepository.UpdateAsync(model);
+			await _accessStatusRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -341,7 +341,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _programmeRepository.UpdateAsync(model);
+			await _programmeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -386,7 +386,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _subProgrammeRepository.UpdateAsync(model);
+			await _subProgrammeRepository.UpdateAsync(null, model, false);
 		}
 
 		public async Task<IEnumerable<SubProgramme>> GetSubProgrammesByProgrammeId(int programmeId)
@@ -431,7 +431,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _financialYearRepository.UpdateAsync(model);
+			await _financialYearRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -460,7 +460,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _applicationTypeRepository.UpdateAsync(model);
+			await _applicationTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -489,7 +489,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _recipientTypeRepository.UpdateAsync(model);
+			await _recipientTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -518,7 +518,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _activityTypeRepository.UpdateAsync(model);
+			await _activityTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -547,7 +547,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _resourceTypeRepository.UpdateAsync(model);
+			await _resourceTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -576,7 +576,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _serviceTypeRepository.UpdateAsync(model);
+			await _serviceTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -605,7 +605,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _allocationTypeRepository.UpdateAsync(model);
+			await _allocationTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -634,7 +634,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _facilityDistrictRepository.UpdateAsync(model);
+			await _facilityDistrictRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -663,7 +663,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _facilitySubDistrictRepository.UpdateAsync(model);
+			await _facilitySubDistrictRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -692,7 +692,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _facilityClassRepository.UpdateAsync(model);
+			await _facilityClassRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -769,7 +769,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _documentTypeRepository.UpdateAsync(model);
+			await _documentTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -798,7 +798,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _facilityTypeRepository.UpdateAsync(model);
+			await _facilityTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -827,7 +827,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _statusRepository.UpdateAsync(model);
+			await _statusRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -933,7 +933,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _provisionTypeRepository.UpdateAsync(model);
+			await _provisionTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -962,7 +962,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _utilityRepository.UpdateAsync(model);
+			await _utilityRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -1000,7 +1000,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _frequencyRepository.UpdateAsync(model);
+			await _frequencyRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -1034,7 +1034,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _frequencyPeriodRepository.UpdateAsync(model);
+			await _frequencyPeriodRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -1063,7 +1063,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _subProgrammeTypeRepository.UpdateAsync(model);
+			await _subProgrammeTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		public async Task<IEnumerable<SubProgrammeType>> GetSubProgrammeTypesBySubProgrammeId(int subProgrammeId)
@@ -1097,7 +1097,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _directorateRepository.UpdateAsync(model);
+			await _directorateRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -1126,7 +1126,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _bankRepository.UpdateAsync(model);
+			await _bankRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -1165,7 +1165,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _branchRepository.UpdateAsync(model);
+			await _branchRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -1199,7 +1199,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _accountTypeRepository.UpdateAsync(model);
+			await _accountTypeRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion
@@ -1233,7 +1233,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _compliantCycleRuleRepository.UpdateAsync(model);
+			await _compliantCycleRuleRepository.UpdateAsync(null, model, false);
 		}
 
 		#endregion

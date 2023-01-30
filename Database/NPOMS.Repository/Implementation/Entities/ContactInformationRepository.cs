@@ -29,11 +29,13 @@ namespace NPOMS.Repository.Implementation.Entities
 							.ToListAsync();
 		}
 
-		public async Task DeleteEntity(int id)
+		public async Task DeleteEntity(int id, Npo model)
 		{
-			var model = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
-			model.IsActive = false;
-			await UpdateAsync(model);
+			var existingEntity = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+			existingEntity.IsActive = false;
+
+			var oldEntity = await this.RepositoryContext.ContactInformation.FindAsync(id);
+			await UpdateAsync(oldEntity, existingEntity, true);
 		}
 
 		#endregion

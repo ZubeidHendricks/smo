@@ -58,8 +58,7 @@
                                 </div>
                             </div>
                             <div class="p-col">
-                                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange()" #financialYear="ngModel" [ngClass]="{'ng-dirty': (financialYear.invalid && validated) || (financialYear.dirty && financialYear.invalid)}" required></p-dropdown>
-                                <small *ngIf="(financialYear.invalid && validated) || (financialYear.dirty && financialYear.invalid)" class="p-error">Financial Year is required.</small>
+                                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
                             </div>
                         </div>
                     </div>

@@ -134,7 +134,7 @@ namespace NPOMS.Services.Implementation
 					foreach (var id in existingIds)
 					{
 						if (!newIds.Contains(id))
-							await _contactInformationRepository.DeleteEntity(id);
+							await _contactInformationRepository.DeleteEntity(id, model);
 					}
 				}
 			}
@@ -145,6 +145,8 @@ namespace NPOMS.Services.Implementation
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
 			npo.ApprovalStatus = null;
+			npo.UpdatedUserId = loggedInUser.Id;
+			npo.UpdatedDateTime = DateTime.Now;
 			npo.ApprovalUserId = loggedInUser.Id;
 			npo.ApprovalDateTime = DateTime.Now;
 

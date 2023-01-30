@@ -31,7 +31,9 @@ namespace NPOMS.Repository.Implementation.Entities
 		{
 			var model = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
 			model.IsActive = false;
-			await UpdateAsync(model);
+
+			var oldEntity = await this.RepositoryContext.ServicesRendered.FindAsync(model.Id);
+			await UpdateAsync(oldEntity, model, true);
 		}
 
 		public async Task<ServicesRendered> GetByProperties(ServicesRendered model)
