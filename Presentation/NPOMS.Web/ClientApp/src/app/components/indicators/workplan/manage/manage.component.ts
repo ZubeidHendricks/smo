@@ -3,11 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MegaMenuItem } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { ApplicationTypeEnum, DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IFinancialYear, IFrequencyPeriod, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
-import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
@@ -30,10 +29,11 @@ export class ManageComponent implements OnInit {
   }
 
   paramSubcriptions: Subscription;
-  id: string;
+  npoId: string;
 
   profile: IUser;
 
+  applications: IApplication[];
   application: IApplication;
   activities: IActivity[];
 
@@ -42,6 +42,7 @@ export class ManageComponent implements OnInit {
 
   workplanIndicators: IWorkplanIndicator[];
   financialYears: IFinancialYear[];
+  selectedFinancialYear: IFinancialYear;
   frequencyPeriods: IFrequencyPeriod[];
 
   constructor(
@@ -50,14 +51,13 @@ export class ManageComponent implements OnInit {
     private _activeRouter: ActivatedRoute,
     private _router: Router,
     private _dropdownRepo: DropdownService,
-    private _indicatorRepo: IndicatorService,
     private _loggerService: LoggerService,
     private _authService: AuthService
   ) { }
 
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      this.id = params.get('id');
+      this.npoId = params.get('npoId');
     });
 
     this._authService.profile$.subscribe(profile => {
@@ -67,9 +67,8 @@ export class ManageComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption))
           this._router.navigate(['401']);
 
-        this.loadApplication();
+        this.loadApplications();
         this.buildMenu();
-        this.loadFinancialYears();
         this.loadFrequencyPeriods();
       }
     });
@@ -92,14 +91,18 @@ export class ManageComponent implements OnInit {
     return value;
   }
 
-  private loadApplication() {
+  private loadApplications() {
     this._spinner.show();
-    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
+    this._applicationRepo.getApplicationsByNpoId(Number(this.npoId)).subscribe(
       (results) => {
-        if (results != null) {
-          this.application = results;
-          this.loadActivities();
-        }
+        this.financialYears = [];
+        this.applications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP && x.statusId === StatusEnum.AcceptedSLA);
+
+        this.applications.forEach(item => {
+          var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
+          if (!isPresent)
+            this.financialYears.push(item.applicationPeriod.financialYear);
+        });
 
         this._spinner.hide();
       },
@@ -134,8 +137,6 @@ export class ManageComponent implements OnInit {
     );
   }
 
-
-
   private buildMenu() {
     this.menuActions = [
       {
@@ -146,20 +147,6 @@ export class ManageComponent implements OnInit {
         }
       }
     ];
-  }
-
-  private loadFinancialYears() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
-      (results) => {
-        this.financialYears = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
   }
 
   private loadFrequencyPeriods() {
@@ -182,6 +169,26 @@ export class ManageComponent implements OnInit {
   }
 
   captureTargets(activity) {
-    this._router.navigateByUrl('workplan-indicator/targets/' + activity.id);
+    this._router.navigateByUrl('workplan-indicator/targets/' + activity.id + '/financial-year/' + this.selectedFinancialYear.id);
+  }
+
+  public financialYearChange() {    
+    this._spinner.show();
+    let application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
+
+    this._applicationRepo.getApplicationById(Number(application.id)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.application = results;
+          this.loadActivities();
+        }
+
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 }

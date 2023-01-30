@@ -12,6 +12,10 @@ namespace NPOMS.Repository.Interfaces.Entities
 
 		Task<Application> GetByNpoIdAndPeriodId(int NpoId, int applicationPeriodId);
 
+		Task<IEnumerable<Application>> GetByNpoId(int npoId);
+
+		Task<Application> GetByIds(int npoId, int financialYearId, int applicationTypeId);
+
 		Task CreateEntity(Application model);
 
 		Task UpdateEntity(Application model);

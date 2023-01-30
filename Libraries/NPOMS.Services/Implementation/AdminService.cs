@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Entities;
+using NPOMS.Repository;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Interfaces;
@@ -16,6 +17,8 @@ namespace NPOMS.Services.Implementation
 		private IPaymentScheduleRepository _paymentScheduleRepository;
 		private IUserRepository _userRepository;
 
+		private RepositoryContext _repositoryContext;
+
 		#endregion
 
 		#region Constructors
@@ -23,12 +26,14 @@ namespace NPOMS.Services.Implementation
 		public AdminService(
 			ICompliantCycleRepository compliantCycleRepository,
 			IPaymentScheduleRepository paymentScheduleRepository,
-			IUserRepository userRepository
+			IUserRepository userRepository,
+			RepositoryContext repositoryContext
 			)
 		{
 			_compliantCycleRepository = compliantCycleRepository;
 			_paymentScheduleRepository = paymentScheduleRepository;
 			_userRepository = userRepository;
+			_repositoryContext = repositoryContext;
 		}
 
 		#endregion
@@ -57,7 +62,8 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _compliantCycleRepository.UpdateAsync(model);
+			var oldEntity = await this._repositoryContext.CompliantCycles.FindAsync(model.Id);
+			await _compliantCycleRepository.UpdateAsync(oldEntity, model, true);
 		}
 
 		public async Task<IEnumerable<PaymentSchedule>> GetPaymentSchedulesByIds(int departmentId, int financialYearId)
@@ -82,7 +88,8 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _paymentScheduleRepository.UpdateAsync(model);
+			var oldEntity = await this._repositoryContext.PaymentSchedules.FindAsync(model.Id);
+			await _paymentScheduleRepository.UpdateAsync(oldEntity, model, true);
 		}
 
 		#endregion

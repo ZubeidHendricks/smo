@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
+using NPOMS.Domain.Core;
+using NPOMS.Domain.Entities;
+using NPOMS.Domain.Enumerations;
+using NPOMS.Domain.Lookup;
+using NPOMS.Domain.Mapping;
+using NPOMS.Repository;
+using NPOMS.Repository.Interfaces.Core;
+using NPOMS.Repository.Interfaces.Entities;
+using NPOMS.Repository.Interfaces.Mapping;
+using NPOMS.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NPOMS.Domain.Entities;
-using NPOMS.Domain.Lookup;
-using NPOMS.Services.Interfaces;
-using NPOMS.Repository.Interfaces.Entities;
-using NPOMS.Repository.Interfaces.Core;
-using NPOMS.Domain.Enumerations;
-using NPOMS.Domain.Core;
-using NPOMS.Domain.Mapping;
-using NPOMS.Repository.Interfaces.Mapping;
 
 namespace NPOMS.Services.Implementation
 {
@@ -37,6 +38,8 @@ namespace NPOMS.Services.Implementation
 		private IUserNpoRepository _userNpoRepository;
 		private IApplicationReviewerSatisfactionRepository _applicationReviewerSatisfactionRepository;
 
+		private RepositoryContext _repositoryContext;
+
 		#endregion
 
 		#region Constructorrs
@@ -58,7 +61,8 @@ namespace NPOMS.Services.Implementation
 			IApplicationApprovalRepository applicationApprovalRepository,
 			IActivityFacilityListRepository activityFacilityListRepository,
 			IUserNpoRepository userNpoRepository,
-			IApplicationReviewerSatisfactionRepository applicationReviewerSatisfactionRepository
+			IApplicationReviewerSatisfactionRepository applicationReviewerSatisfactionRepository,
+			RepositoryContext repositoryContext
 			)
 		{
 			_applicationRepository = applicationRepository;
@@ -78,6 +82,7 @@ namespace NPOMS.Services.Implementation
 			_activityFacilityListRepository = activityFacilityListRepository;
 			_userNpoRepository = userNpoRepository;
 			_applicationReviewerSatisfactionRepository = applicationReviewerSatisfactionRepository;
+			_repositoryContext = repositoryContext;
 		}
 
 		#endregion
@@ -112,6 +117,108 @@ namespace NPOMS.Services.Implementation
 		public async Task<Application> GetApplicationByNpoIdAndPeriodId(int NpoId, int applicationPeriodId)
 		{
 			return await _applicationRepository.GetByNpoIdAndPeriodId(NpoId, applicationPeriodId);
+		}
+
+		public async Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId)
+		{
+			return await _applicationRepository.GetByNpoId(npoId);
+		}
+
+		public async Task<Application> GetByIds(int npoId, int financialYearId, int applicationTypeId)
+		{
+			return await _applicationRepository.GetByIds(npoId, financialYearId, applicationTypeId);
+		}
+
+		public async Task CloneWorkplan(Application model, int financialYearId, string userIdentifier)
+		{
+			var existingApplication = await GetByIds(model.NpoId, financialYearId, (int)ApplicationTypeEnum.ServiceProvision);
+
+			var objectives = await GetAllObjectivesAsync(existingApplication.NpoId, existingApplication.ApplicationPeriodId);
+			var activities = await GetAllActivitiesAsync(existingApplication.NpoId, existingApplication.ApplicationPeriodId);
+			var sustainabilityPlans = await GetAllSustainabilityPlansAsync(existingApplication.NpoId, existingApplication.ApplicationPeriodId);
+			var resources = await GetAllResourcesAsync(existingApplication.NpoId, existingApplication.ApplicationPeriodId);
+
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			foreach (var objective in objectives)
+			{
+				var newObjective = new Objective
+				{
+					ApplicationId = model.Id,
+					Name = objective.Name,
+					Description = objective.Description,
+					FundingSource = objective.FundingSource,
+					FundingPeriodStartDate = objective.FundingPeriodStartDate,
+					FundingPeriodEndDate = objective.FundingPeriodEndDate,
+					RecipientTypeId = objective.RecipientTypeId,
+					Budget = objective.Budget,
+					IsActive = objective.IsActive,
+					CreatedUserId = loggedInUser.Id,
+					CreatedDateTime = DateTime.Now,
+					ChangesRequired = null
+				};
+				_repositoryContext.Objectives.Add(newObjective);
+
+				foreach (var activity in activities)
+				{
+					var newActivity = new Activity
+					{
+						ApplicationId = model.Id,
+						Objective = newObjective,
+						ActivityListId = activity.ActivityListId,
+						ActivityTypeId = activity.ActivityTypeId,
+						TimelineStartDate = activity.TimelineStartDate,
+						TimelineEndDate = activity.TimelineEndDate,
+						Target = activity.Target,
+						SuccessIndicator = activity.SuccessIndicator,
+						IsActive = activity.IsActive,
+						CreatedUserId = loggedInUser.Id,
+						CreatedDateTime = DateTime.Now,
+						ChangesRequired = null
+					};
+					_repositoryContext.Activities.Add(newActivity);
+
+					foreach (var plan in sustainabilityPlans.Where(x => x.ActivityId.Equals(activity.Id)))
+					{
+						var newPlan = new SustainabilityPlan
+						{
+							ApplicationId = model.Id,
+							Activity = newActivity,
+							Description = plan.Description,
+							Risk = plan.Risk,
+							Mitigation = plan.Mitigation,
+							IsActive = plan.IsActive,
+							CreatedUserId = loggedInUser.Id,
+							CreatedDateTime = DateTime.Now,
+							ChangesRequired = null
+						};
+						_repositoryContext.SustainabilityPlans.Add(newPlan);
+					}
+
+					foreach (var resource in resources.Where(x => x.ActivityId.Equals(activity.Id)))
+					{
+						var newResource = new Resource
+						{
+							ApplicationId = model.Id,
+							Activity = newActivity,
+							ResourceTypeId = resource.ResourceTypeId,
+							ServiceTypeId = resource.ServiceTypeId,
+							AllocationTypeId = resource.AllocationTypeId,
+							Description = resource.Description,
+							ProvisionTypeId = resource.ProvisionTypeId,
+							ResourceListId = resource.ResourceListId,
+							NumberOfResources = resource.NumberOfResources,
+							IsActive = resource.IsActive,
+							CreatedUserId = loggedInUser.Id,
+							CreatedDateTime = DateTime.Now,
+							ChangesRequired = null
+						};
+						_repositoryContext.Resources.Add(newResource);
+					}
+				}
+			}
+
+			await _repositoryContext.SaveChangesAsync();
 		}
 
 		public async Task CreateApplication(Application model, string userIdentifier)
@@ -186,7 +293,8 @@ namespace NPOMS.Services.Implementation
 			objective.UpdatedUserId = loggedInUser.Id;
 			objective.UpdatedDateTime = DateTime.Now;
 
-			await _objectiveRepository.UpdateAsync(objective);
+			var oldEntity = await this._repositoryContext.Objectives.FindAsync(model.Id);
+			await _objectiveRepository.UpdateAsync(oldEntity, model, true);
 		}
 
 		private async Task DeleteActivities(Objective model, User currentUser)
@@ -424,25 +532,29 @@ namespace NPOMS.Services.Implementation
 					var objective = await _objectiveRepository.GetById(model.EntityId);
 					objective.ChangesRequired = changesRequired;
 
-					await _objectiveRepository.UpdateAsync(objective);
+					var oldObjective = await this._repositoryContext.Objectives.FindAsync(model.Id);
+					await _objectiveRepository.UpdateAsync(oldObjective, objective, true);
 					break;
 				case ServiceProvisionStepsEnum.Activities:
 					var activity = await _activityRepository.GetById(model.EntityId);
 					activity.ChangesRequired = changesRequired;
 
-					await _activityRepository.UpdateAsync(activity);
+					var oldActivity = await this._repositoryContext.Activities.FindAsync(model.Id);
+					await _activityRepository.UpdateAsync(oldActivity, activity, true);
 					break;
 				case ServiceProvisionStepsEnum.Sustainability:
 					var sustainability = await _sustainabilityPlanRepository.GetById(model.EntityId);
 					sustainability.ChangesRequired = changesRequired;
 
-					await _sustainabilityPlanRepository.UpdateAsync(sustainability);
+					var oldSustainability = await this._repositoryContext.SustainabilityPlans.FindAsync(model.Id);
+					await _sustainabilityPlanRepository.UpdateAsync(oldSustainability, sustainability, true);
 					break;
 				case ServiceProvisionStepsEnum.Resourcing:
 					var resource = await _resourceRepository.GetById(model.EntityId);
 					resource.ChangesRequired = changesRequired;
 
-					await _resourceRepository.UpdateAsync(resource);
+					var oldResource = await this._repositoryContext.Resources.FindAsync(model.Id);
+					await _resourceRepository.UpdateAsync(oldResource, resource, true);
 					break;
 			}
 		}

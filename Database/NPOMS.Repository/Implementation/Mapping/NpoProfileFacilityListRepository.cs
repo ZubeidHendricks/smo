@@ -43,7 +43,7 @@ namespace NPOMS.Repository.Implementation.Mapping
 		{
 			var model = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
 			model.IsActive = false;
-			await UpdateAsync(model);
+			await UpdateAsync(null, model, false);
 		}
 
 		#endregion

@@ -38,7 +38,8 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task UpdateEntity(SustainabilityPlan model)
 		{
-			await UpdateAsync(model);
+			var oldEntity = await this.RepositoryContext.SustainabilityPlans.FindAsync(model.Id);
+			await UpdateAsync(oldEntity, model, true);
 		}
 
 		public async Task<SustainabilityPlan> GetById(int id)

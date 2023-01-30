@@ -3,8 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Table } from 'primeng/table';
-import { AccessStatusEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationPeriod, INpo, IUser } from 'src/app/models/interfaces';
+import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
+import { IApplication, IApplicationPeriod, IFinancialYear, INpo, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
@@ -29,6 +29,10 @@ export class ApplicationPeriodListComponent implements OnInit {
     return PermissionsEnum;
   }
 
+  public get ApplicationTypeEnum(): typeof ApplicationTypeEnum {
+    return ApplicationTypeEnum;
+  }
+
   profile: IUser;
 
   cols: any[];
@@ -44,6 +48,13 @@ export class ApplicationPeriodListComponent implements OnInit {
   selectedNPO: INpo;
 
   application: IApplication = {} as IApplication;
+
+  selectedApplicationPeriod: IApplicationPeriod;
+  stateOptions: any[];
+  selectedOption: boolean;
+
+  financialYears: IFinancialYear[];
+  selectedFinancialYear: IFinancialYear;
 
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
@@ -82,10 +93,16 @@ export class ApplicationPeriodListComponent implements OnInit {
       { field: 'refNo', header: 'Ref. No.', width: '10%' },
       { field: 'department.name', header: 'Department', width: '10%' },
       { field: 'name', header: 'Name', width: '20%' },
-      { field: 'applicationType.name', header: 'Type', width: '21%' },
+      { field: 'applicationType.name', header: 'Type', width: '15%' },
+      { field: 'financialYear.name', header: 'Financial Year', width: '8%' },
       { field: 'openingDate', header: 'Opening Date', width: '10%' },
       { field: 'closingDate', header: 'Closing Date', width: '10%' },
-      { field: 'status', header: 'Status', width: '7%' }
+      { field: 'status', header: 'Status', width: '5%' }
+    ];
+
+    this.stateOptions = [
+      { label: 'Create New Workplan', value: true },
+      { label: 'Use Existing Workplan', value: false }
     ];
   }
 
@@ -107,7 +124,7 @@ export class ApplicationPeriodListComponent implements OnInit {
     this._spinner.show();
     this._applicationPeriodRepo.getAllApplicationPeriods().subscribe(
       (results) => {
-
+        
         results.forEach(period => {
           this.setStatus(period);
         });
@@ -160,7 +177,11 @@ export class ApplicationPeriodListComponent implements OnInit {
   }
 
   onRowSelect(applicationPeriod: IApplicationPeriod) {
+    this.selectedApplicationPeriod = applicationPeriod;
     this.applicationPeriodId = applicationPeriod.id;
+    this.selectedOption = true;
+    this.selectedFinancialYear = null;
+    this.selectedNPO = null;
     this.displayDialog = true;
   }
 
@@ -168,11 +189,17 @@ export class ApplicationPeriodListComponent implements OnInit {
     if (!this.selectedNPO)
       return true;
 
+    if (this.selectedApplicationPeriod.applicationType.id === ApplicationTypeEnum.SP && !this.selectedOption) {
+      if (!this.selectedFinancialYear)
+        return true
+    }
+
     return false;
   }
 
   selectNPO() {
     this.displayDialog = false;
+    this._spinner.show();
     this.autoCreateApplication();
   }
 
@@ -181,7 +208,7 @@ export class ApplicationPeriodListComponent implements OnInit {
     this.application.applicationPeriodId = this.applicationPeriodId;
     this.application.statusId = StatusEnum.New;
 
-    this._applicationRepo.createApplication(this.application).subscribe(
+    this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
       (resp) => {
         this._router.navigateByUrl('application/create/' + resp.id);
       },
@@ -197,5 +224,38 @@ export class ApplicationPeriodListComponent implements OnInit {
     this._npoRepo.getNpoByName(query).subscribe((results) => {
       this.allNpos = results;
     });
+  }
+
+  selectedOptionChange() {
+    this.financialYears = [];
+    this.selectedFinancialYear = null;
+    this.getExistingWorkplanFinancialYear();
+  }
+
+  selectedNPOChange() {
+    this.getExistingWorkplanFinancialYear();
+  }
+
+  private getExistingWorkplanFinancialYear() {
+    if (!this.selectedOption && this.selectedNPO) {
+      this._spinner.show();
+      this._applicationRepo.getApplicationsByNpoId(this.selectedNPO.id).subscribe(
+        (results) => {
+          let filteredApplications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP);
+
+          filteredApplications.forEach(item => {
+            var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
+            if (!isPresent)
+              this.financialYears.push(item.applicationPeriod.financialYear);
+          });
+
+          this._spinner.hide();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
   }
 }

@@ -38,7 +38,7 @@ namespace NPOMS.Repository.Implementation.Mapping
 
 		public async Task UpdateEntity(RolePermission entity)
 		{
-			await UpdateAsync(entity);
+			await UpdateAsync(null, entity, false);
 		}
 
 		public async Task DeleteEntity(RolePermission entity)

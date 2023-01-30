@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230123144831_AuditLogAdded")]
+    partial class AuditLogAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -793,7 +795,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 19,
-                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been updated with a status of <span style=\"font-weight: bold;\">{status}</span>.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{npoId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been updated with a status of <span style=\"font-weight: bold;\">{status}</span>.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{applicationId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
                             EmailAccountId = 0,
                             IsActive = false,
                             Name = "WorkplanActualStatusChanged",
@@ -802,7 +804,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 20,
-                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been submitted for you to review.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{npoId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been submitted for you to review.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{applicationId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
                             EmailAccountId = 0,
                             IsActive = false,
                             Name = "WorkplanActualPendingReview",
@@ -811,7 +813,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 21,
-                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been sent for you to approve.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{npoId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                            Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been sent for you to approve.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{applicationId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
                             EmailAccountId = 0,
                             IsActive = false,
                             Name = "WorkplanActualPendingApproval",

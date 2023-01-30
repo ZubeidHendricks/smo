@@ -4,10 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MegaMenuItem, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { DropdownTypeEnum, FrequencyEnum, FrequencyPeriodEnum, PermissionsEnum } from 'src/app/models/enums';
+import { ApplicationTypeEnum, FrequencyEnum, FrequencyPeriodEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IFinancialYear, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -41,17 +40,17 @@ export class SummaryComponent implements OnInit {
   }
 
   paramSubcriptions: Subscription;
-  id: string;
+  npoId: string;
 
   profile: IUser;
 
+  applications: IApplication[];
   application: IApplication;
   activities: IActivity[];
 
   menuActions: MegaMenuItem[];
 
   financialYears: IFinancialYear[];
-  filtererdFinancialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
 
   workplanIndicators: IWorkplanIndicator[];
@@ -60,13 +59,15 @@ export class SummaryComponent implements OnInit {
   scrollableCols: any[];
   frozenCols: any[];
 
+  lastWorkplanTarget: boolean;
+  lastWorkplanActual: boolean;
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _applicationRepo: ApplicationService,
     private _activeRouter: ActivatedRoute,
     private _router: Router,
     private _indicatorRepo: IndicatorService,
-    private _dropdownRepo: DropdownService,
     private _datePipe: DatePipe,
     private _messageService: MessageService,
     private _loggerService: LoggerService,
@@ -75,7 +76,7 @@ export class SummaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      this.id = params.get('id');
+      this.npoId = params.get('npoId');
     });
 
     this._authService.profile$.subscribe(profile => {
@@ -85,21 +86,24 @@ export class SummaryComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.ViewSummaryOption))
           this._router.navigate(['401']);
 
-        this.loadApplication();
-        this.loadFinancialYears();
+        this.loadApplications();
         this.buildMenu();
       }
     });
   }
 
-  private loadApplication() {
+  private loadApplications() {
     this._spinner.show();
-    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
+    this._applicationRepo.getApplicationsByNpoId(Number(this.npoId)).subscribe(
       (results) => {
-        if (results != null) {
-          this.application = results;
-          this.loadActivities();
-        }
+        this.financialYears = [];
+        this.applications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP && x.statusId === StatusEnum.AcceptedSLA);
+
+        this.applications.forEach(item => {
+          var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
+          if (!isPresent)
+            this.financialYears.push(item.applicationPeriod.financialYear);
+        });
 
         this._spinner.hide();
       },
@@ -144,7 +148,10 @@ export class SummaryComponent implements OnInit {
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanTargets = results;
 
-        this.populateFilteredFinancialYears();
+        if (this.activities[this.activities.length - 1] === activity) {
+          this.lastWorkplanTarget = true;
+          this.filterWorkplanIndicators();
+        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -159,40 +166,17 @@ export class SummaryComponent implements OnInit {
         // Add WorkplanActuals to WorkplanIndicators at index of activity
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanActuals = results;
+
+        if (this.activities[this.activities.length - 1] === activity) {
+          this.lastWorkplanActual = true;
+          this.filterWorkplanIndicators();
+        }
       },
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
     );
-  }
-
-  private loadFinancialYears() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
-      (results) => {
-        this.financialYears = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private populateFilteredFinancialYears() {
-    if (this.financialYears && this.financialYears.length > 0) {
-      let financialYears = [];
-
-      this.workplanIndicators.forEach(indicator => {
-        indicator.workplanTargets.forEach(target => {
-          financialYears.push(this.financialYears.find(x => x.id === target.financialYearId));
-        });
-      });
-
-      this.filtererdFinancialYears = financialYears.filter((element, index) => index === financialYears.indexOf(element));
-    }
   }
 
   private buildMenu() {
@@ -349,6 +333,13 @@ export class SummaryComponent implements OnInit {
 
   financialYearChange() {
     if (this.selectedFinancialYear) {
+      this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
+      this.loadActivities();
+    }
+  }
+
+  private filterWorkplanIndicators() {
+    if (this.lastWorkplanTarget && this.lastWorkplanActual) {
       this.filteredWorkplanIndicators = [];
 
       this.workplanIndicators.forEach(indicator => {

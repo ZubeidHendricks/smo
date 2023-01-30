@@ -317,13 +317,13 @@ export class CreateApplicationPeriodComponent implements OnInit {
     this.disableOpeningDate = false;
   }
 
-  private updateDateField(startDate: Date, dateField: string) {
-    let newStartDate = new Date(startDate);
+  private updateDateField(date: Date, dateField: string) {
+    let newDate = new Date(date);
 
     if (dateField === 'opening date')
-      this.openingMinDate = newStartDate;
+      this.openingMinDate = new Date();
     else
-      this.closingMinDate = newStartDate;
+      this.closingMinDate = newDate;
   }
 
   private getFinancialYearRange(finYear: IFinancialYear) {

@@ -32,7 +32,7 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task UpdateEntity(ApplicationApproval model)
 		{
-			await UpdateAsync(model);
+			await UpdateAsync(null, model, false);
 		}
 
 		#endregion

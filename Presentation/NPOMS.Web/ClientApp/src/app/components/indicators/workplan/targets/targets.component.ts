@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { DropdownTypeEnum, FrequencyEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IActivity, IFinancialYear, IFrequency, IUser, IWorkplanTarget } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IFinancialYear, IFrequency, IUser, IWorkplanTarget } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
@@ -40,6 +40,9 @@ export class TargetsComponent implements OnInit {
   menuActions: MenuItem[];
   paramSubcriptions: Subscription;
   id: string;
+  financialYearId: string;
+
+  application: IApplication;
 
   activity: IActivity;
   isDataAvailable: boolean;
@@ -71,6 +74,7 @@ export class TargetsComponent implements OnInit {
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
+      this.financialYearId = params.get('financialYearId');
       this.loadActivity();
     });
 
@@ -93,7 +97,25 @@ export class TargetsComponent implements OnInit {
     this._applicationRepo.getActivityById(Number(this.id)).subscribe(
       (results) => {
         this.activity = results;
+        this.loadApplication();
         this.loadTargets();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadApplication() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(this.activity.applicationId).subscribe(
+      (results) => {
+        if (results != null) {
+          this.application = results;
+        }
+
+        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -121,6 +143,7 @@ export class TargetsComponent implements OnInit {
     this._dropdownRepo.getFromCurrentFinYear().subscribe(
       (results) => {
         this.financialYears = results;
+        this.selectedFinancialYear = this.financialYears.find(x => x.id === Number(this.financialYearId));
         this._spinner.hide();
       },
       (err) => {
@@ -165,7 +188,7 @@ export class TargetsComponent implements OnInit {
         label: 'Go Back',
         icon: 'fa fa-step-backward',
         command: () => {
-          this._router.navigateByUrl('workplan-indicator/manage/' + this.activity.applicationId);
+          this._router.navigateByUrl('workplan-indicator/manage/' + this.application.npoId);
         }
       }
     ];
@@ -257,7 +280,7 @@ export class TargetsComponent implements OnInit {
 
   private findTarget() {
     this.validated = false;
-    
+
     if (this.selectedFinancialYear && this.selectedFrequency) {
       this.selectedWorkplanTarget = this.getSelectedTarget();
 
