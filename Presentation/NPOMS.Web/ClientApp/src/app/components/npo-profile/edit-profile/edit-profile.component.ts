@@ -531,7 +531,7 @@ export class EditProfileComponent implements OnInit {
     if (this.npo.contactInformation.length === 0)
       this.validationErrors.push({ severity: 'error', summary: "Contact Information:", detail: "The Organisation Contact List cannot be empty. This can be updated on the Organisations tab." });
 
-    if (!data.addressInformation.physicalAddress || !data.addressInformation.postalSameAsPhysical || !data.addressInformation.postalAddress)
+    if (!data.addressInformation.physicalAddress || data.addressInformation.postalSameAsPhysical == null || data.addressInformation.postalSameAsPhysical == undefined || !data.addressInformation.postalAddress)
       this.validationErrors.push({ severity: 'error', summary: "Address Information:", detail: "Missing detail required." });
 
     if (this.npoProfileFacilityLists.length === 0)
