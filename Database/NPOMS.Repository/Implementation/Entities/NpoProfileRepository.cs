@@ -45,6 +45,7 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task UpdateEntity(NpoProfile model)
 		{
+			this.RepositoryContext.AddressInformation.Update(model.AddressInformation);
 			var oldEntity = await this.RepositoryContext.NpoProfiles.FindAsync(model.Id);
 			await UpdateAsync(oldEntity, model, true);
 		}
