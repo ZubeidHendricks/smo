@@ -582,6 +582,8 @@ export class EditProfileComponent implements OnInit {
 
       this._npoRepo.updateNpo(this.npo).subscribe(
         (resp) => {
+          data.addressInformation.npoProfileId = data.id;
+          
           this._npoProfileRepo.updateNpoProfile(data).subscribe(
             (resp) => {
               this._spinner.hide();
