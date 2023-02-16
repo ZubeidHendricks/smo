@@ -43,6 +43,8 @@ namespace NPOMS.Domain.Entities
 
 		public bool? ChangesRequired { get; set; }
 
+		public bool? IsNew { get; set; }
+
 		public RecipientType RecipientType { get; set; }
 
 		public List<ObjectiveProgramme> ObjectiveProgrammes { get; set; } = new List<ObjectiveProgramme>();

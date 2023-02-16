@@ -26,6 +26,7 @@ export class ResourcingComponent implements OnInit {
   @Input() reviewApplication: boolean;
   @Input() canReviewOrApprove: boolean;
   @Input() canAddComments: boolean;
+  @Input() isReview: boolean;
 
   resources: IResource[];
   resource: IResource = {} as IResource;
@@ -104,7 +105,7 @@ export class ResourcingComponent implements OnInit {
       { field: 'serviceType.name', header: 'Service Type', width: '15%' },
       { field: 'allocationType.name', header: 'Allocation Type', width: '10%' },
       { field: 'provisionType.name', header: 'Provided vs Required', width: '12%' },
-      { field: 'resourceList.name', header: 'Resource', width: '35%' },
+      { field: 'resourceList.name', header: 'Resource', width: '30%' },
       { field: 'numberOfResources', header: 'Number of Resources', width: '11%' }
     ];
 
@@ -223,6 +224,17 @@ export class ResourcingComponent implements OnInit {
     );
   }
 
+  public GetDifference(isNew: boolean) {
+    switch (isNew) {
+      case undefined:
+        return '';
+      case true:
+        return 'New';
+      case false:
+        return 'Changed';
+    }
+  }
+
   nextPage() {
     this.activeStep = this.activeStep + 1;
     this.activeStepChange.emit(this.activeStep);
@@ -244,11 +256,18 @@ export class ResourcingComponent implements OnInit {
     this.selectedResource = null;
     this.filteredResourceList = [];
     this.displayResourceDialog = true;
+
+    if (this.application.isCloned)
+      this.resource.isNew = this.resource.isNew == undefined ? true : this.resource.isNew;
   }
 
   editResource(data: IResource) {
     this.newResource = false;
     this.resource = this.cloneResource(data);
+
+    if (this.application.isCloned)
+      this.resource.isNew = this.resource.isNew == undefined ? false : this.resource.isNew;
+
     this.displayResourceDialog = true;
   }
 
@@ -515,5 +534,9 @@ export class ResourcingComponent implements OnInit {
       reject: () => {
       }
     });
+  }
+
+  public getColspan() {
+    return this.application.isCloned && this.isReview ? 8 : 7;
   }
 }

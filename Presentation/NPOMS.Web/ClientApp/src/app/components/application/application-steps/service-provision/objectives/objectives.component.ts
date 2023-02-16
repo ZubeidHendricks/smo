@@ -26,6 +26,7 @@ export class ObjectivesComponent implements OnInit {
   @Input() application: IApplication;
   @Output() objectiveChange: EventEmitter<IObjective> = new EventEmitter<IObjective>();
   @Input() canAddComments: boolean;
+  @Input() isReview: boolean;
 
   objectives: IObjective[];
   objectiveCols: any[];
@@ -96,7 +97,7 @@ export class ObjectivesComponent implements OnInit {
     this.objectiveCols = [
       { header: 'Objective Name', width: '20%' },
       { header: 'Funding Source', width: '15%' },
-      { header: 'Funding Period', width: '25%' },
+      { header: 'Funding Period', width: '20%' },
       { header: 'Recipient Type', width: '15%' },
       { header: 'Budget', width: '15%' }
     ];
@@ -200,6 +201,17 @@ export class ObjectivesComponent implements OnInit {
     );
   }
 
+  public GetDifference(isNew: boolean) {
+    switch (isNew) {
+      case undefined:
+        return '';
+      case true:
+        return 'New';
+      case false:
+        return 'Changed';
+    }
+  }
+
   private setYearRange() {
     let currentDate = new Date;
     let startYear = currentDate.getFullYear() - 5;
@@ -232,11 +244,18 @@ export class ObjectivesComponent implements OnInit {
     this.selectedSubProgrammes = [];
     this.selectedRecipientType = null;
     this.displayObjectiveDialog = true;
+
+    if (this.application.isCloned)
+      this.objective.isNew = this.objective.isNew == undefined ? true : this.objective.isNew;
   }
 
   editObjective(data: IObjective) {
     this.newObjective = false;
     this.objective = this.cloneObjective(data);
+
+    if (this.application.isCloned)
+      this.objective.isNew = this.objective.isNew == undefined ? false : this.objective.isNew;
+
     this.displayObjectiveDialog = true;
   }
 
@@ -461,7 +480,7 @@ export class ObjectivesComponent implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        
+
         let model = {
           applicationId: this.application.id,
           serviceProvisionStepId: ServiceProvisionStepsEnum.Objectives,
