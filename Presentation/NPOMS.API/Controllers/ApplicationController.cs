@@ -108,6 +108,7 @@ namespace NPOMS.API.Controllers
 
 				if (application == null)
 				{
+					model.IsCloned = !createNew;
 					await _applicationService.CreateApplication(model, base.GetUserIdentifier());
 					await CreateApplicationAudit(model);
 

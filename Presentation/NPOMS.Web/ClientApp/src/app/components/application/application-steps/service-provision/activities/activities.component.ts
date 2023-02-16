@@ -24,6 +24,7 @@ export class ActivitiesComponent implements OnInit {
   @Input() application: IApplication;
   @Output() activityChange: EventEmitter<IActivity> = new EventEmitter<IActivity>();
   @Input() canAddComments: boolean;
+  @Input() isReview: boolean;
 
   activities: IActivity[];
   activityCols: any[];
@@ -106,7 +107,7 @@ export class ActivitiesComponent implements OnInit {
     this.activityCols = [
       { header: 'Activity Name', width: '20%' },
       { header: 'Activity Type', width: '10%' },
-      { header: 'Timeline', width: '15%' },
+      { header: 'Timeline', width: '10%' },
       { header: 'Target', width: '10%' },
       { header: 'Facilities and/or Community Places', width: '38%' }
     ];
@@ -168,6 +169,17 @@ export class ActivitiesComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  public GetDifference(isNew: boolean) {
+    switch (isNew) {
+      case undefined:
+        return '';
+      case true:
+        return 'New';
+      case false:
+        return 'Changed';
+    }
   }
 
   private getFacilityListText(activities: IActivity[]) {
@@ -256,12 +268,19 @@ export class ActivitiesComponent implements OnInit {
     this.selectedSubProgrammes = [];
     this.selectedActivity = null;
     this.displayActivityDialog = true;
+
+    if (this.application.isCloned)
+      this.activity.isNew = this.activity.isNew == undefined ? true : this.activity.isNew;
   }
 
   editActivity(data: IActivity) {
     this.newActivity = false;
     this.activity = this.cloneActivity(data);
     this.selectedActivity = null;
+
+    if (this.application.isCloned)
+      this.activity.isNew = this.activity.isNew == undefined ? false : this.activity.isNew;
+
     this.displayActivityDialog = true;
   }
 
@@ -566,5 +585,9 @@ export class ActivitiesComponent implements OnInit {
       reject: () => {
       }
     });
+  }
+
+  public getColspan() {
+    return this.application.isCloned && this.isReview ? 7 : 6;
   }
 }
