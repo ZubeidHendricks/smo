@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Dropdown;
+using NPOMS.Domain.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NPOMS.Domain.Mapping
@@ -11,6 +12,8 @@ namespace NPOMS.Domain.Mapping
 		public int ProgrammeId { get; set; }
 
 		public int SubProgrammeId { get; set; }
+
+		public Objective Objective { get; set; }
 
 		public Programme Programme { get; set; }
 

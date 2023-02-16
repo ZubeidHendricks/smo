@@ -7,6 +7,7 @@
                     {{col.header}}
                 </th>
                 <th style="width: 7%;">Actions</th>
+                <th style="width: 5%;" *ngIf="application.isCloned && isReview">Difference</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -21,6 +22,9 @@
                     <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteObjective(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
                     <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
                     <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
+                </td>
+                <td *ngIf="application.isCloned && isReview">
+                    {{GetDifference(rowData.isNew)}}
                 </td>
             </tr>
         </ng-template>

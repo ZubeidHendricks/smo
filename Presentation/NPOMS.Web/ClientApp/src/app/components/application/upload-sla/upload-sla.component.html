@@ -10,10 +10,10 @@
     </div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
         <app-npo-details *ngIf="activeStep == ServiceProvisionStepsEnum.NpoConfirmation" [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details>
-        <app-objectives *ngIf="activeStep == ServiceProvisionStepsEnum.Objectives" [(activeStep)]="activeStep" [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="false"></app-objectives>
-        <app-activities *ngIf="activeStep == ServiceProvisionStepsEnum.Activities" [(activeStep)]="activeStep" [application]="application" (activityChange)="loadActivities()" [canAddComments]="false"></app-activities>
-        <app-sustainability *ngIf="activeStep == ServiceProvisionStepsEnum.Sustainability" [(activeStep)]="activeStep" [application]="application" (sustainabilityPlanChange)="loadSustainabilityPlans()" [canAddComments]="false"></app-sustainability>
-        <app-resourcing *ngIf="activeStep == ServiceProvisionStepsEnum.Resourcing" [(activeStep)]="activeStep" [application]="application" (resourceChange)="loadResources()" [reviewApplication]="true" [canReviewOrApprove]="true" [canAddComments]="false"></app-resourcing>
+        <app-objectives *ngIf="activeStep == ServiceProvisionStepsEnum.Objectives" [(activeStep)]="activeStep" [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="false" [isReview]="false"></app-objectives>
+        <app-activities *ngIf="activeStep == ServiceProvisionStepsEnum.Activities" [(activeStep)]="activeStep" [application]="application" (activityChange)="loadActivities()" [canAddComments]="false" [isReview]="false"></app-activities>
+        <app-sustainability *ngIf="activeStep == ServiceProvisionStepsEnum.Sustainability" [(activeStep)]="activeStep" [application]="application" (sustainabilityPlanChange)="loadSustainabilityPlans()" [canAddComments]="false" [isReview]="false"></app-sustainability>
+        <app-resourcing *ngIf="activeStep == ServiceProvisionStepsEnum.Resourcing" [(activeStep)]="activeStep" [application]="application" (resourceChange)="loadResources()" [reviewApplication]="true" [canReviewOrApprove]="true" [canAddComments]="false" [isReview]="false"></app-resourcing>
                 
         <div *ngIf="activeStep == ServiceProvisionStepsEnum.ApplicationConfirmation">
             <p-panel [style]="{'font-size':'12px'}" header="Upload SLA">

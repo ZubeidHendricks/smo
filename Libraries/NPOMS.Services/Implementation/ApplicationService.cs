@@ -155,9 +155,21 @@ namespace NPOMS.Services.Implementation
 					IsActive = objective.IsActive,
 					CreatedUserId = loggedInUser.Id,
 					CreatedDateTime = DateTime.Now,
-					ChangesRequired = null
+					ChangesRequired = null,
+					IsNew = null
 				};
 				_repositoryContext.Objectives.Add(newObjective);
+
+				foreach (var objectiveProgramme in objective.ObjectiveProgrammes)
+				{
+					var newObjectiveProgramme = new ObjectiveProgramme
+					{
+						Objective = newObjective,
+						ProgrammeId = objectiveProgramme.ProgrammeId,
+						SubProgrammeId = objectiveProgramme.SubProgrammeId
+					};
+					_repositoryContext.ObjectiveProgrammes.Add(newObjectiveProgramme);
+				}
 
 				foreach (var activity in activities)
 				{
@@ -174,9 +186,32 @@ namespace NPOMS.Services.Implementation
 						IsActive = activity.IsActive,
 						CreatedUserId = loggedInUser.Id,
 						CreatedDateTime = DateTime.Now,
-						ChangesRequired = null
+						ChangesRequired = null,
+						IsNew = null
 					};
 					_repositoryContext.Activities.Add(newActivity);
+
+					foreach (var activitySubProgramme in activity.ActivitySubProgrammes)
+					{
+						var newActivitySubProgramme = new ActivitySubProgramme
+						{
+							Activity = newActivity,
+							SubProgrammeId = activitySubProgramme.SubProgrammeId,
+							IsActive = activitySubProgramme.IsActive
+						};
+						_repositoryContext.ActivitySubProgrammes.Add(newActivitySubProgramme);
+					}
+
+					foreach (var activityFacilityList in activity.ActivityFacilityLists)
+					{
+						var newActivityFacilityList = new ActivityFacilityList
+						{
+							Activity = newActivity,
+							FacilityListId = activityFacilityList.FacilityListId,
+							IsActive = activityFacilityList.IsActive
+						};
+						_repositoryContext.ActivityFacilityLists.Add(newActivityFacilityList);
+					}
 
 					foreach (var plan in sustainabilityPlans.Where(x => x.ActivityId.Equals(activity.Id)))
 					{
@@ -190,7 +225,8 @@ namespace NPOMS.Services.Implementation
 							IsActive = plan.IsActive,
 							CreatedUserId = loggedInUser.Id,
 							CreatedDateTime = DateTime.Now,
-							ChangesRequired = null
+							ChangesRequired = null,
+							IsNew = null
 						};
 						_repositoryContext.SustainabilityPlans.Add(newPlan);
 					}
@@ -211,7 +247,8 @@ namespace NPOMS.Services.Implementation
 							IsActive = resource.IsActive,
 							CreatedUserId = loggedInUser.Id,
 							CreatedDateTime = DateTime.Now,
-							ChangesRequired = null
+							ChangesRequired = null,
+							IsNew = null
 						};
 						_repositoryContext.Resources.Add(newResource);
 					}

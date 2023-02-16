@@ -34,6 +34,7 @@ import { MegaMenuModule } from 'primeng/megamenu';
 import { CardModule } from 'primeng/card';
 import { AccordionModule } from 'primeng/accordion';
 import { MenuModule } from 'primeng/menu';
+import { ScrollTopModule } from 'primeng/scrolltop';
 
 // B2B / B2C
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
@@ -288,7 +289,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     MegaMenuModule,
     CardModule,
     AccordionModule,
-    MenuModule
+    MenuModule,
+    ScrollTopModule
   ],
   providers: [
     {

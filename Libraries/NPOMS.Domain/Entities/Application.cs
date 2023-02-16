@@ -25,6 +25,8 @@ namespace NPOMS.Domain.Entities
 
 		public DateTime? UpdatedDateTime { get; set; }
 
+		public bool IsCloned { get; set; }
+
 		public Npo Npo { get; set; }
 
 		public ApplicationPeriod ApplicationPeriod { get; set; }

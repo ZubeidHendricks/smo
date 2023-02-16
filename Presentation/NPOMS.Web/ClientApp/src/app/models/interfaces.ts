@@ -287,6 +287,7 @@ export interface IActivity {
     name: string;
     description: string;
     facilityListText: string;
+    isNew: boolean;
 
     objective: IObjective;
     activityType: IActivityType;
@@ -310,6 +311,7 @@ export interface IApplication {
     applicationPeriodId: number;
     statusId: number;
     isActive: boolean;
+    isCloned: boolean;
 
     applicationPeriod: IApplicationPeriod;
     status: IStatus;
@@ -453,6 +455,7 @@ export interface IObjective {
     budget: number;
     isActive: boolean;
     changesRequired: boolean;
+    isNew: boolean;
 
     recipientType: IRecipientType;
     objectiveProgrammes: IObjectiveProgramme[];
@@ -472,6 +475,7 @@ export interface IResource {
     numberOfResources: number;
     isActive: boolean;
     changesRequired: boolean;
+    isNew: boolean;
 
     activity: IActivity;
     resourceType: IResourceType;
@@ -497,6 +501,7 @@ export interface ISustainabilityPlan {
     mitigation: string;
     isActive: boolean;
     changesRequired: boolean;
+    isNew: boolean;
 
     activity: IActivity;
 }

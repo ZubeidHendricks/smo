@@ -13,7 +13,7 @@ namespace NPOMS.Domain.Mapping
 
 		public bool IsActive { get; set; }
 
-		//public Activity Activity { get; set; }
+		public Activity Activity { get; set; }
 
 		public FacilityList FacilityList { get; set; }
 	}

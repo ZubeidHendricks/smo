@@ -42,6 +42,8 @@ namespace NPOMS.Domain.Entities
 
 		public bool? ChangesRequired { get; set; }
 
+		public bool? IsNew { get; set; }
+
 		public Objective Objective { get; set; }
 
 		public ActivityType ActivityType { get; set; }

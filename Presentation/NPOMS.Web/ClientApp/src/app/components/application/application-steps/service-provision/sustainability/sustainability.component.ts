@@ -23,6 +23,7 @@ export class SustainabilityComponent implements OnInit {
   @Input() application: IApplication;
   @Output() sustainabilityPlanChange: EventEmitter<ISustainabilityPlan> = new EventEmitter<ISustainabilityPlan>();
   @Input() canAddComments: boolean;
+  @Input() isReview: boolean;
 
   sustainabilityPlans: ISustainabilityPlan[];
   sustainabilityPlan: ISustainabilityPlan = {} as ISustainabilityPlan;
@@ -74,8 +75,8 @@ export class SustainabilityComponent implements OnInit {
     this.loadSustainabilityPlans();
 
     this.sustainabilityPlanCols = [
-      { header: 'Risk', width: '47%' },
-      { header: 'Mitigation', width: '46%' }
+      { header: 'Risk', width: '44%' },
+      { header: 'Mitigation', width: '44%' }
     ];
 
     this.commentCols = [
@@ -122,6 +123,17 @@ export class SustainabilityComponent implements OnInit {
     );
   }
 
+  public GetDifference(isNew: boolean) {
+    switch (isNew) {
+      case undefined:
+        return '';
+      case true:
+        return 'New';
+      case false:
+        return 'Changed';
+    }
+  }
+
   nextPage() {
     if (this.sustainabilityPlans.length > 0) {
       let canContinue: boolean[] = [];
@@ -152,11 +164,18 @@ export class SustainabilityComponent implements OnInit {
     this.sustainabilityPlan = {} as ISustainabilityPlan;
     this.selectedActivity = null;
     this.displaySustainabilityPlanDialog = true;
+
+    if (this.application.isCloned)
+      this.sustainabilityPlan.isNew = this.sustainabilityPlan.isNew == undefined ? true : this.sustainabilityPlan.isNew;
   }
 
   editSustainabilityPlan(data: ISustainabilityPlan) {
     this.newSustainabilityPlan = false;
     this.sustainabilityPlan = this.cloneSustainabilityPlan(data);
+
+    if (this.application.isCloned)
+      this.sustainabilityPlan.isNew = this.sustainabilityPlan.isNew == undefined ? false : this.sustainabilityPlan.isNew;
+
     this.displaySustainabilityPlanDialog = true;
   }
 
@@ -368,5 +387,9 @@ export class SustainabilityComponent implements OnInit {
       reject: () => {
       }
     });
+  }
+
+  public getColspan() {
+    return this.application.isCloned && this.isReview ? 4 : 3;
   }
 }
