@@ -25,7 +25,10 @@ export class SustainabilityComponent implements OnInit {
   @Input() canAddComments: boolean;
   @Input() isReview: boolean;
 
-  sustainabilityPlans: ISustainabilityPlan[];
+  allSustainabilityPlans: ISustainabilityPlan[];
+  activeSustainabilityPlans: ISustainabilityPlan[];
+  deletedSustainabilityPlans: ISustainabilityPlan[];
+
   sustainabilityPlan: ISustainabilityPlan = {} as ISustainabilityPlan;
   sustainabilityPlanCols: any[];
   displaySustainabilityPlanDialog: boolean;
@@ -49,6 +52,8 @@ export class SustainabilityComponent implements OnInit {
   applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[] = [];
   displayReviewerSatisfactionDialog: boolean;
   reviewerSatisfactionCols: any;
+
+  displayDeletedPlanDialog: boolean;
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -75,8 +80,8 @@ export class SustainabilityComponent implements OnInit {
     this.loadSustainabilityPlans();
 
     this.sustainabilityPlanCols = [
-      { header: 'Risk', width: '44%' },
-      { header: 'Mitigation', width: '44%' }
+      { header: 'Risk', width: '43%' },
+      { header: 'Mitigation', width: '43%' }
     ];
 
     this.commentCols = [
@@ -98,7 +103,7 @@ export class SustainabilityComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        this.activities = results;
+        this.activities = results.filter(x => x.isActive === true);
         this._spinner.hide();
       },
       (err) => {
@@ -112,7 +117,8 @@ export class SustainabilityComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
       (results) => {
-        this.sustainabilityPlans = results;
+        this.allSustainabilityPlans = results;
+        this.activeSustainabilityPlans = this.allSustainabilityPlans.filter(x => x.isActive === true);
         this.updateRowGroupMetaData();
         this._spinner.hide();
       },
@@ -135,11 +141,11 @@ export class SustainabilityComponent implements OnInit {
   }
 
   nextPage() {
-    if (this.sustainabilityPlans.length > 0) {
+    if (this.activeSustainabilityPlans.length > 0) {
       let canContinue: boolean[] = [];
 
       this.activities.forEach(item => {
-        var isPresent = this.sustainabilityPlans.some(function (sustainabilityPlan) { return sustainabilityPlan.activityId === item.id });
+        var isPresent = this.activeSustainabilityPlans.some(function (sustainabilityPlan) { return sustainabilityPlan.activityId === item.id });
         canContinue.push(isPresent);
       });
 
@@ -253,11 +259,11 @@ export class SustainabilityComponent implements OnInit {
   private updateRowGroupMetaData() {
     this.rowGroupMetadata = [];
 
-    this.sustainabilityPlans = this.sustainabilityPlans.sort((a, b) => a.activityId - b.activityId);
+    this.activeSustainabilityPlans = this.activeSustainabilityPlans.sort((a, b) => a.activityId - b.activityId);
 
-    if (this.sustainabilityPlans) {
+    if (this.activeSustainabilityPlans) {
 
-      this.sustainabilityPlans.forEach(element => {
+      this.activeSustainabilityPlans.forEach(element => {
 
         var itemExists = this.rowGroupMetadata.some(function (data) { return data.itemName === element.activity.activityList.description });
 
@@ -391,5 +397,10 @@ export class SustainabilityComponent implements OnInit {
 
   public getColspan() {
     return this.application.isCloned && this.isReview ? 4 : 3;
+  }
+
+  public viewDeletedPlans() {
+    this.deletedSustainabilityPlans = this.allSustainabilityPlans.filter(x => x.isActive === false);
+    this.displayDeletedPlanDialog = true;
   }
 }

@@ -1,13 +1,13 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header="Sustainability Plan">
-    <p-table [columns]="sustainabilityPlanCols" [value]="sustainabilityPlans" styleClass="p-datatable-sm">
+    <p-table [columns]="sustainabilityPlanCols" [value]="activeSustainabilityPlans" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                     {{col.header}}
                 </th>
                 <th style="width: 7%;">Actions</th>
-                <th style="width: 5%;" *ngIf="application.isCloned && isReview">Difference</th>
+                <th style="width: 7%;" *ngIf="application.isCloned && isReview">Difference</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
@@ -38,6 +38,11 @@
         <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
             <div style="text-align:left">
                 <button pButton pRipple type="button" label="Add Sustainability Plan" class="p-button-text" icon="fa fa-plus" (click)="addSustainabilityPlan()"></button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData *ngIf="application.isCloned && isReview">
+            <div style="text-align:left">
+                <button pButton pRipple type="button" label="View Deleted Sustainability Plans" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedPlans()"></button>
             </div>
         </ng-template>
     </p-table>
@@ -210,6 +215,40 @@
                     <p-button label="No" icon="fa fa-thumbs-o-down" styleClass="p-button-danger" (onClick)="createReviewerSatisfaction(false)"></p-button>
                 </div>
             </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Deleted Sustainability Plans" 
+          [(visible)]="displayDeletedPlanDialog" 
+          [style]="{width: '90vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [columns]="sustainabilityPlanCols" [value]="deletedSustainabilityPlans" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="heading">
+                <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="2">
+                    <span class="p-text-bold">Activity: {{rowData.activity.activityList.description}}</span>
+                </td>
+            </tr>
+            <tr class="default-font">                
+                <td>{{rowData.risk}}</td>
+                <td>{{rowData.mitigation}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="2" style="text-align: center;">No results found</td>
+            </tr>
         </ng-template>
     </p-table>
 </p-dialog>

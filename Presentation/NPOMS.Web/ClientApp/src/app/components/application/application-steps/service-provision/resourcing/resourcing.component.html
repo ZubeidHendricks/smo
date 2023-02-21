@@ -1,13 +1,13 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header="Resourcing" *ngIf="isDataAvailable">
-    <p-table [columns]="resourceCols" [value]="resources" styleClass="p-datatable-sm">
+    <p-table [columns]="resourceCols" [value]="activeResources" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                     {{col.header}}
                 </th>
                 <th style="width: 7%;">Actions</th>
-                <th style="width: 5%;" *ngIf="application.isCloned && isReview">Difference</th>
+                <th style="width: 7%;" *ngIf="application.isCloned && isReview">Difference</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
@@ -39,6 +39,11 @@
         <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
             <div style="text-align:left">
                 <button pButton pRipple type="button" label="Add Resource" class="p-button-text" icon="fa fa-plus" (click)="addResource()"></button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData *ngIf="application.isCloned && isReview">
+            <div style="text-align:left">
+                <button pButton pRipple type="button" label="View Deleted Resources" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedResources()"></button>
             </div>
         </ng-template>
     </p-table>
@@ -262,6 +267,41 @@
                     <p-button label="No" icon="fa fa-thumbs-o-down" styleClass="p-button-danger" (onClick)="createReviewerSatisfaction(false)"></p-button>
                 </div>
             </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Deleted Resources" 
+          [(visible)]="displayDeletedResourceDialog" 
+          [style]="{width: '90vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [columns]="resourceCols" [value]="deletedResources" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="heading">
+                <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="6">
+                    <span class="p-text-bold">Activity: {{rowData.activity.activityList.description}}</span>
+                </td>
+            </tr>
+            <tr class="default-font">                
+                <td *ngFor="let col of columns">
+                    <span>{{getCellData(rowData, col)}}</span>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="6" style="text-align: center;">No results found</td>
+            </tr>
         </ng-template>
     </p-table>
 </p-dialog>
