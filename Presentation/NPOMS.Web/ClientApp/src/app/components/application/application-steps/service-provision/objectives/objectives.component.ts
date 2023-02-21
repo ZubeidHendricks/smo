@@ -28,7 +28,10 @@ export class ObjectivesComponent implements OnInit {
   @Input() canAddComments: boolean;
   @Input() isReview: boolean;
 
-  objectives: IObjective[];
+  allObjectives: IObjective[];
+  activeObjectives: IObjective[];
+  deletedObjectives: IObjective[];
+
   objectiveCols: any[];
   displayObjectiveDialog: boolean;
   newObjective: boolean;
@@ -64,6 +67,8 @@ export class ObjectivesComponent implements OnInit {
   displayReviewerSatisfactionDialog: boolean;
   reviewerSatisfactionCols: any;
 
+  displayDeletedObjectiveDialog: boolean;
+
   constructor(
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
@@ -97,7 +102,7 @@ export class ObjectivesComponent implements OnInit {
     this.objectiveCols = [
       { header: 'Objective Name', width: '20%' },
       { header: 'Funding Source', width: '15%' },
-      { header: 'Funding Period', width: '20%' },
+      { header: 'Funding Period', width: '18%' },
       { header: 'Recipient Type', width: '15%' },
       { header: 'Budget', width: '15%' }
     ];
@@ -191,7 +196,8 @@ export class ObjectivesComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
-        this.objectives = results;
+        this.allObjectives = results;
+        this.activeObjectives = this.allObjectives.filter(x => x.isActive === true);
         this._spinner.hide();
       },
       (err) => {
@@ -221,7 +227,7 @@ export class ObjectivesComponent implements OnInit {
   }
 
   nextPage() {
-    if (this.objectives.length > 0) {
+    if (this.activeObjectives.length > 0) {
       this.activeStep = this.activeStep + 1;
       this.activeStepChange.emit(this.activeStep);
     }
@@ -509,5 +515,10 @@ export class ObjectivesComponent implements OnInit {
       reject: () => {
       }
     });
+  }
+
+  public viewDeletedObjectives() {
+    this.deletedObjectives = this.allObjectives.filter(x => x.isActive === false);
+    this.displayDeletedObjectiveDialog = true;
   }
 }

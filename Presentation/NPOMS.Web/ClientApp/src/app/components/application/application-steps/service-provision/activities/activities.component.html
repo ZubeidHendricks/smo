@@ -1,13 +1,13 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header="Activities">
-    <p-table [columns]="activityCols" [value]="activities" styleClass="p-datatable-sm">
+    <p-table [columns]="activityCols" [value]="activeActivities" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                     {{col.header}}
                 </th>
                 <th style="width: 7%;">Actions</th>
-                <th style="width: 5%;" *ngIf="application.isCloned && isReview">Difference</th>
+                <th style="width: 7%;" *ngIf="application.isCloned && isReview">Difference</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
@@ -41,6 +41,11 @@
         <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
             <div style="text-align:left">
                 <button pButton pRipple type="button" label="Add Activity" class="p-button-text" icon="fa fa-plus" (click)="addActivity()"></button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData *ngIf="application.isCloned && isReview">
+            <div style="text-align:left">
+                <button pButton pRipple type="button" label="View Deleted Activities" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedActivities()"></button>
             </div>
         </ng-template>
     </p-table>
@@ -300,6 +305,43 @@
                     <p-button label="No" icon="fa fa-thumbs-o-down" styleClass="p-button-danger" (onClick)="createReviewerSatisfaction(false)"></p-button>
                 </div>
             </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Deleted Activities" 
+          [(visible)]="displayDeletedActivityDialog" 
+          [style]="{width: '90vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [columns]="activityCols" [value]="deletedActivities" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="heading">
+                <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
+                    <span class="p-text-bold">Objective: {{rowData.objective.description}}</span>
+                </td>
+            </tr>
+            <tr class="default-font">
+                <td>{{rowData.activityList.name}}</td>
+                <td>{{rowData.activityType.name}}</td>
+                <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date: 'yyyy-MM-dd'}}</td>
+                <td>{{rowData.target}}</td>
+                <td>{{rowData.facilityListText}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="5" style="text-align: center;">No results found</td>
+            </tr>
         </ng-template>
     </p-table>
 </p-dialog>

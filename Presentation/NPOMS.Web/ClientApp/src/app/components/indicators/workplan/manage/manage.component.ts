@@ -62,6 +62,7 @@ export class ManageComponent implements OnInit {
 
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
+        this._spinner.show();
         this.profile = profile;
 
         if (!this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption))
@@ -92,7 +93,6 @@ export class ManageComponent implements OnInit {
   }
 
   private loadApplications() {
-    this._spinner.show();
     this._applicationRepo.getApplicationsByNpoId(Number(this.npoId)).subscribe(
       (results) => {
         this.financialYears = [];
@@ -104,7 +104,7 @@ export class ManageComponent implements OnInit {
             this.financialYears.push(item.applicationPeriod.financialYear);
         });
 
-        this._spinner.hide();
+        this.isDataAvailable();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -117,7 +117,7 @@ export class ManageComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        this.activities = results;
+        this.activities = results.filter(x => x.isActive === true);
         this.workplanIndicators = [];
 
         this.activities.forEach(item => {
@@ -150,18 +150,22 @@ export class ManageComponent implements OnInit {
   }
 
   private loadFrequencyPeriods() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FrequencyPeriods, false).subscribe(
       (results) => {
         results = results.sort((a, b) => a.id - b.id);
         this.frequencyPeriods = results;
-        this._spinner.hide();
+        this.isDataAvailable();
       },
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
     );
+  }
+
+  private isDataAvailable() {
+    if (this.applications && this.frequencyPeriods)
+      this._spinner.hide();
   }
 
   captureActuals(activity) {
@@ -172,18 +176,14 @@ export class ManageComponent implements OnInit {
     this._router.navigateByUrl('workplan-indicator/targets/' + activity.id + '/financial-year/' + this.selectedFinancialYear.id);
   }
 
-  public financialYearChange() {    
+  public financialYearChange() {
     this._spinner.show();
     let application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
 
     this._applicationRepo.getApplicationById(Number(application.id)).subscribe(
       (results) => {
-        if (results != null) {
-          this.application = results;
-          this.loadActivities();
-        }
-
-        this._spinner.hide();
+        this.application = results;
+        this.loadActivities();
       },
       (err) => {
         this._loggerService.logException(err);

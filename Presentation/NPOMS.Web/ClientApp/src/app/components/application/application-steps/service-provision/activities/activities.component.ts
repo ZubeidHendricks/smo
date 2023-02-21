@@ -26,7 +26,10 @@ export class ActivitiesComponent implements OnInit {
   @Input() canAddComments: boolean;
   @Input() isReview: boolean;
 
-  activities: IActivity[];
+  allActivities: IActivity[];
+  activeActivities: IActivity[];
+  deletedActivities: IActivity[];
+
   activityCols: any[];
   displayActivityDialog: boolean;
   newActivity: boolean;
@@ -70,6 +73,8 @@ export class ActivitiesComponent implements OnInit {
   displayReviewerSatisfactionDialog: boolean;
   reviewerSatisfactionCols: any;
 
+  displayDeletedActivityDialog: boolean;
+
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
@@ -109,7 +114,7 @@ export class ActivitiesComponent implements OnInit {
       { header: 'Activity Type', width: '10%' },
       { header: 'Timeline', width: '10%' },
       { header: 'Target', width: '10%' },
-      { header: 'Facilities and/or Community Places', width: '38%' }
+      { header: 'Facilities and/or Community Places', width: '36%' }
     ];
 
     this.commentCols = [
@@ -145,7 +150,7 @@ export class ActivitiesComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
-        this.objectives = results;
+        this.objectives = results.filter(x => x.isActive === true);
         this._spinner.hide();
       },
       (err) => {
@@ -159,7 +164,8 @@ export class ActivitiesComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        this.activities = results;
+        this.allActivities = results;
+        this.activeActivities = this.allActivities.filter(x => x.isActive === true);
         this.getFacilityListText(results);
         this.updateRowGroupMetaData();
         this._spinner.hide();
@@ -231,11 +237,11 @@ export class ActivitiesComponent implements OnInit {
   }
 
   nextPage() {
-    if (this.activities.length > 0) {
+    if (this.activeActivities.length > 0) {
       let canContinue: boolean[] = [];
 
       this.objectives.forEach(item => {
-        var isPresent = this.activities.some(function (activity) { return activity.objectiveId === item.id });
+        var isPresent = this.activeActivities.some(function (activity) { return activity.objectiveId === item.id });
         canContinue.push(isPresent);
       });
 
@@ -425,11 +431,11 @@ export class ActivitiesComponent implements OnInit {
   private updateRowGroupMetaData() {
     this.rowGroupMetadata = [];
 
-    this.activities = this.activities.sort((a, b) => a.objectiveId - b.objectiveId);
+    this.activeActivities = this.activeActivities.sort((a, b) => a.objectiveId - b.objectiveId);
 
-    if (this.activities) {
+    if (this.activeActivities) {
 
-      this.activities.forEach(element => {
+      this.activeActivities.forEach(element => {
 
         var itemExists = this.rowGroupMetadata.some(function (data) { return data.itemName === element.objective.name });
 
@@ -589,5 +595,10 @@ export class ActivitiesComponent implements OnInit {
 
   public getColspan() {
     return this.application.isCloned && this.isReview ? 7 : 6;
+  }
+
+  public viewDeletedActivities() {
+    this.deletedActivities = this.allActivities.filter(x => x.isActive === false);
+    this.displayDeletedActivityDialog = true;
   }
 }

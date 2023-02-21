@@ -28,7 +28,10 @@ export class ResourcingComponent implements OnInit {
   @Input() canAddComments: boolean;
   @Input() isReview: boolean;
 
-  resources: IResource[];
+  allResources: IResource[];
+  activeResources: IResource[];
+  deletedResources: IResource[];
+
   resource: IResource = {} as IResource;
   resourceCols: any[];
   displayResourceDialog: boolean;
@@ -70,6 +73,8 @@ export class ResourcingComponent implements OnInit {
   displayReviewerSatisfactionDialog: boolean;
   reviewerSatisfactionCols: any;
 
+  displayDeletedResourceDialog: boolean;
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _applicationRepo: ApplicationService,
@@ -105,7 +110,7 @@ export class ResourcingComponent implements OnInit {
       { field: 'serviceType.name', header: 'Service Type', width: '15%' },
       { field: 'allocationType.name', header: 'Allocation Type', width: '10%' },
       { field: 'provisionType.name', header: 'Provided vs Required', width: '12%' },
-      { field: 'resourceList.name', header: 'Resource', width: '30%' },
+      { field: 'resourceList.name', header: 'Resource', width: '28%' },
       { field: 'numberOfResources', header: 'Number of Resources', width: '11%' }
     ];
 
@@ -170,7 +175,7 @@ export class ResourcingComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        this.activities = results;
+        this.activities = results.filter(x => x.isActive === true);
         this._spinner.hide();
       },
       (err) => {
@@ -184,7 +189,8 @@ export class ResourcingComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
-        this.resources = results;
+        this.allResources = results;
+        this.activeResources = this.allResources.filter(x => x.isActive === true);
         this.updateRowGroupMetaData();
         this.isDataAvailable = true;
         this._spinner.hide();
@@ -368,11 +374,11 @@ export class ResourcingComponent implements OnInit {
   private updateRowGroupMetaData() {
     this.rowGroupMetadata = [];
 
-    this.resources = this.resources.sort((a, b) => a.activityId - b.activityId);
+    this.activeResources = this.activeResources.sort((a, b) => a.activityId - b.activityId);
 
-    if (this.resources) {
+    if (this.activeResources) {
 
-      this.resources.forEach(element => {
+      this.activeResources.forEach(element => {
 
         var itemExists = this.rowGroupMetadata.some(function (data) { return data.itemName === element.activity.activityList.description });
 
@@ -538,5 +544,10 @@ export class ResourcingComponent implements OnInit {
 
   public getColspan() {
     return this.application.isCloned && this.isReview ? 8 : 7;
+  }
+
+  public viewDeletedResources() {
+    this.deletedResources = this.allResources.filter(x => x.isActive === false);
+    this.displayDeletedResourceDialog = true;
   }
 }
