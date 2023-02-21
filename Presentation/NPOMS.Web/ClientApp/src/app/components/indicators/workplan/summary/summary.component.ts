@@ -118,7 +118,7 @@ export class SummaryComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        this.activities = results;
+        this.activities = results.filter(x => x.isActive === true);
         this.workplanIndicators = [];
 
         this.activities.forEach(activity => {
@@ -131,8 +131,6 @@ export class SummaryComponent implements OnInit {
           this.loadTargets(activity);
           this.loadActuals(activity);
         });
-
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -233,75 +231,81 @@ export class SummaryComponent implements OnInit {
 
     this.filteredWorkplanIndicators.forEach(indicator => {
 
+      let defaultTargetValue = 0;
+      let defaultActualValue = 0;
+      let defaultStatementValue = '';
+      let defaultDeviationReasonValue = '';
+      let defaultActionvalue = '';
+
       /* Targets*/
-      let aprilTarget = indicator.workplanTargets[0].apr;
-      let mayTarget = indicator.workplanTargets[0].may;
-      let juneTarget = indicator.workplanTargets[0].jun;
-      let julyTarget = indicator.workplanTargets[0].jul;
-      let augustTarget = indicator.workplanTargets[0].aug;
-      let septemberTarget = indicator.workplanTargets[0].sep;
-      let octoberTarget = indicator.workplanTargets[0].oct;
-      let novemberTarget = indicator.workplanTargets[0].nov;
-      let decemberTarget = indicator.workplanTargets[0].dec;
-      let januaryTarget = indicator.workplanTargets[0].jan;
-      let februaryTarget = indicator.workplanTargets[0].feb;
-      let marchTarget = indicator.workplanTargets[0].mar;
+      let aprilTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].apr : defaultTargetValue;
+      let mayTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].may : defaultTargetValue;
+      let juneTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].jun : defaultTargetValue;
+      let julyTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].jul : defaultTargetValue;
+      let augustTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].aug : defaultTargetValue;
+      let septemberTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].sep : defaultTargetValue;
+      let octoberTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].oct : defaultTargetValue;
+      let novemberTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].nov : defaultTargetValue;
+      let decemberTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].dec : defaultTargetValue;
+      let januaryTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].jan : defaultTargetValue;
+      let februaryTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].feb : defaultTargetValue;
+      let marchTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].mar : defaultTargetValue;
 
       /* Actuals */
-      let aprilActual = indicator.workplanActuals[0].actual;
-      let mayActual = indicator.workplanActuals[1].actual;
-      let juneActual = indicator.workplanActuals[2].actual;
-      let julyActual = indicator.workplanActuals[3].actual;
-      let augustActual = indicator.workplanActuals[4].actual;
-      let septemberActual = indicator.workplanActuals[5].actual;
-      let octoberActual = indicator.workplanActuals[6].actual;
-      let novemberActual = indicator.workplanActuals[7].actual;
-      let decemberActual = indicator.workplanActuals[8].actual;
-      let januaryActual = indicator.workplanActuals[9].actual;
-      let februaryActual = indicator.workplanActuals[10].actual;
-      let marchActual = indicator.workplanActuals[11].actual;
+      let aprilActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[0].actual : defaultActualValue;
+      let mayActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[1].actual : defaultActualValue;
+      let juneActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[2].actual : defaultActualValue;
+      let julyActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[3].actual : defaultActualValue;
+      let augustActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[4].actual : defaultActualValue;
+      let septemberActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[5].actual : defaultActualValue;
+      let octoberActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[6].actual : defaultActualValue;
+      let novemberActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[7].actual : defaultActualValue;
+      let decemberActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[8].actual : defaultActualValue;
+      let januaryActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[9].actual : defaultActualValue;
+      let februaryActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[10].actual : defaultActualValue;
+      let marchActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[11].actual : defaultActualValue;
 
       /* Statements */
-      let aprilStatement = indicator.workplanActuals[0].statement;
-      let mayStatement = indicator.workplanActuals[1].statement;
-      let juneStatement = indicator.workplanActuals[2].statement;
-      let julyStatement = indicator.workplanActuals[3].statement;
-      let augustStatement = indicator.workplanActuals[4].statement;
-      let septemberStatement = indicator.workplanActuals[5].statement;
-      let octoberStatement = indicator.workplanActuals[6].statement;
-      let novemberStatement = indicator.workplanActuals[7].statement;
-      let decemberStatement = indicator.workplanActuals[8].statement;
-      let januaryStatement = indicator.workplanActuals[9].statement;
-      let februaryStatement = indicator.workplanActuals[10].statement;
-      let marchStatement = indicator.workplanActuals[11].statement;
+      let aprilStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[0].statement : defaultStatementValue;
+      let mayStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[1].statement : defaultStatementValue;
+      let juneStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[2].statement : defaultStatementValue;
+      let julyStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[3].statement : defaultStatementValue;
+      let augustStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[4].statement : defaultStatementValue;
+      let septemberStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[5].statement : defaultStatementValue;
+      let octoberStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[6].statement : defaultStatementValue;
+      let novemberStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[7].statement : defaultStatementValue;
+      let decemberStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[8].statement : defaultStatementValue;
+      let januaryStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[9].statement : defaultStatementValue;
+      let februaryStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[10].statement : defaultStatementValue;
+      let marchStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[11].statement : defaultStatementValue;
 
       /* Deviation Reasons */
-      let aprilDeviationReason = indicator.workplanActuals[0].deviationReason;
-      let mayDeviationReason = indicator.workplanActuals[1].deviationReason;
-      let juneDeviationReason = indicator.workplanActuals[2].deviationReason;
-      let julyDeviationReason = indicator.workplanActuals[3].deviationReason;
-      let augustDeviationReason = indicator.workplanActuals[4].deviationReason;
-      let septemberDeviationReason = indicator.workplanActuals[5].deviationReason;
-      let octoberDeviationReason = indicator.workplanActuals[6].deviationReason;
-      let novemberDeviationReason = indicator.workplanActuals[7].deviationReason;
-      let decemberDeviationReason = indicator.workplanActuals[8].deviationReason;
-      let januaryDeviationReason = indicator.workplanActuals[9].deviationReason;
-      let februaryDeviationReason = indicator.workplanActuals[10].deviationReason;
-      let marchDeviationReason = indicator.workplanActuals[11].deviationReason;
+      let aprilDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[0].deviationReason : defaultDeviationReasonValue;
+      let mayDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[1].deviationReason : defaultDeviationReasonValue;
+      let juneDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[2].deviationReason : defaultDeviationReasonValue;
+      let julyDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[3].deviationReason : defaultDeviationReasonValue;
+      let augustDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[4].deviationReason : defaultDeviationReasonValue;
+      let septemberDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[5].deviationReason : defaultDeviationReasonValue;
+      let octoberDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[6].deviationReason : defaultDeviationReasonValue;
+      let novemberDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[7].deviationReason : defaultDeviationReasonValue;
+      let decemberDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[8].deviationReason : defaultDeviationReasonValue;
+      let januaryDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[9].deviationReason : defaultDeviationReasonValue;
+      let februaryDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[10].deviationReason : defaultDeviationReasonValue;
+      let marchDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[11].deviationReason : defaultDeviationReasonValue;
 
       /* Actions */
-      let aprilAction = indicator.workplanActuals[0].action;
-      let mayAction = indicator.workplanActuals[1].action;
-      let juneAction = indicator.workplanActuals[2].action;
-      let julyAction = indicator.workplanActuals[3].action;
-      let augustAction = indicator.workplanActuals[4].action;
-      let septemberAction = indicator.workplanActuals[5].action;
-      let octoberAction = indicator.workplanActuals[6].action;
-      let novemberAction = indicator.workplanActuals[7].action;
-      let decemberAction = indicator.workplanActuals[8].action;
-      let januaryAction = indicator.workplanActuals[9].action;
-      let februaryAction = indicator.workplanActuals[10].action;
-      let marchAction = indicator.workplanActuals[11].action;
+      let aprilAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[0].action : defaultActionvalue;
+      let mayAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[1].action : defaultActionvalue;
+      let juneAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[2].action : defaultActionvalue;
+      let julyAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[3].action : defaultActionvalue;
+      let augustAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[4].action : defaultActionvalue;
+      let septemberAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[5].action : defaultActionvalue;
+      let octoberAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[6].action : defaultActionvalue;
+      let novemberAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[7].action : defaultActionvalue;
+      let decemberAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[8].action : defaultActionvalue;
+      let januaryAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[9].action : defaultActionvalue;
+      let februaryAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[10].action : defaultActionvalue;
+      let marchAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[11].action : defaultActionvalue;
 
       worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'April', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': aprilTarget, 'Actual': aprilActual, 'Statement': aprilStatement, 'DeviationReason': aprilDeviationReason, 'Action': aprilAction });
       worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'May', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': mayTarget, 'Actual': mayActual, 'Statement': mayStatement, 'DeviationReason': mayDeviationReason, 'Action': mayAction });
@@ -333,6 +337,7 @@ export class SummaryComponent implements OnInit {
 
   financialYearChange() {
     if (this.selectedFinancialYear) {
+      this.filteredWorkplanIndicators = [];
       this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
       this.loadActivities();
     }
@@ -400,6 +405,8 @@ export class SummaryComponent implements OnInit {
             }
           }
         }
+
+        this._spinner.hide();
       }
     });
   }

@@ -22,7 +22,7 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task<IEnumerable<SustainabilityPlan>> GetEntities(int applicationId)
 		{
-			return await FindByCondition(x => x.ApplicationId.Equals(applicationId) && x.IsActive)
+			return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
 				.Include(x => x.Activity).ThenInclude(x => x.ActivityList).AsNoTracking().ToListAsync();
 		}
 

@@ -206,22 +206,20 @@ export class TargetsComponent implements OnInit {
 
       let sumOfMonthlyTargets = (this.selectedWorkplanTarget.apr + this.selectedWorkplanTarget.may + this.selectedWorkplanTarget.jun + this.selectedWorkplanTarget.jul + this.selectedWorkplanTarget.aug + this.selectedWorkplanTarget.sep + this.selectedWorkplanTarget.oct + this.selectedWorkplanTarget.nov + this.selectedWorkplanTarget.dec + this.selectedWorkplanTarget.jan + this.selectedWorkplanTarget.feb + this.selectedWorkplanTarget.mar);
 
-      if (this.activity.target == sumOfMonthlyTargets) {
-        this._indicatorRepo.manageTarget(this.selectedWorkplanTarget).subscribe(
-          (resp) => {
-            this.loadTargets();
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          },
-          (err) => {
-            this._loggerService.logException(err);
-            this._spinner.hide();
-          }
-        );
-      }
-      else {
-        this._spinner.hide();
-        this._messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Sum of Monthly Targets not equal to Activity Target.' });
-      }
+      this._indicatorRepo.manageTarget(this.selectedWorkplanTarget).subscribe(
+        (resp) => {
+          this.loadTargets();
+
+          if (this.activity.target != sumOfMonthlyTargets)
+            this._messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Sum of Monthly Targets not equal to Activity Target.' });
+
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
     }
   }
 

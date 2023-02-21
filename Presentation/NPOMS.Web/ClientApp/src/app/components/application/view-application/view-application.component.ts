@@ -233,7 +233,7 @@ export class ViewApplicationComponent implements OnInit {
   private loadObjectives() {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
-        this.objectives = results;
+        this.objectives = results.filter(x => x.isActive === true);
         this.isObjectivesAvailable = true;
         this.allDataLoaded();
       },
@@ -247,7 +247,7 @@ export class ViewApplicationComponent implements OnInit {
   private loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        this.activities = results;
+        this.activities = results.filter(x => x.isActive === true);
         this.getFacilityListText(results);
         this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Activities);
         this.isActivitiesAvailable = true;
@@ -274,7 +274,7 @@ export class ViewApplicationComponent implements OnInit {
   private loadSustainabilityPlans() {
     this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
       (results) => {
-        this.sustainabilityPlans = results;
+        this.sustainabilityPlans = results.filter(x => x.isActive === true);
         this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Sustainability);
         this.isSustainabilityAvailable = true;
       },
@@ -288,7 +288,7 @@ export class ViewApplicationComponent implements OnInit {
   private loadResources() {
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
-        this.resources = results;
+        this.resources = results.filter(x => x.isActive === true);
         this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Resourcing);
         this.isResourcesAvailable = true;
       },

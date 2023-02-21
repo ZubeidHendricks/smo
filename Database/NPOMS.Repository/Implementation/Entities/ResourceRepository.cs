@@ -22,7 +22,7 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task<IEnumerable<Resource>> GetEntities(int applicationId)
 		{
-			return await FindByCondition(x => x.ApplicationId.Equals(applicationId) && x.IsActive)
+			return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
 					.Include(x => x.Activity).ThenInclude(x => x.ActivityList)
 					.Include(x => x.ResourceType).Include(x => x.ServiceType).Include(x => x.AllocationType)
 					.Include(x => x.ResourceList).Include(x => x.ProvisionType).AsNoTracking().ToListAsync();
