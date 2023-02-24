@@ -140,7 +140,7 @@ namespace NPOMS.Services.Implementation
 
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			foreach (var objective in objectives)
+			foreach (var objective in objectives.Where(x => x.IsActive))
 			{
 				var newObjective = new Objective
 				{
@@ -171,7 +171,7 @@ namespace NPOMS.Services.Implementation
 					_repositoryContext.ObjectiveProgrammes.Add(newObjectiveProgramme);
 				}
 
-				foreach (var activity in activities)
+				foreach (var activity in activities.Where(x => x.IsActive))
 				{
 					var newActivity = new Activity
 					{
@@ -191,7 +191,7 @@ namespace NPOMS.Services.Implementation
 					};
 					_repositoryContext.Activities.Add(newActivity);
 
-					foreach (var activitySubProgramme in activity.ActivitySubProgrammes)
+					foreach (var activitySubProgramme in activity.ActivitySubProgrammes.Where(x => x.IsActive))
 					{
 						var newActivitySubProgramme = new ActivitySubProgramme
 						{
@@ -202,7 +202,7 @@ namespace NPOMS.Services.Implementation
 						_repositoryContext.ActivitySubProgrammes.Add(newActivitySubProgramme);
 					}
 
-					foreach (var activityFacilityList in activity.ActivityFacilityLists)
+					foreach (var activityFacilityList in activity.ActivityFacilityLists.Where(x => x.IsActive))
 					{
 						var newActivityFacilityList = new ActivityFacilityList
 						{
@@ -213,7 +213,7 @@ namespace NPOMS.Services.Implementation
 						_repositoryContext.ActivityFacilityLists.Add(newActivityFacilityList);
 					}
 
-					foreach (var plan in sustainabilityPlans.Where(x => x.ActivityId.Equals(activity.Id)))
+					foreach (var plan in sustainabilityPlans.Where(x => x.ActivityId.Equals(activity.Id) && x.IsActive))
 					{
 						var newPlan = new SustainabilityPlan
 						{
@@ -231,7 +231,7 @@ namespace NPOMS.Services.Implementation
 						_repositoryContext.SustainabilityPlans.Add(newPlan);
 					}
 
-					foreach (var resource in resources.Where(x => x.ActivityId.Equals(activity.Id)))
+					foreach (var resource in resources.Where(x => x.ActivityId.Equals(activity.Id) && x.IsActive))
 					{
 						var newResource = new Resource
 						{
