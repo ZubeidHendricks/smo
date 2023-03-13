@@ -569,28 +569,28 @@ namespace NPOMS.Services.Implementation
 					var objective = await _objectiveRepository.GetById(model.EntityId);
 					objective.ChangesRequired = changesRequired;
 
-					var oldObjective = await this._repositoryContext.Objectives.FindAsync(model.Id);
+					var oldObjective = await this._repositoryContext.Objectives.FindAsync(model.EntityId);
 					await _objectiveRepository.UpdateAsync(oldObjective, objective, true);
 					break;
 				case ServiceProvisionStepsEnum.Activities:
 					var activity = await _activityRepository.GetById(model.EntityId);
 					activity.ChangesRequired = changesRequired;
 
-					var oldActivity = await this._repositoryContext.Activities.FindAsync(model.Id);
+					var oldActivity = await this._repositoryContext.Activities.FindAsync(model.EntityId);
 					await _activityRepository.UpdateAsync(oldActivity, activity, true);
 					break;
 				case ServiceProvisionStepsEnum.Sustainability:
 					var sustainability = await _sustainabilityPlanRepository.GetById(model.EntityId);
 					sustainability.ChangesRequired = changesRequired;
 
-					var oldSustainability = await this._repositoryContext.SustainabilityPlans.FindAsync(model.Id);
+					var oldSustainability = await this._repositoryContext.SustainabilityPlans.FindAsync(model.EntityId);
 					await _sustainabilityPlanRepository.UpdateAsync(oldSustainability, sustainability, true);
 					break;
 				case ServiceProvisionStepsEnum.Resourcing:
 					var resource = await _resourceRepository.GetById(model.EntityId);
 					resource.ChangesRequired = changesRequired;
 
-					var oldResource = await this._repositoryContext.Resources.FindAsync(model.Id);
+					var oldResource = await this._repositoryContext.Resources.FindAsync(model.EntityId);
 					await _resourceRepository.UpdateAsync(oldResource, resource, true);
 					break;
 			}
