@@ -27,10 +27,10 @@ export class FooterComponent implements OnInit {
   }
 
   currentVersion(): string {
-    return '1.1.1';
+    return '1.1.2';
   }
 
   deploymentDate(): string {
-    return '15 March 2023';
+    return '16 March 2023';
   }
 }

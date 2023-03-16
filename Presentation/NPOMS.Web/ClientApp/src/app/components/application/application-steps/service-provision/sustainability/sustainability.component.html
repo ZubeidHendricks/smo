@@ -1,5 +1,5 @@
 <p-toast></p-toast>
-<p-panel [style]="{'font-size':'12px'}" header="Sustainability Plan">
+<p-panel [style]="{'font-size':'12px'}" header="Sustainability Plan" *ngIf="activeSustainabilityPlans">
     <p-table [columns]="sustainabilityPlanCols" [value]="activeSustainabilityPlans" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
