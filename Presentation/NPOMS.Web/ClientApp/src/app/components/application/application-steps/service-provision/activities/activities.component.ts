@@ -90,6 +90,8 @@ export class ActivitiesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this._spinner.show();
+
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -133,11 +135,9 @@ export class ActivitiesComponent implements OnInit {
   }
 
   private loadActivityTypes() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.ActivityTypes, false).subscribe(
       (results) => {
         this.activityTypes = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -147,11 +147,9 @@ export class ActivitiesComponent implements OnInit {
   }
 
   private loadObjectives() {
-    this._spinner.show();
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results.filter(x => x.isActive === true);
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -201,11 +199,9 @@ export class ActivitiesComponent implements OnInit {
   }
 
   private loadFacilities() {
-    this._spinner.show();
     this._applicationRepo.getAssignedFacilities(this.application).subscribe(
       (results) => {
         this.facilities = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -223,11 +219,9 @@ export class ActivitiesComponent implements OnInit {
   }
 
   private loadAllSubProgrammes() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
       (results) => {
         this.allSubProgrammes = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);

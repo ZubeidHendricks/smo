@@ -64,6 +64,8 @@ export class SustainabilityComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this._spinner.show();
+
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -100,11 +102,9 @@ export class SustainabilityComponent implements OnInit {
   }
 
   private loadActivities() {
-    this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);

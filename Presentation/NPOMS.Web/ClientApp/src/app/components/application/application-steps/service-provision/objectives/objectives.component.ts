@@ -81,6 +81,8 @@ export class ObjectivesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this._spinner.show();
+
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -123,11 +125,9 @@ export class ObjectivesComponent implements OnInit {
   }
 
   private loadApplicationPeriod() {
-    this._spinner.show();
     this._applicationPeriodRepo.getApplicationPeriodById(Number(this.application.applicationPeriodId)).subscribe(
       (results) => {
         this.loadProgrammesForDepartment(results.department);
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -137,12 +137,10 @@ export class ObjectivesComponent implements OnInit {
   }
 
   private loadAllProgrammes() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
       (results) => {
         this.allProgrammes = results;
         this.loadApplicationPeriod();
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -165,11 +163,9 @@ export class ObjectivesComponent implements OnInit {
   }
 
   private loadAllSubProgrammes() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
       (results) => {
         this.allSubProgrammes = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -179,11 +175,9 @@ export class ObjectivesComponent implements OnInit {
   }
 
   private loadRecipientTypes() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.RecipientTypes, false).subscribe(
       (results) => {
         this.recipientTypes = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -192,7 +186,7 @@ export class ObjectivesComponent implements OnInit {
     );
   }
 
-  private loadObjectives() {
+  private loadObjectives() {    
     this._spinner.show();
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {

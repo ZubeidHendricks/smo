@@ -40,7 +40,7 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task<Application> GetByNpoIdAndPeriodId(int NpoId, int applicationPeriodId)
 		{
-			return await FindByCondition(x => x.NpoId.Equals(NpoId) && x.ApplicationPeriodId.Equals(applicationPeriodId))
+			return await FindByCondition(x => x.NpoId.Equals(NpoId) && x.ApplicationPeriodId.Equals(applicationPeriodId) && x.IsActive)
 							.AsNoTracking().FirstOrDefaultAsync();
 		}
 
