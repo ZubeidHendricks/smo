@@ -1,5 +1,5 @@
 <p-toast></p-toast>
-<p-panel [style]="{'font-size':'12px'}" header="Resourcing" *ngIf="isDataAvailable">
+<p-panel [style]="{'font-size':'12px'}" header="Resourcing" *ngIf="activeResources">
     <p-table [columns]="resourceCols" [value]="activeResources" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>

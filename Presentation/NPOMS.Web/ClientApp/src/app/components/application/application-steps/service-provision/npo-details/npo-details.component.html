@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false" *ngIf="showWarningMessage"></p-messages>
-<p-panel [style]="{'font-size':'12px'}" header="Organisation Details">
+<p-panel [style]="{'font-size':'12px'}" header="Organisation Details" *ngIf="application">
     <div style="height: 10px;"></div>
     <app-view-npo
         [npoId]="application.npoId"

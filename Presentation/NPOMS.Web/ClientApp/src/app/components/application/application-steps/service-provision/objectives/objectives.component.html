@@ -1,5 +1,5 @@
 <p-toast></p-toast>
-<p-panel [style]="{'font-size':'12px'}" header="Objectives">
+<p-panel [style]="{'font-size':'12px'}" header="Objectives" *ngIf="activeObjectives">
     <p-table [columns]="objectiveCols" [value]="activeObjectives" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>

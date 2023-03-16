@@ -57,7 +57,6 @@ export class ResourcingComponent implements OnInit {
   applicationComments: IApplicationComment[] = [];
 
   tooltip: string;
-  isDataAvailable: boolean = false;
 
   resourceList: IResourceList[];
   filteredResourceList: IResourceList[];
@@ -85,6 +84,8 @@ export class ResourcingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this._spinner.show();
+
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -130,11 +131,9 @@ export class ResourcingComponent implements OnInit {
   }
 
   private loadResourceTypes() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.ResourceTypes, false).subscribe(
       (results) => {
         this.resourceTypes = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -144,11 +143,9 @@ export class ResourcingComponent implements OnInit {
   }
 
   private loadServiceTypes() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.ServiceTypes, false).subscribe(
       (results) => {
         this.serviceTypes = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -158,11 +155,9 @@ export class ResourcingComponent implements OnInit {
   }
 
   private loadAllocationTypes() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.AllocationTypes, false).subscribe(
       (results) => {
         this.allocationTypes = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -172,11 +167,9 @@ export class ResourcingComponent implements OnInit {
   }
 
   private loadActivities() {
-    this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -192,7 +185,6 @@ export class ResourcingComponent implements OnInit {
         this.allResources = results;
         this.activeResources = this.allResources.filter(x => x.isActive === true);
         this.updateRowGroupMetaData();
-        this.isDataAvailable = true;
         this._spinner.hide();
       },
       (err) => {
@@ -203,11 +195,9 @@ export class ResourcingComponent implements OnInit {
   }
 
   private loadResourceList() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.ResourceList, false).subscribe(
       (results) => {
         this.resourceList = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -217,11 +207,9 @@ export class ResourcingComponent implements OnInit {
   }
 
   private loadProvisionTypes() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.ProvisionTypes, false).subscribe(
       (results) => {
         this.provisionTypes = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);

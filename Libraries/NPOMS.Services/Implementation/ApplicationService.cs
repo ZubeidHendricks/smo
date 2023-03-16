@@ -142,6 +142,7 @@ namespace NPOMS.Services.Implementation
 
 			foreach (var objective in objectives.Where(x => x.IsActive))
 			{
+				// Create objective...
 				var newObjective = new Objective
 				{
 					ApplicationId = model.Id,
@@ -171,7 +172,8 @@ namespace NPOMS.Services.Implementation
 					_repositoryContext.ObjectiveProgrammes.Add(newObjectiveProgramme);
 				}
 
-				foreach (var activity in activities.Where(x => x.IsActive))
+				// Create activity linked to objective...
+				foreach (var activity in activities.Where(x => x.ObjectiveId.Equals(objective.Id) && x.IsActive))
 				{
 					var newActivity = new Activity
 					{
@@ -213,6 +215,7 @@ namespace NPOMS.Services.Implementation
 						_repositoryContext.ActivityFacilityLists.Add(newActivityFacilityList);
 					}
 
+					// Create sustainability plan linked to activity...
 					foreach (var plan in sustainabilityPlans.Where(x => x.ActivityId.Equals(activity.Id) && x.IsActive))
 					{
 						var newPlan = new SustainabilityPlan
@@ -231,6 +234,7 @@ namespace NPOMS.Services.Implementation
 						_repositoryContext.SustainabilityPlans.Add(newPlan);
 					}
 
+					// Create resource linked to activity...
 					foreach (var resource in resources.Where(x => x.ActivityId.Equals(activity.Id) && x.IsActive))
 					{
 						var newResource = new Resource
