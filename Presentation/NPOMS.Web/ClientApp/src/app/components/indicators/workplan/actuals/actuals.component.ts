@@ -97,6 +97,8 @@ export class ActualsComponent implements OnInit {
   workplanActualAudits: IWorkplanActualAudit[];
   displayHistory: boolean;
 
+  allFinancialYears: IFinancialYear[];
+
   constructor(
     private _spinner: NgxSpinnerService,
     private _authService: AuthService,
@@ -117,6 +119,7 @@ export class ActualsComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption))
           this._router.navigate(['401']);
 
+        this.loadAllFinancialYears();
         this.loadDocumentTypes();
         this.loadStatuses();
         this.buildButtonItems();
@@ -189,6 +192,18 @@ export class ActualsComponent implements OnInit {
       },
       (err) => {
         this._loggerService.logException(err);
+      }
+    );
+  }
+
+  private loadAllFinancialYears() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, true).subscribe(
+      (results) => {
+        this.allFinancialYears = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
@@ -421,7 +436,7 @@ export class ActualsComponent implements OnInit {
 
       let currentDate = new Date();
 
-      let currentFinancialYear = this.financialYears.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
+      let currentFinancialYear = this.allFinancialYears.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
       this.isPreviousFinancialYear = this.selectedFinancialYear.id >= currentFinancialYear.id ? false : true;
 
       // If previous financial year, disable all buttons besides comments and view history
