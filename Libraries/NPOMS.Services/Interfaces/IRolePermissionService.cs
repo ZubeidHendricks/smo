@@ -20,7 +20,7 @@ namespace NPOMS.Services.Interfaces
 
 		Task<PermissionViewModel> GetById(int permissionId);
 
-		Task Update(PermissionViewModel viewModel);
+		Task Update(PermissionViewModel viewModel, string userIdentifier);
 
 		Task Delete(PermissionViewModel viewModel);
 	}

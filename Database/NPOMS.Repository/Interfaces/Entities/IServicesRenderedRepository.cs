@@ -8,7 +8,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 	{
 		Task<IEnumerable<ServicesRendered>> GetByNpoProfileId(int npoProfileId);
 
-		Task DeleteEntity(int id);
+		Task DeleteEntity(int id, int currentUserId);
 
 		Task<ServicesRendered> GetByProperties(ServicesRendered model);
 	}

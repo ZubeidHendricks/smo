@@ -39,11 +39,11 @@ namespace NPOMS.Repository.Implementation.Mapping
 							.AsNoTracking().FirstOrDefaultAsync();
 		}
 
-		public async Task DeleteEntity(int id)
+		public async Task DeleteEntity(int id, int currentUserId)
 		{
 			var model = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
 			model.IsActive = false;
-			await UpdateAsync(null, model, false);
+			await UpdateAsync(null, model, false, currentUserId);
 		}
 
 		#endregion

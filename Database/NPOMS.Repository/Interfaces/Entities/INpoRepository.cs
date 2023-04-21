@@ -18,7 +18,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 
 		Task CreateEntity(Npo model);
 
-		Task UpdateEntity(Npo model);
+		Task UpdateEntity(Npo model, int currentUserId);
 
 		Task<IEnumerable<Npo>> GetAssignedEntities(string emailAddress);
 	}

@@ -12,7 +12,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 
 		Task CreateEntity(NpoProfile model);
 
-		Task UpdateEntity(NpoProfile model);
+		Task UpdateEntity(NpoProfile model, int currentUserId);
 
 		Task<NpoProfile> GetByNpoId(int NpoId);
 	}

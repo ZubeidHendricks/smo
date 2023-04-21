@@ -76,7 +76,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			var oldEntity = await this._repositoryContext.WorkplanTargets.FindAsync(model.Id);
-			await _workplanTargetRepository.UpdateAsync(oldEntity, model, true);
+			await _workplanTargetRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<WorkplanActual>> GetActualsByActivityId(int activityId)
@@ -108,7 +108,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			var oldEntity = await this._repositoryContext.WorkplanActuals.FindAsync(model.Id);
-			await _workplanActualRepository.UpdateAsync(oldEntity, model, true);
+			await _workplanActualRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<WorkplanComment>> GetWorkplanComments(int workplanActualId)

@@ -12,7 +12,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 
 		Task CreateEntity(SustainabilityPlan model);
 
-		Task UpdateEntity(SustainabilityPlan model);
+		Task UpdateEntity(SustainabilityPlan model, int currentUserId);
 
 		Task<SustainabilityPlan> GetById(int id);
 	}

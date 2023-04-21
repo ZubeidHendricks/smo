@@ -43,11 +43,11 @@ namespace NPOMS.Repository.Implementation.Entities
 			await CreateAsync(model);
 		}
 
-		public async Task UpdateEntity(NpoProfile model)
+		public async Task UpdateEntity(NpoProfile model, int currentUserId)
 		{
 			this.RepositoryContext.AddressInformation.Update(model.AddressInformation);
 			var oldEntity = await this.RepositoryContext.NpoProfiles.FindAsync(model.Id);
-			await UpdateAsync(oldEntity, model, true);
+			await UpdateAsync(oldEntity, model, true, currentUserId);
 		}
 
 		public async Task<NpoProfile> GetByNpoId(int NpoId)

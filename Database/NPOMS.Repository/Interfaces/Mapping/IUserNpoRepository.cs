@@ -14,7 +14,7 @@ namespace NPOMS.Repository.Interfaces.Mapping
 
 		Task CreateEntity(UserNpo model);
 
-		Task UpdateEntity(UserNpo model);
+		Task UpdateEntity(UserNpo model, int currentUserId);
 
 		Task<UserNpo> GetById(int id);
 

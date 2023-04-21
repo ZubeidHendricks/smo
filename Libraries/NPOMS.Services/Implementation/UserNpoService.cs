@@ -75,7 +75,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _userNpoRepository.UpdateEntity(model);
+			await _userNpoRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
 		/// <summary>
@@ -93,7 +93,7 @@ namespace NPOMS.Services.Implementation
 			model.AccessStatusId = (int)AccessStatusEnum.Pending;
 			model.UpdatedUserId = null;
 			model.UpdatedDateTime = null;
-			await _userNpoRepository.UpdateEntity(model);
+			await _userNpoRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
 		public async Task<UserNpo> GetByUserIdAndNpoId(int userId, int NpoId)

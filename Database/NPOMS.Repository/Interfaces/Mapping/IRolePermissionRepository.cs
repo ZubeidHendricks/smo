@@ -12,7 +12,7 @@ namespace NPOMS.Repository.Interfaces.Mapping
 
 		Task CreateEntity(RolePermission entity);
 
-		Task UpdateEntity(RolePermission entity);
+		Task UpdateEntity(RolePermission entity, int currentUserId);
 
 		Task DeleteEntity(RolePermission entity);
 	}

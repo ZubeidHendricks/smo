@@ -172,7 +172,7 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
-				await _npoProfileService.Create(model);
+				await _npoProfileService.Create(model, base.GetUserIdentifier());
 				return Ok(model);
 			}
 			catch (Exception ex)
@@ -187,7 +187,7 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
-				await _npoProfileService.Update(model);
+				await _npoProfileService.Update(model, base.GetUserIdentifier());
 				return Ok(model);
 			}
 			catch (Exception ex)

@@ -132,7 +132,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                await this._rolePermissionService.Update(viewModel);
+                await this._rolePermissionService.Update(viewModel, base.GetUserIdentifier());
                 return Ok();
             }
             catch (Exception ex)

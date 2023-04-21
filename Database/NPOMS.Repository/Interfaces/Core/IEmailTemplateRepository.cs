@@ -15,7 +15,7 @@ namespace NPOMS.Repository.Interfaces.Core
 
         Task CreateEntity(EmailTemplate entity);
 
-        Task UpdateEntity(EmailTemplate entity);
+        Task UpdateEntity(EmailTemplate entity, int currentUserId);
 
         Task DeleteEntity(EmailTemplate entity);
     }

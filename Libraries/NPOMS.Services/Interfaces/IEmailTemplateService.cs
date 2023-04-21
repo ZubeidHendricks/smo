@@ -16,7 +16,7 @@ namespace NPOMS.Services.Interfaces
 
         Task Create(EmailTemplateViewModel viewModel);
 
-        Task Update(EmailTemplateViewModel viewModel);
+        Task Update(EmailTemplateViewModel viewModel, string userIdentifier);
 
         Task Delete(EmailTemplateViewModel viewModel);
     }

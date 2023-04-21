@@ -12,7 +12,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 
 		Task CreateEntity(Activity model);
 
-		Task UpdateEntity(Activity model);
+		Task UpdateEntity(Activity model, int currentUserId);
 
 		Task<Activity> GetById(int id);
 	}

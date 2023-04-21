@@ -273,9 +273,10 @@ namespace NPOMS.Services.Implementation
 			await _applicationRepository.CreateEntity(model);
 		}
 
-		public async Task UpdateApplicationStatus(Application model)
+		public async Task UpdateApplicationStatus(Application model, string userIdentifier)
 		{
-			await _applicationRepository.UpdateEntity(model);
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
 		public async Task UpdateApplication(Application model, string userIdentifier)
@@ -285,7 +286,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _applicationRepository.UpdateEntity(model);
+			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<Objective>> GetAllObjectivesAsync(int NpoId, int applicationPeriodId)
@@ -335,7 +336,7 @@ namespace NPOMS.Services.Implementation
 			objective.UpdatedDateTime = DateTime.Now;
 
 			var oldEntity = await this._repositoryContext.Objectives.FindAsync(model.Id);
-			await _objectiveRepository.UpdateAsync(oldEntity, model, true);
+			await _objectiveRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
 		private async Task DeleteActivities(Objective model, User currentUser)
@@ -426,16 +427,13 @@ namespace NPOMS.Services.Implementation
 			activity.UpdatedUserId = loggedInUser.Id;
 			activity.UpdatedDateTime = DateTime.Now;
 
-			if (model.ActivitySubProgrammes.Count() > 0)
-				await UpdateActivitySubProgrammeMappings(activity);
+			await UpdateActivitySubProgrammeMappings(activity, loggedInUser.Id);
+			await UpdateActivityFacilityListMappings(activity, loggedInUser.Id);
 
-			if (model.ActivityFacilityLists.Count() > 0)
-				await UpdateActivityFacilityListMappings(activity);
-
-			await _activityRepository.UpdateEntity(activity);
+			await _activityRepository.UpdateEntity(activity, loggedInUser.Id);
 		}
 
-		private async Task UpdateActivitySubProgrammeMappings(Activity model)
+		private async Task UpdateActivitySubProgrammeMappings(Activity model, int currentUserId)
 		{
 			var mappings = await _activitySubProgrammeRepository.GetByActivityId(model.Id, false);
 
@@ -452,11 +450,19 @@ namespace NPOMS.Services.Implementation
 				var mapping = await _activitySubProgrammeRepository.GetByModel(item);
 
 				if (mapping != null)
+				{
 					item.Id = mapping.Id;
+					var oldEntity = await this._repositoryContext.ActivitySubProgrammes.FindAsync(mapping.Id);
+					await _activitySubProgrammeRepository.UpdateAsync(oldEntity, item, true, currentUserId);
+				}
+				else
+				{
+					await _activitySubProgrammeRepository.CreateAsync(item);
+				}
 			}
 		}
 
-		private async Task UpdateActivityFacilityListMappings(Activity model)
+		private async Task UpdateActivityFacilityListMappings(Activity model, int currentUserId)
 		{
 			var mappings = await _activityFacilityListRepository.GetByActivityId(model.Id, false);
 
@@ -473,7 +479,15 @@ namespace NPOMS.Services.Implementation
 				var mapping = await _activityFacilityListRepository.GetByModel(item);
 
 				if (mapping != null)
+				{
 					item.Id = mapping.Id;
+					var oldEntity = await this._repositoryContext.ActivityFacilityLists.FindAsync(mapping.Id);
+					await _activityFacilityListRepository.UpdateAsync(oldEntity, item, true, currentUserId);
+				}
+				else
+				{
+					await _activityFacilityListRepository.CreateAsync(item);
+				}
 			}
 		}
 
@@ -507,7 +521,7 @@ namespace NPOMS.Services.Implementation
 			resource.ResourceList = null;
 			resource.UpdatedUserId = loggedInUser.Id;
 			resource.UpdatedDateTime = DateTime.Now;
-			await _resourceRepository.UpdateEntity(resource);
+			await _resourceRepository.UpdateEntity(resource, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<SustainabilityPlan>> GetAllSustainabilityPlansAsync(int NpoId, int applicationPeriodId)
@@ -533,7 +547,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _sustainabilityPlanRepository.UpdateEntity(model);
+			await _sustainabilityPlanRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<FacilityList>> GetAssignedFacilitiesByNpoId(int NpoId)
@@ -563,8 +577,9 @@ namespace NPOMS.Services.Implementation
 			await _applicationCommentRepository.CreateEntity(model);
 		}
 
-		public async Task UpdateChangesRequired(ApplicationComment model, bool changesRequired)
+		public async Task UpdateChangesRequired(ApplicationComment model, bool changesRequired, string userIdentifier)
 		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			ServiceProvisionStepsEnum step = (ServiceProvisionStepsEnum)model.ServiceProvisionStepId;
 
 			switch (step)
@@ -574,28 +589,28 @@ namespace NPOMS.Services.Implementation
 					objective.ChangesRequired = changesRequired;
 
 					var oldObjective = await this._repositoryContext.Objectives.FindAsync(model.EntityId);
-					await _objectiveRepository.UpdateAsync(oldObjective, objective, true);
+					await _objectiveRepository.UpdateAsync(oldObjective, objective, true, loggedInUser.Id);
 					break;
 				case ServiceProvisionStepsEnum.Activities:
 					var activity = await _activityRepository.GetById(model.EntityId);
 					activity.ChangesRequired = changesRequired;
 
 					var oldActivity = await this._repositoryContext.Activities.FindAsync(model.EntityId);
-					await _activityRepository.UpdateAsync(oldActivity, activity, true);
+					await _activityRepository.UpdateAsync(oldActivity, activity, true, loggedInUser.Id);
 					break;
 				case ServiceProvisionStepsEnum.Sustainability:
 					var sustainability = await _sustainabilityPlanRepository.GetById(model.EntityId);
 					sustainability.ChangesRequired = changesRequired;
 
 					var oldSustainability = await this._repositoryContext.SustainabilityPlans.FindAsync(model.EntityId);
-					await _sustainabilityPlanRepository.UpdateAsync(oldSustainability, sustainability, true);
+					await _sustainabilityPlanRepository.UpdateAsync(oldSustainability, sustainability, true, loggedInUser.Id);
 					break;
 				case ServiceProvisionStepsEnum.Resourcing:
 					var resource = await _resourceRepository.GetById(model.EntityId);
 					resource.ChangesRequired = changesRequired;
 
 					var oldResource = await this._repositoryContext.Resources.FindAsync(model.EntityId);
-					await _resourceRepository.UpdateAsync(oldResource, resource, true);
+					await _resourceRepository.UpdateAsync(oldResource, resource, true, loggedInUser.Id);
 					break;
 			}
 		}
@@ -638,7 +653,7 @@ namespace NPOMS.Services.Implementation
 			model.CreatedUserId = loggedInUser.Id;
 			model.CreatedDateTime = DateTime.Now;
 
-			await _applicationApprovalRepository.UpdateEntity(model);
+			await _applicationApprovalRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<ApplicationReviewerSatisfaction>> GetApplicationReviewerSatisfactions(int applicationId, int serviceProvisionStepId, int entityId)

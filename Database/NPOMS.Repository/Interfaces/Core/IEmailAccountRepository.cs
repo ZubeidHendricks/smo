@@ -12,7 +12,7 @@ namespace NPOMS.Repository.Interfaces.Core
 
         Task CreateEntity(EmailAccount entity);
 
-        Task UpdateEntity(EmailAccount entity);
+        Task UpdateEntity(EmailAccount entity, int currentUserId);
 
         Task DeleteEntity(EmailAccount entity);
     }

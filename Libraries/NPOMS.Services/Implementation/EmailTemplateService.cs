@@ -20,6 +20,7 @@ namespace NPOMS.Services.Implementation
 		private ILogger<EmailTemplateService> _logger;
 		private IMapper _mapper;
 		private IEmailTemplateRepository _emailTemplateRepository;
+		private IUserRepository _userRepository;
 
 		#endregion
 
@@ -28,12 +29,13 @@ namespace NPOMS.Services.Implementation
 		public EmailTemplateService(
 			ILogger<EmailTemplateService> logger,
 			IMapper mapper,
-			IEmailTemplateRepository emailTemplateRepository
-			)
+			IEmailTemplateRepository emailTemplateRepository,
+			IUserRepository userRepository)
 		{
 			_logger = logger;
 			_mapper = mapper;
 			_emailTemplateRepository = emailTemplateRepository;
+			_userRepository = userRepository;
 		}
 
 		#endregion
@@ -59,7 +61,7 @@ namespace NPOMS.Services.Implementation
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetAllEmailTemplates action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetAllEmailTemplates action: {ex.Message} Inner Exception: {ex.InnerException}");
 				throw;
 			}
 		}
@@ -79,7 +81,7 @@ namespace NPOMS.Services.Implementation
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetById action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetById action: {ex.Message} Inner Exception: {ex.InnerException}");
 				throw;
 			}
 		}
@@ -102,7 +104,7 @@ namespace NPOMS.Services.Implementation
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside GetByType action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside GetByType action: {ex.Message} Inner Exception: {ex.InnerException}");
 				throw;
 			}
 		}
@@ -128,15 +130,17 @@ namespace NPOMS.Services.Implementation
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside CreateEmailTemplate action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside CreateEmailTemplate action: {ex.Message} Inner Exception: {ex.InnerException}");
 				throw;
 			}
 		}
 
-		public async Task Update(EmailTemplateViewModel viewModel)
+		public async Task Update(EmailTemplateViewModel viewModel, string userIdentifier)
 		{
 			try
 			{
+				var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
 				if (viewModel == null)
 					throw new ArgumentNullException(nameof(viewModel));
 
@@ -151,12 +155,12 @@ namespace NPOMS.Services.Implementation
 					entity.Name = entity.Name;
 					entity.Subject = viewModel.Subject;
 
-					await _emailTemplateRepository.UpdateEntity(entity);
+					await _emailTemplateRepository.UpdateEntity(entity, loggedInUser.Id);
 				}
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside UpdateEmailTemplate action: {ex.Message} Inner Exception: { ex.InnerException}");
+				_logger.LogError($"Something went wrong inside UpdateEmailTemplate action: {ex.Message} Inner Exception: {ex.InnerException}");
 				throw;
 			}
 		}
