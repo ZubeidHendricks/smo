@@ -16,9 +16,9 @@ namespace NPOMS.Repository.Interfaces.Core
 
 		Task CreateEntity(User user);
 
-		Task UpdateEntity(User user);
+		Task UpdateEntity(User user, int currentUserId);
 
-		Task DeleteEntity(User user);
+		Task DeleteEntity(User user, int currentUserId);
 
 		Task<User> GetByIdWithDetails(int id);
 

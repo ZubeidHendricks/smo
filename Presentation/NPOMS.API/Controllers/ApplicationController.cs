@@ -513,7 +513,7 @@ namespace NPOMS.API.Controllers
 				await _applicationService.CreateApplicationComment(model, base.GetUserIdentifier());
 
 				if (changesRequired)
-					await _applicationService.UpdateChangesRequired(model, changesRequired);
+					await _applicationService.UpdateChangesRequired(model, changesRequired, base.GetUserIdentifier());
 
 				return Ok();
 			}

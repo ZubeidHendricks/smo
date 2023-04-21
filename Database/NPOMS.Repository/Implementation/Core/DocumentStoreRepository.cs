@@ -30,9 +30,9 @@ namespace NPOMS.Repository.Implementation.Core
             await CreateAsync(entity);
         }
 
-        public async Task UpdateEntity(DocumentStore entity)
+        public async Task UpdateEntity(DocumentStore entity, int currentUserId)
         {
-            await UpdateAsync(null, entity, false);
+            await UpdateAsync(null, entity, false, currentUserId);
         }
 
         public async Task DeleteEntity(DocumentStore entity)

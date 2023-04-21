@@ -96,7 +96,7 @@ namespace NPOMS.Services.Implementation
 			profile.UpdatedUserId = loggedInUser.Id;
 			profile.UpdatedDateTime = DateTime.Now;
 
-			await _npoProfileRepository.UpdateEntity(profile);
+			await _npoProfileRepository.UpdateEntity(profile, loggedInUser.Id);
 		}
 
 		public async Task<NpoProfile> GetByNpoId(int NpoId)
@@ -110,8 +110,9 @@ namespace NPOMS.Services.Implementation
 			return await _npoProfileFacilityListRepository.GetByNpoProfileId(npoProfileId);
 		}
 
-		public async Task Create(NpoProfileFacilityList model)
+		public async Task Create(NpoProfileFacilityList model, string userIdentifier)
 		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var mapping = await _npoProfileFacilityListRepository.GetByModel(model);
 
 			if (mapping == null)
@@ -121,13 +122,14 @@ namespace NPOMS.Services.Implementation
 			else
 			{
 				mapping.IsActive = true;
-				await _npoProfileFacilityListRepository.UpdateAsync(null, mapping, false);
+				await _npoProfileFacilityListRepository.UpdateAsync(null, mapping, false, loggedInUser.Id);
 			}
 		}
 
-		public async Task Update(NpoProfileFacilityList model)
+		public async Task Update(NpoProfileFacilityList model, string userIdentifier)
 		{
-			await _npoProfileFacilityListRepository.UpdateAsync(null, model, false);
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+			await _npoProfileFacilityListRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(int npoProfileId)
@@ -152,7 +154,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _servicesRenderedRepository.UpdateAsync(null, model, false);
+			await _servicesRenderedRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<BankDetail>> GetBankDetailsByNpoProfileId(int npoProfileId)
@@ -177,7 +179,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _bankDetailRepository.UpdateAsync(null, model, false);
+			await _bankDetailRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
 		#endregion

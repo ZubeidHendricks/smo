@@ -12,9 +12,9 @@ namespace NPOMS.Repository.Interfaces.Lookup
 
 		Task CreateEntity(FacilityList model);
 
-		Task UpdateEntity(FacilityList model);
+		Task UpdateEntity(FacilityList model, int currentUserId);
 
-		Task DeleteEntity(int id);
+		Task DeleteEntity(int id, int currentUserId);
 
 		Task<FacilityList> GetByProperties(FacilityList model);
 	}

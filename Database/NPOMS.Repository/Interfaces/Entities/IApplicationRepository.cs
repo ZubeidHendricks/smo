@@ -18,6 +18,6 @@ namespace NPOMS.Repository.Interfaces.Entities
 
 		Task CreateEntity(Application model);
 
-		Task UpdateEntity(Application model);
+		Task UpdateEntity(Application model, int currentUserId);
 	}
 }

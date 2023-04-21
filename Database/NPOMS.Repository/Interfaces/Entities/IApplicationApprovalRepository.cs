@@ -10,6 +10,6 @@ namespace NPOMS.Repository.Interfaces.Entities
 
 		Task CreateEntity(ApplicationApproval model);
 
-		Task UpdateEntity(ApplicationApproval model);
+		Task UpdateEntity(ApplicationApproval model, int currentUserId);
 	}
 }

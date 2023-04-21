@@ -31,10 +31,10 @@ namespace NPOMS.Repository.Implementation.Entities
 			await CreateAsync(model);
 		}
 
-		public async Task UpdateEntity(Objective model)
+		public async Task UpdateEntity(Objective model, int currentUserId)
 		{
 			var oldEntity = await this.RepositoryContext.Objectives.FindAsync(model.Id);
-			await UpdateAsync(oldEntity, model, true);
+			await UpdateAsync(oldEntity, model, true, currentUserId);
 		}
 
 		public async Task<Objective> GetById(int id)

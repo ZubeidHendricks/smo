@@ -65,7 +65,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			var oldEntity = await this._repositoryContext.DepartmentBudgets.FindAsync(model.Id);
-			await _departmentBudgetRepository.UpdateAsync(oldEntity, model, true);
+			await _departmentBudgetRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<DirectorateBudget>> GetDirectorateBudgetsByIds(int departmentId, int financialYearId)
@@ -91,7 +91,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			var oldEntity = await this._repositoryContext.DirectorateBudgets.FindAsync(model.Id);
-			await _directorateBudgetRepository.UpdateAsync(oldEntity, model, true);
+			await _directorateBudgetRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<ProgrammeBudget>> GetProgrammeBudgetsByIds(int departmentId, int financialYearId)
@@ -122,7 +122,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			var oldEntity = await this._repositoryContext.ProgrammeBudgets.FindAsync(model.Id);
-			await _programmeBudgetRepository.UpdateAsync(oldEntity, model, true);
+			await _programmeBudgetRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
 		#endregion

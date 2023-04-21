@@ -232,13 +232,13 @@ namespace NPOMS.Services.Implementation
 			existingUser.Departments.FirstOrDefault().DepartmentId = user.Departments.FirstOrDefault().Id;
 			existingUser.Departments.FirstOrDefault().Department = null;
 
-			await UpdateUserRoles(user, existingUser);
-			var oldEntity = await this._repositoryContext.Users.FindAsync(user.Id);
-			await _userRepository.UpdateAsync(oldEntity, existingUser, true);
+			await UpdateUserRoles(user, existingUser, loggedInUser.Id);
+			var oldEntity = await this._repositoryContext.Users.FindAsync(existingUser.Id);
+			await _userRepository.UpdateAsync(oldEntity, existingUser, true, loggedInUser.Id);
 			return _mapper.Map<UserViewModel>(existingUser);
 		}
 
-		private async Task UpdateUserRoles(UserViewModel user, User existingUser)
+		private async Task UpdateUserRoles(UserViewModel user, User existingUser, int currentUserId)
 		{
 			foreach (var role in user.Roles)
 			{
@@ -258,6 +258,9 @@ namespace NPOMS.Services.Implementation
 					userRole.IsActive = false;
 
 				userRole.Role = null;
+
+				var oldEntity = await this._repositoryContext.UserRoles.FindAsync(userRole.Id);
+				await _userRoleRepository.UpdateAsync(oldEntity, userRole, true, currentUserId);
 			}
 		}
 

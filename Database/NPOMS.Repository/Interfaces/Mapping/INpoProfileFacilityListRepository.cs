@@ -10,6 +10,6 @@ namespace NPOMS.Repository.Interfaces.Mapping
 
 		Task<NpoProfileFacilityList> GetByModel(NpoProfileFacilityList model);
 
-		Task DeleteEntity(int id);
+		Task DeleteEntity(int id, int currentUserId);
 	}
 }

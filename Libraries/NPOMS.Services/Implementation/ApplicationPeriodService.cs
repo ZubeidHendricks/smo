@@ -59,7 +59,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _applicationPeriodRepository.UpdateEntity(model);
+			await _applicationPeriodRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
 		#endregion

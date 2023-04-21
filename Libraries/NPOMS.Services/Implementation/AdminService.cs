@@ -63,7 +63,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			var oldEntity = await this._repositoryContext.CompliantCycles.FindAsync(model.Id);
-			await _compliantCycleRepository.UpdateAsync(oldEntity, model, true);
+			await _compliantCycleRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
 		public async Task<IEnumerable<PaymentSchedule>> GetPaymentSchedulesByIds(int departmentId, int financialYearId)
@@ -89,7 +89,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			var oldEntity = await this._repositoryContext.PaymentSchedules.FindAsync(model.Id);
-			await _paymentScheduleRepository.UpdateAsync(oldEntity, model, true);
+			await _paymentScheduleRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
 		#endregion

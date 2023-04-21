@@ -65,14 +65,13 @@ namespace NPOMS.Repository.Implementation
 			this.RepositoryContext.Entry(entity).State = EntityState.Detached;
 		}
 
-		public async Task UpdateAsync(T oldEntity, T newEntity, bool trackChanges)
+		public async Task UpdateAsync(T oldEntity, T newEntity, bool trackChanges, int currentUserId)
 		{
 			// Only add to AuditLog table if trackChanges is true
 			if (trackChanges)
 			{
 				if (oldEntity != null)
 				{
-					var currentUserId = newEntity.GetType().GetProperty("UpdatedUserId").GetValue(newEntity, null);
 					this.RepositoryContext.Entry(oldEntity).CurrentValues.SetValues(newEntity);
 					await this.RepositoryContext.SaveChangesAsync(Convert.ToInt32(currentUserId));
 				}

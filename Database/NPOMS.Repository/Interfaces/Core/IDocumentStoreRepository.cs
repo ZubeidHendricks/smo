@@ -10,7 +10,7 @@ namespace NPOMS.Repository.Interfaces.Core
 
 		Task CreateEntity(DocumentStore entity);
 
-		Task UpdateEntity(DocumentStore entity);
+		Task UpdateEntity(DocumentStore entity, int currentUserId);
 
 		Task DeleteEntity(DocumentStore entity);
 	}

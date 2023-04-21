@@ -21,20 +21,22 @@ namespace NPOMS.Services.Implementation
 		private IRolePermissionRepository _rolePermissionRepository;
 		private IMapper _mapper;
 		private ILogger<RolePermissionService> _logger;
+		private IUserRepository _userRepository;
 
 		public RolePermissionService(
 			IMapper mapper,
 			ILogger<RolePermissionService> logger,
 			IPermissionRepository permissionRepository,
 			IRoleRepository roleRepository,
-			IRolePermissionRepository rolePermissionRepository
-			)
+			IRolePermissionRepository rolePermissionRepository,
+			IUserRepository userRepository)
 		{
 			this._mapper = mapper;
 			this._logger = logger;
 			this._permissionRepository = permissionRepository;
 			this._roleRepository = roleRepository;
 			this._rolePermissionRepository = rolePermissionRepository;
+			this._userRepository = userRepository;
 		}
 
 		public RolePermissionsMatrix GetMatrix()
@@ -138,10 +140,12 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
-		public async Task Update(PermissionViewModel viewModel)
+		public async Task Update(PermissionViewModel viewModel, string userIdentifier)
 		{
 			try
 			{
+				var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
 				if (viewModel == null)
 					throw new ArgumentNullException(nameof(viewModel));
 
@@ -154,7 +158,7 @@ namespace NPOMS.Services.Implementation
 					entity.Name = viewModel.Name;
 					entity.SystemName = viewModel.SystemName;
 
-					await _permissionRepository.UpdateEntity(entity);
+					await _permissionRepository.UpdateEntity(entity, loggedInUser.Id);
 				}
 			}
 			catch (Exception ex)

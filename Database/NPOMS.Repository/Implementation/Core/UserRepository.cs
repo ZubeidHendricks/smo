@@ -49,16 +49,16 @@ namespace NPOMS.Repository.Implementation.Core
 			await CreateAsync(user);
 		}
 
-		public async Task UpdateEntity(User user)
+		public async Task UpdateEntity(User user, int currentUserId)
 		{
 			var oldEntity = await this.RepositoryContext.Users.FindAsync(user.Id);
-			await UpdateAsync(oldEntity, user, true);
+			await UpdateAsync(oldEntity, user, true, currentUserId);
 		}
 
-		public async Task DeleteEntity(User user)
+		public async Task DeleteEntity(User user, int currentUserId)
 		{
 			var oldEntity = await this.RepositoryContext.Users.FindAsync(user.Id);
-			await UpdateAsync(oldEntity, user, true);
+			await UpdateAsync(oldEntity, user, true, currentUserId);
 		}
 
 		public async Task<User> GetByIdWithDetails(int id)
