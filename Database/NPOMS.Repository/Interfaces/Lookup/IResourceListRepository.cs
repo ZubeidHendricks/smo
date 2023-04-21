@@ -10,9 +10,9 @@ namespace NPOMS.Repository.Interfaces.Lookup
 
 		Task CreateEntity(ResourceList model);
 
-		Task UpdateEntity(ResourceList model);
+		Task UpdateEntity(ResourceList model, int currentUserId);
 
-		Task DeleteEntity(int id);
+		Task DeleteEntity(int id, int currentUserId);
 
 		Task<ResourceList> GetByName(string name);
 	}

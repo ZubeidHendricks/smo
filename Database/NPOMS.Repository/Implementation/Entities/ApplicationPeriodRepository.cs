@@ -48,10 +48,10 @@ namespace NPOMS.Repository.Implementation.Entities
 			await CreateAsync(model);
 		}
 
-		public async Task UpdateEntity(ApplicationPeriod model)
+		public async Task UpdateEntity(ApplicationPeriod model, int currentUserId)
 		{
 			var oldEntity = await this.RepositoryContext.ApplicationPeriods.FindAsync(model.Id);
-			await UpdateAsync(oldEntity, model, true);
+			await UpdateAsync(oldEntity, model, true, currentUserId);
 		}
 
 		#endregion

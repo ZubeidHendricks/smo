@@ -50,17 +50,17 @@ namespace NPOMS.Repository.Implementation.Lookup
 			await CreateAsync(model);
 		}
 
-		public async Task UpdateEntity(ActivityList model)
+		public async Task UpdateEntity(ActivityList model, int currentUserId)
 		{
-			await UpdateAsync(null, model, false);
+			await UpdateAsync(null, model, false, currentUserId);
 		}
 
-		public async Task DeleteEntity(int id)
+		public async Task DeleteEntity(int id, int currentUserId)
 		{
 			var model = await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
 			model.IsActive = false;
 
-			await UpdateAsync(null, model, false);
+			await UpdateAsync(null, model, false, currentUserId);
 		}
 
 		public async Task<ActivityList> GetByName(string name)

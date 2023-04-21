@@ -35,9 +35,9 @@ namespace NPOMS.Repository.Implementation.Core
 			await CreateAsync(entity);
 		}
 
-		public async Task UpdateEntity(EmailAccount entity)
+		public async Task UpdateEntity(EmailAccount entity, int currentUserId)
 		{
-			await UpdateAsync(null, entity, false);
+			await UpdateAsync(null, entity, false, currentUserId);
 		}
 
 		public async Task DeleteEntity(EmailAccount entity)

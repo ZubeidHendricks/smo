@@ -58,10 +58,10 @@ namespace NPOMS.Repository.Implementation.Entities
 			await CreateAsync(model);
 		}
 
-		public async Task UpdateEntity(Npo model)
+		public async Task UpdateEntity(Npo model, int currentUserId)
 		{
 			var oldEntity = await this.RepositoryContext.Npos.FindAsync(model.Id);
-			await UpdateAsync(oldEntity, model, true);
+			await UpdateAsync(oldEntity, model, true, currentUserId);
 		}
 
 		public async Task<IEnumerable<Npo>> GetAssignedEntities(string emailAddress)

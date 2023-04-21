@@ -37,10 +37,10 @@ namespace NPOMS.Repository.Implementation.Entities
 			await CreateAsync(model);
 		}
 
-		public async Task UpdateEntity(Activity model)
+		public async Task UpdateEntity(Activity model, int currentUserId)
 		{
 			var oldEntity = await this.RepositoryContext.Activities.FindAsync(model.Id);
-			await UpdateAsync(oldEntity, model, true);
+			await UpdateAsync(oldEntity, model, true, currentUserId);
 		}
 
 		public async Task<Activity> GetById(int id)

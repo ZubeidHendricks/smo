@@ -140,7 +140,7 @@ namespace NPOMS.Services.Implementation
 				entity.UpdatedUserId = loggedInUser.Id;
 				entity.UpdatedDateTime = DateTime.Now;
 
-				await _documentStoreRepository.UpdateEntity(entity);
+				await _documentStoreRepository.UpdateEntity(entity, loggedInUser.Id);
 			}
 			catch (Exception ex)
 			{
@@ -206,7 +206,7 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _documentStoreRepository.UpdateEntity(model);
+			await _documentStoreRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
 		private string GetBytesReadable(long i)

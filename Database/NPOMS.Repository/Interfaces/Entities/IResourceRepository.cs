@@ -12,7 +12,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 
 		Task CreateEntity(Resource model);
 
-		Task UpdateEntity(Resource model);
+		Task UpdateEntity(Resource model, int currentUserId);
 
 		Task<Resource> GetById(int id);
 	}

@@ -116,11 +116,11 @@ namespace NPOMS.Services.Implementation
 			npo.UpdatedUserId = loggedInUser.Id;
 			npo.UpdatedDateTime = DateTime.Now;
 
-			await UpdateMappings(npo);
-			await _npoRepository.UpdateEntity(npo);
+			await UpdateMappings(npo, loggedInUser.Id);
+			await _npoRepository.UpdateEntity(npo, loggedInUser.Id);
 		}
 
-		private async Task UpdateMappings(Npo model)
+		private async Task UpdateMappings(Npo model, int currentUserId)
 		{
 			if (model.ContactInformation != null)
 			{
@@ -134,7 +134,7 @@ namespace NPOMS.Services.Implementation
 					foreach (var id in existingIds)
 					{
 						if (!newIds.Contains(id))
-							await _contactInformationRepository.DeleteEntity(id, model);
+							await _contactInformationRepository.DeleteEntity(id, model, currentUserId);
 					}
 				}
 			}
@@ -150,7 +150,7 @@ namespace NPOMS.Services.Implementation
 			npo.ApprovalUserId = loggedInUser.Id;
 			npo.ApprovalDateTime = DateTime.Now;
 
-			await _npoRepository.UpdateEntity(npo);
+			await _npoRepository.UpdateEntity(npo, loggedInUser.Id);
 		}
 
 		#endregion

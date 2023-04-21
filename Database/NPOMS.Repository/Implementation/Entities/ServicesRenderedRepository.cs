@@ -27,13 +27,13 @@ namespace NPOMS.Repository.Implementation.Entities
 							.ToListAsync();
 		}
 
-		public async Task DeleteEntity(int id)
+		public async Task DeleteEntity(int id, int currentUserId)
 		{
 			var model = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
 			model.IsActive = false;
 
 			var oldEntity = await this.RepositoryContext.ServicesRendered.FindAsync(model.Id);
-			await UpdateAsync(oldEntity, model, true);
+			await UpdateAsync(oldEntity, model, true, currentUserId);
 		}
 
 		public async Task<ServicesRendered> GetByProperties(ServicesRendered model)

@@ -21,7 +21,7 @@ namespace NPOMS.Services.Interfaces
 
 		Task CreateApplication(Application model, string userIdentifier);
 
-		Task UpdateApplicationStatus(Application model);
+		Task UpdateApplicationStatus(Application model, string userIdentifier);
 
 		Task UpdateApplication(Application model, string userIdentifier);
 
@@ -59,7 +59,7 @@ namespace NPOMS.Services.Interfaces
 
 		Task CreateApplicationComment(ApplicationComment model, string userIdentifier);
 
-		Task UpdateChangesRequired(ApplicationComment model, bool changesRequired);
+		Task UpdateChangesRequired(ApplicationComment model, bool changesRequired, string userIdentifier);
 
 		Task CreateApplicationAudit(ApplicationAudit model, string userIdentifier);
 

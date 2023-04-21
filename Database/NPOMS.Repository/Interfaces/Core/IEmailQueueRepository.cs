@@ -12,7 +12,7 @@ namespace NPOMS.Repository.Interfaces.Core
 
         Task CreateEntity(EmailQueue entity);
 
-        Task UpdateEntity(EmailQueue entity);
+        Task UpdateEntity(EmailQueue entity, int currentUserId);
 
         Task DeleteEntity(EmailQueue entity);
     }

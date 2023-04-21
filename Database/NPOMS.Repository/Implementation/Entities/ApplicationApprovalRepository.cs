@@ -30,9 +30,9 @@ namespace NPOMS.Repository.Implementation.Entities
 			await CreateAsync(model);
 		}
 
-		public async Task UpdateEntity(ApplicationApproval model)
+		public async Task UpdateEntity(ApplicationApproval model, int currentUserId)
 		{
-			await UpdateAsync(null, model, false);
+			await UpdateAsync(null, model, false, currentUserId);
 		}
 
 		#endregion

@@ -14,7 +14,7 @@ namespace NPOMS.Repository.Interfaces.Core
 
         Task CreateEntity(Permission entity);
 
-        Task UpdateEntity(Permission entity);
+        Task UpdateEntity(Permission entity, int currentUserId);
 
         Task DeleteEntity(Permission entity);
     }

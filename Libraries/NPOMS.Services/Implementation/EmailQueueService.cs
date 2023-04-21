@@ -143,7 +143,7 @@ namespace NPOMS.Services.Implementation
 					entity.RecipientName = viewModel.RecipientName;
 					entity.Subject = viewModel.Subject;
 
-					await _emailQueueRepository.UpdateEntity(entity);
+					await _emailQueueRepository.UpdateEntity(entity, 1);
 				}
 			}
 			catch (Exception ex)

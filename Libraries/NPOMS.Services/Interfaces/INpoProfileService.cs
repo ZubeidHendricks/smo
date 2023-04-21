@@ -19,9 +19,9 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<NpoProfileFacilityList>> GetFacilitiesByNpoProfileId(int npoProfileId);
 
-		Task Create(NpoProfileFacilityList model);
+		Task Create(NpoProfileFacilityList model, string userIdentifier);
 
-		Task Update(NpoProfileFacilityList model);
+		Task Update(NpoProfileFacilityList model, string userIdentifier);
 
 		Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(int npoProfileId);
 
