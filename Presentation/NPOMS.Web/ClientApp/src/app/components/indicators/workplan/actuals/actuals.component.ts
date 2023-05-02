@@ -434,7 +434,7 @@ export class ActualsComponent implements OnInit {
     if (this.selectedFinancialYear) {
       this.getFilteredWorkplanIndicators();
 
-      let currentDate = new Date();
+      /*let currentDate = new Date();
 
       let currentFinancialYear = this.allFinancialYears.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
       this.isPreviousFinancialYear = this.selectedFinancialYear.id >= currentFinancialYear.id ? false : true;
@@ -442,7 +442,7 @@ export class ActualsComponent implements OnInit {
       // If previous financial year, disable all buttons besides comments and view history
       for (let i = 0; i < this.buttonItems[0].items.length - 2; i++) {
         this.buttonItems[0].items[i].disabled = this.isPreviousFinancialYear;
-      }
+      }*/
     }
   }
 
