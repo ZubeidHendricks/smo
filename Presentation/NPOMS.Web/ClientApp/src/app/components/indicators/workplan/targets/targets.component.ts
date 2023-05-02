@@ -140,7 +140,7 @@ export class TargetsComponent implements OnInit {
 
   private loadFinancialYears() {
     this._spinner.show();
-    this._dropdownRepo.getFromCurrentFinYear().subscribe(
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, true).subscribe(
       (results) => {
         this.financialYears = results;
         this.selectedFinancialYear = this.financialYears.find(x => x.id === Number(this.financialYearId));
