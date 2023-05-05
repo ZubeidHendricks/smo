@@ -231,6 +231,7 @@ namespace NPOMS.Services.Implementation
 			//not supporting multiple departments
 			existingUser.Departments.FirstOrDefault().DepartmentId = user.Departments.FirstOrDefault().Id;
 			existingUser.Departments.FirstOrDefault().Department = null;
+			_repositoryContext.UserDepartments.Update(existingUser.Departments.FirstOrDefault());
 
 			await UpdateUserRoles(user, existingUser, loggedInUser.Id);
 			var oldEntity = await this._repositoryContext.Users.FindAsync(existingUser.Id);
@@ -259,8 +260,15 @@ namespace NPOMS.Services.Implementation
 
 				userRole.Role = null;
 
-				var oldEntity = await this._repositoryContext.UserRoles.FindAsync(userRole.Id);
-				await _userRoleRepository.UpdateAsync(oldEntity, userRole, true, currentUserId);
+				if (userRole.Id == 0)
+				{
+					await _userRoleRepository.CreateAsync(userRole);
+				}
+				else
+				{
+					var oldEntity = await this._repositoryContext.UserRoles.FindAsync(userRole.Id);
+					await _userRoleRepository.UpdateAsync(oldEntity, userRole, true, currentUserId);
+				}
 			}
 		}
 
