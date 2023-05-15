@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IFinancialYear, IObjective, IResource, ISustainabilityPlan } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IFinancialYear, IFundingApplicationDetails, IObjective, IResource, ISustainabilityPlan } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -66,6 +66,17 @@ export class ApplicationService {
     const url = `${this._envUrl.urlAddress}/api/applications/objectives`;
     return this._http.put<IObjective>(url, objective, httpOptions);
   }
+
+
+  public createFundingApplicationDetails(fundingApplicationDetails: IFundingApplicationDetails, application: IApplication) {
+    const url = `${this._envUrl.urlAddress}/api/applications/fundingApplicationDetails/npoId/${application.npoId}/applicationPeriodId/${application.applicationPeriodId}`;
+    return this._http.post<IFundingApplicationDetails>(url, fundingApplicationDetails, httpOptions);
+  }
+
+  public updateFundingApplicationDetails(fundingApplicationDetails: IFundingApplicationDetails) {
+    const url = `${this._envUrl.urlAddress}/api/applications/fundingApplicationDetails`;
+    return this._http.put<IFundingApplicationDetails>(url, fundingApplicationDetails, httpOptions);
+  }  
 
   public getAllActivities(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/activities/npoId/${application.npoId}/applicationPeriodId/${application.applicationPeriodId}`;

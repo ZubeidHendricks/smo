@@ -51,7 +51,11 @@ export enum DropdownTypeEnum {
     Banks = 32,
     Branches = 33,
     AccountTypes = 34,
-    CompliantCycleRules = 35
+    CompliantCycleRules = 35,
+    DistrictCouncil =36,
+    LocalMunicipality = 37,
+  Region = 38,
+    ServiceDeliveryArea =39
 }
 
 export enum EntityTypeEnum {
@@ -102,7 +106,18 @@ export enum StatusEnum {
     ApprovalInProgress = 10,
     DeptComments = 11,
     OrgComments = 12,
-    Approved = 13
+    InProgress = 13,
+    Approved = 14,
+    Reviewed = 15,
+    Cancelled = 16,
+    OnHold = 17,
+    Declined = 18,
+    ConditionalAccepted = 19,
+    StronglyRecommended = 20,
+    EvaluationDecline = 21,
+    Evaluated = 22,
+    EvaluationApproved = 23,
+    GetName
 }
 
 export enum PermissionsEnum {
@@ -298,6 +313,18 @@ export enum FundingStepsEnum {
     PaymentSchedule = 2,
     BankDetails = 3,
     Documents = 4
+}
+
+export enum FundingApplicationStepsEnum {
+    NpoConfirmationDetails = 0,
+    AmountYouApplyingFor = 1,
+    FinancialMatters = 2,
+    ProjectInformation = 3,
+    Monitoring_And_Evaluation = 4,
+    ProjectImplementationPlan = 5,
+    ApplicationDocument = 6,
+    PreAssessment = 7,
+    Evaluation = 8
 }
 
 export enum DocumentUploadLocationsEnum {

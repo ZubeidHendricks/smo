@@ -4,9 +4,22 @@
     <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>
     <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
+    <p-steps [model]="faItems" [readonly]="false" [activeIndex]="activeStep" *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
+
     <div style="height: 10px;"></div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
-        this is the funding application portion
+        <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
+            [(activeStep)]="activeStep" [application]="application" [newApplication]="true"></app-npo-details>
+
+        <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
+        [(activeStep)]="activeStep" [application]="application"></app-application-details>
+
+        <app-financial-details *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters" 
+             [(activeStep)]="activeStep" [application]="application">
+
+        </app-financial-details>
+
+   
     </div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
         <app-npo-details *ngIf="activeStep == ServiceProvisionStepsEnum.NpoConfirmation" [(activeStep)]="activeStep" [application]="application" [newApplication]="true"></app-npo-details>

@@ -94,13 +94,18 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IBankRepository, BankRepository>();
 			services.AddScoped<IBranchRepository, BranchRepository>();
 			services.AddScoped<IAccountTypeRepository, AccountTypeRepository>();
+            services.AddScoped<IDistrictCouncilRepository, DistrictCouncilRepository>();
+            services.AddScoped<ILocalMunicipalityRepository, LocalMunicipalityRepository>();
+            services.AddScoped<IRegionRepository, RegionRepository>();
+            services.AddScoped<IServiceDeliveryAreaRepository, ServiceDeliveryAreaRepository>();
 
-			/* Entities */
-			services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
-			services.AddScoped<IActivityRepository, ActivityRepository>();
-			services.AddScoped<IApplicationRepository, ApplicationRepository>();
-			services.AddScoped<IApplicationApprovalRepository, ApplicationApprovalRepository>();
-			services.AddScoped<IApplicationAuditRepository, ApplicationAuditRepository>();
+            /* Entities */
+            services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
+            services.AddScoped<IActivityRepository, ActivityRepository>();
+            services.AddScoped<IApplicationRepository, ApplicationRepository>();
+            services.AddScoped<IApplicationApprovalRepository, ApplicationApprovalRepository>();
+
+            services.AddScoped<IApplicationAuditRepository, ApplicationAuditRepository>();
 			services.AddScoped<IApplicationCommentRepository, ApplicationCommentRepository>();
 			services.AddScoped<IApplicationPeriodRepository, ApplicationPeriodRepository>();
 			services.AddScoped<IApplicationReviewerSatisfactionRepository, ApplicationReviewerSatisfactionRepository>();
@@ -117,9 +122,11 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<ICompliantCycleRuleRepository, CompliantCycleRuleRepository>();
 			services.AddScoped<ICompliantCycleRepository, CompliantCycleRepository>();
 			services.AddScoped<IPaymentScheduleRepository, PaymentScheduleRepository>();
+            services.AddScoped<IFundingApplicationDetailsRepository, FundingApplicationDetailsRepository>();
 
-			/* Lookup */
-			services.AddScoped<IActivityListRepository, ActivityListRepository>();
+
+            /* Lookup */
+            services.AddScoped<IActivityListRepository, ActivityListRepository>();
 			services.AddScoped<IFacilityListRepository, FacilityListRepository>();
 			services.AddScoped<IResourceListRepository, ResourceListRepository>();
 

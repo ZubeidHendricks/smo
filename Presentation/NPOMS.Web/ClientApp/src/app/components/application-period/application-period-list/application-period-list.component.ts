@@ -177,6 +177,8 @@ export class ApplicationPeriodListComponent implements OnInit {
   }
 
   onRowSelect(applicationPeriod: IApplicationPeriod) {
+    debugger;
+    console.log('Selected Application Period', applicationPeriod);
     this.selectedApplicationPeriod = applicationPeriod;
     this.applicationPeriodId = applicationPeriod.id;
     this.selectedOption = true;
@@ -193,7 +195,6 @@ export class ApplicationPeriodListComponent implements OnInit {
       if (!this.selectedFinancialYear)
         return true
     }
-
     return false;
   }
 

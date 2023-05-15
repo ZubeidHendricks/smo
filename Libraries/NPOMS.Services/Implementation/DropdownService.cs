@@ -56,12 +56,15 @@ namespace NPOMS.Services.Implementation
 		private IBranchRepository _branchRepository;
 		private IAccountTypeRepository _accountTypeRepository;
 		private ICompliantCycleRuleRepository _compliantCycleRuleRepository;
+        private IDistrictCouncilRepository _districtCouncilRepository;
+        private ILocalMunicipalityRepository _localMunicipalityRepository;
+        private IRegionRepository _regionRepository;
+        private IServiceDeliveryAreaRepository _serviceDeliveryAreaRepository;
+        #endregion
 
-		#endregion
+        #region Constructors
 
-		#region Constructors
-
-		public DropdownService(
+        public DropdownService(
 			IMapper mapper,
 			IRoleRepository roleRepository,
 			IDepartmentRepository departmentRepository,
@@ -98,7 +101,11 @@ namespace NPOMS.Services.Implementation
 			IBankRepository bankRepository,
 			IBranchRepository branchRepository,
 			IAccountTypeRepository accountTypeRepository,
-			ICompliantCycleRuleRepository compliantCycleRuleRepository)
+			ICompliantCycleRuleRepository compliantCycleRuleRepository,
+			IDistrictCouncilRepository districtCouncilRepository,
+			ILocalMunicipalityRepository localMunicipalityRepository,
+			IRegionRepository regionRepository,
+			IServiceDeliveryAreaRepository serviceDeliveryAreaRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -137,7 +144,11 @@ namespace NPOMS.Services.Implementation
 			_branchRepository = branchRepository;
 			_accountTypeRepository = accountTypeRepository;
 			_compliantCycleRuleRepository = compliantCycleRuleRepository;
-		}
+            _districtCouncilRepository = districtCouncilRepository;
+            _localMunicipalityRepository = localMunicipalityRepository;
+			_regionRepository= regionRepository;
+			_serviceDeliveryAreaRepository= serviceDeliveryAreaRepository;
+        }
 
 		#endregion
 
@@ -646,7 +657,7 @@ namespace NPOMS.Services.Implementation
 			return await _facilitySubDistrictRepository.GetEntities(returnInactive);
 		}
 
-		public async Task CreateFacilitySubDistrict(FacilitySubDistrict model, string userIdentifier)
+        public async Task CreateFacilitySubDistrict(FacilitySubDistrict model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
@@ -666,11 +677,36 @@ namespace NPOMS.Services.Implementation
 			await _facilitySubDistrictRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
-		#endregion
+        #endregion
 
-		#region Facility Class
+        #region FA-DistrictCouncil-Municipalaities-Region-ServiceDeliveryAreas
+        public async Task<IEnumerable<DistrictCouncil>> GetDistrictCouncils(bool returnInactive)
+        {
+            return await _districtCouncilRepository.GetEntities(returnInactive);
+        }
 
-		public async Task<IEnumerable<FacilityClass>> GetFacilityClasses(bool returnInactive)
+
+        public async Task<IEnumerable<LocalMunicipality>> GetLocalMunicipalities(bool returnInactive)
+        {
+            return await _localMunicipalityRepository.GetEntities(returnInactive);
+        }
+
+		public async Task<IEnumerable<Region>> GetRegions(bool returnInactive)
+		{
+			return await _regionRepository.GetEntities(returnInactive);
+		}
+
+        public async Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(bool returnInactive)
+        {
+            return await _serviceDeliveryAreaRepository.GetEntities(returnInactive);
+        }
+
+
+        #endregion
+
+        #region Facility Class
+
+        public async Task<IEnumerable<FacilityClass>> GetFacilityClasses(bool returnInactive)
 		{
 			return await _facilityClassRepository.GetEntities(returnInactive);
 		}

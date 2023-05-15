@@ -8,6 +8,7 @@ import { IActivity, IApplication, IApplicationPeriod, IObjective, IResource, ISu
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { FundingApplicationStepsEnum } from '../../../models/enums';
 
 @Component({
   selector: 'app-create-application',
@@ -36,16 +37,21 @@ export class CreateApplicationComponent implements OnInit {
     return ServiceProvisionStepsEnum;
   }
 
+  public get FundingApplicationStepsEnum(): typeof FundingApplicationStepsEnum {
+    return FundingApplicationStepsEnum;
+  }
+
+
   paramSubcriptions: Subscription;
   npoId: string;
-  applicationPeriodId: string;
+  applicationPeriodId: number;
   id: string;
 
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
-
   items: MenuItem[];
+  faItems: MenuItem[];
 
   activeStep: number = 0;
   application: IApplication;
@@ -71,6 +77,8 @@ export class CreateApplicationComponent implements OnInit {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
+      this.loadfundingDropdowns();
+      this.applicationPeriodId = +this.id;
     });
 
     this._authService.profile$.subscribe(profile => {
@@ -83,6 +91,39 @@ export class CreateApplicationComponent implements OnInit {
         this.buildMenu();
       }
     });
+  }
+  private loadfundingDropdowns() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
+      (results) => {
+
+        if (results != null) {
+          this.application = results;
+          // this.bid.ApplicationPeriodId = this.application?.applicationPeriodId;
+          // this.bid.ApplicationId = this.application?.id;
+          this.fASteps(results.applicationPeriod);
+          this.isApplicationAvailable = true;
+        }
+        this._spinner.hide();
+      },
+      (err) => this._spinner.hide()
+    );
+  }
+
+  private fASteps(applicationPeriod: IApplicationPeriod) {
+    if (applicationPeriod != null) {
+      if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+        this.faItems = [
+          { label: 'Organisation Details' },
+          { label: 'Application Details' },
+          { label: 'Financial Matters' },
+          { label: 'Project Information' },
+          { label: 'Monitoring and Evaluation' },
+          { label: ' Project Implementation Plan' },
+          { label: 'Application Document' }
+        ];
+      }
+    }
   }
 
   private loadApplication() {
@@ -117,12 +158,6 @@ export class CreateApplicationComponent implements OnInit {
           { label: 'Activities' },
           { label: 'Sustainability' },
           { label: 'Resourcing' }
-        ];
-      }
-
-      if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
-        this.items = [
-          { label: 'Organisation Details' }
         ];
       }
     }

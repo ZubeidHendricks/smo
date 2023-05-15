@@ -104,8 +104,14 @@ namespace NPOMS.Repository
 		public DbSet<Branch> Branches { get; set; }
 		public DbSet<AccountType> AccountTypes { get; set; }
 
-		/* Entities */
-		public DbSet<AccessStatus> AccessStatuses { get; set; }
+        public DbSet<DistrictCouncil> DistrictCouncils { get; set; }
+        public DbSet<LocalMunicipality> LocalMunicipalities { get; set; }
+
+        public DbSet<Region> Regions { get; set; }
+        public DbSet<ServiceDeliveryArea> ServiceDeliveryAreas { get; set; }
+
+        /* Entities */
+        public DbSet<AccessStatus> AccessStatuses { get; set; }
 		public DbSet<Activity> Activities { get; set; }
 		public DbSet<AddressInformation> AddressInformation { get; set; }
 		public DbSet<Application> Applications { get; set; }
@@ -118,7 +124,9 @@ namespace NPOMS.Repository
 		public DbSet<Npo> Npos { get; set; }
 		public DbSet<NpoProfile> NpoProfiles { get; set; }
 		public DbSet<Objective> Objectives { get; set; }
-		public DbSet<Resource> Resources { get; set; }
+        public DbSet<FundingApplicationDetails> FundingApplicationDetails { get; set; }
+
+        public DbSet<Resource> Resources { get; set; }
 		public DbSet<Status> Statuses { get; set; }
 		public DbSet<SustainabilityPlan> SustainabilityPlans { get; set; }
 		public DbSet<ServicesRendered> ServicesRendered { get; set; }
@@ -218,9 +226,13 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new BankConfiguration());
 			modelBuilder.ApplyConfiguration(new BranchConfiguration());
 			modelBuilder.ApplyConfiguration(new AccountTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new DistrictCouncilConfiguration());
+            modelBuilder.ApplyConfiguration(new LocalMunicipalityConfiguration());
+            modelBuilder.ApplyConfiguration(new RegionConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceDeliveryAreaConfiguration());
 
-			/* Entities */
-			modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());
+            /* Entities */
+            modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());
 			modelBuilder.ApplyConfiguration(new StatusConfiguration());
 			modelBuilder.ApplyConfiguration(new TrainingMaterialConfiguration());
 			modelBuilder.ApplyConfiguration(new CompliantCycleRuleConfiguration());
