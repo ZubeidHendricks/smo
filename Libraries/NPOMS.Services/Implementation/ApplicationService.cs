@@ -5,6 +5,7 @@ using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository;
+using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.Mapping;
@@ -37,8 +38,10 @@ namespace NPOMS.Services.Implementation
 		private IActivityFacilityListRepository _activityFacilityListRepository;
 		private IUserNpoRepository _userNpoRepository;
 		private IApplicationReviewerSatisfactionRepository _applicationReviewerSatisfactionRepository;
+        private IFundingApplicationDetailsRepository _fundingApplicationDetailsRepository;
 
-		private RepositoryContext _repositoryContext;
+
+        private RepositoryContext _repositoryContext;
 
 		#endregion
 
@@ -62,7 +65,8 @@ namespace NPOMS.Services.Implementation
 			IActivityFacilityListRepository activityFacilityListRepository,
 			IUserNpoRepository userNpoRepository,
 			IApplicationReviewerSatisfactionRepository applicationReviewerSatisfactionRepository,
-			RepositoryContext repositoryContext
+            IFundingApplicationDetailsRepository fundingApplicationDetailsRepository,
+            RepositoryContext repositoryContext
 			)
 		{
 			_applicationRepository = applicationRepository;
@@ -82,7 +86,8 @@ namespace NPOMS.Services.Implementation
 			_activityFacilityListRepository = activityFacilityListRepository;
 			_userNpoRepository = userNpoRepository;
 			_applicationReviewerSatisfactionRepository = applicationReviewerSatisfactionRepository;
-			_repositoryContext = repositoryContext;
+            _fundingApplicationDetailsRepository = fundingApplicationDetailsRepository;
+            _repositoryContext = repositoryContext;
 		}
 
 		#endregion
@@ -309,7 +314,17 @@ namespace NPOMS.Services.Implementation
 			return null;
 		}
 
-		public async Task CreateObjective(Objective model, string userIdentifier)
+        public async Task CreateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _fundingApplicationDetailsRepository.CreateEntity(model);
+        }
+
+        public async Task CreateObjective(Objective model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
@@ -339,7 +354,21 @@ namespace NPOMS.Services.Implementation
 			await _objectiveRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
-		private async Task DeleteActivities(Objective model, User currentUser)
+        public async Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+
+
+            var objective = _mapper.Map<Objective>(model);
+            objective.UpdatedUserId = loggedInUser.Id;
+            objective.UpdatedDateTime = DateTime.Now;
+
+            var oldEntity = await this._repositoryContext.FundingApplicationDetails.FindAsync(model.Id);
+            await _fundingApplicationDetailsRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+        }
+
+        private async Task DeleteActivities(Objective model, User currentUser)
 		{
 			var activities = await _activityRepository.GetByObjectiveId(model.Id);
 

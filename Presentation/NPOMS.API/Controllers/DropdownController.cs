@@ -150,7 +150,20 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.CompliantCycleRules:
 						var compliantCycleRules = await _dropdownService.GetCompliantCycleRules(returnInactive);
 						return Ok(compliantCycleRules);
-				}
+                    case DropdownTypeEnum.DistrictCouncil:
+                        var districtCouncils = await _dropdownService.GetDistrictCouncils(returnInactive);
+                        return Ok(districtCouncils);
+                    case DropdownTypeEnum.LocalMunicipality:
+                        var localMunicipalities = await _dropdownService.GetLocalMunicipalities(returnInactive);
+                        return Ok(localMunicipalities);
+
+                    case DropdownTypeEnum.Region:
+                        var regions = await _dropdownService.GetDistrictCouncils(returnInactive);
+                        return Ok(regions);
+                    case DropdownTypeEnum.ServiceDeliveryArea:
+                        var serviceDeliveryAreas = await _dropdownService.GetServiceDeliveryAreas(returnInactive);
+                        return Ok(serviceDeliveryAreas);
+                }
 
 				return Ok();
 			}

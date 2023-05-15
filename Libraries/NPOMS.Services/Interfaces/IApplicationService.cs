@@ -31,7 +31,12 @@ namespace NPOMS.Services.Interfaces
 
 		Task UpdateObjective(Objective model, string userIdentifier);
 
-		Task<IEnumerable<Activity>> GetAllActivitiesAsync(int NpoId, int applicationPeriodId);
+
+        Task CreateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
+
+        Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
+
+        Task<IEnumerable<Activity>> GetAllActivitiesAsync(int NpoId, int applicationPeriodId);
 
 		Task<Activity> GetActivityById(int id);
 

@@ -232,5 +232,15 @@ namespace NPOMS.Services.Interfaces
 		Task CreateCompliantCycleRule(CompliantCycleRule model, string userIdentifier);
 
 		Task UpdateCompliantCycleRule(CompliantCycleRule model, string userIdentifier);
-	}
+
+        Task<IEnumerable<DistrictCouncil>> GetDistrictCouncils(bool returnInactive);
+
+        Task<IEnumerable<LocalMunicipality>> GetLocalMunicipalities(bool returnInactive);
+
+        Task<IEnumerable<Region>> GetRegions(bool returnInactive);
+
+        Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(bool returnInactive);
+
+
+    }
 }

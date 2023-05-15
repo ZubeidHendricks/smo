@@ -36,6 +36,10 @@
 		Banks = 32,
 		Branches = 33,
 		AccountTypes = 34,
-		CompliantCycleRules = 35
-	}
+		CompliantCycleRules = 35,
+        DistrictCouncil = 36,
+        LocalMunicipality = 37,
+		Region =38,
+		ServiceDeliveryArea =39
+    }
 }

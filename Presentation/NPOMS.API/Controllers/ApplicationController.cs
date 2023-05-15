@@ -268,7 +268,40 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpPost("objectives/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateObjective")]
+        [HttpPost("fundingApplicationDetails/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateFundingApplicationDetails")]
+        public async Task<IActionResult> CreateFundingApplicationDetails([FromBody] FundingApplicationDetails model, int NpoId, int applicationPeriodId)
+        {
+            try
+            {
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(NpoId, applicationPeriodId);
+                model.ApplicationId = application.Id;
+
+                await _applicationService.CreateFundingApplicationDetails(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateFundingApplicationDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("fundingApplicationDetails", Name = "UpdateFundingApplicationDetails")]
+        public async Task<IActionResult> UpdateFundingApplicationDetails([FromBody] FundingApplicationDetails model)
+        {
+            try
+            {
+                await _applicationService.UpdateFundingApplicationDetails(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateFundingApplicationDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("objectives/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateObjective")]
 		public async Task<IActionResult> CreateObjective([FromBody] Objective model, int NpoId, int applicationPeriodId)
 		{
 			try
