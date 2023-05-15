@@ -1,4 +1,7 @@
+
 import { EntityTypeEnum } from "./enums";
+import { FinancialMatters } from "./FinancialMatters";
+
 
 /* Core */
 export interface IDepartment {
@@ -134,6 +137,36 @@ export interface IFacilitySubDistrict {
     isActive: boolean;
 
     facilityDistrict: IFacilityDistrict;
+}
+
+export interface IDistrictCouncil {
+    id: number;
+    name: string;
+    isActive: boolean;
+}
+
+export interface ILocalMunicipality {
+    id: number;
+    districtCouncilId: number;
+    name: string;
+    isActive: boolean;
+    districtCouncil: IDistrictCouncil;
+}
+
+export interface IRegion {
+  id: number;
+  localMunicipalityId: number;
+  name: string;
+  isActive: boolean;
+  localMunicipality: ILocalMunicipality;
+}
+
+export interface IServiceDeliveryArea {
+  id: number;
+  regionId: number;
+  name: string;
+  isActive: boolean;
+  region: IRegion;
 }
 
 export interface IFacilityType {
@@ -317,6 +350,79 @@ export interface IApplication {
     status: IStatus;
 }
 
+export interface Bid {
+    id: number;
+   
+    ApplicationPeriodId: number;
+    ApplicationId:number
+    // projectInformation:IProjectInformation;
+    // monitoringEvalution:IMonitoringAndEvaluation;
+    // implementations: Implementation[];
+    applicationPeriod: IApplicationPeriod;
+    // incomes: Budget[],
+    // expenses: Budget[],
+    
+    financialMatters: FinancialMatters[];
+  
+    // applicationDetails: IApplicationDetails;
+    // evaluationQuestions: EvalutionSection[];
+    // evaluationAnswers: EvaluationAnswers[];
+  }
+
+  export interface FinYear {
+    id: number;
+    name: string;
+    next: number;
+  }
+
+  export interface SubPlace {
+    placeId: number;
+    id: number;
+    name: string;
+    
+  }
+  export interface Place {
+    id: number;
+    name: string;
+    serviceDeliveryAreaId: number;
+  }
+
+  export interface SDA {
+    id: number;
+    name: string;
+    isActive: boolean;
+    regionId: number;
+  }
+
+  export interface LocalMunicipality {
+    id: number;
+    name: string;
+    districtCouncilId: number;
+  }  
+
+  export interface DistrictCouncil {
+    id: number;
+    name: string;
+  }
+
+  export interface Region {
+    id: number;
+    isActive: boolean;
+    name: string;
+    localMunicipalityId: number;
+  }
+  
+
+  export interface IFinancialYear {
+    id: number;
+    name: string;
+    year: number;
+    startDate: Date;
+    endDate: Date;
+    isActive: boolean;
+}
+
+
 export interface IApplicationApproval {
     id: number;
     applicationId: number;
@@ -460,6 +566,21 @@ export interface IObjective {
     recipientType: IRecipientType;
     objectiveProgrammes: IObjectiveProgramme[];
 }
+
+export interface IFundingApplicationDetails {
+    id: number;
+    applicationId: number;    
+    isActive: boolean;
+    changesRequired: boolean;
+    isNew: boolean;    
+    amountApplyingFor: number;
+    localMunicipalities: ILocalMunicipality[],
+    regions: IRegion[],
+    serviceDeliveryAreas :IServiceDeliveryArea[],
+    fundAppSDADetails:IFundAppSDADetail[];  
+}
+
+
 
 export interface IResource {
     id: number;
@@ -648,6 +769,22 @@ export interface IObjectiveProgramme {
 
     programme: IProgramme;
     subProgramme: ISubProgramme;
+}
+
+export interface IFundAppSDADetail {
+    id: number;
+    fundingApplicationDetailsId: number;
+    districtCouncilId: number;
+    localMunicipalityId: number;
+    regionId: number;
+    serviceDeliveryAreaId:number;
+
+    isActive: boolean;
+
+    districtCouncil: IDistrictCouncil;
+    localMunicipality: ILocalMunicipality;
+    region:IRegion;
+    serviceDeliveryArea:IServiceDeliveryArea;
 }
 
 export interface IUserDepartment {
