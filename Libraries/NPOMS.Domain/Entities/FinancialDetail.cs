@@ -13,19 +13,19 @@ namespace NPOMS.Domain.Entities
     public class FinancialDetail : BaseEntity
     {
         public int ApplicationId { get; set; }
-
-
         public int PropertyId { get; set; }
         public int SubPropertyId { get; set; }
+        [Column(TypeName = "nvarchar(50)")]
         public string Property { get; set; }
+        [Column(TypeName = "nvarchar(50)")]
         public string SubProperty { get; set; }
-        public string AmountOne { get; set; }
-        public string AmountTwo { get; set; }
-        public string AmountThree { get; set; }
-        //public int BidId { get; set; }
+        [Column(TypeName = "numeric(18,6)")]
+        public decimal AmountOne { get; set; }
+        [Column(TypeName = "numeric(18,6)")]
+        public decimal AmountTwo { get; set; }
+        [Column(TypeName = "numeric(18,6)")]
+        public decimal AmountThree { get; set; }
         public string Type { get; set; }
-        //public virtual Bid Bid { get; set; }
-
 
         public bool IsActive { get; set; }
 

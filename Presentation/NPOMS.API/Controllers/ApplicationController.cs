@@ -287,6 +287,26 @@ namespace NPOMS.API.Controllers
         }
 
 
+        [HttpPost("projectInformation/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateProjectInformation")]
+        public async Task<IActionResult> CreateProjectInformation([FromBody] ProjectInformation model, int NpoId, int applicationPeriodId)
+        {
+            try
+            {
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(NpoId, applicationPeriodId);
+                model.ApplicationId = application.Id;
+
+                await _applicationService.CreateProjectInformation(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateProjectInformation action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
         [HttpPost("financialDetail/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateFinancialDetail")]
         public async Task<IActionResult> CreateFinancialDetail([FromBody] FinancialDetail model, int NpoId, int applicationPeriodId)
         {
@@ -301,6 +321,21 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside CreateFinancialDetail action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("projectInformation", Name = "UpdateProjectInformation")]
+        public async Task<IActionResult> UpdateProjectInformation([FromBody] ProjectInformation model)
+        {
+            try
+            {
+                await _applicationService.UpdateProjectInformation(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateProjectInformation action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
