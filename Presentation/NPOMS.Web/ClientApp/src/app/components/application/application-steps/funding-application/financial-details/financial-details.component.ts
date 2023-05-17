@@ -26,8 +26,8 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
   newFinancialMatter: boolean;
   propertyObj: PropertyType = {} as PropertyType;
-  financialMattersIncome: FinancialMatters[];
-  financialMattersExpenditure: FinancialMatters[];
+  financialMattersIncome: FinancialMatters[] =[];
+  financialMattersExpenditure: FinancialMatters[] =[];
   displayExpenditureTotal: boolean = false;
   displayIncomeTotal: boolean = false;
   calculatedFinMattersIncome: CalculatedFinMatters = {} as CalculatedFinMatters;
@@ -97,7 +97,7 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.PropertyType, false).subscribe((propertyTypes) => {
       console.log('propertyTypes',propertyTypes);
       this.propertyTypes = propertyTypes;
-      //this.propertyTypes.unshift({ name: 'Select Property Type', id: null });
+      this.propertyTypes.unshift({ name: 'Select Property Type', id: null });
     }, error => {
       var errorMessage = error ? error.error ? error.error : null : null;
       this.messageService.add({ severity: 'error', summary: 'Error Message', detail: errorMessage });
@@ -112,7 +112,7 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.PropertySubType, false).subscribe((subpropertyTypes) => {
       this.propertySubtypes = subpropertyTypes.filter(x => x.propertyTypeID == id);
-      //this.propertySubtypes.unshift({ name: 'Select Sub Property Type', id: null, propertyTypeID: null });
+      this.propertySubtypes.unshift({ name: 'Select Sub Property Type', id: null, propertyTypeID: null });
     }, error => {
       var errorMessage = error ? error.error ? error.error : null : null;
       this.messageService.add({ severity: 'error', summary: 'Error Message', detail: errorMessage });
@@ -207,13 +207,16 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
   }
 
   saveAddFun() {
-
+  debugger;
     this.financialmatter.property = this.selectedPropertyTypes.name;
     this.financialmatter.propertyId = Number(this.selectedPropertyTypes.id);
     this.financialmatter.subProperty = this.selectedPropertySubtypes.name;
     this.financialmatter.subPropertyId = Number(this.selectedPropertySubtypes.id);
     if (this.financialmatter.type == "income") {
       if (this.newFinancialMatter) {
+        console.log('financialMattersIncome',this.financialMattersIncome);
+        console.log('financialmatter',this.financialmatter);
+
         this.financialMattersIncome.push(this.financialmatter);
       }
       else {
@@ -290,6 +293,7 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
 
   save() {
+    debugger;
 
     this.financialmatter.property = this.selectedPropertyTypes.name;
     this.financialmatter.propertyId = Number(this.selectedPropertyTypes.id);
@@ -297,6 +301,8 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
     this.financialmatter.subPropertyId = Number(this.selectedPropertySubtypes.id);
 
     let financialmatter = [...this.financialMatters];
+    console.log('save Method [...this.financialMatters]' , [...this.financialMatters]);
+    console.log('save Method this.financialmatter', this.financialmatter);
     if (this.newFinancialMatter) {
       financialmatter.push(this.financialmatter);
     }
