@@ -128,6 +128,7 @@ import { PaymentSchedulesComponent } from './components/admin/payment-schedules/
 import { CompliantCyclesComponent } from './components/admin/compliant-cycles/compliant-cycles.component';
 import { ApplicationDetailsComponent } from './components/application/application-steps/funding-application/application-details/application-details.component';
 import { FinancialDetailsComponent } from './components/application/application-steps/funding-application/financial-details/financial-details.component';
+import { ProjectInformationComponent } from './components/application/application-steps/funding-application/project-information/project-information.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -255,7 +256,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     PaymentSchedulesComponent,
     CompliantCyclesComponent,
     ApplicationDetailsComponent,
-    FinancialDetailsComponent
+    FinancialDetailsComponent,
+    ProjectInformationComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

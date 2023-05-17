@@ -32,6 +32,11 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateObjective(Objective model, string userIdentifier);
 
 
+        Task CreateProjectInformation(ProjectInformation model, string userIdentifier);
+
+        Task UpdateProjectInformation(ProjectInformation model, string userIdentifier);
+
+
         Task CreateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
 
         Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
@@ -72,7 +77,7 @@ namespace NPOMS.Services.Interfaces
 
 		Task UpdateChangesRequired(ApplicationComment model, bool changesRequired, string userIdentifier);
 
-		Task CreateApplicationAudit(ApplicationAudit model, string userIdentifier);
+        Task CreateApplicationAudit(ApplicationAudit model, string userIdentifier);
 
 		Task<IEnumerable<ApplicationAudit>> GetApplicationAudits(int applicationId);
 

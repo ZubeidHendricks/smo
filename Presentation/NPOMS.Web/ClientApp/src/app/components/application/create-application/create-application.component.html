@@ -18,6 +18,10 @@
              [(activeStep)]="activeStep" [application]="application">
 
         </app-financial-details>
+        <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
+            [(activeStep)]="activeStep" [application]="application">
+        </app-project-information>
+      
 
    
     </div>

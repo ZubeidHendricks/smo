@@ -2,9 +2,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPOMS.Repository.Interfaces.Core;
 using System.Threading.Tasks;
 
-namespace NPOMS.Tests.Services
+namespace NPOMS.Test.Services
 {
-	/*[TestClass]
+    /*[TestClass]
     public class DepartmentTest
     {
         private readonly IDepartmentRepository _departmentRepository;

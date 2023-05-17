@@ -40,6 +40,8 @@ namespace NPOMS.Services.Implementation
 		private IApplicationReviewerSatisfactionRepository _applicationReviewerSatisfactionRepository;
         private IFundingApplicationDetailsRepository _fundingApplicationDetailsRepository;
 		private IFinancialDetailRepository _financialDetailRepository;
+        private IProjectInformationRepository _projectInformationRepository;
+
 
 
         private RepositoryContext _repositoryContext;
@@ -68,6 +70,7 @@ namespace NPOMS.Services.Implementation
 			IApplicationReviewerSatisfactionRepository applicationReviewerSatisfactionRepository,
             IFundingApplicationDetailsRepository fundingApplicationDetailsRepository,
 			IFinancialDetailRepository financialDetailRepository,
+			IProjectInformationRepository projectInformationRepository,
             RepositoryContext repositoryContext
 			)
 		{
@@ -90,6 +93,7 @@ namespace NPOMS.Services.Implementation
 			_applicationReviewerSatisfactionRepository = applicationReviewerSatisfactionRepository;
             _fundingApplicationDetailsRepository = fundingApplicationDetailsRepository;
 			_financialDetailRepository= financialDetailRepository;
+			_projectInformationRepository = projectInformationRepository;
             _repositoryContext = repositoryContext;
 		}
 
@@ -337,6 +341,17 @@ namespace NPOMS.Services.Implementation
             return null;
         }
 
+
+        public async Task CreateProjectInformation(ProjectInformation model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _projectInformationRepository.CreateEntity(model);
+        }
+
         public async Task CreateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
@@ -391,12 +406,24 @@ namespace NPOMS.Services.Implementation
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-            var objective = _mapper.Map<Objective>(model);
-            objective.UpdatedUserId = loggedInUser.Id;
-            objective.UpdatedDateTime = DateTime.Now;
+            var fundAppDetails = _mapper.Map<FundingApplicationDetails>(model);
+            fundAppDetails.UpdatedUserId = loggedInUser.Id;
+            fundAppDetails.UpdatedDateTime = DateTime.Now;
 
             var oldEntity = await this._repositoryContext.FundingApplicationDetails.FindAsync(model.Id);
             await _fundingApplicationDetailsRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+        }
+
+        public async Task UpdateProjectInformation(ProjectInformation model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            var objective = _mapper.Map<ProjectInformation>(model);
+            objective.UpdatedUserId = loggedInUser.Id;
+            objective.UpdatedDateTime = DateTime.Now;
+
+            var oldEntity = await this._repositoryContext.ProjectInformations.FindAsync(model.Id);
+            await _projectInformationRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
         }
 
         public async Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier)
@@ -687,7 +714,7 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
-		public async Task CreateApplicationAudit(ApplicationAudit model, string userIdentifier)
+        public async Task CreateApplicationAudit(ApplicationAudit model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 

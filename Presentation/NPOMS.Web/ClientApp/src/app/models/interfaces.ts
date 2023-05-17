@@ -601,6 +601,18 @@ export interface IFundingApplicationDetails {
     fundAppSDADetails:IFundAppSDADetail[];  
 }
 
+export interface IProjectInformation
+{
+    id : number;
+    applicationId : number;
+    isActive: boolean;
+    changeRequired: boolean;
+    isNew: boolean;
+    initiatedQuestion: string;
+    considerQuestion: string;
+    purposeQuestion: string;
+}
+
 // export interface IFinancialDetails {
 //     id: number;
 //     applicationId: number;    
