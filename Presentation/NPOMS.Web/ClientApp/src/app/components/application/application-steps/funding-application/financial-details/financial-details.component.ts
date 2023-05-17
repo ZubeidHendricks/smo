@@ -5,9 +5,10 @@ import { CalculatedFinMatters } from 'src/app/models/CalculatedFinMatters';
 import { FinancialMatters } from 'src/app/models/FinancialMatters';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { PropertyType } from 'src/app/models/PropertyType';
-import { StatusEnum } from 'src/app/models/enums';
+import { DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
 import { Bid, FinYear, IApplication } from 'src/app/models/interfaces';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
+import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 
 @Component({
   selector: 'app-financial-details',
@@ -44,10 +45,12 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private bidService: BidService, private messageService: MessageService) { }
+  constructor(private dropDownService: DropdownService, private messageService: MessageService) { }
 
 
   ngOnInit(): void {
+
+     //console.log('bid', this.bid);
 
     // console.log('bid', this.bid);
 
@@ -60,20 +63,21 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
     //   this.financialMattersIncome = [];
     //   this.financialMattersExpenditure = [];
     // }
-    // this.loadPropertyTypes();
+    this.loadPropertyTypes();
 
-    // var subscription = this.bidService.getFinYears().subscribe(res => {
-    //   this.finYears = res;
 
-    //   this.cols = [
-    //     { field: 'property', header: 'Property' },
-    //     { field: 'subproperty', header: 'Sub Property' },
-    //     { field: 'year1', header: 'Budget for financial year ' + this.finYears[0].name },
-    //     { field: 'year2', header: 'Budget for financial year ' + this.finYears[1].name },
-    //     { field: 'year3', header: 'Budget for financial year ' + this.finYears[2].name },
-    //   ];
-    // });
-    // this.subscriptions.push(subscription);
+    var subscription = this.dropDownService.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(res => {
+      this.finYears = res;
+
+      this.cols = [
+        { field: 'property', header: 'Property' },
+        { field: 'subproperty', header: 'Sub Property' },
+        { field: 'year1', header: 'Budget for financial year ' + this.finYears[0].name },
+        { field: 'year2', header: 'Budget for financial year ' + this.finYears[1].name },
+        { field: 'year3', header: 'Budget for financial year ' + this.finYears[2].name },
+      ];
+    });
+    this.subscriptions.push(subscription);
   }
 
 
@@ -86,12 +90,14 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
           return true;
         else return false;
       }
-  
+
+ 
   private loadPropertyTypes() {
 
-    var subscription = this.bidService.getpropertyTypes().subscribe((propertyTypes) => {
+    var subscription = this.dropDownService.getEntities(DropdownTypeEnum.PropertyType, false).subscribe((propertyTypes) => {
+      console.log('propertyTypes',propertyTypes);
       this.propertyTypes = propertyTypes;
-      this.propertyTypes.unshift({ name: 'Select Property Type', id: null });
+      //this.propertyTypes.unshift({ name: 'Select Property Type', id: null });
     }, error => {
       var errorMessage = error ? error.error ? error.error : null : null;
       this.messageService.add({ severity: 'error', summary: 'Error Message', detail: errorMessage });
@@ -104,9 +110,9 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
   private loadPropertySubTypes(id: number) {
 
-    var subscription = this.bidService.getsubPropertyTypes().subscribe((subpropertyTypes) => {
+    var subscription = this.dropDownService.getEntities(DropdownTypeEnum.PropertySubType, false).subscribe((subpropertyTypes) => {
       this.propertySubtypes = subpropertyTypes.filter(x => x.propertyTypeID == id);
-      this.propertySubtypes.unshift({ name: 'Select Sub Property Type', id: null, propertyTypeID: null });
+      //this.propertySubtypes.unshift({ name: 'Select Sub Property Type', id: null, propertyTypeID: null });
     }, error => {
       var errorMessage = error ? error.error ? error.error : null : null;
       this.messageService.add({ severity: 'error', summary: 'Error Message', detail: errorMessage });
@@ -129,9 +135,10 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
 
-    if (this.bid) {
-      this.financialMattersIncome = this.bid.financialMatters?.filter(x => x.type == "income");
-      this.financialMattersExpenditure = this.bid.financialMatters?.filter(x => x.type == "expenditure");
+    console.log('Financial Matters',this.financialMatters);
+    if (this.financialMatters) {
+      this.financialMattersIncome = this.financialMatters?.filter(x => x.type == "income");
+      this.financialMattersExpenditure = this.financialMatters?.filter(x => x.type == "expenditure");
       var sumOne = 0;
       var sumTwo = 0;
       var sumThree = 0;
@@ -169,9 +176,9 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
     }
     else {
-      if (this.bid == null) {
-        this.bid.financialMatters = [];
-      }
+      //if (this.bid == null) {
+        this.financialMatters = [];
+      //}
     }
 
 
@@ -213,7 +220,7 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
         this.financialMattersIncome[this.financialMattersIncome.indexOf(this.selectedFinancialMatter)] = this.financialmatter;
       }
 
-      this.bid.financialMatters = this.financialMattersIncome.concat(this.financialMattersExpenditure);
+      this.financialMatters = this.financialMattersIncome.concat(this.financialMattersExpenditure);
       let totalOne: number = this.financialMattersIncome.map(a => a.amountOne).reduce(function (a, b) {
         return Number(a) + Number(b);
       });
@@ -240,7 +247,7 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
         this.financialMattersExpenditure[this.financialMattersExpenditure.indexOf(this.selectedFinancialMatter)] = this.financialmatter;
       }
 
-      this.bid.financialMatters = this.financialMattersExpenditure.concat(this.financialMattersIncome);
+      this.financialMatters = this.financialMattersExpenditure.concat(this.financialMattersIncome);
 
       let totalOneExpenditure: number = this.financialMattersExpenditure.map(a => a.amountOne).reduce(function (a, b) {
         return Number(a) + Number(b);
@@ -309,7 +316,7 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
     this.financialmatter = this.cloneImplementation(event.data);
 
     // loadProperty Types
-    this.bidService.getpropertyTypes().subscribe((typs) => {
+    this.dropDownService.getEntities(DropdownTypeEnum.PropertyType, false).subscribe((typs) => {
       this.propertyTypes = typs;
       let properties = this.propertyTypes?.filter(x => x.id == this.financialmatter.propertyId);
 
@@ -320,7 +327,7 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
       }
     });
 
-    this.bidService.getsubPropertyTypes().subscribe((subpropertyTypes) => {
+    this.dropDownService.getEntities(DropdownTypeEnum.PropertySubType, false).subscribe((subpropertyTypes) => {
       this.propertySubtypes = subpropertyTypes;
       if (this.propertySubtypes.length > 0) {
         let subProperty = this.propertySubtypes.filter(x => x.id == this.financialmatter.subPropertyId);

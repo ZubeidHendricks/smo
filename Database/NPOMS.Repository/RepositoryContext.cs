@@ -110,6 +110,9 @@ namespace NPOMS.Repository
         public DbSet<Region> Regions { get; set; }
         public DbSet<ServiceDeliveryArea> ServiceDeliveryAreas { get; set; }
 
+        public DbSet<PropertyType> PropertyTypes { get; set; }
+        public DbSet<PropertySubType> PropertySubTypes { get; set; }
+
         /* Entities */
         public DbSet<AccessStatus> AccessStatuses { get; set; }
 		public DbSet<Activity> Activities { get; set; }
@@ -125,6 +128,8 @@ namespace NPOMS.Repository
 		public DbSet<NpoProfile> NpoProfiles { get; set; }
 		public DbSet<Objective> Objectives { get; set; }
         public DbSet<FundingApplicationDetails> FundingApplicationDetails { get; set; }
+        public DbSet<FinancialDetail> FinancialDetails { get; set; }
+
 
         public DbSet<Resource> Resources { get; set; }
 		public DbSet<Status> Statuses { get; set; }
@@ -230,6 +235,8 @@ namespace NPOMS.Repository
             modelBuilder.ApplyConfiguration(new LocalMunicipalityConfiguration());
             modelBuilder.ApplyConfiguration(new RegionConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceDeliveryAreaConfiguration());
+            modelBuilder.ApplyConfiguration(new PropertyTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new PropertySubTypeConfiguration());
 
             /* Entities */
             modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());

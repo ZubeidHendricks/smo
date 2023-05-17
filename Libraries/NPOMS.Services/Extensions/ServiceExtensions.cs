@@ -98,6 +98,8 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<ILocalMunicipalityRepository, LocalMunicipalityRepository>();
             services.AddScoped<IRegionRepository, RegionRepository>();
             services.AddScoped<IServiceDeliveryAreaRepository, ServiceDeliveryAreaRepository>();
+            services.AddScoped<IPropertyTypeRepository, PropertyTypeRepository>();
+            services.AddScoped<IPropertySubTypeRepository, PropertySubTypeRepository>();
 
             /* Entities */
             services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
@@ -123,6 +125,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<ICompliantCycleRepository, CompliantCycleRepository>();
 			services.AddScoped<IPaymentScheduleRepository, PaymentScheduleRepository>();
             services.AddScoped<IFundingApplicationDetailsRepository, FundingApplicationDetailsRepository>();
+			services.AddScoped<IFinancialDetailRepository, FinancialDetailRepository>();
 
 
             /* Lookup */

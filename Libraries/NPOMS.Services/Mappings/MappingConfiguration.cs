@@ -1,7 +1,9 @@
 using AutoMapper;
 using NPOMS.Domain.Core;
+using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Mapping;
 using NPOMS.Services.Models;
+using NPOMS.Services.Models.FundingApplication;
 
 namespace NPOMS.Services.Mappings
 {
@@ -140,6 +142,48 @@ namespace NPOMS.Services.Mappings
 			 .ForMember(d => d.ReportId, op => op.MapFrom(s => s.ReportId))
 			 .ForMember(d => d.WorkspaceId, op => op.MapFrom(s => s.WorkspaceId))
 			 .ForMember(d => d.CategoryName, op => op.MapFrom(s => s.CategoryName));
-		}
+
+            CreateMap<PropertyTypeViewModel, PropertyType>()
+             .ForMember(model => model.Id, op => op.Ignore())
+             .ForMember(model => model.Name, op => op.MapFrom(c => c.Name))
+             .ForMember(model => model.Code, op => op.MapFrom(c => c.Code))
+             .ForMember(model => model.OnGeneralLevel, op => op.MapFrom(c => c.OnGeneralLevel))
+             .ForMember(model => model.OnSubsidyLevel, op => op.MapFrom(c => c.OnSubsidyLevel))
+             .ForMember(model => model.CanDefineName, op => op.MapFrom(c => c.CanDefineName))
+             .ForMember(model => model.ValueOnGeneralLevel, op => op.MapFrom(c => c.ValueOnGeneralLevel))
+             .ForMember(model => model.ValueOnSybsidyLevel, op => op.MapFrom(c => c.ValueOnSybsidyLevel))
+             .ForMember(model => model.HaveBreakDown, op => op.MapFrom(c => c.HaveBreakDown))
+             .ForMember(model => model.HaveRelatedProperty, op => op.MapFrom(c => c.HaveRelatedProperty))
+             .ForMember(model => model.IsBusinessRule, op => op.MapFrom(c => c.IsBusinessRule))
+             .ForMember(model => model.IsActive, op => op.MapFrom(c => c.IsActive))
+             .ForMember(model => model.IsDeleted, op => op.MapFrom(c => c.IsDeleted))
+             .ForMember(model => model.CreatedUserID, op => op.MapFrom(c => c.CreatedUserID))
+             .ForMember(model => model.UpdatedUserID, op => op.MapFrom(c => c.UpdatedUserID))
+             .ForMember(model => model.CreatedDateTime, op => op.MapFrom(c => c.CreatedDateTime))
+             .ForMember(model => model.UpdatedDateTime, op => op.MapFrom(c => c.UpdatedDateTime))
+             .ForMember(model => model.HaveFrequency, op => op.MapFrom(c => c.HaveFrequency))
+             .ForMember(model => model.PropertySubTypes, op => op.MapFrom(c => c.PropertySubTypes));
+
+            CreateMap<PropertyType, PropertyTypeViewModel>()
+             .ForMember(model => model.Id, op => op.MapFrom(c => c.Id))
+             .ForMember(model => model.Name, op => op.MapFrom(c => c.Name))
+             .ForMember(model => model.Code, op => op.MapFrom(c => c.Code))
+             .ForMember(model => model.OnGeneralLevel, op => op.MapFrom(c => c.OnGeneralLevel))
+             .ForMember(model => model.OnSubsidyLevel, op => op.MapFrom(c => c.OnSubsidyLevel))
+             .ForMember(model => model.CanDefineName, op => op.MapFrom(c => c.CanDefineName))
+             .ForMember(model => model.ValueOnGeneralLevel, op => op.MapFrom(c => c.ValueOnGeneralLevel))
+             .ForMember(model => model.ValueOnSybsidyLevel, op => op.MapFrom(c => c.ValueOnSybsidyLevel))
+             .ForMember(model => model.HaveBreakDown, op => op.MapFrom(c => c.HaveBreakDown))
+             .ForMember(model => model.HaveRelatedProperty, op => op.MapFrom(c => c.HaveRelatedProperty))
+             .ForMember(model => model.IsBusinessRule, op => op.MapFrom(c => c.IsBusinessRule))
+             .ForMember(model => model.IsActive, op => op.MapFrom(c => c.IsActive))
+             .ForMember(model => model.IsDeleted, op => op.MapFrom(c => c.IsDeleted))
+             .ForMember(model => model.CreatedUserID, op => op.MapFrom(c => c.CreatedUserID))
+             .ForMember(model => model.UpdatedUserID, op => op.MapFrom(c => c.UpdatedUserID))
+             .ForMember(model => model.CreatedDateTime, op => op.MapFrom(c => c.CreatedDateTime))
+             .ForMember(model => model.UpdatedDateTime, op => op.MapFrom(c => c.UpdatedDateTime))
+             .ForMember(model => model.HaveFrequency, op => op.MapFrom(c => c.HaveFrequency))
+             .ForMember(model => model.PropertySubTypes, op => op.MapFrom(c => c.PropertySubTypes));
+        }
 	}
 }

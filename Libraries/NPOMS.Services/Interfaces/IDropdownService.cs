@@ -241,6 +241,10 @@ namespace NPOMS.Services.Interfaces
 
         Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(bool returnInactive);
 
+		Task<IEnumerable<PropertyType>> GetPropertyTypes(bool returnInactive);
+
+		Task<IEnumerable<PropertySubType>> GetPropertySubTypes(bool returnInactive);
+
 
     }
 }
