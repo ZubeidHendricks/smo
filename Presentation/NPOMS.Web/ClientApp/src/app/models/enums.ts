@@ -1,3 +1,4 @@
+import { PropertySubType } from './PropertySubType';
 export enum AccessStatusEnum {
     AllStatuses = 0,
     Pending = 1,
@@ -54,8 +55,10 @@ export enum DropdownTypeEnum {
     CompliantCycleRules = 35,
     DistrictCouncil =36,
     LocalMunicipality = 37,
-  Region = 38,
-    ServiceDeliveryArea =39
+    Region = 38,
+    ServiceDeliveryArea =39,
+    PropertyType =40,
+    PropertySubType =41
 }
 
 export enum EntityTypeEnum {

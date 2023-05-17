@@ -39,6 +39,7 @@ namespace NPOMS.Services.Implementation
 		private IUserNpoRepository _userNpoRepository;
 		private IApplicationReviewerSatisfactionRepository _applicationReviewerSatisfactionRepository;
         private IFundingApplicationDetailsRepository _fundingApplicationDetailsRepository;
+		private IFinancialDetailRepository _financialDetailRepository;
 
 
         private RepositoryContext _repositoryContext;
@@ -66,6 +67,7 @@ namespace NPOMS.Services.Implementation
 			IUserNpoRepository userNpoRepository,
 			IApplicationReviewerSatisfactionRepository applicationReviewerSatisfactionRepository,
             IFundingApplicationDetailsRepository fundingApplicationDetailsRepository,
+			IFinancialDetailRepository financialDetailRepository,
             RepositoryContext repositoryContext
 			)
 		{
@@ -87,6 +89,7 @@ namespace NPOMS.Services.Implementation
 			_userNpoRepository = userNpoRepository;
 			_applicationReviewerSatisfactionRepository = applicationReviewerSatisfactionRepository;
             _fundingApplicationDetailsRepository = fundingApplicationDetailsRepository;
+			_financialDetailRepository= financialDetailRepository;
             _repositoryContext = repositoryContext;
 		}
 
@@ -314,6 +317,26 @@ namespace NPOMS.Services.Implementation
 			return null;
 		}
 
+        public async Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId)
+        {
+            var application = await _applicationRepository.GetByNpoIdAndPeriodId(NpoId, applicationPeriodId);
+
+            if (application != null)
+            {
+                var financialDetails = await _financialDetailRepository.GetEntities(application.Id);
+
+                //foreach (var item in financialDetails)
+                //{
+                //    var mappings = await _objectiveProgrammeRepository.GetByObjectiveId(item.Id);
+                //    item.ObjectiveProgrammes = mappings.ToList();
+                //}
+
+                return financialDetails;
+            }
+
+            return null;
+        }
+
         public async Task CreateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
@@ -322,6 +345,16 @@ namespace NPOMS.Services.Implementation
             model.CreatedDateTime = DateTime.Now;
 
             await _fundingApplicationDetailsRepository.CreateEntity(model);
+        }
+
+        public async Task CreateFinancialDetail(FinancialDetail model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _financialDetailRepository.CreateEntity(model);
         }
 
         public async Task CreateObjective(Objective model, string userIdentifier)
@@ -358,14 +391,24 @@ namespace NPOMS.Services.Implementation
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-
-
             var objective = _mapper.Map<Objective>(model);
             objective.UpdatedUserId = loggedInUser.Id;
             objective.UpdatedDateTime = DateTime.Now;
 
             var oldEntity = await this._repositoryContext.FundingApplicationDetails.FindAsync(model.Id);
             await _fundingApplicationDetailsRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+        }
+
+        public async Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            var objective = _mapper.Map<FinancialDetail>(model);
+            objective.UpdatedUserId = loggedInUser.Id;
+            objective.UpdatedDateTime = DateTime.Now;
+
+            var oldEntity = await this._repositoryContext.FinancialDetails.FindAsync(model.Id);
+            await _financialDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
         }
 
         private async Task DeleteActivities(Objective model, User currentUser)

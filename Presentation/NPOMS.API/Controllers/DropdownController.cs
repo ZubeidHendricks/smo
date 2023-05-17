@@ -156,13 +156,18 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.LocalMunicipality:
                         var localMunicipalities = await _dropdownService.GetLocalMunicipalities(returnInactive);
                         return Ok(localMunicipalities);
-
                     case DropdownTypeEnum.Region:
-                        var regions = await _dropdownService.GetDistrictCouncils(returnInactive);
+                        var regions = await _dropdownService.GetRegions(returnInactive);
                         return Ok(regions);
                     case DropdownTypeEnum.ServiceDeliveryArea:
                         var serviceDeliveryAreas = await _dropdownService.GetServiceDeliveryAreas(returnInactive);
                         return Ok(serviceDeliveryAreas);
+                    case DropdownTypeEnum.PropertyType:
+                        var propertyType = await _dropdownService.GetPropertyTypes(returnInactive);
+                        return Ok(propertyType);
+                    case DropdownTypeEnum.PropertySubType:
+                        var propertySubType = await _dropdownService.GetPropertySubTypes(returnInactive);
+                        return Ok(propertySubType);
                 }
 
 				return Ok();

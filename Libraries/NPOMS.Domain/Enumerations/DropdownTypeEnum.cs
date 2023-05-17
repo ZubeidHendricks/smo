@@ -40,6 +40,8 @@
         DistrictCouncil = 36,
         LocalMunicipality = 37,
 		Region =38,
-		ServiceDeliveryArea =39
+		ServiceDeliveryArea =39,
+        PropertyType =40,
+        PropertySubType =41
     }
 }

@@ -36,6 +36,12 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
 
+		Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId);
+
+        Task CreateFinancialDetail(FinancialDetail model, string userIdentifier);
+
+        Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier);
+
         Task<IEnumerable<Activity>> GetAllActivitiesAsync(int NpoId, int applicationPeriodId);
 
 		Task<Activity> GetActivityById(int id);

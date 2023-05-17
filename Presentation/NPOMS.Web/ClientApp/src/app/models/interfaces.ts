@@ -1,6 +1,6 @@
+import { FinancialMatters } from 'src/app/models/FinancialMatters';
 
 import { EntityTypeEnum } from "./enums";
-import { FinancialMatters } from "./FinancialMatters";
 
 
 /* Core */
@@ -359,8 +359,8 @@ export interface Bid {
     // monitoringEvalution:IMonitoringAndEvaluation;
     // implementations: Implementation[];
     applicationPeriod: IApplicationPeriod;
-    // incomes: Budget[],
-    // expenses: Budget[],
+     incomes: Budget[],
+    expenses: Budget[],
     
     financialMatters: FinancialMatters[];
   
@@ -368,6 +368,27 @@ export interface Bid {
     // evaluationQuestions: EvalutionSection[];
     // evaluationAnswers: EvaluationAnswers[];
   }
+
+  export interface FinYear {
+    id: number;
+    name: string;
+    next: number;
+  }
+  export interface FinYearBudget {
+    id: number;
+    finYear: FinYear;
+    budget: number;
+  }
+
+  export interface Budget {
+    id: number;
+    description: string;
+    finYear1: FinYearBudget;
+    finYear2: FinYearBudget;
+    finYear3: FinYearBudget;
+    category: string;
+  }
+  
 
   export interface FinYear {
     id: number;
@@ -579,6 +600,15 @@ export interface IFundingApplicationDetails {
     serviceDeliveryAreas :IServiceDeliveryArea[],
     fundAppSDADetails:IFundAppSDADetail[];  
 }
+
+// export interface IFinancialDetails {
+//     id: number;
+//     applicationId: number;    
+//     isActive: boolean;
+//     changesRequired: boolean;
+//     isNew: boolean;
+//     financialMatters:FinancialMatters[];  
+// }
 
 
 

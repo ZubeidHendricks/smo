@@ -60,11 +60,14 @@ namespace NPOMS.Services.Implementation
         private ILocalMunicipalityRepository _localMunicipalityRepository;
         private IRegionRepository _regionRepository;
         private IServiceDeliveryAreaRepository _serviceDeliveryAreaRepository;
-        #endregion
 
-        #region Constructors
+        private IPropertyTypeRepository _propertyTypeRepository;
+        private IPropertySubTypeRepository _propertySubTypeRepository;
+		#endregion
 
-        public DropdownService(
+		#region Constructors
+
+		public DropdownService(
 			IMapper mapper,
 			IRoleRepository roleRepository,
 			IDepartmentRepository departmentRepository,
@@ -105,7 +108,9 @@ namespace NPOMS.Services.Implementation
 			IDistrictCouncilRepository districtCouncilRepository,
 			ILocalMunicipalityRepository localMunicipalityRepository,
 			IRegionRepository regionRepository,
-			IServiceDeliveryAreaRepository serviceDeliveryAreaRepository)
+			IServiceDeliveryAreaRepository serviceDeliveryAreaRepository,
+			IPropertyTypeRepository propertyTypeRepository,
+			IPropertySubTypeRepository propertySubTypeRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -144,11 +149,13 @@ namespace NPOMS.Services.Implementation
 			_branchRepository = branchRepository;
 			_accountTypeRepository = accountTypeRepository;
 			_compliantCycleRuleRepository = compliantCycleRuleRepository;
-            _districtCouncilRepository = districtCouncilRepository;
-            _localMunicipalityRepository = localMunicipalityRepository;
-			_regionRepository= regionRepository;
-			_serviceDeliveryAreaRepository= serviceDeliveryAreaRepository;
-        }
+			_districtCouncilRepository = districtCouncilRepository;
+			_localMunicipalityRepository = localMunicipalityRepository;
+			_regionRepository = regionRepository;
+			_serviceDeliveryAreaRepository = serviceDeliveryAreaRepository;
+			_propertyTypeRepository = propertyTypeRepository;
+			_propertySubTypeRepository = propertySubTypeRepository;
+		}
 
 		#endregion
 
@@ -677,6 +684,19 @@ namespace NPOMS.Services.Implementation
 			await _facilitySubDistrictRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
+        #endregion
+
+        #region FA-FinancialDetails- PropertyTypes
+
+        public async Task<IEnumerable<PropertyType>> GetPropertyTypes(bool returnInactive)
+        {
+            return await _propertyTypeRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<PropertySubType>> GetPropertySubTypes(bool returnInactive)
+        {
+            return await _propertySubTypeRepository.GetEntities(returnInactive);
+        }
         #endregion
 
         #region FA-DistrictCouncil-Municipalaities-Region-ServiceDeliveryAreas
