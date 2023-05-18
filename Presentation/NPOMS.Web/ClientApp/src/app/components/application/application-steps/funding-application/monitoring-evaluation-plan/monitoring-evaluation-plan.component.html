@@ -1,0 +1,24 @@
+<p-panel [style]="{'font-size':'12px'}" header="Monitoring">
+    <div class="p-fluid p-formgrid p-grid">
+      <div class="p-col-6">
+        <label for="monEvalDescription" style="font-weight:bold">Please describe how you will know your service/ project is
+          achieving its goals/ outcomes and impact (i.e. how will you know that your service /project made a difference to
+          the beneficiaries of the project and the community they are in?) <span class="bid-required">*</span></label>
+      </div>
+      <div class="p-col-3">
+      </div>
+      <div class="p-col-3">
+      </div>
+      <div class="p-col-6">
+        <textarea pInputTextarea [rows]="5" [cols]="30" autoResize="autoResize" id="monEvalDescription"
+          (ngModelChange)="onMonEvalDescription($event)" [(ngModel)]="monEvalDescription"
+          [ngModelOptions]="{standalone: true}" autocomplete="off" autofocus="on" [disabled]="readonly()"></textarea>
+      </div>
+    </div>
+  </p-panel>
+  
+  <div style="height: 10px;"></div>
+  <div class="p-grid p-nogutter p-justify-between">
+    <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+    <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
+  </div>

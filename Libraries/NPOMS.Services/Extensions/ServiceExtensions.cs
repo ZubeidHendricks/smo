@@ -127,7 +127,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IFundingApplicationDetailsRepository, FundingApplicationDetailsRepository>();
 			services.AddScoped<IFinancialDetailRepository, FinancialDetailRepository>();
             services.AddScoped<IProjectInformationRepository, ProjectInformationRepository>();
-
+            services.AddScoped<IMonitoringEvaluationRepository, MonitoringEvaluationRepository>();
 
             /* Lookup */
             services.AddScoped<IActivityListRepository, ActivityListRepository>();
