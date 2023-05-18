@@ -21,9 +21,9 @@
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
             [(activeStep)]="activeStep" [application]="application">
         </app-project-information>
-      
-
-   
+        <app-monitoring-evaluation-plan *ngIf="activeStep == FundingApplicationStepsEnum.Monitoring_And_Evaluation"
+            [(activeStep)]="activeStep" [application]="application">
+        </app-monitoring-evaluation-plan>  
     </div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
         <app-npo-details *ngIf="activeStep == ServiceProvisionStepsEnum.NpoConfirmation" [(activeStep)]="activeStep" [application]="application" [newApplication]="true"></app-npo-details>

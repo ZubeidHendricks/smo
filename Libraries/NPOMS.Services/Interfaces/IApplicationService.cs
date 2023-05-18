@@ -47,6 +47,10 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier);
 
+        Task CreateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier);
+
+        Task UpdateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier);
+
         Task<IEnumerable<Activity>> GetAllActivitiesAsync(int NpoId, int applicationPeriodId);
 
 		Task<Activity> GetActivityById(int id);

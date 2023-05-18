@@ -130,6 +130,7 @@ namespace NPOMS.Repository
         public DbSet<FundingApplicationDetails> FundingApplicationDetails { get; set; }
         public DbSet<FinancialDetail> FinancialDetails { get; set; }
         public DbSet<ProjectInformation> ProjectInformations { get; set; }
+		public DbSet<MonitoringEvaluation> MonitoringEvaluations { get; set; }
 
 
         public DbSet<Resource> Resources { get; set; }

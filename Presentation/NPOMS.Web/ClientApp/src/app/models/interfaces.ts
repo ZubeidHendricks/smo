@@ -612,8 +612,16 @@ export interface IProjectInformation
     considerQuestion: string;
     purposeQuestion: string;
 }
+export interface IMonitoringEvalution {
+    id : number;
+    applicationId : number;
+    isActive: boolean;
+    changeRequired: boolean;
+    isNew: boolean;    
+    monEvalDescription: string;
+}
 
-// export interface IFinancialDetails {
+// export interface IFinancialDetails {ng g 
 //     id: number;
 //     applicationId: number;    
 //     isActive: boolean;

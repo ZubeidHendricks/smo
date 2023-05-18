@@ -129,6 +129,8 @@ import { CompliantCyclesComponent } from './components/admin/compliant-cycles/co
 import { ApplicationDetailsComponent } from './components/application/application-steps/funding-application/application-details/application-details.component';
 import { FinancialDetailsComponent } from './components/application/application-steps/funding-application/financial-details/financial-details.component';
 import { ProjectInformationComponent } from './components/application/application-steps/funding-application/project-information/project-information.component';
+import { MonitoringEvaluationPlanComponent } from './components/application/application-steps/funding-application/monitoring-evaluation-plan/monitoring-evaluation-plan.component';
+import { ProjectImplementationComponent } from './components/application/application-steps/funding-application/project-implementation/project-implementation.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -257,7 +259,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     CompliantCyclesComponent,
     ApplicationDetailsComponent,
     FinancialDetailsComponent,
-    ProjectInformationComponent
+    ProjectInformationComponent,
+    MonitoringEvaluationPlanComponent,
+    ProjectImplementationComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

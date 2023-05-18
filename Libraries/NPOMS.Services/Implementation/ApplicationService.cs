@@ -41,7 +41,9 @@ namespace NPOMS.Services.Implementation
         private IFundingApplicationDetailsRepository _fundingApplicationDetailsRepository;
 		private IFinancialDetailRepository _financialDetailRepository;
         private IProjectInformationRepository _projectInformationRepository;
+        private IMonitoringEvaluationRepository _monitoringEvaluationRepository;
 
+        
 
 
         private RepositoryContext _repositoryContext;
@@ -71,6 +73,7 @@ namespace NPOMS.Services.Implementation
             IFundingApplicationDetailsRepository fundingApplicationDetailsRepository,
 			IFinancialDetailRepository financialDetailRepository,
 			IProjectInformationRepository projectInformationRepository,
+			IMonitoringEvaluationRepository monitoringEvaluationRepository,
             RepositoryContext repositoryContext
 			)
 		{
@@ -94,6 +97,7 @@ namespace NPOMS.Services.Implementation
             _fundingApplicationDetailsRepository = fundingApplicationDetailsRepository;
 			_financialDetailRepository= financialDetailRepository;
 			_projectInformationRepository = projectInformationRepository;
+			_monitoringEvaluationRepository = monitoringEvaluationRepository;
             _repositoryContext = repositoryContext;
 		}
 
@@ -372,6 +376,16 @@ namespace NPOMS.Services.Implementation
             await _financialDetailRepository.CreateEntity(model);
         }
 
+        public async Task CreateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _monitoringEvaluationRepository.CreateEntity(model);
+        }
+
         public async Task CreateObjective(Objective model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
@@ -424,6 +438,18 @@ namespace NPOMS.Services.Implementation
 
             var oldEntity = await this._repositoryContext.ProjectInformations.FindAsync(model.Id);
             await _projectInformationRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+        }
+
+        public async Task UpdateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            var objective = _mapper.Map<MonitoringEvaluation>(model);
+            objective.UpdatedUserId = loggedInUser.Id;
+            objective.UpdatedDateTime = DateTime.Now;
+
+            var oldEntity = await this._repositoryContext.MonitoringEvaluations.FindAsync(model.Id);
+            await _monitoringEvaluationRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
         }
 
         public async Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier)

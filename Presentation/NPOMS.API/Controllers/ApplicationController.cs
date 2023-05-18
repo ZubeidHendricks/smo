@@ -325,6 +325,24 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPost("monitoringEvaluation/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateMonitoringEvaluation")]
+        public async Task<IActionResult> CreateMonitoringEvaluation([FromBody] MonitoringEvaluation model, int NpoId, int applicationPeriodId)
+        {
+            try
+            {
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(NpoId, applicationPeriodId);
+                model.ApplicationId = application.Id;
+
+                await _applicationService.CreateMonitoringEvaluation(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateMonitoringEvaluation action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPut("projectInformation", Name = "UpdateProjectInformation")]
         public async Task<IActionResult> UpdateProjectInformation([FromBody] ProjectInformation model)
         {
@@ -336,6 +354,21 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside UpdateProjectInformation action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("monitoringEvaluation", Name = "UpdateMonitoringEvaluation")]
+        public async Task<IActionResult> UpdateMonitoringEvaluation([FromBody] MonitoringEvaluation model)
+        {
+            try
+            {
+                await _applicationService.UpdateMonitoringEvaluation(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside MonitoringEvaluation action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
