@@ -357,7 +357,7 @@ export interface Bid {
     ApplicationId:number
     // projectInformation:IProjectInformation;
     // monitoringEvalution:IMonitoringAndEvaluation;
-    // implementations: Implementation[];
+     implementations: Implementation[];
     applicationPeriod: IApplicationPeriod;
      incomes: Budget[],
     expenses: Budget[],
@@ -368,6 +368,23 @@ export interface Bid {
     // evaluationQuestions: EvalutionSection[];
     // evaluationAnswers: EvaluationAnswers[];
   }
+
+  export interface Implementation {
+    id: number;
+    applicationId :number;
+    description: string;
+    projectObjective: string;
+    beneficiaries: number;
+    timeframe: Date[];
+    timeframeFrom: string;
+    timeframeTo: string;
+    places: Place[];
+    subPlaces: SubPlace[];
+
+    results: string;
+    resources: string;
+    budget: number;
+  }  
 
   export interface FinYear {
     id: number;
