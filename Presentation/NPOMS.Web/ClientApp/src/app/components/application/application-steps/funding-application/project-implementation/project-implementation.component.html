@@ -1,0 +1,155 @@
+<p-table [columns]="cols" [value]="implementations" selectionMode="single" [(selection)]="selectedImplementation"
+  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+  <ng-template pTemplate="caption">
+    Project Activities
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        {{col.header}}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr [pSelectableRow]="rowData">
+      <td>{{rowData.description}}</td>
+      <td>{{rowData.beneficiaries}}</td>
+      <td>{{rowData.budget}}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="summary" let-rowData>
+    <div style="text-align:left">
+      <button type="button" pButton icon="pi pi-plus" (click)="showDialogToAdd()" label="Add"
+        [disabled]="readonly()"></button>
+    </div>
+  </ng-template>
+</p-table>
+
+<p-dialog header="Project Activity" [(visible)]="displayDialogImpl" [style]="{width: '50vw'}" [focusOnShow]="false"
+  [height]='400' showEffect="fade" [transitionOptions]="'0ms'" [modal]="true" *ngIf="implementation">
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Activity Description</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <input type="text" class="form-text" pInputText id="description" [disabled]="readonly()" autocomplete="off"
+        [(ngModel)]="implementation.description" [ngModelOptions]="{standalone: true}">
+
+    </div>
+  </div>
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Project Objective</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="projectObjective" [disabled]="readonly()"
+        [(ngModel)]="implementation.projectObjective" [ngModelOptions]="{standalone: true}" ></textarea>
+    </div>
+  </div>
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Number of Beneficiaries</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <input type="text" class="form-text" pInputText pKeyFilter="int" id="beneficiaries" [disabled]="readonly()"autocomplete="off"
+        [(ngModel)]="implementation.beneficiaries" [ngModelOptions]="{standalone: true}">
+    </div>
+  </div>
+
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Results (What you want to achieve)</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="results" [disabled]="readonly()"
+        [(ngModel)]="implementation.results" [ngModelOptions]="{standalone: true}" ></textarea>
+    </div>
+  </div>
+
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Resources Needed</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="resources" [disabled]="readonly()"
+        [(ngModel)]="implementation.resources" [ngModelOptions]="{standalone: true}" ></textarea>
+    </div>
+  </div>
+
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Funding Period</span>
+
+      </div>
+    </div>
+    <div class="p-col">
+      <p-calendar [(ngModel)]="implementation.timeframe" dateFormat="dd/M/yy" selectionMode="range"
+        [readonlyInput]="true" placeholder="Select a Start Date and End Date" [ngModelOptions]="{standalone: true}"
+        appendTo="body" [style]="{'width':'47%'}" [monthNavigator]="true" [yearRange]="yearRange" [yearNavigator]="true"
+        (onSelect)="updateTimeframe(implementation.timeframe)" [disabled]="readonly()" ></p-calendar>
+    </div>
+  </div>
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Budget</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <p-inputNumber inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
+        [style]="{'width':'100%'}" [(ngModel)]="implementation.budget" [disabled]="readonly()" (onselect)="verifyDialog($event)" autocomplete="off"></p-inputNumber>
+    </div>
+  </div>
+
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Place-Target Area(s)</span>
+      </div>
+    </div>
+
+    <div class="p-col">
+      <p-multiSelect defaultLabel="Choose target area" [options]="places" optionLabel="name"
+        [(ngModel)]="selectedPlaces" (onChange)="placesChange($event.value)" [style]="{'width':'100%'}"
+        [ngModelOptions]="{standalone: true}" appendTo="body" [disabled]="disableSubPlacesOrPlace()">
+      </p-multiSelect>
+    </div>
+  </div>
+
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Sub-Place – Community(ies)</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <p-multiSelect defaultLabel="Choose sub-places" [options]="subPlaces" optionLabel="name"
+        [(ngModel)]="selectedSubPlaces" (onChange)="subPlacesChange($event.value)" [style]="{'width':'100%'}"
+        [ngModelOptions]="{standalone: true}" [disabled]="disableSubPlacesOrPlace()" appendTo="body"></p-multiSelect>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+
+    <button pButton pRipple type="button" class="p-button-text" icon="pi pi-check" [disabled]="disableSave()"
+      (click)="save()" (click)="displayDialogImpl=false" label="Save" ></button>
+  </ng-template>
+</p-dialog>
+
+<div style="height: 10px;"></div>
+<div class="p-grid p-nogutter p-justify-between">
+  <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+  <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
+</div>
