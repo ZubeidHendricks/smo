@@ -15,6 +15,6 @@ namespace NPOMS.Repository.Interfaces.Entities
 
         Task UpdateEntity(MonitoringEvaluation model, int currentUserId);
 
-        Task<MonitoringEvaluation> GetById(int id);
+        Task<MonitoringEvaluation> GetById(int? id);
     }
 }

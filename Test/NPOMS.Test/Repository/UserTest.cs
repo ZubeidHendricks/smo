@@ -1,7 +1,7 @@
 using NPOMS.Repository;
 using NPOMS.Repository.Implementation;
 using NPOMS.Repository.Interfaces;
-using NPOMS.Tests.Config;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

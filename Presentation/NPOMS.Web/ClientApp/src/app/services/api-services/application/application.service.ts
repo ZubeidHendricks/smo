@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IFinancialYear, IFundingApplicationDetails, IObjective, IResource, ISustainabilityPlan } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IFinancialYear, IFundingApplicationDetails, IObjective, IPlace, IResource, ISDA, IServiceDeliveryArea, ISubPlace, ISustainabilityPlan } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
+import { Observable } from 'rxjs';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -176,5 +177,15 @@ export class ApplicationService {
   public createApplicationReviewerSatisfaction(model: IApplicationReviewerSatisfaction) {
     const url = `${this._envUrl.urlAddress}/api/applications/application-reviewer-satisfaction`;
     return this._http.post<IApplicationReviewerSatisfaction>(url, model, httpOptions);
+  }
+
+  getPlaces(sdas: ISDA[]): Observable<IPlace[]> {
+    const url = `${this._envUrl.urlAddress}/api/applications/places`;
+    return this._http.post<IPlace[]>(url, JSON.stringify(sdas), httpOptions);
+  }
+
+  getSubPlaces(places: IPlace[]): Observable<ISubPlace[]> {
+    const url = `${this._envUrl.urlAddress}/api/applications/subplaces`;
+    return this._http.post<ISubPlace[]>(url, JSON.stringify(places), httpOptions);
   }
 }

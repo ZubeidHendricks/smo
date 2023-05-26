@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Implementation.Entities
 {
-	public class FundingApplicationDetailsRepository : BaseRepository<FundingApplicationDetails>, IFundingApplicationDetailsRepository
+	public class FundingApplicationDetailsRepository : BaseRepository<FundingApplicationDetail>, IFundingApplicationDetailsRepository
 	{
 		#region Constructors
 
@@ -20,26 +20,27 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		#region Methods
 
-		public async Task<IEnumerable<FundingApplicationDetails>> GetEntities(int applicationId)
+		public async Task<IEnumerable<FundingApplicationDetail>> GetEntities(int applicationId)
 		{
 			return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
-				.Include(x => x.IsActive).AsNoTracking().ToListAsync();
+				.AsNoTracking().ToListAsync();
 		}
 
-		public async Task CreateEntity(FundingApplicationDetails model)
+		public async Task CreateEntity(FundingApplicationDetail model)
 		{
 			await CreateAsync(model);
 		}
 
-		public async Task UpdateEntity(FundingApplicationDetails model, int currentUserId)
+		public async Task UpdateEntity(FundingApplicationDetail model, int currentUserId)
 		{
 			var oldEntity = await this.RepositoryContext.FundingApplicationDetails.FindAsync(model.Id);
 			await UpdateAsync(oldEntity, model, true, currentUserId);
 		}
 
-		public async Task<FundingApplicationDetails> GetById(int id)
+		public async Task<FundingApplicationDetail> GetById(int id)
 		{
-            return await FindByCondition(x => x.Id.Equals(id)).Include(x => x.LocalMunicipality).Include(x=>x.DistrictCouncil).AsNoTracking().FirstOrDefaultAsync();
+            return await FindByCondition(x => x.Id.Equals(id))
+                .AsNoTracking().FirstOrDefaultAsync();
         }
 
 

@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Interfaces.Core;
-using NPOMS.Tests.Config;
+using NPOMS.Test.Config;
 using System.Linq;
 using System.Threading.Tasks;
 

@@ -4,14 +4,14 @@ using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Interfaces.Entities
 {
-	public interface IFundingApplicationDetailsRepository : IBaseRepository<FundingApplicationDetails>
+	public interface IFundingApplicationDetailsRepository : IBaseRepository<FundingApplicationDetail>
 	{
-		Task<IEnumerable<FundingApplicationDetails>> GetEntities(int applicationId);
+		Task<IEnumerable<FundingApplicationDetail>> GetEntities(int applicationId);
 
-		Task CreateEntity(FundingApplicationDetails model);
+		Task CreateEntity(FundingApplicationDetail model);
 
-		Task UpdateEntity(FundingApplicationDetails model, int currentUserId);
+		Task UpdateEntity(FundingApplicationDetail model, int currentUserId);
 
-		Task<FundingApplicationDetails> GetById(int id);
+		Task<FundingApplicationDetail> GetById(int id);
 	}
 }

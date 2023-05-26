@@ -10,5 +10,6 @@ namespace NPOMS.Repository.Interfaces.Dropdown
     public interface ILocalMunicipalityRepository : IBaseRepository<LocalMunicipality>
     {
         Task<IEnumerable<LocalMunicipality>> GetEntities(bool returnInactive);
+        Task<LocalMunicipality> GetById(int id);
     }
 }

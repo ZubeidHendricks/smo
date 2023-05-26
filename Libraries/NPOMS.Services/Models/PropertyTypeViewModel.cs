@@ -1,10 +1,9 @@
-﻿using System;
+﻿using NPOMS.Domain.Dropdown;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace NPOMS.Services.Models.FundingApplication
+namespace NPOMS.Services.Models
 {
     public class PropertyTypeViewModel
     {
@@ -13,6 +12,7 @@ namespace NPOMS.Services.Models.FundingApplication
             PropertySubTypes = PropertySubTypes ?? new List<PropertySubTypeViewModel>();
 
         }
+
         public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
@@ -27,9 +27,9 @@ namespace NPOMS.Services.Models.FundingApplication
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public int CreatedUserID { get; set; }
-        public int? UpdatedUserID { get; set; }
-        public DateTime CreatedDateTime { get; set; }
-        public DateTime? UpdatedDateTime { get; set; }
+        public Nullable<int> UpdatedUserID { get; set; }
+        public System.DateTime CreatedDateTime { get; set; }
+        public Nullable<System.DateTime> UpdatedDateTime { get; set; }
         public bool HaveFrequency { get; set; }
         public List<PropertySubTypeViewModel> PropertySubTypes { get; set; }
     }

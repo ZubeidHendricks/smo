@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace NPOMS.Services.Models.FundingApplication
+namespace NPOMS.Services.Models
 {
     public class FinancialMattersViewModel
-    {
+    {     
+
         public int Id { get; set; }
         public int PropertyId { get; set; }
         public int SubPropertyId { get; set; }
@@ -16,7 +15,7 @@ namespace NPOMS.Services.Models.FundingApplication
         public string AmountOne { get; set; }
         public string AmountTwo { get; set; }
         public string AmountThree { get; set; }
-        public int BidId { get; set; }
+        public int FundingApplicationDetailId { get; set; }
         public string Type { get; set; }
     }
 }

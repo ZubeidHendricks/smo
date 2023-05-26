@@ -245,6 +245,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<PropertySubType>> GetPropertySubTypes(bool returnInactive);
 
+		Task<IEnumerable<Place>> GetPlaces(bool returnInactive);
+        Task<IEnumerable<SubPlace>> GetSubPlaces(bool returnInactive);
 
     }
 }

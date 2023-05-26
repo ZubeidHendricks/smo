@@ -42,6 +42,8 @@
 		Region =38,
 		ServiceDeliveryArea =39,
         PropertyType =40,
-        PropertySubType =41
+        PropertySubType =41,
+		Place =42,
+		SubPlace =43
     }
 }

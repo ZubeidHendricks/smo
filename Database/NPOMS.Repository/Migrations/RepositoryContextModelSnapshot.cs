@@ -7231,23 +7231,7 @@ namespace NPOMS.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Cape Town"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "West Coast"
-                        },
-                        new
-                        {
-                            Id = 3,
+                            Id = 7,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             IsActive = false,
@@ -7255,15 +7239,23 @@ namespace NPOMS.Repository.Migrations
                         },
                         new
                         {
-                            Id = 4,
+                            Id = 8,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             IsActive = false,
-                            Name = "Overberg"
+                            Name = "Central Karoo"
                         },
                         new
                         {
-                            Id = 5,
+                            Id = 9,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "City of Cape Town"
+                        },
+                        new
+                        {
+                            Id = 10,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             IsActive = false,
@@ -7271,11 +7263,19 @@ namespace NPOMS.Repository.Migrations
                         },
                         new
                         {
-                            Id = 6,
+                            Id = 11,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             IsActive = false,
-                            Name = "Central Karoo"
+                            Name = "Overberg"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "West Coast"
                         });
                 });
 
@@ -8618,228 +8618,228 @@ namespace NPOMS.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = 26,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            DistrictCouncilId = 1,
-                            IsActive = false,
-                            Name = "Cape Town"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 2,
-                            IsActive = false,
-                            Name = "Bergrivier"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 2,
-                            IsActive = false,
-                            Name = "Cederberg"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 2,
-                            IsActive = false,
-                            Name = "Matzikama"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 2,
-                            IsActive = false,
-                            Name = "Saldanha Bay"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 2,
-                            IsActive = false,
-                            Name = "Swartland"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 3,
-                            IsActive = false,
-                            Name = "Breede"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 3,
-                            IsActive = false,
-                            Name = "Drakenstein"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 3,
-                            IsActive = false,
-                            Name = "Langeberg"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 3,
-                            IsActive = false,
-                            Name = "Stellenbosch"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 3,
-                            IsActive = false,
-                            Name = "Witzenberg"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 4,
-                            IsActive = false,
-                            Name = "Cape Agulhas"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 4,
-                            IsActive = false,
-                            Name = "Overstrand"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 4,
-                            IsActive = false,
-                            Name = "Swellendam"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 4,
-                            IsActive = false,
-                            Name = "Theewaterskloof"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 5,
-                            IsActive = false,
-                            Name = "Bitou"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 5,
-                            IsActive = false,
-                            Name = "George"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 5,
-                            IsActive = false,
-                            Name = "Hessequa"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 5,
-                            IsActive = false,
-                            Name = "Kannaland"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 5,
-                            IsActive = false,
-                            Name = "Knysna"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 5,
-                            IsActive = false,
-                            Name = "Mossel Bay"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 5,
-                            IsActive = false,
-                            Name = "Oudtshoorn"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            DistrictCouncilId = 6,
+                            DistrictCouncilId = 8,
                             IsActive = false,
                             Name = "Beaufort West"
                         },
                         new
                         {
-                            Id = 24,
+                            Id = 27,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            DistrictCouncilId = 6,
+                            DistrictCouncilId = 12,
+                            IsActive = false,
+                            Name = "Bergrivier"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 10,
+                            IsActive = false,
+                            Name = "Bitou"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 7,
+                            IsActive = false,
+                            Name = "Breede Valley"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 11,
+                            IsActive = false,
+                            Name = "Cape Agulhas"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 12,
+                            IsActive = false,
+                            Name = "Cederberg"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 9,
+                            IsActive = false,
+                            Name = "City of Cape Town"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 7,
+                            IsActive = false,
+                            Name = "Drakenstein"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 10,
+                            IsActive = false,
+                            Name = "George "
+                        },
+                        new
+                        {
+                            Id = 35,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 10,
+                            IsActive = false,
+                            Name = "Hessequa"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 10,
+                            IsActive = false,
+                            Name = "Kannaland"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 10,
+                            IsActive = false,
+                            Name = "Knysna"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 8,
                             IsActive = false,
                             Name = "Laingsburg"
                         },
                         new
                         {
-                            Id = 25,
+                            Id = 39,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
-                            DistrictCouncilId = 6,
+                            DistrictCouncilId = 7,
+                            IsActive = false,
+                            Name = "Langeberg"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 12,
+                            IsActive = false,
+                            Name = "Matzikama"
+                        },
+                        new
+                        {
+                            Id = 41,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 10,
+                            IsActive = false,
+                            Name = "Mossel Bay"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 10,
+                            IsActive = false,
+                            Name = "Oudtshoorn"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 11,
+                            IsActive = false,
+                            Name = "Overstrand"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 8,
                             IsActive = false,
                             Name = "Prince Albert"
+                        },
+                        new
+                        {
+                            Id = 45,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 12,
+                            IsActive = false,
+                            Name = "Saldanha Bay"
+                        },
+                        new
+                        {
+                            Id = 46,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 7,
+                            IsActive = false,
+                            Name = "Stellenbosch"
+                        },
+                        new
+                        {
+                            Id = 47,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 12,
+                            IsActive = false,
+                            Name = "Swartland"
+                        },
+                        new
+                        {
+                            Id = 48,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 11,
+                            IsActive = false,
+                            Name = "Swellendam"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 11,
+                            IsActive = false,
+                            Name = "Theewaterskloof"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DistrictCouncilId = 7,
+                            IsActive = false,
+                            Name = "Witzenberg"
                         });
                 });
 
@@ -9000,6 +9000,127 @@ namespace NPOMS.Repository.Migrations
                             Description = "Non Governmental Organisation",
                             IsActive = false,
                             Name = "NGO"
+                        });
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.Place", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ServiceDeliveryAreaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SystemName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceDeliveryAreaId");
+
+                    b.ToTable("Places", "dropdown");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Athlone",
+                            ServiceDeliveryAreaId = 175,
+                            SystemName = "PL9"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Atlantis",
+                            ServiceDeliveryAreaId = 176,
+                            SystemName = "PL12"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Belhar",
+                            ServiceDeliveryAreaId = 178,
+                            SystemName = "PL19"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bellville",
+                            ServiceDeliveryAreaId = 178,
+                            SystemName = "PL21"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Farms",
+                            ServiceDeliveryAreaId = 176,
+                            SystemName = "PL51"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Metro",
+                            ServiceDeliveryAreaId = 176,
+                            SystemName = "PL52"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Metro",
+                            ServiceDeliveryAreaId = 178,
+                            SystemName = "PL53"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Town",
+                            ServiceDeliveryAreaId = 175,
+                            SystemName = "PL54"
                         });
                 });
 
@@ -9563,7 +9684,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(557),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6829),
                             CreatedUserID = 3,
                             Frequency = 12,
                             HaveComment = false,
@@ -9576,7 +9697,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(559),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6832),
                             CreatedUserID = 3,
                             Frequency = 1,
                             HaveComment = false,
@@ -9589,7 +9710,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(560),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6833),
                             CreatedUserID = 3,
                             Frequency = 264,
                             HaveComment = false,
@@ -9602,7 +9723,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(561),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6834),
                             CreatedUserID = 3,
                             Frequency = 240,
                             HaveComment = false,
@@ -9615,7 +9736,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(562),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6835),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = false,
@@ -9627,7 +9748,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(563),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6836),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9639,7 +9760,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(564),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6837),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9651,7 +9772,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(565),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6839),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9663,7 +9784,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(566),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6840),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9675,7 +9796,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(566),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6841),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9687,7 +9808,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(567),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6842),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9699,7 +9820,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(568),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6843),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9711,7 +9832,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(569),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6844),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9723,7 +9844,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 14,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(570),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6845),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9735,7 +9856,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 15,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(571),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6846),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9747,7 +9868,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 16,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(572),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6848),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9759,7 +9880,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 17,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(584),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6849),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9771,7 +9892,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 18,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(585),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6850),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9783,7 +9904,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 19,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(586),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6851),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9795,7 +9916,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 20,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(587),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6852),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9807,7 +9928,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 21,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(588),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6858),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = false,
@@ -9819,7 +9940,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 22,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(600),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6859),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9831,7 +9952,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 23,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(612),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6866),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9843,7 +9964,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 24,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(613),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6880),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9855,7 +9976,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 25,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(613),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6881),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9867,7 +9988,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 26,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(614),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6882),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9879,7 +10000,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 27,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(615),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6883),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9891,7 +10012,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 28,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(616),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6884),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9903,7 +10024,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 29,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(617),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6885),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9915,7 +10036,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 30,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(617),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6886),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9927,7 +10048,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 31,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(618),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6887),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -9939,7 +10060,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 32,
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(619),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6888),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10019,7 +10140,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 1,
                             CanDefineName = false,
                             Code = "AdministrationFee",
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(483),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6702),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -10038,7 +10159,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 2,
                             CanDefineName = false,
                             Code = "PostItem",
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(497),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6720),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = false,
@@ -10057,7 +10178,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 3,
                             CanDefineName = true,
                             Code = "UnitItem",
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(499),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6722),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = true,
@@ -10076,7 +10197,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 4,
                             CanDefineName = false,
                             Code = "OperationalItem",
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(500),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6724),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = false,
@@ -10095,7 +10216,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 6,
                             CanDefineName = false,
                             Code = "RuleForSocialWorkers",
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(501),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6725),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -10114,7 +10235,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 7,
                             CanDefineName = false,
                             Code = "UIFFee",
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(502),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6760),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -10133,7 +10254,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 8,
                             CanDefineName = false,
                             Code = "COIDAFee",
-                            CreatedDateTime = new DateTime(2023, 5, 18, 11, 49, 40, 591, DateTimeKind.Local).AddTicks(503),
+                            CreatedDateTime = new DateTime(2023, 5, 26, 11, 6, 49, 453, DateTimeKind.Local).AddTicks(6761),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -10318,228 +10439,30 @@ namespace NPOMS.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = 49,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "Cape Winelands"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "Cross Boundary"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "Eden Karoo"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
+                            LocalMunicipalityId = 32,
                             Name = "Metro East"
                         },
                         new
                         {
-                            Id = 5,
+                            Id = 50,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             IsActive = false,
-                            LocalMunicipalityId = 5,
+                            LocalMunicipalityId = 32,
                             Name = "Metro North"
                         },
                         new
                         {
-                            Id = 6,
+                            Id = 51,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             IsActive = false,
-                            LocalMunicipalityId = 5,
+                            LocalMunicipalityId = 32,
                             Name = "Metro South"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "Winelands Overberg"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 6,
-                            Name = "West Coast"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 12,
-                            Name = "Winelands Overberg"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 12,
-                            Name = "Cape Winelands"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 3,
-                            Name = "Witzenberg"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 4,
-                            Name = "Cape Agulhas"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 4,
-                            Name = "Overstrand"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 4,
-                            Name = "Swellendam"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 4,
-                            Name = "Theewaterskloof"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "Bitou"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "George"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "Hessequa"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "Kannaland"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "Knysna"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "Mossel Bay"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 5,
-                            Name = "Oudtshoorn"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 6,
-                            Name = "Beaufort West"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 6,
-                            Name = "Laingsburg"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            LocalMunicipalityId = 6,
-                            Name = "Prince Albert"
                         });
                 });
 
@@ -10650,345 +10573,192 @@ namespace NPOMS.Repository.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Mitchells Plain 1",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Mitchells Plain 2",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Fish Hoek",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 4,
+                            Id = 175,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             IsActive = false,
                             Name = "Athlone",
-                            RegionId = 6
+                            RegionId = 51
                         },
                         new
                         {
-                            Id = 5,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Gugulethu",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Retreat",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Claremont",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Mowbray",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Wynberg",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Philippi",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Rondebosch",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Plumstead",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Wetton",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Khayelitsha",
-                            RegionId = 6
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Khayelitsha 1 SDA",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 16,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Kraaifontein",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 17,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Khayelitsha 3  SDA",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 18,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Somerset West",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 19,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "xxEersterivier",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 20,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Eersteriver",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 21,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Blackheath",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 22,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Khayelitsha 2  SDA",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 23,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Eerste River",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 24,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Khayelitsha",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 25,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Eerste Rivier",
-                            RegionId = 4
-                        },
-                        new
-                        {
-                            Id = 26,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Parow",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 27,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Athlone",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 28,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "xxElsies Rivier",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 29,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Kraaifontein",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 30,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Durbanville",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 31,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Goodwood",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 32,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Metro North",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 33,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Tygerberg",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 34,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Milnerton",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 35,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Delft",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 36,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Bellville",
-                            RegionId = 5
-                        },
-                        new
-                        {
-                            Id = 37,
+                            Id = 176,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             IsActive = false,
                             Name = "Atlantis",
-                            RegionId = 5
+                            RegionId = 50
                         },
                         new
                         {
-                            Id = 38,
+                            Id = 178,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bellville",
+                            RegionId = 50
+                        },
+                        new
+                        {
+                            Id = 183,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Town",
+                            RegionId = 50
+                        },
+                        new
+                        {
+                            Id = 185,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Delft",
+                            RegionId = 50
+                        },
+                        new
+                        {
+                            Id = 187,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Eersterivier",
+                            RegionId = 49
+                        },
+                        new
+                        {
+                            Id = 188,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Elsies Rivier",
+                            RegionId = 50
+                        },
+                        new
+                        {
+                            Id = 189,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Fish Hoek",
+                            RegionId = 51
+                        },
+                        new
+                        {
+                            Id = 190,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Gugulethu",
+                            RegionId = 51
+                        },
+                        new
+                        {
+                            Id = 191,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Khayelitsha",
+                            RegionId = 49
+                        },
+                        new
+                        {
+                            Id = 192,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Khayelitsha 2",
+                            RegionId = 49
+                        },
+                        new
+                        {
+                            Id = 193,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Khayelitsha 3",
+                            RegionId = 49
+                        },
+                        new
+                        {
+                            Id = 194,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Kraaifontein",
+                            RegionId = 49
+                        },
+                        new
+                        {
+                            Id = 195,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             IsActive = false,
                             Name = "Langa",
-                            RegionId = 5
+                            RegionId = 50
+                        },
+                        new
+                        {
+                            Id = 196,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Milnerton",
+                            RegionId = 50
+                        },
+                        new
+                        {
+                            Id = 197,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mitchell's Plain 1",
+                            RegionId = 51
+                        },
+                        new
+                        {
+                            Id = 198,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Mitchell's Plain 2",
+                            RegionId = 51
+                        },
+                        new
+                        {
+                            Id = 199,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Philippi",
+                            RegionId = 51
+                        },
+                        new
+                        {
+                            Id = 200,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Retreat",
+                            RegionId = 51
+                        },
+                        new
+                        {
+                            Id = 201,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Somerset West",
+                            RegionId = 49
+                        },
+                        new
+                        {
+                            Id = 202,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Wynberg",
+                            RegionId = 51
                         });
                 });
 
@@ -11051,6 +10821,187 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "Non-Direct Service Delivery",
                             SystemName = "Non-Direct"
+                        });
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.SubPlace", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PlaceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SystemName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlaceId");
+
+                    b.ToTable("SubPlaces", "dropdown");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Athlone SP",
+                            PlaceId = 1,
+                            SystemName = "SP28"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Belgravia(Athlone)",
+                            PlaceId = 1,
+                            SystemName = "SP66"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Atlantis Industrial",
+                            PlaceId = 2,
+                            SystemName = "SP29"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Avondale SP1",
+                            PlaceId = 2,
+                            SystemName = "SP36"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Belhar 1",
+                            PlaceId = 3,
+                            SystemName = "SP68"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Belhar 10",
+                            PlaceId = 3,
+                            SystemName = "SP69"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bellville Central",
+                            PlaceId = 4,
+                            SystemName = "SP95"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Bellville Lot 1",
+                            PlaceId = 4,
+                            SystemName = "SP96"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Papekuil Outspan",
+                            PlaceId = 5,
+                            SystemName = "SP1040"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Metro NU1",
+                            PlaceId = 6,
+                            SystemName = "SP239"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Metro NU2",
+                            PlaceId = 6,
+                            SystemName = "SP240"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Cape Metro NU3",
+                            PlaceId = 7,
+                            SystemName = "SP241"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Buckingham",
+                            PlaceId = 8,
+                            SystemName = "SP226"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Crawford",
+                            PlaceId = 8,
+                            SystemName = "SP289"
                         });
                 });
 
@@ -12921,6 +12872,27 @@ namespace NPOMS.Repository.Migrations
                     b.ToTable("ApplicationComments", "dbo");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Entities.ApplicationDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("AmountApplyingFor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("FundAppSDADetailId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FundAppSDADetailId");
+
+                    b.ToTable("ApplicationDetails", "fa");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Entities.ApplicationPeriod", b =>
                 {
                     b.Property<int>("Id")
@@ -13366,7 +13338,7 @@ namespace NPOMS.Repository.Migrations
                     b.ToTable("FinancialDetails", "fa");
                 });
 
-            modelBuilder.Entity("NPOMS.Domain.Entities.FundingApplicationDetails", b =>
+            modelBuilder.Entity("NPOMS.Domain.Entities.FinancialMatters", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -13374,11 +13346,14 @@ namespace NPOMS.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<decimal>("AmountApplyingFor")
+                    b.Property<decimal>("AmountOne")
                         .HasColumnType("numeric(18,6)");
 
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("AmountThree")
+                        .HasColumnType("numeric(18,6)");
+
+                    b.Property<decimal>("AmountTwo")
+                        .HasColumnType("numeric(18,6)");
 
                     b.Property<bool?>("ChangesRequired")
                         .HasColumnType("bit");
@@ -13389,7 +13364,7 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int>("CreatedUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("DistrictCouncilId")
+                    b.Property<int>("FundingApplicationDetailId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
@@ -13398,20 +13373,104 @@ namespace NPOMS.Repository.Migrations
                     b.Property<bool?>("IsNew")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Property")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PropertySubTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PropertyTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubProperty")
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("SubPropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("UpdatedDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("UpdatedUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("localMunicipalityId")
+                    b.HasKey("Id");
+
+                    b.HasIndex("FundingApplicationDetailId");
+
+                    b.HasIndex("PropertySubTypeId");
+
+                    b.HasIndex("PropertyTypeId");
+
+                    b.ToTable("FinancialMatters", "fa");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.FundAppSDADetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DistrictCouncilId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LocalMunicipalityId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RegionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DistrictCouncilId");
 
-                    b.HasIndex("localMunicipalityId");
+                    b.HasIndex("LocalMunicipalityId");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("FundAppSDADetail", "fa");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.FundingApplicationDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ApplicationDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ApplicationPeriodId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MonitoringEvaluationId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProjectInformationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationDetailId");
+
+                    b.HasIndex("ApplicationPeriodId");
+
+                    b.HasIndex("MonitoringEvaluationId");
+
+                    b.HasIndex("ProjectInformationId");
 
                     b.ToTable("FundingApplicationDetails", "fa");
                 });
@@ -13657,6 +13716,48 @@ namespace NPOMS.Repository.Migrations
                     b.ToTable("PaymentSchedules", "dbo");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Entities.ProjectImplementation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Beneficiaries")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BudgetAmount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FundingApplicationDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProjectObjective")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Resources")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Results")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TimeframeFrom")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TimeframeTo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FundingApplicationDetailId");
+
+                    b.ToTable("ProjectImplementations", "fa");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Entities.ProjectInformation", b =>
                 {
                     b.Property<int>("Id")
@@ -13665,35 +13766,14 @@ namespace NPOMS.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConsiderQuestion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("InitiatedQuestion")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsNew")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("PurposeQuestion")
+                    b.Property<string>("considerQuestion")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
+                    b.Property<string>("purposeQuestion")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -16844,6 +16924,58 @@ namespace NPOMS.Repository.Migrations
                     b.ToTable("Activities_SubProgrammes", "mapping");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Mapping.FundAppSDADetail_Region", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("FundAppSDADetailId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RegionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FundAppSDADetailId");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("FundAppSDADetail_Regions", "mapping");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Mapping.FundAppServiceDeliveryArea", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("FundAppSDADetailId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ServiceDeliveryAreaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FundAppSDADetailId");
+
+                    b.HasIndex("ServiceDeliveryAreaId");
+
+                    b.ToTable("ServiceDeliveryAreas", "mapping");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Mapping.NpoProfileFacilityList", b =>
                 {
                     b.Property<int>("Id")
@@ -16886,6 +17018,58 @@ namespace NPOMS.Repository.Migrations
                     b.HasIndex("SubProgrammeId");
 
                     b.ToTable("Objectives_Programmes", "mapping");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Mapping.ProjectImplementationPlace", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ImplementationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PlaceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ImplementationId");
+
+                    b.HasIndex("PlaceId");
+
+                    b.ToTable("Project_Implementation_Places", "mapping");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Mapping.ProjectImplementationSubPlace", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ImplementationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SubPlaceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ImplementationId");
+
+                    b.HasIndex("SubPlaceId");
+
+                    b.ToTable("Project_Implementation_SubPlaces", "mapping");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Mapping.RolePermission", b =>
@@ -17543,6 +17727,17 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("DistrictCouncil");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.Place", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Dropdown.ServiceDeliveryArea", "ServiceDeliveryArea")
+                        .WithMany()
+                        .HasForeignKey("ServiceDeliveryAreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServiceDeliveryArea");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Dropdown.PropertySubType", b =>
                 {
                     b.HasOne("NPOMS.Domain.Dropdown.PropertyType", "PropertyType")
@@ -17574,6 +17769,17 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("Region");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.SubPlace", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Dropdown.Place", "Place")
+                        .WithMany("SubPlaces")
+                        .HasForeignKey("PlaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Place");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.Activity", b =>
@@ -17680,6 +17886,17 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("CreatedUser");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Entities.ApplicationDetail", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Entities.FundAppSDADetail", "FundAppSDADetail")
+                        .WithMany()
+                        .HasForeignKey("FundAppSDADetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FundAppSDADetail");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Entities.ApplicationPeriod", b =>
                 {
                     b.HasOne("NPOMS.Domain.Dropdown.ApplicationType", "ApplicationType")
@@ -17774,7 +17991,30 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("PropertyType");
                 });
 
-            modelBuilder.Entity("NPOMS.Domain.Entities.FundingApplicationDetails", b =>
+            modelBuilder.Entity("NPOMS.Domain.Entities.FinancialMatters", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Entities.FundingApplicationDetail", "FundingApplicationDetail")
+                        .WithMany("FinancialMatters")
+                        .HasForeignKey("FundingApplicationDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NPOMS.Domain.Dropdown.PropertySubType", "PropertySubType")
+                        .WithMany()
+                        .HasForeignKey("PropertySubTypeId");
+
+                    b.HasOne("NPOMS.Domain.Dropdown.PropertyType", "PropertyType")
+                        .WithMany()
+                        .HasForeignKey("PropertyTypeId");
+
+                    b.Navigation("FundingApplicationDetail");
+
+                    b.Navigation("PropertySubType");
+
+                    b.Navigation("PropertyType");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.FundAppSDADetail", b =>
                 {
                     b.HasOne("NPOMS.Domain.Dropdown.DistrictCouncil", "DistrictCouncil")
                         .WithMany()
@@ -17784,13 +18024,50 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasOne("NPOMS.Domain.Dropdown.LocalMunicipality", "LocalMunicipality")
                         .WithMany()
-                        .HasForeignKey("localMunicipalityId")
+                        .HasForeignKey("LocalMunicipalityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("NPOMS.Domain.Dropdown.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId");
 
                     b.Navigation("DistrictCouncil");
 
                     b.Navigation("LocalMunicipality");
+
+                    b.Navigation("Region");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.FundingApplicationDetail", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Entities.ApplicationDetail", "ApplicationDetails")
+                        .WithMany()
+                        .HasForeignKey("ApplicationDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NPOMS.Domain.Entities.ApplicationPeriod", "ApplicationPeriod")
+                        .WithMany()
+                        .HasForeignKey("ApplicationPeriodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NPOMS.Domain.Entities.MonitoringEvaluation", "MonitoringEvaluation")
+                        .WithMany()
+                        .HasForeignKey("MonitoringEvaluationId");
+
+                    b.HasOne("NPOMS.Domain.Entities.ProjectInformation", "ProjectInformation")
+                        .WithMany()
+                        .HasForeignKey("ProjectInformationId");
+
+                    b.Navigation("ApplicationDetails");
+
+                    b.Navigation("ApplicationPeriod");
+
+                    b.Navigation("MonitoringEvaluation");
+
+                    b.Navigation("ProjectInformation");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.Npo", b =>
@@ -17857,6 +18134,17 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("CompliantCycle");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.ProjectImplementation", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Entities.FundingApplicationDetail", "FundingApplicationDetail")
+                        .WithMany("Implementations")
+                        .HasForeignKey("FundingApplicationDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FundingApplicationDetail");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.Resource", b =>
@@ -18046,6 +18334,44 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("SubProgramme");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Mapping.FundAppSDADetail_Region", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Entities.FundAppSDADetail", "FundAppSDADetail")
+                        .WithMany("Regions")
+                        .HasForeignKey("FundAppSDADetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NPOMS.Domain.Dropdown.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FundAppSDADetail");
+
+                    b.Navigation("Region");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Mapping.FundAppServiceDeliveryArea", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Entities.FundAppSDADetail", "FundAppSDADetail")
+                        .WithMany("ServiceDeliveryAreas")
+                        .HasForeignKey("FundAppSDADetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NPOMS.Domain.Dropdown.ServiceDeliveryArea", "ServiceDeliveryArea")
+                        .WithMany()
+                        .HasForeignKey("ServiceDeliveryAreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FundAppSDADetail");
+
+                    b.Navigation("ServiceDeliveryArea");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Mapping.NpoProfileFacilityList", b =>
                 {
                     b.HasOne("NPOMS.Domain.Lookup.FacilityList", "FacilityList")
@@ -18082,6 +18408,44 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("Programme");
 
                     b.Navigation("SubProgramme");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Mapping.ProjectImplementationPlace", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Entities.ProjectImplementation", "Implementation")
+                        .WithMany("ImplementationPlaces")
+                        .HasForeignKey("ImplementationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NPOMS.Domain.Dropdown.Place", "Place")
+                        .WithMany()
+                        .HasForeignKey("PlaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Implementation");
+
+                    b.Navigation("Place");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Mapping.ProjectImplementationSubPlace", b =>
+                {
+                    b.HasOne("NPOMS.Domain.Entities.ProjectImplementation", "Implementation")
+                        .WithMany("ImplementationSubPlaces")
+                        .HasForeignKey("ImplementationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NPOMS.Domain.Dropdown.SubPlace", "SubPlace")
+                        .WithMany()
+                        .HasForeignKey("SubPlaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Implementation");
+
+                    b.Navigation("SubPlace");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Mapping.RolePermission", b =>
@@ -18195,6 +18559,11 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("Roles");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Dropdown.Place", b =>
+                {
+                    b.Navigation("SubPlaces");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Dropdown.Programme", b =>
                 {
                     b.Navigation("SubProgrammes");
@@ -18217,6 +18586,20 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("ActivitySubProgrammes");
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Entities.FundAppSDADetail", b =>
+                {
+                    b.Navigation("Regions");
+
+                    b.Navigation("ServiceDeliveryAreas");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.FundingApplicationDetail", b =>
+                {
+                    b.Navigation("FinancialMatters");
+
+                    b.Navigation("Implementations");
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Entities.Npo", b =>
                 {
                     b.Navigation("ContactInformation");
@@ -18230,6 +18613,13 @@ namespace NPOMS.Repository.Migrations
             modelBuilder.Entity("NPOMS.Domain.Entities.Objective", b =>
                 {
                     b.Navigation("ObjectiveProgrammes");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.ProjectImplementation", b =>
+                {
+                    b.Navigation("ImplementationPlaces");
+
+                    b.Navigation("ImplementationSubPlaces");
                 });
 #pragma warning restore 612, 618
         }

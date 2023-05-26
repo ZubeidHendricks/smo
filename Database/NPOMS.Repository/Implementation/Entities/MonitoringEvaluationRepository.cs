@@ -21,10 +21,11 @@ namespace NPOMS.Repository.Implementation.Entities
 
         }
 
-        public async Task<MonitoringEvaluation> GetById(int id)
+        public async Task<MonitoringEvaluation> GetById(int? id)
         {
             return await FindByCondition(x => x.Id.Equals(id)).Include(x => x.MonEvalDescription).AsNoTracking().FirstOrDefaultAsync();
         }
+
 
         public async Task<IEnumerable<MonitoringEvaluation>> GetEntities(int applicationId)
         {

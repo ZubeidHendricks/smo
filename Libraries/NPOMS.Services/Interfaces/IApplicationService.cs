@@ -1,5 +1,7 @@
-﻿using NPOMS.Domain.Entities;
+﻿using NPOMS.Domain.Dropdown;
+using NPOMS.Domain.Entities;
 using NPOMS.Domain.Lookup;
+using NPOMS.Services.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -32,14 +34,19 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateObjective(Objective model, string userIdentifier);
 
 
-        Task CreateProjectInformation(ProjectInformation model, string userIdentifier);
+		//Task CreateProjectInformation(ProjectInformation model, string userIdentifier);
 
-        Task UpdateProjectInformation(ProjectInformation model, string userIdentifier);
+		//Task UpdateProjectInformation(ProjectInformation model, string userIdentifier);
 
 
-        Task CreateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
+		//Task CreateProjectImplementation(ProjectImplementation model, string userIdentifier);
 
-        Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
+		//Task UpdateProjectImplementation(ProjectImplementation model, string userIdentifier);
+
+
+		Task CreateFundingApplicationDetails(FundingApplicationDetail model, string userIdentifier);
+
+		//Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
 
 		Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId);
 
@@ -94,5 +101,11 @@ namespace NPOMS.Services.Interfaces
 		Task<IEnumerable<ApplicationReviewerSatisfaction>> GetApplicationReviewerSatisfactions(int applicationId, int serviceProvisionStepId, int entityId);
 
 		Task CreateApplicationReviewerSatisfaction(ApplicationReviewerSatisfaction model, string userIdentifier);
-	}
+
+        //Task<IEnumerable<Place>> GetPlaces(List<int> sdaIds);
+
+        //Task<IEnumerable<SubPlace>> GetSubplaces(List<int> placeIds);
+
+        //Task<FundAppDetailViewModel> GetApplicationIDAsync(int bidId);
+    }
 }
