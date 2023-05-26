@@ -168,6 +168,12 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.PropertySubType:
                         var propertySubType = await _dropdownService.GetPropertySubTypes(returnInactive);
                         return Ok(propertySubType);
+                    case DropdownTypeEnum.Place:
+                        var place = await _dropdownService.GetPlaces(returnInactive);
+                        return Ok(place);
+                    case DropdownTypeEnum.SubPlace:
+                        var subPlace = await _dropdownService.GetSubPlaces(returnInactive);
+                        return Ok(subPlace);
                 }
 
 				return Ok();

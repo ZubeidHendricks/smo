@@ -20,15 +20,10 @@ namespace NPOMS.Repository.Implementation.Entities
             await CreateAsync(model);
         }
 
-        public async Task<ProjectInformation> GetById(int id)
+        public async Task<ProjectInformation> GetById(int? id)
         {
-            return await FindByCondition(x => x.Id.Equals(id)).Include(x => x.InitiatedQuestion).Include(x => x.PurposeQuestion).AsNoTracking().FirstOrDefaultAsync();
-        }
-
-        public async Task<IEnumerable<ProjectInformation>> GetEntities(int applicationId)
-        {
-            return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
-                .Include(x => x.IsActive).AsNoTracking().ToListAsync();
+            var info = await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+            return info;
         }
 
         public async Task UpdateEntity(ProjectInformation model, int currentUserId)

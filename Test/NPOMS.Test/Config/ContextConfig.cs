@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using NPOMS.Repository;
 
-namespace NPOMS.Tests.Config
+namespace NPOMS.Test.Config
 {
-	public static class ContextConfig
+    public static class ContextConfig
     {
         public static RepositoryContext GetContext()
         {

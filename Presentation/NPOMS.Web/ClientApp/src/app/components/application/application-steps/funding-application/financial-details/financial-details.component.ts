@@ -6,8 +6,7 @@ import { FinancialMatters } from 'src/app/models/FinancialMatters';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { PropertyType } from 'src/app/models/PropertyType';
 import { DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
-import { Bid, FinYear, IApplication } from 'src/app/models/interfaces';
-import { BidService } from 'src/app/services/api-services/bid/bid.service';
+import {  FinYear, IApplication, IFundingApplicationDetails } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 
 @Component({
@@ -18,7 +17,7 @@ import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown
 export class FinancialDetailsComponent implements OnInit, OnChanges {
 
   @Input() isReadOnly: boolean;
-  @Input() bid: Bid; @Input() application: IApplication;
+  @Input() bid: IFundingApplicationDetails; @Input() application: IApplication;
   @Input() financialMatters: FinancialMatters[];
   @Output() financialMattersChange = new EventEmitter();
   @Input() activeStep: number;

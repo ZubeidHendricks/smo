@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -25,6 +26,12 @@ namespace NPOMS.Repository.Interfaces
 
 		Task DeleteAsync(T entity);
 
-		Task SaveAsync();
-	}
+		Task SaveAsync();   
+
+
+        void InsertMultiItemsAsync(List<T> entity);
+
+        Task UpdateAsync(T entity);
+
+    }
 }

@@ -15,6 +15,11 @@ namespace NPOMS.Repository.Implementation.Dropdown
         {
         }
 
+        public async Task<LocalMunicipality> GetById(int id)
+        {
+            return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<LocalMunicipality>> GetEntities(bool returnInactive)
         {
             if (returnInactive)

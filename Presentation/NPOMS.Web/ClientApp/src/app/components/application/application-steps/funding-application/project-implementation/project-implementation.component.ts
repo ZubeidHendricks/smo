@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { StatusEnum } from 'src/app/models/enums';
-import { Bid, IApplication, Implementation, Place, SubPlace } from 'src/app/models/interfaces';
+import { IApplication, IFundingApplicationDetails, IPlace, IProjectImplementation, ISubPlace, } from 'src/app/models/interfaces';
 
 @Component({
   selector: 'app-project-implementation',
@@ -13,10 +13,10 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   canEdit: boolean;
   @Input() activeStep: number;
-  @Input() bid: Bid;
+  @Input() fundingApplicationDetails: IFundingApplicationDetails;
   @Input() application: IApplication;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
-  @Input() implementations: Implementation[];
+  @Input() implementations: IProjectImplementation[];
   @Output() implementationsChange = new EventEmitter();
 
 
@@ -24,17 +24,17 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   yearRange: string;
   displayDialogImpl: boolean;
   newImplementation: boolean;
-  implementation: Implementation = {} as Implementation;
-  selectedImplementation: Implementation;
+  implementation: IProjectImplementation = {} as IProjectImplementation;
+  selectedImplementation: IProjectImplementation;
   rangeDates: Date[];
   timeframes: Date[] = [];
   cols: any[];
-  @Input() places: Place[];
-  @Input() allsubPlaces: SubPlace[];
+  @Input() places: IPlace[];
+  @Input() allsubPlaces: ISubPlace[];
 
-  subPlaces: SubPlace[];
-  selectedSubPlaces: SubPlace[];
-  selectedPlaces: Place[];
+  subPlaces: ISubPlace[];
+  selectedSubPlaces: ISubPlace[];
+  selectedPlaces: IPlace[];
   private subscriptions: Subscription[] = [];
   constructor() {
 
@@ -105,7 +105,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     this.implementation = {
       places: [],
       subPlaces: []
-    } as Implementation;
+    } as IProjectImplementation;
     this.displayDialogImpl = true;
   }
 
@@ -114,8 +114,11 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     !this.implementation.beneficiaries || !this.implementation.budget ||
     !this.implementation.results ! || !this.implementation.projectObjective||
     !this.implementation.resources||
-    !this.implementation.description ||(this.places.length>0 && this.selectedPlaces.length== 0) ||
-    (this.allsubPlaces.length>0 && this.selectedSubPlaces.length== 0)) 
+    !this.implementation.description
+    //  ||
+    // (this.places.length>0 && this.selectedPlaces.length== 0) ||
+    // (this.allsubPlaces.length>0 && this.selectedSubPlaces.length== 0)
+    ) 
     return true;
   
     return false;
@@ -140,11 +143,11 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     }
 
     this.implementations = implementation;
-    this.bid.implementations.length = 0;
-    this.bid.implementations = this.implementations;
+    this.fundingApplicationDetails.implementations.length = 0;
+    this.fundingApplicationDetails.implementations = this.implementations;
     this.implementationsChange.emit(this.implementations);
     this.implementation = null;
-    console.log('bit after', this.bid)
+    console.log('bit after', this.fundingApplicationDetails)
   }
 
  
@@ -160,7 +163,7 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     this.implementation.timeframe.push(new Date(event.data.timeframeTo));
     this.implementation.places = this.implementation.places;
     this.implementation.subPlaces = this.implementation.subPlaces;
-    console.log('bit after', this.bid)
+    console.log('bit after', this.fundingApplicationDetails)
     this.placesChange(this.implementation.places);
     this.subPlacesChange(this.implementation.subPlaces);
     if(this.application.status.id == 3 || 22||23){ this.displayDialogImpl = false;}
@@ -176,8 +179,8 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
   }
 
 
-  cloneImplementation(c: Implementation): Implementation {
-    let addFun = {} as Implementation;
+  cloneImplementation(c: IProjectImplementation): IProjectImplementation {
+    let addFun = {} as IProjectImplementation;
     for (let prop in c) {
       addFun[prop] = c[prop];
     }
@@ -188,7 +191,7 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     this.displayDialogImpl = false;
   }
 
-  placesChange(p: Place[]) {
+  placesChange(p: IPlace[]) {
     this.selectedPlaces = [];
 
     p.forEach(item => {
@@ -208,7 +211,7 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     }
   }
 
-  subPlacesChange(sub: SubPlace[]) {     // create dropdown with data for subPlaces
+  subPlacesChange(sub: ISubPlace[]) {     // create dropdown with data for subPlaces
     this.selectedSubPlaces = [];
     sub.forEach(item => {
       this.selectedSubPlaces = this.selectedSubPlaces.concat(this.allsubPlaces.find(x => x.id == item.id))
@@ -219,16 +222,16 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
   private allDropdownsLoaded() {  // use for edit purposes if implementation has places and sub places or not
 
     if (this.places?.length > 0 && this.allsubPlaces?.length > 0) {
-      let plc: Place[];
-      let subplc: SubPlace[];
-      this.bid.implementations.map(c => { plc = c.places });
+      let plc: IPlace[];
+      let subplc: ISubPlace[];
+      this.fundingApplicationDetails.implementations.map(c => { plc = c.places });
       this.implementation.places = plc;
       if (this.implementation.places?.length > 0) {
 
         this.placesChange(this.implementation.places);
       }
 
-      this.bid.implementations.forEach(c => { subplc = c.subPlaces; this.implementation.subPlaces = subplc; });
+      this.fundingApplicationDetails.implementations.forEach(c => { subplc = c.subPlaces; this.implementation.subPlaces = subplc; });
 
       if (this.implementation.subPlaces !== undefined) {
         this.subPlacesChange(this.implementation.subPlaces);

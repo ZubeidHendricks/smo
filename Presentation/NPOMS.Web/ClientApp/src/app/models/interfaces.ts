@@ -139,35 +139,6 @@ export interface IFacilitySubDistrict {
     facilityDistrict: IFacilityDistrict;
 }
 
-export interface IDistrictCouncil {
-    id: number;
-    name: string;
-    isActive: boolean;
-}
-
-export interface ILocalMunicipality {
-    id: number;
-    districtCouncilId: number;
-    name: string;
-    isActive: boolean;
-    districtCouncil: IDistrictCouncil;
-}
-
-export interface IRegion {
-  id: number;
-  localMunicipalityId: number;
-  name: string;
-  isActive: boolean;
-  localMunicipality: ILocalMunicipality;
-}
-
-export interface IServiceDeliveryArea {
-  id: number;
-  regionId: number;
-  name: string;
-  isActive: boolean;
-  region: IRegion;
-}
 
 export interface IFacilityType {
     id: number;
@@ -350,42 +321,6 @@ export interface IApplication {
     status: IStatus;
 }
 
-export interface Bid {
-    id: number;
-   
-    ApplicationPeriodId: number;
-    ApplicationId:number
-    // projectInformation:IProjectInformation;
-    // monitoringEvalution:IMonitoringAndEvaluation;
-     implementations: Implementation[];
-    applicationPeriod: IApplicationPeriod;
-     incomes: Budget[],
-    expenses: Budget[],
-    
-    financialMatters: FinancialMatters[];
-  
-    // applicationDetails: IApplicationDetails;
-    // evaluationQuestions: EvalutionSection[];
-    // evaluationAnswers: EvaluationAnswers[];
-  }
-
-  export interface Implementation {
-    id: number;
-    applicationId :number;
-    description: string;
-    projectObjective: string;
-    beneficiaries: number;
-    timeframe: Date[];
-    timeframeFrom: string;
-    timeframeTo: string;
-    places: Place[];
-    subPlaces: SubPlace[];
-
-    results: string;
-    resources: string;
-    budget: number;
-  }  
-
   export interface FinYear {
     id: number;
     name: string;
@@ -411,45 +346,7 @@ export interface Bid {
     id: number;
     name: string;
     next: number;
-  }
-
-  export interface SubPlace {
-    placeId: number;
-    id: number;
-    name: string;
-    
-  }
-  export interface Place {
-    id: number;
-    name: string;
-    serviceDeliveryAreaId: number;
-  }
-
-  export interface SDA {
-    id: number;
-    name: string;
-    isActive: boolean;
-    regionId: number;
-  }
-
-  export interface LocalMunicipality {
-    id: number;
-    name: string;
-    districtCouncilId: number;
   }  
-
-  export interface DistrictCouncil {
-    id: number;
-    name: string;
-  }
-
-  export interface Region {
-    id: number;
-    isActive: boolean;
-    name: string;
-    localMunicipalityId: number;
-  }
-  
 
   export interface IFinancialYear {
     id: number;
@@ -605,18 +502,24 @@ export interface IObjective {
     objectiveProgrammes: IObjectiveProgramme[];
 }
 
+
 export interface IFundingApplicationDetails {
     id: number;
-    applicationId: number;    
+    applicationId: number; 
+    applicationPeriodId: number;
+    projectInformation:IProjectInformation;
+    monitoringEvaluation:IMonitoringAndEvaluation;
+    implementations: IProjectImplementation[];
+    applicationPeriod: IApplicationPeriod;
+    incomes: Budget[],
+    expenses: Budget[],    
+    financialMatters: FinancialMatters[];  
+    applicationDetails: IApplicationDetails;
+    amountApplyingFor:number;   
     isActive: boolean;
-    changesRequired: boolean;
     isNew: boolean;    
-    amountApplyingFor: number;
-    localMunicipalities: ILocalMunicipality[],
-    regions: IRegion[],
-    serviceDeliveryAreas :IServiceDeliveryArea[],
-    fundAppSDADetails:IFundAppSDADetail[];  
 }
+
 
 export interface IProjectInformation
 {
@@ -629,7 +532,7 @@ export interface IProjectInformation
     considerQuestion: string;
     purposeQuestion: string;
 }
-export interface IMonitoringEvalution {
+export interface IMonitoringAndEvaluation {
     id : number;
     applicationId : number;
     isActive: boolean;
@@ -637,18 +540,6 @@ export interface IMonitoringEvalution {
     isNew: boolean;    
     monEvalDescription: string;
 }
-
-// export interface IFinancialDetails {ng g 
-//     id: number;
-//     applicationId: number;    
-//     isActive: boolean;
-//     changesRequired: boolean;
-//     isNew: boolean;
-//     financialMatters:FinancialMatters[];  
-// }
-
-
-
 export interface IResource {
     id: number;
     applicationId: number;
@@ -664,7 +555,6 @@ export interface IResource {
     isActive: boolean;
     changesRequired: boolean;
     isNew: boolean;
-
     activity: IActivity;
     resourceType: IResourceType;
     serviceType: IServiceType;
@@ -690,7 +580,6 @@ export interface ISustainabilityPlan {
     isActive: boolean;
     changesRequired: boolean;
     isNew: boolean;
-
     activity: IActivity;
 }
 
@@ -837,23 +726,6 @@ export interface IObjectiveProgramme {
     programme: IProgramme;
     subProgramme: ISubProgramme;
 }
-
-export interface IFundAppSDADetail {
-    id: number;
-    fundingApplicationDetailsId: number;
-    districtCouncilId: number;
-    localMunicipalityId: number;
-    regionId: number;
-    serviceDeliveryAreaId:number;
-
-    isActive: boolean;
-
-    districtCouncil: IDistrictCouncil;
-    localMunicipality: ILocalMunicipality;
-    region:IRegion;
-    serviceDeliveryArea:IServiceDeliveryArea;
-}
-
 export interface IUserDepartment {
     id: number;
     userId: number;
@@ -1073,3 +945,182 @@ export interface IProgrammeBudget {
     directorate: IDirectorate;
     programme: IProgramme;
 }
+
+//FundingApplicationDetail
+export interface IDistrictCouncil {
+    id: number;
+    name: string;
+    isActive: boolean;
+}
+
+export interface ILocalMunicipality {
+    [x: string]: any;
+    id: number;
+    districtCouncilId: number;
+    name: string;
+    isActive: boolean;
+
+}
+
+export interface IRegion {
+  id: number;
+  localMunicipalityId: number;
+  name: string;
+  isActive: boolean;
+  localMunicipality: ILocalMunicipality;
+}
+
+export interface IServiceDeliveryArea {
+  id: number;
+  regionId: number;
+  name: string;
+  isActive: boolean;
+  region: IRegion;
+}
+
+  export interface IApplicationDetails {
+    id: number;
+    amountApplyingFor: number;
+    fundAppSDADetailId: number;
+    fundAppSDADetail:  IFundAppSDADetail;
+  }
+
+
+export interface IFundAppSDADetail {
+    id: number;
+    districtCouncil: IDistrictCouncil;
+    localMunicipality: ILocalMunicipality;
+    regions: IRegion[];
+    serviceDeliveryAreas: ISDA[];
+}
+
+  export interface ISubPlace {
+    placeId: number;
+    id: number;
+    name: string;
+  }
+      
+  export interface IPlace {
+    id: number;
+    name: string;
+    serviceDeliveryAreaId: number;
+  }
+  export interface ISDA {
+    id: number;
+    name: string;
+    isActive: boolean;
+    regionId: number;
+  }
+  export interface ILocalMunicipality {
+    id: number;
+    name: string;
+    districtCouncilId: number;
+  }  
+
+  export interface IDistrictCouncil {
+    id: number;
+    name: string;
+  }
+
+  export interface IRegion {
+    id: number;
+    isActive: boolean;
+    name: string;
+    localMunicipalityId: number;
+  }
+  export interface IProjectInformation {
+    initiatedQuestion: string;
+    considerQuestion: string;
+    purposeQuestion: string;
+}
+
+
+export interface Budget {
+    id: number;
+    description: string;
+    finYear1: FinYearBudget;
+    finYear2: FinYearBudget;
+    finYear3: FinYearBudget;
+    category: string;
+  }
+  
+export interface IProjectImplementation {
+    id: number;
+    description: string;
+    projectObjective: string;
+    beneficiaries: number;
+    timeframe: Date[];
+    timeframeFrom: string;
+    timeframeTo: string;
+    places: IPlace[];
+    subPlaces: ISubPlace[];
+
+    results: string;
+    resources: string;
+    budget: number;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//CommentedCode  
+//   export interface SubPlace {
+//     placeId: number;
+//     id: number;
+//     name: string;
+    
+//   }
+//   export interface Place {
+//     id: number;
+//     name: string;
+//     serviceDeliveryAreaId: number;
+//   }
+//   export interface Region {
+//     id: number;
+//     isActive: boolean;
+//     name: string;
+//     localMunicipalityId: number;
+//   }
+//   export interface DistrictCouncil {
+//     id: number;
+//     name: string;
+//   }
+//   export interface LocalMunicipality {
+//     id: number;
+//     name: string;
+//     districtCouncilId: number;
+//   }  
+//   export interface SDA {
+//     id: number;
+//     name: string;
+//     isActive: boolean;
+//     regionId: number;
+//   }
+// export interface GeographicalDetails {
+//     id: number;
+//     districtCouncil: DistrictCouncil;
+//     localMunicipality: LocalMunicipality;
+//     regions: Region[];
+//     serviceDeliveryAreas: SDA[];
+//   }

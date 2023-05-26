@@ -58,7 +58,9 @@ export enum DropdownTypeEnum {
     Region = 38,
     ServiceDeliveryArea =39,
     PropertyType =40,
-    PropertySubType =41
+    PropertySubType =41,
+    Places=42,
+    SubPlaces =43
 }
 
 export enum EntityTypeEnum {

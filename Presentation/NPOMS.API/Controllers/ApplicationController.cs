@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Services.Email;
 using NPOMS.Services.Email.EmailTemplates;
 using NPOMS.Services.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NPOMS.API.Controllers
@@ -268,46 +271,46 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-        [HttpPost("fundingApplicationDetails/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateFundingApplicationDetails")]
-        public async Task<IActionResult> CreateFundingApplicationDetails([FromBody] FundingApplicationDetails model, int NpoId, int applicationPeriodId)
-        {
-            try
-            {
-                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(NpoId, applicationPeriodId);
-                model.ApplicationId = application.Id;
+		[HttpPost]
+		public async Task<IActionResult> CreateFundingApplicationDetails([FromBody] FundingApplicationDetail model, int NpoId, int applicationPeriodId)
+		{
+			try
+			{
+				var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(NpoId, applicationPeriodId);
+				model.ApplicationId = application.Id;
 
-                await _applicationService.CreateFundingApplicationDetails(model, base.GetUserIdentifier());
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside CreateFundingApplicationDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-
-        [HttpPost("projectInformation/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateProjectInformation")]
-        public async Task<IActionResult> CreateProjectInformation([FromBody] ProjectInformation model, int NpoId, int applicationPeriodId)
-        {
-            try
-            {
-                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(NpoId, applicationPeriodId);
-                model.ApplicationId = application.Id;
-
-                await _applicationService.CreateProjectInformation(model, base.GetUserIdentifier());
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside CreateProjectInformation action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+				await _applicationService.CreateFundingApplicationDetails(model, base.GetUserIdentifier());
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateFundingApplicationDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
 
 
+		//[HttpPost("projectInformation/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateProjectInformation")]
+		//public async Task<IActionResult> CreateProjectInformation([FromBody] ProjectInformation model, int NpoId, int applicationPeriodId)
+		//{
+		//    try
+		//    {
+		//        var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(NpoId, applicationPeriodId);
+		//        model.ApplicationId = application.Id;
 
-        [HttpPost("financialDetail/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateFinancialDetail")]
+		//        await _applicationService.CreateProjectInformation(model, base.GetUserIdentifier());
+		//        return Ok();
+		//    }
+		//    catch (Exception ex)
+		//    {
+		//        _logger.LogError($"Something went wrong inside CreateProjectInformation action: {ex.Message} Inner Exception: {ex.InnerException}");
+		//        return StatusCode(500, $"Internal server error: {ex.Message}");
+		//    }
+		//}
+
+
+
+		[HttpPost("financialDetail/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateFinancialDetail")]
         public async Task<IActionResult> CreateFinancialDetail([FromBody] FinancialDetail model, int NpoId, int applicationPeriodId)
         {
             try
@@ -343,20 +346,20 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut("projectInformation", Name = "UpdateProjectInformation")]
-        public async Task<IActionResult> UpdateProjectInformation([FromBody] ProjectInformation model)
-        {
-            try
-            {
-                await _applicationService.UpdateProjectInformation(model, base.GetUserIdentifier());
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside UpdateProjectInformation action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        //[HttpPut("projectInformation", Name = "UpdateProjectInformation")]
+        //public async Task<IActionResult> UpdateProjectInformation([FromBody] ProjectInformation model)
+        //{
+        //    try
+        //    {
+        //        await _applicationService.UpdateProjectInformation(model, base.GetUserIdentifier());
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside UpdateProjectInformation action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         [HttpPut("monitoringEvaluation", Name = "UpdateMonitoringEvaluation")]
         public async Task<IActionResult> UpdateMonitoringEvaluation([FromBody] MonitoringEvaluation model)
@@ -403,20 +406,20 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut("fundingApplicationDetails", Name = "UpdateFundingApplicationDetails")]
-        public async Task<IActionResult> UpdateFundingApplicationDetails([FromBody] FundingApplicationDetails model)
-        {
-            try
-            {
-                await _applicationService.UpdateFundingApplicationDetails(model, base.GetUserIdentifier());
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside UpdateFundingApplicationDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        //[HttpPut("fundingApplicationDetails", Name = "UpdateFundingApplicationDetails")]
+        //public async Task<IActionResult> UpdateFundingApplicationDetails([FromBody] FundingApplicationDetails model)
+        //{
+        //    try
+        //    {
+        //        await _applicationService.UpdateFundingApplicationDetails(model, base.GetUserIdentifier());
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside UpdateFundingApplicationDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         [HttpPost("objectives/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateObjective")]
 		public async Task<IActionResult> CreateObjective([FromBody] Objective model, int NpoId, int applicationPeriodId)
@@ -771,6 +774,64 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		#endregion
-	}
+        #endregion
+
+        #region Place-SubPlace
+        //[HttpPost]
+        //[Route("places")]
+        //public async Task<IActionResult> GetPlaces([FromBody] IEnumerable<ServiceDeliveryArea> sdas)
+        //{
+        //    try
+        //    {
+        //        var sdaIds = sdas.Select(p => p.Id).ToList();
+        //        var items = await _applicationService.GetPlaces(sdaIds);
+
+        //        return Ok(items);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError("Get places", ex);
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+        //[HttpPost]
+        //[Route("subPlaces")]
+        //public async Task<IActionResult> GetSubPlaces([FromBody] IEnumerable<Place> places)
+        //{
+        //    try
+        //    {
+        //        var placesIds = places.Select(p => p.Id).ToList();
+        //        var items = await _applicationService.GetSubplaces(placesIds);
+
+        //        return Ok(items);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError("Get sub-places", ex);
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+        //[HttpGet("applicationId/{applicationId}", Name = "GetapplicationIDAsync")]
+        //public ActionResult GetapplicationIDAsync(int applicationId)
+        //{
+
+
+        //    try
+        //    {
+        //        var userIdentifier = GetUserIdentifier();
+        //        var bid = await _applicationService.GetapplicationIDAsync(applicationId);
+
+        //        return Ok(bid);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Get one Application, id: {applicationId}", ex);
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+        #endregion
+    }
 }

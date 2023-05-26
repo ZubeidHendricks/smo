@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { StatusEnum } from 'src/app/models/enums';
-import { Bid, IApplication } from 'src/app/models/interfaces';
+import {  IApplication, IFundingApplicationDetails } from 'src/app/models/interfaces';
 
 @Component({
   selector: 'app-project-information',
@@ -10,7 +10,7 @@ import { Bid, IApplication } from 'src/app/models/interfaces';
 export class ProjectInformationComponent implements OnInit {
   @Input() isReadOnly: boolean;
   @Input() initiatedQuestion: string;
-  @Input() bid: Bid;
+  @Input() bid: IFundingApplicationDetails;
   @Input() application: IApplication;
   @Output() initiatedQuestionChange = new EventEmitter();
   @Input() purposeQuestion: string;

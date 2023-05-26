@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="FundingApplication\" />
+    <Compile Remove="FundingApplication\**" />
+    <EmbeddedResource Remove="FundingApplication\**" />
+    <None Remove="FundingApplication\**" />
   </ItemGroup>
 
 </Project>

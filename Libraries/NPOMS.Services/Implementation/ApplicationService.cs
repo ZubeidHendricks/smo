@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using NPOMS.Domain.Core;
+using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Lookup;
@@ -7,9 +8,11 @@ using NPOMS.Domain.Mapping;
 using NPOMS.Repository;
 using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Interfaces.Core;
+using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,8 +45,11 @@ namespace NPOMS.Services.Implementation
 		private IFinancialDetailRepository _financialDetailRepository;
         private IProjectInformationRepository _projectInformationRepository;
         private IMonitoringEvaluationRepository _monitoringEvaluationRepository;
+		private IProjectImplementationRepository _projectImplementationRepository;
+        private IPlaceRepository _placeRepository;
+        private ISubPlaceRepository _subPlaceRepository;
+        private IFundAppSDADetailRepository _fundAppDetailRepository;
 
-        
 
 
         private RepositoryContext _repositoryContext;
@@ -74,6 +80,10 @@ namespace NPOMS.Services.Implementation
 			IFinancialDetailRepository financialDetailRepository,
 			IProjectInformationRepository projectInformationRepository,
 			IMonitoringEvaluationRepository monitoringEvaluationRepository,
+			IProjectImplementationRepository projectImplementationRepository,
+			IPlaceRepository placeRepository,
+			ISubPlaceRepository subPlaceRepository,
+			IFundAppSDADetailRepository fundAppDetailRepository,
             RepositoryContext repositoryContext
 			)
 		{
@@ -98,6 +108,10 @@ namespace NPOMS.Services.Implementation
 			_financialDetailRepository= financialDetailRepository;
 			_projectInformationRepository = projectInformationRepository;
 			_monitoringEvaluationRepository = monitoringEvaluationRepository;
+			_projectImplementationRepository = projectImplementationRepository;
+			_placeRepository= placeRepository;
+			_subPlaceRepository= subPlaceRepository;
+			_fundAppDetailRepository= fundAppDetailRepository;
             _repositoryContext = repositoryContext;
 		}
 
@@ -345,28 +359,39 @@ namespace NPOMS.Services.Implementation
             return null;
         }
 
+        //public async Task CreateProjectImplementation(ProjectImplementation model, string userIdentifier)
+        //{
+        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+        //    model.CreatedUserId = loggedInUser.Id;
+        //    model.CreatedDateTime = DateTime.Now;
+
+        //    await _projectImplementationRepository.CreateEntity(model);
+        //}
+
 
         public async Task CreateProjectInformation(ProjectInformation model, string userIdentifier)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-            model.CreatedUserId = loggedInUser.Id;
-            model.CreatedDateTime = DateTime.Now;
+            //model.CreatedUserId = loggedInUser.Id;
+            //model.CreatedDateTime = DateTime.Now;
 
             await _projectInformationRepository.CreateEntity(model);
         }
 
-        public async Task CreateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier)
-        {
-            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+		public async Task CreateFundingApplicationDetails(FundingApplicationDetail model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-            model.CreatedUserId = loggedInUser.Id;
-            model.CreatedDateTime = DateTime.Now;
+			//model.CreatedUserId = loggedInUser.Id;
+			//model.CreatedDateTime = DateTime.Now;
+	
 
-            await _fundingApplicationDetailsRepository.CreateEntity(model);
-        }
+			await _fundingApplicationDetailsRepository.CreateEntity(model);
+		}
 
-        public async Task CreateFinancialDetail(FinancialDetail model, string userIdentifier)
+		public async Task CreateFinancialDetail(FinancialDetail model, string userIdentifier)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
@@ -416,29 +441,41 @@ namespace NPOMS.Services.Implementation
 			await _objectiveRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
-        public async Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier)
-        {
-            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+        //public async Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier)
+        //{
+        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-            var fundAppDetails = _mapper.Map<FundingApplicationDetails>(model);
-            fundAppDetails.UpdatedUserId = loggedInUser.Id;
-            fundAppDetails.UpdatedDateTime = DateTime.Now;
+        //    var fundAppDetails = _mapper.Map<FundingApplicationDetails>(model);
+        //    fundAppDetails.UpdatedUserId = loggedInUser.Id;
+        //    fundAppDetails.UpdatedDateTime = DateTime.Now;
 
-            var oldEntity = await this._repositoryContext.FundingApplicationDetails.FindAsync(model.Id);
-            await _fundingApplicationDetailsRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
-        }
+        //    var oldEntity = await this._repositoryContext.FundingApplicationDetails.FindAsync(model.Id);
+        //    await _fundingApplicationDetailsRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+        //}
 
-        public async Task UpdateProjectInformation(ProjectInformation model, string userIdentifier)
-        {
-            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+        //public async Task UpdateProjectImplementation(ProjectImplementation model, string userIdentifier)
+        //{
+        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-            var objective = _mapper.Map<ProjectInformation>(model);
-            objective.UpdatedUserId = loggedInUser.Id;
-            objective.UpdatedDateTime = DateTime.Now;
+        //    var projectImplementation = _mapper.Map<ProjectImplementation>(model);
+        //    projectImplementation.UpdatedUserId = loggedInUser.Id;
+        //    projectImplementation.UpdatedDateTime = DateTime.Now;
 
-            var oldEntity = await this._repositoryContext.ProjectInformations.FindAsync(model.Id);
-            await _projectInformationRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
-        }
+        //    var oldEntity = await this._repositoryContext.ProjectImplementations.FindAsync(model.Id);
+        //    await _projectImplementationRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+        //}
+
+        //public async Task UpdateProjectInformation(ProjectInformation model, string userIdentifier)
+        //{
+        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+        //    var projectInformation = _mapper.Map<ProjectInformation>(model);
+        //    projectInformation.UpdatedUserId = loggedInUser.Id;
+        //    projectInformation.UpdatedDateTime = DateTime.Now;
+
+        //    var oldEntity = await this._repositoryContext.ProjectInformations.FindAsync(model.Id);
+        //    await _projectInformationRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+        //}
 
         public async Task UpdateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier)
         {
@@ -796,6 +833,45 @@ namespace NPOMS.Services.Implementation
 			await _applicationReviewerSatisfactionRepository.CreateEntity(model);
 		}
 
-		#endregion
-	}
+        #endregion
+
+        #region Place-SubPlace
+        public IEnumerable<SubPlace> GetSubplaces(List<int> placeIds)
+        {
+            var sublaces = _subPlaceRepository.FindAll().ToList();
+            var filteredSuPlace = new List<SubPlace>();
+
+            foreach (var SbPlace in sublaces)
+            {
+                foreach (var i in placeIds)
+                {
+                    if (SbPlace.PlaceId == i)
+                    {
+                        filteredSuPlace.Add(SbPlace);
+                    }
+                }
+            }
+            return filteredSuPlace;
+        }
+
+
+        public IEnumerable<Place> GetPlaces(List<int> sdaIds)
+        {
+            var filteredPlace = new List<Place>();
+            var places = _placeRepository.FindAll().ToList();
+            foreach (var place in places)
+            {
+                foreach (var i in sdaIds)
+                {
+                    if (place.ServiceDeliveryAreaId == i)
+                    {
+                        filteredPlace.Add(place);
+                    }
+                }
+            }
+            return filteredPlace;
+        }
+
+        #endregion
+    }
 }

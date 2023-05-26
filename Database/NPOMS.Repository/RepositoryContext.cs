@@ -127,11 +127,12 @@ namespace NPOMS.Repository
 		public DbSet<Npo> Npos { get; set; }
 		public DbSet<NpoProfile> NpoProfiles { get; set; }
 		public DbSet<Objective> Objectives { get; set; }
-        public DbSet<FundingApplicationDetails> FundingApplicationDetails { get; set; }
+        public DbSet<FundingApplicationDetail> FundingApplicationDetails { get; set; }
         public DbSet<FinancialDetail> FinancialDetails { get; set; }
         public DbSet<ProjectInformation> ProjectInformations { get; set; }
 		public DbSet<MonitoringEvaluation> MonitoringEvaluations { get; set; }
-
+        public DbSet<ProjectImplementation> ProjectImplementations { get; set; }
+        public DbSet<FundAppSDADetail> FundAppSDADetails { get; set; }
 
         public DbSet<Resource> Resources { get; set; }
 		public DbSet<Status> Statuses { get; set; }
@@ -239,6 +240,8 @@ namespace NPOMS.Repository
             modelBuilder.ApplyConfiguration(new ServiceDeliveryAreaConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PropertySubTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new PlaceConfiguration());
+            modelBuilder.ApplyConfiguration(new SubPlaceConfiguration());
 
             /* Entities */
             modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());

@@ -60,9 +60,10 @@ namespace NPOMS.Services.Implementation
         private ILocalMunicipalityRepository _localMunicipalityRepository;
         private IRegionRepository _regionRepository;
         private IServiceDeliveryAreaRepository _serviceDeliveryAreaRepository;
-
         private IPropertyTypeRepository _propertyTypeRepository;
         private IPropertySubTypeRepository _propertySubTypeRepository;
+		private IPlaceRepository _placeRepository;
+		private ISubPlaceRepository _subPlaceRepository;
 		#endregion
 
 		#region Constructors
@@ -110,7 +111,9 @@ namespace NPOMS.Services.Implementation
 			IRegionRepository regionRepository,
 			IServiceDeliveryAreaRepository serviceDeliveryAreaRepository,
 			IPropertyTypeRepository propertyTypeRepository,
-			IPropertySubTypeRepository propertySubTypeRepository)
+			IPropertySubTypeRepository propertySubTypeRepository,
+			IPlaceRepository placeRepository,
+			ISubPlaceRepository subPlaceRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -155,6 +158,8 @@ namespace NPOMS.Services.Implementation
 			_serviceDeliveryAreaRepository = serviceDeliveryAreaRepository;
 			_propertyTypeRepository = propertyTypeRepository;
 			_propertySubTypeRepository = propertySubTypeRepository;
+			_placeRepository = placeRepository;
+			_subPlaceRepository = subPlaceRepository;
 		}
 
 		#endregion
@@ -699,7 +704,7 @@ namespace NPOMS.Services.Implementation
         }
         #endregion
 
-        #region FA-DistrictCouncil-Municipalaities-Region-ServiceDeliveryAreas
+        #region FA-DistrictCouncil-Municipalaities-Region-ServiceDeliveryAreas-Place-SubPlace
         public async Task<IEnumerable<DistrictCouncil>> GetDistrictCouncils(bool returnInactive)
         {
             return await _districtCouncilRepository.GetEntities(returnInactive);
@@ -719,6 +724,16 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(bool returnInactive)
         {
             return await _serviceDeliveryAreaRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<Place>> GetPlaces(bool returnInactive)
+        {
+            return await _placeRepository .GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<SubPlace>> GetSubPlaces(bool returnInactive)
+        {
+            return await _subPlaceRepository.GetEntities(returnInactive);
         }
 
 

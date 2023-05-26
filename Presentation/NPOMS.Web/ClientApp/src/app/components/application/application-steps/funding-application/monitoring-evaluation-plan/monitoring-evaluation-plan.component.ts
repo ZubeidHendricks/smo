@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { StatusEnum } from 'src/app/models/enums';
-import { Bid, IApplication } from 'src/app/models/interfaces';
+import { IApplication } from 'src/app/models/interfaces';
 
 @Component({
   selector: 'app-monitoring-evaluation-plan',

@@ -9,12 +9,11 @@ namespace NPOMS.Repository.Interfaces.Entities
 {
     public interface IProjectInformationRepository :IBaseRepository<ProjectInformation>
     {
-        Task<IEnumerable<ProjectInformation>> GetEntities(int applicationId);
 
         Task CreateEntity(ProjectInformation model);
 
         Task UpdateEntity(ProjectInformation model, int currentUserId);
 
-        Task<ProjectInformation> GetById(int id);
+        Task<ProjectInformation> GetById(int? id);
     }
 }

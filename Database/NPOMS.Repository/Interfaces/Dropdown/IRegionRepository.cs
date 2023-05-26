@@ -1,4 +1,5 @@
-﻿using NPOMS.Domain.Dropdown;
+﻿using Microsoft.EntityFrameworkCore;
+using NPOMS.Domain.Dropdown;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,5 +12,7 @@ namespace NPOMS.Repository.Interfaces.Dropdown
     public interface IRegionRepository : IBaseRepository<Region>
     {
         Task<IEnumerable<Region>> GetEntities(bool returnInactive);
+        Task<Region> GetById(int id);
+        
     }
 }

@@ -1,14 +1,17 @@
+import { IApplicationDetails, IDistrictCouncil, IFundAppSDADetail, ILocalMunicipality, IPlace, IProjectInformation, IRegion, ISDA, ISubPlace } from './../../../models/interfaces';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationPeriod, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationPeriod, IFundingApplicationDetails, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { FundingApplicationStepsEnum } from '../../../models/enums';
+import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
+import { BidService } from 'src/app/services/api-services/bid/bid.service';
 
 @Component({
   selector: 'app-create-application',
@@ -17,7 +20,10 @@ import { FundingApplicationStepsEnum } from '../../../models/enums';
   providers: [MessageService, ConfirmationService]
 })
 export class CreateApplicationComponent implements OnInit {
-
+  canEdit: boolean = false;
+  applicationIdOnBid: any;
+  subPlacesAll: ISubPlace[];
+  place: IPlace[];
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -63,6 +69,32 @@ export class CreateApplicationComponent implements OnInit {
   sustainabilityPlans: ISustainabilityPlan[] = [];
   resources: IResource[] = [];
 
+  // funding dropdowns
+  // funding dropdowns
+  districtCouncils: IDistrictCouncil[] = [];
+  localMunicipalitiesAll: ILocalMunicipality[] = [];
+  localMunicipalities: ILocalMunicipality[] = [];
+  regions: IRegion[] = [];
+  regionsAll: IRegion[] = [];
+  sdasAll: ISDA[] = [];
+  sdas: ISDA[] = [];
+  // end of funding dropdowns
+
+  fundingApplicationDetails: IFundingApplicationDetails = {
+    applicationDetails: {
+          fundAppSDADetail: {
+            districtCouncil: {} as IDistrictCouncil,
+            localMunicipality: {} as ILocalMunicipality,
+            regions: [],
+            serviceDeliveryAreas: [],
+            } as IFundAppSDADetail,
+    } as IApplicationDetails,
+
+    financialMatters: [],
+    implementations: [],
+
+  } as IFundingApplicationDetails;
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -70,17 +102,26 @@ export class CreateApplicationComponent implements OnInit {
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _fundAppService :FundingApplicationService,
+    private _bidService: BidService
   ) { }
 
   ngOnInit(): void {
+    debugger;
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
       this.loadfundingDropdowns();
       this.applicationPeriodId = +this.id;
-    });
+      this.fundingApplicationDetails.applicationPeriodId = +this.id;
 
+      this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
+        console.log('response',resp);
+        this.applicationIdOnBid = resp.applicationId;
+      });      
+    });
+console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -99,8 +140,8 @@ export class CreateApplicationComponent implements OnInit {
 
         if (results != null) {
           this.application = results;
-          // this.bid.ApplicationPeriodId = this.application?.applicationPeriodId;
-          // this.bid.ApplicationId = this.application?.id;
+           this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
+           this.fundingApplicationDetails.applicationId = this.application?.id;
           this.fASteps(results.applicationPeriod);
           this.isApplicationAvailable = true;
         }
@@ -234,16 +275,32 @@ export class CreateApplicationComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-            this.saveItems(StatusEnum.Saved);
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
+              this.saveItems(StatusEnum.Saved);
+            }
+
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+              this.bidForm(StatusEnum.Saved);
+            }
           }
         },
+
         {
           label: 'Submit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.saveItems(StatusEnum.PendingReview);
-          }
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
+              this.saveItems(StatusEnum.PendingReview);
+            }
+
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+              this.bidForm(StatusEnum.PendingReview);
+            }
+
+          },
+          disabled: true
         },
+
         {
           label: 'Go Back',
           icon: 'fa fa-step-backward',
@@ -255,58 +312,140 @@ export class CreateApplicationComponent implements OnInit {
     }
   }
 
+  private bidForm(status: StatusEnum) {
+    debugger;
+    console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
+    this.application.status =null;
+    if (status === StatusEnum.Saved) {
+      this.application.statusId = status;
+    }
+    if (status === StatusEnum.PendingReview) {
+      this.application.statusId = status;
+    }
+    if (this.bidCanContinue(status)) {
+      this.application.statusId = status;
+      if (this.validationErrors.length == 0) {
+        this._applicationRepo.updateApplication(this.application).subscribe();
+      }
+      if (!this.applicationIdOnBid) {
+        debugger
+        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+          this.menuActions[1].visible = false;
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          this._router.navigateByUrl('applications');
+          resp;
+        });
+      }
+
+      else {
+
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+
+      }
+
+      if (status == StatusEnum.PendingReview) {
+debugger
+        this.application.status.name = "PendingReview";
+        this._applicationRepo.updateApplication(this.application).subscribe();
+
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+        this._router.navigateByUrl('applications');
+      };
+    }
+  }  
+
+
+  private bidCanContinue(status: StatusEnum) {
+    this.validationErrors = [];
+    if (status === StatusEnum.PendingReview)
+      this.formValidate();
+    if (this.validationErrors.length == 0)
+      return true;
+
+    return false;
+  }  
+
+  
   private formValidate() {
     this.validationErrors = [];
+    if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {
 
-    if (this.objectives.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
+      if (this.objectives.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
 
-    if (this.activities.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Activities:", detail: "Activity table cannot be empty." });
-    else {
-      let hasActivityErrors: boolean[] = [];
+      if (this.activities.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Activities:", detail: "Activity table cannot be empty." });
+      else {
+        let hasActivityErrors: boolean[] = [];
 
-      this.objectives.forEach(item => {
-        var isPresent = this.activities.some(function (activity) { return activity.objectiveId === item.id });
-        hasActivityErrors.push(isPresent);
-      });
+        this.objectives.forEach(item => {
+          var isPresent = this.activities.some(function (activity) { return activity.objectiveId === item.id });
+          hasActivityErrors.push(isPresent);
+        });
 
-      if (hasActivityErrors.includes(false))
-        this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "Please capture an activity for each objective." });
+        if (hasActivityErrors.includes(false))
+          this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "Please capture an activity for each objective." });
+      }
+
+      if (this.sustainabilityPlans.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Sustainability:", detail: "Sustainability Plan table cannot be empty." });
+      else {
+        let hasSustainabilityErrors: boolean[] = [];
+
+        this.activities.forEach(item => {
+          var isPresent = this.sustainabilityPlans.some(function (sustainabilityPlan) { return sustainabilityPlan.activityId === item.id });
+          hasSustainabilityErrors.push(isPresent);
+        });
+
+        if (hasSustainabilityErrors.includes(false))
+          this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "Please capture a sustainability plan for each activity." });
+      }
+
+      if (this.resources.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Resourcing:", detail: "Resourcing table cannot be empty." });
+      else {
+        let hasResourcingErrors: boolean[] = [];
+
+        this.activities.forEach(item => {
+          var isPresent = this.resources.some(function (resource) { return resource.activityId === item.id });
+          hasResourcingErrors.push(isPresent);
+        });
+
+        if (hasResourcingErrors.includes(false))
+          this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "Please capture a resource for each activity." });
+      }
     }
 
-    if (this.sustainabilityPlans.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Sustainability:", detail: "Sustainability Plan table cannot be empty." });
-    else {
-      let hasSustainabilityErrors: boolean[] = [];
+    if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
+      debugger
+      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length == 0 || this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
+        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please capture Application info and save." });
+        if (this.fundingApplicationDetails.financialMatters.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
 
-      this.activities.forEach(item => {
-        var isPresent = this.sustainabilityPlans.some(function (sustainabilityPlan) { return sustainabilityPlan.activityId === item.id });
-        hasSustainabilityErrors.push(isPresent);
-      });
+      if (this.fundingApplicationDetails.implementations.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+      if (this.fundingApplicationDetails.projectInformation?.initiatedQuestion == undefined  &&
+         this.fundingApplicationDetails.projectInformation?.considerQuestion == undefined  &&
+          this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined )
+        this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
 
-      if (hasSustainabilityErrors.includes(false))
-        this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "Please capture a sustainability plan for each activity." });
+      if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined )
+        this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+
     }
 
-    if (this.resources.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Resourcing:", detail: "Resourcing table cannot be empty." });
-    else {
-      let hasResourcingErrors: boolean[] = [];
 
-      this.activities.forEach(item => {
-        var isPresent = this.resources.some(function (resource) { return resource.activityId === item.id });
-        hasResourcingErrors.push(isPresent);
-      });
-
-      if (hasResourcingErrors.includes(false))
-        this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "Please capture a resource for each activity." });
-    }
-
-    if (this.validationErrors.length == 0)
+    if (this.validationErrors.length == 0) {
+      this.menuActions[3].disabled = false;
       this.menuActions[1].visible = false;
-    else
+    }
+    else {
+      this.menuActions[3].disabled = true;
       this.menuActions[1].visible = true;
+    }
+
   }
 
   private clearMessages() {
@@ -340,6 +479,8 @@ export class CreateApplicationComponent implements OnInit {
     }
   }
 
+  
+
   private canContinue(status: StatusEnum) {
     this.validationErrors = [];
 
@@ -350,5 +491,14 @@ export class CreateApplicationComponent implements OnInit {
       return true;
 
     return false;
+  }
+
+
+  places(place: IPlace[]) {
+    this.place = place;
+  }
+
+  subPlaces(subPlacesAll: ISubPlace[]) {
+    this.subPlacesAll = subPlacesAll;
   }
 }
