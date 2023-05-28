@@ -515,10 +515,24 @@ export class ApplicationDetailsComponent implements OnInit {
     );
   }
 
+
+  
   nextPage() {
+
+    if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
+      debugger;
+      console.log("Bid Id",this.fundingApplicationDetails?.id);
       this.activeStep = this.activeStep + 1;
-      this.activeStepChange.emit(this.activeStep);   
+      this.activeStepChange.emit(this.activeStep);
+
+    }
+    else
+      this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
   }
+  // nextPage() {
+  //     this.activeStep = this.activeStep + 1;
+  //     this.activeStepChange.emit(this.activeStep);   
+  // }
 
   prevPage() {
     this.activeStep = this.activeStep - 1;
@@ -638,7 +652,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
 
   onSdaChange(sdas: ISDA[]) {
-debugger;
+
     this.places = [];
     this.subPlacesAll = [];
     this.selectedSdas = [];
@@ -646,7 +660,7 @@ debugger;
     sdas.forEach(item => {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
-    console.log('onSdaChange',this.selectedSdas);
+    console.log('onSdaChange selected sds',this.selectedSdas);
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
     console.log('onSdaChange',  this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
 

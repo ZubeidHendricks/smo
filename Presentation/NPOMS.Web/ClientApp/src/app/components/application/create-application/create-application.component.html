@@ -19,27 +19,28 @@
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
-        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)" [(activeStep)]="activeStep" [application]="application">
+        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
         </app-application-details>
 
         <app-financial-details *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"  
-          [(activeStep)]="activeStep" [application]="application"
-          [(fundingApplicationDetails)]="fundingApplicationDetails">
+        [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
+        [(fundingApplicationDetails)]="fundingApplicationDetails">
         </app-financial-details>
 
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
-            [(activeStep)]="activeStep" [application]="application" 
-   
-            [(fundingApplicationDetails)]="fundingApplicationDetails">
+            [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails"
+            [(initiatedQuestion)]="fundingApplicationDetails.projectInformation.initiatedQuestion"
+            [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion" 
+            [(considerQuestion)]="fundingApplicationDetails.projectInformation.considerQuestion">
         </app-project-information>
         <app-monitoring-evaluation-plan *ngIf="activeStep == FundingApplicationStepsEnum.Monitoring_And_Evaluation"
             [(activeStep)]="activeStep" [application]="application" 
-       
+            [(monEvalDescription)]="fundingApplicationDetails.monitoringEvaluation.monEvalDescription"
             [(fundingApplicationDetails)]="fundingApplicationDetails">
         </app-monitoring-evaluation-plan>  
         <app-project-implementation *ngIf="activeStep == FundingApplicationStepsEnum.ProjectImplementationPlan"
             [(activeStep)]="activeStep" [application]="application"  [(implementations)]="fundingApplicationDetails.implementations"
-            [places]="places" [subPlacesAll]="subPlacesAll" [(fundingApplicationDetails)]="fundingApplicationDetails">
+            [(fundingApplicationDetails)]="fundingApplicationDetails" [places]="placesAll" [allsubPlaces]="subPlacesAll">
         </app-project-implementation>         
     </div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">

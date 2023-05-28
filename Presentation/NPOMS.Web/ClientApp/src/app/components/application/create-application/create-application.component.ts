@@ -22,8 +22,11 @@ import { BidService } from 'src/app/services/api-services/bid/bid.service';
 export class CreateApplicationComponent implements OnInit {
   canEdit: boolean = false;
   applicationIdOnBid: any;
-  subPlacesAll: ISubPlace[];
-  place: IPlace[];
+  // subPlacesAll: ISubPlace[];
+  // place: IPlace[];
+
+  placesAll: IPlace[] = [];
+  subPlacesAll: ISubPlace[] = [];
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -495,7 +498,7 @@ debugger
 
 
   places(place: IPlace[]) {
-    this.place = place;
+    this.placesAll = place;
   }
 
   subPlaces(subPlacesAll: ISubPlace[]) {

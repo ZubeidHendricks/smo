@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { StatusEnum } from 'src/app/models/enums';
-import { IApplication } from 'src/app/models/interfaces';
+import { IApplication, IFundingApplicationDetails } from 'src/app/models/interfaces';
 
 @Component({
   selector: 'app-monitoring-evaluation-plan',
@@ -11,7 +11,7 @@ export class MonitoringEvaluationPlanComponent implements OnInit {
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
  @Input() application: IApplication;
-  
+ @Input() fundingApplicationDetails: IFundingApplicationDetails;
   @Input() monEvalDescription: string;
   @Input() isReadOnly: boolean;
   @Output() monEvalDescriptionChange = new EventEmitter();

@@ -87,17 +87,24 @@ export class EditApplicationComponent implements OnInit {
     private _loggerService: LoggerService
   ) { }
   places(place: IPlace[]) {
+    debugger;
+    
     this.placeAll = place;
   }
 
   subPlaces(subPlaces: ISubPlace[]) {
+    debugger;
     this.subPlacesAll = subPlaces;
   }
   ngOnInit(): void {
+    debugger;
+    console.log('Edit Screen Ng onint',this.placeAll);
+    console.log('Edit Screen Ng onint',this.subPlacesAll);
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
     });
+
 
     this.loadfundingSteps();
     this.applicationPeriodId = +this.id;

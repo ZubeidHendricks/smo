@@ -31,6 +31,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   @Input() places: IPlace[];
   @Input() allsubPlaces: ISubPlace[];
+  
 
   subPlaces: ISubPlace[];
   selectedSubPlaces: ISubPlace[];
@@ -47,6 +48,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
     
     this.cols = [
       { header: 'Description' },
@@ -55,12 +57,13 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     ];
     this.setYearRange();
 
-    console.log('Places', this.places);
-    console.log('subPlacesAll', this.allsubPlaces);
+    console.log('Places coming from Edit component on ProjImpl', this.places);
+    console.log('Places coming from ProjectImpsubPlacesAll', this.allsubPlaces);
     this.allDropdownsLoaded();    
   }
 
   disableSubPlacesOrPlace(): boolean {
+
   
     if (  this.places && this.allsubPlaces) {
       return false;
@@ -150,7 +153,7 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
 
  
   onRowSelect(event) {
-
+debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
     console.log('data', event.data);
@@ -164,8 +167,8 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     console.log('bit after', this.fundingApplicationDetails)
     this.placesChange(this.implementation.places);
     this.subPlacesChange(this.implementation.subPlaces);
-    if(this.application.status.id == 3 || 22||23){ this.displayDialogImpl = false;}
-   
+    //if(this.application.statusId == 3 || 22||23){ this.displayDialogImpl = false;}
+    this.displayDialogImpl = true;
   }
 
   updateTimeframe(value: any) {
