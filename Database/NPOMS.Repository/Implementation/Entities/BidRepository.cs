@@ -29,7 +29,7 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<FundingApplicationDetail> GetapplicationIDAsync(int applicationId)
         {
 
-            return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
+           return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
                 .Include(x => x.FinancialMatters)
                 .Include(impl => impl.Implementations).FirstOrDefaultAsync();
         }

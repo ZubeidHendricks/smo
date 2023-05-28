@@ -10,7 +10,7 @@ import {  IApplication, IFundingApplicationDetails } from 'src/app/models/interf
 export class ProjectInformationComponent implements OnInit {
   @Input() isReadOnly: boolean;
   @Input() initiatedQuestion: string;
-  @Input() bid: IFundingApplicationDetails;
+  @Input() fundingApplicationDetails: IFundingApplicationDetails;
   @Input() application: IApplication;
   @Output() initiatedQuestionChange = new EventEmitter();
   @Input() purposeQuestion: string;
@@ -23,7 +23,7 @@ export class ProjectInformationComponent implements OnInit {
 
   ngOnInit(): void {
 
-console.log('bit status',this.bid)
+console.log('bit status',this.fundingApplicationDetails)
   }
 
   onInitiatedQuestionChange($event) {

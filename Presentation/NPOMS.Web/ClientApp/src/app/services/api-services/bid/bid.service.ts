@@ -1,8 +1,6 @@
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PropertySubType } from 'src/app/models/PropertySubType';
-import { PropertyType } from 'src/app/models/PropertyType';
 import { FinYear, IFundingApplicationDetails, IPlace, ISDA, ISubPlace } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
@@ -15,16 +13,13 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class BidService {
-  private bidUrl: string;
 
+  private bidUrl: string;
 
   constructor(private http: HttpClient,
     private envUrl: EnvironmentUrlService) {
     this.bidUrl = this.envUrl.urlAddress + '/api/bid';
-  }
-
- 
- 
+  } 
 
   getBid(id: number): Observable<IFundingApplicationDetails> {
     const url = `${this.bidUrl}/${id}`;
@@ -39,9 +34,7 @@ export class BidService {
   editBid(id: number, bid: IFundingApplicationDetails): Observable<IFundingApplicationDetails> {
     const url = `${this.bidUrl}/${id}`;
     return this.http.put<IFundingApplicationDetails>(url, bid, httpOptions);
-  }
-  
-  
+  } 
 
 
   getFinYears(): Observable<FinYear[]> {
@@ -52,10 +45,8 @@ export class BidService {
 
   public getApplicationBiId(applicationId: number) {
     const url = `${this.bidUrl}/applicationId/${applicationId}`;
-    return this.http.get<IFundingApplicationDetails>(url, httpOptions);
-    
+    return this.http.get<IFundingApplicationDetails>(url, httpOptions);    
   }
-
 
   getPlaces(sdas: ISDA[]): Observable<IPlace[]> {
     const url = `${this.bidUrl}/places`;
@@ -66,7 +57,4 @@ export class BidService {
     const url = `${this.bidUrl}/subplaces`;
     return this.http.post<ISubPlace[]>(url, JSON.stringify(places), httpOptions);
   }
-
-
-
 }

@@ -2,7 +2,7 @@ import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DropdownTypeEnum } from 'src/app/models/enums';
-import { IAccessStatus, IAccountType, IActivityList, IActivityType, IAllocationType, IApplicationType, IBank, IBranch, ICompliantCycleRule, IDenodoFacilityWrapper, IDepartment, IDirectorate, IDistrictCouncil, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod, ILocalMunicipality, IOrganisationType, IPosition, IProgramme, IProvisionType, IRecipientType, IRegion, IResourceList, IResourceType, IRole, IServiceDeliveryArea, IServiceType, IStatus, ISubProgramme, ISubProgrammeType, ITitle, ITrainingMaterial, IUtility } from 'src/app/models/interfaces';
+import { IAccessStatus, IAccountType, IActivityList, IActivityType, IAllocationType, IApplicationType, IBank, IBranch, ICompliantCycleRule, IDenodoFacilityWrapper, IDepartment, IDirectorate, IDistrictCouncil, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod, ILocalMunicipality, IOrganisationType, IPosition, IProgramme, IProvisionType, IRecipientType, IRegion, IResourceList, IResourceType, IRole, ISDA, IServiceType, IStatus, ISubProgramme, ISubProgrammeType, ITitle, ITrainingMaterial, IUtility } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { PropertyType } from 'src/app/models/PropertyType';
 
@@ -144,7 +144,7 @@ export class DropdownService {
         data = this._http.get<IRegion[]>(url, httpOptions);
         break;
       case DropdownTypeEnum.ServiceDeliveryArea:
-        data = this._http.get<IServiceDeliveryArea[]>(url, httpOptions);
+        data = this._http.get<ISDA[]>(url, httpOptions);
         break; 
 
         case DropdownTypeEnum.PropertyType:
