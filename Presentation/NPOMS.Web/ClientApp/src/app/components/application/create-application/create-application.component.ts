@@ -118,7 +118,7 @@ export class CreateApplicationComponent implements OnInit {
 
       this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
         console.log('response',resp);
-        this.applicationIdOnBid = resp.applicationId;
+        //this.applicationIdOnBid = resp.applicationId;
       });      
     });
 console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);

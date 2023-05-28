@@ -1,6 +1,7 @@
 import { FundingApplicationService } from './../../../services/api-services/funding-application/funding-application.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Console } from 'console';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -105,6 +106,8 @@ export class EditApplicationComponent implements OnInit {
     this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
       this.applicationIdOnBid = resp.applicationId;
     });    
+
+
 
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -249,9 +252,7 @@ export class EditApplicationComponent implements OnInit {
               this.saveItems(StatusEnum.Saved);
             }
 
-            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
-              debugger
-
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {          
               this.bidForm(StatusEnum.Saved);
             }
 
@@ -288,11 +289,13 @@ export class EditApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
-    debugger
+    debugger;
+    console.log('status bidForm', status);
     this.application.status = null;
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails
+      console.log('applicationIdOnBid', this.fundingApplicationDetails);
 
       this._applicationRepo.updateApplication(this.application).subscribe();
       this.application.statusId = status;
@@ -346,7 +349,9 @@ export class EditApplicationComponent implements OnInit {
         if (results != null) {
           this.application = results;
           this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
-            if (response.id != null) { this.getFundingApplicationDetails(response); }
+            if (response.id != null) { this.getFundingApplicationDetails(response);
+              console.log('data.result',response);
+            }
           });
           this.fASteps(results.applicationPeriod);
           this.isApplicationAvailable = true;
@@ -359,8 +364,8 @@ export class EditApplicationComponent implements OnInit {
   
   private getFundingApplicationDetails(data) {
 
-console.log('data.result',data.result);
-    this._bidService.getBid(data.result.id).subscribe(response => {
+console.log('data.result',data);
+    this._bidService.getBid(data.id).subscribe(response => {
 
       this.getBidFullObject(response)
     });
@@ -368,29 +373,30 @@ console.log('data.result',data.result);
   }
 
   private getBidFullObject(data) {
-
-    this.fundingApplicationDetails = data.result;
-    this.fundingApplicationDetails.id = data.result.id;
-    this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.result.applicationDetails.amountApplyingFor;
-    this.fundingApplicationDetails.implementations = data.result.implementations;
+debugger;
+    this.fundingApplicationDetails = data;
+    this.fundingApplicationDetails.id = data.id;
+    this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
+    this.fundingApplicationDetails.implementations = data.implementations;
     if (this.fundingApplicationDetails.projectInformation != null) {
-      this.fundingApplicationDetails.projectInformation.considerQuestion = data.result.projectInformation.considerQuestion;
-      this.fundingApplicationDetails.projectInformation.purposeQuestion = data.result.projectInformation.purposeQuestion;
-      this.fundingApplicationDetails.projectInformation.initiatedQuestion = data.result.projectInformation.initiatedQuestion;
+      this.fundingApplicationDetails.projectInformation.considerQuestion = data.projectInformation.considerQuestion;
+      this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
+      this.fundingApplicationDetails.projectInformation.initiatedQuestion = data.projectInformation.initiatedQuestion;
     }
     else {
       this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
     }
 
     if (this.fundingApplicationDetails.monitoringEvaluation != null) {
-      this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.result.monitoringEvaluation.monEvalDescription;
+      console.log('this.fundingApplicationDetails.monitoringEvaluation',this.fundingApplicationDetails.monitoringEvaluation);
+      this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
 
     }
     else {
       this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
     }
-    this.fundingApplicationDetails.financialMatters = data.result.financialMatters;
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.result.applicationDetails.fundAppSDADetail;
+    this.fundingApplicationDetails.financialMatters = data.financialMatters;
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
 
     this.fundingApplicationDetails.implementations?.forEach(c => {
 

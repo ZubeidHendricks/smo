@@ -12,7 +12,7 @@
         <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
         [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" 
         [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"      
-        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)" [(activeStep)]="activeStep" [application]="application">
+        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
         </app-application-details>
 
         <app-financial-details *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"  
@@ -34,12 +34,9 @@
         </app-monitoring-evaluation-plan>  
         <app-project-implementation *ngIf="activeStep == FundingApplicationStepsEnum.ProjectImplementationPlan"
             [(activeStep)]="activeStep" [application]="application"  [(implementations)]="fundingApplicationDetails.implementations"
-            [places]="places" [subPlacesAll]="subPlacesAll" [(fundingApplicationDetails)]="fundingApplicationDetails">
-        </app-project-implementation>         
-
-    
+            [(fundingApplicationDetails)]="fundingApplicationDetails" [places]="places" [subPlacesAll]="subPlacesAll">
+        </app-project-implementation>  
             <!-- <app-documen-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument" [(activeStep)]="activeStep" [application]="application"[fundingApplicationDetails]="fundingApplicationDetails"></app-documen-upload> -->
-        
        
     </div>
 

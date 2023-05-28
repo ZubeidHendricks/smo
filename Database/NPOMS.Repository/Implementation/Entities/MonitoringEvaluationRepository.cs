@@ -23,7 +23,9 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public async Task<MonitoringEvaluation> GetById(int? id)
         {
-            return await FindByCondition(x => x.Id.Equals(id)).Include(x => x.MonEvalDescription).AsNoTracking().FirstOrDefaultAsync();
+            //return await FindByCondition(x => x.Id.Equals(id)).Include(x => x.MonEvalDescription).AsNoTracking().FirstOrDefaultAsync();
+            return await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+
         }
 
 

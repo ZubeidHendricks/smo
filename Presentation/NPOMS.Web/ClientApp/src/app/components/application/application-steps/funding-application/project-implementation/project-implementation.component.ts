@@ -19,7 +19,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   @Input() implementations: IProjectImplementation[];
   @Output() implementationsChange = new EventEmitter();
 
-
   pint: RegExp = /^[0-9]\d*$/;
   yearRange: string;
   displayDialogImpl: boolean;
@@ -29,6 +28,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   rangeDates: Date[];
   timeframes: Date[] = [];
   cols: any[];
+
   @Input() places: IPlace[];
   @Input() allsubPlaces: ISubPlace[];
 
@@ -57,8 +57,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
     console.log('Places', this.places);
     console.log('subPlacesAll', this.allsubPlaces);
-    this.allDropdownsLoaded();
-    
+    this.allDropdownsLoaded();    
   }
 
   disableSubPlacesOrPlace(): boolean {
@@ -114,10 +113,9 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     !this.implementation.beneficiaries || !this.implementation.budget ||
     !this.implementation.results ! || !this.implementation.projectObjective||
     !this.implementation.resources||
-    !this.implementation.description
-    //  ||
-    // (this.places.length>0 && this.selectedPlaces.length== 0) ||
-    // (this.allsubPlaces.length>0 && this.selectedSubPlaces.length== 0)
+    !this.implementation.description||
+    (this.places.length>0 && this.selectedPlaces.length== 0) ||
+    (this.allsubPlaces.length>0 && this.selectedSubPlaces.length== 0)
     ) 
     return true;
   
@@ -239,7 +237,6 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
 
     }
   }
-
 }
 
 
