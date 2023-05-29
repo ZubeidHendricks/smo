@@ -41,7 +41,11 @@
         <app-project-implementation *ngIf="activeStep == FundingApplicationStepsEnum.ProjectImplementationPlan"
             [(activeStep)]="activeStep" [application]="application"  [(implementations)]="fundingApplicationDetails.implementations"
             [(fundingApplicationDetails)]="fundingApplicationDetails" [places]="placesAll" [allsubPlaces]="subPlacesAll">
-        </app-project-implementation>         
+        </app-project-implementation>  
+        <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument" 
+        [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" >
+    </app-document-upload>
+
     </div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
         <app-npo-details *ngIf="activeStep == ServiceProvisionStepsEnum.NpoConfirmation" [(activeStep)]="activeStep" [application]="application" [newApplication]="true"></app-npo-details>

@@ -3,7 +3,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
 import { IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion } from 'src/app/models/interfaces';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -515,13 +515,21 @@ export class ApplicationDetailsComponent implements OnInit {
     );
   }
 
-
+  readonly(): boolean {
+    debugger;
+    console.log('this.application',this.application);
+    
+    console.log('this.application.statusId',this.application.statusId);
+        if (this.application.statusId ==StatusEnum.PendingReview ||  
+          this.application.statusId == StatusEnum.Approved )          
+          return true;
+        else return false;
+      }
   
   nextPage() {
 
     if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
-      debugger;
-      console.log("Bid Id",this.fundingApplicationDetails?.id);
+    
       this.activeStep = this.activeStep + 1;
       this.activeStepChange.emit(this.activeStep);
 
@@ -529,10 +537,7 @@ export class ApplicationDetailsComponent implements OnInit {
     else
       this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
   }
-  // nextPage() {
-  //     this.activeStep = this.activeStep + 1;
-  //     this.activeStepChange.emit(this.activeStep);   
-  // }
+
 
   prevPage() {
     this.activeStep = this.activeStep - 1;

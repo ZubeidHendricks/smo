@@ -72,7 +72,8 @@ export enum EntityTypeEnum {
 export enum EntityEnum {
     NpoProfile = 'NpoProfile',
     Application = 'Application',
-    WorkplanIndicators = 'WorkplanIndicators'
+    WorkplanIndicators = 'WorkplanIndicators',
+    FundingApplicationDetails ='FundingApplicationDetails'
 }
 
 export enum FacilityTypeEnum {

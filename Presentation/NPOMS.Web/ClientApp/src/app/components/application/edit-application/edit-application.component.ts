@@ -270,19 +270,15 @@ export class EditApplicationComponent implements OnInit {
           label: 'Submit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            //  this.saveItems(StatusEnum.PendingReview);
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
               this.saveItems(StatusEnum.PendingReview);
             }
 
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
-              debugger
-
-              this.bidForm(StatusEnum.PendingReview);
+               this.bidForm(StatusEnum.PendingReview);
             }
           },
           disabled: true
-
         },
         {
           label: 'Go Back',
@@ -296,7 +292,6 @@ export class EditApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
-    debugger;
     console.log('status bidForm', status);
     this.application.status = null;
     if (this.bidCanContinue(status)) {

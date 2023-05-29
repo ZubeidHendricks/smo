@@ -48,7 +48,7 @@
                 <label class="mandatory-content">District Council</label>              
                 <p-dropdown [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name" 
                 [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
-                (onChange)="OnDistrictCouncilChange($event.value)"></p-dropdown>
+                (onChange)="OnDistrictCouncilChange($event.value)" [disabled]="readonly()"></p-dropdown>
 
             </div>
          
@@ -57,14 +57,14 @@
                 <p-dropdown [options]="localMunicipalities" defaultLabel="Select option(s)" 
                optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" placeholder="Select Local Municipalities"
                [style]="{'width':'100%'}" appendTo="body" (onChange)="onLocalMunicipalityChange($event.value)"
-               selectedItemsLabel="{0} items selected"></p-dropdown>
+               selectedItemsLabel="{0} items selected" [disabled]="readonly()"></p-dropdown>
             </div>   
 
             <div class="p-field p-col-12 p-md-3">
                 <label class="mandatory-content">Region</label>
                 <p-multiSelect defaultLabel="Choose"  optionLabel="name" [options]="regions" [(ngModel)]="selectedRegions"
                  [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="onRegionChange($event.value)"
-                 [style]="{'width':'100%'}" ></p-multiSelect> 
+                 [style]="{'width':'100%'}"  [disabled]="readonly()"></p-multiSelect> 
             </div>            
           
 
@@ -72,22 +72,14 @@
                 <label class="mandatory-content">Service Delivery Area</label>
                 <p-multiSelect defaultLabel="Choose"  optionLabel="name" [options]="sdas" [ngModelOptions]="{standalone: true}" 
                 appendTo="body" [(ngModel)]="selectedSdas"  (onChange)="onSdaChange($event.value)" 
-                 [style]="{'width':'100%'}" ></p-multiSelect> 
+                 [style]="{'width':'100%'}"  [disabled]="readonly()"></p-multiSelect> 
             </div>     
         </div>
-        <!-- <div class="p-field p-col-12 p-md-6">
-            <label class="mandatory-content">Amount You Applying For</label>
-        <p-inputNumber [(ngModel)]="fundingApplicationDetails.amountApplyingFor" 
-            inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" 
-            [style]="{'width':'100%'}" #amount="ngModel" [
-            ngClass]="{'ng-dirty': (amount.invalid && validated) || (amount.dirty && amount.invalid)}" required>
-        </p-inputNumber>
-        </div> -->
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Rand amount you applying for</label>
             <input type="text" class="form-text" pKeyFilter="int" pInputText name="amountApplyingFor" id="amountApplyingFor"
               (ngModelChange)="onAmountChange($event)" [(ngModel)]="Amount" [ngModelOptions]="{standalone: true}"
-              [ngModelOptions]="{standalone: true}" autofocus autocomplete="off"/>        
+              [ngModelOptions]="{standalone: true}" autofocus autocomplete="off" [disabled]="readonly()"/>        
         </div>   
     </p-panel>
     <div style="height: 10px;"></div>
