@@ -74,9 +74,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   readonly(): boolean {
   
         if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved ||
-          this.application.statusId ==  StatusEnum.Evaluated ||
-          this.application.statusId ==  StatusEnum.EvaluationApproved)
+          this.application.statusId == StatusEnum.Approved )
           return true;
         else return false;
       }

@@ -131,6 +131,7 @@ import { FinancialDetailsComponent } from './components/application/application-
 import { ProjectInformationComponent } from './components/application/application-steps/funding-application/project-information/project-information.component';
 import { MonitoringEvaluationPlanComponent } from './components/application/application-steps/funding-application/monitoring-evaluation-plan/monitoring-evaluation-plan.component';
 import { ProjectImplementationComponent } from './components/application/application-steps/funding-application/project-implementation/project-implementation.component';
+import { DocumentUploadComponent } from './components/application/application-steps/funding-application/document-upload/document-upload.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -261,7 +262,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     FinancialDetailsComponent,
     ProjectInformationComponent,
     MonitoringEvaluationPlanComponent,
-    ProjectImplementationComponent
+    ProjectImplementationComponent,
+    DocumentUploadComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

@@ -163,8 +163,9 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
           { label: 'Financial Matters' },
           { label: 'Project Information' },
           { label: 'Monitoring and Evaluation' },
-          { label: ' Project Implementation Plan' },
-          { label: 'Application Document' }
+          { label: 'Project Implementation Plan' },
+          { label: 'Application Document' },
+          { label: 'Declaration' },
         ];
       }
     }
@@ -348,7 +349,6 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
       }
 
       if (status == StatusEnum.PendingReview) {
-debugger
         this.application.status.name = "PendingReview";
         this._applicationRepo.updateApplication(this.application).subscribe();
 
@@ -464,13 +464,11 @@ debugger
       this._applicationRepo.updateApplication(this.application).subscribe(
         (resp) => {
           if (resp.statusId === StatusEnum.Saved) {
-            this._spinner.hide();
             this.menuActions[1].visible = false;
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           }
 
-          if (resp.statusId === StatusEnum.PendingReview) {
-            this._spinner.hide();
+          if (resp.statusId === StatusEnum.PendingReview) {           
             this._router.navigateByUrl('applications');
           }
         },

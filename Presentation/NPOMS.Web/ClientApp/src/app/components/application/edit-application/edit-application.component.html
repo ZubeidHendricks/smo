@@ -37,7 +37,8 @@
             [(fundingApplicationDetails)]="fundingApplicationDetails" 
             [places]="placeAll" [allsubPlaces]="subPlacesAll">
         </app-project-implementation>  
-            <!-- <app-documen-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument" [(activeStep)]="activeStep" [application]="application"[fundingApplicationDetails]="fundingApplicationDetails"></app-documen-upload> -->
+            <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument" 
+            [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" ></app-document-upload>
        
     </div>
 
