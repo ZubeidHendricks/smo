@@ -514,8 +514,22 @@ export interface IFundingApplicationDetails {
     incomes: Budget[],
     expenses: Budget[],    
     financialMatters: FinancialMatters[];  
-    applicationDetails: IApplicationDetails;     
+    applicationDetails: IApplicationDetails;
+    fundAppDeclaration :IFundAppDeclaration;     
 }
+
+// export interface IDeclaration {
+//     id: number;
+//     fundingApplicationDetailId: number;
+//     declarationType: string;
+//     comments: string;
+//     acceptSignOff: boolean;
+//     isActing: boolean;   
+//     isActive: boolean;
+//     createdUserId: number;
+//     createdDateTime: Date;
+//     createdUser: IUser;
+// }
 
 
 export interface IProjectInformation
@@ -1034,3 +1048,20 @@ export interface IProjectImplementation {
     resources: string;
     budget: number;
   }
+
+  export interface IFundAppDeclaration {
+    id: number;
+    applicationId: number;
+    comments: string;
+    statusId: number;
+    isActive: boolean;
+    createdDateTime: Date;
+    declarationType: string;
+
+    acceptDeclaration: boolean;
+    createdUser: IUser;
+    status: IStatus;
+    createdUserId :number;
+}
+
+
