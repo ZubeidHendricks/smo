@@ -5,7 +5,7 @@
     <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>
     <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
-    <p-steps [model]="faItems" [readonly]="true" [activeIndex]="activeStep"
+    <p-steps [model]="faItems" [readonly]="false" [activeIndex]="activeStep"
         *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
     <div style="height: 10px;"></div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
