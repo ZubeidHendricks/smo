@@ -225,7 +225,8 @@ export class EditApplicationComponent implements OnInit {
           { label: 'Project Information' },
           { label: 'Monitoring and Evaluation' },
           { label: 'Project Implementation Plan' },
-          { label: 'Application Document' }
+          { label: 'Application Document' },
+          { label: 'Declaration' }
         ];
       }
     }
@@ -240,8 +241,7 @@ export class EditApplicationComponent implements OnInit {
           icon: 'fa fa-check',
           command: () => {
             this.formValidate();
-          },
-          visible: false
+          }
         },
         {
           label: 'Clear Messages',
@@ -262,8 +262,6 @@ export class EditApplicationComponent implements OnInit {
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {          
               this.bidForm(StatusEnum.Saved);
             }
-
-
           }
         },
         {
@@ -279,7 +277,7 @@ export class EditApplicationComponent implements OnInit {
             }
           },
           disabled: true
-        },
+        },        
         {
           label: 'Go Back',
           icon: 'fa fa-step-backward',
@@ -325,7 +323,6 @@ export class EditApplicationComponent implements OnInit {
 
         this.application.statusId = status;
         this._applicationRepo.updateApplication(this.application).subscribe();
-       // this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });        
         this._router.navigateByUrl('applications');
       };
@@ -413,6 +410,7 @@ debugger;
 
   private formValidate() {
     this.validationErrors = [];
+    if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {    
 
     if (this.objectives.length === 0)
       this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
@@ -486,11 +484,34 @@ debugger;
       if (changesRequiredOnResources.length > 0)
         this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "New comments added." });
     }
+  }
 
-    if (this.validationErrors.length == 0)
+
+    if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+     
+      if (this.fundingApplicationDetails.implementations.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+      if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
+        this.fundingApplicationDetails.projectInformation.purposeQuestion == null)
+        this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
+
+      if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
+        this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+
+    }    
+
+    // if (this.validationErrors.length == 0)
+    //   this.menuActions[1].visible = false;
+    // else
+    //   this.menuActions[1].visible = true;
+    if (this.validationErrors.length == 0) {
+      this.menuActions[3].disabled = false;
       this.menuActions[1].visible = false;
-    else
+    }
+    else {
+      this.menuActions[3].disabled = true;
       this.menuActions[1].visible = true;
+    }
   }
 
   private clearMessages() {

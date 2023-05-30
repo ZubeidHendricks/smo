@@ -1,8 +1,9 @@
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FinYear, IFundingApplicationDetails, IPlace, ISDA, ISubPlace } from 'src/app/models/interfaces';
+import { FinYear, IFundAppDeclaration, IFundingApplicationDetails, IPlace, ISDA, ISubPlace } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
+import { DeclarationTypeEnum, FundingApplicationStepsEnum } from 'src/app/models/enums';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -57,4 +58,37 @@ export class BidService {
     const url = `${this.bidUrl}/subplaces`;
     return this.http.post<ISubPlace[]>(url, JSON.stringify(places), httpOptions);
   }
+
+  public getSignOff(procurementSection: FundingApplicationStepsEnum, implementationId: number, declarationType: string) {
+   // const url = `${this.bidUrl}/api/proposal/procurementSectionEnum/${procurementSection}/implementationId/${implementationId}/declarationType/${declarationType}`;
+    var data;
+
+    // switch (procurementSection) {
+    //   case FundingApplicationStepsEnum.Declaration:
+    //     data = this.http.get<IFundAppDeclaration>(url, httpOptions);
+    //     break;
+    //   // case FundingApplicationStepsEnum.Bidders2:
+    //   //   data = this.http.get<IFundAppDeclaration>(url, httpOptions);
+    //   //   break;
+    // }
+
+    return data;
+  }
+
+  public updateSignOff(data: any, procurementSection: FundingApplicationStepsEnum, declarationType: string) {
+    //const url = `${this.bidUrl}/api/proposal/procurementSectionEnum/${procurementSection}/declarationType/${declarationType}`;
+    var entity;
+
+    // switch (procurementSection) {
+    //   case FundingApplicationStepsEnum.Declaration:
+    //     entity = this.http.put<IFundAppDeclaration>(url, data, httpOptions);
+    //     break;
+    //   // case DeclarationTypeEnum.Bidders2:
+    //   //   entity = this.http.put<IFundAppDeclaration>(url, data, httpOptions);
+    //   //   break;
+    // }
+
+    return entity;
+  }
+
 }

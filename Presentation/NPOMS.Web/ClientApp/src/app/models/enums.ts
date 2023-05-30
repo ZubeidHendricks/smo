@@ -76,6 +76,15 @@ export enum EntityEnum {
     FundingApplicationDetails ='FundingApplicationDetails'
 }
 
+
+
+export enum DeclarationTypeEnum {
+    Bidders1 = "Bidders 1",
+    Bidders2 = "Bidders 2",
+    Bidders3 = "Bidders 3",
+    Bidders4 = "Bidders 4"   
+}
+
 export enum FacilityTypeEnum {
     Facility = 1,
     Community = 2
@@ -329,8 +338,7 @@ export enum FundingApplicationStepsEnum {
     Monitoring_And_Evaluation = 4,
     ProjectImplementationPlan = 5,
     ApplicationDocument = 6,
-    PreAssessment = 7,
-    Evaluation = 8
+    Declaration = 7
 }
 
 export enum DocumentUploadLocationsEnum {

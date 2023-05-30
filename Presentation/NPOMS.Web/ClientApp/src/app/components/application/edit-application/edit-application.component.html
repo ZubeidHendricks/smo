@@ -1,55 +1,71 @@
 <p-toast></p-toast>
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Edit Application" *ngIf="isApplicationAvailable">
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
+        *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
     <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>
     <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
-    <p-steps [model]="faItems"[readonly]="true" [activeIndex]="activeStep"*ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
+    <p-steps [model]="faItems" [readonly]="true" [activeIndex]="activeStep"
+        *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
     <div style="height: 10px;"></div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
         <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
             [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details>
         <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
-        [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" 
-        [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"      
-        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
+            [(activeStep)]="activeStep" [application]="application"
+            [(fundingApplicationDetails)]="fundingApplicationDetails"
+            [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" (getPlace)="places($event)"
+            (getSubPlace)=" subPlaces($event)">
         </app-application-details>
 
-        <app-financial-details *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"  
-          [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
-          [(fundingApplicationDetails)]="fundingApplicationDetails">
+        <app-financial-details *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
+            [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
+            [(fundingApplicationDetails)]="fundingApplicationDetails">
         </app-financial-details>
 
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
-            [(activeStep)]="activeStep" [application]="application" 
+            [(activeStep)]="activeStep" [application]="application"
             [(initiatedQuestion)]="fundingApplicationDetails.projectInformation.initiatedQuestion"
-            [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion" 
-            [(considerQuestion)]="fundingApplicationDetails.projectInformation.considerQuestion" 
+            [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion"
+            [(considerQuestion)]="fundingApplicationDetails.projectInformation.considerQuestion"
             [(fundingApplicationDetails)]="fundingApplicationDetails">
         </app-project-information>
         <app-monitoring-evaluation-plan *ngIf="activeStep == FundingApplicationStepsEnum.Monitoring_And_Evaluation"
-            [(activeStep)]="activeStep" [application]="application" 
+            [(activeStep)]="activeStep" [application]="application"
             [(monEvalDescription)]="fundingApplicationDetails.monitoringEvaluation.monEvalDescription"
             [(fundingApplicationDetails)]="fundingApplicationDetails">
-        </app-monitoring-evaluation-plan>  
+        </app-monitoring-evaluation-plan>
         <app-project-implementation *ngIf="activeStep == FundingApplicationStepsEnum.ProjectImplementationPlan"
-            [(activeStep)]="activeStep" [application]="application"  [(implementations)]="fundingApplicationDetails.implementations"
-            [(fundingApplicationDetails)]="fundingApplicationDetails" 
-            [places]="placeAll" [allsubPlaces]="subPlacesAll">
-        </app-project-implementation>  
-            <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument" 
-            [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" ></app-document-upload>
-       
+            [(activeStep)]="activeStep" [application]="application"
+            [(implementations)]="fundingApplicationDetails.implementations"
+            [(fundingApplicationDetails)]="fundingApplicationDetails" [places]="placeAll" [allsubPlaces]="subPlacesAll">
+        </app-project-implementation>
+        <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument"
+            [(activeStep)]="activeStep" [application]="application"
+            [(fundingApplicationDetails)]="fundingApplicationDetails"></app-document-upload>
+        <!-- <app-declaration *ngIf="activeStep == FundingApplicationStepsEnum.Declaration" [(activeStep)]="activeStep"
+            [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails">
+        </app-declaration> -->
     </div>
 
-    
+
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
-        <app-npo-details *ngIf="activeStep == ServiceProvisionStepsEnum.NpoConfirmation" [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details>
-        <app-objectives *ngIf="activeStep == ServiceProvisionStepsEnum.Objectives" [(activeStep)]="activeStep" [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true" [isReview]="false"></app-objectives>
-        <app-activities *ngIf="activeStep == ServiceProvisionStepsEnum.Activities" [(activeStep)]="activeStep" [application]="application" (activityChange)="loadActivities()" [canAddComments]="true" [isReview]="false"></app-activities>
-        <app-sustainability *ngIf="activeStep == ServiceProvisionStepsEnum.Sustainability" [(activeStep)]="activeStep" [application]="application" (sustainabilityPlanChange)="loadSustainabilityPlans()" [canAddComments]="true" [isReview]="false"></app-sustainability>
-        <app-resourcing *ngIf="activeStep == ServiceProvisionStepsEnum.Resourcing" [(activeStep)]="activeStep" [application]="application" (resourceChange)="loadResources()" [reviewApplication]="false" [canReviewOrApprove]="false" [canAddComments]="true" [isReview]="false"></app-resourcing>
+        <app-npo-details *ngIf="activeStep == ServiceProvisionStepsEnum.NpoConfirmation" [(activeStep)]="activeStep"
+            [application]="application" [newApplication]="false"></app-npo-details>
+        <app-objectives *ngIf="activeStep == ServiceProvisionStepsEnum.Objectives" [(activeStep)]="activeStep"
+            [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"
+            [isReview]="false"></app-objectives>
+        <app-activities *ngIf="activeStep == ServiceProvisionStepsEnum.Activities" [(activeStep)]="activeStep"
+            [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
+            [isReview]="false"></app-activities>
+        <app-sustainability *ngIf="activeStep == ServiceProvisionStepsEnum.Sustainability" [(activeStep)]="activeStep"
+            [application]="application" (sustainabilityPlanChange)="loadSustainabilityPlans()" [canAddComments]="true"
+            [isReview]="false"></app-sustainability>
+        <app-resourcing *ngIf="activeStep == ServiceProvisionStepsEnum.Resourcing" [(activeStep)]="activeStep"
+            [application]="application" (resourceChange)="loadResources()" [reviewApplication]="false"
+            [canReviewOrApprove]="false" [canAddComments]="true" [isReview]="false"></app-resourcing>
     </div>
     <div style="height: 10px;"></div>
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
+        *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
 </p-panel>

@@ -1,0 +1,62 @@
+<div >
+    <p>I, the undersigned Project Manager, certify that:</p>
+    <ol>
+        <li>I have applied the definition and principles of Demand Management in terms of the relevant regulations.</li>
+        <li>All evidence will be retained for Audit purposes.</li>
+        <li>I have no knowledge of any other factors that may adversely affect the determination of the procurement method.</li>
+    </ol>
+    <p style="font-weight: bold;">For the utilization of Consultants <span style="color: red;">(where applicable)</span>:</p>
+    <p>I, the undersigned Project Manager, certify that:</p>
+    <ol>
+        <li>The contents of this Business Case adheres to the provisions as contained in Part B, Chapter 11 (Utilisation of Consultants) of the Finance Policy Manual.</li>
+        <li>It is aligned to the cost containment measures relating to the engagement of professional service providers (consultants) as articulated in National Treasury Instruction 3 of 2017/18.</li>
+        <li>A thorough Gap Analysis in support of this Business Case has been completed and is attached as Annexure A.</li>
+    </ol>
+    
+    <div *ngIf="!readonlyView">
+        <div class="p-fluid">
+            <div class="p-field p-grid">
+                <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 non-mandatory-content">Additional Comments</label>
+                <div class="p-col-12 p-md-10">
+                    <p-editor [(ngModel)]="review.comments" [ngModelOptions]="{standalone: true}" (onSelectionChange)="update()" [readonly]="isDisabled"></p-editor>
+                </div>
+            </div>
+            <div class="p-field p-grid">
+                <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 mandatory-content">Accept Sign-Off</label>
+                <div class="p-col-12 p-md-10">
+                    <p-checkbox [(ngModel)]="review.acceptSignOff" binary="true" inputId="binary" (onChange)="update()" [disabled]="isDisabled"></p-checkbox>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="readonlyView">
+        <div class="p-fluid">
+            <div class="p-field p-grid">
+                <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 non-mandatory-content">Additional Comments</label>
+                <div class="p-col-12 p-md-10">
+                    <p-editor [(ngModel)]="review.comments" [ngModelOptions]="{standalone: true}" [readonly]="isDisabled" [style]="{'border':'0px'}" [modules]="{ toolbar: false }">
+                        <p-header></p-header>
+                    </p-editor>
+                </div>
+            </div>
+            <div class="p-field p-grid">
+                <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 non-mandatory-content">Accept Sign-Off</label>
+                <div class="p-col-12 p-md-10">
+                    <p-checkbox [(ngModel)]="review.acceptSignOff" binary="true" inputId="binary" [disabled]="isDisabled"></p-checkbox>
+                </div>
+            </div>
+            <div class="p-field p-grid">
+                <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 non-mandatory-content">Signed By</label>
+                <div class="p-col-12 p-md-10">
+                    <span *ngIf="review.createdUser">{{review.createdUser.fullName}}</span>
+                </div>
+            </div>
+            <div class="p-field p-grid">
+                <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 non-mandatory-content">Date</label>
+                <div class="p-col-12 p-md-10">
+                    {{review.createdDateTime | date:"yyyy-MM-dd  HH:mm:ss"}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
