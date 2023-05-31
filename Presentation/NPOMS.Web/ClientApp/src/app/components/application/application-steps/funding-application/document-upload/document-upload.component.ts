@@ -91,7 +91,7 @@ export class DocumentUploadComponent implements OnInit {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
-        console.log('',this.documentTypes);
+        console.log('this.documentTypes',this.documentTypes);
         console.log('results',results);
       },
       (err) => {
