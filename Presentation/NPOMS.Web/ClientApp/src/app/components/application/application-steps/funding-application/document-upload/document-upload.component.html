@@ -17,15 +17,7 @@
                   <div class="p-col-5">
                     <div>{{file.name}}</div>
                   </div>
-                  <!-- <div class="p-grid">
-
-                    <p style="font-weight: bold;">Declaration of Interest Instructions:</p>  <br />
-                    <ol>
-                        <li>The DOI template will be accessed from the same place where User Guides are placed..</li>  <br/>
-                     <a href ="https://www.westerncape.gov.za/sites/www.westerncape.gov.za/files/">Link to download the template</a>                     <br/>
-                    </ol>
-                    <br/>
-                  </div> -->
+ 
                   <div class="p-col-5">
                     <div>
                       <p-dropdown [options]="documentTypes" placeholder="Select a Document Type" optionLabel="name" [(ngModel)]="file.documentType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
@@ -55,7 +47,7 @@
                         <tr>
                             <td style="text-align: center;">{{rowIndex + 1}}</td>
                             <td>{{document?.name}}</td>
-                            <td>{{document.documentType.name}}</td>                            
+                            <td>{{document?.documentType?.name}}</td>                            
                             <td>{{document?.fileSize}}</td>
                             <td>{{document?.createdDateTime | date: 'yyyy-MM-dd'}}</td>
                             <td style="text-align: center;">
