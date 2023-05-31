@@ -3,9 +3,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Message, MenuItem, ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { EntityEnum, EntityTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
+import { DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IUser, IDocumentStore, IDocumentType, IFundingApplicationDetails } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
+import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
   selector: 'app-document-upload',
@@ -37,6 +39,7 @@ export class DocumentUploadComponent implements OnInit {
   documentTypes: IDocumentType[] = [];
   compulsoryDocuments: IDocumentType[] = [];
   nonCompulsoryDocuments: IDocumentType[] = [];
+
   validationErrors: Message[];
   menuActions: MenuItem[];
 
@@ -44,7 +47,9 @@ export class DocumentUploadComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _documentStore: DocumentStoreService,
     private _confirmationService: ConfirmationService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _dropdownRepo: DropdownService,
+    private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
@@ -52,10 +57,17 @@ export class DocumentUploadComponent implements OnInit {
     this.documentCols = [
       { header: '', width: '5%' },
       { header: 'Document Name', width: '43%' },
+      { header: 'Document Type', width: '25%' },
       { header: 'Size', width: '10%' },
       { header: 'Uploaded Date', width: '10%' },
       { header: 'Actions', width: '7%' }
     ];
+    this.documentTypeCols = [
+      { header: '', width: '5%' },
+      { header: 'Document Type', width: '20%' },
+      { header: 'Document Type Description', width: '75%' }
+    ];
+    this.loadDocumentTypes();
   }
 
   readonly(): boolean {
@@ -71,7 +83,23 @@ export class DocumentUploadComponent implements OnInit {
     uploader.remove(event, index);
   }
 
-
+  private loadDocumentTypes() {
+    debugger;
+    
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
+      (results) => {
+        this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
+        this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
+        this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
+        console.log('',this.documentTypes);
+        console.log('results',results);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
   onDownloadDocument(doc: any) {
     debugger;
     console.log('download',doc);
@@ -149,12 +177,4 @@ export class DocumentUploadComponent implements OnInit {
     this.activeStep = this.activeStep - 1;
     this.activeStepChange.emit(this.activeStep);
   }
-  nextPage() {
-
-    this.activeStep = this.activeStep + 1;
-    this.activeStepChange.emit(this.activeStep);
-  }
-
-
-
 }

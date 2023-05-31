@@ -14,19 +14,33 @@
             <ng-template let-file pTemplate="file">
                 <div style="height: 10px;"></div>
                 <div class="p-grid">
-                    <div class="p-col-5">
-                        <div>{{file.name}}</div>
-                    </div>
+                  <div class="p-col-5">
+                    <div>{{file.name}}</div>
+                  </div>
+                  <!-- <div class="p-grid">
 
-                    <div class="p-col-2">
-                        <div class="pull-right">
-                            <button pButton pRipple type="button" class="p-button-text p-button-danger action-button"
-                                icon="fa fa-trash" (click)="remove($event, file, form)" pTooltip="Delete"
-                                tooltipPosition="top"></button>
-                        </div>
+                    <p style="font-weight: bold;">Declaration of Interest Instructions:</p>  <br />
+                    <ol>
+                        <li>The DOI template will be accessed from the same place where User Guides are placed..</li>  <br/>
+                     <a href ="https://www.westerncape.gov.za/sites/www.westerncape.gov.za/files/">Link to download the template</a>                     <br/>
+                    </ol>
+                    <br/>
+                  </div> -->
+                  <div class="p-col-5">
+                    <div>
+                      <p-dropdown [options]="documentTypes" placeholder="Select a Document Type" optionLabel="name" [(ngModel)]="file.documentType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
                     </div>
+                  </div>
+                  <div class="p-col-2">
+                    <div class="pull-right">
+                      <button pButton pRipple type="button" class="p-button-text p-button-danger action-button"
+                              icon="fa fa-trash" (click)="remove($event, file, form)" pTooltip="Delete"
+                              tooltipPosition="top"></button>
+                    </div>
+                  </div>
                 </div>
             </ng-template>
+            
             <ng-template pTemplate="content">
                 <div style="height: 10px;"></div>
                 <p-table [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
@@ -41,6 +55,7 @@
                         <tr>
                             <td style="text-align: center;">{{rowIndex + 1}}</td>
                             <td>{{document?.name}}</td>
+                            <td>{{document.documentType.name}}</td>                            
                             <td>{{document?.fileSize}}</td>
                             <td>{{document?.createdDateTime | date: 'yyyy-MM-dd'}}</td>
                             <td style="text-align: center;">
@@ -79,5 +94,4 @@
 <div style="height: 10px;"></div>
 <div class="p-grid p-nogutter p-justify-between">
     <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
-    <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
   </div>
