@@ -344,5 +344,6 @@ export enum FundingApplicationStepsEnum {
 export enum DocumentUploadLocationsEnum {
     NpoProfile = 'NpoProfile',
     Workplan = 'Workplan',
-    WorkplanActuals = 'WorkplanActuals'
+    WorkplanActuals = 'WorkplanActuals',
+    FundApp ="FundApp"
 }

@@ -25,8 +25,17 @@ namespace NPOMS.Repository.Configurations.Core
 					Id = 2,
 					Name = "Signed SLA",
 					Location = "Workplan"
-				}
-			);
+				},
+                new DocumentType
+                {
+                    Id = 7,
+                    Name = "Signed Declaration of Interest",
+					Description = "Signed Declaration of Interest",
+					IsActive = true,
+					IsCompulsory = false,
+                    Location = "FundApp"
+                }
+            );
 		}
 	}
 }
