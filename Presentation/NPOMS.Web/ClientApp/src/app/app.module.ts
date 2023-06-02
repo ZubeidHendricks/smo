@@ -1,3 +1,4 @@
+import { EditorModule } from 'primeng/editor';
 import { BrowserModule } from '@angular/platform-browser';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { MessageService } from 'primeng/api';
@@ -35,6 +36,7 @@ import { CardModule } from 'primeng/card';
 import { AccordionModule } from 'primeng/accordion';
 import { MenuModule } from 'primeng/menu';
 import { ScrollTopModule } from 'primeng/scrolltop';
+
 
 // B2B / B2C
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
@@ -127,12 +129,12 @@ import { AccountTypeComponent } from './components/admin/utilities/account-type/
 import { PaymentSchedulesComponent } from './components/admin/payment-schedules/payment-schedules.component';
 import { CompliantCyclesComponent } from './components/admin/compliant-cycles/compliant-cycles.component';
 import { ApplicationDetailsComponent } from './components/application/application-steps/funding-application/application-details/application-details.component';
-import { FinancialDetailsComponent } from './components/application/application-steps/funding-application/financial-details/financial-details.component';
 import { ProjectInformationComponent } from './components/application/application-steps/funding-application/project-information/project-information.component';
 import { MonitoringEvaluationPlanComponent } from './components/application/application-steps/funding-application/monitoring-evaluation-plan/monitoring-evaluation-plan.component';
 import { ProjectImplementationComponent } from './components/application/application-steps/funding-application/project-implementation/project-implementation.component';
 import { DocumentUploadComponent } from './components/application/application-steps/funding-application/document-upload/document-upload.component';
 import { DeclarationComponent } from './components/application/application-steps/funding-application/declaration/declaration.component';
+import { FinancialMattersComponent } from './components/application/application-steps/funding-application/financial-matters/financial-matters.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -260,12 +262,12 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     PaymentSchedulesComponent,
     CompliantCyclesComponent,
     ApplicationDetailsComponent,
-    FinancialDetailsComponent,
     ProjectInformationComponent,
     MonitoringEvaluationPlanComponent,
     ProjectImplementationComponent,
     DocumentUploadComponent,
-    DeclarationComponent
+    DeclarationComponent,
+    FinancialMattersComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
@@ -308,7 +310,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     CardModule,
     AccordionModule,
     MenuModule,
-    ScrollTopModule
+    ScrollTopModule,
+    EditorModule
   ],
   providers: [
     {

@@ -18,10 +18,10 @@
             (getSubPlace)=" subPlaces($event)">
         </app-application-details>
 
-        <app-financial-details *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
+        <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
             [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
             [(fundingApplicationDetails)]="fundingApplicationDetails">
-        </app-financial-details>
+        </app-financial-matters>
 
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
             [(activeStep)]="activeStep" [application]="application"

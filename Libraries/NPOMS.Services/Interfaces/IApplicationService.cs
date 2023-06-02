@@ -48,11 +48,11 @@ namespace NPOMS.Services.Interfaces
 
 		//Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
 
-		Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId);
+		//Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId);
 
-        Task CreateFinancialDetail(FinancialDetail model, string userIdentifier);
+  //      Task CreateFinancialDetail(FinancialDetail model, string userIdentifier);
 
-        Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier);
+  //      Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier);
 
         Task CreateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier);
 
