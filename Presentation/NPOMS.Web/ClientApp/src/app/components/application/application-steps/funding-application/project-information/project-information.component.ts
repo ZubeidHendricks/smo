@@ -2,12 +2,15 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { StatusEnum } from 'src/app/models/enums';
 import {  IApplication, IFundingApplicationDetails } from 'src/app/models/interfaces';
 
+
+
 @Component({
   selector: 'app-project-information',
   templateUrl: './project-information.component.html',
   styleUrls: ['./project-information.component.css']
 })
 export class ProjectInformationComponent implements OnInit {
+
   @Input() isReadOnly: boolean;
   @Input() initiatedQuestion: string;
   @Input() fundingApplicationDetails: IFundingApplicationDetails;
@@ -23,6 +26,7 @@ export class ProjectInformationComponent implements OnInit {
 
   ngOnInit(): void {
 
+    
 console.log('bit status',this.fundingApplicationDetails)
   }
 

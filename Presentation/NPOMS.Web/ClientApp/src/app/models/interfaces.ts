@@ -515,7 +515,7 @@ export interface IFundingApplicationDetails {
     expenses: Budget[],    
     financialMatters: FinancialMatters[];  
     applicationDetails: IApplicationDetails;
-    fundAppDeclaration :IFundAppDeclaration;     
+    //fundAppDeclaration :IFundAppDeclaration;     
 }
 
 // export interface IDeclaration {

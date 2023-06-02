@@ -75,10 +75,7 @@ export class ApplicationDetailsComponent implements OnInit {
   applicationTypes: IApplicationType[];
   selectedApplicationType: IApplicationType;
 
-  openingMinDate: Date;
-  closingMinDate: Date;
-  disableClosingDate: boolean = true;
-  disableOpeningDate: boolean = true;
+
   finYearRange: string;
 
   // Highlight required fields on validate click
@@ -219,7 +216,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear )
       this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -245,8 +242,7 @@ export class ApplicationDetailsComponent implements OnInit {
       data.financialYearId = this.selectedFinancialYear.id;
       data.applicationTypeId = this.selectedApplicationType.id;
 
-      data.openingDate = this.addTwoHours(data.openingDate);
-      data.closingDate = this.addTwoHours(data.closingDate);
+
 
       this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
         (resp) => {
@@ -259,14 +255,6 @@ export class ApplicationDetailsComponent implements OnInit {
         }
       );
     }
-  }
-
-  private addTwoHours(date: Date) {
-    let newDate = new Date(date);
-    let nextTwoHours = newDate.getHours() + 2;
-    newDate.setHours(nextTwoHours);
-
-    return newDate;
   }
 
   private canContinue() {
@@ -373,11 +361,8 @@ export class ApplicationDetailsComponent implements OnInit {
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
 
-          this.updateDateField(results.financialYear.startDate, 'opening date');
-          this.updateDateField(results.openingDate, 'closing date');
 
-          this.disableOpeningDate = false;
-          this.disableClosingDate = false;
+       
 
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
@@ -385,8 +370,6 @@ export class ApplicationDetailsComponent implements OnInit {
           this.selectedFinancialYear = results.financialYear;
           this.selectedApplicationType = results.applicationType;
 
-          results.openingDate = new Date(results.openingDate);
-          results.closingDate = new Date(results.closingDate);
 
           this.applicationPeriod = results;
           this.isDataAvailable = true;
@@ -429,32 +412,14 @@ export class ApplicationDetailsComponent implements OnInit {
     }
   }
 
-  openingDateSelected(date: Date) {
-    this.applicationPeriod.closingDate = null;
-    this.updateDateField(date, 'closing date');
-    this.disableClosingDate = false;
-  }
-
-  closingDateSelected(date: Date) {
-    if (this.applicationPeriod.openingDate > date)
-      this.applicationPeriod.closingDate = this.applicationPeriod.openingDate;
-  }
 
   financialYearChange(finYear: IFinancialYear) {
-    this.applicationPeriod.openingDate = null;
+
     this.getFinancialYearRange(finYear);
-    this.updateDateField(finYear.startDate, 'opening date');
-    this.disableOpeningDate = false;
+
   }
 
-  private updateDateField(date: Date, dateField: string) {
-    let newDate = new Date(date);
 
-    if (dateField === 'opening date')
-      this.openingMinDate = new Date();
-    else
-      this.closingMinDate = newDate;
-  }
 
   private getFinancialYearRange(finYear: IFinancialYear) {
     if (this.financialYears.length > 0) {

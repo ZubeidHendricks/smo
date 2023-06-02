@@ -128,7 +128,7 @@ namespace NPOMS.Repository
 		public DbSet<NpoProfile> NpoProfiles { get; set; }
 		public DbSet<Objective> Objectives { get; set; }
         public DbSet<FundingApplicationDetail> FundingApplicationDetails { get; set; }
-        public DbSet<FinancialDetail> FinancialDetails { get; set; }
+        //public DbSet<FinancialDetail> FinancialDetails { get; set; }
         public DbSet<ProjectInformation> ProjectInformations { get; set; }
 		public DbSet<MonitoringEvaluation> MonitoringEvaluations { get; set; }
         public DbSet<ProjectImplementation> ProjectImplementations { get; set; }

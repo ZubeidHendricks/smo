@@ -1,6 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Compile Remove="Implementation\Entities\FinancialDetailRepository.cs" />
+    <Compile Remove="Interfaces\Entities\IFinancialDetailRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Libraries\NPOMS.Domain\NPOMS.Domain.csproj" />
   </ItemGroup>
 

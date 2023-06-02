@@ -6,18 +6,19 @@ import { FinancialMatters } from 'src/app/models/FinancialMatters';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { PropertyType } from 'src/app/models/PropertyType';
 import { DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
-import {  FinYear, IApplication, IFundingApplicationDetails } from 'src/app/models/interfaces';
+import { IApplication, FinYear, IFundingApplicationDetails } from 'src/app/models/interfaces';
+
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 
 @Component({
-  selector: 'app-financial-details',
-  templateUrl: './financial-details.component.html',
-  styleUrls: ['./financial-details.component.css']
+  selector: 'app-financial-matters',
+  templateUrl: './financial-matters.component.html',
+  styleUrls: ['./financial-matters.component.css']
 })
-export class FinancialDetailsComponent implements OnInit, OnChanges {
+export class FinancialMattersComponent implements OnInit, OnChanges {
 
   @Input() isReadOnly: boolean;
-  @Input() bid: IFundingApplicationDetails; @Input() application: IApplication;
+  @Input() fundingApplicationDetails: IFundingApplicationDetails; @Input() application: IApplication;
   @Input() financialMatters: FinancialMatters[];
   @Output() financialMattersChange = new EventEmitter();
   @Input() activeStep: number;
@@ -25,8 +26,8 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
   newFinancialMatter: boolean;
   propertyObj: PropertyType = {} as PropertyType;
-  financialMattersIncome: FinancialMatters[] =[];
-  financialMattersExpenditure: FinancialMatters[] =[];
+  financialMattersIncome: FinancialMatters[];
+  financialMattersExpenditure: FinancialMatters[];
   displayExpenditureTotal: boolean = false;
   displayIncomeTotal: boolean = false;
   calculatedFinMattersIncome: CalculatedFinMatters = {} as CalculatedFinMatters;
@@ -44,26 +45,24 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private dropDownService: DropdownService, private messageService: MessageService) { }
+  constructor(private dropDownService: DropdownService,
+    private messageService: MessageService) { }
 
 
   ngOnInit(): void {
 
-     //console.log('bid', this.bid);
+    console.log('fundingApplicationDetails', this.fundingApplicationDetails);
 
-    // console.log('bid', this.bid);
-
-    // if (this.bid.financialMatters) {
-    //   this.financialMattersIncome = this.bid.financialMatters?.filter(x => x.type == "income");
-    //   this.financialMattersExpenditure = this.bid.financialMatters?.filter(x => x.type == "expenditure");
-    // }
-    // else {
-    //   this.bid.financialMatters = [];
-    //   this.financialMattersIncome = [];
-    //   this.financialMattersExpenditure = [];
-    // }
+    if (this.fundingApplicationDetails.financialMatters) {
+      this.financialMattersIncome = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "income");
+      this.financialMattersExpenditure = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "expenditure");
+    }
+    else {
+      this.fundingApplicationDetails.financialMatters = [];
+      this.financialMattersIncome = [];
+      this.financialMattersExpenditure = [];
+    }
     this.loadPropertyTypes();
-
 
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(res => {
       this.finYears = res;
@@ -81,20 +80,17 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
 
   readonly(): boolean {
-    
-        if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved ||
-          this.application.statusId ==  StatusEnum.Evaluated ||
-          this.application.statusId ==  StatusEnum.EvaluationApproved)
-          return true;
-        else return false;
-      }
 
- 
+    if (this.application.statusId == StatusEnum.PendingReview ||
+      this.application.statusId == StatusEnum.Approved )
+      return true;
+    else return false;
+  }
+
   private loadPropertyTypes() {
 
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.PropertyType, false).subscribe((propertyTypes) => {
-      console.log('propertyTypes',propertyTypes);
+      console.log('propertyTypes', propertyTypes);
       this.propertyTypes = propertyTypes;
       this.propertyTypes.unshift({ name: 'Select Property Type', id: null });
     }, error => {
@@ -122,6 +118,7 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
   }
 
 
+
   public propertyTypeChange(propertyType: PropertyType) {
 
     this.propertySubtypes = [];
@@ -134,10 +131,9 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
 
-    console.log('Financial Matters',this.financialMatters);
-    if (this.financialMatters) {
-      this.financialMattersIncome = this.financialMatters?.filter(x => x.type == "income");
-      this.financialMattersExpenditure = this.financialMatters?.filter(x => x.type == "expenditure");
+    if (this.fundingApplicationDetails) {
+      this.financialMattersIncome = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "income");
+      this.financialMattersExpenditure = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "expenditure");
       var sumOne = 0;
       var sumTwo = 0;
       var sumThree = 0;
@@ -175,9 +171,9 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
     }
     else {
-      //if (this.bid == null) {
-        this.financialMatters = [];
-      //}
+      if (this.fundingApplicationDetails == null) {
+        this.fundingApplicationDetails.financialMatters = [];
+      }
     }
 
 
@@ -206,23 +202,20 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
   }
 
   saveAddFun() {
-  debugger;
+
     this.financialmatter.property = this.selectedPropertyTypes.name;
     this.financialmatter.propertyId = Number(this.selectedPropertyTypes.id);
     this.financialmatter.subProperty = this.selectedPropertySubtypes.name;
     this.financialmatter.subPropertyId = Number(this.selectedPropertySubtypes.id);
     if (this.financialmatter.type == "income") {
       if (this.newFinancialMatter) {
-        console.log('financialMattersIncome',this.financialMattersIncome);
-        console.log('financialmatter',this.financialmatter);
-
         this.financialMattersIncome.push(this.financialmatter);
       }
       else {
         this.financialMattersIncome[this.financialMattersIncome.indexOf(this.selectedFinancialMatter)] = this.financialmatter;
       }
 
-      this.financialMatters = this.financialMattersIncome.concat(this.financialMattersExpenditure);
+      this.fundingApplicationDetails.financialMatters = this.financialMattersIncome.concat(this.financialMattersExpenditure);
       let totalOne: number = this.financialMattersIncome.map(a => a.amountOne).reduce(function (a, b) {
         return Number(a) + Number(b);
       });
@@ -249,7 +242,7 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
         this.financialMattersExpenditure[this.financialMattersExpenditure.indexOf(this.selectedFinancialMatter)] = this.financialmatter;
       }
 
-      this.financialMatters = this.financialMattersExpenditure.concat(this.financialMattersIncome);
+      this.fundingApplicationDetails.financialMatters = this.financialMattersExpenditure.concat(this.financialMattersIncome);
 
       let totalOneExpenditure: number = this.financialMattersExpenditure.map(a => a.amountOne).reduce(function (a, b) {
         return Number(a) + Number(b);
@@ -292,7 +285,6 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
 
 
   save() {
-    debugger;
 
     this.financialmatter.property = this.selectedPropertyTypes.name;
     this.financialmatter.propertyId = Number(this.selectedPropertyTypes.id);
@@ -300,8 +292,6 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
     this.financialmatter.subPropertyId = Number(this.selectedPropertySubtypes.id);
 
     let financialmatter = [...this.financialMatters];
-    console.log('save Method [...this.financialMatters]' , [...this.financialMatters]);
-    console.log('save Method this.financialmatter', this.financialmatter);
     if (this.newFinancialMatter) {
       financialmatter.push(this.financialmatter);
     }
@@ -319,7 +309,6 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
     this.selectedFinancialMatter = event.data;
     this.newFinancialMatter = false;
     this.financialmatter = this.cloneImplementation(event.data);
-
     // loadProperty Types
     this.dropDownService.getEntities(DropdownTypeEnum.PropertyType, false).subscribe((typs) => {
       this.propertyTypes = typs;
@@ -342,6 +331,8 @@ export class FinancialDetailsComponent implements OnInit, OnChanges {
         this.displayDialogAddFin = true;
       }
     });
+
+
   }
 
 

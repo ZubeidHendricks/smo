@@ -42,7 +42,7 @@ namespace NPOMS.Services.Implementation
 		private IUserNpoRepository _userNpoRepository;
 		private IApplicationReviewerSatisfactionRepository _applicationReviewerSatisfactionRepository;
         private IFundingApplicationDetailsRepository _fundingApplicationDetailsRepository;
-		private IFinancialDetailRepository _financialDetailRepository;
+		//private IFinancialDetailRepository _financialDetailRepository;
         private IProjectInformationRepository _projectInformationRepository;
         private IMonitoringEvaluationRepository _monitoringEvaluationRepository;
 		private IProjectImplementationRepository _projectImplementationRepository;
@@ -77,7 +77,7 @@ namespace NPOMS.Services.Implementation
 			IUserNpoRepository userNpoRepository,
 			IApplicationReviewerSatisfactionRepository applicationReviewerSatisfactionRepository,
             IFundingApplicationDetailsRepository fundingApplicationDetailsRepository,
-			IFinancialDetailRepository financialDetailRepository,
+			//IFinancialDetailRepository financialDetailRepository,
 			IProjectInformationRepository projectInformationRepository,
 			IMonitoringEvaluationRepository monitoringEvaluationRepository,
 			IProjectImplementationRepository projectImplementationRepository,
@@ -105,7 +105,7 @@ namespace NPOMS.Services.Implementation
 			_userNpoRepository = userNpoRepository;
 			_applicationReviewerSatisfactionRepository = applicationReviewerSatisfactionRepository;
             _fundingApplicationDetailsRepository = fundingApplicationDetailsRepository;
-			_financialDetailRepository= financialDetailRepository;
+			//_financialDetailRepository= financialDetailRepository;
 			_projectInformationRepository = projectInformationRepository;
 			_monitoringEvaluationRepository = monitoringEvaluationRepository;
 			_projectImplementationRepository = projectImplementationRepository;
@@ -339,25 +339,25 @@ namespace NPOMS.Services.Implementation
 			return null;
 		}
 
-        public async Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId)
-        {
-            var application = await _applicationRepository.GetByNpoIdAndPeriodId(NpoId, applicationPeriodId);
+        //public async Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId)
+        //{
+        //    var application = await _applicationRepository.GetByNpoIdAndPeriodId(NpoId, applicationPeriodId);
 
-            if (application != null)
-            {
-                var financialDetails = await _financialDetailRepository.GetEntities(application.Id);
+        //    if (application != null)
+        //    {
+        //        var financialDetails = await _financialDetailRepository.GetEntities(application.Id);
 
-                //foreach (var item in financialDetails)
-                //{
-                //    var mappings = await _objectiveProgrammeRepository.GetByObjectiveId(item.Id);
-                //    item.ObjectiveProgrammes = mappings.ToList();
-                //}
+        //        //foreach (var item in financialDetails)
+        //        //{
+        //        //    var mappings = await _objectiveProgrammeRepository.GetByObjectiveId(item.Id);
+        //        //    item.ObjectiveProgrammes = mappings.ToList();
+        //        //}
 
-                return financialDetails;
-            }
+        //        return financialDetails;
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         //public async Task CreateProjectImplementation(ProjectImplementation model, string userIdentifier)
         //{
@@ -391,15 +391,15 @@ namespace NPOMS.Services.Implementation
 			await _fundingApplicationDetailsRepository.CreateEntity(model);
 		}
 
-		public async Task CreateFinancialDetail(FinancialDetail model, string userIdentifier)
-        {
-            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+		//public async Task CreateFinancialDetail(FinancialDetail model, string userIdentifier)
+  //      {
+  //          var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-            model.CreatedUserId = loggedInUser.Id;
-            model.CreatedDateTime = DateTime.Now;
+  //          model.CreatedUserId = loggedInUser.Id;
+  //          model.CreatedDateTime = DateTime.Now;
 
-            await _financialDetailRepository.CreateEntity(model);
-        }
+  //          await _financialDetailRepository.CreateEntity(model);
+  //      }
 
         public async Task CreateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier)
         {
@@ -489,17 +489,17 @@ namespace NPOMS.Services.Implementation
             await _monitoringEvaluationRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
         }
 
-        public async Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier)
-        {
-            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+        //public async Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier)
+        //{
+        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-            var objective = _mapper.Map<FinancialDetail>(model);
-            objective.UpdatedUserId = loggedInUser.Id;
-            objective.UpdatedDateTime = DateTime.Now;
+        //    var objective = _mapper.Map<FinancialDetail>(model);
+        //    objective.UpdatedUserId = loggedInUser.Id;
+        //    objective.UpdatedDateTime = DateTime.Now;
 
-            var oldEntity = await this._repositoryContext.FinancialDetails.FindAsync(model.Id);
-            await _financialDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
-        }
+        //    var oldEntity = await this._repositoryContext.FinancialDetails.FindAsync(model.Id);
+        //    await _financialDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+        //}
 
         private async Task DeleteActivities(Objective model, User currentUser)
 		{

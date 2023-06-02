@@ -3,7 +3,7 @@
 export class FinancialMatters {
   constructor(
     public id: number,
-    public applicationId: number,
+    public fundingApplicationDetailId: number,
     public propertyId: number,
     public subPropertyId: number,
     public property: string,

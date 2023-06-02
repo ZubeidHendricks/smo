@@ -98,8 +98,7 @@ export class EditApplicationComponent implements OnInit {
   }
   ngOnInit(): void {
     debugger;
-    console.log('Edit Screen Ng onint',this.placeAll);
-    console.log('Edit Screen Ng onint',this.subPlacesAll);
+
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
@@ -110,9 +109,9 @@ export class EditApplicationComponent implements OnInit {
     this.applicationPeriodId = +this.id;
     this.fundingApplicationDetails.applicationPeriodId = +this.id;
 
-    this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-      this.applicationIdOnBid = resp.applicationId;
-    });    
+    // this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
+    //   this.applicationIdOnBid = resp.applicationId;
+    // });    
 
 
 
@@ -289,6 +288,7 @@ export class EditApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
+    debugger;
     console.log('status bidForm', status);
     this.application.status = null;
     if (this.bidCanContinue(status)) {
@@ -394,6 +394,7 @@ debugger;
       this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
     }
     this.fundingApplicationDetails.financialMatters = data.financialMatters;
+    console.log('data.financialMatters',data.financialMatters);
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
 
     this.fundingApplicationDetails.implementations?.forEach(c => {

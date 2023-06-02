@@ -9,12 +9,22 @@
       </div>
       <div class="p-col-3">
       </div>
-      <div class="p-col-6">
+      <!-- <div class="p-col-6">
         <textarea pInputTextarea [rows]="5" [cols]="30" autoResize="autoResize" id="monEvalDescription"
           (ngModelChange)="onMonEvalDescription($event)" [(ngModel)]="monEvalDescription"
           [ngModelOptions]="{standalone: true}" autocomplete="off" autofocus="on" [disabled]="readonly()"></textarea>
+      </div> -->
+      <div class="p-fluid">
+        <div class="p-field">
+     
+          <p-editor [(ngModel)]="monEvalDescription" [ngModelOptions]="{standalone: true}"
+            (ngModelChange)="onMonEvalDescription($event)"></p-editor>
+        </div>
       </div>
+      <br />
     </div>
+
+
   </p-panel>
   
   <div style="height: 10px;"></div>

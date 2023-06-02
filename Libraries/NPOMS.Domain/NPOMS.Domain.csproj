@@ -10,4 +10,8 @@
     <None Remove="FundingApplication\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Entities\FinancialDetail.cs" />
+  </ItemGroup>
+
 </Project>
