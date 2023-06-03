@@ -3,19 +3,18 @@
   <!-- Taken from primeng begin...
   <p-editor [(ngModel)]="initiatedQuestion" [style]="{'height':'320px'}" [ngModelOptions]="{standalone: true}"></p-editor>
   Taken from primeng end... -->
-
-  <div class="ui-fluid p-formgrid p-grid">
+    <div style="height: 10px;"></div>
 
     <div class="p-fluid">
       <div class="p-field">
         <label for="initiatedQuestion" style="font-weight:bold">Why was the project initiated? <span
             class="bid-required">*</span></label>
-        <p-editor [(ngModel)]="initiatedQuestion" [ngModelOptions]="{standalone: true}"
+        <p-editor [(ngModel)]="initiatedQuestion" [ngModelOptions]="{standalone: true}" 
           (ngModelChange)="onInitiatedQuestionChange($event)"></p-editor>
       </div>
     </div>
-    <br />
-    <br />
+    <div style="height: 10px;"></div>
+
     <div class="p-fluid">
       <div class="p-field">
         <label for="purposeQuestion" style="font-weight:bold">What is the purpose of the project? <span
@@ -25,8 +24,7 @@
         </p-editor>
       </div>
     </div>
-    <br />
-    <br />
+    <div style="height: 10px;"></div>
     <div class="p-fluid">
       <div class="p-field">
         <label for="considerQuestion" style="font-weight:bold">Why do you believe DSD should consider your
@@ -36,10 +34,6 @@
           (ngModelChange)="onConsiderQuestionChange($event)" id="considerQuestion"></p-editor>
       </div>
     </div>
-    <br />
-    <br />
-  </div>
-
 </p-panel>
 
 <div style="height: 10px;"></div>
