@@ -21,6 +21,7 @@ namespace NPOMS.Domain.Entities
         public decimal AmountTwo { get; set; }
         [Column(TypeName = "numeric(18,6)")]
         public decimal AmountThree { get; set; }
+        public int TotalFundingAmount { get; set; }
         public int FundingApplicationDetailId { get; set; }
         public string Type { get; set; }
         public bool IsActive { get; set; }

@@ -11,6 +11,9 @@ namespace NPOMS.Repository.Interfaces.Entities
 {
     public interface IFinancialMattersRepository : IBaseRepository<FinancialMatters>
     {
+		Task<IEnumerable<FinancialMatters>> GetByFundingApplicationIdAsync(int fundingApplicationId);
+
         Task<FinancialMatters> GetById(int id);
+        Task DeleteFinancialMattersByIdAsync(int id);
     }
 }
