@@ -238,6 +238,8 @@ namespace NPOMS.Services.Mappings
             .ForMember(model => model.AmountOne, op => op.MapFrom(c => c.AmountOne))
             .ForMember(model => model.AmountTwo, op => op.MapFrom(c => c.AmountTwo))
             .ForMember(model => model.AmountThree, op => op.MapFrom(c => c.AmountThree))
+            .ForMember(model => model.TotalFundingAmount, op => op.MapFrom(c => c.TotalFundingAmount))
+
             .ForMember(model => model.FundingApplicationDetailId, op => op.MapFrom(c => c.FundingApplicationDetailId));
 
             CreateMap<FinancialMatters, FinancialMattersViewModel>()
@@ -250,6 +252,7 @@ namespace NPOMS.Services.Mappings
             .ForMember(model => model.AmountOne, op => op.MapFrom(c => c.AmountOne))
             .ForMember(model => model.AmountTwo, op => op.MapFrom(c => c.AmountTwo))
             .ForMember(model => model.AmountThree, op => op.MapFrom(c => c.AmountThree))
+            .ForMember(model => model.TotalFundingAmount, op => op.MapFrom(c => c.TotalFundingAmount))
             .ForMember(model => model.FundingApplicationDetailId, op => op.MapFrom(c => c.FundingApplicationDetailId));
 
             CreateMap<PropertySubType, PropertySubTypeViewModel>()

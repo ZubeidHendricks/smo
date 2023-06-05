@@ -1,17 +1,14 @@
-<p-panel [style]="{'font-size':'12px'}" header="Monitoring">
-
+<p-panel [style]="{'font-size':'12px'}" header="Monitoring and Evaluation">
+  <div style="height: 10px;"></div>
   <div class="p-fluid">
     <div class="p-field">
-      <label for="monEvalDescription" style="font-weight:bold">Please describe how you will know your service/ project
-        is achieving its goals/ outcomes and impact (i.e. how will you know that your service /project made a difference
-        to the beneficiaries of the project and the community they are in?) <span class="bid-required">*</span></label>
-
+      <label for="monEvalDescription" style="font-weight:bold">Please describe how you will know your service/ project is achieving its goals/ outcomes and impact (i.e. how will you know that your service /project made a difference to the beneficiaries of the project and the community they are in?) 
+        <span class="bid-required">*</span></label>
+        <div style="height: 15px;"></div>
       <p-editor [(ngModel)]="monEvalDescription" [ngModelOptions]="{standalone: true}"
         (ngModelChange)="onMonEvalDescription($event)"></p-editor>
     </div>
   </div>
-  <br />
-
 </p-panel>
 
 <div style="height: 10px;"></div>

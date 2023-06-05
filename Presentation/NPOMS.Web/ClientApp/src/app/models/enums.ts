@@ -347,3 +347,15 @@ export enum DocumentUploadLocationsEnum {
     WorkplanActuals = 'WorkplanActuals',
     FundApp ="FundApp"
 }
+
+//export enum FundingTemplateTypeEnum {
+//    BoosterFundTemplate = 1,
+//    EnergyFundTemplate = 2
+//}
+
+//export enum FoundationalEnergyStudiesEnum {
+//    UpdatingOfElectricity = 1,
+//    DevelopmentForNERSAApproval = 2,
+//    MiniIRPsForMunicipality = 3,
+//    OtherRenewableEnergy = 4
+//}
