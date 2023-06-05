@@ -11,5 +11,7 @@ export class FinancialMatters {
     public amountOne: number,
     public amountTwo: number,
     public amountThree: number,
+    public totalFundingAmount: number,
+    public createdDateTime: Date,
     public type: string) { }
 }

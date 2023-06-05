@@ -133,7 +133,7 @@ export class NavigationComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.ViewApplicationPeriodMenu)) {
         this.mainMenu.push({
-          label: 'Workplan',
+          label: 'Applications',
           icon: 'fa fa-briefcase wcg-icon',
           command: () => {
             this._router.navigateByUrl('application-periods');
@@ -143,7 +143,7 @@ export class NavigationComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.ViewApplicationMenu)) {
         this.mainMenu.push({
-          label: 'Applications',
+          label: 'Submissions',
           icon: 'fa fa-file-text wcg-icon',
           command: () => {
             this._router.navigateByUrl('applications');

@@ -15,6 +15,7 @@ namespace NPOMS.Services.Models
         public string AmountOne { get; set; }
         public string AmountTwo { get; set; }
         public string AmountThree { get; set; }
+        public string TotalFundingAmount { get; set; }
         public int FundingApplicationDetailId { get; set; }
         public string Type { get; set; }
     }

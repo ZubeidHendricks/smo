@@ -1065,3 +1065,29 @@ export interface IProjectImplementation {
 }
 
 
+//export interface IBudget {
+//    id: number;
+//    fundingApplicationId: number;
+//    budgetItem: string;
+//    description: string;
+//    dedatFundingAmount: number;
+//    ownFundingAmount: number;
+//    otherFundingAmount: number;
+//    totalProjectFundingAmount: number;
+//    orderOfPriority: number;
+//    requirementDescription: string;
+//    projectBackground: string;
+//    motivationForDEDATSupport: string;
+//    createdDateTime: Date;
+//    internalExternalFundingUtilised: string;
+//}
+
+//export interface IFoundationalEnergyStudy {
+//    id: number;
+//    name: string;
+//    description: string;
+//    isActive: boolean;
+
+//    optionDisabled: boolean;
+//}
+
