@@ -119,7 +119,7 @@ export class DocumentUploadComponent implements OnInit {
     if (event.files[0]) {
       this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments, 
         Number(this.fundingApplicationDetails.id), EntityEnum.FundingApplicationDetails, 
-        this.application.refNo, null).subscribe(
+        this.application.refNo, event.files[0].documentType.id).subscribe(
         event => {
           if (event.type === HttpEventType.UploadProgress)
             this._spinner.show();
