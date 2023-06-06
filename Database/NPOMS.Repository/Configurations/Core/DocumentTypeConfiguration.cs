@@ -34,6 +34,79 @@ namespace NPOMS.Repository.Configurations.Core
 					IsActive = true,
 					IsCompulsory = false,
                     Location = "FundApp"
+                },
+                new DocumentType
+                {
+                    Id = 8,
+                    Name = "NPO Reg Cert",
+                    Description = "NPO Registration Certificate (copy)",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+
+                new DocumentType
+                {
+                    Id = 9,
+                    Name = "Org Registration Certificate",
+                    Description = "NPC/ Trust / PBO Registration Certificate (copies of all applicable)",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 10,
+                    Name = "Constitution",
+                    Description = "Organisation Constitution (most recent copy)",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 11,
+                    Name = "Supporting",
+                    Description = "Statutory Registration Certificates (copies of all applicable)",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 12,
+                    Name = "Bank Letter",
+                    Description = "Bank details confirmation letter (New applicants only)",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 13,
+                    Name = "Audited Annual Financial",
+                    Description = "A copy of the Organisations’ most recent",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 14,
+                    Name = "Certified Financial Statement",
+                    Description = "A copy of the Organisations’ most recent Certified Financial Statements by a registered accountant, if income is less than R600 000.00 per annum",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 15,
+                    Name = "PFMA",
+                    Description = "Written assurance in terms of Section 38 of the PFMA",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
                 }
             );
 		}
