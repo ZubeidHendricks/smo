@@ -39,9 +39,17 @@ namespace NPOMS.Domain.Entities
 		[Column(TypeName = "nvarchar(1000)")]
 		public string Comments { get; set; }
 
-		public bool IsPrimaryContact { get; set; }
+		public bool? IsPrimaryContact { get; set; }
+        public bool? IsDisabled { get; set; }
+        public bool? IsBoardMember { get; set; }
+		public bool? IsSignatory { get; set; }
+        public int? RaceId { get; set; }
+        public int? GenderId { get; set; }
+        public DateTime? DateOfEmployment { get; set; }
+        public string Qualifications { get; set; }
+        public string AddressInformation { get; set; }
 
-		public bool IsActive { get; set; }
+        public bool IsActive { get; set; }
 
 		public int CreatedUserId { get; set; }
 
@@ -54,5 +62,9 @@ namespace NPOMS.Domain.Entities
 		public Title Title { get; set; }
 
 		public Position Position { get; set; }
-	}
+
+        public Race? Race { get; set; }
+
+        public Gender? Gender { get; set; }
+    }
 }

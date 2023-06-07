@@ -159,6 +159,19 @@ export interface IPosition {
     isActive: boolean;
 }
 
+export interface IRace {
+    id: number;
+    name: string;
+    isActive: boolean;
+}
+
+export interface IGender {
+    id: number;
+    name: string;
+    isActive: boolean;
+}
+
+
 export interface IProgramme {
     id: number;
     name: string;
@@ -430,6 +443,8 @@ export interface IContactInformation {
     id: number;
     npoId: number;
     titleId: number;
+    raceId:number;
+    genderId:number;
     firstName: string;
     lastName: string;
     rsaIdNumber: boolean;
@@ -440,7 +455,13 @@ export interface IContactInformation {
     cellphone: string;
     positionId: number;
     comments: string;
+    qualifications:string;
+    addressInformation:string;
     isPrimaryContact: boolean;
+    isDisabled:boolean;
+    isSignatory:boolean;
+    isBoardMember:boolean;
+    yearsOfExperience:number;
     isActive: boolean;
     createdUserId: number;
     createdDateTime: Date;
@@ -449,6 +470,9 @@ export interface IContactInformation {
 
     title: ITitle;
     position: IPosition;
+    gender: IGender;
+    race:IRace;
+
 }
 
 export interface INpo {

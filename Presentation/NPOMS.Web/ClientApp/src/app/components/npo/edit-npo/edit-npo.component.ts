@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IContactInformation, INpo, IOrganisationType, IPosition, ITitle, IUser } from 'src/app/models/interfaces';
+import { IContactInformation, IGender, INpo, IOrganisationType, IPosition, IRace, ITitle, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -45,6 +45,13 @@ export class EditNpoComponent implements OnInit {
   positions: IPosition[];
   selectedPosition: IPosition;
 
+  races: IRace[];
+  selectedRace: IRace;
+
+  gender :IGender[]
+  selectedGender:IGender;
+
+
   contactCols: any[];
   isContactInformationEdit: boolean;
   newContactInformation: boolean;
@@ -62,6 +69,14 @@ export class EditNpoComponent implements OnInit {
 
   // Highlight required fields on validate click
   validated: boolean = false;
+  minDate: Date;
+  maxDate: Date;
+  disableDate: boolean = true;
+
+  isPrimaryContact: boolean;  
+  isBoardMember: boolean;    
+  isSignatory: boolean;
+  isDisabled:boolean;
 
   constructor(
     private _router: Router,
@@ -92,6 +107,8 @@ export class EditNpoComponent implements OnInit {
         this.loadPositions();
         this.loadNpo();
         this.buildMenu();
+        this.loadRaces();
+        this.loadGender();
       }
     });
 
@@ -137,6 +154,7 @@ export class EditNpoComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
+            debugger;
             this.saveItems();
           }
         },
@@ -186,6 +204,31 @@ export class EditNpoComponent implements OnInit {
       }
     );
   }
+
+  
+  private loadRaces() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Race, false).subscribe(
+      (results) => {
+        this.races = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadGender() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Gender, false).subscribe(
+      (results) => {
+        this.gender = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }  
 
   private loadNpo() {
     if (this.npoId != null) {
@@ -241,6 +284,8 @@ export class EditNpoComponent implements OnInit {
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
         item.positionId = item.position.id;
+        //item.genderId =item.gender.id;
+        //item.raceId=item.race.id;
       });
 
       this._npoRepo.updateNpo(data).subscribe(
@@ -287,12 +332,16 @@ export class EditNpoComponent implements OnInit {
 
     this.selectedTitle = null;
     this.selectedPosition = null;
+    this.selectedGender= null;
+    this.selectedRace = null;
     this.displayContactDialog = true;
   }
 
   saveContactInformation() {
     this.contactInformation.title = this.selectedTitle;
     this.contactInformation.position = this.selectedPosition;
+    this.contactInformation.race= this.selectedRace;
+    this.contactInformation.gender= this.selectedGender;
 
     if (this.newContactInformation)
       this.npo.contactInformation.push(this.contactInformation);
@@ -330,6 +379,8 @@ export class EditNpoComponent implements OnInit {
 
     this.selectedTitle = data.title;
     this.selectedPosition = data.position;
+    this.selectedRace = data.race;
+    this.selectedGender = data.gender;
 
     return contactInfo;
   }
