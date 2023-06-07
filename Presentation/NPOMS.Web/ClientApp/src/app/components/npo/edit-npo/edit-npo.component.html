@@ -32,7 +32,7 @@
         </div>
     </p-panel>
     <div style="height: 10px;"></div>
-    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Contact Information">            
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Contact / Stakeholder Information">            
         <div class="heading">Organisation Contact List</div>
         <p-table [columns]="contactCols" [value]="npo.contactInformation" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
@@ -62,14 +62,14 @@
             </ng-template>
             <ng-template pTemplate="summary" let-rowData>
                 <div style="text-align:left">
-                    <button pButton pRipple type="button" label="Add Contact Information" class="p-button-text" icon="fa fa-plus" (click)="addContactInformation()"></button>
+                    <button pButton pRipple type="button" label="Add Contact / Stakeholder Information" class="p-button-text" icon="fa fa-plus" (click)="addContactInformation()"></button>
                 </div>
             </ng-template>
         </p-table>
     </p-panel>
 </p-panel>
 
-<p-dialog header="Contact Information" 
+<p-dialog header="Stakeholder Information" 
           [(visible)]="displayContactDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
@@ -182,6 +182,66 @@
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
+                <span class="non-mandatory-content">Races</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="races" placeholder="Select a Race" optionLabel="name" [(ngModel)]="selectedRace" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body"></p-dropdown>
+        </div>
+    </div> 
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Gender</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="gender" placeholder="Select a Gender" optionLabel="name" [(ngModel)]="selectedGender" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body"></p-dropdown>
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Qualifications</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.qualifications" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Physical Address</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.addressInformation" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>    
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Years of Experience</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.yearsOfExperience" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Date of Employment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-calendar [minDate]="minDate" [maxDate]="maxDate" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [style]="{'width': '50%'}" inputId="time" appendTo="body"></p-calendar>
+        </div>
+    </div>                    
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
                 <span class="non-mandatory-content">Comments</span>
             </div>
         </div>
@@ -199,6 +259,43 @@
             <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="contactInformation.isPrimaryContact" [ngModelOptions]="{standalone: true}"></p-selectButton>
         </div>
     </div>
+
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Disabled</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="isDisabled" binary="true" inputId="binary"></p-checkbox>
+        </div>
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Signatory</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="isSignatory" binary="true" inputId="binary"></p-checkbox>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Board Member</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="isBoardMember" binary="true" inputId="binary"></p-checkbox>
+        </div>
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Primary Contact</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="isPrimaryContact" binary="true" inputId="binary"></p-checkbox>
+        </div>
+    </div>         
     <ng-template pTemplate="footer">
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveContactInfo() (click)="saveContactInformation()"></button>
     </ng-template>

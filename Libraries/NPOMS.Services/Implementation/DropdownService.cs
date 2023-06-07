@@ -64,11 +64,14 @@ namespace NPOMS.Services.Implementation
         private IPropertySubTypeRepository _propertySubTypeRepository;
 		private IPlaceRepository _placeRepository;
 		private ISubPlaceRepository _subPlaceRepository;
-		#endregion
+        private IRaceRepository _raceRepository;
+        private IGenderRepository _genderRepository;
 
-		#region Constructors
+        #endregion
 
-		public DropdownService(
+        #region Constructors
+
+        public DropdownService(
 			IMapper mapper,
 			IRoleRepository roleRepository,
 			IDepartmentRepository departmentRepository,
@@ -113,7 +116,9 @@ namespace NPOMS.Services.Implementation
 			IPropertyTypeRepository propertyTypeRepository,
 			IPropertySubTypeRepository propertySubTypeRepository,
 			IPlaceRepository placeRepository,
-			ISubPlaceRepository subPlaceRepository)
+			ISubPlaceRepository subPlaceRepository,
+			IRaceRepository raceRepository,
+			IGenderRepository genderRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -160,6 +165,8 @@ namespace NPOMS.Services.Implementation
 			_propertySubTypeRepository = propertySubTypeRepository;
 			_placeRepository = placeRepository;
 			_subPlaceRepository = subPlaceRepository;
+			_raceRepository= raceRepository;
+			_genderRepository= genderRepository;
 		}
 
 		#endregion
@@ -309,11 +316,70 @@ namespace NPOMS.Services.Implementation
 			await _positionRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
-		#endregion
+        #endregion
 
-		#region Access Status
 
-		public async Task<IEnumerable<AccessStatus>> GetAccessStatuses(bool returnInactive)
+        #region Race
+
+        public async Task<IEnumerable<Race>> GetRaces(bool returnInactive)
+        {
+            return await _raceRepository.GetEntities(returnInactive);
+        }
+
+        public async Task CreateRace(Race model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _raceRepository.CreateAsync(model);
+        }
+
+        public async Task UpdateRace(Race model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _raceRepository.UpdateAsync(null, model, false, loggedInUser.Id);
+        }
+
+        #endregion
+
+        #region Gender
+
+        public async Task<IEnumerable<Gender>> GetGenders(bool returnInactive)
+        {
+            return await _genderRepository.GetEntities(returnInactive);
+        }
+
+        public async Task CreateGender(Gender model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _genderRepository.CreateAsync(model);
+        }
+
+        public async Task UpdateGender(Gender model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _genderRepository.UpdateAsync(null, model, false, loggedInUser.Id);
+        }
+
+        #endregion
+
+        #region Access Status
+
+        public async Task<IEnumerable<AccessStatus>> GetAccessStatuses(bool returnInactive)
 		{
 			return await _accessStatusRepository.GetEntities(returnInactive);
 		}

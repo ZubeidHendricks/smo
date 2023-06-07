@@ -102,6 +102,8 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IPropertySubTypeRepository, PropertySubTypeRepository>();
             services.AddScoped<IPlaceRepository, PlaceRepository>();
             services.AddScoped<ISubPlaceRepository, SubPlaceRepositoy>();
+            services.AddScoped<IRaceRepository, RaceRepository>();
+            services.AddScoped<IGenderRepository, GenderRepository>();
 
             /* Entities */
             services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();

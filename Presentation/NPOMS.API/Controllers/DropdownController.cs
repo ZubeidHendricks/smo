@@ -174,6 +174,12 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.SubPlace:
                         var subPlace = await _dropdownService.GetSubPlaces(returnInactive);
                         return Ok(subPlace);
+                    case DropdownTypeEnum.Race:
+                        var races = await _dropdownService.GetRaces(returnInactive);
+                        return Ok(races);
+                    case DropdownTypeEnum.Gender:
+                        var gender = await _dropdownService.GetGenders(returnInactive);
+                        return Ok(gender);
                 }
 
 				return Ok();
@@ -316,7 +322,15 @@ namespace NPOMS.API.Controllers
 						var rule = JsonConvert.DeserializeObject<CompliantCycleRule>(Convert.ToString(entity));
 						await _dropdownService.CreateCompliantCycleRule(rule, base.GetUserIdentifier());
 						break;
-				}
+                    case DropdownTypeEnum.Race:
+                        var race = JsonConvert.DeserializeObject<Race>(Convert.ToString(entity));
+                        await _dropdownService.CreateRace(race, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.Gender:
+                        var gender = JsonConvert.DeserializeObject<Gender>(Convert.ToString(entity));
+                        await _dropdownService.CreateGender(gender, base.GetUserIdentifier());
+                        break;
+                }
 
 				return Ok();
 			}
@@ -458,7 +472,15 @@ namespace NPOMS.API.Controllers
 						var rule = JsonConvert.DeserializeObject<CompliantCycleRule>(Convert.ToString(entity));
 						await _dropdownService.UpdateCompliantCycleRule(rule, base.GetUserIdentifier());
 						break;
-				}
+                    case DropdownTypeEnum.Race:
+                        var race = JsonConvert.DeserializeObject<Race>(Convert.ToString(entity));
+                        await _dropdownService.UpdateRace(race, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.Gender:
+                        var gender = JsonConvert.DeserializeObject<Gender>(Convert.ToString(entity));
+                        await _dropdownService.UpdateGender(gender, base.GetUserIdentifier());
+                        break;
+                }
 
 				return Ok();
 			}

@@ -60,7 +60,9 @@ export enum DropdownTypeEnum {
     PropertyType =40,
     PropertySubType =41,
     Places=42,
-    SubPlaces =43
+    SubPlaces =43,
+    Race =44,
+    Gender =45
 }
 
 export enum EntityTypeEnum {
