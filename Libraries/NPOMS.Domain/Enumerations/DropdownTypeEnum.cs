@@ -44,6 +44,8 @@
         PropertyType =40,
         PropertySubType =41,
 		Place =42,
-		SubPlace =43
+		SubPlace =43,
+		Race=44,
+		Gender =45
     }
 }

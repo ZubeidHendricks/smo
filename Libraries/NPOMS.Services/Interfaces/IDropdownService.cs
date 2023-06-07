@@ -39,7 +39,19 @@ namespace NPOMS.Services.Interfaces
 
 		Task UpdatePosition(Position model, string userIdentifier);
 
-		Task<IEnumerable<AccessStatus>> GetAccessStatuses(bool returnInactive);
+        Task<IEnumerable<Race>> GetRaces(bool returnInactive);
+
+        Task CreateRace(Race model, string userIdentifier);
+
+        Task UpdateRace(Race model, string userIdentifier);
+
+        Task<IEnumerable<Gender>> GetGenders(bool returnInactive);
+
+        Task CreateGender(Gender model, string userIdentifier);
+
+        Task UpdateGender(Gender model, string userIdentifier);
+
+        Task<IEnumerable<AccessStatus>> GetAccessStatuses(bool returnInactive);
 
 		Task CreateAccessStatus(AccessStatus model, string userIdentifier);
 
