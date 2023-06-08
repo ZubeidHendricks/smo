@@ -1,5 +1,5 @@
 <p-toast></p-toast>
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Edit Application" *ngIf="isApplicationAvailable">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Organisation Details" *ngIf="isApplicationAvailable">
     <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
         *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
     <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>

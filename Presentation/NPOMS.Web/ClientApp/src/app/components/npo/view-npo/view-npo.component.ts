@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { IContactInformation, INpo } from 'src/app/models/interfaces';
+import { DropdownTypeEnum } from 'src/app/models/enums';
+import { IContactInformation, IGender, INpo, IRace } from 'src/app/models/interfaces';
+import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
@@ -24,6 +26,12 @@ export class ViewNpoComponent implements OnInit {
 
   selectedTitle: string;
   selectedPosition: string;
+  selectedRace: string;
+  selectedGender: string;
+  selectedLanguage: string;
+
+  minDate: Date;
+  maxDate: Date;
 
   // Highlight required fields on validate click
   validated: boolean = true;
@@ -31,10 +39,12 @@ export class ViewNpoComponent implements OnInit {
   constructor(
     private _npoRepo: NpoService,
     private _spinner: NgxSpinnerService,
+    private _dropdownRepo: DropdownService,
     private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
+    
     this.loadNpo();
 
     this.contactCols = [
@@ -87,6 +97,9 @@ export class ViewNpoComponent implements OnInit {
 
     this.selectedTitle = data.title.name;
     this.selectedPosition = data.position.name;
+    // this.selectedGender = data.gender.name;
+    // this.selectedRace =data.race.name;
+    // this.selectedLanguage = data.language.name;
 
     return contactInfo;
   }

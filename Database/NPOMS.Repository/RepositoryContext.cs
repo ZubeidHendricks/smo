@@ -91,7 +91,8 @@ namespace NPOMS.Repository
 		public DbSet<Position> Positions { get; set; }
 		public DbSet<Gender> Genders { get; set; }
 		public DbSet<Race> Races { get; set; }
-		public DbSet<Programme> Programmes { get; set; }
+        public DbSet<Language> Languages { get; set; }
+        public DbSet<Programme> Programmes { get; set; }
 		public DbSet<ProvisionType> ProvisionTypes { get; set; }
 		public DbSet<RecipientType> RecipientTypes { get; set; }
 		public DbSet<ResourceType> ResourceTypes { get; set; }
@@ -246,6 +247,7 @@ namespace NPOMS.Repository
             modelBuilder.ApplyConfiguration(new SubPlaceConfiguration());
             modelBuilder.ApplyConfiguration(new GenderConfiguration());
             modelBuilder.ApplyConfiguration(new RaceConfiguration());
+			modelBuilder.ApplyConfiguration(new LanguageConfiguration());
 
 
             /* Entities */

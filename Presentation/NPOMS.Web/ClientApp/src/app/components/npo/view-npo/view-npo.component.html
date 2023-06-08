@@ -29,7 +29,7 @@
         </div>
     </p-panel>
     <div style="height: 10px;"></div>
-    <p-panel [style]="{'font-size':'12px'}" header="Contact Information">            
+    <p-panel [style]="{'font-size':'12px'}" header="Contact / Stakeholder Details">            
         <div class="heading">Organisation Contact List</div>
         <p-table [columns]="contactCols" [value]="npo.contactInformation" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
@@ -59,7 +59,7 @@
     </p-panel>
 </div>
 
-<p-dialog header="Contact Information" 
+<p-dialog header="Contact / Stakeholder Details" 
           [(visible)]="displayContactDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
@@ -168,7 +168,78 @@
         <div class="p-col">
             <input type="text" class="form-text" pInputText [(ngModel)]="selectedPosition" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
-    </div>   
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Races</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedRace" [ngModelOptions]="{standalone: true}" [disabled]="true">
+
+        </div>
+    </div> 
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Preferred Languages</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedLanguage" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>      
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Gender</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedGender" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Qualifications</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.qualifications" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Physical Address</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.addressInformation" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>    
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Years of Experience</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.yearsOfExperience" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Date of Employment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-calendar [minDate]="minDate" [maxDate]="maxDate" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [style]="{'width': '50%'}" inputId="time" appendTo="body" [disabled]="true"></p-calendar>
+        </div>
+    </div>        
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -189,4 +260,33 @@
             <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="contactInformation.isPrimaryContact" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-selectButton>
         </div>
     </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Disabled</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isDisabled" binary="true" inputId="binary" [disabled]="true"></p-checkbox>
+        </div>
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Signatory</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isSignatory" binary="true" inputId="binary" [disabled]="true"></p-checkbox>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Board Member</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isBoardMember" binary="true" inputId="binary" [disabled]="true"></p-checkbox>
+        </div>
+    </div>         
+
 </p-dialog>

@@ -62,7 +62,8 @@ export enum DropdownTypeEnum {
     Places=42,
     SubPlaces =43,
     Race =44,
-    Gender =45
+    Gender =45,
+    Languages = 46
 }
 
 export enum EntityTypeEnum {

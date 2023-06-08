@@ -45,6 +45,7 @@ namespace NPOMS.Domain.Entities
 		public bool? IsSignatory { get; set; }
         public int? RaceId { get; set; }
         public int? GenderId { get; set; }
+        public int? LanguageId { get; set; }
         public DateTime? DateOfEmployment { get; set; }
         public string Qualifications { get; set; }
         public string AddressInformation { get; set; }
@@ -66,5 +67,7 @@ namespace NPOMS.Domain.Entities
         public Race? Race { get; set; }
 
         public Gender? Gender { get; set; }
+
+		public Language? Language { get; set; }
     }
 }
