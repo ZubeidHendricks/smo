@@ -267,7 +267,7 @@
             </div>
         </div>
         <div class="p-col">
-            <p-checkbox [(ngModel)]="isDisabled" binary="true" inputId="binary"></p-checkbox>
+            <p-checkbox [(ngModel)]="contactInformation.isDisabled" binary="true" inputId="binary"></p-checkbox>
         </div>
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -275,7 +275,7 @@
             </div>
         </div>
         <div class="p-col">
-            <p-checkbox [(ngModel)]="isSignatory" binary="true" inputId="binary"></p-checkbox>
+            <p-checkbox [(ngModel)]="contactInformation.isSignatory" binary="true" inputId="binary"></p-checkbox>
         </div>
     </div>
     <div class="p-grid">
@@ -285,15 +285,7 @@
             </div>
         </div>
         <div class="p-col">
-            <p-checkbox [(ngModel)]="isBoardMember" binary="true" inputId="binary"></p-checkbox>
-        </div>
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Is Primary Contact</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-checkbox [(ngModel)]="isPrimaryContact" binary="true" inputId="binary"></p-checkbox>
+            <p-checkbox [(ngModel)]="contactInformation.isBoardMember" binary="true" inputId="binary"></p-checkbox>
         </div>
     </div>         
     <ng-template pTemplate="footer">
