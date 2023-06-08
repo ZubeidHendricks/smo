@@ -25,6 +25,8 @@ namespace NPOMS.Repository.Implementation.Entities
 			return await FindByCondition(x => x.NpoId.Equals(NpoId) && x.IsActive)
 							.Include(x => x.Title)
 							.Include(x => x.Position)
+							//.Include(x => x.Gender)
+							//.Include(x => x.Race)
 							.AsNoTracking()
 							.ToListAsync();
 		}

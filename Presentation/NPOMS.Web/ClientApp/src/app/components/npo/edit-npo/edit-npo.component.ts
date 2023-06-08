@@ -48,7 +48,7 @@ export class EditNpoComponent implements OnInit {
   races: IRace[];
   selectedRace: IRace;
 
-  gender :IGender[]
+  gender :IGender[];
   selectedGender:IGender;
 
 
@@ -102,13 +102,15 @@ export class EditNpoComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.EditNpo))
           this._router.navigate(['401']);
 
+        
         this.loadOrganisationTypes();
         this.loadTitles();
         this.loadPositions();
-        this.loadNpo();
-        this.buildMenu();
         this.loadRaces();
         this.loadGender();
+        this.loadNpo();
+        this.buildMenu();
+   
       }
     });
 
@@ -222,6 +224,7 @@ export class EditNpoComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Gender, false).subscribe(
       (results) => {
         this.gender = results;
+        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -231,6 +234,7 @@ export class EditNpoComponent implements OnInit {
   }  
 
   private loadNpo() {
+    debugger;
     if (this.npoId != null) {
       this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
         (results) => {
@@ -275,17 +279,21 @@ export class EditNpoComponent implements OnInit {
   }
 
   private saveItems() {
+    debugger;
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npo;
+      console.log('this.npo',this.npo);
+      console.log('data', data);
+
 
       data.organisationTypeId = this.selectedOrganisationType.id;
 
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
         item.positionId = item.position.id;
-        //item.genderId =item.gender.id;
-        //item.raceId=item.race.id;
+        // item.genderId = item.gender.id;
+        // item.raceId = item.race.id;
       });
 
       this._npoRepo.updateNpo(data).subscribe(

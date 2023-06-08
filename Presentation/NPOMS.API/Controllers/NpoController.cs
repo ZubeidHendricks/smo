@@ -150,7 +150,7 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
-				ClearObjects(model);
+				//ClearObjects(model);
 				await _npoService.Update(model, base.GetUserIdentifier());
 				return Ok(model);
 			}
@@ -169,6 +169,8 @@ namespace NPOMS.API.Controllers
 			{
 				item.Title = null;
 				item.Position = null;
+				item.Race= null;
+				item.Gender = null;
 			}
 		}
 
