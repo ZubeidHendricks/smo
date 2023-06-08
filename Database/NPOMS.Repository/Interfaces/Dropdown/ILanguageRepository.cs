@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Interfaces.Dropdown
 {
-	public interface ILanguageRepository : IBaseRepository<Language>
+	public interface IRaceRepository : IBaseRepository<Race>
 	{
-		Task<IEnumerable<Language>> GetEntities(bool returnInactive);
+		Task<IEnumerable<Race>> GetEntities(bool returnInactive);
 	}
 }

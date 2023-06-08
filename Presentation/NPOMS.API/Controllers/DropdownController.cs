@@ -180,6 +180,9 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.Gender:
                         var gender = await _dropdownService.GetGenders(returnInactive);
                         return Ok(gender);
+                    case DropdownTypeEnum.Languages:
+                        var language = await _dropdownService.GetLanguages(returnInactive);
+                        return Ok(language);
                 }
 
 				return Ok();

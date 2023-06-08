@@ -46,6 +46,7 @@
 		Place =42,
 		SubPlace =43,
 		Race=44,
-		Gender =45
+		Gender =45,
+		Languages =46
     }
 }

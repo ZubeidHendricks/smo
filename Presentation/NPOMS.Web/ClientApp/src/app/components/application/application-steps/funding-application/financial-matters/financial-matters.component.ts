@@ -68,14 +68,12 @@ export class FinancialMattersComponent implements OnInit {
   ngOnInit(): void {
     this.menuItem = [
       {
-        label: 'Financial Matters Details for Funding Application',        
+        label: 'Financial Matter Details for Funding Application',        
         command: () => {
           this.addBudget();
         }
       }
     ];
-
-    console.log('fundingApplicationDetails', this.fundingApplicationDetails);
 
     if (this.fundingApplicationDetails.financialMatters) {
       this.financialMattersIncome = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "income");

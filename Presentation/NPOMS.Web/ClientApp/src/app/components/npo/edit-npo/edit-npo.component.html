@@ -32,7 +32,7 @@
         </div>
     </p-panel>
     <div style="height: 10px;"></div>
-    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Contact / Stakeholder Information">            
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Contact / Stakeholder Details">            
         <div class="heading">Organisation Contact List</div>
         <p-table [columns]="contactCols" [value]="npo.contactInformation" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
@@ -62,14 +62,14 @@
             </ng-template>
             <ng-template pTemplate="summary" let-rowData>
                 <div style="text-align:left">
-                    <button pButton pRipple type="button" label="Add Contact / Stakeholder Information" class="p-button-text" icon="fa fa-plus" (click)="addContactInformation()"></button>
+                    <button pButton pRipple type="button" label="Add Contact / Stakeholder Details" class="p-button-text" icon="fa fa-plus" (click)="addContactInformation()"></button>
                 </div>
             </ng-template>
         </p-table>
     </p-panel>
 </p-panel>
 
-<p-dialog header="Stakeholder Information" 
+<p-dialog header="Contact / Stakeholder Deatils" 
           [(visible)]="displayContactDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
@@ -188,7 +188,17 @@
         <div class="p-col">
             <p-dropdown [options]="races" placeholder="Select a Race" optionLabel="name" [(ngModel)]="selectedRace" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body"></p-dropdown>
         </div>
-    </div> 
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Preferred Languages</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="languages" placeholder="Select a Preferred Language" optionLabel="name" [(ngModel)]="selectedLanguage" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body"></p-dropdown>
+        </div>
+    </div>      
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">

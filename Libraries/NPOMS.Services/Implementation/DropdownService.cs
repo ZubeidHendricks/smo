@@ -66,6 +66,8 @@ namespace NPOMS.Services.Implementation
 		private ISubPlaceRepository _subPlaceRepository;
         private IRaceRepository _raceRepository;
         private IGenderRepository _genderRepository;
+        private ILanguageRepository _languageRepository;
+
 
         #endregion
 
@@ -118,7 +120,8 @@ namespace NPOMS.Services.Implementation
 			IPlaceRepository placeRepository,
 			ISubPlaceRepository subPlaceRepository,
 			IRaceRepository raceRepository,
-			IGenderRepository genderRepository)
+			IGenderRepository genderRepository,
+			ILanguageRepository languageRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -167,6 +170,7 @@ namespace NPOMS.Services.Implementation
 			_subPlaceRepository = subPlaceRepository;
 			_raceRepository= raceRepository;
 			_genderRepository= genderRepository;
+			_languageRepository= languageRepository;
 		}
 
 		#endregion
@@ -353,6 +357,11 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<Gender>> GetGenders(bool returnInactive)
         {
             return await _genderRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<Language>> GetLanguages(bool returnInactive)
+        {
+            return await _languageRepository.GetEntities(returnInactive);
         }
 
         public async Task CreateGender(Gender model, string userIdentifier)

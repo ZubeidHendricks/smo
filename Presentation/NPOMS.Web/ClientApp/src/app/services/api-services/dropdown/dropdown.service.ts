@@ -1,3 +1,4 @@
+import { ILanguage } from './../../../models/interfaces';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -158,7 +159,10 @@ export class DropdownService {
             break;
           case DropdownTypeEnum.Gender:
             data = this._http.get<IGender[]>(url, httpOptions);
-            break;                 
+            break;   
+            case DropdownTypeEnum.Languages:
+              data = this._http.get<ILanguage[]>(url, httpOptions);
+              break;                            
     }
 
     return data;

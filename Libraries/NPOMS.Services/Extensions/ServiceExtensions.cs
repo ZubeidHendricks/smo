@@ -104,6 +104,8 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<ISubPlaceRepository, SubPlaceRepositoy>();
             services.AddScoped<IRaceRepository, RaceRepository>();
             services.AddScoped<IGenderRepository, GenderRepository>();
+            services.AddScoped<ILanguageRepository, LanguageRepository>();
+
 
             /* Entities */
             services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
