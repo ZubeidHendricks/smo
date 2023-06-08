@@ -334,34 +334,34 @@ export interface IApplication {
     status: IStatus;
 }
 
-  export interface FinYear {
+export interface FinYear {
     id: number;
     name: string;
     next: number;
-  }
-  export interface FinYearBudget {
+}
+export interface FinYearBudget {
     id: number;
     finYear: FinYear;
     budget: number;
-  }
+}
 
-  export interface Budget {
+export interface Budget {
     id: number;
     description: string;
     finYear1: FinYearBudget;
     finYear2: FinYearBudget;
     finYear3: FinYearBudget;
     category: string;
-  }
-  
+}
 
-  export interface FinYear {
+
+export interface FinYear {
     id: number;
     name: string;
     next: number;
-  }  
+}
 
-  export interface IFinancialYear {
+export interface IFinancialYear {
     id: number;
     name: string;
     year: number;
@@ -443,8 +443,8 @@ export interface IContactInformation {
     id: number;
     npoId: number;
     titleId: number;
-    raceId:number;
-    genderId:number;
+    raceId: number;
+    genderId: number;
     firstName: string;
     lastName: string;
     rsaIdNumber: boolean;
@@ -455,13 +455,13 @@ export interface IContactInformation {
     cellphone: string;
     positionId: number;
     comments: string;
-    qualifications:string;
-    addressInformation:string;
+    qualifications: string;
+    addressInformation: string;
     isPrimaryContact: boolean;
-    isDisabled:boolean;
-    isSignatory:boolean;
-    isBoardMember:boolean;
-    yearsOfExperience:number;
+    isDisabled: boolean;
+    isSignatory: boolean;
+    isBoardMember: boolean;
+    yearsOfExperience: number;
     isActive: boolean;
     createdUserId: number;
     createdDateTime: Date;
@@ -471,7 +471,7 @@ export interface IContactInformation {
     title: ITitle;
     position: IPosition;
     gender: IGender;
-    race:IRace;
+    race: IRace;
 
 }
 
@@ -529,15 +529,15 @@ export interface IObjective {
 
 export interface IFundingApplicationDetails {
     id: number;
-    applicationId: number; 
+    applicationId: number;
     applicationPeriodId: number;
-    projectInformation:IProjectInformation;
-    monitoringEvaluation:IMonitoringAndEvaluation;
+    projectInformation: IProjectInformation;
+    monitoringEvaluation: IMonitoringAndEvaluation;
     implementations: IProjectImplementation[];
     applicationPeriod: IApplicationPeriod;
     incomes: Budget[],
-    expenses: Budget[],    
-    financialMatters: FinancialMatters[];  
+    expenses: Budget[],
+    financialMatters: FinancialMatters[];
     applicationDetails: IApplicationDetails;
     //fundAppDeclaration :IFundAppDeclaration;     
 }
@@ -556,10 +556,9 @@ export interface IFundingApplicationDetails {
 // }
 
 
-export interface IProjectInformation
-{
-    id : number;
-    applicationId : number;
+export interface IProjectInformation {
+    id: number;
+    applicationId: number;
     isActive: boolean;
     changeRequired: boolean;
     isNew: boolean;
@@ -568,11 +567,11 @@ export interface IProjectInformation
     purposeQuestion: string;
 }
 export interface IMonitoringAndEvaluation {
-    id : number;
-    applicationId : number;
+    id: number;
+    applicationId: number;
     isActive: boolean;
     changeRequired: boolean;
-    isNew: boolean;    
+    isNew: boolean;
     monEvalDescription: string;
 }
 export interface IResource {
@@ -994,18 +993,18 @@ export interface ILocalMunicipality {
 }
 
 export interface IRegion {
-  id: number;
-  isActive: boolean;
-  localMunicipalityId: number;
-  name: string;
+    id: number;
+    isActive: boolean;
+    localMunicipalityId: number;
+    name: string;
 }
 
- export interface IApplicationDetails {
+export interface IApplicationDetails {
     id: number;
     amountApplyingFor: number;
     fundAppSDADetailId: number;
-    fundAppSDADetail:  IFundAppSDADetail;
-  }
+    fundAppSDADetail: IFundAppSDADetail;
+}
 
 export interface IFundAppSDADetail {
     id: number;
@@ -1015,35 +1014,35 @@ export interface IFundAppSDADetail {
     serviceDeliveryAreas: ISDA[];
 }
 
-  export interface ISubPlace {
+export interface ISubPlace {
     placeId: number;
     id: number;
     name: string;
-  }
-      
-  export interface IPlace {
+}
+
+export interface IPlace {
     id: number;
     name: string;
     serviceDeliveryAreaId: number;
-  }
-  export interface ISDA {
+}
+export interface ISDA {
     id: number;
     name: string;
     isActive: boolean;
     regionId: number;
-  }
-  export interface ILocalMunicipality {
+}
+export interface ILocalMunicipality {
     id: number;
     name: string;
     districtCouncilId: number;
-  }  
+}
 
-  export interface IDistrictCouncil {
+export interface IDistrictCouncil {
     id: number;
     name: string;
-  }
+}
 
-  export interface IProjectInformation {
+export interface IProjectInformation {
     initiatedQuestion: string;
     considerQuestion: string;
     purposeQuestion: string;
@@ -1056,8 +1055,8 @@ export interface Budget {
     finYear2: FinYearBudget;
     finYear3: FinYearBudget;
     category: string;
-  }
-  
+}
+
 export interface IProjectImplementation {
     id: number;
     description: string;
@@ -1071,9 +1070,9 @@ export interface IProjectImplementation {
     results: string;
     resources: string;
     budget: number;
-  }
+}
 
-  export interface IFundAppDeclaration {
+export interface IFundAppDeclaration {
     id: number;
     applicationId: number;
     comments: string;
@@ -1085,7 +1084,7 @@ export interface IProjectImplementation {
     acceptDeclaration: boolean;
     createdUser: IUser;
     status: IStatus;
-    createdUserId :number;
+    createdUserId: number;
 }
 
 
