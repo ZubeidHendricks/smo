@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IContactInformation, IGender, INpo, IOrganisationType, IPosition, IRace, ITitle, IUser } from 'src/app/models/interfaces';
+import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, ITitle, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -51,6 +51,8 @@ export class EditNpoComponent implements OnInit {
   gender :IGender[];
   selectedGender:IGender;
 
+  languages: ILanguage[];
+  selectedLanguage: ILanguage;
 
   contactCols: any[];
   isContactInformationEdit: boolean;
@@ -108,6 +110,7 @@ export class EditNpoComponent implements OnInit {
         this.loadPositions();
         this.loadRaces();
         this.loadGender();
+        this.loadLanguages();
         this.loadNpo();
         this.buildMenu();
    
@@ -219,6 +222,20 @@ export class EditNpoComponent implements OnInit {
       }
     );
   }
+
+  private loadLanguages() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Languages, false).subscribe(
+      (results) => {
+        this.languages = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }  
+
 
   private loadGender() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Gender, false).subscribe(

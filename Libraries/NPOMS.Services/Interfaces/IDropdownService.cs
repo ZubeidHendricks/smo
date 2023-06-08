@@ -47,6 +47,8 @@ namespace NPOMS.Services.Interfaces
 
         Task<IEnumerable<Gender>> GetGenders(bool returnInactive);
 
+        Task<IEnumerable<Language>> GetLanguages(bool returnInactive);
+
         Task CreateGender(Gender model, string userIdentifier);
 
         Task UpdateGender(Gender model, string userIdentifier);

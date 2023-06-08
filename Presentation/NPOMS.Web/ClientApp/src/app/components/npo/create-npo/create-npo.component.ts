@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IContactInformation, INpo, IOrganisationType, IPosition, ITitle, IUser } from 'src/app/models/interfaces';
+import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, ITitle, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
@@ -47,6 +47,20 @@ export class CreateNpoComponent implements OnInit {
   positions: IPosition[];
   selectedPosition: IPosition;
 
+  races: IRace[];
+  selectedRace: IRace;
+
+  gender: IGender[];
+  selectedGender: IGender;
+
+  languages: ILanguage[];
+  selectedLanguage: ILanguage;
+
+  isBoardMember: boolean;    
+  isSignatory: boolean;
+  isDisabled:boolean;
+  minDate: Date;
+  maxDate: Date;
   contactCols: any[];
   isContactInformationEdit: boolean;
   newContactInformation: boolean;
@@ -83,6 +97,9 @@ export class CreateNpoComponent implements OnInit {
         this.loadOrganisationTypes();
         this.loadTitles();
         this.loadPositions();
+        this.loadGender();
+        this.loadRaces();
+        this.loadLanguages();
         this.buildMenu();
       }
     });
@@ -185,6 +202,48 @@ export class CreateNpoComponent implements OnInit {
     );
   }
 
+  private loadRaces() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Race, false).subscribe(
+      (results) => {
+        this.races = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadLanguages() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Languages, false).subscribe(
+      (results) => {
+        this.languages = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }  
+
+  private loadGender() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Gender, false).subscribe(
+      (results) => {
+        this.gender = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private formValidate() {
     this.validated = true;
     this.validationErrors = [];
@@ -277,12 +336,18 @@ export class CreateNpoComponent implements OnInit {
 
     this.selectedTitle = null;
     this.selectedPosition = null;
+    this.selectedRace = null;
+    this.selectedGender = null;
+    this.selectedLanguage = null;
     this.displayContactDialog = true;
   }
-
+ 
   saveContactInformation() {
     this.contactInformation.title = this.selectedTitle;
     this.contactInformation.position = this.selectedPosition;
+    this.contactInformation.race =this.selectedRace;
+    this.contactInformation.gender = this.selectedGender;
+    this.contactInformation.language = this.selectedLanguage;
 
     if (this.newContactInformation)
       this.npo.contactInformation.push(this.contactInformation);
@@ -317,6 +382,9 @@ export class CreateNpoComponent implements OnInit {
 
     this.selectedTitle = data.title;
     this.selectedPosition = data.position;
+    this.selectedRace =data.race;
+    this.selectedGender = data.gender;
+    this.selectedLanguage = data.language;
 
     return contactInfo;
   }

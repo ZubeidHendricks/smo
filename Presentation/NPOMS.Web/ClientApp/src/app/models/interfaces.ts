@@ -171,6 +171,11 @@ export interface IGender {
     isActive: boolean;
 }
 
+export interface ILanguage {
+    id: number;
+    name: string;
+    isActive: boolean;
+}
 
 export interface IProgramme {
     id: number;
@@ -444,6 +449,7 @@ export interface IContactInformation {
     npoId: number;
     titleId: number;
     raceId: number;
+    languageId : number;
     genderId: number;
     firstName: string;
     lastName: string;
@@ -472,7 +478,7 @@ export interface IContactInformation {
     position: IPosition;
     gender: IGender;
     race: IRace;
-
+    language : ILanguage;
 }
 
 export interface INpo {
