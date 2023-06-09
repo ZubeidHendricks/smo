@@ -45,7 +45,7 @@ namespace NPOMS.Domain.Entities
 		public bool? IsSignatory { get; set; }
 		public bool? IsWrittenAgreementSignatory { get; set; }
 
-
+		public int? YearsOfExperience { get; set; }
         public int? RaceId { get; set; }
         public int? GenderId { get; set; }
         public int? LanguageId { get; set; }
