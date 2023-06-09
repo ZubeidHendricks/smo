@@ -258,6 +258,7 @@ export class EditNpoComponent implements OnInit {
         (results) => {
           this.selectedOrganisationType = results.organisationType;
           this.npo = results;
+          console.log('results',results);
           this.isDataAvailable = true;
           this._spinner.hide();
         },
@@ -272,8 +273,10 @@ export class EditNpoComponent implements OnInit {
   private formValidate() {
     this.validated = true;
     this.validationErrors = [];
-
+console.log('NPO-contact',this.npo);
+    
     let data = this.npo;
+
 
     if (!data.name || !this.selectedOrganisationType)
       this.validationErrors.push({ severity: 'error', summary: "General Information:", detail: "Missing detail required." });
@@ -360,6 +363,7 @@ export class EditNpoComponent implements OnInit {
     this.selectedPosition = null;
     this.selectedGender= null;
     this.selectedRace = null;
+    this.selectedLanguage = null;
     this.displayContactDialog = true;
   }
 
@@ -368,6 +372,7 @@ export class EditNpoComponent implements OnInit {
     this.contactInformation.position = this.selectedPosition;
     this.contactInformation.race= this.selectedRace;
     this.contactInformation.gender= this.selectedGender;
+    this.contactInformation.language = this.selectedLanguage;
 
     if (this.newContactInformation)
       this.npo.contactInformation.push(this.contactInformation);
@@ -407,6 +412,7 @@ export class EditNpoComponent implements OnInit {
     this.selectedPosition = data.position;
     this.selectedRace = data.race;
     this.selectedGender = data.gender;
+    this.selectedLanguage = data.language;
 
     return contactInfo;
   }

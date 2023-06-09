@@ -22,11 +22,12 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task<IEnumerable<ContactInformation>> GetByNpoId(int NpoId)
 		{
-			return await FindByCondition(x => x.NpoId.Equals(NpoId) && x.IsActive)
+			return await FindByCondition(x => x.NpoId.Equals(NpoId))
 							.Include(x => x.Title)
 							.Include(x => x.Position)
-							//.Include(x => x.Gender)
-							//.Include(x => x.Race)
+							.Include(x => x.Gender)
+							.Include(x => x.Race)
+							.Include(x => x.Language)
 							.AsNoTracking()
 							.ToListAsync();
 		}

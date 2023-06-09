@@ -44,6 +44,7 @@ export class FinancialMattersComponent implements OnInit {
   financialmatter: FinancialMatters = {} as FinancialMatters;
   selectedFinancialMatter: FinancialMatters;
   cols: any[];
+  colsOther: any[];
   displayDialogAddFin: boolean = false;
   propertyTypes: PropertyType[] = [];
   propertySubtypes: PropertySubType[] = [];
@@ -99,6 +100,16 @@ export class FinancialMattersComponent implements OnInit {
 
       this.cols = [
         { field: 'property', header: 'Item Description', width: '40%' },
+        // { field: 'subproperty', header: 'Sub Property' },
+        { field: 'year1', header:  this.finYears[2].name, width: '15%' },
+        { field: 'year2', header:  this.finYears[3].name +'[estimated]', width: '15%' },
+        { field: 'year3', header: this.finYears[4].name +'[estimated]', width: '15%' },
+        { field: 'total', header: 'Total Funding ', width: '10%'},
+        { field: 'action', header: 'Action ', width: '5%'}
+
+      ];
+      this.colsOther = [
+        { field: 'property', header: 'Name of Organisation', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
         { field: 'year1', header:  this.finYears[2].name, width: '15%' },
         { field: 'year2', header:  this.finYears[3].name +'[estimated]', width: '15%' },
