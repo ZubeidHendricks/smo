@@ -192,7 +192,7 @@
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
-                <span class="non-mandatory-content">Preferred Languages</span>
+                <span class="non-mandatory-content">Preferred Language</span>
             </div>
         </div>
         <div class="p-col">
@@ -281,11 +281,19 @@
         </div>
         <div class="p-col-fixed form-label">
             <div class="box">
-                <span class="non-mandatory-content">Is Signatory</span>
+                <span class="non-mandatory-content">Is  Bank Signatory</span>
             </div>
         </div>
         <div class="p-col">
             <p-checkbox [(ngModel)]="contactInformation.isSignatory" binary="true" inputId="binary"></p-checkbox>
+        </div>
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Written AgreementSignatory</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="isWrittenAgreementSignatory" binary="true" inputId="binary"></p-checkbox>
         </div>
     </div>
     <div class="p-grid">

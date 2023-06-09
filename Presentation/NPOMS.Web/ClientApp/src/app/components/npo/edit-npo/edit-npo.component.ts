@@ -78,6 +78,7 @@ export class EditNpoComponent implements OnInit {
   isPrimaryContact: boolean;  
   isBoardMember: boolean;    
   isSignatory: boolean;
+  isWrittenAgreementSignatory: boolean;
   isDisabled:boolean;
 
   constructor(
