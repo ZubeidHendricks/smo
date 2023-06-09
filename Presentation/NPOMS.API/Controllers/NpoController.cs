@@ -171,6 +171,7 @@ namespace NPOMS.API.Controllers
 				item.Position = null;
 				item.Race= null;
 				item.Gender = null;
+				item.Language= null;
 			}
 		}
 

@@ -466,6 +466,7 @@ export interface IContactInformation {
     isPrimaryContact: boolean;
     isDisabled: boolean;
     isSignatory: boolean;
+    isWrittenAgreementSignatory: boolean;    
     isBoardMember: boolean;
     yearsOfExperience: number;
     isActive: boolean;
