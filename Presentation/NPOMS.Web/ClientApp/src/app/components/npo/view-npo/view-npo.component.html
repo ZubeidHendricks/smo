@@ -172,7 +172,7 @@
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
-                <span class="non-mandatory-content">Races</span>
+                <span class="non-mandatory-content">Race</span>
             </div>
         </div>
         <div class="p-col">
@@ -237,7 +237,7 @@
             </div>
         </div>
         <div class="p-col">
-            <p-calendar [minDate]="minDate" [maxDate]="maxDate" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [style]="{'width': '50%'}" inputId="time" appendTo="body" [disabled]="true"></p-calendar>
+            <p-calendar [minDate]="minDate" [maxDate]="maxDate" [(ngModel)]="contactInformation.dateOfEmployment" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [style]="{'width': '50%'}" inputId="time" appendTo="body" [disabled]="true"></p-calendar>
         </div>
     </div>        
     <div class="p-grid">
