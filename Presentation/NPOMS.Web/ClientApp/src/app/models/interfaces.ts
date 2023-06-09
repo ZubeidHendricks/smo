@@ -474,7 +474,7 @@ export interface IContactInformation {
     createdDateTime: Date;
     updatedUserId: number;
     updatedDateTime: Date;
-
+    dateOfEmployment: Date;
     title: ITitle;
     position: IPosition;
     gender: IGender;

@@ -68,6 +68,7 @@ export class ViewNpoComponent implements OnInit {
   }
 
   private loadNpo() {
+    debugger;
     if (this.npoId != null) {
       this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
         (results) => {
@@ -97,9 +98,13 @@ export class ViewNpoComponent implements OnInit {
 
     this.selectedTitle = data.title.name;
     this.selectedPosition = data.position.name;
-    // this.selectedGender = data.gender.name;
-    // this.selectedRace =data.race.name;
-    // this.selectedLanguage = data.language.name;
+    console.log('data',data);
+    console.log('data',data.gender.name);
+    console.log('data',data.race.name);
+    console.log('data',data.language.name);
+    this.selectedGender = data.gender.name;
+    this.selectedRace = data.race.name;
+    this.selectedLanguage = data.language.name;
 
     return contactInfo;
   }
