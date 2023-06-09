@@ -254,7 +254,7 @@
       <td pEditableColumn>
         <p-cellEditor>
           <ng-template pTemplate="input">
-            <textarea [rows]="1" [colsOther]="90" pInputTextarea class="form-text" [(ngModel)]="financicalMattersOthrSourceFunding.property"
+            <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financicalMattersOthrSourceFunding.property"
               [ngModelOptions]="{standalone: true}" [required]="true" autoResize="autoResize">
             </textarea>
           </ng-template>
@@ -267,7 +267,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersExpenditure.amountOne"
+              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financicalMattersOthrSourceFunding.amountOne"
               [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -335,8 +335,8 @@
   </ng-template>
   <!-- <ng-template pTemplate="footer">
     <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" (click)="save()"></button>
-  </ng-template>
-</p-table> -->
+  </ng-template>-->
+</p-table>
 
 <div class="content-section implementation">
   <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
