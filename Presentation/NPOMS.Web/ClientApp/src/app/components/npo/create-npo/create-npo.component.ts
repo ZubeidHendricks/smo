@@ -58,6 +58,7 @@ export class CreateNpoComponent implements OnInit {
 
   isBoardMember: boolean;    
   isSignatory: boolean;
+  isWrittenAgreementSignatory: boolean;
   isDisabled:boolean;
   minDate: Date;
   maxDate: Date;
