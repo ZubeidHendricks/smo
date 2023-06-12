@@ -432,6 +432,8 @@ namespace NPOMS.Services.Implementation
                 _mapper.Map(model.MonitoringEvaluation, bid.MonitoringEvaluation);
             }
         }
+
+  
         public async Task<FundAppDetailViewModel> Update(string userIdentifier, int bidId, FundAppDetailViewModel model)
         {
 
@@ -597,7 +599,15 @@ namespace NPOMS.Services.Implementation
             return _mapper.Map<FundAppDetailViewModel>(bid);
         }
 
-       
+        public void UpdateIncome(FinancialMatters model)
+        {
+            //var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            //model.SignOffUserId = loggedInUser.Id;
+            //model.SignOffDateTime = DateTime.Now;
+
+             _finalcialMattersRepository.UpdateAsync(model);
+        }
 
 
 

@@ -5,6 +5,7 @@ import { Console } from 'console';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import { FinancialMatters } from 'src/app/models/FinancialMatters';
 import { ApplicationTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
@@ -50,6 +51,7 @@ export class EditApplicationComponent implements OnInit {
   placeAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
   applicationIdOnBid: any;
+  selectedApplicationId:number;
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
@@ -98,7 +100,7 @@ export class EditApplicationComponent implements OnInit {
   }
   ngOnInit(): void {
     debugger;
-
+console.log('fundingApplicationDetails',JSON.stringify(this.fundingApplicationDetails));
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
@@ -109,9 +111,11 @@ export class EditApplicationComponent implements OnInit {
     this.applicationPeriodId = +this.id;
     this.fundingApplicationDetails.applicationPeriodId = +this.id;
 
-    // this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-    //   this.applicationIdOnBid = resp.applicationId;
-    // });    
+    //  this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
+    //   console.log('response',resp)
+    //    this.selectedApplicationId = resp.applicationId;
+    //    console.log('response',this.selectedApplicationId )
+    //  });    
 
 
 
@@ -127,6 +131,10 @@ export class EditApplicationComponent implements OnInit {
     });
     console.log('fundingApplicationDetails after initialization', this.fundingApplicationDetails);
   }
+getfinFund(event: FinancialMatters)
+{
+ console.log('event from Edit', JSON.stringify(event));
+}
 
   private loadApplication() {
     this._spinner.show();

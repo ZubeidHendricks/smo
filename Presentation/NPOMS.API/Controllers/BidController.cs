@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Graph;
+using Newtonsoft.Json;
 using NPOMS.Domain.Dropdown;
+using NPOMS.Domain.Entities;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
+using Place = NPOMS.Domain.Dropdown.Place;
 
 namespace NPOMS.API.Controllers
 {
@@ -84,6 +89,39 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPut("{id}/income")]
+        public void  Put(int id, [FromBody] FinancialMatters value)
+        {
+            try
+            {
+                var userIdentifier = GetUserIdentifier();
+                  _bidService.UpdateIncome( value);
+
+                _logger.LogError($"Edit Application,Id: {id}, User Identifier: {userIdentifier}, Data: {value}");
+
+               // return Ok(bid);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Create Application, data: {value}", ex);
+               //return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        //[HttpPut("{id}", Name = "UpdateIncome")]
+        //public async Task<IActionResult> UpdateFundingApplicationEntity(int id, [FromBody] FinancialMattersViewModel value)
+        //{
+
+
+        //    //List<FinancialMattersViewModel> contactInformation = JsonConvert.DeserializeObject<List<FinancialMattersViewModel>>(Convert.ToString(value.FinancialMatters));
+
+        //    //var bid = await _bidService.Update(id, value);
+
+        //   // _logger.LogError($"Edit Application,Id: {id}, User Identifier: {userIdentifier}, Data: {value}");
+
+        //   // return Ok(bid);
+        //}
 
         // GET: api/Bid/5
         [HttpGet("{id}")]

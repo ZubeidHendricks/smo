@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { FinYear, IFundAppDeclaration, IFundingApplicationDetails, IPlace, ISDA, ISubPlace } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { DeclarationTypeEnum, FundingApplicationStepsEnum } from 'src/app/models/enums';
+import { FinancialMatters } from 'src/app/models/FinancialMatters';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -35,6 +36,11 @@ export class BidService {
   editBid(id: number, bid: IFundingApplicationDetails): Observable<IFundingApplicationDetails> {
     const url = `${this.bidUrl}/${id}`;
     return this.http.put<IFundingApplicationDetails>(url, bid, httpOptions);
+  } 
+
+  editIncome(id: number, financialMatter: FinancialMatters): Observable<FinancialMatters> {
+    const url = `${this.bidUrl}/${id}/income`;
+    return this.http.put<FinancialMatters>(url, financialMatter, httpOptions);
   } 
 
 

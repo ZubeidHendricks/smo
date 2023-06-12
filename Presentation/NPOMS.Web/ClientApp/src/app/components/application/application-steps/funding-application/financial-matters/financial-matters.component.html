@@ -1,7 +1,7 @@
 <div style="height: 10px;"></div>
 <p-menubar [model]="menuItem" [style]="{'font-size':'14px', 'height': '43px', 'font-weight':'bold'}"></p-menubar>
 <div style="height: 10px;"></div>
-<p-table [columns]="cols" [value]="financialMattersIncome">
+<p-table [columns]="cols" [value]="financialMattersIncome"  >
   <ng-template pTemplate="header" let-columns>
     <tr>
       <th style="text-align:center">
@@ -11,8 +11,8 @@
   </ng-template>
 </p-table>
 
-<p-table [columns]="cols" [value]="financialMattersIncome" selectionMode="single" styleClass="p-datatable-sm"
-  [(selection)]="selectedFinancialMatter" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+<p-table [columns]="cols" [value]="financialMattersIncome" selectionMode="single"  styleClass="p-datatable-sm" [(selection)]="selectedFinancialMatter" (onRowSelect)="onRowSelect($event)"
+ [paginator]="true" [rows]="15">
   <ng-template pTemplate="header" let-columns>
     <tr>
       <th style="width: 40%;"></th>
@@ -36,7 +36,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financialMattersIncome.property"
-              [ngModelOptions]="{standalone: true}" [required]="true" autoResize="autoResize">
+              [ngModelOptions]="{standalone: true}" [required]="true" autoResize="autoResize" >
             </textarea>
           </ng-template>
           <ng-template pTemplate="output">
@@ -49,7 +49,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()"
-              [(ngModel)]="financialMattersIncome.amountOne" [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="financialMattersIncome.amountOne" [ngModelOptions]="{standalone: true}" 
               placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -72,8 +72,8 @@
       <td pEditableColumn>
         <p-cellEditor>
           <ng-template pTemplate="input">
-            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()"
-              [(ngModel)]="financialMattersIncome.amountThree" [ngModelOptions]="{standalone: true}"
+            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()" 
+              [(ngModel)]="financialMattersIncome.amountThree" [ngModelOptions]="{standalone: true}"  
               placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -308,36 +308,59 @@
       </td>
     </tr>
   </ng-template>
-  <!-- <ng-template pTemplate="summary">
-      <ng-container *ngIf="displayExpenditureTotal">
-        <div style="margin-left:0">
-        
-        </div>
-      </ng-container>
-      <div style="text-align:right;">
-        <button pButton pRipple type="button" icon="pi pi-plus" label="Add" (click)="showDialogAddFin('expenditure')"
-          [disabled]="readonly()"></button>
-      </div>
-  
-    </ng-template> -->
+
   <ng-template pTemplate="footer">
     <tr>
       <td colspan="1">
         <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus"
           (click)="addBudgetOthrSourceFunding()"></button>
       </td>
-      <td>R{{totalAmountOneE | number: '1.0':'en-US'}}</td>
-      <td>R{{totalAmountTwoE | number: '1.0':'en-US'}}</td>
-      <td>R{{totalAmountThreeE | number: '1.0':'en-US'}}</td>
-      <td>R{{fundingTotalE | number: '1.0':'en-US'}}</td>
+      <td>R{{totalAmountOneO | number: '1.0':'en-US'}}</td>
+      <td>R{{totalAmountTwoO | number: '1.0':'en-US'}}</td>
+      <td>R{{totalAmountThreeO | number: '1.0':'en-US'}}</td>
+      <td>R{{fundingTotalO | number: '1.0':'en-US'}}</td>
       <td></td>
     </tr>
   </ng-template>
-  <!-- <ng-template pTemplate="footer">
-    <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" (click)="save()"></button>
-  </ng-template>-->
 </p-table>
 
+<div style="height: 10px;"></div>
+ <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Bank Details">
+    <p-table [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+                <th style="width: 7%;">Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr class="default-font">
+                <td *ngIf="rowData.bank">{{rowData.bank.name}}</td>
+                <td *ngIf="rowData.branch">{{rowData.branch.name}}</td>
+                <td>{{rowData.branchCode}}</td>
+                <td *ngIf="rowData.accountType">{{rowData.accountType.name}}</td>
+                <td>{{rowData.accountNumber}}</td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editBankDetail(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                    <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteBankDetail(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="6" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData>
+            <div style="text-align:left">
+                <button pButton pRipple type="button" label="Add Bank Detail" class="p-button-text" icon="fa fa-plus" (click)="addBankDetail()"></button>
+            </div>
+        </ng-template>
+    </p-table>
+</p-panel>    
+<div style="height: 10px;"></div>
 <div class="content-section implementation">
   <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
     <p-footer>
@@ -347,6 +370,73 @@
     </p-footer>
   </p-confirmDialog>
 </div>
+
+<p-dialog header="Bank Detail" 
+          [(visible)]="displayBankDetailDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Bank</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="banks" placeholder="Select a Bank" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="bankChange()" [filter]="true" filterBy="name"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Branch</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="branches" placeholder="Select a branch" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="branchChange()" [filter]="true" filterBy="name"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Branch Code</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" name="branchCode" class="form-text" pInputText [(ngModel)]="bankDetail.branchCode" [ngModelOptions]="{standalone: true}" [disabled]="true"> 
+            </div>
+        </div>        
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Account Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="accountTypes" placeholder="Select an Account Type" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+            </div>
+        </div>        
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Account Number</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" name="accountNumber" class="form-text" pInputText [(ngModel)]="bankDetail.accountNumber" [ngModelOptions]="{standalone: true}" (keypress)="numberOnly($event)"> 
+            </div>
+        </div>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveBankDetail() (click)="saveBankDetail()"></button>
+        </ng-template>
+</p-dialog>
+<div style="height: 10px;"></div>
+<!-- <div class="p-grid">
+  <p-button  pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o"
+  (onClick)="saveBudget()"></p-button>
+</div> -->
 
 <div style="height: 10px;"></div>
 <div class="p-grid p-nogutter p-justify-between">
