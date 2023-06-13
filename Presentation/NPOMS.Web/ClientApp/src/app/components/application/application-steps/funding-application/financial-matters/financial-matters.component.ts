@@ -350,7 +350,6 @@ export class FinancialMattersComponent implements OnInit {
   }  
 
   calculateTotals() {
-    alert('Hi');
     var totalAmountOne: number = 0;
     var totalAmountTwo: number = 0;
     var totalAmountThree: number = 0;
