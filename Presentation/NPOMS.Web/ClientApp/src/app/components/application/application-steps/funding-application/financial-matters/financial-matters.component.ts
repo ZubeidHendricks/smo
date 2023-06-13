@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { CalculatedFinMatters } from 'src/app/models/CalculatedFinMatters';
@@ -6,7 +7,8 @@ import { FinancialMatters } from 'src/app/models/FinancialMatters';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { PropertyType } from 'src/app/models/PropertyType';
 import { DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, FinYear, IFundingApplicationDetails } from 'src/app/models/interfaces';
+import { IApplication, FinYear, IFundingApplicationDetails, IBankDetail, IBank, IBranch, IAccountType } from 'src/app/models/interfaces';
+import { BidService } from 'src/app/services/api-services/bid/bid.service';
 
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 
@@ -19,17 +21,17 @@ export class FinancialMattersComponent implements OnInit {
 
   @Input() isReadOnly: boolean;
   @Input() fundingApplicationDetails: IFundingApplicationDetails; @Input() application: IApplication;
-  @Input() financialMatters: FinancialMatters[];
+  @Input() financialMatters: FinancialMatters[] = [];
   @Input() isEdit: boolean;
-  @Output() financialMattersChange = new EventEmitter();
+  @Output() financialMattersChange = new EventEmitter<any>();
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
 
   newFinancialMatter: boolean;
   menuItem: any[];
   propertyObj: PropertyType = {} as PropertyType;
-  financialMattersIncome: FinancialMatters[];
-  financialMattersExpenditure: FinancialMatters[];
+  financialMattersIncome: FinancialMatters[] =[];
+  financialMattersExpenditure: FinancialMatters[] =[];
 
   financicalMattersOthrSourceFunding: FinancialMatters[];
   displayOthrSourceFundingTotal: boolean = false;
@@ -52,6 +54,8 @@ export class FinancialMattersComponent implements OnInit {
 
   private subscriptions: Subscription[] = [];
 
+  paramSubcriptions: Subscription;
+
   totalAmountOne: number;
   totalAmountTwo: number;
   totalAmountThree: number;
@@ -62,15 +66,52 @@ export class FinancialMattersComponent implements OnInit {
   totalAmountThreeE: number;
   fundingTotalE: number;
 
+  totalAmountOneO: number;
+  totalAmountTwoO: number;
+  totalAmountThreeO: number;
+  fundingTotalO: number;  
+
   isBudgetEdit: boolean = false;
   displayDialog: boolean;
+  selectedApplicationId: string;
+  fundAppDetailId: number;
+  id: string;
 
+
+  bankDetailCols: any[];
+  displayBankDetailDialog: boolean;
+  isBankDetailEdit: boolean;
+  newBankDetail: boolean;
+  bankDetail: IBankDetail = {} as IBankDetail;
+  selectedBankDetail: IBankDetail;
+
+  banks: IBank[];
+  selectedBank: IBank;
+  branches: IBranch[];
+  selectedBranch: IBranch;
+  accountTypes: IAccountType[];
+  selectedAccountType: IAccountType;
+  bankDetails: IBankDetail[];
   constructor(private dropDownService: DropdownService,
     private _confirmationService: ConfirmationService,
+    private _bidServie :BidService,
+    private _activeRouter: ActivatedRoute,
+    private _dropdownRepo: DropdownService,
     private messageService: MessageService) { }
 
 
   ngOnInit(): void {
+
+    this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+      this.selectedApplicationId = params.get('id');
+      console.log('id', params.get('id'));  
+
+    });  
+    // this._bidServie.getApplicationBiId(+this.id).subscribe(resp => {
+    //   console.log('response',resp)
+    //    this.fundAppDetailId = resp.id;
+    //    console.log('response',this.selectedApplicationId )
+    //  });  
     this.menuItem = [
       {
         label: 'Financial Matter Details for Funding Application',        
@@ -123,8 +164,59 @@ export class FinancialMattersComponent implements OnInit {
     if (this.isEdit) {
       this.calculateTotals();
     }
+
+    this.loadBanks();
+    this.loadAccountTypes();    
   }
 
+  private loadBanks() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Banks, false).subscribe(
+      (results) => {
+        this.banks = results;
+        this.updateBankDetailObjects();
+      },
+      (err) => {
+        //this._loggerService.logException(err);
+        //this._spinner.hide();
+      }
+    );
+  }
+
+  private loadAccountTypes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.AccountTypes, false).subscribe(
+      (results) => {
+        this.accountTypes = results;
+        this.updateBankDetailObjects();
+      },
+      (err) => {
+        //this._loggerService.logException(err);
+        //this._spinner.hide();
+      }
+    );
+  }
+
+  private updateBankDetailObjects() {
+    if ( this.banks && this.accountTypes && this.bankDetails) {
+      this.bankDetails.forEach(item => {
+        item.bank = this.banks.find(x => x.id === item.bankId);
+        this.loadBranch(item);
+        item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
+      });
+    }
+  }
+
+  private loadBranch(bankDetail: IBankDetail) {
+    this._dropdownRepo.getBranchById(bankDetail.branchId).subscribe(
+      (results) => {
+        bankDetail.branch = results;
+        bankDetail.branchCode = bankDetail.branch.branchCode != null ? bankDetail.branch.branchCode : bankDetail.bank.code;
+      },
+      (err) => {
+        //this._loggerService.logException(err);
+        //this._spinner.hide();
+      }
+    );
+  }
 
   readonly(): boolean {
 
@@ -142,7 +234,123 @@ export class FinancialMattersComponent implements OnInit {
     return true;
   }
 
+  addBankDetail() {
+    this.isBankDetailEdit = false;
+    this.newBankDetail = true;
+    this.bankDetail = {} as IBankDetail;
+    this.selectedBank = null;
+    this.branches = [];
+    this.selectedBranch = null;
+    this.selectedAccountType = null;
+    this.displayBankDetailDialog = true;
+  }
+
+  editBankDetail(data: IBankDetail) {
+    this.selectedBankDetail = data;
+    this.isBankDetailEdit = true;
+    this.newBankDetail = false;
+    this.bankDetail = this.cloneBankDetail(data);
+    this.branchChange();
+    this.displayBankDetailDialog = true;
+  }
+
+  private cloneBankDetail(data: IBankDetail): IBankDetail {
+    let bankDetail = {} as IBankDetail;
+
+    for (let prop in data)
+      bankDetail[prop] = data[prop];
+
+    this.selectedBank = data.bank;
+    this.bankChange();
+    this.selectedBranch = data.branch;
+    this.selectedAccountType = data.accountType;
+
+    return bankDetail;
+  }
+
+  deleteBankDetail(data: IBankDetail) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        data.isActive = false;
+        //this.updateBankDetail(data);
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  saveBankDetail() {
+    //this.bankDetail.npoProfileId = Number(this.npoProfileId);
+    this.bankDetail.bankId = this.selectedBank.id;
+    this.bankDetail.branchId = this.selectedBranch.id;
+    this.bankDetail.accountTypeId = this.selectedAccountType.id;
+    this.bankDetail.isActive = true;
+
+    //this.newBankDetail ? this.createBankDetail(this.bankDetail) : this.updateBankDetail(this.bankDetail);
+    this.displayBankDetailDialog = false;
+  }
+
+  // private createBankDetail(bankDetail: IBankDetail) {
+  //   this._npoProfileRepo.createBankDetail(bankDetail).subscribe(
+  //     (resp) => {
+  //       this.loadBankDetails(Number(this.npoProfileId));
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
+
+  // private updateBankDetail(bankDetail: IBankDetail) {
+  //   this._npoProfileRepo.updateBankDetail(bankDetail).subscribe(
+  //     (resp) => {
+  //       this.loadBankDetails(Number(this.npoProfileId));
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
+
+  disableSaveBankDetail() {
+    if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.bankDetail.accountNumber)
+      return true;
+
+    return false;
+  }
+
+  bankChange() {
+    if (this.selectedBank) {
+      this.branches = [];
+      this.selectedBranch = null;
+
+      //this._spinner.show();
+      this._dropdownRepo.getEntitiesByEntityId(DropdownTypeEnum.Branches, this.selectedBank.id).subscribe(
+        (results) => {
+          this.branches = results;
+          //this._spinner.hide();
+        },
+        (err) => {
+          //this._loggerService.logException(err);
+          //this._spinner.hide();
+        }
+      );
+    }
+  }
+
+  branchChange() {
+    if (this.selectedBranch) {
+      this.bankDetail.branchCode = this.selectedBranch.branchCode != null ? this.selectedBranch.branchCode : this.selectedBank.code;
+    }
+  }  
+
   calculateTotals() {
+    alert('Hi');
     var totalAmountOne: number = 0;
     var totalAmountTwo: number = 0;
     var totalAmountThree: number = 0;
@@ -166,6 +374,7 @@ export class FinancialMattersComponent implements OnInit {
     this.totalAmountTwo = totalAmountTwo;
     this.totalAmountThree = totalAmountThree;
     this.fundingTotal = totalFundingAmount;
+    this.financialMattersChange.emit(this.financialMattersIncome);
   }
 
   calculateExpenditureTotals() {
@@ -214,13 +423,14 @@ export class FinancialMattersComponent implements OnInit {
       totalFundingAmount = totalFundingAmount + projectFundingAmount;
     });
 
-    this.totalAmountOneE = totalAmountOne;
-    this.totalAmountTwoE = totalAmountTwo;
-    this.totalAmountThreeE = totalAmountThree;
-    this.fundingTotalE = totalFundingAmount;
+    this.totalAmountOneO = totalAmountOne;
+    this.totalAmountTwoO = totalAmountTwo;
+    this.totalAmountThreeO = totalAmountThree;
+    this.fundingTotalO = totalFundingAmount;
   }  
 
   addBudgetIncomeItem() {
+    debugger;
     this.newFinancialMatter = true;
     var today = this.getCurrentDateTime();
 
@@ -228,6 +438,16 @@ export class FinancialMattersComponent implements OnInit {
       createdDateTime: today
     } as FinancialMatters);
 
+    if (this.newFinancialMatter) {
+      this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
+
+      this.financialMatters.push(this.financialmatter);
+    }
+    else {
+      //this.financialmatter.property = this.selectedFoundationalEnergyStudy.description;
+      this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
+      this.financialMatters[this.financialMatters.indexOf(this.selectedFinancialMatter)] = this.financialmatter;
+    }
    }
 
    addBudgetExpenditureItem() {
@@ -269,6 +489,7 @@ export class FinancialMattersComponent implements OnInit {
     this.displayDialogAddFin = false;
   }
   private addBudget() {
+    debugger;
     var today = this.getCurrentDateTime();
     this.isBudgetEdit = false;
     this.newFinancialMatter = true;
@@ -278,7 +499,22 @@ export class FinancialMattersComponent implements OnInit {
 
     this.displayDialog = true;
   }
+  saveBudget() {
+    debugger;
+    if (this.newFinancialMatter) {
+      this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
 
+      this.financialMatters.push(this.financialmatter);
+    }
+    else {
+      //this.financialmatter.property = this.selectedFoundationalEnergyStudy.description;
+      this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
+      this.financialMatters[this.financialMatters.indexOf(this.selectedFinancialMatter)] = this.financialmatter;
+    }
+    this.financialMattersChange.emit(this.financialMatters);
+    this.financialmatter = null;
+
+  }
 
   save() {
   debugger;
@@ -286,7 +522,7 @@ export class FinancialMattersComponent implements OnInit {
     if (this.newFinancialMatter) {
     this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
 
-      financialmatter.push(this.financialmatter);
+      this.financialMatters.push(this.financialmatter);
     }
     else {
     this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
@@ -363,6 +599,7 @@ export class FinancialMattersComponent implements OnInit {
     this.financialmatter = this.cloneImplementation(event.data);
   }
   onRowSelect(data) {
+    console.log('this',data);
     this.selectedFinancialMatter = data;
     this.isBudgetEdit = true;
     this.newFinancialMatter = false;
@@ -396,6 +633,27 @@ export class FinancialMattersComponent implements OnInit {
     this.subscriptions.forEach(function (sub) {
       sub.unsubscribe();
     });
+  }
+  updateDetails(rowData: FinancialMatters) {
+debugger;
+    if (this.isEdit) {
+
+      var today = this.getCurrentDateTime();
+      this.financialMatters[0].createdDateTime = today;
+    }
+    this._bidServie.editIncome(rowData.fundingApplicationDetailId, rowData ).subscribe(
+
+      (resp) => {
+
+       // this.administrationGrants.id = resp.id;
+
+      },
+
+      (err) => {
+
+      }
+
+    );
   }
 
 }

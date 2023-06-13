@@ -5,9 +5,9 @@ using NPOMS.Test.Config;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NPOMS.Tests.Repository
+namespace NPOMS.Test.Repository
 {
-	public class DepartmentTest
+    public class DepartmentTest
     {
         private readonly IDepartmentRepository _departmentRepository;
 

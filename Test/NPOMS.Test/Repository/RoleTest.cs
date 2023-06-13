@@ -1,8 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace NPOMS.Tests.Repository
+namespace NPOMS.Test.Repository
 {
-	[TestClass]
+    [TestClass]
     public class RoleTest
     {
         /*private readonly IRoleRepository _roleRepository;

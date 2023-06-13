@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NPOMS.Tests.Repository
+namespace NPOMS.Test.Repository
 {
     [TestClass]
     public class UserTest
