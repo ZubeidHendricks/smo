@@ -1,6 +1,7 @@
 ﻿
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
+using NPOMS.Domain.Entities;
 using NPOMS.Services.Models;
 
 using System;
@@ -17,7 +18,7 @@ namespace NPOMS.Services.Interfaces
 
         IEnumerable<FinYearViewModel> GetFinYears();
         Task<FundAppDetailViewModel> Update(string userIdentifier, int bidId, FundAppDetailViewModel model);
-   
+        void UpdateIncome(FinancialMatters model);
         Task<FundAppDetailViewModel> GetById(int bidId);
         IEnumerable<Place> GetPlaces(List<int> sdaIds);
         IEnumerable<SubPlace> GetSubplaces(List<int> placeIds);

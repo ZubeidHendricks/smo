@@ -26,7 +26,7 @@ namespace NPOMS.Services.Models
         public int ApplicationDetailId { get; set; }
         public ApplicationDetailViewModel ApplicationDetails { get; set; }
 
-        public int? MonitoringEvaluationId { get; set; }
+        public int? MonitoringEvaluationId { get; set; }    
         public MonitoringEvaluationViewModel MonitoringEvaluation { get; set; }
         public List<ProjectImplementationViewModel> Implementations { get; set; }
         public List<FinancialMattersViewModel> FinancialMatters { get; set; }

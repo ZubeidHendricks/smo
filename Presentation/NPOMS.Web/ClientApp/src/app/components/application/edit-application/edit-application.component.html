@@ -20,7 +20,7 @@
 
         <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
             [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
-            [(fundingApplicationDetails)]="fundingApplicationDetails">
+            [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
         </app-financial-matters>
 
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
