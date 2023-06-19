@@ -110,7 +110,8 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   disableSave(): boolean {
-if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
+if(
+    //(!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     !this.implementation.beneficiaries || !this.implementation.budget ||
     !this.implementation.results ! || !this.implementation.projectObjective||
     !this.implementation.resources||
@@ -151,15 +152,14 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
 
  
   onRowSelect(event) {
-debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
     console.log('data', event.data);
     this.newImplementation = false;
     this.implementation = this.cloneImplementation(event.data);
-    this.implementation.timeframe = [];
-    this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
-    this.implementation.timeframe.push(new Date(event.data.timeframeTo));
+   // this.implementation.timeframe = [];
+    //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
+   // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
     this.implementation.places = this.implementation.places;
     this.implementation.subPlaces = this.implementation.subPlaces;
     console.log('bit after', this.fundingApplicationDetails)
@@ -169,13 +169,13 @@ debugger;
     this.displayDialogImpl = true;
   }
 
-  updateTimeframe(value: any) {
+  // updateTimeframe(value: any) {
 
-    if (value[0] !== null && value[1] !== null) {
-      this.implementation.timeframeFrom = moment(value[0]).format('L');
-      this.implementation.timeframeTo = moment(value[1]).format('L');
-    }
-  }
+  //   if (value[0] !== null && value[1] !== null) {
+  //     this.implementation.timeframeFrom = moment(value[0]).format('L');
+  //     this.implementation.timeframeTo = moment(value[1]).format('L');
+  //   }
+  // }
 
 
   cloneImplementation(c: IProjectImplementation): IProjectImplementation {

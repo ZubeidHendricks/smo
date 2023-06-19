@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IBankDetail, INpoProfile, INpoProfileFacilityList, IServicesRendered } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
+import { IPreviousFinancialYear } from 'src/app/models/FinancialMatters';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -90,7 +91,7 @@ export class NpoProfileService {
   }
 
   public createBankDetail(bankDetail: IBankDetail) {
-    const url = `${this._envUrl.urlAddress}/api/npo-profiles/bank-detail`;
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/CreateBankDetail`;
     return this._http.post<IBankDetail>(url, bankDetail, httpOptions);
   }
 
@@ -102,5 +103,10 @@ export class NpoProfileService {
   public deleteBankDetail(bankDetail: IBankDetail) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/bank-detail`;
     return this._http.put<IBankDetail>(url, bankDetail, httpOptions);
+  }
+
+  public UpdatePreviousYearData(previousYearData: any[], npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/bank-detail`;
+    return this._http.put<IPreviousFinancialYear[]>(url, previousYearData, httpOptions);
   }
 }

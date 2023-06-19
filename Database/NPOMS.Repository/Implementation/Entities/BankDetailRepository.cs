@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Entities;
+using NPOMS.Repository.Extensions;
 using NPOMS.Repository.Interfaces.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -25,6 +27,10 @@ namespace NPOMS.Repository.Implementation.Entities
 			return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
 							.AsNoTracking().ToListAsync();
 		}
+        //public async Task CreateEntity(BankDetail model, int currentUserId)
+        //{
+        //    await CreateAsync(model);
+        //}
 
 		#endregion
 	}

@@ -104,7 +104,8 @@ namespace NPOMS.Repository
 		public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
 		public DbSet<Directorate> Directorates { get; set; }
 		public DbSet<Bank> Banks { get; set; }
-		public DbSet<Branch> Branches { get; set; }
+        public DbSet<BankDetail> BankDetail { get; set; }
+        public DbSet<Branch> Branches { get; set; }
 		public DbSet<AccountType> AccountTypes { get; set; }
 
         public DbSet<DistrictCouncil> DistrictCouncils { get; set; }

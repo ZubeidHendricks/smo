@@ -257,7 +257,7 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpPost("bank-detail", Name = "CreateBankDetail")]
+		[HttpPost("CreateBankDetail", Name = "CreateBankDetail")]
 		public async Task<IActionResult> CreateBankDetail([FromBody] BankDetail model)
 		{
 			try
