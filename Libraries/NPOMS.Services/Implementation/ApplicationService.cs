@@ -49,6 +49,7 @@ namespace NPOMS.Services.Implementation
         private IPlaceRepository _placeRepository;
         private ISubPlaceRepository _subPlaceRepository;
         private IFundAppSDADetailRepository _fundAppDetailRepository;
+        private IBankDetailRepository _bankDetailRepository;
 
 
 
@@ -84,6 +85,7 @@ namespace NPOMS.Services.Implementation
 			IPlaceRepository placeRepository,
 			ISubPlaceRepository subPlaceRepository,
 			IFundAppSDADetailRepository fundAppDetailRepository,
+			IBankDetailRepository bankDetailRepository,
             RepositoryContext repositoryContext
 			)
 		{
@@ -112,6 +114,7 @@ namespace NPOMS.Services.Implementation
 			_placeRepository= placeRepository;
 			_subPlaceRepository= subPlaceRepository;
 			_fundAppDetailRepository= fundAppDetailRepository;
+			_bankDetailRepository= bankDetailRepository;
             _repositoryContext = repositoryContext;
 		}
 
@@ -303,7 +306,8 @@ namespace NPOMS.Services.Implementation
 			await _applicationRepository.CreateEntity(model);
 		}
 
-		public async Task UpdateApplicationStatus(Application model, string userIdentifier)
+        
+        public async Task UpdateApplicationStatus(Application model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);

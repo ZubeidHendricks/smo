@@ -104,8 +104,10 @@ namespace NPOMS.Repository
 		public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
 		public DbSet<Directorate> Directorates { get; set; }
 		public DbSet<Bank> Banks { get; set; }
-		public DbSet<Branch> Branches { get; set; }
+        public DbSet<BankDetail> BankDetail { get; set; }
+        public DbSet<Branch> Branches { get; set; }
 		public DbSet<AccountType> AccountTypes { get; set; }
+		public DbSet<RegistrationStatus> RegistrationStatuses { get; set; }
 
         public DbSet<DistrictCouncil> DistrictCouncils { get; set; }
         public DbSet<LocalMunicipality> LocalMunicipalities { get; set; }
@@ -146,6 +148,7 @@ namespace NPOMS.Repository
 		public DbSet<CompliantCycle> CompliantCycles { get; set; }
 		public DbSet<PaymentSchedule> PaymentSchedules { get; set; }
 		public DbSet<AuditLog> AuditLogs { get; set; }
+		public DbSet<AuditorOrAffiliation> AuditorOrAffiliations { get; set; }
 
 		/* Lookup */
 		public DbSet<FacilityList> ActivityList { get; set; }
@@ -249,15 +252,17 @@ namespace NPOMS.Repository
             modelBuilder.ApplyConfiguration(new RaceConfiguration());
 			modelBuilder.ApplyConfiguration(new LanguageConfiguration());
 
+			modelBuilder.ApplyConfiguration(new RegistrationStatusConfiguration());
 
             /* Entities */
             modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());
 			modelBuilder.ApplyConfiguration(new StatusConfiguration());
 			modelBuilder.ApplyConfiguration(new TrainingMaterialConfiguration());
 			modelBuilder.ApplyConfiguration(new CompliantCycleRuleConfiguration());
+            modelBuilder.ApplyConfiguration(new PreviousYearFinanceConfiguration());
 
-			/* Lookup */
-			modelBuilder.ApplyConfiguration(new ActivityListConfiguration());
+            /* Lookup */
+            modelBuilder.ApplyConfiguration(new ActivityListConfiguration());
 			modelBuilder.ApplyConfiguration(new ResourceListConfiguration());
 
 			/* Mapping */

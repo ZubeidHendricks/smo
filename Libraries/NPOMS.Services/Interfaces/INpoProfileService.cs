@@ -34,5 +34,11 @@ namespace NPOMS.Services.Interfaces
 		Task Create(BankDetail model, string userIdentifier);
 
 		Task Update(BankDetail model, string userIdentifier);
-	}
+
+        Task<IEnumerable<PreviousYearFinance>> GetByNpoProfileIdAsync(int npoProfileId);
+        Task<PreviousYearFinance> DeleteById(int id);
+        Task<BankDetail> DeleteBankDetailById(int id);
+
+        Task Update(List<PreviousYearFinance> model, string userIdentifier, string npoProfileId);
+    }
 }

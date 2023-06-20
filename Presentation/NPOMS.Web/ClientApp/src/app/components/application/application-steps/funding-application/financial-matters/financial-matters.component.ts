@@ -3,13 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { CalculatedFinMatters } from 'src/app/models/CalculatedFinMatters';
-import { FinancialMatters } from 'src/app/models/FinancialMatters';
+import { FinancialMatters, IPreviousFinancialYear } from 'src/app/models/FinancialMatters';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { PropertyType } from 'src/app/models/PropertyType';
 import { DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, FinYear, IFundingApplicationDetails, IBankDetail, IBank, IBranch, IAccountType } from 'src/app/models/interfaces';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
-
+import { ApplicationService } from 'src/app/services/api-services/application/application.service';
+import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 
 @Component({
@@ -26,13 +27,19 @@ export class FinancialMattersComponent implements OnInit {
   @Output() financialMattersChange = new EventEmitter<any>();
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
+  @Input() currentUserId: number;
 
+  previousFinancialYear: IPreviousFinancialYear[];
+  totalIncome: number;
+  totalExpenditure: number;
+  totalDeficitSurplus: number;
+  stateOptions: any[];
   newFinancialMatter: boolean;
   menuItem: any[];
   propertyObj: PropertyType = {} as PropertyType;
   financialMattersIncome: FinancialMatters[] =[];
   financialMattersExpenditure: FinancialMatters[] =[];
-
+  npoProfileId: string;
   financicalMattersOthrSourceFunding: FinancialMatters[];
   displayOthrSourceFundingTotal: boolean = false;
   displayExpenditureTotal: boolean = false;
@@ -97,6 +104,8 @@ export class FinancialMattersComponent implements OnInit {
     private _bidServie :BidService,
     private _activeRouter: ActivatedRoute,
     private _dropdownRepo: DropdownService,
+    private _applicationRepo: ApplicationService,
+    private _npoProfile: NpoProfileService,
     private messageService: MessageService) { }
 
 
@@ -104,14 +113,15 @@ export class FinancialMattersComponent implements OnInit {
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
-      console.log('id', params.get('id'));  
 
-    });  
-    // this._bidServie.getApplicationBiId(+this.id).subscribe(resp => {
-    //   console.log('response',resp)
-    //    this.fundAppDetailId = resp.id;
-    //    console.log('response',this.selectedApplicationId )
-    //  });  
+    });
+    
+    this.GetPreviousYearFinanceData();
+       this.GetBankDetail();
+
+    if (this.previousFinancialYear != null && this.previousFinancialYear.length > 0)
+      this.calculatePreviousYearTotals(); 
+       
     this.menuItem = [
       {
         label: 'Financial Matter Details for Funding Application',        
@@ -120,7 +130,16 @@ export class FinancialMattersComponent implements OnInit {
         }
       }
     ];
-
+    this.stateOptions = [
+      {
+        label: 'Yes',
+        value: 'Yes'
+      },
+      {
+        label: 'No',
+        value: 'No'
+      }
+    ];
     if (this.fundingApplicationDetails.financialMatters) {
       this.financialMattersIncome = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "income");
       this.financialMattersExpenditure = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "expenditure");
@@ -182,6 +201,15 @@ export class FinancialMattersComponent implements OnInit {
     );
   }
 
+  addIncomeExpenditure() {
+    var today = this.getCurrentDateTime();
+
+    this.previousFinancialYear.push({
+      createdUserId: this.currentUserId,
+      createdDateTime: today
+    } as IPreviousFinancialYear);
+  }
+
   private loadAccountTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.AccountTypes, false).subscribe(
       (results) => {
@@ -189,8 +217,7 @@ export class FinancialMattersComponent implements OnInit {
         this.updateBankDetailObjects();
       },
       (err) => {
-        //this._loggerService.logException(err);
-        //this._spinner.hide();
+        //
       }
     );
   }
@@ -245,6 +272,7 @@ export class FinancialMattersComponent implements OnInit {
     this.displayBankDetailDialog = true;
   }
 
+/*
   editBankDetail(data: IBankDetail) {
     this.selectedBankDetail = data;
     this.isBankDetailEdit = true;
@@ -267,55 +295,47 @@ export class FinancialMattersComponent implements OnInit {
 
     return bankDetail;
   }
+*/
 
-  deleteBankDetail(data: IBankDetail) {
+  deleteBankDetail(bankDetail) {
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        data.isActive = false;
-        //this.updateBankDetail(data);
+        this._npoProfile.deleteBankDetail(bankDetail).subscribe(
+          (resp) => {
+            this.GetBankDetail();
+          },
+          (err) => {
+            //
+          }
+        );        
       },
       reject: () => {
+        //
       }
     });
   }
 
   saveBankDetail() {
-    //this.bankDetail.npoProfileId = Number(this.npoProfileId);
+    this.bankDetail.npoProfileId = Number(this.selectedApplicationId);
     this.bankDetail.bankId = this.selectedBank.id;
     this.bankDetail.branchId = this.selectedBranch.id;
     this.bankDetail.accountTypeId = this.selectedAccountType.id;
     this.bankDetail.isActive = true;
-
-    //this.newBankDetail ? this.createBankDetail(this.bankDetail) : this.updateBankDetail(this.bankDetail);
+    this.createBankDetail(this.bankDetail)
     this.displayBankDetailDialog = false;
   }
-
-  // private createBankDetail(bankDetail: IBankDetail) {
-  //   this._npoProfileRepo.createBankDetail(bankDetail).subscribe(
-  //     (resp) => {
-  //       this.loadBankDetails(Number(this.npoProfileId));
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
-
-  // private updateBankDetail(bankDetail: IBankDetail) {
-  //   this._npoProfileRepo.updateBankDetail(bankDetail).subscribe(
-  //     (resp) => {
-  //       this.loadBankDetails(Number(this.npoProfileId));
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
+  private createBankDetail(bankDetail: IBankDetail) {
+    this._npoProfile.createBankDetail(bankDetail).subscribe(
+      (resp) => {
+        this.GetBankDetail();
+      },
+      (err) => {//
+      }
+    );
+  }
 
   disableSaveBankDetail() {
     if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.bankDetail.accountNumber)
@@ -328,16 +348,12 @@ export class FinancialMattersComponent implements OnInit {
     if (this.selectedBank) {
       this.branches = [];
       this.selectedBranch = null;
-
-      //this._spinner.show();
       this._dropdownRepo.getEntitiesByEntityId(DropdownTypeEnum.Branches, this.selectedBank.id).subscribe(
         (results) => {
           this.branches = results;
-          //this._spinner.hide();
         },
         (err) => {
-          //this._loggerService.logException(err);
-          //this._spinner.hide();
+          //
         }
       );
     }
@@ -349,8 +365,47 @@ export class FinancialMattersComponent implements OnInit {
     }
   }  
 
+  calculatePreviousYearTotals() {
+    var calculatedTotalIncome: number = 0;
+    var calculatedTotalExpenditure: number = 0;
+
+    this.previousFinancialYear.forEach(element => {
+      var incomeAmount = element.incomeAmount != null ? Number(element.incomeAmount) : 0;
+      var expenditureAmount = element.expenditureAmount != null ? Number(element.expenditureAmount) : 0;
+
+      calculatedTotalIncome = calculatedTotalIncome + incomeAmount;
+      calculatedTotalExpenditure = calculatedTotalExpenditure + expenditureAmount;
+    });
+
+    this.totalIncome = calculatedTotalIncome;
+    this.totalExpenditure = calculatedTotalExpenditure;
+    this.totalDeficitSurplus = this.totalIncome - this.totalExpenditure;
+  }
+  showTable(obj:any)
+  {
+    if(obj.value === "Yes")
+      document.getElementById('previousFinancialYear').hidden = false;  
+    else
+      document.getElementById('previousFinancialYear').hidden = true;  
+  }
+  calculatePreviousYearTotal() {
+    var calculatedTotalIncome: number = 0;
+    var calculatedTotalExpenditure: number = 0;
+
+    this.previousFinancialYear.forEach(element => {
+      var incomeAmount = element.incomeAmount != null ? Number(element.incomeAmount) : 0;
+      var expenditureAmount = element.expenditureAmount != null ? Number(element.expenditureAmount) : 0;
+
+      calculatedTotalIncome = calculatedTotalIncome + incomeAmount;
+      calculatedTotalExpenditure = calculatedTotalExpenditure + expenditureAmount;
+    });
+
+    this.totalIncome = calculatedTotalIncome;
+    this.totalExpenditure = calculatedTotalExpenditure;
+    this.totalDeficitSurplus = this.totalIncome - this.totalExpenditure;
+  }
+
   calculateTotals() {
-    alert('Hi');
     var totalAmountOne: number = 0;
     var totalAmountTwo: number = 0;
     var totalAmountThree: number = 0;
@@ -430,7 +485,6 @@ export class FinancialMattersComponent implements OnInit {
   }  
 
   addBudgetIncomeItem() {
-    debugger;
     this.newFinancialMatter = true;
     var today = this.getCurrentDateTime();
 
@@ -489,7 +543,6 @@ export class FinancialMattersComponent implements OnInit {
     this.displayDialogAddFin = false;
   }
   private addBudget() {
-    debugger;
     var today = this.getCurrentDateTime();
     this.isBudgetEdit = false;
     this.newFinancialMatter = true;
@@ -500,7 +553,6 @@ export class FinancialMattersComponent implements OnInit {
     this.displayDialog = true;
   }
   saveBudget() {
-    debugger;
     if (this.newFinancialMatter) {
       this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
 
@@ -517,7 +569,6 @@ export class FinancialMattersComponent implements OnInit {
   }
 
   save() {
-  debugger;
     let financialmatter = [...this.financialMatters];
     if (this.newFinancialMatter) {
     this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
@@ -535,8 +586,29 @@ export class FinancialMattersComponent implements OnInit {
     this.financialmatter = null;
   }
 
+  deletePreviousYearItem(previousYear) {
+    
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this._npoProfile.deletePreviousYearDataById(previousYear).subscribe(
+          (resp) => {
+           this.GetPreviousYearFinanceData();
+          },
+          (err) => {
+            //
+          }
+        );        
+          this.calculateTotals();      
+      },
+      reject: () => {
+      }
+    });
+  }
+
   deleteBudgetItem(budget: FinancialMatters) {
-    debugger;
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
@@ -555,7 +627,6 @@ export class FinancialMattersComponent implements OnInit {
   }
 
   deleteBudgetExpenditureItem(budget: FinancialMatters) {
-    debugger;
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
@@ -574,7 +645,6 @@ export class FinancialMattersComponent implements OnInit {
   }
 
   deleteBudgetOthrSourceFunding(budget: FinancialMatters) {
-    debugger;
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
@@ -599,7 +669,6 @@ export class FinancialMattersComponent implements OnInit {
     this.financialmatter = this.cloneImplementation(event.data);
   }
   onRowSelect(data) {
-    console.log('this',data);
     this.selectedFinancialMatter = data;
     this.isBudgetEdit = true;
     this.newFinancialMatter = false;
@@ -634,8 +703,8 @@ export class FinancialMattersComponent implements OnInit {
       sub.unsubscribe();
     });
   }
+
   updateDetails(rowData: FinancialMatters) {
-debugger;
     if (this.isEdit) {
 
       var today = this.getCurrentDateTime();
@@ -644,15 +713,54 @@ debugger;
     this._bidServie.editIncome(rowData.fundingApplicationDetailId, rowData ).subscribe(
 
       (resp) => {
-
-       // this.administrationGrants.id = resp.id;
-
+        //
       },
-
       (err) => {
-
+        //
       }
+    );
+  }
+  
+  updateDetail(rowData: IPreviousFinancialYear) {
+    if (this.isEdit) {
+      var today = this.getCurrentDateTime();
 
+      this.previousFinancialYear[0].updatedUserId = this.currentUserId;
+      this.previousFinancialYear[0].updatedDateTime = today;
+    }
+    this._npoProfile.UpdatePreviousYearData(this.previousFinancialYear, this.selectedApplicationId).subscribe(
+      (resp) => {
+        this.GetPreviousYearFinanceData();
+      },
+      (err) => {
+        //
+      }
+    );
+  }
+
+  private GetPreviousYearFinanceData() {
+    this._npoProfile.getPreviousYearDataById(this.selectedApplicationId).subscribe(
+      (results) => {
+        this.previousFinancialYear = results;
+        if(results.length > 0)
+        {
+          document.getElementById('previousFinancialYear').hidden = false; 
+        }
+      },
+      (err) => {
+        //
+      }
+    );
+  }
+
+  private GetBankDetail() {
+    this._npoProfile.getBankDetailByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        this.bankDetails = results;
+      },
+      (err) => {
+        //
+      }
     );
   }
 

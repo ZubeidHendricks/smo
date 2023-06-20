@@ -182,8 +182,11 @@ namespace NPOMS.API.Controllers
                         return Ok(gender);
                     case DropdownTypeEnum.Languages:
                         var language = await _dropdownService.GetLanguages(returnInactive);
-                        return Ok(language);
-                }
+                        return Ok(language);                
+					case DropdownTypeEnum.RegistrationStatus:
+						var registrationStatuses = await _dropdownService.GetRegistrationStatuses(returnInactive);
+						return Ok(registrationStatuses);
+				}
 
 				return Ok();
 			}
@@ -333,7 +336,11 @@ namespace NPOMS.API.Controllers
                         var gender = JsonConvert.DeserializeObject<Gender>(Convert.ToString(entity));
                         await _dropdownService.CreateGender(gender, base.GetUserIdentifier());
                         break;
-                }
+					case DropdownTypeEnum.RegistrationStatus:
+						var registrationStatus = JsonConvert.DeserializeObject<RegistrationStatus>(Convert.ToString(entity));
+						await _dropdownService.CreateRegistrationStatus(registrationStatus, base.GetUserIdentifier());
+						break;
+				}
 
 				return Ok();
 			}
@@ -483,7 +490,11 @@ namespace NPOMS.API.Controllers
                         var gender = JsonConvert.DeserializeObject<Gender>(Convert.ToString(entity));
                         await _dropdownService.UpdateGender(gender, base.GetUserIdentifier());
                         break;
-                }
+					case DropdownTypeEnum.RegistrationStatus:
+						var registrationStatus = JsonConvert.DeserializeObject<RegistrationStatus>(Convert.ToString(entity));
+						await _dropdownService.UpdateRegistrationStatus(registrationStatus, base.GetUserIdentifier());
+						break;
+				}
 
 				return Ok();
 			}

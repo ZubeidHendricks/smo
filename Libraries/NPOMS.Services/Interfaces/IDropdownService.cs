@@ -262,5 +262,12 @@ namespace NPOMS.Services.Interfaces
 		Task<IEnumerable<Place>> GetPlaces(bool returnInactive);
         Task<IEnumerable<SubPlace>> GetSubPlaces(bool returnInactive);
 
-    }
+    
+
+		Task<IEnumerable<RegistrationStatus>> GetRegistrationStatuses(bool returnInactive);
+
+		Task CreateRegistrationStatus(RegistrationStatus model, string userIdentifier);
+
+		Task UpdateRegistrationStatus(RegistrationStatus model, string userIdentifier);
+	}
 }

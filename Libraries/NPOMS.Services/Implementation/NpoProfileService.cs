@@ -25,12 +25,13 @@ namespace NPOMS.Services.Implementation
 		private IFacilityListRepository _facilityListRepository;
 		private IServicesRenderedRepository _servicesRenderedRepository;
 		private IBankDetailRepository _bankDetailRepository;
+        private IPreviousYearFinanceRepository _previousYearFinanceRepository;
 
-		#endregion
+        #endregion
 
-		#region Constructorrs
+        #region Constructorrs
 
-		public NpoProfileService(
+        public NpoProfileService(
 			INpoProfileRepository npoProfileRepository,
 			IUserRepository userRepository,
 			INpoRepository npoRepository,
@@ -38,7 +39,8 @@ namespace NPOMS.Services.Implementation
 			INpoProfileFacilityListRepository npoProfileFacilityListRepository,
 			IFacilityListRepository facilityListRepository,
 			IServicesRenderedRepository servicesRenderedRepository,
-			IBankDetailRepository bankDetailRepository)
+			IBankDetailRepository bankDetailRepository,
+            IPreviousYearFinanceRepository previousYearFinanceRepository)
 		{
 			_npoProfileRepository = npoProfileRepository;
 			_userRepository = userRepository;
@@ -48,7 +50,8 @@ namespace NPOMS.Services.Implementation
 			_facilityListRepository = facilityListRepository;
 			_servicesRenderedRepository = servicesRenderedRepository;
 			_bankDetailRepository = bankDetailRepository;
-		}
+            _previousYearFinanceRepository = previousYearFinanceRepository;
+        }
 
 		#endregion
 
@@ -182,6 +185,51 @@ namespace NPOMS.Services.Implementation
 			await _bankDetailRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
-		#endregion
-	}
+        public async Task<IEnumerable<PreviousYearFinance>> GetByNpoProfileIdAsync(int id)
+        {
+            return await _previousYearFinanceRepository.GetByNpoProfileIdAsync(id);
+        }
+		
+		public async Task Create(PreviousYearFinance model, string userIdentifier)
+		{
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+            await _previousYearFinanceRepository.CreateAsync(model);
+        }
+
+		public async Task Update(List<PreviousYearFinance> model, string userIdentifier, string id)
+		{
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            foreach (var m in model)
+            {
+                if (m.Id == 0)
+                {
+					m.CreatedUserId = loggedInUser.Id;
+					m.CreatedDateTime = DateTime.Now;
+                    m.npoProfileId = Convert.ToInt32(id);
+                    await _previousYearFinanceRepository.CreateAsync(m);
+                }
+                else
+                {
+                    m.UpdatedUserId = loggedInUser.Id;
+                    m.UpdatedDateTime = DateTime.Now;
+                    await _previousYearFinanceRepository.UpdateAsync(m);
+                }
+            }
+        }
+
+        public async Task<PreviousYearFinance> DeleteById(int id)
+        {
+            return await _previousYearFinanceRepository.DeleteById(id);
+        }
+
+        public async Task<BankDetail> DeleteBankDetailById(int id)
+        {
+            return await _bankDetailRepository.DeleteBankDetailById(id);
+        }
+
+        #endregion
+    }
 }

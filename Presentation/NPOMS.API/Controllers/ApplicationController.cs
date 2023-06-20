@@ -376,52 +376,69 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        //[HttpPut("financialDetail", Name = "UpdateFinancialDetail")]
-        //public async Task<IActionResult> UpdateFinancialDetail([FromBody] FinancialDetail model)
-        //{
-        //    try
-        //    {
-        //        await _applicationService.UpdateFinancialDetail(model, base.GetUserIdentifier());
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Something went wrong inside UpdateFinancialDetail action: {ex.Message} Inner Exception: {ex.InnerException}");
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
+		//[HttpPut("financialDetail", Name = "UpdateFinancialDetail")]
+		//public async Task<IActionResult> UpdateFinancialDetail([FromBody] FinancialDetail model)
+		//{
+		//    try
+		//    {
+		//        await _applicationService.UpdateFinancialDetail(model, base.GetUserIdentifier());
+		//        return Ok();
+		//    }
+		//    catch (Exception ex)
+		//    {
+		//        _logger.LogError($"Something went wrong inside UpdateFinancialDetail action: {ex.Message} Inner Exception: {ex.InnerException}");
+		//        return StatusCode(500, $"Internal server error: {ex.Message}");
+		//    }
+		//}
 
-        //[HttpGet("financialDetail/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "GetAllFinancialDetails")]
-        //public async Task<IActionResult> GetAllFinancialDetails(int NpoId, int applicationPeriodId)
-        //{
-        //    try
-        //    {
-        //        var results = await _applicationService.GetAllFinancialDetailsAsync(NpoId, applicationPeriodId);
-        //        return Ok(results);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Something went wrong inside GetAllFinancialDetailsAsync action: {ex.Message} Inner Exception: {ex.InnerException}");
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
+		//[HttpGet("financialDetail/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "GetAllFinancialDetails")]
+		//public async Task<IActionResult> GetAllFinancialDetails(int NpoId, int applicationPeriodId)
+		//{
+		//    try
+		//    {
+		//        var results = await _applicationService.GetAllFinancialDetailsAsync(NpoId, applicationPeriodId);
+		//        return Ok(results);
+		//    }
+		//    catch (Exception ex)
+		//    {
+		//        _logger.LogError($"Something went wrong inside GetAllFinancialDetailsAsync action: {ex.Message} Inner Exception: {ex.InnerException}");
+		//        return StatusCode(500, $"Internal server error: {ex.Message}");
+		//    }
+		//}
 
-        //[HttpPut("fundingApplicationDetails", Name = "UpdateFundingApplicationDetails")]
-        //public async Task<IActionResult> UpdateFundingApplicationDetails([FromBody] FundingApplicationDetails model)
-        //{
-        //    try
-        //    {
-        //        await _applicationService.UpdateFundingApplicationDetails(model, base.GetUserIdentifier());
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Something went wrong inside UpdateFundingApplicationDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
+		//[HttpPut("fundingApplicationDetails", Name = "UpdateFundingApplicationDetails")]
+		//public async Task<IActionResult> UpdateFundingApplicationDetails([FromBody] FundingApplicationDetails model)
+		//{
+		//    try
+		//    {
+		//        await _applicationService.UpdateFundingApplicationDetails(model, base.GetUserIdentifier());
+		//        return Ok();
+		//    }
+		//    catch (Exception ex)
+		//    {
+		//        _logger.LogError($"Something went wrong inside UpdateFundingApplicationDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+		//        return StatusCode(500, $"Internal server error: {ex.Message}");
+		//    }
+		//}
 
-        [HttpPost("objectives/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateObjective")]
+		/*
+		[HttpPost("CreateBankDetail", Name = "CreateBankDetail")]
+		public async Task<IActionResult> CreateBankDetail([FromBody] BankDetail model)
+		{
+			try
+			{
+				await _applicationService.CreateBankDetail(model, base.GetUserIdentifier());
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateBankDetail action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+		*/
+
+		[HttpPost("objectives/NpoId/{NpoId}/applicationPeriodId/{applicationPeriodId}", Name = "CreateObjective")]
 		public async Task<IActionResult> CreateObjective([FromBody] Objective model, int NpoId, int applicationPeriodId)
 		{
 			try

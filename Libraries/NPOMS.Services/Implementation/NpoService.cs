@@ -14,6 +14,8 @@ namespace NPOMS.Services.Implementation
 {
 	public class NpoService : INpoService
 	{
+		public const string Auditor = "Auditor";
+		public const string Affiliation = "Affiliation";
 
 		#region Fields
 
@@ -22,6 +24,8 @@ namespace NPOMS.Services.Implementation
 		private IOrganisationTypeRepository _organisationTypeRepository;
 		private IContactInformationRepository _contactInformationRepository;
 		private IUserNpoRepository _userNpoRepository;
+		private IRegistrationStatusRepository _registrationStatusRepository;
+		private IAuditorOrAffiliationRepository _auditorOrAffiliationRepository;
 
 		#endregion
 
@@ -32,14 +36,17 @@ namespace NPOMS.Services.Implementation
 			IUserRepository userRepository,
 			IOrganisationTypeRepository organisationTypeRepository,
 			IContactInformationRepository contactInformationRepository,
-			IUserNpoRepository userNpoRepository
-			)
+			IUserNpoRepository userNpoRepository,
+			IRegistrationStatusRepository registrationStatusRepository,
+			IAuditorOrAffiliationRepository auditorOrAffiliationRepository)
 		{
 			_npoRepository = npoRepository;
 			_userRepository = userRepository;
 			_organisationTypeRepository = organisationTypeRepository;
 			_contactInformationRepository = contactInformationRepository;
 			_userNpoRepository = userNpoRepository;
+			_registrationStatusRepository = registrationStatusRepository;
+			_auditorOrAffiliationRepository = auditorOrAffiliationRepository;
 		}
 
 		#endregion
@@ -77,6 +84,8 @@ namespace NPOMS.Services.Implementation
 		{
 			var result = await _npoRepository.GetById(id);
 			result.OrganisationType = await _organisationTypeRepository.GetById(result.OrganisationTypeId);
+
+			result.RegistrationStatus = result.RegistrationStatusId != null ? await _registrationStatusRepository.GetById(Convert.ToInt32(result.RegistrationStatusId)) : null;
 
 			var contactInformation = await _contactInformationRepository.GetByNpoId(result.Id);
 			result.ContactInformation = contactInformation.ToList();
@@ -151,6 +160,31 @@ namespace NPOMS.Services.Implementation
 			npo.ApprovalDateTime = DateTime.Now;
 
 			await _npoRepository.UpdateEntity(npo, loggedInUser.Id);
+		}
+
+		public async Task<IEnumerable<AuditorOrAffiliation>> GetAuditorOrAffiliations(int entityId)
+		{
+			return await _auditorOrAffiliationRepository.GetByEntityId(entityId);
+		}
+
+		public async Task CreateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _auditorOrAffiliationRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _auditorOrAffiliationRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
 		#endregion
