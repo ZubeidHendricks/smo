@@ -746,6 +746,7 @@ export class FinancialMattersComponent implements OnInit {
         {
           document.getElementById('previousFinancialYear').hidden = false; 
         }
+        this.calculatePreviousYearTotals(); 
       },
       (err) => {
         //
