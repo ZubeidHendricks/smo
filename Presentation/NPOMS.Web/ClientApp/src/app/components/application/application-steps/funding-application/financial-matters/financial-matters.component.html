@@ -78,7 +78,7 @@
           </td>
           <td style="text-align: center;">
             <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
-              class="p-button-text p-button-danger" icon="pi pi-trash" (click)="deletePreviousYearItem(previousFinancialYear)"
+              class="p-button-text p-button-danger" icon="pi pi-trash" (click)="deletePreviousYearItem(rowData.id)"
               pTooltip="Delete" tooltipPosition="top"></button>
           </td>
       </tr>
@@ -432,10 +432,12 @@
     <p-table [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
-                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                    {{col.header}}
-                </th>
-                <th style="width: 7%;">Actions</th>
+              <th colspan="1">Bank</th>
+              <th colspan="1">Branch</th>
+              <th colspan="1">Branch Code</th>
+              <th colspan="1">Account Type</th>
+              <th colspan="1">Account Number</th>
+              <th colspan="1">Action</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -446,8 +448,8 @@
                 <td *ngIf="rowData.accountType">{{rowData.accountType.name}}</td>
                 <td>{{rowData.accountNumber}}</td>
                 <td style="text-align: center;">
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editBankDetail(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
-                    <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteBankDetail(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                    <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editBankDetail(rowData)" pTooltip="Edit" tooltipPosition="top"></button> -->
+                    <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteBankDetail(rowData.id)" pTooltip="Delete" tooltipPosition="top"></button>
                 </td>
             </tr>
         </ng-template>
@@ -482,53 +484,53 @@
           [transitionOptions]="'0ms'"
           [modal]="true">
         <div class="p-grid">
-            <div class="p-col-fixed form-label">
+            <div class="p-col">
                 <div class="box">
-                    <span class="mandatory-content">Bank</span>
+                    <span class="mandatory-content">Bank:</span>
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="banks" placeholder="Select a Bank" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="bankChange()" [filter]="true" filterBy="name"></p-dropdown>
+                <p-dropdown [options]="banks" placeholder="Select a Bank" [style]="{'width':'100%'}" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="bankChange()"  [filter]="true" filterBy="name"></p-dropdown>
             </div>
         </div>
         <div class="p-grid">
-            <div class="p-col-fixed form-label">
+            <div class="p-col">
                 <div class="box">
-                    <span class="mandatory-content">Branch</span>
+                    <span class="mandatory-content">Branch:</span>
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="branches" placeholder="Select a branch" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="branchChange()" [filter]="true" filterBy="name"></p-dropdown>
+                <p-dropdown [options]="branches" placeholder="Select a branch" [style]="{'width':'100%'}" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="branchChange()" [filter]="true" filterBy="name"></p-dropdown>
             </div>
         </div>
         <div class="p-grid">
-            <div class="p-col-fixed form-label">
+            <div class="p-col">
                 <div class="box">
-                    <span class="non-mandatory-content">Branch Code</span>
+                    <span class="non-mandatory-content">Branch Code:</span>
                 </div>
             </div>
             <div class="p-col">
-                <input type="text" name="branchCode" class="form-text" pInputText [(ngModel)]="bankDetail.branchCode" [ngModelOptions]="{standalone: true}" [disabled]="true"> 
+                <input type="text" name="branchCode" [style]="{'width':'100%'}" class="form-text" pInputText [(ngModel)]="bankDetail.branchCode" [ngModelOptions]="{standalone: true}" [disabled]="true"> 
             </div>
         </div>        
         <div class="p-grid">
-            <div class="p-col-fixed form-label">
+            <div class="p-col">
                 <div class="box">
-                    <span class="mandatory-content">Account Type</span>
+                    <span class="mandatory-content">Account Type:</span>
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="accountTypes" placeholder="Select an Account Type" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+                <p-dropdown [options]="accountTypes" placeholder="Select an Account Type" [style]="{'width':'100%'}" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" appendTo="body"></p-dropdown>
             </div>
         </div>        
         <div class="p-grid">
-            <div class="p-col-fixed form-label">
+            <div class="p-col">
                 <div class="box">
-                    <span class="mandatory-content">Account Number</span>
+                    <span class="mandatory-content">Account Number:</span>
                 </div>
             </div>
             <div class="p-col">
-                <input type="text" name="accountNumber" class="form-text" pInputText [(ngModel)]="bankDetail.accountNumber" [ngModelOptions]="{standalone: true}" (keypress)="numberOnly($event)"> 
+                <input type="text" name="accountNumber" class="form-text" [style]="{'width':'100%'}" pInputText [(ngModel)]="bankDetail.accountNumber" [ngModelOptions]="{standalone: true}" (keypress)="numberOnly($event)"> 
             </div>
         </div>
         <ng-template pTemplate="footer">

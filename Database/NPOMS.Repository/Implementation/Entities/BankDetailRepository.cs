@@ -18,19 +18,22 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		}
 
-		#endregion
+        public async Task<BankDetail> DeleteBankDetailById(int id)
+        {
+            var model = await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+            await DeleteAsync(model);
+            return model;
+        }
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public async Task<IEnumerable<BankDetail>> GetByNpoProfileId(int npoProfileId)
+        public async Task<IEnumerable<BankDetail>> GetByNpoProfileId(int npoProfileId)
 		{
 			return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
 							.AsNoTracking().ToListAsync();
 		}
-        //public async Task CreateEntity(BankDetail model, int currentUserId)
-        //{
-        //    await CreateAsync(model);
-        //}
+        
 
 		#endregion
 	}

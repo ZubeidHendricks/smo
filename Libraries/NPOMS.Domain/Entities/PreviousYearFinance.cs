@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace NPOMS.Domain.Entities
 {
-    [Table("PreviousYearFinance", Schema = "fa")]
+    [Table("PreviousYearFinance", Schema = "dbo")]
     public class PreviousYearFinance : BaseEntity
     {
-        public int? FundingApplicationDetailId { get; set; }
+        public int? npoProfileId { get; set; }
 
         [Column(TypeName = "nvarchar(255)")]
         public string IncomeDescription { get; set; }

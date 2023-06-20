@@ -91,7 +91,7 @@ export class NpoProfileService {
   }
 
   public createBankDetail(bankDetail: IBankDetail) {
-    const url = `${this._envUrl.urlAddress}/api/npo-profiles/CreateBankDetail`;
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/createBankDetail`;
     return this._http.post<IBankDetail>(url, bankDetail, httpOptions);
   }
 
@@ -100,13 +100,24 @@ export class NpoProfileService {
     return this._http.put<IBankDetail>(url, bankDetail, httpOptions);
   }
 
-  public deleteBankDetail(bankDetail: IBankDetail) {
-    const url = `${this._envUrl.urlAddress}/api/npo-profiles/bank-detail`;
-    return this._http.put<IBankDetail>(url, bankDetail, httpOptions);
+  public deleteBankDetail(id: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteBankDetailById/id/${id}`;
+    return this._http.delete<IBankDetail[]>(url, httpOptions);
   }
 
   public UpdatePreviousYearData(previousYearData: any[], npoProfileId: string) {
-    const url = `${this._envUrl.urlAddress}/api/npo-profiles/bank-detail`;
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updatePreviousYearFinance/npoProfileId/${npoProfileId}`;
     return this._http.put<IPreviousFinancialYear[]>(url, previousYearData, httpOptions);
   }
+
+  public getPreviousYearDataById(npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/getPreviousYearFinanceByNpoProfileId/npoProfileId/${npoProfileId}`;
+    return this._http.get<IPreviousFinancialYear[]>(url, httpOptions);
+  }
+
+  public deletePreviousYearDataById(id: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteById/id/${id}`;
+    return this._http.delete<IPreviousFinancialYear[]>(url, httpOptions);
+  }
+
 }

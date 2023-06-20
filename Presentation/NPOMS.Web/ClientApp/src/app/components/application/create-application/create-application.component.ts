@@ -111,7 +111,6 @@ export class CreateApplicationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    debugger;
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
@@ -120,11 +119,8 @@ export class CreateApplicationComponent implements OnInit {
       this.fundingApplicationDetails.applicationPeriodId = +this.id;
 
       this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-        console.log('response',resp);
-        //this.applicationIdOnBid = resp.applicationId;
       });      
     });
-console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -317,8 +313,6 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
   }
 
   private bidForm(status: StatusEnum) {
-    debugger;
-    console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
     this.application.status =null;
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
@@ -332,7 +326,6 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
         this._applicationRepo.updateApplication(this.application).subscribe();
       }
       if (!this.applicationIdOnBid) {
-        debugger
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
           this.menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
@@ -421,7 +414,6 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
     }
 
     if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
-      debugger
       if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length == 0 || this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please capture Application info and save." });
         if (this.fundingApplicationDetails.financialMatters.length === 0)

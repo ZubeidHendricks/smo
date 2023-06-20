@@ -1,3 +1,4 @@
+using NPOMS.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,5 @@ namespace NPOMS.Repository.Interfaces
         void InsertMultiItemsAsync(List<T> entity);
 
         Task UpdateAsync(T entity);
-
     }
 }

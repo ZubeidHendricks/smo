@@ -137,12 +137,9 @@ export class ApplicationDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    debugger;
     this._spinner.show();
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
-      console.log('id', params.get('id'));
-
     });
 
     this._authService.profile$.subscribe(profile => {
