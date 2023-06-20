@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IContactInformation, INpo, IOrganisationType, IPosition, ITitle, IUser } from 'src/app/models/interfaces';
+import { AccessStatusEnum, AuditorOrAffiliationEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { IAddressLookup, IAuditorOrAffiliation, IContactInformation, INpo, IOrganisationType, IPosition, IRegistrationStatus, ITitle, IUser } from 'src/app/models/interfaces';
+import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
@@ -30,6 +31,7 @@ export class CreateNpoComponent implements OnInit {
   }
 
   npo: INpo = {
+    section18Receipts: false,
     contactInformation: [] as IContactInformation[]
   } as INpo;
 
@@ -41,6 +43,9 @@ export class CreateNpoComponent implements OnInit {
 
   organisationTypes: IOrganisationType[];
   selectedOrganisationType: IOrganisationType;
+
+  registrationStatuses: IRegistrationStatus[];
+  selectedRegistrationStatus: IRegistrationStatus;
 
   titles: ITitle[];
   selectedTitle: ITitle;
@@ -54,6 +59,16 @@ export class CreateNpoComponent implements OnInit {
   selectedContactInformation: IContactInformation;
   primaryContactInformation: IContactInformation;
   displayContactDialog: boolean;
+
+  auditorOrAffiliations: IAuditorOrAffiliation[] = [];
+  auditorCols: any[];
+  newAuditorOrAffiliation: boolean;
+  auditorOrAffiliation: IAuditorOrAffiliation = {} as IAuditorOrAffiliation;
+  selectedAuditorOrAffiliation: IAuditorOrAffiliation;
+  displayAuditorDialog: boolean;
+
+  newAddress: IAddressLookup[];
+  addressLookup: IAddressLookup;
 
   selectedNPO: INpo;
   NPOs: INpo[];
@@ -69,7 +84,8 @@ export class CreateNpoComponent implements OnInit {
     private _confirmationService: ConfirmationService,
     private _npoRepo: NpoService,
     private _npoProfileRepo: NpoProfileService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _addressLookupService: AddressLookupService
   ) { }
 
   ngOnInit(): void {
@@ -81,6 +97,7 @@ export class CreateNpoComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.loadOrganisationTypes();
+        this.loadRegistrationStatuses();
         this.loadTitles();
         this.loadPositions();
         this.buildMenu();
@@ -103,6 +120,14 @@ export class CreateNpoComponent implements OnInit {
       { header: 'Position', width: '20%' },
       { header: 'Email', width: '33%' },
       { header: 'Cellphone', width: '15%' }
+    ];
+
+    this.auditorCols = [
+      { header: 'Company', width: '20%' },
+      { header: 'Registration Number', width: '15%' },
+      { header: 'Address', width: '23%' },
+      { header: 'Telephone Number', width: '10%' },
+      { header: 'Email Address', width: '25%' }
     ];
   }
 
@@ -157,6 +182,20 @@ export class CreateNpoComponent implements OnInit {
     );
   }
 
+  private loadRegistrationStatuses() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.RegistrationStatus, false).subscribe(
+      (results) => {
+        this.registrationStatuses = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadTitles() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Titles, false).subscribe(
@@ -191,7 +230,7 @@ export class CreateNpoComponent implements OnInit {
 
     let data = this.npo;
 
-    if (!data.name || !this.selectedOrganisationType)
+    if (!data.name || !this.selectedOrganisationType || !this.selectedRegistrationStatus)
       this.validationErrors.push({ severity: 'error', summary: "General Information:", detail: "Missing detail required." });
 
     if (data.contactInformation.length === 0)
@@ -217,8 +256,10 @@ export class CreateNpoComponent implements OnInit {
       this._spinner.show();
       let data = this.npo;
 
-      data.approvalStatusId = AccessStatusEnum.New;
+      // TK: Set default approval status to Approved after chat with RG on 2023-06-19
+      data.approvalStatusId = AccessStatusEnum.Approved; //AccessStatusEnum.New;
       data.organisationTypeId = this.selectedOrganisationType.id;
+      data.registrationStatusId = this.selectedRegistrationStatus.id;
 
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
@@ -227,16 +268,31 @@ export class CreateNpoComponent implements OnInit {
 
       this._npoRepo.createNpo(data).subscribe(
         (resp) => {
-          this._npoProfileRepo.getNpoProfileByNpoId(Number(resp.id)).subscribe(
-            (results) => {
-              this._spinner.hide();
-              this._router.navigateByUrl('npo-profile/edit/' + results.id);
-            },
-            (err) => {
-              this._loggerService.logException(err);
-              this._spinner.hide();
-            }
-          );
+
+          this.auditorOrAffiliations.forEach(item => {
+            item.entityId = resp.id;
+
+            this._npoRepo.createAuditorOrAffiliation(item).subscribe(
+              (results) => {
+                if (this.auditorOrAffiliations[this.auditorOrAffiliations.length - 1] === item) {
+                  this._npoProfileRepo.getNpoProfileByNpoId(Number(resp.id)).subscribe(
+                    (results) => {
+                      this._spinner.hide();
+                      this._router.navigateByUrl('npo-profile/edit/' + results.id);
+                    },
+                    (err) => {
+                      this._loggerService.logException(err);
+                      this._spinner.hide();
+                    }
+                  );
+                }
+              },
+              (err) => {
+                this._loggerService.logException(err);
+                this._spinner.hide();
+              }
+            );
+          });
         },
         (err) => {
           this._loggerService.logException(err);
@@ -347,5 +403,86 @@ export class CreateNpoComponent implements OnInit {
 
   updateNpoName() {
     this.npo.name = this.selectedNPO.name;
+  }
+
+  public addAuditorInformation() {
+    this.newAuditorOrAffiliation = true;
+
+    this.auditorOrAffiliation = {
+      entityType: AuditorOrAffiliationEnum.Auditor,
+      isActive: true
+    } as IAuditorOrAffiliation;
+
+    this.addressLookup = null;
+    this.displayAuditorDialog = true;
+  }
+
+  public editAuditorInformation(data: IAuditorOrAffiliation) {
+    this.selectedAuditorOrAffiliation = data;
+    this.newAuditorOrAffiliation = false;
+    this.auditorOrAffiliation = this.cloneAuditorOrAffiliation(data);
+    this.displayAuditorDialog = true;
+  }
+
+  private cloneAuditorOrAffiliation(data: IAuditorOrAffiliation): IAuditorOrAffiliation {
+    let object = {} as IAuditorOrAffiliation;
+
+    for (let prop in data)
+      object[prop] = data[prop];
+
+    return object;
+  }
+
+  public deleteAuditorInformation(data: IAuditorOrAffiliation) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.auditorOrAffiliations.forEach(function (item, index, object) {
+          if (data === item)
+            object.splice(index, 1);
+        });
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  public disableSaveAuditorInfo() {
+    const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (!this.auditorOrAffiliation.organisationName || !this.auditorOrAffiliation.registrationNumber || !this.auditorOrAffiliation.address || !this.auditorOrAffiliation.contactPerson || !this.auditorOrAffiliation.telephoneNumber || this.auditorOrAffiliation.telephoneNumber.length != 10 || !this.auditorOrAffiliation.emailAddress || !regularExpression.test(String(this.auditorOrAffiliation.emailAddress)))
+      return true;
+
+    return false;
+  }
+
+  public saveAuditorInformation() {
+
+    if (this.newAuditorOrAffiliation)
+      this.auditorOrAffiliations.push(this.auditorOrAffiliation);
+    else
+      this.auditorOrAffiliations[this.auditorOrAffiliations.indexOf(this.selectedAuditorOrAffiliation)] = this.auditorOrAffiliation;
+
+    this.displayAuditorDialog = false;
+  }
+
+  public filterCountrySingle(event) {
+    let query = event.query;
+
+    this._addressLookupService.getAddress(query).subscribe(
+      (d) => {
+        this.newAddress = d['suggestions'];
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public populateAddressField(event) {
+    this.auditorOrAffiliation.address = event.text;
   }
 }

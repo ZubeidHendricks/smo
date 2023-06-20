@@ -94,6 +94,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IBankRepository, BankRepository>();
 			services.AddScoped<IBranchRepository, BranchRepository>();
 			services.AddScoped<IAccountTypeRepository, AccountTypeRepository>();
+			services.AddScoped<IRegistrationStatusRepository, RegistrationStatusRepository>();
 
 			/* Entities */
 			services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
@@ -117,6 +118,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<ICompliantCycleRuleRepository, CompliantCycleRuleRepository>();
 			services.AddScoped<ICompliantCycleRepository, CompliantCycleRepository>();
 			services.AddScoped<IPaymentScheduleRepository, PaymentScheduleRepository>();
+			services.AddScoped<IAuditorOrAffiliationRepository, AuditorOrAffiliationRepository>();
 
 			/* Lookup */
 			services.AddScoped<IActivityListRepository, ActivityListRepository>();

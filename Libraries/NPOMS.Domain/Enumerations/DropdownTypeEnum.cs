@@ -36,6 +36,7 @@
 		Banks = 32,
 		Branches = 33,
 		AccountTypes = 34,
-		CompliantCycleRules = 35
+		CompliantCycleRules = 35,
+		RegistrationStatus = 36
 	}
 }

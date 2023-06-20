@@ -51,7 +51,8 @@ export enum DropdownTypeEnum {
     Banks = 32,
     Branches = 33,
     AccountTypes = 34,
-    CompliantCycleRules = 35
+    CompliantCycleRules = 35,
+    RegistrationStatus = 36
 }
 
 export enum EntityTypeEnum {
@@ -103,6 +104,11 @@ export enum StatusEnum {
     DeptComments = 11,
     OrgComments = 12,
     Approved = 13
+}
+
+export enum AuditorOrAffiliationEnum {
+    Auditor = "Auditor",
+    Affiliation = "Affiliation"
 }
 
 export enum PermissionsEnum {

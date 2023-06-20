@@ -150,6 +150,9 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.CompliantCycleRules:
 						var compliantCycleRules = await _dropdownService.GetCompliantCycleRules(returnInactive);
 						return Ok(compliantCycleRules);
+					case DropdownTypeEnum.RegistrationStatus:
+						var registrationStatuses = await _dropdownService.GetRegistrationStatuses(returnInactive);
+						return Ok(registrationStatuses);
 				}
 
 				return Ok();
@@ -292,6 +295,10 @@ namespace NPOMS.API.Controllers
 						var rule = JsonConvert.DeserializeObject<CompliantCycleRule>(Convert.ToString(entity));
 						await _dropdownService.CreateCompliantCycleRule(rule, base.GetUserIdentifier());
 						break;
+					case DropdownTypeEnum.RegistrationStatus:
+						var registrationStatus = JsonConvert.DeserializeObject<RegistrationStatus>(Convert.ToString(entity));
+						await _dropdownService.CreateRegistrationStatus(registrationStatus, base.GetUserIdentifier());
+						break;
 				}
 
 				return Ok();
@@ -433,6 +440,10 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.CompliantCycleRules:
 						var rule = JsonConvert.DeserializeObject<CompliantCycleRule>(Convert.ToString(entity));
 						await _dropdownService.UpdateCompliantCycleRule(rule, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.RegistrationStatus:
+						var registrationStatus = JsonConvert.DeserializeObject<RegistrationStatus>(Convert.ToString(entity));
+						await _dropdownService.UpdateRegistrationStatus(registrationStatus, base.GetUserIdentifier());
 						break;
 				}
 

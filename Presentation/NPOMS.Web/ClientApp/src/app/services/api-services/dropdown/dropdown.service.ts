@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DropdownTypeEnum } from 'src/app/models/enums';
-import { IAccessStatus, IAccountType, IActivityList, IActivityType, IAllocationType, IApplicationType, IBank, IBranch, ICompliantCycleRule, IDenodoFacilityWrapper, IDepartment, IDirectorate, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod, IOrganisationType, IPosition, IProgramme, IProvisionType, IRecipientType, IResourceList, IResourceType, IRole, IServiceType, IStatus, ISubProgramme, ISubProgrammeType, ITitle, ITrainingMaterial, IUtility } from 'src/app/models/interfaces';
+import { IAccessStatus, IAccountType, IActivityList, IActivityType, IAllocationType, IApplicationType, IBank, IBranch, ICompliantCycleRule, IDenodoFacilityWrapper, IDepartment, IDirectorate, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod, IOrganisationType, IPosition, IProgramme, IProvisionType, IRecipientType, IRegistrationStatus, IResourceList, IResourceType, IRole, IServiceType, IStatus, ISubProgramme, ISubProgrammeType, ITitle, ITrainingMaterial, IUtility } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -130,6 +130,9 @@ export class DropdownService {
       case DropdownTypeEnum.CompliantCycleRules:
         data = this._http.get<ICompliantCycleRule[]>(url, httpOptions);
         break;
+      case DropdownTypeEnum.RegistrationStatus:
+        data = this._http.get<IRegistrationStatus[]>(url, httpOptions);
+        break;
     }
 
     return data;
@@ -233,6 +236,9 @@ export class DropdownService {
       case DropdownTypeEnum.CompliantCycleRules:
         entity = this._http.post<ICompliantCycleRule>(url, data, httpOptions);
         break;
+      case DropdownTypeEnum.RegistrationStatus:
+        entity = this._http.post<IRegistrationStatus>(url, data, httpOptions);
+        break;
     }
 
     return entity;
@@ -335,6 +341,9 @@ export class DropdownService {
         break;
       case DropdownTypeEnum.CompliantCycleRules:
         entity = this._http.put<ICompliantCycleRule>(url, data, httpOptions);
+        break;
+      case DropdownTypeEnum.RegistrationStatus:
+        entity = this._http.put<IRegistrationStatus>(url, data, httpOptions);
         break;
     }
 

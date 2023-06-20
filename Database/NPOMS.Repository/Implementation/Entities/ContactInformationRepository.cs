@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Entities;
 using NPOMS.Repository.Interfaces.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -33,6 +34,8 @@ namespace NPOMS.Repository.Implementation.Entities
 		{
 			var existingEntity = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
 			existingEntity.IsActive = false;
+			existingEntity.UpdatedUserId = currentUserId;
+			existingEntity.UpdatedDateTime = DateTime.Now;
 
 			var oldEntity = await this.RepositoryContext.ContactInformation.FindAsync(id);
 			await UpdateAsync(oldEntity, existingEntity, true, currentUserId);

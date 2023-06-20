@@ -232,5 +232,11 @@ namespace NPOMS.Services.Interfaces
 		Task CreateCompliantCycleRule(CompliantCycleRule model, string userIdentifier);
 
 		Task UpdateCompliantCycleRule(CompliantCycleRule model, string userIdentifier);
+
+		Task<IEnumerable<RegistrationStatus>> GetRegistrationStatuses(bool returnInactive);
+
+		Task CreateRegistrationStatus(RegistrationStatus model, string userIdentifier);
+
+		Task UpdateRegistrationStatus(RegistrationStatus model, string userIdentifier);
 	}
 }

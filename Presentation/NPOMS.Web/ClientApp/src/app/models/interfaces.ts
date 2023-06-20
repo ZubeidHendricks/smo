@@ -264,6 +264,13 @@ export interface IAccountType {
     isActive: boolean;
 }
 
+export interface IRegistrationStatus {
+    id: number;
+    name: string;
+    systemName: string;
+    isActive: boolean;
+}
+
 /* Entities */
 export interface IAccessStatus {
     id: number;
@@ -424,11 +431,16 @@ export interface INpo {
     approvalUserId: number;
     approvalDateTime: Date;
 
+    registrationStatusId: number;
+    pboNumber: string;
+    section18Receipts: boolean;
+
     organisationType: IOrganisationType;
     approvalStatus: IAccessStatus;
     contactInformation: IContactInformation[];
     createdUser: IUser;
     approvalUser: IUser;
+    registrationStatus: IRegistrationStatus;
 }
 
 export interface INpoProfile {
@@ -577,6 +589,24 @@ export interface IPaymentSchedule {
     isActive: boolean;
 
     compliantCycle: ICompliantCycle;
+}
+
+export interface IAuditorOrAffiliation {
+    id: number;
+    entityId: number; //Either NpoId or FundingApplicationId
+    entityType: string; //Either Auditor or Affiliation
+    organisationName: string;
+    registrationNumber: string;
+    address: string;
+    contactPerson: string;
+    emailAddress: string;
+    telephoneNumber: string;
+    website: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
 }
 
 /* Lookup */

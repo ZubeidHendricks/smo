@@ -25,7 +25,11 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task<IEnumerable<Npo>> GetEntities()
 		{
-			return await FindAll().Include(x => x.OrganisationType).Include(x => x.ApprovalStatus).Include(x => x.CreatedUser).Include(x => x.ApprovalUser)
+			return await FindAll().Include(x => x.OrganisationType)
+								  .Include(x => x.ApprovalStatus)
+								  .Include(x => x.CreatedUser)
+								  .Include(x => x.ApprovalUser)
+								  .Include(x => x.RegistrationStatus)
 							.Where(x => x.IsActive).OrderBy(x => x.Name).AsNoTracking().ToListAsync();
 		}
 

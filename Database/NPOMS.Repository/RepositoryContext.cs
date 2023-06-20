@@ -103,6 +103,7 @@ namespace NPOMS.Repository
 		public DbSet<Bank> Banks { get; set; }
 		public DbSet<Branch> Branches { get; set; }
 		public DbSet<AccountType> AccountTypes { get; set; }
+		public DbSet<RegistrationStatus> RegistrationStatuses { get; set; }
 
 		/* Entities */
 		public DbSet<AccessStatus> AccessStatuses { get; set; }
@@ -127,6 +128,7 @@ namespace NPOMS.Repository
 		public DbSet<CompliantCycle> CompliantCycles { get; set; }
 		public DbSet<PaymentSchedule> PaymentSchedules { get; set; }
 		public DbSet<AuditLog> AuditLogs { get; set; }
+		public DbSet<AuditorOrAffiliation> AuditorOrAffiliations { get; set; }
 
 		/* Lookup */
 		public DbSet<FacilityList> ActivityList { get; set; }
@@ -218,6 +220,7 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new BankConfiguration());
 			modelBuilder.ApplyConfiguration(new BranchConfiguration());
 			modelBuilder.ApplyConfiguration(new AccountTypeConfiguration());
+			modelBuilder.ApplyConfiguration(new RegistrationStatusConfiguration());
 
 			/* Entities */
 			modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());
