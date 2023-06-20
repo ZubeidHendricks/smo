@@ -104,7 +104,8 @@ namespace NPOMS.Repository
 		public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
 		public DbSet<Directorate> Directorates { get; set; }
 		public DbSet<Bank> Banks { get; set; }
-		public DbSet<Branch> Branches { get; set; }
+        public DbSet<BankDetail> BankDetail { get; set; }
+        public DbSet<Branch> Branches { get; set; }
 		public DbSet<AccountType> AccountTypes { get; set; }
 		public DbSet<RegistrationStatus> RegistrationStatuses { get; set; }
 
@@ -258,9 +259,10 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new StatusConfiguration());
 			modelBuilder.ApplyConfiguration(new TrainingMaterialConfiguration());
 			modelBuilder.ApplyConfiguration(new CompliantCycleRuleConfiguration());
+            modelBuilder.ApplyConfiguration(new PreviousYearFinanceConfiguration());
 
-			/* Lookup */
-			modelBuilder.ApplyConfiguration(new ActivityListConfiguration());
+            /* Lookup */
+            modelBuilder.ApplyConfiguration(new ActivityListConfiguration());
 			modelBuilder.ApplyConfiguration(new ResourceListConfiguration());
 
 			/* Mapping */

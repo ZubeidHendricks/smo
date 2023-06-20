@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IFinancialYear, IFundingApplicationDetails, IObjective, IPlace, IResource, ISDA,  ISubPlace, ISustainabilityPlan } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IObjective, IPlace, IResource, ISDA,  ISubPlace, ISustainabilityPlan } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -77,7 +77,13 @@ export class ApplicationService {
   public updateFundingApplicationDetails(fundingApplicationDetails: IFundingApplicationDetails) {
     const url = `${this._envUrl.urlAddress}/api/applications/fundingApplicationDetails`;
     return this._http.put<IFundingApplicationDetails>(url, fundingApplicationDetails, httpOptions);
+  } 
+  
+  public createBankDetail(bankDetail: IBankDetail) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/bank-detail`;
+    return this._http.post<IBankDetail>(url, bankDetail, httpOptions);
   }  
+
 
   public getAllActivities(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/activities/npoId/${application.npoId}/applicationPeriodId/${application.applicationPeriodId}`;

@@ -14,3 +14,16 @@ export class FinancialMatters {
     public createdDateTime: Date,
     public type: string) { }
 }
+
+export interface IPreviousFinancialYear {
+  id: number;
+  fundingApplicationDetailId: number;
+  incomeDescription: string;
+  incomeAmount: number;
+  expenditureDescription: string;
+  expenditureAmount: number;
+  createdUserId: number;
+  createdDateTime: Date;
+  updatedUserId: number;
+  updatedDateTime: Date;
+}

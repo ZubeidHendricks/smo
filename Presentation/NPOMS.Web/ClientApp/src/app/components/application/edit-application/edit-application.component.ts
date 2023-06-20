@@ -89,18 +89,13 @@ export class EditApplicationComponent implements OnInit {
     private _loggerService: LoggerService
   ) { }
   places(place: IPlace[]) {
-    debugger;
-    
     this.placeAll = place;
   }
 
   subPlaces(subPlaces: ISubPlace[]) {
-    debugger;
     this.subPlacesAll = subPlaces;
   }
   ngOnInit(): void {
-    debugger;
-console.log('fundingApplicationDetails',JSON.stringify(this.fundingApplicationDetails));
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
@@ -296,8 +291,6 @@ getfinFund(event: FinancialMatters)
   }
 
   private bidForm(status: StatusEnum) {
-    debugger;
-    console.log('status bidForm', status);
     this.application.status = null;
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
@@ -369,8 +362,6 @@ getfinFund(event: FinancialMatters)
   }
   
   private getFundingApplicationDetails(data) {
-
-console.log('data.result',data);
     this._bidService.getBid(data.id).subscribe(response => {
 
       this.getBidFullObject(response)
@@ -379,7 +370,6 @@ console.log('data.result',data);
   }
 
   private getBidFullObject(data) {
-debugger;
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
@@ -394,7 +384,6 @@ debugger;
     }
 
     if (this.fundingApplicationDetails.monitoringEvaluation != null) {
-      console.log('this.fundingApplicationDetails.monitoringEvaluation',this.fundingApplicationDetails.monitoringEvaluation);
       this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
 
     }
@@ -402,7 +391,6 @@ debugger;
       this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
     }
     this.fundingApplicationDetails.financialMatters = data.financialMatters;
-    console.log('data.financialMatters',data.financialMatters);
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
 
     this.fundingApplicationDetails.implementations?.forEach(c => {
@@ -411,7 +399,6 @@ debugger;
       c.timeframe?.push(new Date(c.timeframeTo));
       c.timeframe?.push(new Date(c.timeframeFrom))
     });
-    console.log('fundingApplicationDetails as get', this.fundingApplicationDetails);
 
   }
   

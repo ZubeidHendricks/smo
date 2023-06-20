@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Graph;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Mapping;
@@ -7,6 +8,7 @@ using NPOMS.Services.Email;
 using NPOMS.Services.Email.EmailTemplates;
 using NPOMS.Services.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NPOMS.API.Controllers
@@ -257,7 +259,7 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpPost("bank-detail", Name = "CreateBankDetail")]
+		[HttpPost("createBankDetail", Name = "CreateBankDetail")]
 		public async Task<IActionResult> CreateBankDetail([FromBody] BankDetail model)
 		{
 			try
@@ -287,6 +289,58 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		#endregion
-	}
+        [HttpPut("updatePreviousYearFinance/npoProfileId/{npoProfileId}", Name = "UpdatePreviousYearFinance")]
+        public async Task<IActionResult> UpdatePreviousYearFinance([FromBody] List<PreviousYearFinance> model, string npoProfileId)
+        {
+			await _npoProfileService.Update(model, base.GetUserIdentifier(), npoProfileId);
+			return Ok(model);
+        }
+
+        [HttpGet("getPreviousYearFinanceByNpoProfileId/npoProfileId/{npoProfileId}", Name = "GetPreviousYearFinanceByNpoProfileId")]
+        public async Task<IActionResult> GetPreviousYearFinanceByNpoProfileId(int npoProfileId)
+        {
+            try
+            {
+                var results = await _npoProfileService.GetByNpoProfileIdAsync(npoProfileId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetBankDetailsByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("deleteById/id/{id}", Name = "DeleteById")]
+        public async Task<IActionResult> DeleteById(int id)
+        {
+            try
+            {
+                var results = await _npoProfileService.DeleteById(id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetBankDetailsByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("deleteBankDetailById/id/{id}", Name = "DeleteBankDetailById")]
+        public async Task<IActionResult> DeleteBankDetailById(int id)
+        {
+            try
+            {
+                var results = await _npoProfileService.DeleteBankDetailById(id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetBankDetailsByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        #endregion
+    }
 }
