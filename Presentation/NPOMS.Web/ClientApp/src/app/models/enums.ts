@@ -63,7 +63,8 @@ export enum DropdownTypeEnum {
     SubPlaces =43,
     Race =44,
     Gender =45,
-    Languages = 46
+    Languages = 46,
+    RegistrationStatus = 47
 }
 
 export enum EntityTypeEnum {
@@ -136,6 +137,11 @@ export enum StatusEnum {
     Evaluated = 22,
     EvaluationApproved = 23,
     GetName
+}
+
+export enum AuditorOrAffiliationEnum {
+    Auditor = "Auditor",
+    Affiliation = "Affiliation"
 }
 
 export enum PermissionsEnum {

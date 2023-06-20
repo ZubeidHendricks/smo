@@ -67,6 +67,7 @@ namespace NPOMS.Services.Implementation
         private IRaceRepository _raceRepository;
         private IGenderRepository _genderRepository;
         private ILanguageRepository _languageRepository;
+		private IRegistrationStatusRepository _registrationStatusRepository;
 
 
         #endregion
@@ -121,7 +122,8 @@ namespace NPOMS.Services.Implementation
 			ISubPlaceRepository subPlaceRepository,
 			IRaceRepository raceRepository,
 			IGenderRepository genderRepository,
-			ILanguageRepository languageRepository)
+			ILanguageRepository languageRepository,
+			IRegistrationStatusRepository registrationStatusRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -171,6 +173,7 @@ namespace NPOMS.Services.Implementation
 			_raceRepository= raceRepository;
 			_genderRepository= genderRepository;
 			_languageRepository= languageRepository;
+			_registrationStatusRepository = registrationStatusRepository;
 		}
 
 		#endregion
@@ -1380,6 +1383,35 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			await _compliantCycleRuleRepository.UpdateAsync(null, model, false, loggedInUser.Id);
+		}
+
+		#endregion
+
+		#region Registration Status
+
+		public async Task<IEnumerable<RegistrationStatus>> GetRegistrationStatuses(bool returnInactive)
+		{
+			return await _registrationStatusRepository.GetEntities(returnInactive);
+		}
+
+		public async Task CreateRegistrationStatus(RegistrationStatus model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _registrationStatusRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateRegistrationStatus(RegistrationStatus model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _registrationStatusRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
 		#endregion

@@ -47,6 +47,7 @@
 		SubPlace =43,
 		Race=44,
 		Gender =45,
-		Languages =46
-    }
+		Languages =46,
+		RegistrationStatus = 47
+	}
 }

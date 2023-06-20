@@ -576,7 +576,8 @@ export class EditProfileComponent implements OnInit {
       this._spinner.show();
       let data = this.npoProfile;
 
-      this.npo.approvalStatusId = AccessStatusEnum.Pending;
+      // TK: Set default approval status to Approved after chat with RG on 2023-06-19
+      this.npo.approvalStatusId = AccessStatusEnum.Approved; //AccessStatusEnum.Pending;
       this.npo.approvalUserId = null;
       this.npo.approvalDateTime = null;
 

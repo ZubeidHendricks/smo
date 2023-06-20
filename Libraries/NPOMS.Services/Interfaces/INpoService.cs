@@ -22,5 +22,11 @@ namespace NPOMS.Services.Interfaces
 		Task Update(Npo npo, string userIdentifier);
 
 		Task UpdateNpoStatus(Npo npo, string userIdentifier);
+
+		Task<IEnumerable<AuditorOrAffiliation>> GetAuditorOrAffiliations(int entityId);
+
+		Task CreateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier);
+
+		Task UpdateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier);
 	}
 }

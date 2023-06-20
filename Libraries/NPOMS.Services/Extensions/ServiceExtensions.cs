@@ -105,6 +105,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IRaceRepository, RaceRepository>();
             services.AddScoped<IGenderRepository, GenderRepository>();
             services.AddScoped<ILanguageRepository, LanguageRepository>();
+			services.AddScoped<IRegistrationStatusRepository, RegistrationStatusRepository>();
 
 
             /* Entities */
@@ -147,6 +148,7 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IBidRepository,BidRepository>();
 
 
+			services.AddScoped<IAuditorOrAffiliationRepository, AuditorOrAffiliationRepository>();
 
             /* Lookup */
             services.AddScoped<IActivityListRepository, ActivityListRepository>();

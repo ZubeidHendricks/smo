@@ -164,6 +164,7 @@ namespace NPOMS.API.Controllers
 		private static void ClearObjects(Npo model)
 		{
 			model.OrganisationType = null;
+			model.RegistrationStatus = null;
 
 			foreach (var item in model.ContactInformation)
 			{
@@ -222,6 +223,51 @@ namespace NPOMS.API.Controllers
 			catch (Exception ex)
 			{
 				_logger.LogError($"Something went wrong inside NpoConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+			}
+		}
+
+		[HttpGet("auditor-affiliation/entityId/{entityId}", Name = "GetAuditorOrAffiliations")]
+		public async Task<IActionResult> GetAuditorOrAffiliations(int entityId)
+		{
+			try
+			{
+				var results = await _npoService.GetAuditorOrAffiliations(entityId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetAuditorOrAffiliations action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("auditor-affiliation", Name = "CreateAuditorOrAffiliation")]
+		public async Task<IActionResult> CreateAuditorOrAffiliation([FromBody] AuditorOrAffiliation model)
+		{
+			try
+			{
+				await _npoService.CreateAuditorOrAffiliation(model, base.GetUserIdentifier());
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateAuditorOrAffiliation action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPut("auditor-affiliation", Name = "UpdateAuditorOrAffiliation")]
+		public async Task<IActionResult> UpdateAuditorOrAffiliation([FromBody] AuditorOrAffiliation model)
+		{
+			try
+			{
+				await _npoService.UpdateAuditorOrAffiliation(model, base.GetUserIdentifier());
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside UpdateAuditorOrAffiliation action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
 
