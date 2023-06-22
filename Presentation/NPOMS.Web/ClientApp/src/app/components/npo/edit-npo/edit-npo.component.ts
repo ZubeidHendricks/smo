@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { AccessStatusEnum, AuditorOrAffiliationEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IAddressLookup, IAuditorOrAffiliation, IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, IRegistrationStatus, ITitle, IUser } from 'src/app/models/interfaces';
+import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, IRegistrationStatus, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
@@ -52,8 +52,8 @@ export class EditNpoComponent implements OnInit {
   races: IRace[];
   selectedRace: IRace;
 
-  gender :IGender[];
-  selectedGender:IGender;
+  gender: IGender[];
+  selectedGender: IGender;
 
   languages: ILanguage[];
   selectedLanguage: ILanguage;
@@ -73,27 +73,17 @@ export class EditNpoComponent implements OnInit {
   paramSubcriptions: Subscription;
   isDataAvailable: boolean = false;
 
-  auditorOrAffiliations: IAuditorOrAffiliation[];
-  auditorCols: any[];
-  newAuditorOrAffiliation: boolean;
-  auditorOrAffiliation: IAuditorOrAffiliation = {} as IAuditorOrAffiliation;
-  selectedAuditorOrAffiliation: IAuditorOrAffiliation;
-  displayAuditorDialog: boolean;
-
-  newAddress: IAddressLookup[];
-  addressLookup: IAddressLookup;
-
   // Highlight required fields on validate click
   validated: boolean = false;
   minDate: Date;
   maxDate: Date;
   disableDate: boolean = true;
 
-  isPrimaryContact: boolean;  
-  isBoardMember: boolean;    
+  isPrimaryContact: boolean;
+  isBoardMember: boolean;
   isSignatory: boolean;
   isWrittenAgreementSignatory: boolean;
-  isDisabled:boolean;
+  isDisabled: boolean;
 
   constructor(
     private _router: Router,
@@ -120,7 +110,7 @@ export class EditNpoComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.EditNpo))
           this._router.navigate(['401']);
 
-        
+
         this.loadOrganisationTypes();
         this.loadRegistrationStatuses();
         this.loadTitles();
@@ -130,7 +120,7 @@ export class EditNpoComponent implements OnInit {
         this.loadLanguages();
         this.loadNpo();
         this.buildMenu();
-   
+
       }
     });
 
@@ -150,14 +140,6 @@ export class EditNpoComponent implements OnInit {
       { header: 'Position', width: '20%' },
       { header: 'Email', width: '33%' },
       { header: 'Cellphone', width: '15%' }
-    ];
-
-    this.auditorCols = [
-      { header: 'Company', width: '20%' },
-      { header: 'Registration Number', width: '15%' },
-      { header: 'Address', width: '23%' },
-      { header: 'Telephone Number', width: '10%' },
-      { header: 'Email Address', width: '25%' }
     ];
   }
 
@@ -247,7 +229,7 @@ export class EditNpoComponent implements OnInit {
     );
   }
 
-  
+
   private loadRaces() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Race, false).subscribe(
       (results) => {
@@ -271,7 +253,7 @@ export class EditNpoComponent implements OnInit {
         this._spinner.hide();
       }
     );
-  }  
+  }
 
 
   private loadGender() {
@@ -285,7 +267,7 @@ export class EditNpoComponent implements OnInit {
         this._spinner.hide();
       }
     );
-  }  
+  }
 
   private loadNpo() {
     debugger;
@@ -295,7 +277,8 @@ export class EditNpoComponent implements OnInit {
           this.selectedOrganisationType = results.organisationType;
           this.selectedRegistrationStatus = results.registrationStatus;
           this.npo = results;
-          this.loadAuditorOrAffiliations();
+          this.isDataAvailable = true;
+          this._spinner.hide();
         },
         (err) => {
           this._loggerService.logException(err);
@@ -305,35 +288,21 @@ export class EditNpoComponent implements OnInit {
     }
   }
 
-  private loadAuditorOrAffiliations() {
-    this._npoRepo.getAuditorOrAffiliations(this.npo.id).subscribe(
-      (results) => {
-        this.auditorOrAffiliations = results.filter(x => x.entityType === AuditorOrAffiliationEnum.Auditor);
-        this.isDataAvailable = true;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
   private formValidate() {
     this.validated = true;
     this.validationErrors = [];
-console.log('NPO-contact',this.npo);
-    
+    console.log('NPO-contact', this.npo);
+
     let data = this.npo;
 
     if (!data.name || !this.selectedOrganisationType || !this.selectedRegistrationStatus)
       this.validationErrors.push({ severity: 'error', summary: "General Information:", detail: "Missing detail required." });
 
     if (data.contactInformation.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Contact Information:", detail: "The Organisation Contact List cannot be empty." });
+      this.validationErrors.push({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "The Organisation Contact List cannot be empty." });
 
     if (data.contactInformation.length > 0 && data.contactInformation.filter(x => x.isPrimaryContact === true).length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Contact Information:", detail: "Please specify the primary contact." });
+      this.validationErrors.push({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "Please specify the primary contact." });
 
     if (this.validationErrors.length == 0)
       this.menuActions[1].visible = false;
@@ -352,7 +321,7 @@ console.log('NPO-contact',this.npo);
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npo;
-      console.log('this.npo',this.npo);
+      console.log('this.npo', this.npo);
       console.log('data', data);
 
 
@@ -412,7 +381,7 @@ console.log('NPO-contact',this.npo);
 
     this.selectedTitle = null;
     this.selectedPosition = null;
-    this.selectedGender= null;
+    this.selectedGender = null;
     this.selectedRace = null;
     this.selectedLanguage = null;
     this.displayContactDialog = true;
@@ -421,8 +390,8 @@ console.log('NPO-contact',this.npo);
   saveContactInformation() {
     this.contactInformation.title = this.selectedTitle;
     this.contactInformation.position = this.selectedPosition;
-    this.contactInformation.race= this.selectedRace;
-    this.contactInformation.gender= this.selectedGender;
+    this.contactInformation.race = this.selectedRace;
+    this.contactInformation.gender = this.selectedGender;
     this.contactInformation.language = this.selectedLanguage;
 
     if (this.newContactInformation)
@@ -494,105 +463,5 @@ console.log('NPO-contact',this.npo);
 
   updateNpoName() {
     this.npo.name = this.selectedNPO.name;
-  }
-
-  public addAuditorInformation() {
-    this.newAuditorOrAffiliation = true;
-
-    this.auditorOrAffiliation = {
-      entityId: this.npo.id,
-      entityType: AuditorOrAffiliationEnum.Auditor,
-      isActive: true
-    } as IAuditorOrAffiliation;
-
-    this.addressLookup = null;
-    this.displayAuditorDialog = true;
-  }
-
-  public editAuditorInformation(data: IAuditorOrAffiliation) {
-    this.newAuditorOrAffiliation = false;
-    this.auditorOrAffiliation = this.cloneAuditorOrAffiliation(data);
-    this.addressLookup = null;
-    this.displayAuditorDialog = true;
-  }
-
-  private cloneAuditorOrAffiliation(data: IAuditorOrAffiliation): IAuditorOrAffiliation {
-    let object = {} as IAuditorOrAffiliation;
-
-    for (let prop in data)
-      object[prop] = data[prop];
-
-    return object;
-  }
-
-  public deleteAuditorInformation(data: IAuditorOrAffiliation) {
-    this._confirmationService.confirm({
-      message: 'Are you sure that you want to delete this item?',
-      header: 'Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-        this.auditorOrAffiliation = this.cloneAuditorOrAffiliation(data);
-        this.auditorOrAffiliation.isActive = false;
-        this.updateAuditorOrAffiliation();
-      },
-      reject: () => {
-      }
-    });
-  }
-
-  public disableSaveAuditorInfo() {
-    const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    if (!this.auditorOrAffiliation.organisationName || !this.auditorOrAffiliation.registrationNumber || !this.auditorOrAffiliation.address || !this.auditorOrAffiliation.contactPerson || !this.auditorOrAffiliation.telephoneNumber || this.auditorOrAffiliation.telephoneNumber.length != 10 || !this.auditorOrAffiliation.emailAddress || !regularExpression.test(String(this.auditorOrAffiliation.emailAddress)))
-      return true;
-
-    return false;
-  }
-
-  public saveAuditorInformation() {
-    this.newAuditorOrAffiliation ? this.createAuditorOrAffiliation() : this.updateAuditorOrAffiliation();
-    this.displayAuditorDialog = false;
-  }
-
-  private createAuditorOrAffiliation() {
-    this._npoRepo.createAuditorOrAffiliation(this.auditorOrAffiliation).subscribe(
-      (resp) => {
-        this.loadAuditorOrAffiliations();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private updateAuditorOrAffiliation() {
-    this._npoRepo.updateAuditorOrAffiliation(this.auditorOrAffiliation).subscribe(
-      (resp) => {
-        this.loadAuditorOrAffiliations();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  public filterCountrySingle(event) {
-    let query = event.query;
-
-    this._addressLookupService.getAddress(query).subscribe(
-      (d) => {
-        this.newAddress = d['suggestions'];
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  public populateAddressField(event) {
-    this.auditorOrAffiliation.address = event.text;
   }
 }

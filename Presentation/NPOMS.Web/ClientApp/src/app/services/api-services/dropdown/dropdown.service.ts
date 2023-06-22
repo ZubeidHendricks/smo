@@ -1,4 +1,4 @@
-import { ILanguage } from './../../../models/interfaces';
+import { ILanguage, IStaffCategory } from './../../../models/interfaces';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -135,10 +135,10 @@ export class DropdownService {
         break;
 
       case DropdownTypeEnum.DistrictCouncil:
-          data = this._http.get<IDistrictCouncil[]>(url, httpOptions);
-          break;
+        data = this._http.get<IDistrictCouncil[]>(url, httpOptions);
+        break;
       case DropdownTypeEnum.LocalMunicipality:
-          data = this._http.get<ILocalMunicipality[]>(url, httpOptions);
+        data = this._http.get<ILocalMunicipality[]>(url, httpOptions);
         break;
 
       case DropdownTypeEnum.Region:
@@ -146,25 +146,28 @@ export class DropdownService {
         break;
       case DropdownTypeEnum.ServiceDeliveryArea:
         data = this._http.get<ISDA[]>(url, httpOptions);
-        break; 
+        break;
 
-        case DropdownTypeEnum.PropertyType:
-          data = this._http.get<PropertyType[]>(url, httpOptions);
-          break;
-        case DropdownTypeEnum.PropertySubType:
-          data = this._http.get<PropertySubType[]>(url, httpOptions);
-          break;     
-          case DropdownTypeEnum.Race:
-            data = this._http.get<IRace[]>(url, httpOptions);
-            break;
-          case DropdownTypeEnum.Gender:
-            data = this._http.get<IGender[]>(url, httpOptions);
-            break;   
-            case DropdownTypeEnum.Languages:
-              data = this._http.get<ILanguage[]>(url, httpOptions);
-              break;                            
+      case DropdownTypeEnum.PropertyType:
+        data = this._http.get<PropertyType[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.PropertySubType:
+        data = this._http.get<PropertySubType[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Race:
+        data = this._http.get<IRace[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Gender:
+        data = this._http.get<IGender[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Languages:
+        data = this._http.get<ILanguage[]>(url, httpOptions);
+        break;
       case DropdownTypeEnum.RegistrationStatus:
         data = this._http.get<IRegistrationStatus[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.StaffCategory:
+        data = this._http.get<IStaffCategory[]>(url, httpOptions);
         break;
     }
 
@@ -272,6 +275,9 @@ export class DropdownService {
       case DropdownTypeEnum.RegistrationStatus:
         entity = this._http.post<IRegistrationStatus>(url, data, httpOptions);
         break;
+      case DropdownTypeEnum.StaffCategory:
+        entity = this._http.post<IStaffCategory>(url, data, httpOptions);
+        break;
     }
 
     return entity;
@@ -377,6 +383,9 @@ export class DropdownService {
         break;
       case DropdownTypeEnum.RegistrationStatus:
         entity = this._http.put<IRegistrationStatus>(url, data, httpOptions);
+        break;
+      case DropdownTypeEnum.StaffCategory:
+        entity = this._http.put<IStaffCategory>(url, data, httpOptions);
         break;
     }
 

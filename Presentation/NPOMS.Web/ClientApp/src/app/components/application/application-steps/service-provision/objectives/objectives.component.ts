@@ -186,7 +186,7 @@ export class ObjectivesComponent implements OnInit {
     );
   }
 
-  private loadObjectives() {    
+  private loadObjectives() {
     this._spinner.show();
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {

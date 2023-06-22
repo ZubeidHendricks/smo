@@ -14,8 +14,6 @@ namespace NPOMS.Services.Implementation
 {
 	public class NpoService : INpoService
 	{
-		public const string Auditor = "Auditor";
-		public const string Affiliation = "Affiliation";
 
 		#region Fields
 
@@ -25,7 +23,6 @@ namespace NPOMS.Services.Implementation
 		private IContactInformationRepository _contactInformationRepository;
 		private IUserNpoRepository _userNpoRepository;
 		private IRegistrationStatusRepository _registrationStatusRepository;
-		private IAuditorOrAffiliationRepository _auditorOrAffiliationRepository;
 
 		#endregion
 
@@ -37,8 +34,7 @@ namespace NPOMS.Services.Implementation
 			IOrganisationTypeRepository organisationTypeRepository,
 			IContactInformationRepository contactInformationRepository,
 			IUserNpoRepository userNpoRepository,
-			IRegistrationStatusRepository registrationStatusRepository,
-			IAuditorOrAffiliationRepository auditorOrAffiliationRepository)
+			IRegistrationStatusRepository registrationStatusRepository)
 		{
 			_npoRepository = npoRepository;
 			_userRepository = userRepository;
@@ -46,7 +42,6 @@ namespace NPOMS.Services.Implementation
 			_contactInformationRepository = contactInformationRepository;
 			_userNpoRepository = userNpoRepository;
 			_registrationStatusRepository = registrationStatusRepository;
-			_auditorOrAffiliationRepository = auditorOrAffiliationRepository;
 		}
 
 		#endregion
@@ -160,31 +155,6 @@ namespace NPOMS.Services.Implementation
 			npo.ApprovalDateTime = DateTime.Now;
 
 			await _npoRepository.UpdateEntity(npo, loggedInUser.Id);
-		}
-
-		public async Task<IEnumerable<AuditorOrAffiliation>> GetAuditorOrAffiliations(int entityId)
-		{
-			return await _auditorOrAffiliationRepository.GetByEntityId(entityId);
-		}
-
-		public async Task CreateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier)
-		{
-			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
-			model.CreatedUserId = loggedInUser.Id;
-			model.CreatedDateTime = DateTime.Now;
-
-			await _auditorOrAffiliationRepository.CreateAsync(model);
-		}
-
-		public async Task UpdateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier)
-		{
-			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
-			model.UpdatedUserId = loggedInUser.Id;
-			model.UpdatedDateTime = DateTime.Now;
-
-			await _auditorOrAffiliationRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
 		#endregion

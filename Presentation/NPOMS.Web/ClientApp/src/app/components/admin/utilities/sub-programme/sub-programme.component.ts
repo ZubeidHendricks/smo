@@ -99,7 +99,7 @@ export class SubProgrammeComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, true).subscribe(
       (results) => {
         this.entities = results;
-        
+
         this.updateProgramme();
         this._spinner.hide();
       },

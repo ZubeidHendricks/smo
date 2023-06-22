@@ -55,7 +55,19 @@ namespace NPOMS.Services.Interfaces
         Task<FinancialMattersOthers> DeleteOthersById(int id);
 
 
+		Task<IEnumerable<AuditorOrAffiliation>> GetAuditorOrAffiliations(int entityId);
 
+		Task CreateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier);
+
+		Task UpdateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier);
+
+		Task<IEnumerable<StaffMemberProfile>> GetStaffMemberProfiles(int npoProfileId);
+
+		Task CreateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
+
+		Task UpdateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
+        Task<IEnumerable<AffiliatedOrganisationInformation>> GetAffiliatedOrganisationById(int npoProfileId);
+        Task<IEnumerable<SourceOfInformation>> GetSourceOfInformationById(int npoProfileId);
 
         Task Update(List<AffiliatedOrganisationInformation> model, string userIdentifier, string npoProfileId);
         Task Update(SourceOfInformation model, string userIdentifier, string npoProfileId);

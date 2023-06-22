@@ -72,7 +72,7 @@ export class IFinancialMattersOthers {
   updatedUserId: number;
   updatedDateTime: Date;
 }
-}
+
 
 export interface ISourceOfInformation {
   id: number;

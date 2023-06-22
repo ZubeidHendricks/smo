@@ -109,7 +109,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowData>
                 <tr>
-                    <th>&nbsp;</th>
+                    <th class="p-text-center"> <input [ngStyle]="{'width': 100 + '%'}" type="text" pInputText [ngModelOptions]="{standalone: true}" [disabled]="true"></th>
                     <th class="p-text-center">
                         <input [ngStyle]="{'width': 100 + '%'}" type="text" pInputText [(ngModel)]="sourceOfInformationText" [ngModelOptions]="{standalone: true}" [disabled]="true">
                     </th>
@@ -206,25 +206,6 @@
                     </td>
                 </tr>
             </ng-template>
-            <!-- <ng-template pTemplate="body" let-rowData>
-                <tr>
-                    <th class="p-text-center">
-                        <input [ngStyle]="{'width': 100 + '%'}" type="text" pInputText [(ngModel)]="affiliatedOrganisation" [ngModelOptions]="{standalone: true}" [disabled]="false" (change)="updateDetail()">
-                    </th>
-                    <th class="p-text-center">
-                        <input [ngStyle]="{'width': 100 + '%'}" type="text" class="form-text" pInputText [(ngModel)]="rowData.contactPerson" [ngModelOptions]="{standalone: true}" [disabled]="false" (change)="updateDetail()">
-                    </th>
-                    <th class="p-text-center">
-                        <input [ngStyle]="{'width': 100 + '%'}" type="text" class="form-text" pInputText [(ngModel)]="rowData.emailAddress" [ngModelOptions]="{standalone: true}" [disabled]="false" (change)="updateDetail()">
-                    </th>
-                    <th class="p-text-center">
-                        <input [ngStyle]="{'width': 100 + '%'}" type="text" class="form-text" pInputText [(ngModel)]="rowData.telephoneNumber" [ngModelOptions]="{standalone: true}" [disabled]="false" (change)="updateDetail()">
-                    </th>
-                    <th class="p-text-center">
-                        <input [ngStyle]="{'width': 100 + '%'}" type="text" class="form-text" pInputText [(ngModel)]="rowData.website" [ngModelOptions]="{standalone: true}" [disabled]="false" (change)="updateDetail()">
-                    </th>
-                </tr>
-            </ng-template> -->
         </p-table>
    <br>
     <div style="height: 10px;"></div>

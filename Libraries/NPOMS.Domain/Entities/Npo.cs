@@ -37,6 +37,9 @@ namespace NPOMS.Domain.Entities
 
 		public bool Section18Receipts { get; set; }
 
+		[Column(TypeName = "nvarchar(255)")]
+		public string CCode { get; set; }
+
 		public int CreatedUserId { get; set; }
 
 		public DateTime CreatedDateTime { get; set; }

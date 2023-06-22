@@ -10,8 +10,8 @@ import { IApplication, IFundingApplicationDetails } from 'src/app/models/interfa
 export class MonitoringEvaluationPlanComponent implements OnInit {
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
- @Input() application: IApplication;
- @Input() fundingApplicationDetails: IFundingApplicationDetails;
+  @Input() application: IApplication;
+  @Input() fundingApplicationDetails: IFundingApplicationDetails;
   @Input() monEvalDescription: string;
   @Input() isReadOnly: boolean;
   @Output() monEvalDescriptionChange = new EventEmitter();
@@ -25,13 +25,13 @@ export class MonitoringEvaluationPlanComponent implements OnInit {
   }
 
   readonly(): boolean {
-        if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved )
-          return true;
-        else return false;
-      }
+    if (this.application.statusId == StatusEnum.PendingReview ||
+      this.application.statusId == StatusEnum.Approved)
+      return true;
+    else return false;
+  }
 
-      onMonEvalDescription($event) {
+  onMonEvalDescription($event) {
     this.monEvalDescriptionChange.emit($event);
   }
 

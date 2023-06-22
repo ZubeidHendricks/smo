@@ -692,21 +692,23 @@ export class ApplicationDetailsComponent implements OnInit {
     this._npoProfile.getSourceOfInformationById(this.selectedApplicationId).subscribe(
       (results) => {
         this.sourceOfInformation = results;
-
-        this.sourceOfInformation.forEach(function (value) {
-          console.log('selectedSourceValue', this.value);
-          if(value.selectedSourceValue === 1)
-          {
-            console.log('selectedSourceValue', this.value)
-            this.sourceOfInformationText = "Printed newspaper";
-          }
-        });
-
-        // if(this.sourceOfInformation[0].selectedSourceValue ===1)
-        // {
-        //   this.sourceOfInformationText = "fsdfd";
-        // }
-        console.log('sourceOfInformation', this.sourceOfInformation)
+        this.sourceOfInformationText = "Printed newspaper";
+        if(results.find(results => results.selectedSourceValue ===1))
+        {
+          this.sourceOfInformationText = "Printed newspaper";
+        }
+        if(results.find(results => results.selectedSourceValue ===2))
+        {
+          this.sourceOfInformationText = "Online";
+        }
+        if(results.find(results => results.selectedSourceValue ===3))
+        {
+          this.sourceOfInformationText = "DSD circular to NPOs";
+        }
+        if(results.find(results => results.selectedSourceValue ===4))
+        {
+          this.sourceOfInformationText = "Other (specify)";
+        }
       },
       (err) => {
         //
@@ -762,15 +764,9 @@ export class ApplicationDetailsComponent implements OnInit {
   save()
   {
     var today = this.getCurrentDateTime();
-   // this.sourceOfInformation.id = 0;
     this.sourceOfInformations.npoProfileId = Number(this.selectedApplicationId);
     this.sourceOfInformations.selectedSourceValue = Number(this.selectedDropdownValue);
     this.sourceOfInformations.additionalSourceInformation = this.specify;
-    // this.sourceOfInformation.createdUserId = 0;
-    // this.sourceOfInformation.createdDateTime = today;
-    // this.sourceOfInformation.updatedUserId = 0;
-    // this.sourceOfInformation.updatedDateTime = today;
-    console.log('this.sourceOfInformation[0]', this.sourceOfInformation[0]);
     this.updateSourceOfInformation(this.sourceOfInformations);
    
   }
