@@ -171,6 +171,7 @@ this.calculateOthrSourceFundingTotal();
       this.fundingApplicationDetails.financialMatters = [];
       this.financialMattersIncome = [];
       this.financialMattersExpenditure = [];
+      this.financialMattersOthers =[];
       this.financicalMattersOthrSourceFunding =[];
     // }
 
@@ -717,7 +718,7 @@ this.calculateOthrSourceFundingTotal();
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        this.financicalMattersOthrSourceFunding.forEach(function (item, index, object) {
+        this.financialMattersOthers.forEach(function (item, index, object) {
           if (budget === item)
             object.splice(index, 1);
         });
@@ -860,7 +861,7 @@ this.calculateOthrSourceFundingTotal();
       this.financialMattersOthers[0].updatedUserId = this.currentUserId;
       this.financialMattersOthers[0].updatedDateTime = today;
     }
-    this._npoProfile.updateFinancialMattersOthers(this.financialMattersExpenditure, this.selectedApplicationId).subscribe(
+    this._npoProfile.updateFinancialMattersOthers(this.financialMattersOthers, this.selectedApplicationId).subscribe(
       (resp) => {
         this.GetFinancialMattersOther();
       },

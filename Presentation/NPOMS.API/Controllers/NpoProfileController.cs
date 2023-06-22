@@ -361,7 +361,7 @@ namespace NPOMS.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetExpenditureByNpoProfileIdAsync action: {ex.Message} Inner Exception: {ex.InnerException}");
+                _logger.LogError($"Something went wrong inside GetOthersByNpoProfileIdAsync action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
