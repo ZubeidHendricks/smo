@@ -263,22 +263,13 @@ namespace NPOMS.Services.Implementation
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var getData = await _sourceOfInformationRepository.GetSourceOfInformationByIdAsync( Convert.ToInt32(npoProfileId));
-			//foreach (var m in model)
-			//{
-				if (getData.Count() <= 1)
-                {
-                    model.CreatedUserId = loggedInUser.Id;
-                    model.CreatedDateTime = DateTime.Now;
-                   // model.NpoProfileId = Convert.ToInt32(id);
-                    await _sourceOfInformationRepository.CreateAsync(model);
-                }
-                else
-                {
-                    model.UpdatedUserId = loggedInUser.Id;
-                    model.UpdatedDateTime = DateTime.Now;
-                    await _sourceOfInformationRepository.UpdateAsync(model);
-                }
-			//}
+			
+			if (getData.Count() == 0)
+            {
+                model.CreatedUserId = loggedInUser.Id;
+                model.CreatedDateTime = DateTime.Now;
+                await _sourceOfInformationRepository.CreateAsync(model);
+            }                
 		}
 
         public async Task<IEnumerable<AffiliatedOrganisationInformation>> GetAffiliatedOrganisationById(int id)

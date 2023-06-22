@@ -755,6 +755,7 @@ export class FinancialMattersComponent implements OnInit {
     this._npoProfile.getBankDetailByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         this.bankDetails = results;
+        this.updateBankDetailObjects();
       },
       (err) => {
         //

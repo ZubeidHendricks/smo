@@ -132,14 +132,10 @@ export class ApplicationDetailsComponent implements OnInit {
     private _npoProfile: NpoProfileService,
   ) { }
 
-  // onOptionSelected(value: any) {
-  //   alert(value);
-  // }
   getSelectedValue(value:string){
   
     this.selectedDropdownValue = value;
-    // Prints selected value
-    alert(this.selectedDropdownValue);
+   // alert(this.selectedDropdownValue);
   }
   ngOnInit(): void {
     this._spinner.show();
@@ -149,9 +145,7 @@ export class ApplicationDetailsComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-
-        // if (!this.IsAuthorized(PermissionsEnum.EditApplicationPeriod))
-        //   this._router.navigate(['401']);
+        
         this.loadDepartments();
         this.loadApplicationTypes();
         this.loadApplicationPeriod();
@@ -355,15 +349,11 @@ export class ApplicationDetailsComponent implements OnInit {
     }
   }
 
-
-
   private loadApplicationPeriod() {
     this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          console.log('results', results);
           this.applicationPeriodId = results.applicationPeriodId;
-          console.log('this.applicationPeriodId', this.applicationPeriodId);
           this.loadApplicationPeriodById(this.applicationPeriodId);
         } this._spinner.hide();
       },
@@ -381,15 +371,11 @@ export class ApplicationDetailsComponent implements OnInit {
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
 
-
-       
-
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
           this.selectedSubProgramme = results.subProgramme;
           this.selectedFinancialYear = results.financialYear;
           this.selectedApplicationType = results.applicationType;
-
 
           this.applicationPeriod = results;
           this.isDataAvailable = true;
@@ -577,13 +563,6 @@ export class ApplicationDetailsComponent implements OnInit {
     this.regions = [];
     this.sdas = [];
 
-    // if (districtCouncil.id != undefined && this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil?.id != districtCouncil.id)
-    //  {
-    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality =  { name: 'Select Type', id: null, districtCouncilId: null };
-    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
-    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
-    //  }
-
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
 
     if (districtCouncil.id != undefined) {
@@ -688,21 +667,22 @@ export class ApplicationDetailsComponent implements OnInit {
     this._npoProfile.getSourceOfInformationById(this.selectedApplicationId).subscribe(
       (results) => {
         this.sourceOfInformation = results;
-
-        this.sourceOfInformation.forEach(function (value) {
-          console.log('selectedSourceValue', this.value);
-          if(value.selectedSourceValue === 1)
-          {
-            console.log('selectedSourceValue', this.value)
-            this.sourceOfInformationText = "Printed newspaper";
-          }
-        });
-
-        // if(this.sourceOfInformation[0].selectedSourceValue ===1)
-        // {
-        //   this.sourceOfInformationText = "fsdfd";
-        // }
-        console.log('sourceOfInformation', this.sourceOfInformation)
+        if(results.find(results=> results.selectedSourceValue === 1))
+        {
+          this.sourceOfInformationText = "Printed newspaper";
+        }
+        if(results.find(results=> results.selectedSourceValue === 2))
+        {
+          this.sourceOfInformationText = "Online";
+        }
+        if(results.find(results=> results.selectedSourceValue === 3))
+        {
+          this.sourceOfInformationText = "DSD circular to NPOs";
+        }
+        if(results.find(results=> results.selectedSourceValue === 4))
+        {
+          this.sourceOfInformationText = "Other (specify)";
+        }
       },
       (err) => {
         //
