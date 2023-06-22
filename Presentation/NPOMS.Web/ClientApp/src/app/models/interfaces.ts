@@ -1,5 +1,6 @@
-import { FinancialMatters } from 'src/app/models/FinancialMatters';
 
+
+import { FinancialMatters } from "./FinancialMatters";
 import { EntityTypeEnum } from "./enums";
 
 

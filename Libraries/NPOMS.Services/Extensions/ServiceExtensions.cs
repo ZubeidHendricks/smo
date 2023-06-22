@@ -138,6 +138,13 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IProjectImplementationRepository, ProjectImplementationRepository>();
             services.AddScoped<IFundAppSDADetailRepository, FundAppSDADetailRepository>();
             services.AddScoped<IPreviousYearFinanceRepository, PreviousYearFinanceRepository>();
+            
+			services.AddScoped<IFinancialMattersIncomeRepository, FinancialMattersIncomeRepository>();
+            services.AddScoped<IFinancialMattersExpenditureRepository, FinancialMattersExpenditureRepository>();
+            services.AddScoped<IFinancialMattersOthersRepository, FinancialMattersOthersRepository>();
+
+
+
 
             services.AddScoped<IFundAppRegionRepository, FundAppRegionRepository>();
             services.AddScoped<IServiceDeliveryAreaRepository, ServiceDeliveryAreaRepository>();

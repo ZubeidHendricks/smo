@@ -27,3 +27,48 @@ export interface IPreviousFinancialYear {
   updatedUserId: number;
   updatedDateTime: Date;
 }
+
+export class IFinancialMattersIncome {
+
+    id: number;
+    fundingApplicationDetailId: number;
+    incomeDescription: string;
+    amountOneI: number;
+    amountTwoI: number;
+    amountThreeI: number;
+    totalFundingAmountI: number;
+    typeI:string;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
+}
+
+export class IFinancialMattersExpenditure {
+  id: number;
+  fundingApplicationDetailId: number;
+  expenditureDescription: string;
+  amountOneE: number;
+  amountTwoE: number;
+  amountThreeE: number;
+  totalFundingAmountE: number;
+  typeE:string;
+  createdUserId: number;
+  createdDateTime: Date;
+  updatedUserId: number;
+  updatedDateTime: Date;
+}
+export class IFinancialMattersOthers {
+  id: number;
+  fundingApplicationDetailId: number;
+  otherDescription: string;
+  amountOneO: number;
+  amountTwoO: number;
+  amountThreeO: number;
+  totalFundingAmountO: number;
+  typeO:string;
+  createdUserId: number;
+  createdDateTime: Date;
+  updatedUserId: number;
+  updatedDateTime: Date;
+}

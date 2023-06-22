@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IBankDetail, INpoProfile, INpoProfileFacilityList, IServicesRendered } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
-import { IPreviousFinancialYear } from 'src/app/models/FinancialMatters';
+import { IFinancialMattersExpenditure, IFinancialMattersIncome, IFinancialMattersOthers, IPreviousFinancialYear } from 'src/app/models/FinancialMatters';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -109,6 +109,54 @@ export class NpoProfileService {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/updatePreviousYearFinance/npoProfileId/${npoProfileId}`;
     return this._http.put<IPreviousFinancialYear[]>(url, previousYearData, httpOptions);
   }
+
+
+  public updateFinancialMattersIncome(financialMattersIncome: any[], npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersIncome/npoProfileId/${npoProfileId}`;
+    return this._http.put<IFinancialMattersIncome[]>(url, financialMattersIncome, httpOptions);
+  }
+
+  public updateFinancialMattersExpenditure(financialMattersExpenditure: any[], npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersExpenditure/npoProfileId/${npoProfileId}`;
+    return this._http.put<IFinancialMattersExpenditure[]>(url, financialMattersExpenditure, httpOptions);
+  }  
+
+  public updateFinancialMattersOthers(financialMattersOthers: any[], npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersOthers/npoProfileId/${npoProfileId}`;
+    return this._http.put<IFinancialMattersOthers[]>(url, financialMattersOthers, httpOptions);
+  }    
+  
+  public getFinancialMattersIncomeByNpoProfileId(npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/getFinancialMattersIncomeByNpoProfileId/npoProfileId/${npoProfileId}`;
+    return this._http.get<[IFinancialMattersIncome]>(url, httpOptions);
+  }
+
+  public getFinancialMattersExpenditureByNpoProfileId(npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/getFinancialMattersExpenditureByNpoProfileId/npoProfileId/${npoProfileId}`;
+    return this._http.get<[IFinancialMattersExpenditure]>(url, httpOptions);
+  }  
+
+  public getFinancialMattersOthersByNpoProfileId(npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/getFinancialMattersOthersByNpoProfileId/npoProfileId/${npoProfileId}`;
+    return this._http.get<[IFinancialMattersOthers]>(url, httpOptions);
+  }   
+
+  public deleteFinancialMattersIncomeById(id: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteIncomeById/id/${id}`;
+    return this._http.delete<[IFinancialMattersIncome]>(url, httpOptions);
+  }  
+
+
+  public deleteFinancialMattersExpenditureById(id: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteExpenditureById/id/${id}`;
+    return this._http.delete<[IFinancialMattersExpenditure]>(url, httpOptions);
+  }    
+
+
+  public deleteFinancialMattersOthersById(id: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteOthersById/id/${id}`;
+    return this._http.delete<[IFinancialMattersOthers]>(url, httpOptions);
+  }      
 
   public getPreviousYearDataById(npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/getPreviousYearFinanceByNpoProfileId/npoProfileId/${npoProfileId}`;
