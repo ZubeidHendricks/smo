@@ -53,9 +53,7 @@ namespace NPOMS.Services.Implementation
             IPreviousYearFinanceRepository previousYearFinanceRepository,
 			IFinancialMattersIncomeRepository financialMattersIncomeRepository,
 			IFinancialMattersExpenditureRepository financialMattersExpenditureRepository,
-			IFinancialMattersOthersRepository financialMattersOthersRepository
-			)
-			IBankDetailRepository bankDetailRepository,
+			IFinancialMattersOthersRepository financialMattersOthersRepository,
 			IAuditorOrAffiliationRepository auditorOrAffiliationRepository,
 			IStaffMemberProfileRepository staffMemberProfileRepository)
 		{
@@ -71,8 +69,6 @@ namespace NPOMS.Services.Implementation
 			_financialMattersIncomeRepository= financialMattersIncomeRepository;
             _financialMattersExpenditureRepository = financialMattersExpenditureRepository;
             _financialMattersOthersRepository = financialMattersOthersRepository;
-
-        }
 			_auditorOrAffiliationRepository = auditorOrAffiliationRepository;
 			_staffMemberProfileRepository = staffMemberProfileRepository;
 		}
@@ -353,8 +349,6 @@ namespace NPOMS.Services.Implementation
             return await _bankDetailRepository.DeleteBankDetailById(id);
         }
 
-        #endregion
-    }
 		public async Task<IEnumerable<AuditorOrAffiliation>> GetAuditorOrAffiliations(int entityId)
 		{
 			return await _auditorOrAffiliationRepository.GetByEntityId(entityId);

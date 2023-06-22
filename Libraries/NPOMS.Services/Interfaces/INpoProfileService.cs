@@ -55,9 +55,6 @@ namespace NPOMS.Services.Interfaces
         Task<FinancialMattersOthers> DeleteOthersById(int id);
 
 
-
-    }
-
 		Task<IEnumerable<AuditorOrAffiliation>> GetAuditorOrAffiliations(int entityId);
 
 		Task CreateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier);

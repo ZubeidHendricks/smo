@@ -456,8 +456,6 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        #endregion
-    }
 		[HttpGet("auditor-affiliation/entityId/{entityId}", Name = "GetAuditorOrAffiliations")]
 		public async Task<IActionResult> GetAuditorOrAffiliations(int entityId)
 		{
