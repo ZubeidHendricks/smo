@@ -256,6 +256,12 @@ export interface ISubProgrammeType {
     subProgramme: ISubProgramme;
 }
 
+export interface IStaffCategory {
+    id: number;
+    name: string;
+    isActive: boolean;
+}
+
 export interface IDirectorate {
     id: number;
     name: string;
@@ -457,7 +463,7 @@ export interface IContactInformation {
     npoId: number;
     titleId: number;
     raceId: number;
-    languageId : number;
+    languageId: number;
     genderId: number;
     firstName: string;
     lastName: string;
@@ -474,7 +480,7 @@ export interface IContactInformation {
     isPrimaryContact: boolean;
     isDisabled: boolean;
     isSignatory: boolean;
-    isWrittenAgreementSignatory: boolean;    
+    isWrittenAgreementSignatory: boolean;
     isBoardMember: boolean;
     yearsOfExperience: number;
     isActive: boolean;
@@ -487,7 +493,7 @@ export interface IContactInformation {
     position: IPosition;
     gender: IGender;
     race: IRace;
-    language : ILanguage;
+    language: ILanguage;
 }
 
 export interface INpo {
@@ -507,6 +513,7 @@ export interface INpo {
     registrationStatusId: number;
     pboNumber: string;
     section18Receipts: boolean;
+    cCode: string;
 
     organisationType: IOrganisationType;
     approvalStatus: IAccessStatus;
@@ -726,6 +733,31 @@ export interface IAuditorOrAffiliation {
     createdDateTime: Date;
     updatedUserId: number;
     updatedDateTime: Date;
+}
+
+export interface IStaffMemberProfile {
+    id: number;
+    npoProfileId: number;
+    staffCategoryId: number;
+    vacantPosts: number;
+    filledPosts: number;
+    consultantsAppointed: number;
+    staffWithDisabilities: number;
+    africanMale: number;
+    africanFemale: number;
+    indianMale: number;
+    indianFemale: number;
+    colouredMale: number;
+    colouredFemale: number;
+    whiteMale: number;
+    whiteFemale: number;
+    otherSpecify: string;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
+
+    staffCategory: IStaffCategory;
 }
 
 /* Lookup */

@@ -12,7 +12,7 @@
           </div>
         </div>
     </div>
-    <p-table #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="allApplicationPeriods" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['refNo','department.name','name','applicationType.name']">
+    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="allApplicationPeriods" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['refNo','department.name','name','applicationType.name']">
         <ng-template pTemplate="header" let-columns>
             <tr>
               <th style="width: 5%;"></th>

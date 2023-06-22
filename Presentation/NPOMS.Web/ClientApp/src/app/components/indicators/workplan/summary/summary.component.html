@@ -22,7 +22,7 @@
             </div>
         </p-card>
         <div style="height: 10px;"></div>        
-        <p-table [value]="filteredWorkplanIndicators" styleClass="p-datatable-sm" [columns]="scrollableCols" [frozenColumns]="frozenCols" [scrollable]="true" frozenWidth="55%">
+        <p-table [rowHover]="true" [value]="filteredWorkplanIndicators" styleClass="p-datatable-sm" [columns]="scrollableCols" [frozenColumns]="frozenCols" [scrollable]="true" frozenWidth="55%">
             <ng-template pTemplate="frozencolgroup" let-columns>
                 <colgroup>
                     <col style="width: 5%;">

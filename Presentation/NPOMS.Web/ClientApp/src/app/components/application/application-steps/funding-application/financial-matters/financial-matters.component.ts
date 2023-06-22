@@ -86,7 +86,7 @@ export class FinancialMattersComponent implements OnInit {
   totalAmountOneO: number;
   totalAmountTwoO: number;
   totalAmountThreeO: number;
-  fundingTotalO: number;  
+  fundingTotalO: number;
 
   isBudgetEdit: boolean = false;
   displayDialog: boolean;
@@ -111,7 +111,7 @@ export class FinancialMattersComponent implements OnInit {
   bankDetails: IBankDetail[];
   constructor(private dropDownService: DropdownService,
     private _confirmationService: ConfirmationService,
-    private _bidServie :BidService,
+    private _bidServie: BidService,
     private _activeRouter: ActivatedRoute,
     private _dropdownRepo: DropdownService,
     private _applicationRepo: ApplicationService,
@@ -146,7 +146,7 @@ this.calculateOthrSourceFundingTotal();
 
     this.menuItem = [
       {
-        label: 'Financial Matter Details for Funding Application',        
+        label: 'Financial Matter Details for Funding Application',
         command: () => {
           this.addBudget();
         }
@@ -176,28 +176,28 @@ this.calculateOthrSourceFundingTotal();
 
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(res => {
       this.finYears = res;
-      console.log('this.finYears',this.finYears);
-      console.log('res',res);
+      console.log('this.finYears', this.finYears);
+      console.log('res', res);
 
 
       this.cols = [
         { field: 'property', header: 'Item Description', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
-        { field: 'year1', header:  this.finYears[2].name, width: '15%' },
-        { field: 'year2', header:  this.finYears[3].name +'[estimated]', width: '15%' },
-        { field: 'year3', header: this.finYears[4].name +'[estimated]', width: '15%' },
-        { field: 'total', header: 'Total Funding ', width: '10%'},
-        { field: 'action', header: 'Action ', width: '5%'}
+        { field: 'year1', header: this.finYears[2].name, width: '15%' },
+        { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },
+        { field: 'year3', header: this.finYears[4].name + '[estimated]', width: '15%' },
+        { field: 'total', header: 'Total Funding ', width: '10%' },
+        { field: 'action', header: 'Action ', width: '5%' }
 
       ];
       this.colsOther = [
         { field: 'property', header: 'Name of Organisation', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
-        { field: 'year1', header:  this.finYears[2].name, width: '15%' },
-        { field: 'year2', header:  this.finYears[3].name +'[estimated]', width: '15%' },
-        { field: 'year3', header: this.finYears[4].name +'[estimated]', width: '15%' },
-        { field: 'total', header: 'Total Funding ', width: '10%'},
-        { field: 'action', header: 'Action ', width: '5%'}
+        { field: 'year1', header: this.finYears[2].name, width: '15%' },
+        { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },
+        { field: 'year3', header: this.finYears[4].name + '[estimated]', width: '15%' },
+        { field: 'total', header: 'Total Funding ', width: '10%' },
+        { field: 'action', header: 'Action ', width: '5%' }
 
       ];
       this.bankDetailCols = [
@@ -215,7 +215,7 @@ this.calculateOthrSourceFundingTotal();
     }
 
     this.loadBanks();
-    this.loadAccountTypes();    
+    this.loadAccountTypes();
   }
 
   private loadBanks() {
@@ -279,7 +279,7 @@ this.calculateOthrSourceFundingTotal();
   readonly(): boolean {
 
     if (this.application.statusId == StatusEnum.PendingReview ||
-      this.application.statusId == StatusEnum.Approved )
+      this.application.statusId == StatusEnum.Approved)
       return true;
     else return false;
   }
@@ -431,7 +431,7 @@ this.calculateOthrSourceFundingTotal();
     if (this.selectedBranch) {
       this.bankDetail.branchCode = this.selectedBranch.branchCode != null ? this.selectedBranch.branchCode : this.selectedBank.code;
     }
-  }  
+  }
 
   calculatePreviousYearTotals() {
     var calculatedTotalIncome: number = 0;
@@ -550,7 +550,7 @@ this.calculateOthrSourceFundingTotal();
     this.totalAmountTwoO = totalAmountTwo;
     this.totalAmountThreeO = totalAmountThree;
     this.fundingTotalO = totalFundingAmount;
-  }  
+  }
 
   addBudgetIncomeItem() {
     this.newFinancialMatter = true;
@@ -570,9 +570,9 @@ this.calculateOthrSourceFundingTotal();
       this.financialmatterIncome.totalFundingAmountI = Number(this.financialmatterIncome.amountOneI) + Number(this.financialmatterIncome.amountTwoI) + Number(this.financialmatterIncome.amountThreeI);
       this.financialMatters[this.financialMatters.indexOf(this.selectedFinancialMatterIncome)] = this.financialmatterIncome;
     }
-   }
+  }
 
-   addBudgetExpenditureItem() {
+  addBudgetExpenditureItem() {
     this.newFinancialMatter = true;
     var today = this.getCurrentDateTime();
 
@@ -580,9 +580,9 @@ this.calculateOthrSourceFundingTotal();
       createdDateTime: today
     } as IFinancialMattersExpenditure);
 
-   }
+  }
 
-   addBudgetOthrSourceFunding() {
+  addBudgetOthrSourceFunding() {
     this.newFinancialMatter = true;
     var today = this.getCurrentDateTime();
 
@@ -590,7 +590,7 @@ this.calculateOthrSourceFundingTotal();
       createdDateTime: today
     } as IFinancialMattersOthers);
 
-   }   
+  }
 
   private getCurrentDateTime() {
     let today = new Date();
@@ -598,8 +598,8 @@ this.calculateOthrSourceFundingTotal();
     today.setHours(nextTwoHours);
 
     return today;
-  } 
-  
+  }
+
   isReadOnlyBudget(): boolean {
     if (this.isReadOnly) {
       return true;
@@ -687,7 +687,7 @@ this.calculateOthrSourceFundingTotal();
             object.splice(index, 1);
         });
 
-          this.calculateTotals();      
+        this.calculateTotals();
       },
       reject: () => {
       }
@@ -705,7 +705,7 @@ this.calculateOthrSourceFundingTotal();
             object.splice(index, 1);
         });
 
-          this.calculateExpenditureTotals();      
+        this.calculateExpenditureTotals();
       },
       reject: () => {
       }
@@ -723,12 +723,12 @@ this.calculateOthrSourceFundingTotal();
             object.splice(index, 1);
         });
 
-          this.calculateOthrSourceFundingTotal();      
+        this.calculateOthrSourceFundingTotal();
       },
       reject: () => {
       }
     });
-  }  
+  }
 
   onRowSelect1(event) {
 
@@ -780,7 +780,7 @@ this.calculateOthrSourceFundingTotal();
       var today = this.getCurrentDateTime();
       this.financialMatters[0].createdDateTime = today;
     }
-    this._bidServie.editIncome(rowData.fundingApplicationDetailId, rowData ).subscribe(
+    this._bidServie.editIncome(rowData.fundingApplicationDetailId, rowData).subscribe(
 
       (resp) => {
         //

@@ -51,7 +51,7 @@ export class EditApplicationComponent implements OnInit {
   placeAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
   applicationIdOnBid: any;
-  selectedApplicationId:number;
+  selectedApplicationId: number;
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
@@ -72,8 +72,8 @@ export class EditApplicationComponent implements OnInit {
   fundingApplicationDetails: IFundingApplicationDetails = {
     financialMatters: [],
     implementations: [],
-     projectInformation:{} as IProjectInformation,
-     monitoringEvaluation:{} as IMonitoringAndEvaluation,
+    projectInformation: {} as IProjectInformation,
+    monitoringEvaluation: {} as IMonitoringAndEvaluation,
     applicationDetails: {} as IApplicationDetails
   } as IFundingApplicationDetails;
 
@@ -84,7 +84,7 @@ export class EditApplicationComponent implements OnInit {
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
-    private _fundAppService:FundingApplicationService,
+    private _fundAppService: FundingApplicationService,
     private _bidService: BidService,
     private _loggerService: LoggerService
   ) { }
@@ -126,10 +126,9 @@ export class EditApplicationComponent implements OnInit {
     });
     console.log('fundingApplicationDetails after initialization', this.fundingApplicationDetails);
   }
-getfinFund(event: FinancialMatters)
-{
- console.log('event from Edit', JSON.stringify(event));
-}
+  getfinFund(event: FinancialMatters) {
+    console.log('event from Edit', JSON.stringify(event));
+  }
 
   private loadApplication() {
     this._spinner.show();
@@ -221,13 +220,13 @@ getfinFund(event: FinancialMatters)
     if (applicationPeriod != null) {
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
         this.faItems = [
-          { label: 'Organisation Details' , command: (event: any) => { this.activeStep = 0; }  },
-          { label: 'Application Details' , command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Financial Matters' , command: (event: any) => { this.activeStep = 2; } },
-          { label: 'Project Information', command: (event: any) => { this.activeStep = 3; }  },
-          { label: 'Monitoring and Evaluation', command: (event: any) => { this.activeStep = 4; }  },
-          { label: 'Project Implementation Plan', command: (event: any) => { this.activeStep = 5; }  },
-          { label: 'Application Document', command: (event: any) => { this.activeStep = 6; }  }
+          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
+          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
+          { label: 'Financial Matters', command: (event: any) => { this.activeStep = 2; } },
+          { label: 'Project Information', command: (event: any) => { this.activeStep = 3; } },
+          { label: 'Monitoring and Evaluation', command: (event: any) => { this.activeStep = 4; } },
+          { label: 'Project Implementation Plan', command: (event: any) => { this.activeStep = 5; } },
+          { label: 'Application Document', command: (event: any) => { this.activeStep = 6; } }
         ];
       }
     }
@@ -260,7 +259,7 @@ getfinFund(event: FinancialMatters)
               this.saveItems(StatusEnum.Saved);
             }
 
-            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {          
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
               this.bidForm(StatusEnum.Saved);
             }
           }
@@ -274,11 +273,11 @@ getfinFund(event: FinancialMatters)
             }
 
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
-               this.bidForm(StatusEnum.PendingReview);
+              this.bidForm(StatusEnum.PendingReview);
             }
           },
           disabled: true
-        },        
+        },
         {
           label: 'Go Back',
           icon: 'fa fa-step-backward',
@@ -323,7 +322,7 @@ getfinFund(event: FinancialMatters)
 
         this.application.statusId = status;
         this._applicationRepo.updateApplication(this.application).subscribe();
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });        
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
         this._router.navigateByUrl('applications');
       };
     }
@@ -348,8 +347,9 @@ getfinFund(event: FinancialMatters)
         if (results != null) {
           this.application = results;
           this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
-            if (response.id != null) { this.getFundingApplicationDetails(response);
-              console.log('data.result',response);
+            if (response.id != null) {
+              this.getFundingApplicationDetails(response);
+              console.log('data.result', response);
             }
           });
           this.fASteps(results.applicationPeriod);
@@ -360,7 +360,7 @@ getfinFund(event: FinancialMatters)
       (err) => this._spinner.hide()
     );
   }
-  
+
   private getFundingApplicationDetails(data) {
     this._bidService.getBid(data.id).subscribe(response => {
 
@@ -401,89 +401,89 @@ getfinFund(event: FinancialMatters)
     });
 
   }
-  
+
 
   private formValidate() {
     this.validationErrors = [];
-    if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {    
+    if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {
 
-    if (this.objectives.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
+      if (this.objectives.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
 
-    if (this.objectives.length > 0) {
-      let changesRequiredOnObjectives = this.objectives.filter(x => x.changesRequired === true);
+      if (this.objectives.length > 0) {
+        let changesRequiredOnObjectives = this.objectives.filter(x => x.changesRequired === true);
 
-      if (changesRequiredOnObjectives.length > 0)
-        this.validationErrors.push({ severity: 'warn', summary: "Objectives:", detail: "New comments added." });
+        if (changesRequiredOnObjectives.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Objectives:", detail: "New comments added." });
+      }
+
+      if (this.activities.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Activities:", detail: "Activity table cannot be empty." });
+      else {
+        let hasActivityErrors: boolean[] = [];
+
+        this.objectives.forEach(item => {
+          var isPresent = this.activities.some(function (activity) { return activity.objectiveId === item.id });
+          hasActivityErrors.push(isPresent);
+        });
+
+        if (hasActivityErrors.includes(false))
+          this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "Please capture an activity for each objective." });
+      }
+
+      if (this.activities.length > 0) {
+        let changesRequiredOnActivities = this.activities.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnActivities.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "New comments added." });
+      }
+
+      if (this.sustainabilityPlans.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Sustainability:", detail: "Sustainability Plan table cannot be empty." });
+      else {
+        let hasSustainabilityErrors: boolean[] = [];
+
+        this.activities.forEach(item => {
+          var isPresent = this.sustainabilityPlans.some(function (sustainabilityPlan) { return sustainabilityPlan.activityId === item.id });
+          hasSustainabilityErrors.push(isPresent);
+        });
+
+        if (hasSustainabilityErrors.includes(false))
+          this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "Please capture a sustainability plan for each activity." });
+      }
+
+      if (this.sustainabilityPlans.length > 0) {
+        let changesRequiredOnSustainabilityPlans = this.sustainabilityPlans.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnSustainabilityPlans.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "New comments added." });
+      }
+
+      if (this.resources.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Resourcing:", detail: "Resourcing table cannot be empty." });
+      else {
+        let hasResourcingErrors: boolean[] = [];
+
+        this.activities.forEach(item => {
+          var isPresent = this.resources.some(function (resource) { return resource.activityId === item.id });
+          hasResourcingErrors.push(isPresent);
+        });
+
+        if (hasResourcingErrors.includes(false))
+          this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "Please capture a resource for each activity." });
+      }
+
+      if (this.resources.length > 0) {
+        let changesRequiredOnResources = this.resources.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnResources.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "New comments added." });
+      }
     }
-
-    if (this.activities.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Activities:", detail: "Activity table cannot be empty." });
-    else {
-      let hasActivityErrors: boolean[] = [];
-
-      this.objectives.forEach(item => {
-        var isPresent = this.activities.some(function (activity) { return activity.objectiveId === item.id });
-        hasActivityErrors.push(isPresent);
-      });
-
-      if (hasActivityErrors.includes(false))
-        this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "Please capture an activity for each objective." });
-    }
-
-    if (this.activities.length > 0) {
-      let changesRequiredOnActivities = this.activities.filter(x => x.changesRequired === true);
-
-      if (changesRequiredOnActivities.length > 0)
-        this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "New comments added." });
-    }
-
-    if (this.sustainabilityPlans.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Sustainability:", detail: "Sustainability Plan table cannot be empty." });
-    else {
-      let hasSustainabilityErrors: boolean[] = [];
-
-      this.activities.forEach(item => {
-        var isPresent = this.sustainabilityPlans.some(function (sustainabilityPlan) { return sustainabilityPlan.activityId === item.id });
-        hasSustainabilityErrors.push(isPresent);
-      });
-
-      if (hasSustainabilityErrors.includes(false))
-        this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "Please capture a sustainability plan for each activity." });
-    }
-
-    if (this.sustainabilityPlans.length > 0) {
-      let changesRequiredOnSustainabilityPlans = this.sustainabilityPlans.filter(x => x.changesRequired === true);
-
-      if (changesRequiredOnSustainabilityPlans.length > 0)
-        this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "New comments added." });
-    }
-
-    if (this.resources.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Resourcing:", detail: "Resourcing table cannot be empty." });
-    else {
-      let hasResourcingErrors: boolean[] = [];
-
-      this.activities.forEach(item => {
-        var isPresent = this.resources.some(function (resource) { return resource.activityId === item.id });
-        hasResourcingErrors.push(isPresent);
-      });
-
-      if (hasResourcingErrors.includes(false))
-        this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "Please capture a resource for each activity." });
-    }
-
-    if (this.resources.length > 0) {
-      let changesRequiredOnResources = this.resources.filter(x => x.changesRequired === true);
-
-      if (changesRequiredOnResources.length > 0)
-        this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "New comments added." });
-    }
-  }
 
 
     if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
-     
+
       if (this.fundingApplicationDetails.implementations.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
       if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
@@ -493,7 +493,7 @@ getfinFund(event: FinancialMatters)
       if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
         this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
 
-    }    
+    }
 
     // if (this.validationErrors.length == 0)
     //   this.menuActions[1].visible = false;

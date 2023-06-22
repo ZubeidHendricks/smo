@@ -25,7 +25,7 @@
     <div style="height: 10px;"></div>
     <p-tabView>
         <p-tabPanel header="Targets">
-            <p-table [columns]="cols" [value]="activities" styleClass="p-datatable-sm">
+            <p-table [rowHover]="true" [columns]="cols" [value]="activities" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th style="width: 5%;"></th>

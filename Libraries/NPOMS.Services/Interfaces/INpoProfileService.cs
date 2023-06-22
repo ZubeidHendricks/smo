@@ -57,4 +57,17 @@ namespace NPOMS.Services.Interfaces
 
 
     }
+
+		Task<IEnumerable<AuditorOrAffiliation>> GetAuditorOrAffiliations(int entityId);
+
+		Task CreateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier);
+
+		Task UpdateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier);
+
+		Task<IEnumerable<StaffMemberProfile>> GetStaffMemberProfiles(int npoProfileId);
+
+		Task CreateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
+
+		Task UpdateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
+	}
 }
