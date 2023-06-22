@@ -9912,7 +9912,6 @@ namespace NPOMS.Repository.Migrations
                         {
                             Id = 1,
                             CreatedDateTime = new DateTime(2023, 6, 21, 21, 13, 29, 170, DateTimeKind.Local).AddTicks(4591),
-                            CreatedDateTime = new DateTime(2023, 6, 22, 5, 16, 28, 654, DateTimeKind.Local).AddTicks(3098),
                             CreatedUserID = 3,
                             Frequency = 12,
                             HaveComment = false,
