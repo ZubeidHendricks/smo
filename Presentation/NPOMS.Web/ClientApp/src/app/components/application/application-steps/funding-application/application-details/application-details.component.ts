@@ -486,10 +486,7 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-    debugger;
-    console.log('this.application', this.application);
-
-    console.log('this.application.statusId', this.application.statusId);
+    
     if (this.application.statusId == StatusEnum.PendingReview ||
       this.application.statusId == StatusEnum.Approved)
       return true;
