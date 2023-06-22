@@ -27,8 +27,13 @@ namespace NPOMS.Services.Implementation
 		private IServicesRenderedRepository _servicesRenderedRepository;
 		private IBankDetailRepository _bankDetailRepository;
         private IPreviousYearFinanceRepository _previousYearFinanceRepository;
+        private IFinancialMattersIncomeRepository _financialMattersIncomeRepository;
+        private IFinancialMattersExpenditureRepository _financialMattersExpenditureRepository;
+        private IFinancialMattersOthersRepository _financialMattersOthersRepository;
         private ISourceOfInformationRepository _sourceOfInformationRepository;
         private IAffiliatedOrganisationInformationRepository _affiliatedOrganisationInformationRepository;
+
+
 
         #endregion
 
@@ -43,9 +48,7 @@ namespace NPOMS.Services.Implementation
 			IFacilityListRepository facilityListRepository,
 			IServicesRenderedRepository servicesRenderedRepository,
 			IBankDetailRepository bankDetailRepository,
-            IPreviousYearFinanceRepository previousYearFinanceRepository,
-            IAffiliatedOrganisationInformationRepository affiliatedOrganisationInformationRepository,
-            ISourceOfInformationRepository sourceOfInformationRepository)
+            IPreviousYearFinanceRepository previousYearFinanceRepository)
 		{
 			_npoProfileRepository = npoProfileRepository;
 			_userRepository = userRepository;
@@ -56,15 +59,13 @@ namespace NPOMS.Services.Implementation
 			_servicesRenderedRepository = servicesRenderedRepository;
 			_bankDetailRepository = bankDetailRepository;
             _previousYearFinanceRepository = previousYearFinanceRepository;
-			_affiliatedOrganisationInformationRepository = affiliatedOrganisationInformationRepository;
-			_sourceOfInformationRepository = sourceOfInformationRepository;
         }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public async Task<IEnumerable<NpoProfile>> Get(string userIdentifier)
+        public async Task<IEnumerable<NpoProfile>> Get(string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var npoProfiles = await _npoProfileRepository.GetEntities();
@@ -192,6 +193,22 @@ namespace NPOMS.Services.Implementation
 			await _bankDetailRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
+
+        public async Task<IEnumerable<FinancialMattersIncome>> GetIncomeByNpoProfileIdAsync(int id)
+        {
+            return await _financialMattersIncomeRepository.GetByNpoProfileIdAsync(id);
+        }
+
+        public async Task<IEnumerable<FinancialMattersExpenditure>> GetExpenditureByNpoProfileIdAsync(int id)
+        {
+            return await _financialMattersExpenditureRepository.GetByNpoProfileIdAsync(id);
+        }
+
+        public async Task<IEnumerable<FinancialMattersOthers>> GetOthersByNpoProfileIdAsync(int id)
+        {
+            return await _financialMattersOthersRepository.GetByNpoProfileIdAsync(id);
+        }
+
         public async Task<IEnumerable<PreviousYearFinance>> GetByNpoProfileIdAsync(int id)
         {
             return await _previousYearFinanceRepository.GetByNpoProfileIdAsync(id);
@@ -227,9 +244,92 @@ namespace NPOMS.Services.Implementation
             }
         }
 
+        public async Task UpdateIncome(List<FinancialMattersIncome> model, string userIdentifier, string id)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            foreach (var m in model)
+            {
+                if (m.Id == 0)
+                {
+                    m.CreatedUserId = loggedInUser.Id;
+                    m.CreatedDateTime = DateTime.Now;
+                    m.npoProfileId = Convert.ToInt32(id);
+                    await _financialMattersIncomeRepository.CreateAsync(m);
+                }
+                else
+                {
+                    m.UpdatedUserId = loggedInUser.Id;
+                    m.UpdatedDateTime = DateTime.Now;
+                    await _financialMattersIncomeRepository.UpdateAsync(m);
+                }
+            }
+        }
+
+        public async Task UpdateExpenditure(List<FinancialMattersExpenditure> model, string userIdentifier, string id)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            foreach (var m in model)
+            {
+                if (m.Id == 0)
+                {
+                    m.CreatedUserId = loggedInUser.Id;
+                    m.CreatedDateTime = DateTime.Now;
+                    m.npoProfileId = Convert.ToInt32(id);
+                    await _financialMattersExpenditureRepository.CreateAsync(m);
+                }
+                else
+                {
+                    m.UpdatedUserId = loggedInUser.Id;
+                    m.UpdatedDateTime = DateTime.Now;
+                    await _financialMattersExpenditureRepository.UpdateAsync(m);
+                }
+            }
+        }
+
+        public async Task UpdateOthers(List<FinancialMattersOthers> model, string userIdentifier, string id)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            foreach (var m in model)
+            {
+                if (m.Id == 0)
+                {
+                    m.CreatedUserId = loggedInUser.Id;
+                    m.CreatedDateTime = DateTime.Now;
+                    m.npoProfileId = Convert.ToInt32(id);
+                    await _financialMattersOthersRepository.CreateAsync(m);
+                }
+                else
+                {
+                    m.UpdatedUserId = loggedInUser.Id;
+                    m.UpdatedDateTime = DateTime.Now;
+                    await _financialMattersOthersRepository.UpdateAsync(m);
+                }
+            }
+        }
+
+
         public async Task<PreviousYearFinance> DeleteById(int id)
         {
             return await _previousYearFinanceRepository.DeleteById(id);
+        }
+
+        public async Task<FinancialMattersIncome> DeleteIncomeById(int id)
+        {
+            return await _financialMattersIncomeRepository.DeleteById(id);
+        }
+
+        public async Task<FinancialMattersExpenditure> DeleteExpenditureById(int id)
+        {
+            return await _financialMattersExpenditureRepository.DeleteById(id);
+        }
+
+
+        public async Task<FinancialMattersOthers> DeleteOthersById(int id)
+        {
+            return await _financialMattersOthersRepository.DeleteById(id);
         }
 
         public async Task<BankDetail> DeleteBankDetailById(int id)

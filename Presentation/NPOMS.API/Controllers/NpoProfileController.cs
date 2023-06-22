@@ -25,7 +25,7 @@ namespace NPOMS.API.Controllers
 		private INpoService _npoService;
 		private IEmailService _emailService;
 
-		#endregion
+		#endregion+
 
 		#region Constructors
 
@@ -290,12 +290,82 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+        [HttpPut("updateFinancialMattersOthers/npoProfileId/{npoProfileId}", Name = "updateFinancialMattersOthers")]
+        public async Task<IActionResult> updateFinancialMattersOthers([FromBody] List<FinancialMattersOthers> model, string npoProfileId)
+        {
+            await _npoProfileService.UpdateOthers(model, base.GetUserIdentifier(), npoProfileId);
+            return Ok(model);
+        }
+
+        [HttpPut("updateFinancialMattersExpenditure/npoProfileId/{npoProfileId}", Name = "updateFinancialMattersExpenditure")]
+        public async Task<IActionResult> updateFinancialMattersExpenditure([FromBody] List<FinancialMattersExpenditure> model, string npoProfileId)
+        {
+            await _npoProfileService.UpdateExpenditure(model, base.GetUserIdentifier(), npoProfileId);
+            return Ok(model);
+        }
+
+
+        [HttpPut("updateFinancialMattersIncome/npoProfileId/{npoProfileId}", Name = "updateFinancialMattersIncome")]
+        public async Task<IActionResult> updateFinancialMattersIncome([FromBody] List<FinancialMattersIncome> model, string npoProfileId)
+        {
+            await _npoProfileService.UpdateIncome(model, base.GetUserIdentifier(), npoProfileId);
+            return Ok(model);
+        }
+
+
         [HttpPut("updatePreviousYearFinance/npoProfileId/{npoProfileId}", Name = "UpdatePreviousYearFinance")]
         public async Task<IActionResult> UpdatePreviousYearFinance([FromBody] List<PreviousYearFinance> model, string npoProfileId)
         {
 			await _npoProfileService.Update(model, base.GetUserIdentifier(), npoProfileId);
 			return Ok(model);
         }
+
+
+        [HttpGet("getFinancialMattersIncomeByNpoProfileId/npoProfileId/{npoProfileId}", Name = "GetIncomeByNpoProfileIdAsync")]
+        public async Task<IActionResult> GetIncomeByNpoProfileIdAsync(int npoProfileId)
+        {
+            try
+            {
+                var results = await _npoProfileService.GetIncomeByNpoProfileIdAsync(npoProfileId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetIncomeByNpoProfileIdAsync action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("getFinancialMattersExpenditureByNpoProfileId/npoProfileId/{npoProfileId}", Name = "GetExpenditureByNpoProfileIdAsync")]
+        public async Task<IActionResult> GetExpenditureByNpoProfileIdAsync(int npoProfileId)
+        {
+            try
+            {
+                var results = await _npoProfileService.GetExpenditureByNpoProfileIdAsync(npoProfileId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetExpenditureByNpoProfileIdAsync action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("getFinancialMattersOthersByNpoProfileId/npoProfileId/{npoProfileId}", Name = "GetOthersByNpoProfileIdAsync")]
+        public async Task<IActionResult> GetOthersByNpoProfileIdAsync(int npoProfileId)
+        {
+            try
+            {
+                var results = await _npoProfileService.GetOthersByNpoProfileIdAsync(npoProfileId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetExpenditureByNpoProfileIdAsync action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
         [HttpGet("getPreviousYearFinanceByNpoProfileId/npoProfileId/{npoProfileId}", Name = "GetPreviousYearFinanceByNpoProfileId")]
         public async Task<IActionResult> GetPreviousYearFinanceByNpoProfileId(int npoProfileId)
@@ -323,6 +393,51 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside DeleteById action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("deleteIncomeById/id/{id}", Name = "DeleteIncomeById")]
+        public async Task<IActionResult> DeleteIncomeById(int id)
+        {
+            try
+            {
+                var results = await _npoProfileService.DeleteIncomeById(id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside DeleteIncomeById action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("deleteExpenditureById/id/{id}", Name = "DeleteExpenditureById")]
+        public async Task<IActionResult> DeleteExpenditureById(int id)
+        {
+            try
+            {
+                var results = await _npoProfileService.DeleteExpenditureById(id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside DeleteExpenditureById action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("deleteOthersById/id/{id}", Name = "DeleteOthersById")]
+        public async Task<IActionResult> DeleteOthersById(int id)
+        {
+            try
+            {
+                var results = await _npoProfileService.DeleteOthersById(id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside DeleteOthersById action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
