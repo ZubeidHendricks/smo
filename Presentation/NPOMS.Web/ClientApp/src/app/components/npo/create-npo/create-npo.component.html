@@ -10,8 +10,8 @@
                 <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small>
             </div>
             <div class="p-field p-col-12 p-md-6">
-                <label class="non-mandatory-content">Website</label>
-                <input type="text" name="website" class="form-text" pInputText [(ngModel)]="npo.website" [ngModelOptions]="{standalone: true}">
+                <label class="non-mandatory-content">Year Registered</label>
+                <input type="text" name="yearRegistered" class="form-text" pInputText [(ngModel)]="npo.yearRegistered" [ngModelOptions]="{standalone: true}" minlength="4" maxlength="4" (keypress)="numberOnly($event)"> 
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Organisation Type</label>
@@ -23,24 +23,25 @@
                 <input type="text" name="pboNumber" class="form-text" pInputText [(ngModel)]="npo.pboNumber" [ngModelOptions]="{standalone: true}">
             </div>
             <div class="p-field p-col-12 p-md-6">
-                <label class="mandatory-content">Registration Status</label>
-                <p-dropdown [options]="registrationStatuses" placeholder="Select a Registration Status" optionLabel="name" [(ngModel)]="selectedRegistrationStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body" #registrationStatus="ngModel" [ngClass]="{'ng-dirty': (registrationStatus.invalid && validated) || (registrationStatus.dirty && registrationStatus.invalid)}" required></p-dropdown>
-                <small *ngIf="(registrationStatus.invalid && validated) || (registrationStatus.dirty && registrationStatus.invalid)" class="p-error">Registration Status is required.</small>
+                <label class="non-mandatory-content">C-Code</label>
+                <input type="text" name="cCode" class="form-text" pInputText [(ngModel)]="npo.cCode" [ngModelOptions]="{standalone: true}">
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Is the organisation also registered to provide Section 18 receipts?</label>
                 <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="npo.section18Receipts" [ngModelOptions]="{standalone: true}"></p-selectButton>
             </div>
             <div class="p-field p-col-12 p-md-6">
-                <label class="non-mandatory-content">Registration Number - Please provide us with your NPO's registration number. If the organisation's NPO application is in progress, please provide the NDSD Application number (APP number)</label>
+                <label class="mandatory-content">Registration Status</label>
+                <p-dropdown [options]="registrationStatuses" placeholder="Select a Registration Status" optionLabel="name" [(ngModel)]="selectedRegistrationStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body" #registrationStatus="ngModel" [ngClass]="{'ng-dirty': (registrationStatus.invalid && validated) || (registrationStatus.dirty && registrationStatus.invalid)}" required></p-dropdown>
+                <small *ngIf="(registrationStatus.invalid && validated) || (registrationStatus.dirty && registrationStatus.invalid)" class="p-error">Registration Status is required.</small>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Website</label>
+                <input type="text" name="website" class="form-text" pInputText [(ngModel)]="npo.website" [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Registration Number - Please provide your NPO's registration number. If the organisation's NPO application is in progress, please provide the NDSD Application number (APP number)</label>
                 <input type="text" name="registrationNumber" class="form-text" pInputText [(ngModel)]="npo.registrationNumber" [ngModelOptions]="{standalone: true}">
-            </div>
-            <div class="p-field p-col-12 p-md-6">
-
-            </div>
-            <div class="p-field p-col-12 p-md-6">
-                <label class="non-mandatory-content">Year Registered</label>
-                <input type="text" name="yearRegistered" class="form-text" pInputText [(ngModel)]="npo.yearRegistered" [ngModelOptions]="{standalone: true}" minlength="4" maxlength="4" (keypress)="numberOnly($event)"> 
             </div>
             <div class="p-field p-col-12 p-md-6">
 
@@ -48,45 +49,9 @@
         </div>
     </p-panel>
     <div style="height: 10px;"></div>
-    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Auditor Information">
-        <p-table [columns]="auditorCols" [value]="auditorOrAffiliations" *ngIf="auditorOrAffiliations" styleClass="p-datatable-sm">
-            <ng-template pTemplate="header" let-columns>
-                <tr>
-                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                        {{col.header}}
-                    </th>
-                    <th style="width: 7%;">Actions</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr class="default-font">
-                    <td>{{rowData.organisationName}}</td>
-                    <td>{{rowData.registrationNumber}}</td>
-                    <td>{{rowData.address}}</td>
-                    <td>{{rowData.telephoneNumber}}</td>
-                    <td>{{rowData.emailAddress}}</td>
-                    <td style="text-align: center;">
-                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editAuditorInformation(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
-                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteAuditorInformation(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
-                    </td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                <tr class="default-font">
-                    <td colspan="6" style="text-align: center;">No results found</td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="summary" let-rowData>
-                <div style="text-align:left">
-                    <button pButton pRipple type="button" label="Add Auditor Information" class="p-button-text" icon="fa fa-plus" (click)="addAuditorInformation()"></button>
-                </div>
-            </ng-template>
-        </p-table>
-    </p-panel>
-    <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Contact / Stakeholder Details">            
         <div class="heading">Organisation Contact List</div>
-        <p-table [columns]="contactCols" [value]="npo.contactInformation" *ngIf="npo.contactInformation" styleClass="p-datatable-sm">
+        <p-table [rowHover]="true" [columns]="contactCols" [value]="npo.contactInformation" *ngIf="npo.contactInformation" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -362,101 +327,6 @@
 
     <ng-template pTemplate="footer">
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveContactInfo() (click)="saveContactInformation()"></button>
-    </ng-template>
-</p-dialog>
-
-<p-dialog header="Auditor Information" 
-          [(visible)]="displayAuditorDialog" 
-          [style]="{width: '50vw'}" 
-          [focusOnShow]="false"
-          showEffect="fade"
-          [transitionOptions]="'0ms'"
-          [modal]="true">
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Company</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.organisationName" [ngModelOptions]="{standalone: true}">
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Registration Number</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.registrationNumber" [ngModelOptions]="{standalone: true}">
-        </div>
-    </div>    
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Address Lookup</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-autoComplete [(ngModel)]="addressLookup" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" [suggestions]="newAddress" (completeMethod)="filterCountrySingle($event)" field="text" [size]="20" placeholder="Find Address (type 4 letters)" [minLength]="4" [forceSelection]="true" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'" (onSelect)="populateAddressField($event)"></p-autoComplete>
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Address</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.address" [ngModelOptions]="{standalone: true}">
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Contact Person</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.contactPerson" [ngModelOptions]="{standalone: true}">
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Telephone</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.telephoneNumber" [ngModelOptions]="{standalone: true}" [minlength]="10" [maxlength]="10" (keypress)="numberOnly($event)">
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Email Address</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.emailAddress" [ngModelOptions]="{standalone: true}" #auditorEmailAddress="ngModel">
-            <div class="md-errors-spacer" [hidden]="auditorEmailAddress.valid || auditorEmailAddress.untouched">
-                <small class="text-danger" *ngIf="auditorEmailAddress.errors && auditorEmailAddress.errors.pattern">Please provide a valid email address</small>
-            </div>
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Website</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.website" [ngModelOptions]="{standalone: true}">
-        </div>
-    </div>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveAuditorInfo() (click)="saveAuditorInformation()"></button>
     </ng-template>
 </p-dialog>
 

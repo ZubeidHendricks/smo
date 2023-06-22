@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header="Resourcing" *ngIf="activeResources">
-    <p-table [columns]="resourceCols" [value]="activeResources" styleClass="p-datatable-sm">
+    <p-table [rowHover]="true" [columns]="resourceCols" [value]="activeResources" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -13,7 +13,7 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="heading">
                 <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="getColspan()">
-                    <span class="p-text-bold">Activity: {{rowData.activity.activityList.description}}</span>
+                    <span class="p-text-bold">Activity: {{rowData.activity.activityList.name}}</span>
                 </td>
             </tr>
             <tr [ngClass]="rowData.changesRequired === true ? 'red' : 'default' && rowData.changesRequired === false ? 'green' : 'default'" class="default-font">                
@@ -198,7 +198,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <p-table [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="applicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="applicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -234,7 +234,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <p-table [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [paginator]="true" [rows]="10" [value]="applicationReviewerSatisfaction" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [paginator]="true" [rows]="10" [value]="applicationReviewerSatisfaction" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -278,7 +278,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <p-table [columns]="resourceCols" [value]="deletedResources" styleClass="p-datatable-sm">
+    <p-table [rowHover]="true" [columns]="resourceCols" [value]="deletedResources" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">

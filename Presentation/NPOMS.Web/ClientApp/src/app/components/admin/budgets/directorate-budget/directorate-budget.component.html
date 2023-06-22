@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <p-table #dt [columns]="budgetCols" [value]="directorateBudgets" styleClass="p-datatable-sm" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['directorate.name']">
+            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="directorateBudgets" styleClass="p-datatable-sm" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['directorate.name']">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">

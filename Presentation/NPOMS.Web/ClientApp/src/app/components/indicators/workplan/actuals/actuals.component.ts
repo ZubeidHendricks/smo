@@ -430,7 +430,7 @@ export class ActualsComponent implements OnInit {
 
   private financialYearChange() {
     this.selectedFrequencyPeriod = null;
-    
+
     if (this.selectedFinancialYear) {
       this.getFilteredWorkplanIndicators();
 

@@ -30,8 +30,8 @@ export class FinancialMattersComponent implements OnInit {
   newFinancialMatter: boolean;
   menuItem: any[];
   propertyObj: PropertyType = {} as PropertyType;
-  financialMattersIncome: FinancialMatters[] =[];
-  financialMattersExpenditure: FinancialMatters[] =[];
+  financialMattersIncome: FinancialMatters[] = [];
+  financialMattersExpenditure: FinancialMatters[] = [];
 
   financicalMattersOthrSourceFunding: FinancialMatters[];
   displayOthrSourceFundingTotal: boolean = false;
@@ -69,7 +69,7 @@ export class FinancialMattersComponent implements OnInit {
   totalAmountOneO: number;
   totalAmountTwoO: number;
   totalAmountThreeO: number;
-  fundingTotalO: number;  
+  fundingTotalO: number;
 
   isBudgetEdit: boolean = false;
   displayDialog: boolean;
@@ -94,7 +94,7 @@ export class FinancialMattersComponent implements OnInit {
   bankDetails: IBankDetail[];
   constructor(private dropDownService: DropdownService,
     private _confirmationService: ConfirmationService,
-    private _bidServie :BidService,
+    private _bidServie: BidService,
     private _activeRouter: ActivatedRoute,
     private _dropdownRepo: DropdownService,
     private messageService: MessageService) { }
@@ -104,9 +104,9 @@ export class FinancialMattersComponent implements OnInit {
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
-      console.log('id', params.get('id'));  
+      console.log('id', params.get('id'));
 
-    });  
+    });
     // this._bidServie.getApplicationBiId(+this.id).subscribe(resp => {
     //   console.log('response',resp)
     //    this.fundAppDetailId = resp.id;
@@ -114,7 +114,7 @@ export class FinancialMattersComponent implements OnInit {
     //  });  
     this.menuItem = [
       {
-        label: 'Financial Matter Details for Funding Application',        
+        label: 'Financial Matter Details for Funding Application',
         command: () => {
           this.addBudget();
         }
@@ -124,39 +124,39 @@ export class FinancialMattersComponent implements OnInit {
     if (this.fundingApplicationDetails.financialMatters) {
       this.financialMattersIncome = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "income");
       this.financialMattersExpenditure = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "expenditure");
-      this.financicalMattersOthrSourceFunding = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "othersource");      
+      this.financicalMattersOthrSourceFunding = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "othersource");
     }
     else {
       this.fundingApplicationDetails.financialMatters = [];
       this.financialMattersIncome = [];
       this.financialMattersExpenditure = [];
-      this.financicalMattersOthrSourceFunding =[];
+      this.financicalMattersOthrSourceFunding = [];
     }
 
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(res => {
       this.finYears = res;
-      console.log('this.finYears',this.finYears);
-      console.log('res',res);
+      console.log('this.finYears', this.finYears);
+      console.log('res', res);
 
 
       this.cols = [
         { field: 'property', header: 'Item Description', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
-        { field: 'year1', header:  this.finYears[2].name, width: '15%' },
-        { field: 'year2', header:  this.finYears[3].name +'[estimated]', width: '15%' },
-        { field: 'year3', header: this.finYears[4].name +'[estimated]', width: '15%' },
-        { field: 'total', header: 'Total Funding ', width: '10%'},
-        { field: 'action', header: 'Action ', width: '5%'}
+        { field: 'year1', header: this.finYears[2].name, width: '15%' },
+        { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },
+        { field: 'year3', header: this.finYears[4].name + '[estimated]', width: '15%' },
+        { field: 'total', header: 'Total Funding ', width: '10%' },
+        { field: 'action', header: 'Action ', width: '5%' }
 
       ];
       this.colsOther = [
         { field: 'property', header: 'Name of Organisation', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
-        { field: 'year1', header:  this.finYears[2].name, width: '15%' },
-        { field: 'year2', header:  this.finYears[3].name +'[estimated]', width: '15%' },
-        { field: 'year3', header: this.finYears[4].name +'[estimated]', width: '15%' },
-        { field: 'total', header: 'Total Funding ', width: '10%'},
-        { field: 'action', header: 'Action ', width: '5%'}
+        { field: 'year1', header: this.finYears[2].name, width: '15%' },
+        { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },
+        { field: 'year3', header: this.finYears[4].name + '[estimated]', width: '15%' },
+        { field: 'total', header: 'Total Funding ', width: '10%' },
+        { field: 'action', header: 'Action ', width: '5%' }
 
       ];
     });
@@ -166,7 +166,7 @@ export class FinancialMattersComponent implements OnInit {
     }
 
     this.loadBanks();
-    this.loadAccountTypes();    
+    this.loadAccountTypes();
   }
 
   private loadBanks() {
@@ -196,7 +196,7 @@ export class FinancialMattersComponent implements OnInit {
   }
 
   private updateBankDetailObjects() {
-    if ( this.banks && this.accountTypes && this.bankDetails) {
+    if (this.banks && this.accountTypes && this.bankDetails) {
       this.bankDetails.forEach(item => {
         item.bank = this.banks.find(x => x.id === item.bankId);
         this.loadBranch(item);
@@ -221,7 +221,7 @@ export class FinancialMattersComponent implements OnInit {
   readonly(): boolean {
 
     if (this.application.statusId == StatusEnum.PendingReview ||
-      this.application.statusId == StatusEnum.Approved )
+      this.application.statusId == StatusEnum.Approved)
       return true;
     else return false;
   }
@@ -347,7 +347,7 @@ export class FinancialMattersComponent implements OnInit {
     if (this.selectedBranch) {
       this.bankDetail.branchCode = this.selectedBranch.branchCode != null ? this.selectedBranch.branchCode : this.selectedBank.code;
     }
-  }  
+  }
 
   calculateTotals() {
     alert('Hi');
@@ -427,7 +427,7 @@ export class FinancialMattersComponent implements OnInit {
     this.totalAmountTwoO = totalAmountTwo;
     this.totalAmountThreeO = totalAmountThree;
     this.fundingTotalO = totalFundingAmount;
-  }  
+  }
 
   addBudgetIncomeItem() {
     debugger;
@@ -448,9 +448,9 @@ export class FinancialMattersComponent implements OnInit {
       this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
       this.financialMatters[this.financialMatters.indexOf(this.selectedFinancialMatter)] = this.financialmatter;
     }
-   }
+  }
 
-   addBudgetExpenditureItem() {
+  addBudgetExpenditureItem() {
     this.newFinancialMatter = true;
     var today = this.getCurrentDateTime();
 
@@ -458,9 +458,9 @@ export class FinancialMattersComponent implements OnInit {
       createdDateTime: today
     } as FinancialMatters);
 
-   }
+  }
 
-   addBudgetOthrSourceFunding() {
+  addBudgetOthrSourceFunding() {
     this.newFinancialMatter = true;
     var today = this.getCurrentDateTime();
 
@@ -468,7 +468,7 @@ export class FinancialMattersComponent implements OnInit {
       createdDateTime: today
     } as FinancialMatters);
 
-   }   
+  }
 
   private getCurrentDateTime() {
     let today = new Date();
@@ -476,8 +476,8 @@ export class FinancialMattersComponent implements OnInit {
     today.setHours(nextTwoHours);
 
     return today;
-  } 
-  
+  }
+
   isReadOnlyBudget(): boolean {
     if (this.isReadOnly) {
       return true;
@@ -517,16 +517,16 @@ export class FinancialMattersComponent implements OnInit {
   }
 
   save() {
-  debugger;
+    debugger;
     let financialmatter = [...this.financialMatters];
     if (this.newFinancialMatter) {
-    this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
+      this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
 
       this.financialMatters.push(this.financialmatter);
     }
     else {
-    this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
-    
+      this.financialmatter.totalFundingAmount = Number(this.financialmatter.amountOne) + Number(this.financialmatter.amountTwo) + Number(this.financialmatter.amountThree);
+
       financialmatter[this.financialMatters.indexOf(this.selectedFinancialMatter)] = this.financialmatter;
     }
 
@@ -547,7 +547,7 @@ export class FinancialMattersComponent implements OnInit {
             object.splice(index, 1);
         });
 
-          this.calculateTotals();      
+        this.calculateTotals();
       },
       reject: () => {
       }
@@ -566,7 +566,7 @@ export class FinancialMattersComponent implements OnInit {
             object.splice(index, 1);
         });
 
-          this.calculateExpenditureTotals();      
+        this.calculateExpenditureTotals();
       },
       reject: () => {
       }
@@ -585,12 +585,12 @@ export class FinancialMattersComponent implements OnInit {
             object.splice(index, 1);
         });
 
-          this.calculateOthrSourceFundingTotal();      
+        this.calculateOthrSourceFundingTotal();
       },
       reject: () => {
       }
     });
-  }  
+  }
 
   onRowSelect1(event) {
 
@@ -599,7 +599,7 @@ export class FinancialMattersComponent implements OnInit {
     this.financialmatter = this.cloneImplementation(event.data);
   }
   onRowSelect(data) {
-    console.log('this',data);
+    console.log('this', data);
     this.selectedFinancialMatter = data;
     this.isBudgetEdit = true;
     this.newFinancialMatter = false;
@@ -635,17 +635,17 @@ export class FinancialMattersComponent implements OnInit {
     });
   }
   updateDetails(rowData: FinancialMatters) {
-debugger;
+    debugger;
     if (this.isEdit) {
 
       var today = this.getCurrentDateTime();
       this.financialMatters[0].createdDateTime = today;
     }
-    this._bidServie.editIncome(rowData.fundingApplicationDetailId, rowData ).subscribe(
+    this._bidServie.editIncome(rowData.fundingApplicationDetailId, rowData).subscribe(
 
       (resp) => {
 
-       // this.administrationGrants.id = resp.id;
+        // this.administrationGrants.id = resp.id;
 
       },
 

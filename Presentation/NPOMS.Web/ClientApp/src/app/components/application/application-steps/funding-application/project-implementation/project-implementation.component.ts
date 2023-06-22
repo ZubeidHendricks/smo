@@ -31,7 +31,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   @Input() places: IPlace[];
   @Input() allsubPlaces: ISubPlace[];
-  
+
 
   subPlaces: ISubPlace[];
   selectedSubPlaces: ISubPlace[];
@@ -49,7 +49,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    
+
     this.cols = [
       { header: 'Description' },
       { header: 'Beneficiaries' },
@@ -59,25 +59,25 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
     console.log('Places coming from Edit component on ProjImpl', this.places);
     console.log('Places coming from ProjectImpsubPlacesAll', this.allsubPlaces);
-    this.allDropdownsLoaded();    
+    this.allDropdownsLoaded();
   }
 
   disableSubPlacesOrPlace(): boolean {
 
-  
-    if (  this.places && this.allsubPlaces) {
+
+    if (this.places && this.allsubPlaces) {
       return false;
     }
     return true;
   }
-  
+
   readonly(): boolean {
-  
-        if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved )
-          return true;
-        else return false;
-      }
+
+    if (this.application.statusId == StatusEnum.PendingReview ||
+      this.application.statusId == StatusEnum.Approved)
+      return true;
+    else return false;
+  }
 
   nextPage() {
 
@@ -110,22 +110,22 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   disableSave(): boolean {
-if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
-    !this.implementation.beneficiaries || !this.implementation.budget ||
-    !this.implementation.results ! || !this.implementation.projectObjective||
-    !this.implementation.resources||
-    !this.implementation.description||
-    (this.places.length>0 && this.selectedPlaces.length== 0) ||
-    (this.allsubPlaces.length>0 && this.selectedSubPlaces.length== 0)
-    ) 
-    return true;
-  
+    if ((!this.implementation.timeframe || this.implementation.timeframe.length < 2) ||
+      !this.implementation.beneficiaries || !this.implementation.budget ||
+      !this.implementation.results! || !this.implementation.projectObjective ||
+      !this.implementation.resources ||
+      !this.implementation.description ||
+      (this.places.length > 0 && this.selectedPlaces.length == 0) ||
+      (this.allsubPlaces.length > 0 && this.selectedSubPlaces.length == 0)
+    )
+      return true;
+
     return false;
-    
+
   }
- 
+
   save() {
- 
+
     this.displayDialogImpl = false;
     this.implementation.beneficiaries = Number(this.implementation.beneficiaries).valueOf();
     this.implementation.budget = Number(this.implementation.budget).valueOf();
@@ -149,9 +149,9 @@ if((!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     console.log('bit after', this.fundingApplicationDetails)
   }
 
- 
+
   onRowSelect(event) {
-debugger;
+    debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
     console.log('data', event.data);

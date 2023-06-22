@@ -15,7 +15,7 @@
             </div>
         </div>
     </div>
-    <p-table #dt [value]="users" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+    <p-table [rowHover]="true" #dt [value]="users" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['fullName','email']" *ngIf="users">
         <ng-template pTemplate="header">

@@ -124,7 +124,7 @@ export class ApplicationPeriodListComponent implements OnInit {
     this._spinner.show();
     this._applicationPeriodRepo.getAllApplicationPeriods().subscribe(
       (results) => {
-        
+
         results.forEach(period => {
           this.setStatus(period);
         });

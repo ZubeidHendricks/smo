@@ -287,6 +287,85 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+		[HttpGet("auditor-affiliation/entityId/{entityId}", Name = "GetAuditorOrAffiliations")]
+		public async Task<IActionResult> GetAuditorOrAffiliations(int entityId)
+		{
+			try
+			{
+				var results = await _npoProfileService.GetAuditorOrAffiliations(entityId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetAuditorOrAffiliations action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPost("auditor-affiliation", Name = "CreateAuditorOrAffiliation")]
+		public async Task<IActionResult> CreateAuditorOrAffiliation([FromBody] AuditorOrAffiliation model)
+		{
+			try
+			{
+				await _npoProfileService.CreateAuditorOrAffiliation(model, base.GetUserIdentifier());
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside CreateAuditorOrAffiliation action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPut("auditor-affiliation", Name = "UpdateAuditorOrAffiliation")]
+		public async Task<IActionResult> UpdateAuditorOrAffiliation([FromBody] AuditorOrAffiliation model)
+		{
+			try
+			{
+				await _npoProfileService.UpdateAuditorOrAffiliation(model, base.GetUserIdentifier());
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside UpdateAuditorOrAffiliation action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("staff-member-profile/npoProfileId/{npoProfileId}", Name = "GetStaffMemberProfiles")]
+		public async Task<IActionResult> GetStaffMemberProfiles(int npoProfileId)
+		{
+			try
+			{
+				var results = await _npoProfileService.GetStaffMemberProfiles(npoProfileId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetStaffMemberProfiles action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpPut("staff-member-profile", Name = "UpdateStaffMemberProfile")]
+		public async Task<IActionResult> UpdateStaffMemberProfile([FromBody] StaffMemberProfile model)
+		{
+			try
+			{
+				if (model.Id == 0)
+					await _npoProfileService.CreateStaffMemberProfile(model, base.GetUserIdentifier());
+				else
+					await _npoProfileService.UpdateStaffMemberProfile(model, base.GetUserIdentifier());
+
+				return Ok(model);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside UpdateStaffMemberProfile action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
 		#endregion
 	}
 }

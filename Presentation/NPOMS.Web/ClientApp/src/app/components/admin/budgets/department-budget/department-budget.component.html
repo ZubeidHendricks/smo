@@ -79,7 +79,7 @@
                     </div>
                 </div>
             </div>
-            <p-table [columns]="budgetCols" [value]="departmentBudgets" styleClass="p-datatable-sm" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
+            <p-table [rowHover]="true" [columns]="budgetCols" [value]="departmentBudgets" styleClass="p-datatable-sm" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">

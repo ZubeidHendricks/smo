@@ -1,4 +1,4 @@
-<p-table [columns]="cols" [value]="implementations" selectionMode="single" [(selection)]="selectedImplementation"
+<p-table [rowHover]="true" [columns]="cols" [value]="implementations" selectionMode="single" [(selection)]="selectedImplementation"
   (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
   <ng-template pTemplate="caption">
     Project Activities

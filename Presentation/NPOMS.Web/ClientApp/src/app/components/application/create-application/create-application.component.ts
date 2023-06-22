@@ -85,12 +85,12 @@ export class CreateApplicationComponent implements OnInit {
 
   fundingApplicationDetails: IFundingApplicationDetails = {
     applicationDetails: {
-          fundAppSDADetail: {
-            districtCouncil: {} as IDistrictCouncil,
-            localMunicipality: {} as ILocalMunicipality,
-            regions: [],
-            serviceDeliveryAreas: [],
-            } as IFundAppSDADetail,
+      fundAppSDADetail: {
+        districtCouncil: {} as IDistrictCouncil,
+        localMunicipality: {} as ILocalMunicipality,
+        regions: [],
+        serviceDeliveryAreas: [],
+      } as IFundAppSDADetail,
     } as IApplicationDetails,
 
     financialMatters: [],
@@ -106,7 +106,7 @@ export class CreateApplicationComponent implements OnInit {
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
     private _loggerService: LoggerService,
-    private _fundAppService :FundingApplicationService,
+    private _fundAppService: FundingApplicationService,
     private _bidService: BidService
   ) { }
 
@@ -120,11 +120,11 @@ export class CreateApplicationComponent implements OnInit {
       this.fundingApplicationDetails.applicationPeriodId = +this.id;
 
       this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-        console.log('response',resp);
+        console.log('response', resp);
         //this.applicationIdOnBid = resp.applicationId;
-      });      
+      });
     });
-console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
+    console.log('this.fundingApplicationDetails', this.fundingApplicationDetails);
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -143,8 +143,8 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
 
         if (results != null) {
           this.application = results;
-           this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
-           this.fundingApplicationDetails.applicationId = this.application?.id;
+          this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
+          this.fundingApplicationDetails.applicationId = this.application?.id;
           this.fASteps(results.applicationPeriod);
           this.isApplicationAvailable = true;
         }
@@ -318,8 +318,8 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
 
   private bidForm(status: StatusEnum) {
     debugger;
-    console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
-    this.application.status =null;
+    console.log('this.fundingApplicationDetails', this.fundingApplicationDetails);
+    this.application.status = null;
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
     }
@@ -356,7 +356,7 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
         this._router.navigateByUrl('applications');
       };
     }
-  }  
+  }
 
 
   private bidCanContinue(status: StatusEnum) {
@@ -367,9 +367,9 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
       return true;
 
     return false;
-  }  
+  }
 
-  
+
   private formValidate() {
     this.validationErrors = [];
     if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {
@@ -424,17 +424,17 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
       debugger
       if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length == 0 || this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please capture Application info and save." });
-        if (this.fundingApplicationDetails.financialMatters.length === 0)
+      if (this.fundingApplicationDetails.financialMatters.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
 
       if (this.fundingApplicationDetails.implementations.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
-      if (this.fundingApplicationDetails.projectInformation?.initiatedQuestion == undefined  &&
-         this.fundingApplicationDetails.projectInformation?.considerQuestion == undefined  &&
-          this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined )
+      if (this.fundingApplicationDetails.projectInformation?.initiatedQuestion == undefined &&
+        this.fundingApplicationDetails.projectInformation?.considerQuestion == undefined &&
+        this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
 
-      if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined )
+      if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
 
     }
@@ -468,7 +468,7 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           }
 
-          if (resp.statusId === StatusEnum.PendingReview) {           
+          if (resp.statusId === StatusEnum.PendingReview) {
             this._router.navigateByUrl('applications');
           }
         },
@@ -480,7 +480,7 @@ console.log('this.fundingApplicationDetails',this.fundingApplicationDetails);
     }
   }
 
-  
+
 
   private canContinue(status: StatusEnum) {
     this.validationErrors = [];
