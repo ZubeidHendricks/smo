@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { StatusEnum } from 'src/app/models/enums';
-import {  IApplication, IFundingApplicationDetails } from 'src/app/models/interfaces';
+import { IApplication, IFundingApplicationDetails } from 'src/app/models/interfaces';
 
 
 
@@ -26,8 +26,8 @@ export class ProjectInformationComponent implements OnInit {
 
   ngOnInit(): void {
 
-    
-console.log('bit status',this.fundingApplicationDetails)
+
+    console.log('bit status', this.fundingApplicationDetails)
   }
 
   onInitiatedQuestionChange($event) {
@@ -43,13 +43,13 @@ console.log('bit status',this.fundingApplicationDetails)
   }
 
   readonly(): boolean {
-   
-        if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved )
-          return true;
-        else return false;
-      }
-  
+
+    if (this.application.statusId == StatusEnum.PendingReview ||
+      this.application.statusId == StatusEnum.Approved)
+      return true;
+    else return false;
+  }
+
   nextPage() {
 
     this.activeStep = this.activeStep + 1;

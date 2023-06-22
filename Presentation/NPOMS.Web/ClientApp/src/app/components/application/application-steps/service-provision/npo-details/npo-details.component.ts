@@ -86,8 +86,8 @@ export class NpoDetailsComponent implements OnInit {
     }
 
     if (this.npo.contactInformation.length === 0) {
-      validationErrors.push('Errors in Contact Information');
-      this._messageService.add({ severity: 'error', summary: "Contact Information:", detail: "The Organisation Contact List cannot be empty. This can be updated on the Organisations tab." });
+      validationErrors.push('Errors in Contact / Stakeholder Details');
+      this._messageService.add({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "The Organisation Contact List cannot be empty. This can be updated on the Organisations tab." });
     }
 
     if (!this.npoProfile.addressInformation.physicalAddress || !this.npoProfile.addressInformation.postalSameAsPhysical || !this.npoProfile.addressInformation.postalAddress) {

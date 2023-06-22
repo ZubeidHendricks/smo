@@ -104,17 +104,17 @@ namespace NPOMS.Repository
 		public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
 		public DbSet<Directorate> Directorates { get; set; }
 		public DbSet<Bank> Banks { get; set; }
-		public DbSet<Branch> Branches { get; set; }
+        public DbSet<BankDetail> BankDetail { get; set; }
+        public DbSet<Branch> Branches { get; set; }
 		public DbSet<AccountType> AccountTypes { get; set; }
-
+		public DbSet<RegistrationStatus> RegistrationStatuses { get; set; }
         public DbSet<DistrictCouncil> DistrictCouncils { get; set; }
         public DbSet<LocalMunicipality> LocalMunicipalities { get; set; }
-
         public DbSet<Region> Regions { get; set; }
         public DbSet<ServiceDeliveryArea> ServiceDeliveryAreas { get; set; }
-
         public DbSet<PropertyType> PropertyTypes { get; set; }
         public DbSet<PropertySubType> PropertySubTypes { get; set; }
+		public DbSet<StaffCategory> StaffCategories { get; set; }
 
         /* Entities */
         public DbSet<AccessStatus> AccessStatuses { get; set; }
@@ -135,8 +135,12 @@ namespace NPOMS.Repository
         public DbSet<ProjectInformation> ProjectInformations { get; set; }
 		public DbSet<MonitoringEvaluation> MonitoringEvaluations { get; set; }
         public DbSet<ProjectImplementation> ProjectImplementations { get; set; }
-        public DbSet<FundAppSDADetail> FundAppSDADetails { get; set; }
 
+        public DbSet<FinancialMattersIncome> FinancialMattersIncomes { get; set; }
+        public DbSet<FinancialMattersExpenditure> FinancialMattersExpenditures { get; set; }
+        public DbSet<FinancialMattersOthers> FinancialMattersOthers { get; set; }
+
+        public DbSet<FundAppSDADetail> FundAppSDADetails { get; set; }
         public DbSet<Resource> Resources { get; set; }
 		public DbSet<Status> Statuses { get; set; }
 		public DbSet<SustainabilityPlan> SustainabilityPlans { get; set; }
@@ -146,9 +150,11 @@ namespace NPOMS.Repository
 		public DbSet<CompliantCycle> CompliantCycles { get; set; }
 		public DbSet<PaymentSchedule> PaymentSchedules { get; set; }
 		public DbSet<AuditLog> AuditLogs { get; set; }
+		public DbSet<AuditorOrAffiliation> AuditorOrAffiliations { get; set; }
+		public DbSet<StaffMemberProfile> StaffMemberProfiles { get; set; }
 
-		/* Lookup */
-		public DbSet<FacilityList> ActivityList { get; set; }
+        /* Lookup */
+        public DbSet<FacilityList> ActivityList { get; set; }
 		public DbSet<FacilityList> FacilityList { get; set; }
 		public DbSet<ResourceList> ResourceList { get; set; }
 
@@ -248,16 +254,19 @@ namespace NPOMS.Repository
             modelBuilder.ApplyConfiguration(new GenderConfiguration());
             modelBuilder.ApplyConfiguration(new RaceConfiguration());
 			modelBuilder.ApplyConfiguration(new LanguageConfiguration());
-
+			modelBuilder.ApplyConfiguration(new RegistrationStatusConfiguration());
+			modelBuilder.ApplyConfiguration(new StaffCategoryConfiguration());
 
             /* Entities */
             modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());
 			modelBuilder.ApplyConfiguration(new StatusConfiguration());
 			modelBuilder.ApplyConfiguration(new TrainingMaterialConfiguration());
 			modelBuilder.ApplyConfiguration(new CompliantCycleRuleConfiguration());
-
-			/* Lookup */
-			modelBuilder.ApplyConfiguration(new ActivityListConfiguration());
+            modelBuilder.ApplyConfiguration(new PreviousYearFinanceConfiguration());
+            modelBuilder.ApplyConfiguration(new AffiliatedOrganisationInformationConfiguration());
+            modelBuilder.ApplyConfiguration(new SourceOfInformationConfiguration());
+            /* Lookup */
+            modelBuilder.ApplyConfiguration(new ActivityListConfiguration());
 			modelBuilder.ApplyConfiguration(new ResourceListConfiguration());
 
 			/* Mapping */

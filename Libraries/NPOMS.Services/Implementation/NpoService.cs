@@ -22,6 +22,7 @@ namespace NPOMS.Services.Implementation
 		private IOrganisationTypeRepository _organisationTypeRepository;
 		private IContactInformationRepository _contactInformationRepository;
 		private IUserNpoRepository _userNpoRepository;
+		private IRegistrationStatusRepository _registrationStatusRepository;
 
 		#endregion
 
@@ -32,14 +33,15 @@ namespace NPOMS.Services.Implementation
 			IUserRepository userRepository,
 			IOrganisationTypeRepository organisationTypeRepository,
 			IContactInformationRepository contactInformationRepository,
-			IUserNpoRepository userNpoRepository
-			)
+			IUserNpoRepository userNpoRepository,
+			IRegistrationStatusRepository registrationStatusRepository)
 		{
 			_npoRepository = npoRepository;
 			_userRepository = userRepository;
 			_organisationTypeRepository = organisationTypeRepository;
 			_contactInformationRepository = contactInformationRepository;
 			_userNpoRepository = userNpoRepository;
+			_registrationStatusRepository = registrationStatusRepository;
 		}
 
 		#endregion
@@ -77,6 +79,8 @@ namespace NPOMS.Services.Implementation
 		{
 			var result = await _npoRepository.GetById(id);
 			result.OrganisationType = await _organisationTypeRepository.GetById(result.OrganisationTypeId);
+
+			result.RegistrationStatus = result.RegistrationStatusId != null ? await _registrationStatusRepository.GetById(Convert.ToInt32(result.RegistrationStatusId)) : null;
 
 			var contactInformation = await _contactInformationRepository.GetByNpoId(result.Id);
 			result.ContactInformation = contactInformation.ToList();

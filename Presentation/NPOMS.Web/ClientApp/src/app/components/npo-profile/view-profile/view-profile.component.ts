@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DocumentUploadLocationsEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, ISubProgramme, ISubProgrammeType } from 'src/app/models/interfaces';
+import { AuditorOrAffiliationEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum, StaffCategoryEnum } from 'src/app/models/enums';
+import { IAccountType, IAddressInformation, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
@@ -43,6 +43,10 @@ export class ViewProfileComponent implements OnInit {
     return FacilityTypeEnum;
   }
 
+  public get StaffCategoryEnum(): typeof StaffCategoryEnum {
+    return StaffCategoryEnum;
+  }
+
   // Highlight required fields on validate click
   validated: boolean = true;
 
@@ -57,6 +61,14 @@ export class ViewProfileComponent implements OnInit {
   banks: IBank[];
   branches: IBranch[];
   accountTypes: IAccountType[];
+
+  auditorOrAffiliations: IAuditorOrAffiliation[];
+  auditorCols: any[];
+  auditorOrAffiliation: IAuditorOrAffiliation = {} as IAuditorOrAffiliation;
+  displayAuditorDialog: boolean;
+
+  staffCategories: IStaffCategory[];
+  staffMemberProfiles: IStaffMemberProfile[];
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -74,6 +86,7 @@ export class ViewProfileComponent implements OnInit {
     this.loadSubProgrammeTypes();
     this.loadBanks();
     this.loadAccountTypes();
+    this.loadStaffCategories();
     this.loadNpoProfile();
 
     this.stateOptions = [
@@ -123,6 +136,27 @@ export class ViewProfileComponent implements OnInit {
       { header: 'Account Type', width: '20%' },
       { header: 'Account Number', width: '20%' }
     ];
+
+    this.auditorCols = [
+      { header: 'Company', width: '20%' },
+      { header: 'Registration Number', width: '15%' },
+      { header: 'Address', width: '25%' },
+      { header: 'Telephone Number', width: '10%' },
+      { header: 'Email Address', width: '25%' },
+      { header: 'Actions', width: '5%' }
+    ];
+  }
+
+  private loadStaffCategories() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.StaffCategory, false).subscribe(
+      (results) => {
+        this.staffCategories = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private loadNpoProfile() {
@@ -133,14 +167,14 @@ export class ViewProfileComponent implements OnInit {
 
           this.npoProfile = results;
           this.retrievedNpoProfile.emit(this.npoProfile);
+          this.getDocuments();
 
           this.loadFacilities(this.npoProfile.id);
           this.loadServicesRendered(this.npoProfile.id);
           this.loadBankDetails(this.npoProfile.id);
+          this.loadStaffMemberProfiles();
 
-          this.isDataAvailable = true;
-          this.getDocuments();
-          this._spinner.hide();
+          this.loadAuditorOrAffiliations();
         },
         (err) => {
           this._loggerService.logException(err);
@@ -148,6 +182,104 @@ export class ViewProfileComponent implements OnInit {
         }
       );
     }
+  }
+
+  private loadStaffMemberProfiles() {
+    this._npoProfileRepo.getStaffMemberProfilesByNpoProfileId(this.npoProfile.id).subscribe(
+      (results) => {
+        this.staffMemberProfiles = results ? results : [] as IStaffMemberProfile[];
+
+        this.staffMemberProfiles.forEach(item => {
+          item.staffCategory = this.staffCategories.find(x => x.id === item.staffCategoryId);
+        });
+
+        let filteredCategories = this.staffCategories.filter(x => x.id !== StaffCategoryEnum.Other);
+        let memberProfiles = this.staffMemberProfiles;
+
+        if (this.staffMemberProfiles.length > 0) {
+          filteredCategories = filteredCategories.filter(function (category) {
+            return !memberProfiles.find(function (profile) {
+              return category.id === profile.staffCategoryId;
+            });
+          });
+        }
+
+        filteredCategories.forEach(item => {
+          this.staffMemberProfiles.push({
+            staffCategoryId: item.id,
+            staffCategory: item,
+            vacantPosts: 0,
+            filledPosts: 0,
+            consultantsAppointed: 0,
+            staffWithDisabilities: 0,
+            africanMale: 0,
+            africanFemale: 0,
+            indianMale: 0,
+            indianFemale: 0,
+            colouredMale: 0,
+            colouredFemale: 0,
+            whiteMale: 0,
+            whiteFemale: 0,
+            otherSpecify: null
+          } as IStaffMemberProfile);
+        });
+
+        //Sort Staff Member Profiles by Staff Category Id
+        this.staffMemberProfiles.sort((a, b) => a.staffCategoryId - b.staffCategoryId);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  get totalStaffMemberProfile() {
+    let totals = {
+      vacantPosts: 0,
+      filledPosts: 0,
+      consultantsAppointed: 0,
+      staffWithDisabilities: 0,
+      africanMale: 0,
+      africanFemale: 0,
+      indianMale: 0,
+      indianFemale: 0,
+      colouredMale: 0,
+      colouredFemale: 0,
+      whiteMale: 0,
+      whiteFemale: 0
+    } as IStaffMemberProfile;
+
+    this.staffMemberProfiles.forEach(item => {
+      totals.vacantPosts += item.vacantPosts;
+      totals.filledPosts += item.filledPosts;
+      totals.consultantsAppointed += item.consultantsAppointed;
+      totals.staffWithDisabilities += item.staffWithDisabilities;
+      totals.africanMale += item.africanMale;
+      totals.africanFemale += item.africanFemale;
+      totals.indianMale += item.indianMale;
+      totals.indianFemale += item.indianFemale;
+      totals.colouredMale += item.colouredMale;
+      totals.colouredFemale += item.colouredFemale;
+      totals.whiteMale += item.whiteMale;
+      totals.whiteFemale += item.whiteFemale;
+    });
+
+    return totals;
+  }
+
+  private loadAuditorOrAffiliations() {
+    this._npoProfileRepo.getAuditorOrAffiliations(this.npoProfile.id).subscribe(
+      (results) => {
+        this.auditorOrAffiliations = results.filter(x => x.entityType === AuditorOrAffiliationEnum.Auditor);
+        this.isDataAvailable = true;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private loadFacilities(npoProfileId: number) {
@@ -350,5 +482,19 @@ export class ViewProfileComponent implements OnInit {
         });
       });
     }
+  }
+
+  public viewAuditorInformation(data: IAuditorOrAffiliation) {
+    this.auditorOrAffiliation = this.cloneAuditorOrAffiliation(data);
+    this.displayAuditorDialog = true;
+  }
+
+  private cloneAuditorOrAffiliation(data: IAuditorOrAffiliation): IAuditorOrAffiliation {
+    let object = {} as IAuditorOrAffiliation;
+
+    for (let prop in data)
+      object[prop] = data[prop];
+
+    return object;
   }
 }

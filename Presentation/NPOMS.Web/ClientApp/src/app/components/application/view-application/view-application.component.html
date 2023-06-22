@@ -17,7 +17,7 @@
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
         <p-panel [style]="{'font-size':'12px'}" header="Workplan Information">
             <p-panel [style]="{'font-size':'12px'}" header="Objectives" *ngIf="isObjectivesAvailable">
-                <p-table [columns]="objectiveCols" [value]="objectives" styleClass="p-datatable-sm">
+                <p-table [rowHover]="true" [columns]="objectiveCols" [value]="objectives" styleClass="p-datatable-sm">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -43,7 +43,7 @@
             </p-panel>
             <div style="height: 10px;"></div>
             <p-panel [style]="{'font-size':'12px'}" header="Activities" *ngIf="isActivitiesAvailable">
-                <p-table [columns]="activityCols" [value]="activities" styleClass="p-datatable-sm">
+                <p-table [rowHover]="true" [columns]="activityCols" [value]="activities" styleClass="p-datatable-sm">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -74,7 +74,7 @@
             </p-panel>
             <div style="height: 10px;"></div>
             <p-panel [style]="{'font-size':'12px'}" header="Sustainability Plans" *ngIf="isSustainabilityAvailable">
-                <p-table [columns]="sustainabilityPlanCols" [value]="sustainabilityPlans" styleClass="p-datatable-sm">
+                <p-table [rowHover]="true" [columns]="sustainabilityPlanCols" [value]="sustainabilityPlans" styleClass="p-datatable-sm">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -102,7 +102,7 @@
             </p-panel>
             <div style="height: 10px;"></div>
             <p-panel [style]="{'font-size':'12px'}" header="Resourcing" *ngIf="isResourcesAvailable">
-                <p-table [columns]="resourceCols" [value]="resources" styleClass="p-datatable-sm">
+                <p-table [rowHover]="true" [columns]="resourceCols" [value]="resources" styleClass="p-datatable-sm">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -238,7 +238,7 @@
             </p-panel>
             <div style="height: 10px;"></div>
             <p-panel [style]="{'font-size':'12px'}" header="SLA Documents">
-                <p-table [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
+                <p-table [rowHover]="true" [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -631,7 +631,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <p-table [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="filteredApplicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="filteredApplicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -657,7 +657,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <p-table [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="applicationAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="applicationAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">

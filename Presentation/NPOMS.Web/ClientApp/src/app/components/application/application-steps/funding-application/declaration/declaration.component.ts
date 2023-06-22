@@ -56,7 +56,7 @@ export class DeclarationComponent implements OnInit {
 
   public update() {
     this.review.declarationType = DeclarationTypeEnum.Bidders1;
-   
+
     this.review.isActive = true;
     this.review.createdUser = null;
 

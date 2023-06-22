@@ -260,7 +260,19 @@ namespace NPOMS.Services.Interfaces
 		Task<IEnumerable<PropertySubType>> GetPropertySubTypes(bool returnInactive);
 
 		Task<IEnumerable<Place>> GetPlaces(bool returnInactive);
-        Task<IEnumerable<SubPlace>> GetSubPlaces(bool returnInactive);
 
-    }
+        Task<IEnumerable<SubPlace>> GetSubPlaces(bool returnInactive);    
+
+		Task<IEnumerable<RegistrationStatus>> GetRegistrationStatuses(bool returnInactive);
+
+		Task CreateRegistrationStatus(RegistrationStatus model, string userIdentifier);
+
+		Task UpdateRegistrationStatus(RegistrationStatus model, string userIdentifier);
+
+		Task<IEnumerable<StaffCategory>> GetStaffCategories(bool returnInactive);
+
+		Task CreateStaffCategory(StaffCategory model, string userIdentifier);
+
+		Task UpdateStaffCategory(StaffCategory model, string userIdentifier);
+	}
 }

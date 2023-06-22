@@ -3,8 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, ITitle, IUser } from 'src/app/models/interfaces';
+import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, IRegistrationStatus, ITitle, IUser } from 'src/app/models/interfaces';
+import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -40,6 +41,9 @@ export class EditNpoComponent implements OnInit {
   organisationTypes: IOrganisationType[];
   selectedOrganisationType: IOrganisationType;
 
+  registrationStatuses: IRegistrationStatus[];
+  selectedRegistrationStatus: IRegistrationStatus;
+
   titles: ITitle[];
   selectedTitle: ITitle;
   positions: IPosition[];
@@ -48,8 +52,8 @@ export class EditNpoComponent implements OnInit {
   races: IRace[];
   selectedRace: IRace;
 
-  gender :IGender[];
-  selectedGender:IGender;
+  gender: IGender[];
+  selectedGender: IGender;
 
   languages: ILanguage[];
   selectedLanguage: ILanguage;
@@ -75,11 +79,11 @@ export class EditNpoComponent implements OnInit {
   maxDate: Date;
   disableDate: boolean = true;
 
-  isPrimaryContact: boolean;  
-  isBoardMember: boolean;    
+  isPrimaryContact: boolean;
+  isBoardMember: boolean;
   isSignatory: boolean;
   isWrittenAgreementSignatory: boolean;
-  isDisabled:boolean;
+  isDisabled: boolean;
 
   constructor(
     private _router: Router,
@@ -89,7 +93,8 @@ export class EditNpoComponent implements OnInit {
     private _confirmationService: ConfirmationService,
     private _npoRepo: NpoService,
     private _activeRouter: ActivatedRoute,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _addressLookupService: AddressLookupService
   ) { }
 
   ngOnInit(): void {
@@ -105,8 +110,9 @@ export class EditNpoComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.EditNpo))
           this._router.navigate(['401']);
 
-        
+
         this.loadOrganisationTypes();
+        this.loadRegistrationStatuses();
         this.loadTitles();
         this.loadPositions();
         this.loadRaces();
@@ -114,7 +120,7 @@ export class EditNpoComponent implements OnInit {
         this.loadLanguages();
         this.loadNpo();
         this.buildMenu();
-   
+
       }
     });
 
@@ -187,6 +193,18 @@ export class EditNpoComponent implements OnInit {
     );
   }
 
+  private loadRegistrationStatuses() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.RegistrationStatus, false).subscribe(
+      (results) => {
+        this.registrationStatuses = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadTitles() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Titles, false).subscribe(
       (results) => {
@@ -211,7 +229,7 @@ export class EditNpoComponent implements OnInit {
     );
   }
 
-  
+
   private loadRaces() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Race, false).subscribe(
       (results) => {
@@ -235,7 +253,7 @@ export class EditNpoComponent implements OnInit {
         this._spinner.hide();
       }
     );
-  }  
+  }
 
 
   private loadGender() {
@@ -249,7 +267,7 @@ export class EditNpoComponent implements OnInit {
         this._spinner.hide();
       }
     );
-  }  
+  }
 
   private loadNpo() {
     debugger;
@@ -257,8 +275,8 @@ export class EditNpoComponent implements OnInit {
       this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
         (results) => {
           this.selectedOrganisationType = results.organisationType;
+          this.selectedRegistrationStatus = results.registrationStatus;
           this.npo = results;
-          console.log('results',results);
           this.isDataAvailable = true;
           this._spinner.hide();
         },
@@ -273,19 +291,18 @@ export class EditNpoComponent implements OnInit {
   private formValidate() {
     this.validated = true;
     this.validationErrors = [];
-console.log('NPO-contact',this.npo);
-    
+    console.log('NPO-contact', this.npo);
+
     let data = this.npo;
 
-
-    if (!data.name || !this.selectedOrganisationType)
+    if (!data.name || !this.selectedOrganisationType || !this.selectedRegistrationStatus)
       this.validationErrors.push({ severity: 'error', summary: "General Information:", detail: "Missing detail required." });
 
     if (data.contactInformation.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Contact Information:", detail: "The Organisation Contact List cannot be empty." });
+      this.validationErrors.push({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "The Organisation Contact List cannot be empty." });
 
     if (data.contactInformation.length > 0 && data.contactInformation.filter(x => x.isPrimaryContact === true).length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Contact Information:", detail: "Please specify the primary contact." });
+      this.validationErrors.push({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "Please specify the primary contact." });
 
     if (this.validationErrors.length == 0)
       this.menuActions[1].visible = false;
@@ -304,11 +321,14 @@ console.log('NPO-contact',this.npo);
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npo;
-      console.log('this.npo',this.npo);
+      console.log('this.npo', this.npo);
       console.log('data', data);
 
 
+      // TK: Set default approval status to Approved after chat with RG on 2023-06-19
+      data.approvalStatusId = AccessStatusEnum.Approved;
       data.organisationTypeId = this.selectedOrganisationType.id;
+      data.registrationStatusId = this.selectedRegistrationStatus.id;
 
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
@@ -361,7 +381,7 @@ console.log('NPO-contact',this.npo);
 
     this.selectedTitle = null;
     this.selectedPosition = null;
-    this.selectedGender= null;
+    this.selectedGender = null;
     this.selectedRace = null;
     this.selectedLanguage = null;
     this.displayContactDialog = true;
@@ -370,8 +390,8 @@ console.log('NPO-contact',this.npo);
   saveContactInformation() {
     this.contactInformation.title = this.selectedTitle;
     this.contactInformation.position = this.selectedPosition;
-    this.contactInformation.race= this.selectedRace;
-    this.contactInformation.gender= this.selectedGender;
+    this.contactInformation.race = this.selectedRace;
+    this.contactInformation.gender = this.selectedGender;
     this.contactInformation.language = this.selectedLanguage;
 
     if (this.newContactInformation)

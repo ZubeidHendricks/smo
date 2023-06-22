@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, ITitle, IUser } from 'src/app/models/interfaces';
+import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, IRegistrationStatus, ITitle, IUser } from 'src/app/models/interfaces';
+import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
@@ -30,6 +31,7 @@ export class CreateNpoComponent implements OnInit {
   }
 
   npo: INpo = {
+    section18Receipts: false,
     contactInformation: [] as IContactInformation[]
   } as INpo;
 
@@ -41,6 +43,9 @@ export class CreateNpoComponent implements OnInit {
 
   organisationTypes: IOrganisationType[];
   selectedOrganisationType: IOrganisationType;
+
+  registrationStatuses: IRegistrationStatus[];
+  selectedRegistrationStatus: IRegistrationStatus;
 
   titles: ITitle[];
   selectedTitle: ITitle;
@@ -56,10 +61,10 @@ export class CreateNpoComponent implements OnInit {
   languages: ILanguage[];
   selectedLanguage: ILanguage;
 
-  isBoardMember: boolean;    
+  isBoardMember: boolean;
   isSignatory: boolean;
   isWrittenAgreementSignatory: boolean;
-  isDisabled:boolean;
+  isDisabled: boolean;
   minDate: Date;
   maxDate: Date;
   contactCols: any[];
@@ -84,7 +89,8 @@ export class CreateNpoComponent implements OnInit {
     private _confirmationService: ConfirmationService,
     private _npoRepo: NpoService,
     private _npoProfileRepo: NpoProfileService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _addressLookupService: AddressLookupService
   ) { }
 
   ngOnInit(): void {
@@ -96,6 +102,7 @@ export class CreateNpoComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.loadOrganisationTypes();
+        this.loadRegistrationStatuses();
         this.loadTitles();
         this.loadPositions();
         this.loadGender();
@@ -175,6 +182,20 @@ export class CreateNpoComponent implements OnInit {
     );
   }
 
+  private loadRegistrationStatuses() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.RegistrationStatus, false).subscribe(
+      (results) => {
+        this.registrationStatuses = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadTitles() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Titles, false).subscribe(
@@ -229,7 +250,7 @@ export class CreateNpoComponent implements OnInit {
         this._spinner.hide();
       }
     );
-  }  
+  }
 
   private loadGender() {
     this._spinner.show();
@@ -251,14 +272,14 @@ export class CreateNpoComponent implements OnInit {
 
     let data = this.npo;
 
-    if (!data.name || !this.selectedOrganisationType)
+    if (!data.name || !this.selectedOrganisationType || !this.selectedRegistrationStatus)
       this.validationErrors.push({ severity: 'error', summary: "General Information:", detail: "Missing detail required." });
 
     if (data.contactInformation.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Contact Information:", detail: "The Organisation Contact List cannot be empty." });
+      this.validationErrors.push({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "The Organisation Contact List cannot be empty." });
 
     if (data.contactInformation.length > 0 && data.contactInformation.filter(x => x.isPrimaryContact === true).length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Contact Information:", detail: "Please specify the primary contact." });
+      this.validationErrors.push({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "Please specify the primary contact." });
 
     if (this.validationErrors.length == 0)
       this.menuActions[1].visible = false;
@@ -277,8 +298,10 @@ export class CreateNpoComponent implements OnInit {
       this._spinner.show();
       let data = this.npo;
 
-      data.approvalStatusId = AccessStatusEnum.New;
+      // TK: Set default approval status to Approved after chat with RG on 2023-06-19
+      data.approvalStatusId = AccessStatusEnum.Approved; //AccessStatusEnum.New;
       data.organisationTypeId = this.selectedOrganisationType.id;
+      data.registrationStatusId = this.selectedRegistrationStatus.id;
 
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
@@ -342,11 +365,11 @@ export class CreateNpoComponent implements OnInit {
     this.selectedLanguage = null;
     this.displayContactDialog = true;
   }
- 
+
   saveContactInformation() {
     this.contactInformation.title = this.selectedTitle;
     this.contactInformation.position = this.selectedPosition;
-    this.contactInformation.race =this.selectedRace;
+    this.contactInformation.race = this.selectedRace;
     this.contactInformation.gender = this.selectedGender;
     this.contactInformation.language = this.selectedLanguage;
 
@@ -383,7 +406,7 @@ export class CreateNpoComponent implements OnInit {
 
     this.selectedTitle = data.title;
     this.selectedPosition = data.position;
-    this.selectedRace =data.race;
+    this.selectedRace = data.race;
     this.selectedGender = data.gender;
     this.selectedLanguage = data.language;
 

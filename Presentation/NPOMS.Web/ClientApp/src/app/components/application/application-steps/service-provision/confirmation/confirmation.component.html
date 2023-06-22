@@ -33,7 +33,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <p-table [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="applicationAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="applicationAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">

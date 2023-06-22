@@ -53,17 +53,19 @@ export enum DropdownTypeEnum {
     Branches = 33,
     AccountTypes = 34,
     CompliantCycleRules = 35,
-    DistrictCouncil =36,
+    DistrictCouncil = 36,
     LocalMunicipality = 37,
     Region = 38,
-    ServiceDeliveryArea =39,
-    PropertyType =40,
-    PropertySubType =41,
-    Places=42,
-    SubPlaces =43,
-    Race =44,
-    Gender =45,
-    Languages = 46
+    ServiceDeliveryArea = 39,
+    PropertyType = 40,
+    PropertySubType = 41,
+    Places = 42,
+    SubPlaces = 43,
+    Race = 44,
+    Gender = 45,
+    Languages = 46,
+    RegistrationStatus = 47,
+    StaffCategory = 48
 }
 
 export enum EntityTypeEnum {
@@ -76,7 +78,7 @@ export enum EntityEnum {
     NpoProfile = 'NpoProfile',
     Application = 'Application',
     WorkplanIndicators = 'WorkplanIndicators',
-    FundingApplicationDetails ='FundingApplicationDetails'
+    FundingApplicationDetails = 'FundingApplicationDetails'
 }
 
 
@@ -85,7 +87,7 @@ export enum DeclarationTypeEnum {
     Bidders1 = "Bidders 1",
     Bidders2 = "Bidders 2",
     Bidders3 = "Bidders 3",
-    Bidders4 = "Bidders 4"   
+    Bidders4 = "Bidders 4"
 }
 
 export enum FacilityTypeEnum {
@@ -136,6 +138,11 @@ export enum StatusEnum {
     Evaluated = 22,
     EvaluationApproved = 23,
     GetName
+}
+
+export enum AuditorOrAffiliationEnum {
+    Auditor = "Auditor",
+    Affiliation = "Affiliation"
 }
 
 export enum PermissionsEnum {
@@ -348,7 +355,7 @@ export enum DocumentUploadLocationsEnum {
     NpoProfile = 'NpoProfile',
     Workplan = 'Workplan',
     WorkplanActuals = 'WorkplanActuals',
-    FundApp ="FundApp"
+    FundApp = "FundApp"
 }
 
 //export enum FundingTemplateTypeEnum {
@@ -362,3 +369,12 @@ export enum DocumentUploadLocationsEnum {
 //    MiniIRPsForMunicipality = 3,
 //    OtherRenewableEnergy = 4
 //}
+
+export enum StaffCategoryEnum {
+    Managers = 1,
+    ProfessionalStaff = 2,
+    AdminSupport = 3,
+    PartTimeStaff = 4,
+    Volunteers = 5,
+    Other = 6
+}

@@ -34,7 +34,7 @@
 <div style="height: 10px;" *ngIf="selectedFinancialYear && selectedFrequencyPeriod"></div>
 <div *ngIf="selectedFinancialYear && selectedFrequencyPeriod">
     <p-card subheader="Performance Information" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
-        <p-table [columns]="cols" [value]="filteredWorkplanIndicators" styleClass="p-datatable-sm" dataKey="id" editMode="row">
+        <p-table [rowHover]="true" [columns]="cols" [value]="filteredWorkplanIndicators" styleClass="p-datatable-sm" dataKey="id" editMode="row">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns" [ngStyle]="{'width': col.width, 'text-align': 'center'}">{{col.header}}</th>
@@ -135,7 +135,7 @@
           [maximizable]="false"
           [draggable]="false"
           [resizable]="false">
-        <p-table [value]="workplanActual.documents" styleClass="p-datatable-sm" [columns]="documentCols" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
+        <p-table [rowHover]="true" [value]="workplanActual.documents" styleClass="p-datatable-sm" [columns]="documentCols" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -171,7 +171,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <p-table [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="workplanComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="workplanComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -226,7 +226,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <p-table [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="workplanActualAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="workplanActualAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">

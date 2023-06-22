@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { DropdownTypeEnum } from 'src/app/models/enums';
-import { IContactInformation, IGender, INpo, IRace } from 'src/app/models/interfaces';
+import { IContactInformation, INpo } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -20,8 +19,10 @@ export class ViewNpoComponent implements OnInit {
   isDataAvailable: boolean = false;
   contactCols: any[];
   stateOptions: any[];
+  stakeholderCols: any[];
 
   contactInformation: IContactInformation = {} as IContactInformation;
+  stakeholderDetails: IContactInformation[];
   displayContactDialog: boolean;
 
   selectedTitle: string;
@@ -44,7 +45,7 @@ export class ViewNpoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    
+
     this.loadNpo();
 
     this.contactCols = [
@@ -53,6 +54,15 @@ export class ViewNpoComponent implements OnInit {
       { header: 'Email', width: '30%' },
       { header: 'Cellphone', width: '15%' },
       { header: 'Actions', width: '5%' }
+    ];
+
+    this.stakeholderCols = [
+      { header: 'Name', width: '15%' },
+      { header: 'Primary Contact', width: '15%' },
+      { header: 'Board Member', width: '15%' },
+      { header: 'Bank Signatory', width: '15%' },
+      { header: 'Written Agreement Signatory', width: '15%' },
+      { header: 'Diasbled', width: '15%' }
     ];
 
     this.stateOptions = [
@@ -68,12 +78,14 @@ export class ViewNpoComponent implements OnInit {
   }
 
   private loadNpo() {
-    debugger;
     if (this.npoId != null) {
       this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
         (results) => {
-          this.retrievedNpo.emit(results);
           this.npo = results;
+          this.retrievedNpo.emit(results);
+
+          this.stakeholderDetails = this.npo.contactInformation.filter(x => x.isBoardMember || x.isSignatory || x.isWrittenAgreementSignatory);
+
           this.isDataAvailable = true;
           this._spinner.hide();
         },

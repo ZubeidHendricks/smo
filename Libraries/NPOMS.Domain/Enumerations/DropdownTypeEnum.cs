@@ -37,16 +37,18 @@
 		Branches = 33,
 		AccountTypes = 34,
 		CompliantCycleRules = 35,
-        DistrictCouncil = 36,
-        LocalMunicipality = 37,
-		Region =38,
-		ServiceDeliveryArea =39,
-        PropertyType =40,
-        PropertySubType =41,
-		Place =42,
-		SubPlace =43,
-		Race=44,
-		Gender =45,
-		Languages =46
-    }
+		DistrictCouncil = 36,
+		LocalMunicipality = 37,
+		Region = 38,
+		ServiceDeliveryArea = 39,
+		PropertyType = 40,
+		PropertySubType = 41,
+		Place = 42,
+		SubPlace = 43,
+		Race = 44,
+		Gender = 45,
+		Languages = 46,
+		RegistrationStatus = 47,
+		StaffCategory = 48
+	}
 }

@@ -1,5 +1,6 @@
-import { FinancialMatters } from 'src/app/models/FinancialMatters';
 
+
+import { FinancialMatters } from "./FinancialMatters";
 import { EntityTypeEnum } from "./enums";
 
 
@@ -255,6 +256,12 @@ export interface ISubProgrammeType {
     subProgramme: ISubProgramme;
 }
 
+export interface IStaffCategory {
+    id: number;
+    name: string;
+    isActive: boolean;
+}
+
 export interface IDirectorate {
     id: number;
     name: string;
@@ -280,6 +287,13 @@ export interface IBranch {
 }
 
 export interface IAccountType {
+    id: number;
+    name: string;
+    systemName: string;
+    isActive: boolean;
+}
+
+export interface IRegistrationStatus {
     id: number;
     name: string;
     systemName: string;
@@ -449,7 +463,7 @@ export interface IContactInformation {
     npoId: number;
     titleId: number;
     raceId: number;
-    languageId : number;
+    languageId: number;
     genderId: number;
     firstName: string;
     lastName: string;
@@ -466,7 +480,7 @@ export interface IContactInformation {
     isPrimaryContact: boolean;
     isDisabled: boolean;
     isSignatory: boolean;
-    isWrittenAgreementSignatory: boolean;    
+    isWrittenAgreementSignatory: boolean;
     isBoardMember: boolean;
     yearsOfExperience: number;
     isActive: boolean;
@@ -479,7 +493,7 @@ export interface IContactInformation {
     position: IPosition;
     gender: IGender;
     race: IRace;
-    language : ILanguage;
+    language: ILanguage;
 }
 
 export interface INpo {
@@ -496,11 +510,17 @@ export interface INpo {
     approvalUserId: number;
     approvalDateTime: Date;
 
+    registrationStatusId: number;
+    pboNumber: string;
+    section18Receipts: boolean;
+    cCode: string;
+
     organisationType: IOrganisationType;
     approvalStatus: IAccessStatus;
     contactInformation: IContactInformation[];
     createdUser: IUser;
     approvalUser: IUser;
+    registrationStatus: IRegistrationStatus;
 }
 
 export interface INpoProfile {
@@ -695,6 +715,49 @@ export interface IPaymentSchedule {
     isActive: boolean;
 
     compliantCycle: ICompliantCycle;
+}
+
+export interface IAuditorOrAffiliation {
+    id: number;
+    entityId: number; //Either NpoId or FundingApplicationId
+    entityType: string; //Either Auditor or Affiliation
+    organisationName: string;
+    registrationNumber: string;
+    address: string;
+    contactPerson: string;
+    emailAddress: string;
+    telephoneNumber: string;
+    website: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
+}
+
+export interface IStaffMemberProfile {
+    id: number;
+    npoProfileId: number;
+    staffCategoryId: number;
+    vacantPosts: number;
+    filledPosts: number;
+    consultantsAppointed: number;
+    staffWithDisabilities: number;
+    africanMale: number;
+    africanFemale: number;
+    indianMale: number;
+    indianFemale: number;
+    colouredMale: number;
+    colouredFemale: number;
+    whiteMale: number;
+    whiteFemale: number;
+    otherSpecify: string;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
+
+    staffCategory: IStaffCategory;
 }
 
 /* Lookup */

@@ -164,6 +164,7 @@ namespace NPOMS.API.Controllers
 		private static void ClearObjects(Npo model)
 		{
 			model.OrganisationType = null;
+			model.RegistrationStatus = null;
 
 			foreach (var item in model.ContactInformation)
 			{

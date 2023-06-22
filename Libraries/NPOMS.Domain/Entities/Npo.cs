@@ -30,6 +30,16 @@ namespace NPOMS.Domain.Entities
 
 		public bool IsActive { get; set; }
 
+		public int? RegistrationStatusId { get; set; }
+
+		[Column(TypeName = "nvarchar(50)")]
+		public string PBONumber { get; set; }
+
+		public bool Section18Receipts { get; set; }
+
+		[Column(TypeName = "nvarchar(255)")]
+		public string CCode { get; set; }
+
 		public int CreatedUserId { get; set; }
 
 		public DateTime CreatedDateTime { get; set; }
@@ -53,5 +63,7 @@ namespace NPOMS.Domain.Entities
 		public AccessStatus ApprovalStatus { get; set; }
 
 		public User ApprovalUser { get; set; }
+
+		public RegistrationStatus RegistrationStatus { get; set; }
 	}
 }
