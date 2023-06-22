@@ -43,13 +43,13 @@ export class EmailAccountComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.ViewUtilities))
           this._router.navigate(['401']);
 
-        
+
       }
     });
   }
 
   add() {
-    
+
   }
 
   goBack() {

@@ -68,13 +68,13 @@ namespace NPOMS.Services.Implementation
         private IGenderRepository _genderRepository;
         private ILanguageRepository _languageRepository;
 		private IRegistrationStatusRepository _registrationStatusRepository;
-
+		private IStaffCategoryRepository _staffCategoryRepository;
 
         #endregion
 
-        #region Constructors
+		#region Constructors
 
-        public DropdownService(
+		public DropdownService(
 			IMapper mapper,
 			IRoleRepository roleRepository,
 			IDepartmentRepository departmentRepository,
@@ -123,7 +123,8 @@ namespace NPOMS.Services.Implementation
 			IRaceRepository raceRepository,
 			IGenderRepository genderRepository,
 			ILanguageRepository languageRepository,
-			IRegistrationStatusRepository registrationStatusRepository)
+			IRegistrationStatusRepository registrationStatusRepository,
+			IStaffCategoryRepository staffCategoryRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -170,10 +171,11 @@ namespace NPOMS.Services.Implementation
 			_propertySubTypeRepository = propertySubTypeRepository;
 			_placeRepository = placeRepository;
 			_subPlaceRepository = subPlaceRepository;
-			_raceRepository= raceRepository;
-			_genderRepository= genderRepository;
-			_languageRepository= languageRepository;
+			_raceRepository = raceRepository;
+			_genderRepository = genderRepository;
+			_languageRepository = languageRepository;
 			_registrationStatusRepository = registrationStatusRepository;
+			_staffCategoryRepository = staffCategoryRepository;
 		}
 
 		#endregion
@@ -324,7 +326,6 @@ namespace NPOMS.Services.Implementation
 		}
 
         #endregion
-
 
         #region Race
 
@@ -1412,6 +1413,35 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedDateTime = DateTime.Now;
 
 			await _registrationStatusRepository.UpdateAsync(null, model, false, loggedInUser.Id);
+		}
+
+		#endregion
+
+		#region Staff Category
+
+		public async Task<IEnumerable<StaffCategory>> GetStaffCategories(bool returnInactive)
+		{
+			return await _staffCategoryRepository.GetEntities(returnInactive);
+		}
+
+		public async Task CreateStaffCategory(StaffCategory model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _staffCategoryRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateStaffCategory(StaffCategory model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _staffCategoryRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
 		#endregion

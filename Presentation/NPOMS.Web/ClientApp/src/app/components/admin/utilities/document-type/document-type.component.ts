@@ -152,7 +152,7 @@ export class DocumentTypeComponent implements OnInit {
     return false;
   }
 
-  save() {    
+  save() {
     this.entity.isActive = !this.inActive;
     this.entity.isCompulsory = this.isCompulsory ? true : false;
     this.entity.location = this.selectedLocation.value;

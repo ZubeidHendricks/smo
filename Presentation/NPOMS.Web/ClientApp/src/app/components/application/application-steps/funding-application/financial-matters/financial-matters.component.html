@@ -114,7 +114,7 @@
   </ng-template>
 </p-table>
 
-<p-table [columns]="cols" [value]="financialMattersIncome" selectionMode="single"  styleClass="p-datatable-sm" [(selection)]="selectedFinancialMatterIncome" (onRowSelect)="onRowSelect($event)"
+<p-table [rowHover]="true" [columns]="cols" [value]="financialMattersIncome" selectionMode="single"  styleClass="p-datatable-sm" [(selection)]="selectedFinancialMatterIncome" (onRowSelect)="onRowSelect($event)"
  [paginator]="true" [rows]="15">
   <ng-template pTemplate="header" let-columns>
     <tr>
@@ -219,7 +219,7 @@
     </tr>
   </ng-template>
 </p-table>
-<p-table [columns]="cols" [value]="financialMattersExpenditure" selectionMode="single"
+<p-table [rowHover]="true" [columns]="cols" [value]="financialMattersExpenditure" selectionMode="single"
   [(selection)]="selectedFinancialMatterExpenditure" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
   <ng-template pTemplate="header" let-columns>
     <tr>
@@ -322,7 +322,7 @@
     </tr>
   </ng-template>
 </p-table>
-<p-table [columns]="colsOther" [value]="financialMattersOthers" selectionMode="single"
+<p-table [rowHover]="true" [columns]="colsOther" [value]="financialMattersOthers" selectionMode="single"
   [(selection)]="selectedFinancialMatterOthers" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
   <ng-template pTemplate="header" let-columns>
     <tr>
@@ -417,7 +417,7 @@
 
 <div style="height: 10px;"></div>
  <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Bank Details">
-    <p-table [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
+    <p-table [rowHover]="true" [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
           <tr>
             <th style="width: 15%;"></th>

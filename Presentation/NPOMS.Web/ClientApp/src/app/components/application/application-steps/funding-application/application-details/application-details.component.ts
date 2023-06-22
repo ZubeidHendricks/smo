@@ -1,4 +1,4 @@
-import { IApplicationDetails, IFundAppSDADetail, IPlace, ISDA, ISubPlace,  } from './../../../../../models/interfaces';
+import { IApplicationDetails, IFundAppSDADetail, IPlace, ISDA, ISubPlace, } from './../../../../../models/interfaces';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
@@ -37,7 +37,7 @@ export class ApplicationDetailsComponent implements OnInit {
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
   @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
 
-  dropdownTouched: boolean = false;  
+  dropdownTouched: boolean = false;
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -125,11 +125,10 @@ export class ApplicationDetailsComponent implements OnInit {
     private _applicationRepo: ApplicationService,
     private _applicationPeriodRepo: ApplicationPeriodService,
     private _activeRouter: ActivatedRoute,
-    private _fundAppService: FundingApplicationService,  
+    private _fundAppService: FundingApplicationService,
     private _bidService: BidService,
-    private _messageService:MessageService,  
-    private _loggerService: LoggerService,
-    private _npoProfile: NpoProfileService,
+    private _messageService: MessageService,
+    private _loggerService: LoggerService
   ) { }
 
   getSelectedValue(value:string){
@@ -159,9 +158,7 @@ export class ApplicationDetailsComponent implements OnInit {
         //Get all regions
         this.regionDropdown();
         //Get all service delivery areas
-        this. loadServiceDeliveryAreas();     
-        this.GetAffiliatedOrganisation();
-        this.GetSourceOfInformation(); 
+        this.loadServiceDeliveryAreas();
       }
     });
 
@@ -204,7 +201,7 @@ export class ApplicationDetailsComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-         //            this.saveFundingApplicationDetails();
+            //            this.saveFundingApplicationDetails();
           }
         },
         {
@@ -232,7 +229,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear )
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear)
       this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -371,6 +368,9 @@ export class ApplicationDetailsComponent implements OnInit {
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
 
+
+
+
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
           this.selectedSubProgramme = results.subProgramme;
@@ -476,7 +476,7 @@ export class ApplicationDetailsComponent implements OnInit {
       (results) => {
         this.sdasAll = results;
         this.allDropdownsLoaded();
-        
+
       },
       (err) => {
         this._loggerService.logException(err);
@@ -486,16 +486,20 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-        if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved )          
-          return true;
-        else return false;
-      }
-  
+    debugger;
+    console.log('this.application', this.application);
+
+    console.log('this.application.statusId', this.application.statusId);
+    if (this.application.statusId == StatusEnum.PendingReview ||
+      this.application.statusId == StatusEnum.Approved)
+      return true;
+    else return false;
+  }
+
   nextPage() {
 
     if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
-    
+
       this.activeStep = this.activeStep + 1;
       this.activeStepChange.emit(this.activeStep);
 
@@ -511,8 +515,8 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   private allDropdownsLoaded() {
-    if (this.allDistrictCouncils?.length > 0 && 
-      this.localMunicipalitiesAll?.length > 0 && 
+    if (this.allDistrictCouncils?.length > 0 &&
+      this.localMunicipalitiesAll?.length > 0 &&
       this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
 
       if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil.id != undefined)
@@ -534,14 +538,13 @@ export class ApplicationDetailsComponent implements OnInit {
     this.regions = [];
     this.sdas = [];
 
-    if (localMunicipality.id != undefined && 
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.id != localMunicipality.id) 
-      {
+    if (localMunicipality.id != undefined &&
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.id != localMunicipality.id) {
       this.selectedRegions = [];
       this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = null;
       this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
       this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
-      }
+    }
 
     if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.name != localMunicipality.name) {
       this.selectedRegions = [];
@@ -554,7 +557,7 @@ export class ApplicationDetailsComponent implements OnInit {
     if (localMunicipality.id != undefined) {
       this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
     }
-  }  
+  }
 
 
   OnDistrictCouncilChange(districtCouncil: IDistrictCouncil) {
@@ -570,7 +573,7 @@ export class ApplicationDetailsComponent implements OnInit {
       this.localMunicipalities = this.localMunicipalitiesAll?.filter(x => x.districtCouncilId == districtCouncil.id);
       this.localMunicipalities.unshift({ name: 'Select Type', id: null, districtCouncilId: null });
     }
-  }  
+  }
 
 
   onRegionChange(regions: IRegion[]) {
@@ -579,6 +582,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
+      console.log('onRegionChange', this.selectedRegions);
     });
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
     this.sdas = [];
@@ -608,6 +612,8 @@ export class ApplicationDetailsComponent implements OnInit {
     // end  make sure the selected is not redundant!!
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
     this.selectedSdas = filtered;
+    console.log('onRegionChange Selected SDA', this.selectedSdas);
+
   }
 
 
@@ -620,7 +626,9 @@ export class ApplicationDetailsComponent implements OnInit {
     sdas.forEach(item => {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
+    console.log('onSdaChange selected sds', this.selectedSdas);
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
+    console.log('onSdaChange', this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
 
     let count = 0;
     if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 
@@ -654,110 +662,17 @@ export class ApplicationDetailsComponent implements OnInit {
     if (sdas && sdas.length != 0) {
       this._bidService.getPlaces(sdas).subscribe(res => {
         this.places = res;
+        console.log('From setPlaces', this.places);
         this.getPlace.emit(this.places)
         this._bidService.getSubPlaces(this.places).subscribe(res => {
           this.subPlacesAll = res;
+          console.log('From setPlaces', this.subPlacesAll);
+
           this.getSubPlace.emit(this.subPlacesAll)
         });
       });
     }
   }
-  
-  private GetSourceOfInformation() {
-    this._npoProfile.getSourceOfInformationById(this.selectedApplicationId).subscribe(
-      (results) => {
-        this.sourceOfInformation = results;
-        if(results.find(results=> results.selectedSourceValue === 1))
-        {
-          this.sourceOfInformationText = "Printed newspaper";
-        }
-        if(results.find(results=> results.selectedSourceValue === 2))
-        {
-          this.sourceOfInformationText = "Online";
-        }
-        if(results.find(results=> results.selectedSourceValue === 3))
-        {
-          this.sourceOfInformationText = "DSD circular to NPOs";
-        }
-        if(results.find(results=> results.selectedSourceValue === 4))
-        {
-          this.sourceOfInformationText = "Other (specify)";
-        }
-      },
-      (err) => {
-        //
-      }
-    );
-  }
-
-  private GetAffiliatedOrganisation() {
-    this._npoProfile.getAffiliatedOrganisationById(this.selectedApplicationId).subscribe(
-      (results) => {
-        this.affliatedOrganisationInfo = results;
-        if(results.length > 0)
-        {
-          document.getElementById('affliatedOrganisationInfoTable').hidden = false; 
-        }
-      },
-      (err) => {
-        //
-      }
-    );
-  }
-
-  updateDetail(rowData: IAffiliatedOrganisation) {
-   
-    this._npoProfile.updateAffiliatedOrganisationData(this.affliatedOrganisationInfo, this.selectedApplicationId).subscribe(
-      (resp) => {
-        this.GetAffiliatedOrganisation();
-      },
-      (err) => {
-        //
-      }
-    );
-  }
-
-
-  updateSourceOfInformation(sourceOfInfo: ISourceOfInformation)
-  {
-    this._npoProfile.updateSourceOfInformation(sourceOfInfo, this.selectedApplicationId).subscribe(
-      (resp) => {
-        this.GetSourceOfInformation();
-      },
-      (err) => {
-        //
-      }
-    );
-  }
-
-  addNewRow() {
-    this.affliatedOrganisationInfo.push({
-    } as IAffiliatedOrganisation);
-  }
-
-  save()
-  {
-    var today = this.getCurrentDateTime();
-   // this.sourceOfInformation.id = 0;
-    this.sourceOfInformations.npoProfileId = Number(this.selectedApplicationId);
-    this.sourceOfInformations.selectedSourceValue = Number(this.selectedDropdownValue);
-    this.sourceOfInformations.additionalSourceInformation = this.specify;
-    // this.sourceOfInformation.createdUserId = 0;
-    // this.sourceOfInformation.createdDateTime = today;
-    // this.sourceOfInformation.updatedUserId = 0;
-    // this.sourceOfInformation.updatedDateTime = today;
-    console.log('this.sourceOfInformation[0]', this.sourceOfInformation[0]);
-    this.updateSourceOfInformation(this.sourceOfInformations);
-   
-  }
-
-  private getCurrentDateTime() {
-    let today = new Date();
-    let nextTwoHours = today.getHours() + 2;
-    today.setHours(nextTwoHours);
-
-    return today;
-  } 
 
 
 }

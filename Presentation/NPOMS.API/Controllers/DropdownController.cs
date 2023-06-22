@@ -186,6 +186,9 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.RegistrationStatus:
 						var registrationStatuses = await _dropdownService.GetRegistrationStatuses(returnInactive);
 						return Ok(registrationStatuses);
+					case DropdownTypeEnum.StaffCategory:
+						var staffCategories = await _dropdownService.GetStaffCategories(returnInactive);
+						return Ok(staffCategories);
 				}
 
 				return Ok();
@@ -340,6 +343,10 @@ namespace NPOMS.API.Controllers
 						var registrationStatus = JsonConvert.DeserializeObject<RegistrationStatus>(Convert.ToString(entity));
 						await _dropdownService.CreateRegistrationStatus(registrationStatus, base.GetUserIdentifier());
 						break;
+					case DropdownTypeEnum.StaffCategory:
+						var staffCategory = JsonConvert.DeserializeObject<StaffCategory>(Convert.ToString(entity));
+						await _dropdownService.CreateStaffCategory(staffCategory, base.GetUserIdentifier());
+						break;
 				}
 
 				return Ok();
@@ -493,6 +500,10 @@ namespace NPOMS.API.Controllers
 					case DropdownTypeEnum.RegistrationStatus:
 						var registrationStatus = JsonConvert.DeserializeObject<RegistrationStatus>(Convert.ToString(entity));
 						await _dropdownService.UpdateRegistrationStatus(registrationStatus, base.GetUserIdentifier());
+						break;
+					case DropdownTypeEnum.StaffCategory:
+						var staffCategory = JsonConvert.DeserializeObject<StaffCategory>(Convert.ToString(entity));
+						await _dropdownService.UpdateStaffCategory(staffCategory, base.GetUserIdentifier());
 						break;
 				}
 

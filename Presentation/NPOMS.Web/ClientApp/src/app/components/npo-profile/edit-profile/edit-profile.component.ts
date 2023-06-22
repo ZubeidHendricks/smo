@@ -5,8 +5,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { Subscription } from 'rxjs';
-import { AccessStatusEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IAddressLookup, IBank, IBankDetail, IBranch, IDenodoFacility, IDepartment, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, INpo, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
+import { AccessStatusEnum, AuditorOrAffiliationEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
+import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDenodoFacility, IDepartment, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, INpo, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
@@ -36,6 +36,10 @@ export class EditProfileComponent implements OnInit {
 
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
+  }
+
+  public get StaffCategoryEnum(): typeof StaffCategoryEnum {
+    return StaffCategoryEnum;
   }
 
   npo: INpo;
@@ -129,6 +133,16 @@ export class EditProfileComponent implements OnInit {
   servicesRendered: IServicesRendered[];
   bankDetails: IBankDetail[];
 
+  auditorOrAffiliations: IAuditorOrAffiliation[];
+  auditorCols: any[];
+  newAuditorOrAffiliation: boolean;
+  auditorOrAffiliation: IAuditorOrAffiliation = {} as IAuditorOrAffiliation;
+  selectedAuditorOrAffiliation: IAuditorOrAffiliation;
+  displayAuditorDialog: boolean;
+
+  staffCategories: IStaffCategory[];
+  staffMemberProfiles: IStaffMemberProfile[];
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -168,6 +182,7 @@ export class EditProfileComponent implements OnInit {
         this.loadDepartments();
         this.loadBanks();
         this.loadAccountTypes();
+        this.loadStaffCategories();
         this.loadNpoProfile();
         this.buildMenu();
       }
@@ -218,6 +233,14 @@ export class EditProfileComponent implements OnInit {
       { header: 'Code', width: '10%' },
       { header: 'Account Type', width: '15%' },
       { header: 'Account Number', width: '28%' }
+    ];
+
+    this.auditorCols = [
+      { header: 'Company', width: '20%' },
+      { header: 'Registration Number', width: '15%' },
+      { header: 'Address', width: '23%' },
+      { header: 'Telephone Number', width: '10%' },
+      { header: 'Email Address', width: '25%' }
     ];
   }
 
@@ -372,6 +395,18 @@ export class EditProfileComponent implements OnInit {
     );
   }
 
+  private loadStaffCategories() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.StaffCategory, false).subscribe(
+      (results) => {
+        this.staffCategories = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadNpoProfile() {
     if (this.npoProfileId != null) {
       this._npoProfileRepo.getNpoProfileById(Number(this.npoProfileId)).subscribe(
@@ -379,14 +414,14 @@ export class EditProfileComponent implements OnInit {
           results.addressInformation = results.addressInformation != null ? results.addressInformation : {} as IAddressInformation;
 
           this.npoProfile = results;
+          this.getDocuments();
 
           this.loadFacilities(Number(this.npoProfileId));
           this.loadServicesRendered(Number(this.npoProfileId));
           this.loadBankDetails(Number(this.npoProfileId));
+          this.loadStaffMemberProfiles();
 
-          this.isDataAvailable = true;
-          this.getDocuments();
-          this._spinner.hide();
+          this.loadAuditorOrAffiliations();
         },
         (err) => {
           this._loggerService.logException(err);
@@ -394,6 +429,143 @@ export class EditProfileComponent implements OnInit {
         }
       );
     }
+  }
+
+  private loadStaffMemberProfiles() {
+    this._npoProfileRepo.getStaffMemberProfilesByNpoProfileId(this.npoProfile.id).subscribe(
+      (results) => {
+        this.staffMemberProfiles = results ? results : [] as IStaffMemberProfile[];
+
+        this.staffMemberProfiles.forEach(item => {
+          item.staffCategory = this.staffCategories.find(x => x.id === item.staffCategoryId);
+        });
+
+        let filteredCategories = this.staffCategories.filter(x => x.id !== StaffCategoryEnum.Other);
+        let memberProfiles = this.staffMemberProfiles;
+
+        if (this.staffMemberProfiles.length > 0) {
+          filteredCategories = filteredCategories.filter(function (category) {
+            return !memberProfiles.find(function (profile) {
+              return category.id === profile.staffCategoryId;
+            });
+          });
+        }
+
+        filteredCategories.forEach(item => {
+          this.staffMemberProfiles.push({
+            staffCategoryId: item.id,
+            staffCategory: item,
+            vacantPosts: 0,
+            filledPosts: 0,
+            consultantsAppointed: 0,
+            staffWithDisabilities: 0,
+            africanMale: 0,
+            africanFemale: 0,
+            indianMale: 0,
+            indianFemale: 0,
+            colouredMale: 0,
+            colouredFemale: 0,
+            whiteMale: 0,
+            whiteFemale: 0,
+            otherSpecify: null
+          } as IStaffMemberProfile);
+        });
+
+        //Sort Staff Member Profiles by Staff Category Id
+        this.staffMemberProfiles.sort((a, b) => a.staffCategoryId - b.staffCategoryId);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public addOther() {
+    this.staffMemberProfiles.push({
+      staffCategoryId: this.staffCategories.find(x => x.id === StaffCategoryEnum.Other).id,
+      staffCategory: this.staffCategories.find(x => x.id === StaffCategoryEnum.Other),
+      vacantPosts: 0,
+      filledPosts: 0,
+      consultantsAppointed: 0,
+      staffWithDisabilities: 0,
+      africanMale: 0,
+      africanFemale: 0,
+      indianMale: 0,
+      indianFemale: 0,
+      colouredMale: 0,
+      colouredFemale: 0,
+      whiteMale: 0,
+      whiteFemale: 0,
+      otherSpecify: null
+    } as IStaffMemberProfile);
+  }
+
+  public updateStaffMemberProfile(staffMemberProfile: IStaffMemberProfile) {
+    this._spinner.show();
+    staffMemberProfile.npoProfileId = this.npoProfile.id;
+    this._npoProfileRepo.updateStaffMemberProfile(staffMemberProfile).subscribe(
+      (resp) => {
+        staffMemberProfile.id = resp.id;
+        staffMemberProfile.createdUserId = resp.createdUserId;
+        staffMemberProfile.createdDateTime = resp.createdDateTime;
+        staffMemberProfile.updatedUserId = resp.updatedUserId;
+        staffMemberProfile.updatedDateTime = resp.updatedDateTime;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  get totalStaffMemberProfile() {
+    let totals = {
+      vacantPosts: 0,
+      filledPosts: 0,
+      consultantsAppointed: 0,
+      staffWithDisabilities: 0,
+      africanMale: 0,
+      africanFemale: 0,
+      indianMale: 0,
+      indianFemale: 0,
+      colouredMale: 0,
+      colouredFemale: 0,
+      whiteMale: 0,
+      whiteFemale: 0
+    } as IStaffMemberProfile;
+
+    this.staffMemberProfiles.forEach(item => {
+      totals.vacantPosts += item.vacantPosts;
+      totals.filledPosts += item.filledPosts;
+      totals.consultantsAppointed += item.consultantsAppointed;
+      totals.staffWithDisabilities += item.staffWithDisabilities;
+      totals.africanMale += item.africanMale;
+      totals.africanFemale += item.africanFemale;
+      totals.indianMale += item.indianMale;
+      totals.indianFemale += item.indianFemale;
+      totals.colouredMale += item.colouredMale;
+      totals.colouredFemale += item.colouredFemale;
+      totals.whiteMale += item.whiteMale;
+      totals.whiteFemale += item.whiteFemale;
+    });
+
+    return totals;
+  }
+
+  private loadAuditorOrAffiliations() {
+    this._npoProfileRepo.getAuditorOrAffiliations(this.npoProfile.id).subscribe(
+      (results) => {
+        this.auditorOrAffiliations = results.filter(x => x.entityType === AuditorOrAffiliationEnum.Auditor);
+        this.isDataAvailable = true;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private loadFacilities(npoProfileId: number) {
@@ -529,7 +701,7 @@ export class EditProfileComponent implements OnInit {
       this.validationErrors.push({ severity: 'error', summary: "General Information:", detail: "Missing detail required. This can be updated on the Organisations tab." });
 
     if (this.npo.contactInformation.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Contact Information:", detail: "The Organisation Contact List cannot be empty. This can be updated on the Organisations tab." });
+      this.validationErrors.push({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "The Organisation Contact List cannot be empty. This can be updated on the Organisations tab." });
 
     if (!data.addressInformation.physicalAddress || data.addressInformation.postalSameAsPhysical == null || data.addressInformation.postalSameAsPhysical == undefined || !data.addressInformation.postalAddress)
       this.validationErrors.push({ severity: 'error', summary: "Address Information:", detail: "Missing detail required." });
@@ -584,7 +756,7 @@ export class EditProfileComponent implements OnInit {
       this._npoRepo.updateNpo(this.npo).subscribe(
         (resp) => {
           data.addressInformation.npoProfileId = data.id;
-          
+
           this._npoProfileRepo.updateNpoProfile(data).subscribe(
             (resp) => {
               this._spinner.hide();
@@ -938,7 +1110,7 @@ export class EditProfileComponent implements OnInit {
   /*documentTypeChange(document: IDocumentStore, documentType: IDocumentType) {
     document.documentType = null;
     document.documentTypeId = documentType.id;
-  
+   
     this._documentStore.update(document).subscribe(resp => {
       this.getDocuments();
     });
@@ -1019,14 +1191,20 @@ export class EditProfileComponent implements OnInit {
   }
 
   populateAddressField(event, field) {
-    if (field === 'physicalAddress')
-      this.npoProfile.addressInformation.physicalAddress = event.text;
-
-    if (field === 'postalAddress')
-      this.npoProfile.addressInformation.postalAddress = event.text;
-
-    if (field === 'facilityAddress')
-      this.mapping.facilityList.address = event.text;
+    switch (field) {
+      case 'physicalAddress':
+        this.npoProfile.addressInformation.physicalAddress = event.text;
+        break;
+      case 'postalAddress':
+        this.npoProfile.addressInformation.postalAddress = event.text;
+        break;
+      case 'facilityAddress':
+        this.mapping.facilityList.address = event.text;
+        break;
+      case 'auditorAddress':
+        this.auditorOrAffiliation.address = event.text;
+        break;
+    }
   }
 
   addServicesRendered() {
@@ -1273,5 +1451,87 @@ export class EditProfileComponent implements OnInit {
     if (this.selectedBranch) {
       this.bankDetail.branchCode = this.selectedBranch.branchCode != null ? this.selectedBranch.branchCode : this.selectedBank.code;
     }
+  }
+
+  public addAuditorInformation() {
+    this.newAuditorOrAffiliation = true;
+
+    this.auditorOrAffiliation = {
+      entityId: this.npoProfile.id,
+      entityType: AuditorOrAffiliationEnum.Auditor,
+      isActive: true
+    } as IAuditorOrAffiliation;
+
+    this.addressLookup = null;
+    this.displayAuditorDialog = true;
+  }
+
+  public editAuditorInformation(data: IAuditorOrAffiliation) {
+    this.newAuditorOrAffiliation = false;
+    this.auditorOrAffiliation = this.cloneAuditorOrAffiliation(data);
+    this.addressLookup = null;
+    this.displayAuditorDialog = true;
+  }
+
+  private cloneAuditorOrAffiliation(data: IAuditorOrAffiliation): IAuditorOrAffiliation {
+    let object = {} as IAuditorOrAffiliation;
+
+    for (let prop in data)
+      object[prop] = data[prop];
+
+    return object;
+  }
+
+  public deleteAuditorInformation(data: IAuditorOrAffiliation) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.auditorOrAffiliation = this.cloneAuditorOrAffiliation(data);
+        this.auditorOrAffiliation.isActive = false;
+        this.updateAuditorOrAffiliation();
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  public disableSaveAuditorInfo() {
+    const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (!this.auditorOrAffiliation.organisationName || !this.auditorOrAffiliation.registrationNumber || !this.auditorOrAffiliation.address || !this.auditorOrAffiliation.contactPerson || !this.auditorOrAffiliation.telephoneNumber || this.auditorOrAffiliation.telephoneNumber.length != 10 || !this.auditorOrAffiliation.emailAddress || !regularExpression.test(String(this.auditorOrAffiliation.emailAddress)))
+      return true;
+
+    return false;
+  }
+
+  public saveAuditorInformation() {
+    this.newAuditorOrAffiliation ? this.createAuditorOrAffiliation() : this.updateAuditorOrAffiliation();
+    this.displayAuditorDialog = false;
+  }
+
+  private createAuditorOrAffiliation() {
+    this._npoProfileRepo.createAuditorOrAffiliation(this.auditorOrAffiliation).subscribe(
+      (resp) => {
+        this.loadAuditorOrAffiliations();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateAuditorOrAffiliation() {
+    this._npoProfileRepo.updateAuditorOrAffiliation(this.auditorOrAffiliation).subscribe(
+      (resp) => {
+        this.loadAuditorOrAffiliations();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 }

@@ -31,7 +31,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   @Input() places: IPlace[];
   @Input() allsubPlaces: ISubPlace[];
-  
+
 
   subPlaces: ISubPlace[];
   selectedSubPlaces: ISubPlace[];
@@ -49,7 +49,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    
+
     this.cols = [
       { header: 'Description' },
       { header: 'Beneficiaries' },
@@ -59,25 +59,25 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
     console.log('Places coming from Edit component on ProjImpl', this.places);
     console.log('Places coming from ProjectImpsubPlacesAll', this.allsubPlaces);
-    this.allDropdownsLoaded();    
+    this.allDropdownsLoaded();
   }
 
   disableSubPlacesOrPlace(): boolean {
 
-  
-    if (  this.places && this.allsubPlaces) {
+
+    if (this.places && this.allsubPlaces) {
       return false;
     }
     return true;
   }
-  
+
   readonly(): boolean {
-  
-        if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved )
-          return true;
-        else return false;
-      }
+
+    if (this.application.statusId == StatusEnum.PendingReview ||
+      this.application.statusId == StatusEnum.Approved)
+      return true;
+    else return false;
+  }
 
   nextPage() {
 
@@ -122,11 +122,11 @@ if(
     return true;
   
     return false;
-    
+
   }
- 
+
   save() {
- 
+
     this.displayDialogImpl = false;
     this.implementation.beneficiaries = Number(this.implementation.beneficiaries).valueOf();
     this.implementation.budget = Number(this.implementation.budget).valueOf();
@@ -150,7 +150,7 @@ if(
     console.log('bit after', this.fundingApplicationDetails)
   }
 
- 
+
   onRowSelect(event) {
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];

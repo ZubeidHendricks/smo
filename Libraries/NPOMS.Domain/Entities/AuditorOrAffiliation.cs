@@ -8,7 +8,7 @@ namespace NPOMS.Domain.Entities
 	public class AuditorOrAffiliation : BaseEntity
 	{
 		/// <summary>
-		/// This is the Id of the entity. In this case, it could either be the NpoId or FundingApplicationId.
+		/// This is the Id of the entity. In this case, it could either be the NpoProfileId or FundingApplicationId.
 		/// </summary>
 		public int EntityId { get; set; }
 

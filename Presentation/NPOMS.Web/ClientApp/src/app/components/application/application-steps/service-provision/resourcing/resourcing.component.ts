@@ -499,7 +499,7 @@ export class ResourcingComponent implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        
+
         let model = {
           applicationId: this.application.id,
           serviceProvisionStepId: ServiceProvisionStepsEnum.Resourcing,

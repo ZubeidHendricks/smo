@@ -85,14 +85,14 @@ export class DocumentUploadComponent implements OnInit {
 
   private loadDocumentTypes() {
     debugger;
-    
+
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
-        console.log('this.documentTypes',this.documentTypes);
-        console.log('results',results);
+        console.log('this.documentTypes', this.documentTypes);
+        console.log('results', results);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -102,7 +102,7 @@ export class DocumentUploadComponent implements OnInit {
   }
   onDownloadDocument(doc: any) {
     debugger;
-    console.log('download',doc);
+    console.log('download', doc);
     this._confirmationService.confirm({
       message: 'Are you sure that you want to download document?',
       header: 'Confirmation',
@@ -113,23 +113,23 @@ export class DocumentUploadComponent implements OnInit {
       reject: () => {
       }
     });
-  }  
+  }
 
   public onUploadChange = (event, form) => {
     if (event.files[0]) {
-      this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments, 
-        Number(this.fundingApplicationDetails.id), EntityEnum.FundingApplicationDetails, 
+      this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments,
+        Number(this.fundingApplicationDetails.id), EntityEnum.FundingApplicationDetails,
         this.application.refNo, event.files[0].documentType.id).subscribe(
-        event => {
-          if (event.type === HttpEventType.UploadProgress)
-            this._spinner.show();
-          else if (event.type === HttpEventType.Response) {
-            this._spinner.hide();
-            this.getDocuments();
-          }
-        },
-        () => this._spinner.hide()
-      );
+          event => {
+            if (event.type === HttpEventType.UploadProgress)
+              this._spinner.show();
+            else if (event.type === HttpEventType.Response) {
+              this._spinner.hide();
+              this.getDocuments();
+            }
+          },
+          () => this._spinner.hide()
+        );
       form.clear();
     }
     else {

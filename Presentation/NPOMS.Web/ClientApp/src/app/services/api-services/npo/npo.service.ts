@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AccessStatusEnum } from 'src/app/models/enums';
-import { IAuditorOrAffiliation, INpo } from 'src/app/models/interfaces';
+import { INpo } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -53,20 +53,5 @@ export class NpoService {
   public updateNpoApprovalStatus(npo: INpo) {
     const url = `${this._envUrl.urlAddress}/api/npos/approval-status`;
     return this._http.put<INpo>(url, npo, httpOptions);
-  }
-
-  public getAuditorOrAffiliations(entityId: number) {
-    const url = `${this._envUrl.urlAddress}/api/npos/auditor-affiliation/entityId/${entityId}`;
-    return this._http.get<IAuditorOrAffiliation[]>(url, httpOptions);
-  }
-
-  public createAuditorOrAffiliation(model: IAuditorOrAffiliation) {
-    const url = `${this._envUrl.urlAddress}/api/npos/auditor-affiliation`;
-    return this._http.post<IAuditorOrAffiliation>(url, model, httpOptions);
-  }
-
-  public updateAuditorOrAffiliation(model: IAuditorOrAffiliation) {
-    const url = `${this._envUrl.urlAddress}/api/npos/auditor-affiliation`;
-    return this._http.put<IAuditorOrAffiliation>(url, model, httpOptions);
   }
 }
