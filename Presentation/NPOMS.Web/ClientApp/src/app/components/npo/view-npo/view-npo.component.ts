@@ -82,7 +82,6 @@ export class ViewNpoComponent implements OnInit {
   }
 
   private loadNpo() {
-    debugger;
     if (this.npoId != null) {
       this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
         (results) => {

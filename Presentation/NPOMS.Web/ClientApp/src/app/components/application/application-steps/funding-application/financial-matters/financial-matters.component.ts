@@ -154,9 +154,6 @@ export class FinancialMattersComponent implements OnInit {
 
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(res => {
       this.finYears = res;
-      console.log('this.finYears',this.finYears);
-      console.log('res',res);
-
 
       this.cols = [
         { field: 'property', header: 'Item Description', width: '40%' },

@@ -1,4 +1,5 @@
-﻿using NPOMS.Domain.Entities;
+﻿using Microsoft.Extensions.Azure;
+using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Interfaces.Core;
@@ -26,6 +27,8 @@ namespace NPOMS.Services.Implementation
 		private IServicesRenderedRepository _servicesRenderedRepository;
 		private IBankDetailRepository _bankDetailRepository;
         private IPreviousYearFinanceRepository _previousYearFinanceRepository;
+        private ISourceOfInformationRepository _sourceOfInformationRepository;
+        private IAffiliatedOrganisationInformationRepository _affiliatedOrganisationInformationRepository;
 
         #endregion
 
@@ -40,7 +43,9 @@ namespace NPOMS.Services.Implementation
 			IFacilityListRepository facilityListRepository,
 			IServicesRenderedRepository servicesRenderedRepository,
 			IBankDetailRepository bankDetailRepository,
-            IPreviousYearFinanceRepository previousYearFinanceRepository)
+            IPreviousYearFinanceRepository previousYearFinanceRepository,
+            IAffiliatedOrganisationInformationRepository affiliatedOrganisationInformationRepository,
+            ISourceOfInformationRepository sourceOfInformationRepository)
 		{
 			_npoProfileRepository = npoProfileRepository;
 			_userRepository = userRepository;
@@ -51,6 +56,8 @@ namespace NPOMS.Services.Implementation
 			_servicesRenderedRepository = servicesRenderedRepository;
 			_bankDetailRepository = bankDetailRepository;
             _previousYearFinanceRepository = previousYearFinanceRepository;
+			_affiliatedOrganisationInformationRepository = affiliatedOrganisationInformationRepository;
+			_sourceOfInformationRepository = sourceOfInformationRepository;
         }
 
 		#endregion
@@ -230,6 +237,58 @@ namespace NPOMS.Services.Implementation
             return await _bankDetailRepository.DeleteBankDetailById(id);
         }
 
+        public async Task Update(List<AffiliatedOrganisationInformation> model, string userIdentifier, string id)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            foreach (var m in model)
+            {
+                if (m.Id == 0)
+                {
+                    m.CreatedUserId = loggedInUser.Id;
+                    m.CreatedDateTime = DateTime.Now;
+                    m.npoProfileId = Convert.ToInt32(id);
+                    await _affiliatedOrganisationInformationRepository.CreateAsync(m);
+                }
+                else
+                {
+                    m.UpdatedUserId = loggedInUser.Id;
+                    m.UpdatedDateTime = DateTime.Now;
+                    await _affiliatedOrganisationInformationRepository.UpdateAsync(m);
+                }
+            }
+        }
+
+        public async Task Update(SourceOfInformation model, string userIdentifier, string npoProfileId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+			var getData = await _sourceOfInformationRepository.GetSourceOfInformationByIdAsync( Convert.ToInt32(npoProfileId));
+			//foreach (var m in model)
+			//{
+				if (getData.Count() <= 1)
+                {
+                    model.CreatedUserId = loggedInUser.Id;
+                    model.CreatedDateTime = DateTime.Now;
+                   // model.NpoProfileId = Convert.ToInt32(id);
+                    await _sourceOfInformationRepository.CreateAsync(model);
+                }
+                else
+                {
+                    model.UpdatedUserId = loggedInUser.Id;
+                    model.UpdatedDateTime = DateTime.Now;
+                    await _sourceOfInformationRepository.UpdateAsync(model);
+                }
+			//}
+		}
+
+        public async Task<IEnumerable<AffiliatedOrganisationInformation>> GetAffiliatedOrganisationById(int id)
+        {
+            return await _affiliatedOrganisationInformationRepository.GetAffiliatedOrganisationByIdAsync(id);
+        }
+        public async Task<IEnumerable<SourceOfInformation>> GetSourceOfInformationById(int id)
+        {
+            return await _sourceOfInformationRepository.GetSourceOfInformationByIdAsync(id);
+        }
         #endregion
     }
 }

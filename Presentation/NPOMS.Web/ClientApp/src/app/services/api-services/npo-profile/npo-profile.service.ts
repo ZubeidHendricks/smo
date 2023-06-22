@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IBankDetail, INpoProfile, INpoProfileFacilityList, IServicesRendered } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
-import { IPreviousFinancialYear } from 'src/app/models/FinancialMatters';
+import { IPreviousFinancialYear, ISourceOfInformation, IAffiliatedOrganisation } from 'src/app/models/FinancialMatters';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -118,6 +118,26 @@ export class NpoProfileService {
   public deletePreviousYearDataById(id: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteById/id/${id}`;
     return this._http.delete<IPreviousFinancialYear[]>(url, httpOptions);
+  }
+
+  public updateSourceOfInformation(sourceOfInformation: ISourceOfInformation, npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateSourceOfInformation/npoProfileId/${npoProfileId}`;
+    return this._http.post<ISourceOfInformation>(url, sourceOfInformation, httpOptions);
+  }
+
+  public getSourceOfInformationById(npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/getSourceOfInformationById/npoProfileId/${npoProfileId}`;
+    return this._http.get<ISourceOfInformation[]>(url, httpOptions);
+  }
+
+  public getAffiliatedOrganisationById(npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/getAffiliatedOrganisationById/npoProfileId/${npoProfileId}`;
+    return this._http.get<IAffiliatedOrganisation[]>(url, httpOptions);
+  }
+
+  public updateAffiliatedOrganisationData(affiliatedOrganisationData: any[], npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateAffiliatedOrganisationData/npoProfileId/${npoProfileId}`;
+    return this._http.put<IAffiliatedOrganisation[]>(url, affiliatedOrganisationData, httpOptions);
   }
 
 }

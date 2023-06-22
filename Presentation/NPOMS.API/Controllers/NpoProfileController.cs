@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
+using Newtonsoft.Json;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Mapping;
@@ -306,7 +307,7 @@ namespace NPOMS.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetBankDetailsByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                _logger.LogError($"Something went wrong inside GetPreviousYearFinanceByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -321,7 +322,7 @@ namespace NPOMS.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetBankDetailsByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                _logger.LogError($"Something went wrong inside DeleteById action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -336,9 +337,54 @@ namespace NPOMS.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetBankDetailsByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                _logger.LogError($"Something went wrong inside DeleteBankDetailById action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+
+		[HttpGet("getSourceOfInformationById/npoProfileId/{npoProfileId}", Name = "GetSourceOfInformationById")]
+		public async Task<IActionResult> GetSourceOfInformationById(int npoProfileId)
+		{
+			try
+			{
+				var results = await _npoProfileService.GetSourceOfInformationById(npoProfileId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetSourceOfInformationById action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("getAffiliatedOrganisationById/npoProfileId/{npoProfileId}", Name = "GetAffiliatedOrganisationById")]
+		public async Task<IActionResult> GetAffiliatedOrganisationById(int npoProfileId)
+		{
+			try
+			{
+				var results = await _npoProfileService.GetAffiliatedOrganisationById(npoProfileId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetAffiliatedOrganisationById action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+        [HttpPut("updateAffiliatedOrganisationData/npoProfileId/{npoProfileId}", Name = "UpdateAffiliatedOrganisationData")]
+        public async Task<IActionResult> UpdateAffiliatedOrganisationData([FromBody] List<AffiliatedOrganisationInformation> model, string npoProfileId)
+        {
+            await _npoProfileService.Update(model, base.GetUserIdentifier(), npoProfileId);
+            return Ok(model);
+        }
+
+        [HttpPost("updateSourceOfInformation/npoProfileId/{npoProfileId}", Name = "UpdateSourceOfInformation")]
+        public async Task<IActionResult> UpdateSourceOfInformation([FromBody] SourceOfInformation model, string npoProfileId)
+        {
+            //SourceOfInformation sourceOfInformation = JsonConvert.DeserializeObject<SourceOfInformation>(Convert.ToString(entity));
+            await _npoProfileService.Update(model, base.GetUserIdentifier(), npoProfileId);
+            return Ok(model);
         }
 
         #endregion

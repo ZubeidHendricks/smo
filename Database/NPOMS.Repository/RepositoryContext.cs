@@ -149,9 +149,11 @@ namespace NPOMS.Repository
 		public DbSet<PaymentSchedule> PaymentSchedules { get; set; }
 		public DbSet<AuditLog> AuditLogs { get; set; }
 		public DbSet<AuditorOrAffiliation> AuditorOrAffiliations { get; set; }
+        public DbSet<SourceOfInformation> SourceOfInformation { get; set; }
+        public DbSet<AffiliatedOrganisationInformation> AffiliatedOrganisationInformation { get; set; }
 
-		/* Lookup */
-		public DbSet<FacilityList> ActivityList { get; set; }
+        /* Lookup */
+        public DbSet<FacilityList> ActivityList { get; set; }
 		public DbSet<FacilityList> FacilityList { get; set; }
 		public DbSet<ResourceList> ResourceList { get; set; }
 
@@ -260,7 +262,8 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new TrainingMaterialConfiguration());
 			modelBuilder.ApplyConfiguration(new CompliantCycleRuleConfiguration());
             modelBuilder.ApplyConfiguration(new PreviousYearFinanceConfiguration());
-
+            modelBuilder.ApplyConfiguration(new AffiliatedOrganisationInformationConfiguration());
+            modelBuilder.ApplyConfiguration(new SourceOfInformationConfiguration());
             /* Lookup */
             modelBuilder.ApplyConfiguration(new ActivityListConfiguration());
 			modelBuilder.ApplyConfiguration(new ResourceListConfiguration());
