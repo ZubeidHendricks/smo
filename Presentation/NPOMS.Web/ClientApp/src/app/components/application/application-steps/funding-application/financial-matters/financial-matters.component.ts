@@ -176,9 +176,6 @@ this.calculateOthrSourceFundingTotal();
 
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(res => {
       this.finYears = res;
-      console.log('this.finYears',this.finYears);
-      console.log('res',res);
-
 
       this.cols = [
         { field: 'property', header: 'Item Description', width: '40%' },
@@ -923,6 +920,7 @@ this.calculateOthrSourceFundingTotal();
     this._npoProfile.getBankDetailByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         this.bankDetails = results;
+        this.updateBankDetailObjects();
       },
       (err) => {
         //

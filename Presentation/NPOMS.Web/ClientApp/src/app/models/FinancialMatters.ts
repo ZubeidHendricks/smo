@@ -72,3 +72,29 @@ export class IFinancialMattersOthers {
   updatedUserId: number;
   updatedDateTime: Date;
 }
+
+
+export interface ISourceOfInformation {
+  id: number;
+  npoProfileId: number;
+  selectedSourceValue: number;
+  additionalSourceInformation: string;
+  createdUserId: number;
+  createdDateTime: Date;
+  updatedUserId: number;
+  updatedDateTime: Date;
+}
+
+export interface IAffiliatedOrganisation {
+  id: number;
+  fundingApplicationDetailId: number;
+  nameOfOrganisation: string;
+  contactPerson: string;
+  emailAddress: string;
+  telephoneNumber: string;
+  website: string;
+  createdUserId: number;
+  createdDateTime: Date;
+  updatedUserId: number;
+  updatedDateTime: Date;
+}
