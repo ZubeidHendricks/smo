@@ -38,12 +38,6 @@ namespace NPOMS.Services.Implementation
         private IAffiliatedOrganisationInformationRepository _affiliatedOrganisationInformationRepository;
 		private IAuditorOrAffiliationRepository _auditorOrAffiliationRepository;
 		private IStaffMemberProfileRepository _staffMemberProfileRepository;
-		private IAffiliatedOrganisationInformationRepository _affiliatedOrganisationInformationRepository;	
-		private ISourceOfInformationRepository _sourceOfInformationRepository;
-
-
-
-
 
         #endregion
 
@@ -58,7 +52,6 @@ namespace NPOMS.Services.Implementation
 			IFacilityListRepository facilityListRepository,
 			IServicesRenderedRepository servicesRenderedRepository,
 			IBankDetailRepository bankDetailRepository,
-            IPreviousYearFinanceRepository previousYearFinanceRepository)
             IPreviousYearFinanceRepository previousYearFinanceRepository,
 			IFinancialMattersIncomeRepository financialMattersIncomeRepository,
 			IFinancialMattersExpenditureRepository financialMattersExpenditureRepository,
@@ -77,16 +70,15 @@ namespace NPOMS.Services.Implementation
 			_servicesRenderedRepository = servicesRenderedRepository;
 			_bankDetailRepository = bankDetailRepository;
             _previousYearFinanceRepository = previousYearFinanceRepository;
-        }
-			_financialMattersIncomeRepository= financialMattersIncomeRepository;
+            _financialMattersIncomeRepository = financialMattersIncomeRepository;
             _financialMattersExpenditureRepository = financialMattersExpenditureRepository;
             _financialMattersOthersRepository = financialMattersOthersRepository;
-			_auditorOrAffiliationRepository = auditorOrAffiliationRepository;
-			_staffMemberProfileRepository = staffMemberProfileRepository;
-			_affiliatedOrganisationInformationRepository = affiliatedOrganisationInformationRepository;	
-			_sourceOfInformationRepository = sourceOfInformationRepository;
-		}
-
+            _auditorOrAffiliationRepository = auditorOrAffiliationRepository;
+            _staffMemberProfileRepository = staffMemberProfileRepository;
+            _affiliatedOrganisationInformationRepository = affiliatedOrganisationInformationRepository;
+            _sourceOfInformationRepository = sourceOfInformationRepository;
+        }
+			
         #endregion
 
         #region Methods
