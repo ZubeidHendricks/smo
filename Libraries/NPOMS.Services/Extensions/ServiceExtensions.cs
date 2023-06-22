@@ -155,9 +155,13 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IBidRepository, BidRepository>();
 			services.AddScoped<IAuditorOrAffiliationRepository, AuditorOrAffiliationRepository>();
 			services.AddScoped<IStaffMemberProfileRepository, StaffMemberProfileRepository>();
+            services.AddScoped<IFinancialMattersIncomeRepository, FinancialMattersIncomeRepository>();
+            services.AddScoped<IFinancialMattersExpenditureRepository, FinancialMattersExpenditureRepository>();
+            services.AddScoped<IFinancialMattersOthersRepository, FinancialMattersOthersRepository>();
 
-			/* Lookup */
-			services.AddScoped<IActivityListRepository, ActivityListRepository>();
+
+            /* Lookup */
+            services.AddScoped<IActivityListRepository, ActivityListRepository>();
 			services.AddScoped<IFacilityListRepository, FacilityListRepository>();
 			services.AddScoped<IResourceListRepository, ResourceListRepository>();
 

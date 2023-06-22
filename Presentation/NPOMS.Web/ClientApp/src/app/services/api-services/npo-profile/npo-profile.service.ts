@@ -194,4 +194,24 @@ export class NpoProfileService {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/staff-member-profile`;
     return this._http.put<IStaffMemberProfile>(url, staffMemberProfile, httpOptions);
   }
+
+public updateSourceOfInformation(sourceOfInformation: ISourceOfInformation, npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateSourceOfInformation/npoProfileId/${npoProfileId}`;
+    return this._http.post<ISourceOfInformation>(url, sourceOfInformation, httpOptions);
+  }
+
+  public getSourceOfInformationById(npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/getSourceOfInformationById/npoProfileId/${npoProfileId}`;
+    return this._http.get<ISourceOfInformation[]>(url, httpOptions);
+  }
+
+  public getAffiliatedOrganisationById(npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/getAffiliatedOrganisationById/npoProfileId/${npoProfileId}`;
+    return this._http.get<IAffiliatedOrganisation[]>(url, httpOptions);
+  }
+
+  public updateAffiliatedOrganisationData(affiliatedOrganisationData: any[], npoProfileId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateAffiliatedOrganisationData/npoProfileId/${npoProfileId}`;
+    return this._http.put<IAffiliatedOrganisation[]>(url, affiliatedOrganisationData, httpOptions);
+  }
 }
