@@ -34,12 +34,10 @@ namespace NPOMS.Services.Implementation
         private IFinancialMattersIncomeRepository _financialMattersIncomeRepository;
         private IFinancialMattersExpenditureRepository _financialMattersExpenditureRepository;
         private IFinancialMattersOthersRepository _financialMattersOthersRepository;
+        private ISourceOfInformationRepository _sourceOfInformationRepository;
+        private IAffiliatedOrganisationInformationRepository _affiliatedOrganisationInformationRepository;
 		private IAuditorOrAffiliationRepository _auditorOrAffiliationRepository;
 		private IStaffMemberProfileRepository _staffMemberProfileRepository;
-		private IAffiliatedOrganisationInformationRepository _affiliatedOrganisationInformationRepository;	
-		private ISourceOfInformationRepository _sourceOfInformationRepository;
-
-
 
         #endregion
 
@@ -72,15 +70,15 @@ namespace NPOMS.Services.Implementation
 			_servicesRenderedRepository = servicesRenderedRepository;
 			_bankDetailRepository = bankDetailRepository;
             _previousYearFinanceRepository = previousYearFinanceRepository;
-			_financialMattersIncomeRepository= financialMattersIncomeRepository;
+            _financialMattersIncomeRepository = financialMattersIncomeRepository;
             _financialMattersExpenditureRepository = financialMattersExpenditureRepository;
             _financialMattersOthersRepository = financialMattersOthersRepository;
-			_auditorOrAffiliationRepository = auditorOrAffiliationRepository;
-			_staffMemberProfileRepository = staffMemberProfileRepository;
-			_affiliatedOrganisationInformationRepository = affiliatedOrganisationInformationRepository;	
-			_sourceOfInformationRepository = sourceOfInformationRepository;
-		}
-
+            _auditorOrAffiliationRepository = auditorOrAffiliationRepository;
+            _staffMemberProfileRepository = staffMemberProfileRepository;
+            _affiliatedOrganisationInformationRepository = affiliatedOrganisationInformationRepository;
+            _sourceOfInformationRepository = sourceOfInformationRepository;
+        }
+			
         #endregion
 
         #region Methods

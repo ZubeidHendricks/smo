@@ -68,7 +68,8 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
         Task<IEnumerable<AffiliatedOrganisationInformation>> GetAffiliatedOrganisationById(int npoProfileId);
         Task<IEnumerable<SourceOfInformation>> GetSourceOfInformationById(int npoProfileId);
+
         Task Update(List<AffiliatedOrganisationInformation> model, string userIdentifier, string npoProfileId);
         Task Update(SourceOfInformation model, string userIdentifier, string npoProfileId);
-    }
+     }
 }
