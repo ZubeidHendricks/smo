@@ -152,6 +152,8 @@ namespace NPOMS.Repository
 		public DbSet<AuditLog> AuditLogs { get; set; }
 		public DbSet<AuditorOrAffiliation> AuditorOrAffiliations { get; set; }
 		public DbSet<StaffMemberProfile> StaffMemberProfiles { get; set; }
+        public DbSet<SourceOfInformation> SourceOfInformation { get; set; }
+        public DbSet<AffiliatedOrganisationInformation> AffiliatedOrganisationInformation { get; set; }
 
         /* Lookup */
         public DbSet<FacilityList> ActivityList { get; set; }
