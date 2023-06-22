@@ -132,14 +132,9 @@ export class ApplicationDetailsComponent implements OnInit {
     private _npoProfile: NpoProfileService,
   ) { }
 
-  // onOptionSelected(value: any) {
-  //   alert(value);
-  // }
-  getSelectedValue(value:string){
+   getSelectedValue(value:string){
   
     this.selectedDropdownValue = value;
-    // Prints selected value
-    alert(this.selectedDropdownValue);
   }
   ngOnInit(): void {
     this._spinner.show();
