@@ -265,8 +265,8 @@ namespace NPOMS.Repository
 			modelBuilder.ApplyConfiguration(new TrainingMaterialConfiguration());
 			modelBuilder.ApplyConfiguration(new CompliantCycleRuleConfiguration());
             modelBuilder.ApplyConfiguration(new PreviousYearFinanceConfiguration());
-            modelBuilder.ApplyConfiguration(new AffiliatedOrganisationInformationConfiguration());
-            modelBuilder.ApplyConfiguration(new SourceOfInformationConfiguration());
+            //modelBuilder.ApplyConfiguration(new AffiliatedOrganisationInformationConfiguration());
+            //modelBuilder.ApplyConfiguration(new SourceOfInformationConfiguration());
             /* Lookup */
             modelBuilder.ApplyConfiguration(new ActivityListConfiguration());
 			modelBuilder.ApplyConfiguration(new ResourceListConfiguration());
