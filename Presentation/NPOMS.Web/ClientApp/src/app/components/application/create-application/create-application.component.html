@@ -8,6 +8,40 @@
     <div style="height: 10px;"></div>
     <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
     <p-steps [model]="faItems" [readonly]="false" [activeIndex]="activeStep" *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
+    <p-steps [model]="qcItems" [readonly]="false" [activeIndex]="activeStep" *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.QC"></p-steps>
+
+
+    <div style="height: 10px;"></div>
+    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.QC">
+        <!-- <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
+            [(activeStep)]="activeStep" [application]="application" [newApplication]="true"></app-npo-details>
+        <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
+        [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
+        [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
+        [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
+        [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
+        [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
+        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
+        </app-application-details>
+        <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument" 
+            [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" >
+        </app-document-upload> -->
+  <app-npo-details *ngIf="activeStep == QuickCaptureStepsEnum.NpoConfirmationDetails"
+            [(activeStep)]="activeStep" [application]="application" [newApplication]="true"></app-npo-details>
+        <app-qc-application-details *ngIf="activeStep == QuickCaptureStepsEnum.AmountYouApplyingFor"
+        [(activeStep)]="activeStep" [application]="application" [(quickCaptureDetails)]="quickCaptureDetails" [(Amount)]="quickCaptureDetails.applicationDetails.amountApplyingFor"
+        [(quickCaptureDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="quickCaptureDetails.applicationDetails.fundAppSDADetail.districtCouncil"
+        [(quickCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="quickCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality"
+        [(quickCaptureDetails.applicationDetails.fundAppSDADetail.regions)]="quickCaptureDetails.applicationDetails.fundAppSDADetail.regions"
+        [(quickCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="quickCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
+        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
+        </app-qc-application-details>
+        <app-qc-document-upload *ngIf="activeStep == QuickCaptureStepsEnum.ApplicationDocument" 
+            [(activeStep)]="activeStep" [application]="application" [(quickCaptureDetails)]="quickCaptureDetails" >
+        </app-qc-document-upload>         
+
+    </div>    
+
 
     <div style="height: 10px;"></div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AccessStatusEnum } from 'src/app/models/enums';
-import { INpo } from 'src/app/models/interfaces';
+import { INpo, IQuickCaptureDetails } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -24,6 +24,11 @@ export class NpoService {
     const url = `${this._envUrl.urlAddress}/api/npos/access-status/${accessStatus}`;
     return this._http.get<INpo[]>(url, httpOptions);
   }
+
+  public getAllQuickCaptures(accessStatus: AccessStatusEnum) {
+    const url = `${this._envUrl.urlAddress}/api/npos/quick-captures/access-status/${accessStatus}`;
+    return this._http.get<IQuickCaptureDetails[]>(url, httpOptions);
+  }  
 
   public getNpoById(npoId: number) {
     const url = `${this._envUrl.urlAddress}/api/npos/npoId/${npoId}`;

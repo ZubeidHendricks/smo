@@ -1,10 +1,10 @@
-import { IApplicationDetails, IDistrictCouncil, IFundAppSDADetail, ILocalMunicipality, IPlace, IProjectInformation, IRegion, ISDA, ISubPlace } from './../../../models/interfaces';
+import { IApplicationDetails, IDistrictCouncil, IFundAppSDADetail, ILocalMunicipality, IPlace, IProjectInformation, IQuickCaptureDetails, IRegion, ISDA, ISubPlace } from './../../../models/interfaces';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { ApplicationTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { ApplicationTypeEnum, PermissionsEnum, QuickCaptureStepsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationPeriod, IFundingApplicationDetails, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -50,6 +50,9 @@ export class CreateApplicationComponent implements OnInit {
     return FundingApplicationStepsEnum;
   }
 
+  public get QuickCaptureStepsEnum(): typeof QuickCaptureStepsEnum {
+    return QuickCaptureStepsEnum;
+  }
 
   paramSubcriptions: Subscription;
   npoId: string;
@@ -61,6 +64,7 @@ export class CreateApplicationComponent implements OnInit {
   validationErrors: Message[];
   items: MenuItem[];
   faItems: MenuItem[];
+  qcItems: MenuItem[];
 
   activeStep: number = 0;
   application: IApplication;
@@ -91,12 +95,24 @@ export class CreateApplicationComponent implements OnInit {
         regions: [],
         serviceDeliveryAreas: [],
       } as IFundAppSDADetail,
-    } as IApplicationDetails,
+    } as IApplicationDetails,   
 
     financialMatters: [],
     implementations: [],
 
   } as IFundingApplicationDetails;
+
+  quickCaptureDetails: IQuickCaptureDetails = {
+    applicationDetails: {
+      fundAppSDADetail: {
+        districtCouncil: {} as IDistrictCouncil,
+        localMunicipality: {} as ILocalMunicipality,
+        regions: [],
+        serviceDeliveryAreas: [],
+      } as IFundAppSDADetail,
+    } as IApplicationDetails,    
+
+  } as IQuickCaptureDetails;  
 
   constructor(
     private _router: Router,
@@ -114,12 +130,13 @@ export class CreateApplicationComponent implements OnInit {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
-      this.loadfundingDropdowns();
+      this.loadfundingDropdowns();     
       this.applicationPeriodId = +this.id;
       this.fundingApplicationDetails.applicationPeriodId = +this.id;
-
       this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-      });      
+      });   
+      this.loadQuickCaptureDropdowns();   
+      this.quickCaptureDetails.applicationPeriodId = +this.id;
     });
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -154,20 +171,51 @@ export class CreateApplicationComponent implements OnInit {
     if (applicationPeriod != null) {
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
         this.faItems = [
-          { label: 'Organisation Details' },
-          { label: 'Application Details' },
-          { label: 'Financial Matters' },
-          { label: 'Project Information' },
-          { label: 'Monitoring and Evaluation' },
-          { label: 'Project Implementation Plan' },
-          { label: 'Application Document' },
-          { label: 'Declaration' },
+          { label: 'Organisation Details' , command: (event: any) => { this.activeStep = 0; } },
+          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
+          { label: 'Financial Matters', command: (event: any) => { this.activeStep = 2; } },
+          { label: 'Project Information', command: (event: any) => { this.activeStep = 3; } },
+          { label: 'Monitoring and Evaluation', command: (event: any) => { this.activeStep = 4; } },
+          { label: 'Project Implementation Plan', command: (event: any) => { this.activeStep = 5; } },
+          { label: 'Application Document', command: (event: any) => { this.activeStep = 6; } }
         ];
       }
     }
   }
 
-  private loadApplication() {
+  
+  
+  private loadQuickCaptureDropdowns() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
+      (results) => {
+
+        if (results != null) {
+          this.application = results;
+          this.quickCaptureDetails.applicationPeriodId = this.application?.applicationPeriodId;
+          this.quickCaptureDetails.applicationId = this.application?.id;
+          this.qCSteps(results.applicationPeriod);
+          this.isApplicationAvailable = true;
+        }
+        this._spinner.hide();
+      },
+      (err) => this._spinner.hide()
+    );
+  }
+
+  private qCSteps(applicationPeriod: IApplicationPeriod) {
+    if (applicationPeriod != null) {
+      if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
+        this.qcItems = [
+          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
+          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },        
+          { label: 'Application Document', command: (event: any) => { this.activeStep = 2; } }
+        ];
+      }
+    }
+  }
+  
+ private loadApplication() {
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {

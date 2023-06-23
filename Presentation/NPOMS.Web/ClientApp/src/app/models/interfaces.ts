@@ -569,6 +569,14 @@ export interface IFundingApplicationDetails {
     //fundAppDeclaration :IFundAppDeclaration;     
 }
 
+export interface IQuickCaptureDetails {
+    id: number;
+    applicationId: number;
+    applicationPeriodId: number;
+    applicationPeriod: IApplicationPeriod;
+    applicationDetails: IApplicationDetails;   
+}
+
 // export interface IDeclaration {
 //     id: number;
 //     fundingApplicationDetailId: number;
