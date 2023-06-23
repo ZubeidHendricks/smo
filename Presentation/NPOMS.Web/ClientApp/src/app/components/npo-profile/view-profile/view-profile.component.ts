@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { AuditorOrAffiliationEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum, StaffCategoryEnum } from 'src/app/models/enums';
+import { AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum, StaffCategoryEnum } from 'src/app/models/enums';
 import { IAccountType, IAddressInformation, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
@@ -271,7 +271,7 @@ export class ViewProfileComponent implements OnInit {
   private loadAuditorOrAffiliations() {
     this._npoProfileRepo.getAuditorOrAffiliations(this.npoProfile.id).subscribe(
       (results) => {
-        this.auditorOrAffiliations = results.filter(x => x.entityType === AuditorOrAffiliationEnum.Auditor);
+        this.auditorOrAffiliations = results.filter(x => x.entityType === AuditorOrAffiliationEntityTypeEnum.Auditor);
         this.isDataAvailable = true;
         this._spinner.hide();
       },

@@ -84,7 +84,6 @@ export class DocumentUploadComponent implements OnInit {
   }
 
   private loadDocumentTypes() {
-    debugger;
 
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
@@ -101,7 +100,6 @@ export class DocumentUploadComponent implements OnInit {
     );
   }
   onDownloadDocument(doc: any) {
-    debugger;
     console.log('download', doc);
     this._confirmationService.confirm({
       message: 'Are you sure that you want to download document?',

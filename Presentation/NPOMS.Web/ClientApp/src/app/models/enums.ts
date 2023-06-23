@@ -140,9 +140,14 @@ export enum StatusEnum {
     GetName
 }
 
-export enum AuditorOrAffiliationEnum {
+export enum AuditorOrAffiliationEntityTypeEnum {
     Auditor = "Auditor",
     Affiliation = "Affiliation"
+}
+
+export enum AuditorOrAffiliationEntityNameEnum {
+    NpoProfile = "NpoProfile",
+    FundingApplication = "FundingApplication"
 }
 
 export enum PermissionsEnum {

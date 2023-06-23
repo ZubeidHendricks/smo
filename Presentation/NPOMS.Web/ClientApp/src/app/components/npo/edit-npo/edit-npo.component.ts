@@ -166,7 +166,6 @@ export class EditNpoComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-            debugger;
             this.saveItems();
           }
         },
@@ -270,7 +269,6 @@ export class EditNpoComponent implements OnInit {
   }
 
   private loadNpo() {
-    debugger;
     if (this.npoId != null) {
       this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
         (results) => {
@@ -317,7 +315,6 @@ export class EditNpoComponent implements OnInit {
   }
 
   private saveItems() {
-    debugger;
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npo;
