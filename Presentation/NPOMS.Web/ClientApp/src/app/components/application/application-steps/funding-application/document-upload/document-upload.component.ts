@@ -56,11 +56,11 @@ export class DocumentUploadComponent implements OnInit {
     this.getDocuments();
     this.documentCols = [
       { header: '', width: '5%' },
-      { header: 'Document Name', width: '43%' },
       { header: 'Document Type', width: '25%' },
+      { header: 'Document Name', width: '40%' },
       { header: 'Size', width: '10%' },
       { header: 'Uploaded Date', width: '10%' },
-      { header: 'Actions', width: '7%' }
+      { header: 'Actions', width: '10%' }
     ];
     this.documentTypeCols = [
       { header: '', width: '5%' },
@@ -84,6 +84,7 @@ export class DocumentUploadComponent implements OnInit {
   }
 
   private loadDocumentTypes() {
+    debugger;
 
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
@@ -100,6 +101,7 @@ export class DocumentUploadComponent implements OnInit {
     );
   }
   onDownloadDocument(doc: any) {
+    debugger;
     console.log('download', doc);
     this._confirmationService.confirm({
       message: 'Are you sure that you want to download document?',
