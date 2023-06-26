@@ -253,7 +253,6 @@ this.calculateOthrSourceFundingTotal();
   }
 
   private updateBankDetailObjects() {
-    debugger;
     if ( this.banks && this.accountTypes && this.bankDetails) {
       this.bankDetails.forEach(item => {
         item.bank = this.banks.find(x => x.id === item.bankId);
@@ -352,7 +351,6 @@ this.calculateOthrSourceFundingTotal();
   }
 
   saveBankDetail() {
-    debugger;
     // this.bankDetail.npoProfileId = Number(this.selectedApplicationId);
     // this.bankDetail.bankId = this.selectedBank.id;
     // this.bankDetail.branchId = this.selectedBranch.id;

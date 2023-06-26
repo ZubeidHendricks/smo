@@ -727,7 +727,8 @@ export interface IPaymentSchedule {
 
 export interface IAuditorOrAffiliation {
     id: number;
-    entityId: number; //Either NpoId or FundingApplicationId
+    entityId: number; //Either NpoProfileId or FundingApplicationId
+    entityName: string; //Either NpoProfile or FundingApplication
     entityType: string; //Either Auditor or Affiliation
     organisationName: string;
     registrationNumber: string;

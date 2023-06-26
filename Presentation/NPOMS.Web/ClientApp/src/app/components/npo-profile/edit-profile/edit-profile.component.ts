@@ -5,7 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { Subscription } from 'rxjs';
-import { AccessStatusEnum, AuditorOrAffiliationEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
+import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
 import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDenodoFacility, IDepartment, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, INpo, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -557,7 +557,7 @@ export class EditProfileComponent implements OnInit {
   private loadAuditorOrAffiliations() {
     this._npoProfileRepo.getAuditorOrAffiliations(this.npoProfile.id).subscribe(
       (results) => {
-        this.auditorOrAffiliations = results.filter(x => x.entityType === AuditorOrAffiliationEnum.Auditor);
+        this.auditorOrAffiliations = results.filter(x => x.entityType === AuditorOrAffiliationEntityTypeEnum.Auditor);
         this.isDataAvailable = true;
         this._spinner.hide();
       },
@@ -1458,7 +1458,8 @@ export class EditProfileComponent implements OnInit {
 
     this.auditorOrAffiliation = {
       entityId: this.npoProfile.id,
-      entityType: AuditorOrAffiliationEnum.Auditor,
+      entityName: AuditorOrAffiliationEntityNameEnum.NpoProfile,
+      entityType: AuditorOrAffiliationEntityTypeEnum.Auditor,
       isActive: true
     } as IAuditorOrAffiliation;
 

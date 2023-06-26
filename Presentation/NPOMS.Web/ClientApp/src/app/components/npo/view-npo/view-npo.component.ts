@@ -62,7 +62,7 @@ export class ViewNpoComponent implements OnInit {
       { header: 'Board Member', width: '15%' },
       { header: 'Bank Signatory', width: '15%' },
       { header: 'Written Agreement Signatory', width: '15%' },
-      { header: 'Diasbled', width: '15%' }
+      { header: 'Disabled', width: '15%' }
     ];
 
     this.stateOptions = [
