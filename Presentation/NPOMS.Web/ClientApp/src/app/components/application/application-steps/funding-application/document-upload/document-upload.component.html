@@ -55,8 +55,9 @@
                                  (change)="onUploadChange(filesToUpload.files)" style="display:none;">
                                 
                                 <button pButton pRipple type="button"
-                                    class="p-button-text p-button-success action-button" icon="fa fa-cloud-upload teal-color"                                    (click)="filesToUpload.click()" pTooltip="Upload"
-                                    tooltipPosition="top" (change)="onUploadChange(document)" ></button>
+                                    class="p-button-text p-button-success action-button" icon="fa fa-cloud-upload"
+                                        (click)="filesToUpload.click()" pTooltip="Upload"
+                                    tooltipPosition="top"></button>
                                 <button pButton pRipple type="button"
                                     class="p-button-text p-button-success action-button" icon="fa fa-cloud-download"
                                     (click)="onDownloadDocument(document)" pTooltip="Download"

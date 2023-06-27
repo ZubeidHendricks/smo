@@ -137,6 +137,28 @@ export class DocumentUploadComponent implements OnInit {
     }
   }
 
+  public onUploadCloudClick = (event) => {
+    if (event.files[0]) {
+      this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments,
+        Number(this.fundingApplicationDetails.id), EntityEnum.FundingApplicationDetails,
+        this.application.refNo, event.files[0].documentType.id).subscribe(
+          event => {
+            if (event.type === HttpEventType.UploadProgress)
+              this._spinner.show();
+            else if (event.type === HttpEventType.Response) {
+              this._spinner.hide();
+              this.getDocuments();
+            }
+          },
+          () => this._spinner.hide()
+        );
+      //form.clear();
+    }
+    else {
+      this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please specify the document type.' });
+    }
+  }
+
 
 
   private getDocuments() {
