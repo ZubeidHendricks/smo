@@ -138,6 +138,7 @@ export enum StatusEnum {
     EvaluationDecline = 21,
     Evaluated = 22,
     EvaluationApproved = 23,
+    Submitted = 24,
     GetName
 }
 
