@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import * as moment from 'moment';
+import { ConfirmationService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { StatusEnum } from 'src/app/models/enums';
 import { IApplication, IFundingApplicationDetails, IPlace, IProjectImplementation, ISubPlace, } from 'src/app/models/interfaces';
+import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 
 @Component({
   selector: 'app-project-implementation',
@@ -37,7 +39,10 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   selectedSubPlaces: ISubPlace[];
   selectedPlaces: IPlace[];
   private subscriptions: Subscription[] = [];
-  constructor() {
+  constructor(
+    private _confirmationService: ConfirmationService,
+    private _npoProfile: NpoProfileService
+  ) {
 
   }
   ngOnDestroy(): void {
@@ -53,7 +58,8 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     this.cols = [
       { header: 'Description' },
       { header: 'Beneficiaries' },
-      { header: 'Budget' }
+      { header: 'Budget' },
+      {header: 'Actions'}
     ];
     this.setYearRange();
 
@@ -77,6 +83,57 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       this.application.statusId == StatusEnum.Approved)
       return true;
     else return false;
+  }
+
+  editProjImpl(data: IProjectImplementation) {
+    this.selectedPlaces = [];
+    this.selectedSubPlaces = [];
+    console.log('data', data);
+    this.newImplementation = false;
+    this.implementation = this.cloneImplementation(data);
+   // this.implementation.timeframe = [];
+    //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
+   // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
+    this.implementation.places = this.implementation.places;
+    this.implementation.subPlaces = this.implementation.subPlaces;
+    console.log('bit after', this.fundingApplicationDetails)
+    this.placesChange(this.implementation.places);
+    this.subPlacesChange(this.implementation.subPlaces);
+    //if(this.application.statusId == 3 || 22||23){ this.displayDialogImpl = false;}
+    this.displayDialogImpl = true;
+  }
+  
+  // private GetProjImpl() {
+  //   this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
+  //     (results) => {
+  //       this.bankDetails = results;
+  //       this.updateBankDetailObjects();
+  //     },
+  //     (err) => {
+  //       //
+  //     }
+  //   );
+  // }
+
+  deleteProjImpl(projImpl) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this._npoProfile.deleteProjImpl(projImpl).subscribe(
+          (resp) => {
+           // this.GetProjImpl();
+          },
+          (err) => {
+            //
+          }
+        );        
+      },
+      reject: () => {
+        //
+      }
+    });
   }
 
   nextPage() {

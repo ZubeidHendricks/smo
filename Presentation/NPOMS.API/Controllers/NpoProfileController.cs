@@ -245,7 +245,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("bank-detail/npoProfileId/{npoProfileId}", Name = "GetBankDetailsByNpoProfileId")]
+        [HttpGet("projImpl/npoProfileId/{npoProfileId}", Name = "GetProjImplByNpoProfileId")]
+        public async Task<IActionResult> GetProjImplByNpoProfileId(int npoProfileId)
+        {
+            try
+            {
+                var results = await _npoProfileService.GetProjImplByNpoProfileId(npoProfileId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetBankDetailsByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("bank-detail/npoProfileId/{npoProfileId}", Name = "GetBankDetailsByNpoProfileId")]
 		public async Task<IActionResult> GetBankDetailsByNpoProfileId(int npoProfileId)
 		{
 			try
@@ -275,8 +290,8 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpPut("bank-detail", Name = "UpdateBankDetail")]
-		public async Task<IActionResult> UpdateBankDetail([FromBody] BankDetail model)
+		[HttpPut("updateProjImpl", Name = "UpdateProjImpl")]
+		public async Task<IActionResult> UpdateProjImpl([FromBody] ProjectImplementation model)
 		{
 			try
 			{
@@ -285,7 +300,7 @@ namespace NPOMS.API.Controllers
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError($"Something went wrong inside UpdateBankDetail action: {ex.Message} Inner Exception: {ex.InnerException}");
+				_logger.LogError($"Something went wrong inside ProjectImplementation action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
@@ -457,7 +472,22 @@ namespace NPOMS.API.Controllers
             }
         }
 
-		[HttpGet("getSourceOfInformationById/npoProfileId/{npoProfileId}", Name = "GetSourceOfInformationById")]
+        [HttpDelete("deleteProjImplById/id/{id}", Name = "DeleteProjectImplementationById")]
+        public async Task<IActionResult> DeleteProjectImplementationById(int id)
+        {
+            try
+            {
+                var results = await _npoProfileService.DeleteProjectImplementationById(id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside DeleteProjectImplementationById action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("getSourceOfInformationById/npoProfileId/{npoProfileId}", Name = "GetSourceOfInformationById")]
 		public async Task<IActionResult> GetSourceOfInformationById(int npoProfileId)
 		{
 			try
