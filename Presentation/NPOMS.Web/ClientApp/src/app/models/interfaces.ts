@@ -1149,6 +1149,7 @@ export interface IProjectImplementation {
     results: string;
     resources: string;
     budget: number;
+    npoProfileId: number;
 }
 
 export interface IFundAppDeclaration {

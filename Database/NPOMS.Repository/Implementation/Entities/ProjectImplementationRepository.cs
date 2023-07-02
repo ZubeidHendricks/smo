@@ -23,9 +23,12 @@ namespace NPOMS.Repository.Implementation.Entities
             return model;
         }
 
-        public Task<IEnumerable<ProjectImplementation>> GetAllByNpoProfileId(int id)
+        public async Task<IEnumerable<ProjectImplementation>> GetAllByNpoProfileId(int npoProfileId)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId))
+                            .AsNoTracking().ToListAsync();
         }
 
 

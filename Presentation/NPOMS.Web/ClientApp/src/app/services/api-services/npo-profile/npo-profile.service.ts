@@ -92,6 +92,7 @@ export class NpoProfileService {
   }
 
   public getProjImplByNpoProfileId(npoProfileId: number) {
+    debugger;
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/projImpl/npoProfileId/${npoProfileId}`;
     return this._http.get<IProjectImplementation[]>(url, httpOptions);
   }  
@@ -113,7 +114,7 @@ export class NpoProfileService {
 
   public deleteProjImpl(id: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteProjImplById/id/${id}`;
-    return this._http.delete<[IProjectImplementation]>(url, httpOptions);
+    return this._http.delete<IProjectImplementation[]>(url, httpOptions);
   }  
 
   public UpdatePreviousYearData(previousYearData: any[], npoProfileId: string) {
@@ -123,7 +124,7 @@ export class NpoProfileService {
   
   public updateProjImpl(updateProjImpl: IProjectImplementation) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/UpdateProjImpl`;
-    return this._http.put<[IProjectImplementation]>(url, updateProjImpl, httpOptions);
+    return this._http.put<IProjectImplementation[]>(url, updateProjImpl, httpOptions);
   }  
 
   public updateFinancialMattersIncome(financialMattersIncome: any[], npoProfileId: string) {

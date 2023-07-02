@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { ConfirmationService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -27,6 +28,8 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   newImplementation: boolean;
   implementation: IProjectImplementation = {} as IProjectImplementation;
   selectedImplementation: IProjectImplementation;
+  selectedApplicationId: string;
+  paramSubcriptions: Subscription;
   rangeDates: Date[];
   timeframes: Date[] = [];
   cols: any[];
@@ -39,9 +42,12 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   selectedSubPlaces: ISubPlace[];
   selectedPlaces: IPlace[];
   private subscriptions: Subscription[] = [];
+
+  projectImplementations: IProjectImplementation[];
   constructor(
     private _confirmationService: ConfirmationService,
-    private _npoProfile: NpoProfileService
+    private _npoProfile: NpoProfileService,
+    private _activeRouter: ActivatedRoute,
   ) {
 
   }
@@ -54,6 +60,11 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
+    this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+      this.selectedApplicationId = params.get('id');
+      console.log('ng OnInit Id',params.get('id'));
+      console.log('this.selectedApplicationId ',this.selectedApplicationId );
+    });
 
     this.cols = [
       { header: 'Description' },
@@ -70,7 +81,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   disableSubPlacesOrPlace(): boolean {
 
-
     if (this.places && this.allsubPlaces) {
       return false;
     }
@@ -86,6 +96,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   editProjImpl(data: IProjectImplementation) {
+    debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
     console.log('data', data);
@@ -103,19 +114,32 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     this.displayDialogImpl = true;
   }
   
-  // private GetProjImpl() {
-  //   this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
-  //     (results) => {
-  //       this.bankDetails = results;
-  //       this.updateBankDetailObjects();
-  //     },
-  //     (err) => {
-  //       //
-  //     }
-  //   );
-  // }
+  private updateProjImplementations() {
+    if ( this.places && this.subPlaces && this.projectImplementations) {
+      this.projectImplementations.forEach(item => {
+        item.places = this.implementation.places;      
+        item.subPlaces = this.implementation.subPlaces;
+        item.beneficiaries = this.implementation.beneficiaries;
+        item.budget = this.implementation.budget;
+        item.description = this.implementation.description;        
+      });
+    }
+  }
+
+  private GetProjImpl() {
+    this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        this.projectImplementations = results;
+        this.updateProjImplementations();
+      },
+      (err) => {
+        //
+      }
+    );
+  }  
 
   deleteProjImpl(projImpl) {
+    debugger;
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
@@ -123,7 +147,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       accept: () => {
         this._npoProfile.deleteProjImpl(projImpl).subscribe(
           (resp) => {
-           // this.GetProjImpl();
+            this.GetProjImpl();
           },
           (err) => {
             //
@@ -167,8 +191,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   disableSave(): boolean {
-if(
-    //(!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
+if( //(!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     !this.implementation.beneficiaries || !this.implementation.budget ||
     !this.implementation.results ! || !this.implementation.projectObjective||
     !this.implementation.resources||
@@ -188,6 +211,7 @@ if(
     this.implementation.beneficiaries = Number(this.implementation.beneficiaries).valueOf();
     this.implementation.budget = Number(this.implementation.budget).valueOf();
 
+    this.implementation.npoProfileId = Number(this.selectedApplicationId);
 
     let implementation = [...this.implementations];
     if (this.newImplementation) {
@@ -209,6 +233,7 @@ if(
 
 
   onRowSelect(event) {
+    debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
     console.log('data', event.data);
@@ -236,6 +261,7 @@ if(
 
 
   cloneImplementation(c: IProjectImplementation): IProjectImplementation {
+    debugger;
     let addFun = {} as IProjectImplementation;
     for (let prop in c) {
       addFun[prop] = c[prop];
@@ -263,7 +289,6 @@ if(
 
         }
       }
-
     }
   }
 
@@ -283,7 +308,6 @@ if(
       this.fundingApplicationDetails.implementations.map(c => { plc = c.places });
       this.implementation.places = plc;
       if (this.implementation.places?.length > 0) {
-
         this.placesChange(this.implementation.places);
       }
 
@@ -292,7 +316,6 @@ if(
       if (this.implementation.subPlaces !== undefined) {
         this.subPlacesChange(this.implementation.subPlaces);
       }
-
     }
   }
 }
