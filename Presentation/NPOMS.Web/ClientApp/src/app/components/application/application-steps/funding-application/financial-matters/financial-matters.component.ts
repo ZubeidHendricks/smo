@@ -191,7 +191,7 @@ this.calculateOthrSourceFundingTotal();
 
       ];
       this.colsOther = [
-        { field: 'property', header: 'Name of Organisation', width: '40%' },
+        { field: 'property', header: 'Name of Organisation from whom funding has been received', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
         { field: 'year1', header: this.finYears[2].name, width: '15%' },
         { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },
