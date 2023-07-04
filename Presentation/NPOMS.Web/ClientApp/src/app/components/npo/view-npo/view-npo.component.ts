@@ -111,10 +111,7 @@ export class ViewNpoComponent implements OnInit {
     this.selectedTitle = data.title.name;
     this.selectedPosition = data.position.name;
     console.log('data',data);
-    // console.log('data',data.gender.name);
-    // console.log('data',data.race.name);
-    // console.log('data',data.language.name);
-    if(data.gender != null)
+     if(data.gender != null)
     this.selectedGender = data.gender.name;
     if(data.race != null)
     this.selectedRace = data.race.name;
