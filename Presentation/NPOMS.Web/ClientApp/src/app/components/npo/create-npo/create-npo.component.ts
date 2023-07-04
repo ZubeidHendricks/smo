@@ -294,6 +294,7 @@ export class CreateNpoComponent implements OnInit {
   }
 
   private saveItems() {
+    debugger;
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npo;

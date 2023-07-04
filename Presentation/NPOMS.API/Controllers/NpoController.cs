@@ -126,7 +126,7 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
-				//ClearObjects(model);
+				ClearObjects(model);
 				var npo = await _npoService.GetByNameAndOrgTypeId(model.Name, model.OrganisationTypeId);
 
 				if (npo == null)
