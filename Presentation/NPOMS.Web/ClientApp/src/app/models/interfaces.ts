@@ -569,6 +569,14 @@ export interface IFundingApplicationDetails {
     //fundAppDeclaration :IFundAppDeclaration;     
 }
 
+export interface IQuickCaptureDetails {
+    id: number;
+    applicationId: number;
+    applicationPeriodId: number;
+    applicationPeriod: IApplicationPeriod;
+    applicationDetails: IApplicationDetails;   
+}
+
 // export interface IDeclaration {
 //     id: number;
 //     fundingApplicationDetailId: number;
@@ -719,7 +727,8 @@ export interface IPaymentSchedule {
 
 export interface IAuditorOrAffiliation {
     id: number;
-    entityId: number; //Either NpoId or FundingApplicationId
+    entityId: number; //Either NpoProfileId or FundingApplicationId
+    entityName: string; //Either NpoProfile or FundingApplication
     entityType: string; //Either Auditor or Affiliation
     organisationName: string;
     registrationNumber: string;
@@ -1140,6 +1149,7 @@ export interface IProjectImplementation {
     results: string;
     resources: string;
     budget: number;
+    npoProfileId: number;
 }
 
 export interface IFundAppDeclaration {

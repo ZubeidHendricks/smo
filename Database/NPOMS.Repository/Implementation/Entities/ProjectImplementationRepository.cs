@@ -16,6 +16,22 @@ namespace NPOMS.Repository.Implementation.Entities
         }
 
 
+        public async Task<ProjectImplementation> DeleteById(int id)
+        {
+            var model = await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+            await DeleteAsync(model);
+            return model;
+        }
+
+        public async Task<IEnumerable<ProjectImplementation>> GetAllByNpoProfileId(int npoProfileId)
+        {
+            //throw new NotImplementedException();
+
+            return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId))
+                            .AsNoTracking().ToListAsync();
+        }
+
+
 
         public async Task<ProjectImplementation> GetById(int id)
         {

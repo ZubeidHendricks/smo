@@ -42,11 +42,26 @@ namespace NPOMS.API.Controllers
 			_emailService = emailService;
 		}
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		[HttpGet("access-status/{accessStatus}", Name = "GetAllNpos")]
+        //[HttpGet("quick-captures/access-status/{accessStatus}", Name = "GetAllQuickCaptures")]
+        //public async Task<IActionResult> GetAllQuickCaptures(AccessStatusEnum accessStatus)
+        //{
+        //    try
+        //    {
+        //        var results = await _npoService.Get(base.GetUserIdentifier(), accessStatus);
+        //        return Ok(results);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside GetAllQuickCaptures action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+        [HttpGet("access-status/{accessStatus}", Name = "GetAllNpos")]
 		public async Task<IActionResult> GetAllNpos(AccessStatusEnum accessStatus)
 		{
 			try
@@ -111,7 +126,7 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
-				ClearObjects(model);
+				//ClearObjects(model);
 				var npo = await _npoService.GetByNameAndOrgTypeId(model.Name, model.OrganisationTypeId);
 
 				if (npo == null)
@@ -170,9 +185,9 @@ namespace NPOMS.API.Controllers
 			{
 				item.Title = null;
 				item.Position = null;
-				item.Race= null;
+				item.Race = null;
 				item.Gender = null;
-				item.Language= null;
+				item.Language = null;
 			}
 		}
 

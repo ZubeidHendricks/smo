@@ -67,6 +67,9 @@ import { BranchComponent } from './components/admin/utilities/branch/branch.comp
 import { AccountTypeComponent } from './components/admin/utilities/account-type/account-type.component';
 import { CompliantCyclesComponent } from './components/admin/compliant-cycles/compliant-cycles.component';
 import { PaymentSchedulesComponent } from './components/admin/payment-schedules/payment-schedules.component';
+import { QuickCaptureListComponent } from './components/quick-capture/quick-capture-list/quick-capture-list.component';
+import { CreateQuickCaptureComponent } from './components/quick-capture/create-quick-capture/create-quick-capture.component';
+import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick-capture/edit-quick-capture.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -80,6 +83,10 @@ const routes: Routes = [
 
   { path: 'access-request', component: AccessRequestComponent },
   { path: 'access-review', component: AccessReviewComponent },
+
+  { path: 'quick-captures', component: QuickCaptureListComponent },
+  { path: 'quick-capture/create', component: CreateQuickCaptureComponent },
+  { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },  
 
   { path: 'npos', component: NpoListComponent },
   { path: 'npo/create', component: CreateNpoComponent },

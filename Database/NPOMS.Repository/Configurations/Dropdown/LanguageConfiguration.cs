@@ -28,7 +28,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
                     Id = 2,
                     Name = "English"
                 },
-                new Race
+                new Language
                 {
                     Id = 3,
                     Name = "isiXhosha"

@@ -1,8 +1,11 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
+import { ConfirmationService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { StatusEnum } from 'src/app/models/enums';
 import { IApplication, IFundingApplicationDetails, IPlace, IProjectImplementation, ISubPlace, } from 'src/app/models/interfaces';
+import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 
 @Component({
   selector: 'app-project-implementation',
@@ -25,6 +28,8 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   newImplementation: boolean;
   implementation: IProjectImplementation = {} as IProjectImplementation;
   selectedImplementation: IProjectImplementation;
+  selectedApplicationId: string;
+  paramSubcriptions: Subscription;
   rangeDates: Date[];
   timeframes: Date[] = [];
   cols: any[];
@@ -37,7 +42,13 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   selectedSubPlaces: ISubPlace[];
   selectedPlaces: IPlace[];
   private subscriptions: Subscription[] = [];
-  constructor() {
+
+  projectImplementations: IProjectImplementation[];
+  constructor(
+    private _confirmationService: ConfirmationService,
+    private _npoProfile: NpoProfileService,
+    private _activeRouter: ActivatedRoute,
+  ) {
 
   }
   ngOnDestroy(): void {
@@ -49,11 +60,17 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
+    this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+      this.selectedApplicationId = params.get('id');
+      console.log('ng OnInit Id',params.get('id'));
+      console.log('this.selectedApplicationId ',this.selectedApplicationId );
+    });
 
     this.cols = [
       { header: 'Description' },
       { header: 'Beneficiaries' },
-      { header: 'Budget' }
+      { header: 'Budget' },
+      {header: 'Actions'}
     ];
     this.setYearRange();
 
@@ -63,7 +80,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   disableSubPlacesOrPlace(): boolean {
-
 
     if (this.places && this.allsubPlaces) {
       return false;
@@ -77,6 +93,71 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       this.application.statusId == StatusEnum.Approved)
       return true;
     else return false;
+  }
+
+  editProjImpl(data: IProjectImplementation) {
+    debugger;
+    this.selectedPlaces = [];
+    this.selectedSubPlaces = [];
+    console.log('data', data);
+    this.newImplementation = false;
+    this.implementation = this.cloneImplementation(data);
+   // this.implementation.timeframe = [];
+    //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
+   // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
+    this.implementation.places = this.implementation.places;
+    this.implementation.subPlaces = this.implementation.subPlaces;
+    console.log('bit after', this.fundingApplicationDetails)
+    this.placesChange(this.implementation.places);
+    this.subPlacesChange(this.implementation.subPlaces);
+    //if(this.application.statusId == 3 || 22||23){ this.displayDialogImpl = false;}
+    this.displayDialogImpl = true;
+  }
+  
+  private updateProjImplementations() {
+    if ( this.places && this.subPlaces && this.projectImplementations) {
+      this.projectImplementations.forEach(item => {
+        item.places = this.implementation.places;      
+        item.subPlaces = this.implementation.subPlaces;
+        item.beneficiaries = this.implementation.beneficiaries;
+        item.budget = this.implementation.budget;
+        item.description = this.implementation.description;        
+      });
+    }
+  }
+
+  private GetProjImpl() {
+    this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        this.projectImplementations = results;
+        this.updateProjImplementations();
+      },
+      (err) => {
+        //
+      }
+    );
+  }  
+
+  deleteProjImpl(projImpl) {
+    debugger;
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this._npoProfile.deleteProjImpl(projImpl).subscribe(
+          (resp) => {
+            this.GetProjImpl();
+          },
+          (err) => {
+            //
+          }
+        );        
+      },
+      reject: () => {
+        //
+      }
+    });
   }
 
   nextPage() {
@@ -110,8 +191,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   disableSave(): boolean {
-if(
-    //(!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
+if( //(!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
     !this.implementation.beneficiaries || !this.implementation.budget ||
     !this.implementation.results ! || !this.implementation.projectObjective||
     !this.implementation.resources||
@@ -131,6 +211,7 @@ if(
     this.implementation.beneficiaries = Number(this.implementation.beneficiaries).valueOf();
     this.implementation.budget = Number(this.implementation.budget).valueOf();
 
+    this.implementation.npoProfileId = Number(this.selectedApplicationId);
 
     let implementation = [...this.implementations];
     if (this.newImplementation) {
@@ -152,6 +233,7 @@ if(
 
 
   onRowSelect(event) {
+    debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
     console.log('data', event.data);
@@ -179,6 +261,7 @@ if(
 
 
   cloneImplementation(c: IProjectImplementation): IProjectImplementation {
+    debugger;
     let addFun = {} as IProjectImplementation;
     for (let prop in c) {
       addFun[prop] = c[prop];
@@ -206,7 +289,6 @@ if(
 
         }
       }
-
     }
   }
 
@@ -226,7 +308,6 @@ if(
       this.fundingApplicationDetails.implementations.map(c => { plc = c.places });
       this.implementation.places = plc;
       if (this.implementation.places?.length > 0) {
-
         this.placesChange(this.implementation.places);
       }
 
@@ -235,7 +316,6 @@ if(
       if (this.implementation.subPlaces !== undefined) {
         this.subPlacesChange(this.implementation.subPlaces);
       }
-
     }
   }
 }

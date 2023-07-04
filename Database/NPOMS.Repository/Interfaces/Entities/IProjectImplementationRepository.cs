@@ -9,7 +9,12 @@ namespace NPOMS.Repository.Interfaces.Entities
 {
     public interface IProjectImplementationRepository : IBaseRepository<ProjectImplementation>
     {
+
+        Task<IEnumerable<ProjectImplementation>> GetAllByNpoProfileId(int id);
         Task<ProjectImplementation> GetById(int id);
+
+        Task<ProjectImplementation> DeleteById(int id);
+
         //Task CreateEntity(ProjectImplementation model);
     }
 }
