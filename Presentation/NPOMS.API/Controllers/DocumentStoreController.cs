@@ -69,78 +69,74 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-        [HttpPost("UploadDocuments", Name = "UploadDocuments"), DisableRequestSizeLimit]
-        //[RequestSizeLimit(209715200)]
-        public async Task<IActionResult> UploadDocuments(int id, int userId)
-        {
-            try
-            {
-                var indicatorsCaptureDetails = await _fundingApplicationDetailsRepository.GetById(id);
-                var userAdmission = await _fundAppDocumentRepository.GetFundAppDocumentByIdAsync(id);
-                //if (userAdmission.Count() > 0)
-                //{
-                //    var ki = userAdmission.Where(x => x.IndicatorsCaptureDetailsID == indicatorsCaptureDetails.ID && x.MonthNumber == indicatorsCaptureDetails.MonthNumber);
-                //    await _indicatorsDocumentsRepository.DeleteIndicatorsDocument(ki.FirstOrDefault());
-                //}
-                var files = Request.Form.Files;
+        //[HttpPost("UploadDocuments", Name = "UploadDocuments"), DisableRequestSizeLimit]
+        ////[RequestSizeLimit(209715200)]
+        //public async Task<IActionResult> UploadDocuments(int id, int userId)
+        //{
+        //    try
+        //    {
+        //        var indicatorsCaptureDetails = await _fundingApplicationDetailsRepository.GetById(id);
+        //        var userAdmission = await _fundAppDocumentRepository.GetFundAppDocumentByIdAsync(id);
+ 
+        //        var files = Request.Form.Files;
 
-                if (files.Any(f => f.Length == 0))
-                {
-                    return BadRequest();
-                }
+        //        if (files.Any(f => f.Length == 0))
+        //        {
+        //            return BadRequest();
+        //        }
 
-                foreach (var file in files)
-                {
-                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                    FileInfo fi = new FileInfo(fileName);
+        //        foreach (var file in files)
+        //        {
+        //            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+        //            FileInfo fi = new FileInfo(fileName);
 
-                    Guid obj = Guid.NewGuid();
+        //            Guid obj = Guid.NewGuid();
 
-                    var dviNumberGuid = string.Format("{0}-{1}{2}", indicatorsCaptureDetails.ApplicationDetailId, obj.ToString(), fi.Extension);
-                    FundAppDocuments dad = new FundAppDocuments();
-                    dad.FundingApplicationDetailId = indicatorsCaptureDetails.ApplicationDetailId;
-                    dad.Name = fileName;
-                    dad.IsActive = true;
-                    //dad.Url = dviNumberGuid;
-                    dad.CreatedBy = userId;
-                    dad.DateCreated = DateTime.Now;
-                    dad.FileSize = GetBytesReadable(file.Length);
+        //            var dviNumberGuid = string.Format("{0}-{1}{2}", indicatorsCaptureDetails.ApplicationDetailId, obj.ToString(), fi.Extension);
+        //            FundAppDocuments dad = new FundAppDocuments();
+        //            dad.FundingApplicationDetailId = indicatorsCaptureDetails.ApplicationDetailId;
+        //            dad.Name = fileName;
+        //            dad.IsActive = true;
+        //            //dad.Url = dviNumberGuid;
+        //            dad.CreatedBy = userId;
+        //            dad.DateCreated = DateTime.Now;
+        //            dad.FileSize = GetBytesReadable(file.Length);
 
-                    //string srcPathToUpload = string.Format(dviNumberGuid);
+        //            //string srcPathToUpload = string.Format(dviNumberGuid);
 
-                    //using (var stream = file.OpenReadStream())
-                    //{
-                    //    string srcPathToUpload = string.Format(dviNumberGuid);
-                    //    await BlobService.DocumentsUploadFile(srcPathToUpload, stream, _azureBlobStorage);
-                    //}
+        //            //using (var stream = file.OpenReadStream())
+        //            //{
+        //            //    string srcPathToUpload = string.Format(dviNumberGuid);
+        //            //    await BlobService.DocumentsUploadFile(srcPathToUpload, stream, _azureBlobStorage);
+        //            //}
 
-                    using (var stream = file.OpenReadStream())
-                    {
-                        var client = new ChainedTokenCredential(new VisualStudioCredential(), new ManagedIdentityCredential());
+        //            using (var stream = file.OpenReadStream())
+        //            {
+        //                var client = new ChainedTokenCredential(new VisualStudioCredential(), new ManagedIdentityCredential());
 
-                        var dataLakeServiceClient =
-                                                    new DataLakeServiceClient
-                                                    (new Uri(_blobConfiguration.DataLakesEndPoint), client);
+        //                var dataLakeServiceClient =
+        //                                            new DataLakeServiceClient
+        //                                            (new Uri(_blobConfiguration.DataLakesEndPoint), client);
 
 
-                        var fileSystemClient = dataLakeServiceClient.GetFileSystemClient(_blobConfiguration.BlobContainer);
-                        var directoryClient = fileSystemClient.GetDirectoryClient($"{_blobConfiguration.FolderPath01}");
-                        var fileClient = directoryClient.GetFileClient(dviNumberGuid);
+        //                var fileSystemClient = dataLakeServiceClient.GetFileSystemClient(_blobConfiguration.BlobContainer);
+        //                var directoryClient = fileSystemClient.GetDirectoryClient($"{_blobConfiguration.FolderPath01}");
+        //                var fileClient = directoryClient.GetFileClient(dviNumberGuid);
 
-                        await fileClient.UploadAsync(stream);
-                    }
+        //                await fileClient.UploadAsync(stream);
+        //            }
 
-                    await _fundAppDocumentRepository.CreateAsync(dad);
-                }
+        //            await _fundAppDocumentRepository.CreateAsync(dad);
+        //        }
 
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside UploadDocument action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside UploadDocument action: {ex.Message}");
+        //        return StatusCode(500, "Internal server error");
+        //    }
+        //}
 
 
         // Returns the human-readable file size for an arbitrary, 64-bit file size 
@@ -193,7 +189,7 @@ namespace NPOMS.API.Controllers
         }
 
 
-        [HttpPost("UploadToDocumentStore", Name = "UploadToDocumentStore"), DisableRequestSizeLimit]
+        [HttpPost, DisableRequestSizeLimit]
         public async Task<IActionResult> UploadToDocumentStore()
 		{
 			try
