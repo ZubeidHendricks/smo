@@ -1,6 +1,8 @@
-<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+<!-- <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
     <p style="font-size: 20px; color: white">Loading...</p>
-</ngx-spinner>
+</ngx-spinner> -->
+<ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "true"><p style="color: white" > Loading... </p></ngx-spinner>
+
 <p-toast></p-toast>
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Supporting Documents">
     <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
@@ -35,7 +37,7 @@
             
             <ng-template pTemplate="content">
                 <div style="height: 10px;"></div>
-                <p-table [rowHover]="true" [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
+                <p-table [rowHover]="true" [value]="documents" styleClass="p-datatable-sm" [columns]="docTypeNames">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -43,21 +45,28 @@
                             </th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
-                        <tr>
+                    <ng-template pTemplate="body"   let-rowIndex="rowIndex">
+                        <tr >
                             <td style="text-align: center;">{{rowIndex + 1}}</td>
-                            <td>{{document?.documentType?.name}}</td>                            
-                            <td>{{document?.name}}</td>
+                            <!-- <td>{{document?.documentType?.name}}</td>     -->
+                            <td *ngFor="let docT of documentTypes">{{docT.name}}</td>  
+                            <!-- <td>{{document?.name}}</td>
                             <td>{{document?.fileSize}}</td>
-                            <td>{{document?.createdDateTime | date: 'yyyy-MM-dd'}}</td>
-                            <td style="text-align: center;">
-                                <input type="file" #filesToUpload placeholder="Browse" accept="*"
-                                 (change)="onUploadChange(filesToUpload.files)" style="display:none;">
-                                
-                                <button pButton pRipple type="button"
-                                    class="p-button-text p-button-success action-button" icon="fa fa-cloud-upload"
-                                        (click)="filesToUpload.click()" pTooltip="Upload"
+                            <td>{{document?.createdDateTime | date: 'yyyy-MM-dd'}}</td> -->
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td  class="ui-fluid" style="text-align: center;">                     
+
+                                 <div class="p-fluid p-formgrid p-grid">
+                                    <div >
+                                <button pButton style="margin: 0px; height: 15px; width: 15px;" pButton icon="fa fa-files-o" class="p-button-success"
+                                       pTooltip="Upload" (click)="selectCarWithButton(rowData)"
                                     tooltipPosition="top"></button>
+                                 <input type="file" #fileAdDoc (change)="uploadADDocument(fileAdDoc.files)" placeholder="Browse" accept="*" style="display:none;" multiple>        
+
+                                    </div>
+                                    </div>
                                 <button pButton pRipple type="button"
                                     class="p-button-text p-button-success action-button" icon="fa fa-cloud-download"
                                     (click)="onDownloadDocument(document)" pTooltip="Download"
@@ -67,6 +76,7 @@
                                     (click)="onDeleteDocument(document)" pTooltip="Delete"
                                     tooltipPosition="top"></button>
                             </td>
+                            
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="emptymessage">
