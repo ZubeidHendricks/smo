@@ -235,13 +235,13 @@ namespace NPOMS.Services.Extensions
 
 
 
-#if !DEBUG
-	            builder.Services.Configure<dtoBlobConfig>(blobConfig =>
-	            {
-		            blobConfig.Storage01 = Environment.GetEnvironmentVariable("APPSETTING_Storage01");
-	                blobConfig.FolderPath01 = Environment.GetEnvironmentVariable("APPSETTING_FolderPath01");
-	            });
-#endif
+//#if !DEBUG
+//	            builder.Services.Configure<dtoBlobConfig>(blobConfig =>
+//	            {
+//		            blobConfig.Storage01 = Environment.GetEnvironmentVariable("APPSETTING_Storage01");
+//	                blobConfig.FolderPath01 = Environment.GetEnvironmentVariable("APPSETTING_FolderPath01");
+//	            });
+//#endif
 
         }
     }
