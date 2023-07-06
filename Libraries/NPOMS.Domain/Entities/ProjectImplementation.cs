@@ -11,6 +11,7 @@ namespace NPOMS.Domain.Entities
     {
         private ICollection<ProjectImplementationPlace> _implementationPlaces;
         private ICollection<ProjectImplementationSubPlace> _implementationSubPlaces;
+        public int NpoProfileId { get; set; }
 
         public string Description { get; set; }
         public string ProjectObjective { get; set; }

@@ -171,6 +171,7 @@ this.calculateOthrSourceFundingTotal();
       this.fundingApplicationDetails.financialMatters = [];
       this.financialMattersIncome = [];
       this.financialMattersExpenditure = [];
+      this.financialMattersOthers =[];
       this.financicalMattersOthrSourceFunding =[];
     // }
 
@@ -190,7 +191,7 @@ this.calculateOthrSourceFundingTotal();
 
       ];
       this.colsOther = [
-        { field: 'property', header: 'Name of Organisation', width: '40%' },
+        { field: 'property', header: 'Name of Organisation from whom funding has been received', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
         { field: 'year1', header: this.finYears[2].name, width: '15%' },
         { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },
@@ -252,7 +253,6 @@ this.calculateOthrSourceFundingTotal();
   }
 
   private updateBankDetailObjects() {
-    debugger;
     if ( this.banks && this.accountTypes && this.bankDetails) {
       this.bankDetails.forEach(item => {
         item.bank = this.banks.find(x => x.id === item.bankId);
@@ -351,7 +351,6 @@ this.calculateOthrSourceFundingTotal();
   }
 
   saveBankDetail() {
-    debugger;
     // this.bankDetail.npoProfileId = Number(this.selectedApplicationId);
     // this.bankDetail.bankId = this.selectedBank.id;
     // this.bankDetail.branchId = this.selectedBranch.id;
@@ -717,7 +716,7 @@ this.calculateOthrSourceFundingTotal();
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        this.financicalMattersOthrSourceFunding.forEach(function (item, index, object) {
+        this.financialMattersOthers.forEach(function (item, index, object) {
           if (budget === item)
             object.splice(index, 1);
         });
@@ -860,7 +859,7 @@ this.calculateOthrSourceFundingTotal();
       this.financialMattersOthers[0].updatedUserId = this.currentUserId;
       this.financialMattersOthers[0].updatedDateTime = today;
     }
-    this._npoProfile.updateFinancialMattersOthers(this.financialMattersExpenditure, this.selectedApplicationId).subscribe(
+    this._npoProfile.updateFinancialMattersOthers(this.financialMattersOthers, this.selectedApplicationId).subscribe(
       (resp) => {
         this.GetFinancialMattersOther();
       },

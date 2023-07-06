@@ -84,7 +84,7 @@ namespace NPOMS.Repository.Configurations.Core
                 new DocumentType
                 {
                     Id = 13,
-                    Name = "Audited Annual Financial",
+                    Name = "Audited Annual Financial Statement",
                     Description = "A copy of the Organisations’ most recent",
                     Location = "FundApp",
                     IsActive = true,
@@ -104,6 +104,42 @@ namespace NPOMS.Repository.Configurations.Core
                     Id = 15,
                     Name = "PFMA",
                     Description = "Written assurance in terms of Section 38 of the PFMA",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 16,
+                    Name = "Bank Statements",
+                    Description = "Organisations last 3 month’s Bank Statements \r\n\r\n(Only applicable for organisations not funded in 2023/24 applying for less than R600 000.00 funding) ",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 17,
+                    Name = "BAS Entity Form",
+                    Description = "BAS Entity Form (NPOs funded in 2023/24 only)",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 18,
+                    Name = "Application Declaration",
+                    Description = "Application Declaration",
+                    Location = "FundApp",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 19,
+                    Name = "Enrolment Form",
+                    Description = "Schedule A: Enrolment Form",
                     Location = "FundApp",
                     IsActive = true,
                     IsCompulsory = false

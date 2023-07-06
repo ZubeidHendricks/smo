@@ -135,6 +135,11 @@ import { ProjectImplementationComponent } from './components/application/applica
 import { DocumentUploadComponent } from './components/application/application-steps/funding-application/document-upload/document-upload.component';
 import { DeclarationComponent } from './components/application/application-steps/funding-application/declaration/declaration.component';
 import { FinancialMattersComponent } from './components/application/application-steps/funding-application/financial-matters/financial-matters.component';
+import { QuickCaptureListComponent } from './components/quick-capture/quick-capture-list/quick-capture-list.component';
+import { CreateQuickCaptureComponent } from './components/quick-capture/create-quick-capture/create-quick-capture.component';
+import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick-capture/edit-quick-capture.component';
+import { QcApplicationDetailsComponent } from './components/application/application-steps/quick-capture/qc-application-details/qc-application-details.component';
+import { QcDocumentUploadComponent } from './components/application/application-steps/quick-capture/qc-document-upload/qc-document-upload.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -267,7 +272,12 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ProjectImplementationComponent,
     DocumentUploadComponent,
     DeclarationComponent,
-    FinancialMattersComponent
+    FinancialMattersComponent,
+    QuickCaptureListComponent,
+    CreateQuickCaptureComponent,
+    EditQuickCaptureComponent,
+    QcApplicationDetailsComponent,
+    QcDocumentUploadComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

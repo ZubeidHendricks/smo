@@ -119,7 +119,7 @@ export class NavigationComponent implements OnInit {
             this._router.navigateByUrl('npos');
           }
         });
-      }
+      }   
 
       if (this.IsAuthorized(PermissionsEnum.ViewProfileMenu)) {
         this.mainMenu.push({
@@ -130,6 +130,15 @@ export class NavigationComponent implements OnInit {
           }
         });
       }
+      if (this.IsAuthorized(PermissionsEnum.ViewNpoMenu)) {
+        this.mainMenu.push({
+          label: 'Quick Capture',
+          icon: 'fa fa-camera wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('quick-captures');
+          }
+        });
+      }        
 
       if (this.IsAuthorized(PermissionsEnum.ViewApplicationPeriodMenu)) {
         this.mainMenu.push({

@@ -294,6 +294,7 @@ export class CreateNpoComponent implements OnInit {
   }
 
   private saveItems() {
+    debugger;
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npo;
@@ -306,6 +307,9 @@ export class CreateNpoComponent implements OnInit {
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
         item.positionId = item.position.id;
+        item.genderId =item.gender.id;
+        item.raceId = item.race.id;
+        item.languageId =item.language.id;
       });
 
       this._npoRepo.createNpo(data).subscribe(
@@ -367,6 +371,7 @@ export class CreateNpoComponent implements OnInit {
   }
 
   saveContactInformation() {
+    debugger;
     this.contactInformation.title = this.selectedTitle;
     this.contactInformation.position = this.selectedPosition;
     this.contactInformation.race = this.selectedRace;
@@ -399,6 +404,7 @@ export class CreateNpoComponent implements OnInit {
   }
 
   private cloneContactInformation(data: IContactInformation): IContactInformation {
+    debugger;
     let contactInfo = {} as IContactInformation;
 
     for (let prop in data)
@@ -406,8 +412,11 @@ export class CreateNpoComponent implements OnInit {
 
     this.selectedTitle = data.title;
     this.selectedPosition = data.position;
-    this.selectedRace = data.race;
+
+    this.selectedRace = data.race;   
+
     this.selectedGender = data.gender;
+    
     this.selectedLanguage = data.language;
 
     return contactInfo;

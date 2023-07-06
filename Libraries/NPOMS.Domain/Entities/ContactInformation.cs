@@ -67,10 +67,10 @@ namespace NPOMS.Domain.Entities
 
 		public Position Position { get; set; }
 
-        public Race? Race { get; set; }
+        public Race Race { get; set; }
 
-        public Gender? Gender { get; set; }
+        public Gender Gender { get; set; }
 
-		public Language? Language { get; set; }
+		public Language Language { get; set; }
     }
 }

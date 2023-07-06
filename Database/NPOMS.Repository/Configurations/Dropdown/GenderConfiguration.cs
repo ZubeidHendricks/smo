@@ -31,7 +31,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
                 new Gender
                 {
                     Id = 3,
-                    Name = "TransGender"
+                    Name = "Other"
                 }
             );
         }

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IAuditorOrAffiliation, IBankDetail, INpoProfile, INpoProfileFacilityList, IServicesRendered, IStaffMemberProfile } from 'src/app/models/interfaces';
+import { IAuditorOrAffiliation, IBankDetail, INpoProfile, INpoProfileFacilityList, IProjectImplementation, IServicesRendered, IStaffMemberProfile } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { IPreviousFinancialYear, ISourceOfInformation, IAffiliatedOrganisation } from 'src/app/models/FinancialMatters';
 import { IFinancialMattersExpenditure, IFinancialMattersIncome, IFinancialMattersOthers } from 'src/app/models/FinancialMatters';
@@ -91,6 +91,12 @@ export class NpoProfileService {
     return this._http.get<IBankDetail[]>(url, httpOptions);
   }
 
+  public getProjImplByNpoProfileId(npoProfileId: number) {
+    debugger;
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/projImpl/npoProfileId/${npoProfileId}`;
+    return this._http.get<IProjectImplementation[]>(url, httpOptions);
+  }  
+
   public createBankDetail(bankDetail: IBankDetail) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/createBankDetail`;
     return this._http.post<IBankDetail>(url, bankDetail, httpOptions);
@@ -106,11 +112,20 @@ export class NpoProfileService {
     return this._http.delete<IBankDetail[]>(url, httpOptions);
   }
 
+  public deleteProjImpl(id: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteProjImplById/id/${id}`;
+    return this._http.delete<IProjectImplementation[]>(url, httpOptions);
+  }  
+
   public UpdatePreviousYearData(previousYearData: any[], npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/updatePreviousYearFinance/npoProfileId/${npoProfileId}`;
     return this._http.put<IPreviousFinancialYear[]>(url, previousYearData, httpOptions);
   }
-
+  
+  public updateProjImpl(updateProjImpl: IProjectImplementation) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/UpdateProjImpl`;
+    return this._http.put<IProjectImplementation[]>(url, updateProjImpl, httpOptions);
+  }  
 
   public updateFinancialMattersIncome(financialMattersIncome: any[], npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersIncome/npoProfileId/${npoProfileId}`;
@@ -194,8 +209,7 @@ export class NpoProfileService {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/staff-member-profile`;
     return this._http.put<IStaffMemberProfile>(url, staffMemberProfile, httpOptions);
   }
-
-public updateSourceOfInformation(sourceOfInformation: ISourceOfInformation, npoProfileId: string) {
+  public updateSourceOfInformation(sourceOfInformation: ISourceOfInformation, npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateSourceOfInformation/npoProfileId/${npoProfileId}`;
     return this._http.post<ISourceOfInformation>(url, sourceOfInformation, httpOptions);
   }

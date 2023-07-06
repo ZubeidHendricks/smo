@@ -29,15 +29,23 @@ namespace NPOMS.Services.Interfaces
 
 		Task Update(ServicesRendered model, string userIdentifier);
 
-		Task<IEnumerable<BankDetail>> GetBankDetailsByNpoProfileId(int npoProfileId);
+        Task<IEnumerable<BankDetail>> GetBankDetailsByNpoProfileId(int npoProfileId);
 
-		Task Create(BankDetail model, string userIdentifier);
+        Task<IEnumerable<ProjectImplementation>> GetProjImplByNpoProfileId(int npoProfileId);
+
+
+        Task Create(BankDetail model, string userIdentifier);
 
 		Task Update(BankDetail model, string userIdentifier);
+
+		Task Update(ProjectImplementation model, string userIdentifier);
+       
 
         Task<IEnumerable<PreviousYearFinance>> GetByNpoProfileIdAsync(int npoProfileId);
         Task<PreviousYearFinance> DeleteById(int id);
         Task<BankDetail> DeleteBankDetailById(int id);
+
+        Task<ProjectImplementation> DeleteProjectImplementationById(int id);
 
         Task Update(List<PreviousYearFinance> model, string userIdentifier, string npoProfileId);
 

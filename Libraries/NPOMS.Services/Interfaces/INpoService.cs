@@ -9,7 +9,10 @@ namespace NPOMS.Services.Interfaces
 	{
 		Task<IEnumerable<Npo>> Get(string userIdentifier, AccessStatusEnum accessStatus);
 
-		Task<Npo> GetById(int id);
+        //Task<IEnumerable<Npo>> GetQuickCaptures(string userIdentifier, AccessStatusEnum accessStatus);
+
+
+        Task<Npo> GetById(int id);
 
 		Task<IEnumerable<Npo>> Search(string name);
 

@@ -9,7 +9,8 @@ export enum AccessStatusEnum {
 
 export enum ApplicationTypeEnum {
     FA = 1,
-    SP = 2
+    SP = 2,
+    QC = 3
 }
 
 export enum DocumentTypeEnum {
@@ -137,12 +138,18 @@ export enum StatusEnum {
     EvaluationDecline = 21,
     Evaluated = 22,
     EvaluationApproved = 23,
+    Submitted = 24,
     GetName
 }
 
-export enum AuditorOrAffiliationEnum {
+export enum AuditorOrAffiliationEntityTypeEnum {
     Auditor = "Auditor",
     Affiliation = "Affiliation"
+}
+
+export enum AuditorOrAffiliationEntityNameEnum {
+    NpoProfile = "NpoProfile",
+    FundingApplication = "FundingApplication"
 }
 
 export enum PermissionsEnum {
@@ -349,6 +356,12 @@ export enum FundingApplicationStepsEnum {
     ProjectImplementationPlan = 5,
     ApplicationDocument = 6,
     Declaration = 7
+}
+
+export enum QuickCaptureStepsEnum {
+    NpoConfirmationDetails = 0,
+    AmountYouApplyingFor = 1,
+    ApplicationDocument = 2
 }
 
 export enum DocumentUploadLocationsEnum {

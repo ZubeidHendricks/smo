@@ -177,7 +177,6 @@ export class ApplicationPeriodListComponent implements OnInit {
   }
 
   onRowSelect(applicationPeriod: IApplicationPeriod) {
-    debugger;
     console.log('Selected Application Period', applicationPeriod);
     this.selectedApplicationPeriod = applicationPeriod;
     this.applicationPeriodId = applicationPeriod.id;

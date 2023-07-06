@@ -28,7 +28,7 @@ namespace NPOMS.Repository.Configurations.Entities
 				new Status
 				{
 					Id = 3,
-					Name = "Pending Review",
+					Name = "Submitted – Pending Review",
 					SystemName = "PendingReview"
 				},
 				new Status

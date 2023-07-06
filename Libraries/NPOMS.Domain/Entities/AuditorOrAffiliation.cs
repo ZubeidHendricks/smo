@@ -13,6 +13,12 @@ namespace NPOMS.Domain.Entities
 		public int EntityId { get; set; }
 
 		/// <summary>
+		/// This is the Name of the entity. In this case, it could either be the NpoProfile or FundingApplication.
+		/// </summary>
+		[Column(TypeName = "nvarchar(50)")]
+		public string EntityName { get; set; }
+
+		/// <summary>
 		/// This is the entity type. In this case, it could either be Auditor or Affiliation.
 		/// </summary>
 		[Required]

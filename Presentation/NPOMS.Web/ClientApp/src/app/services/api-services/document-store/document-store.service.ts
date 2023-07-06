@@ -41,6 +41,8 @@ export class DocumentStoreService {
       DocumentTypeId: documentTypeId,
       RefNo: refNo
     });
+    console.log('documentStoreViewModel',documentStoreViewModel);
+    console.log('documentTypeId',documentTypeId);
 
     formData.append("documentStoreViewModel", documentStoreViewModel);
 
