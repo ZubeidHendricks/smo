@@ -89,12 +89,12 @@ uploadButtonDisabled: boolean = false;
     //this.getFundAppDocuments(this.selectedDocTypeId);
        this._spinner.hide();
     this.documentCols = [
-      // { header: '', width: '5%' },
-      { header: 'Document Type', width: '25%' },
-      // { header: 'Document Name', width: '40%' },
+      { header: 'Id', width: '5%' },
+      { header: 'Document Type', width: '35%' },
+      { header: 'Document Name', width: '45%' },
       // { header: 'Size', width: '10%' },
       // { header: 'Uploaded Date', width: '10%' },
-      { header: 'Actions', width: '15%' }
+      { header: 'Actions', width: '10%' }
     ];
     this.uploadedFileCols = [
       // { header: '', width: '5%' },
@@ -185,17 +185,23 @@ this.selectedDocTypeId =
   }
 
   public uploadDocument(doc: any) {
+ 
+    console.log('doc',doc);
+    debugger;
     this.element.nativeElement.click();
   }
   public uploadedFiles(doc: any) {
+    debugger;
     this._spinner.show();
     //this.getDocuments();
-    this.getFundAppDocuments(this.selectedDocTypeId);
+    this.getFundAppDocuments(doc.documentTypeId);
     this.displayUploadedFilesDialog = true;
   }
 
   public onUploadChange = (files) => {
+    debugger;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
+
 
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
     EntityEnum.FundingApplicationDetails, this.application.refNo, files[0].documentType.id).subscribe(
@@ -205,6 +211,7 @@ this.selectedDocTypeId =
         else if (event.type === HttpEventType.Response) {
           this._spinner.hide();
           //this.getDocuments();
+          console.log('Document Type Id', files[0].documentType.id);
           this.getFundAppDocuments(files[0].documentType.id);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
         }
@@ -332,7 +339,7 @@ this.selectedDocTypeId =
         this._documentStore.delete(doc.resourceId).subscribe(
           event => {
             //this.getDocuments();
-            this.getFundAppDocuments(this.selectedDocTypeId);
+            this.getFundAppDocuments(doc.documentTypeId);
             this._spinner.hide();
           },
           (error) => this._spinner.hide()
