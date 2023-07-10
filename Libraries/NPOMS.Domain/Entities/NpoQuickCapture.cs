@@ -12,7 +12,10 @@ namespace NPOMS.Domain.Entities
 		[Column(TypeName = "char(15)")]
 		public string RefNo { get; set; }
 
-		[Column(TypeName = "nvarchar(255)")]
+        [Column(TypeName = "char(15)")]
+        public string CCode { get; set; }
+
+        [Column(TypeName = "nvarchar(255)")]
 		public string Name { get; set; }
 
 		public int OrganisationTypeId { get; set; }
@@ -36,9 +39,6 @@ namespace NPOMS.Domain.Entities
 		public string PBONumber { get; set; }
 
 		public bool Section18Receipts { get; set; }
-
-		[Column(TypeName = "nvarchar(255)")]
-		public string CCode { get; set; }
 
 		public int CreatedUserId { get; set; }
 

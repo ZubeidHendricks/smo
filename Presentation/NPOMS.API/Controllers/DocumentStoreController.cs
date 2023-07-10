@@ -235,7 +235,25 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpDelete("{resourceId}", Name = "DeleteFromDocumentStore")]
+        [HttpGet("entitytypes/{entityType}/entities/{entityId}/documentTypeId/{docTypeId}", Name = "GetFundAppDocumentStore")]
+        public async Task<IActionResult> GetFundAppDocumentStore(EntityTypeEnum entityType, int entityId, int docTypeId, [FromQuery] DocumentStoreResourceParameters documentStoreResourceParameters)
+        {
+            try
+            {
+                documentStoreResourceParameters.EntityType = entityType;
+                documentStoreResourceParameters.EntityId = entityId;
+
+                var viewModel = await this._documentStoreService.GetFundApp(documentStoreResourceParameters, docTypeId);
+                return Ok(viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetFromDocumentStore action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{resourceId}", Name = "DeleteFromDocumentStore")]
 		public async Task<IActionResult> DeleteFromDocumentStore(string resourceId)
 		{
 			try

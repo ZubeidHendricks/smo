@@ -32,6 +32,7 @@ export class CreateNpoComponent implements OnInit {
 
   npo: INpo = {
     section18Receipts: false,
+    isQuickCapture : true,
     contactInformation: [] as IContactInformation[]
   } as INpo;
 

@@ -60,6 +60,14 @@ export class DocumentStoreService {
       );
   }
 
+  public getFundApp(entityId: number, docTypeId: number, entityType: EntityTypeEnum): Observable<IDocumentStore[]> {
+
+    return this._http.get<IDocumentStore[]>(`${this._envUrl.urlAddress}/api/documentstore/entitytypes/${entityType}/entities/${entityId}/documentTypeId/${docTypeId}`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
   public download(doc: IDocumentStore) {
     return this._http.get(`${this._envUrl.urlAddress}/api/documentstore/${doc.resourceId}`, { responseType: 'blob' })
       .pipe(

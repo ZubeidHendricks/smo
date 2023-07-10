@@ -42,26 +42,26 @@ namespace NPOMS.API.Controllers
 			_emailService = emailService;
 		}
 
-        #endregion
+		#endregion
 
-        #region Methods
+		#region Methods
 
-        //[HttpGet("quick-captures/access-status/{accessStatus}", Name = "GetAllQuickCaptures")]
-        //public async Task<IActionResult> GetAllQuickCaptures(AccessStatusEnum accessStatus)
-        //{
-        //    try
-        //    {
-        //        var results = await _npoService.Get(base.GetUserIdentifier(), accessStatus);
-        //        return Ok(results);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Something went wrong inside GetAllQuickCaptures action: {ex.Message} Inner Exception: {ex.InnerException}");
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
+		[HttpGet("quick-captures/access-status/{accessStatus}", Name = "GetAllQuickCaptures")]
+		public async Task<IActionResult> GetAllQuickCaptures(AccessStatusEnum accessStatus)
+		{
+			try
+			{
+				var results = await _npoService.GetQuickCaptures(base.GetUserIdentifier(), accessStatus);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetAllQuickCaptures action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
 
-        [HttpGet("access-status/{accessStatus}", Name = "GetAllNpos")]
+		[HttpGet("access-status/{accessStatus}", Name = "GetAllNpos")]
 		public async Task<IActionResult> GetAllNpos(AccessStatusEnum accessStatus)
 		{
 			try

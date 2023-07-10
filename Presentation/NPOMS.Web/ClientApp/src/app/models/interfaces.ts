@@ -513,6 +513,7 @@ export interface INpo {
     registrationStatusId: number;
     pboNumber: string;
     section18Receipts: boolean;
+    isQuickCapture: boolean;
     cCode: string;
 
     organisationType: IOrganisationType;

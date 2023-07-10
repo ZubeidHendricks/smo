@@ -21,6 +21,9 @@ namespace NPOMS.Services.Interfaces
 
 		Task<PagedList<DocumentStoreViewModel>> Get(DocumentStoreResourceParameters documentStoreResourceParameters);
 
-		Task Update(DocumentStore model, string userIdentifier);
+        Task<PagedList<DocumentStoreViewModel>> GetFundApp(DocumentStoreResourceParameters documentStoreResourceParameters, int docTypeId);
+
+
+        Task Update(DocumentStore model, string userIdentifier);
 	}
 }
