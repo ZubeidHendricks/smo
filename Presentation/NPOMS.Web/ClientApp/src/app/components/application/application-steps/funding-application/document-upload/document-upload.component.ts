@@ -311,10 +311,11 @@ this.selectedDocTypeId =
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.get(Number(this.fundingApplicationDetails?.id), EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-          
-          if(res.find(x => x.documentTypeId == 1))
+          console.log('res',res);
+          if(res.find(x => x.documentTypeId == 18))
           {
             this.documentTypeName ="Application Declaration";
+          console.log('this.documentTypeName', this.documentTypeName);
           }
           this.documents = res;
       
