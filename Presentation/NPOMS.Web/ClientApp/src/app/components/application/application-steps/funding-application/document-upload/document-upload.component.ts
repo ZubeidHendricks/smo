@@ -311,12 +311,61 @@ this.selectedDocTypeId =
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.get(Number(this.fundingApplicationDetails?.id), EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-          console.log('res',res);
+        
           if(res.find(x => x.documentTypeId == 18))
           {
-            this.documentTypeName ="Application Declaration";
-          console.log('this.documentTypeName', this.documentTypeName);
+            this.documentTypeName ="Application Declaration";          
           }
+          if(res.find(x => x.documentTypeId == 8))
+          {
+            this.documentTypeName ="NPO Reg Cert";          
+          }
+          if(res.find(x => x.documentTypeId == 9))
+          {
+            this.documentTypeName ="Org Registration Certificate";          
+          }
+          if(res.find(x => x.documentTypeId == 10))
+          {
+            this.documentTypeName ="Constitution";          
+          }
+          if(res.find(x => x.documentTypeId == 11))
+          {
+            this.documentTypeName ="Supporting";          
+          }
+          if(res.find(x => x.documentTypeId == 12))
+          {
+            this.documentTypeName ="Bank Letter";          
+          }
+          if(res.find(x => x.documentTypeId == 13))
+          {
+            this.documentTypeName ="Audited Annual Financial Statement";          
+          }
+          if(res.find(x => x.documentTypeId == 14))
+          {
+            this.documentTypeName ="Certified Financial Statement";          
+          }
+          if(res.find(x => x.documentTypeId == 15))
+          {
+            this.documentTypeName ="PFMA";          
+          }
+          if(res.find(x => x.documentTypeId == 16))
+          {
+            this.documentTypeName ="Bank Statements";          
+          }
+          if(res.find(x => x.documentTypeId == 17))
+          {
+            this.documentTypeName ="BAS Entity Form";          
+          }          
+          if(res.find(x => x.documentTypeId == 19))
+          {
+            this.documentTypeName ="Enrolment Form";          
+          }
+          
+          if(res.find(x => x.documentTypeId == 7))
+          {
+            this.documentTypeName ="Signed Declaration of Interest";          
+          } 
+          
           this.documents = res;
       
         this._spinner.hide();
