@@ -185,16 +185,18 @@ this.selectedDocTypeId =
   }
 
   public uploadDocument(doc: any) {
- 
-    console.log('doc',doc);
     debugger;
+    console.log('doc',doc);
+
     this.element.nativeElement.click();
   }
   public uploadedFiles(doc: any) {
     debugger;
     this._spinner.show();
     //this.getDocuments();
-    this.getFundAppDocuments(doc.documentTypeId);
+    console.log('doc from Uploaded Files',doc);
+    console.log('doc from Uploaded Files',doc.id);
+    this.getFundAppDocuments(doc.id);
     this.displayUploadedFilesDialog = true;
   }
 
@@ -339,7 +341,7 @@ this.selectedDocTypeId =
         this._documentStore.delete(doc.resourceId).subscribe(
           event => {
             //this.getDocuments();
-            this.getFundAppDocuments(doc.documentTypeId);
+            this.getFundAppDocuments(doc.id);
             this._spinner.hide();
           },
           (error) => this._spinner.hide()
