@@ -25,6 +25,11 @@ namespace NPOMS.Repository.Implementation.Core
             return FindAll().Where(x => x.IsActive).Include(x => x.DocumentType);
         }
 
+        public IQueryable<DocumentStore> GetEntitiesByDocId(int docTypeId)
+        {
+            return FindAll().Where(x => x.IsActive && x.DocumentTypeId == docTypeId).Include(x => x.DocumentType);
+        }
+
         public async Task CreateEntity(DocumentStore entity)
         {
             await CreateAsync(entity);

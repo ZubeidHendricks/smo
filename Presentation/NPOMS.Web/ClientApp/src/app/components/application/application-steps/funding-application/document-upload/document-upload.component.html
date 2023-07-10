@@ -41,7 +41,9 @@
 
             <ng-template pTemplate="content">
                 <div style="height: 10px;"></div>
-                <p-table [rowHover]="true" [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
+                <p-table [rowHover]="true" [value]="documents" styleClass="p-datatable-sm" 
+                (onRowSelect)="onRowSelect($event)"
+                [columns]="documentCols">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -54,22 +56,8 @@
                             <!-- <td style="text-align: center;">{{rowIndex + 1}}</td> -->
                             <!-- <td>{{document?.documentType?.name}}</td>     -->
                             <td>{{docT.name}}</td>
-                            <!-- <td>{{document?.name}}</td>
-                                <td>{{document?.fileSize}}</td>
-                                <td>{{document?.createdDateTime | date: 'yyyy-MM-dd'}}</td> -->
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td class="ui-fluid" style="text-align: center;">
 
-                                <!-- <div class="p-fluid p-formgrid p-grid">                                   
-                                        <button pButton style="margin: 0px; height: 1px; width: 15px;" pButton
-                                            icon="fa fa-files-o" class="p-button-success" pTooltip="Upload"
-                                            (click)="selectCarWithButton(rowData)" tooltipPosition="top"></button>
-                                        <input type="file" #fileAdDoc (change)="uploadADDocument(fileAdDoc.files)"
-                                            placeholder="Browse" accept="*" style="display:none;" multiple>
-                                </div> -->
-
+                            <td class="ui-fluid" style="text-align: left;">
                                 <button pButton pRipple type="button" 
                                     class="p-button-text p-button-success action-button" icon="fa fa-files-o" 
                                     pTooltip="Uploaded Files" 
@@ -82,16 +70,7 @@
                                 <input  type="file" #addDoc 
                                     (change)="onUploadChange(addDoc.files)" placeholder="Browse" 
                                     accept="*" style="display:none;">                                
-                                <button pButton pRipple type="button"
-                                    class="p-button-text p-button-success action-button" icon="fa fa-cloud-download"
-                                    (click)="onDownloadDocument(document)" pTooltip="Download"
-                                    tooltipPosition="top"></button>
-                                <button pButton pRipple type="button"
-                                    class="p-button-text p-button-danger action-button" icon="fa fa-trash"
-                                    (click)="onDeleteDocument(document)" pTooltip="Delete"
-                                    tooltipPosition="top"></button>
                             </td>
-
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="emptymessage">
@@ -100,8 +79,6 @@
                         </tr>
                     </ng-template>
                 </p-table>
-
-
             </ng-template>
         </p-fileUpload>
     </p-panel>
@@ -117,7 +94,7 @@
           [maximizable]="false"
           [draggable]="false"
           [resizable]="false">
-        <p-table [rowHover]="true" [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols" 
+        <p-table [rowHover]="true" [value]="documents" styleClass="p-datatable-sm" [columns]="uploadedFileCols" 
         [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
         [rowsPerPageOptions]="[10,25,50]">
             <ng-template pTemplate="header" let-columns>

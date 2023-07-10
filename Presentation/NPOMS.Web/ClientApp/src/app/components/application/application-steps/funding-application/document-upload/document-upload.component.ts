@@ -47,6 +47,7 @@ uploadButtonDisabled: boolean = false;
   profile: IUser;
   documents: IDocumentStore[] = [];
   documentCols: any[];
+  uploadedFileCols:any[];
   documentTypeCols: any[];
   documentTypes: IDocumentType[] = [];
   compulsoryDocuments: IDocumentType[] = [];
@@ -58,6 +59,7 @@ uploadButtonDisabled: boolean = false;
   getFiles: any;
   //uploadedFiles: boolean = false;
   indicatorDetailsId: number;
+  selectedDocTypeId: number;
   userId: number;
   _profile:IUser;
   constructor(
@@ -84,8 +86,17 @@ uploadButtonDisabled: boolean = false;
           this.userId = x.id;
       }});
     this.getDocuments();
+    //this.getFundAppDocuments(this.selectedDocTypeId);
        this._spinner.hide();
     this.documentCols = [
+      // { header: '', width: '5%' },
+      { header: 'Document Type', width: '25%' },
+      // { header: 'Document Name', width: '40%' },
+      // { header: 'Size', width: '10%' },
+      // { header: 'Uploaded Date', width: '10%' },
+      { header: 'Actions', width: '15%' }
+    ];
+    this.uploadedFileCols = [
       // { header: '', width: '5%' },
       { header: 'Document Type', width: '25%' },
       { header: 'Document Name', width: '40%' },
@@ -120,6 +131,19 @@ uploadButtonDisabled: boolean = false;
   remove(event, file: File, uploader: FileUpload) {
     const index = uploader.files.indexOf(file);
     uploader.remove(event, index);
+  }
+
+  onRowSelect(event) {
+    if (event.files[0]) {
+this.selectedDocTypeId =      
+        event.files[0].documentType.id;
+        console.log('this.selectedDocTypeId',this.selectedDocTypeId);
+        console.log('event.files[0].documentType.id',event.files[0].documentType.id);
+
+    }
+    else {
+      this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please specify the document type.' });
+    }    
   }
 
   private loadDocumentTypes() {
@@ -160,21 +184,13 @@ uploadButtonDisabled: boolean = false;
     //  console.log(plan);
   }
 
-
-
-  // uploadedFiless(doc: any) {
-  //    console.log(doc); 
-  
-  //  this.getFiles = doc;
-  //  //this.getFiles.sort((a, b) => b.id - a.id);
-  //  this.uploadedFiles = true;
-  // }
   public uploadDocument(doc: any) {
     this.element.nativeElement.click();
   }
   public uploadedFiles(doc: any) {
     this._spinner.show();
-    this.getDocuments();
+    //this.getDocuments();
+    this.getFundAppDocuments(this.selectedDocTypeId);
     this.displayUploadedFilesDialog = true;
   }
 
@@ -188,7 +204,8 @@ uploadButtonDisabled: boolean = false;
           this._spinner.show();
         else if (event.type === HttpEventType.Response) {
           this._spinner.hide();
-          this.getDocuments();
+          //this.getDocuments();
+          this.getFundAppDocuments(files[0].documentType.id);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
         }
       },
@@ -258,33 +275,43 @@ uploadButtonDisabled: boolean = false;
   });
 }
 
-  public onUploadCloudClick = (event) => {
-    if (event.files[0]) {
-      this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments,
-        Number(this.fundingApplicationDetails.id), EntityEnum.FundingApplicationDetails,
-        this.application.refNo, event.files[0].documentType.id).subscribe(
-          event => {
-            if (event.type === HttpEventType.UploadProgress)
-              this._spinner.show();
-            else if (event.type === HttpEventType.Response) {
-              this.getDocuments();
-              this._spinner.hide();
-            }
-          },
-          () => this._spinner.hide()
-        );
-      //form.clear();
-    }
-    else {
-      this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please specify the document type.' });
-    }
-  }
-
-
+  // public onUploadCloudClick = (event) => {
+  //   if (event.files[0]) {
+  //     this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments,
+  //       Number(this.fundingApplicationDetails.id), EntityEnum.FundingApplicationDetails,
+  //       this.application.refNo, event.files[0].documentType.id).subscribe(
+  //         event => {
+  //           if (event.type === HttpEventType.UploadProgress)
+  //             this._spinner.show();
+  //           else if (event.type === HttpEventType.Response) {
+  //             this.getDocuments();
+  //             this._spinner.hide();
+  //           }
+  //         },
+  //         () => this._spinner.hide()
+  //       );
+  //     //form.clear();
+  //   }
+  //   else {
+  //     this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please specify the document type.' });
+  //   }
+  // }
 
   private getDocuments() {
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.get(Number(this.fundingApplicationDetails?.id), EntityTypeEnum.SupportingDocuments).subscribe(
+        res => {
+          this.documents = res;
+        this._spinner.hide();
+        },
+        () => this._spinner.hide()
+      );
+    }
+  }
+
+  private getFundAppDocuments(docTypeId :number) {
+    if (this.fundingApplicationDetails?.id != undefined) {
+      this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
           this.documents = res;
         this._spinner.hide();
@@ -304,7 +331,8 @@ uploadButtonDisabled: boolean = false;
 
         this._documentStore.delete(doc.resourceId).subscribe(
           event => {
-            this.getDocuments();
+            //this.getDocuments();
+            this.getFundAppDocuments(this.selectedDocTypeId);
             this._spinner.hide();
           },
           (error) => this._spinner.hide()
@@ -315,9 +343,7 @@ uploadButtonDisabled: boolean = false;
     });
   }
 
-
   prevPage() {
-
     this.activeStep = this.activeStep - 1;
     this.activeStepChange.emit(this.activeStep);
   }

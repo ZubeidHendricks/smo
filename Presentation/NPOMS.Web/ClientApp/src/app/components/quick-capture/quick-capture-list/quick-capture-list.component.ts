@@ -61,7 +61,7 @@ ngOnInit(): void {
   // ];
 
   this.cols = [
-    { field: 'cCodeNo', header: 'CCode No.', width: '15%' },
+    { field: 'cCode', header: 'CCode No.', width: '15%' },
     { field: 'name', header: 'Name', width: '50%' },
     { field: 'organisationType.name', header: 'Organisation Type', width: '15%' },
     { field: 'approvalStatus.name', header: 'Organisation Status', width: '10%' }
@@ -70,7 +70,7 @@ ngOnInit(): void {
 
 private loadNPOs() {
   this._spinner.show();
-  this._npoRepo.getAllNpos(AccessStatusEnum.AllStatuses).subscribe(
+  this._npoRepo.getAllQuickCaptures(AccessStatusEnum.AllStatuses).subscribe(
     (results) => {
       this.allNPOs = results;
       this._spinner.hide();

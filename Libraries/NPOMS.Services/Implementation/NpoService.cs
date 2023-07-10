@@ -44,14 +44,41 @@ namespace NPOMS.Services.Implementation
 			_registrationStatusRepository = registrationStatusRepository;
 		}
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public async Task<IEnumerable<Npo>> Get(string userIdentifier, AccessStatusEnum accessStatus)
+        public async Task<IEnumerable<Npo>> Get(string userIdentifier, AccessStatusEnum accessStatus)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var npos = await _npoRepository.GetEntities();
+
+            if (Enum.IsDefined(typeof(AccessStatusEnum), accessStatus))
+            {
+                int accessStatusId = (int)accessStatus;
+
+                if (accessStatusId != 0)
+                    npos = npos.Where(x => x.ApprovalStatusId == accessStatusId);
+            }
+
+            if (loggedInUser.Roles.Any(x => x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin)))
+            {
+                return npos;
+            }
+            else
+            {
+                var mappings = await _userNpoRepository.GetApprovedEntities(loggedInUser.Id);
+                var NpoIds = mappings.Select(x => x.NpoId);
+                var results = npos.Where(x => NpoIds.Contains(x.Id));
+
+                return results;
+            }
+        }
+
+        public async Task<IEnumerable<Npo>> GetQuickCaptures(string userIdentifier, AccessStatusEnum accessStatus)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-			var npos = await _npoRepository.GetEntities();
+			var npos = await _npoRepository.GetQuickCapturers();
 
 			if (Enum.IsDefined(typeof(AccessStatusEnum), accessStatus))
 			{

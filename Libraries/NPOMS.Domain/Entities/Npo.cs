@@ -30,6 +30,8 @@ namespace NPOMS.Domain.Entities
 
 		public bool IsActive { get; set; }
 
+		public bool IsQuickCapture { get; set; }
+
 		public int? RegistrationStatusId { get; set; }
 
 		[Column(TypeName = "nvarchar(50)")]

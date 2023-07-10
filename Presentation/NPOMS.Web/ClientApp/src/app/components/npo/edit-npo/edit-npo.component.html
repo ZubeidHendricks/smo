@@ -44,6 +44,8 @@
                 <input type="text" name="registrationNumber" class="form-text" pInputText [(ngModel)]="npo.registrationNumber" [ngModelOptions]="{standalone: true}">
             </div>
             <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Is Quick Capture?</label>
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="npo.isQuickCapture" [ngModelOptions]="{standalone: true}"></p-selectButton>
 
             </div>
         </div>
