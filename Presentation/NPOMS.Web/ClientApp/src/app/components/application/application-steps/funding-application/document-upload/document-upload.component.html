@@ -58,7 +58,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
             <tr>
-                <td style="text-align: center;">{{rowIndex + 1}}</td>           
+                <td style="text-align: center;">{{documentTypeName}}</td>           
                 <td>{{document.name}}</td>
                 <td>{{document.fileSize}}</td>
                 <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>

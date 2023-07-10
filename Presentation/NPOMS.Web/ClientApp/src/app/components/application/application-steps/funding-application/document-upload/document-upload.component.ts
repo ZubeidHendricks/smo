@@ -53,6 +53,7 @@ uploadButtonDisabled: boolean = false;
   compulsoryDocuments: IDocumentType[] = [];
   nonCompulsoryDocuments: IDocumentType[] = [];
   docTypeNames : any[];
+  documentTypeName : string;
 
   validationErrors: Message[];
   menuActions: MenuItem[];
@@ -310,7 +311,13 @@ this.selectedDocTypeId =
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.get(Number(this.fundingApplicationDetails?.id), EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
+          
+          if(res.find(x => x.documentTypeId == 1))
+          {
+            this.documentTypeName ="Application Declaration";
+          }
           this.documents = res;
+      
         this._spinner.hide();
         },
         () => this._spinner.hide()
