@@ -12,7 +12,7 @@
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}">
         <ng-template pTemplate="content">
             <div style="height: 10px;"></div>
-            <p-table [rowHover]="true" [value]="documentTypes" styleClass="p-datatable-sm" [columns]="documentCols">
+            <p-table [rowHover]="true" [value]="documentTypes" styleClass="p-datatable-sm" [columns]="documentCols"  (onRowSelect)="onRowSelect($event)">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">

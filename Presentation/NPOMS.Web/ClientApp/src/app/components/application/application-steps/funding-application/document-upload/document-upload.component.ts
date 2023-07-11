@@ -136,6 +136,7 @@ uploadButtonDisabled: boolean = false;
   }
 
   onRowSelect(event) {
+    debugger;
     if (event.files[0]) {
 this.selectedDocTypeId =      
         event.files[0].documentType.id;
@@ -308,6 +309,7 @@ this.selectedDocTypeId =
   // }
 
   private getDocuments() {
+    debugger;
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.get(Number(this.fundingApplicationDetails?.id), EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
@@ -376,6 +378,7 @@ this.selectedDocTypeId =
   }
 
   private getFundAppDocuments(docTypeId :number) {
+    debugger;
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
@@ -442,6 +445,7 @@ this.selectedDocTypeId =
   }
 
   onDeleteDocument(doc: any) {
+    debugger;
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this document?',
       header: 'Confirmation',
@@ -451,8 +455,8 @@ this.selectedDocTypeId =
 
         this._documentStore.delete(doc.resourceId).subscribe(
           event => {
-            //this.getDocuments();
-            this.getFundAppDocuments(doc.id);
+            this.getDocuments();
+            //this.getFundAppDocuments(doc.id);
             this._spinner.hide();
           },
           (error) => this._spinner.hide()
