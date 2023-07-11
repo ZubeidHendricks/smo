@@ -206,8 +206,10 @@ this.selectedDocTypeId =
   public onUploadChange = (files) => {
     debugger;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
+    console.log('this.selectedDocTypeId', this.selectedDocTypeId);
+
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
-    EntityEnum.FundingApplicationDetails, this.application.refNo, files[0].documentType.id).subscribe(
+    EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress)
           this._spinner.show();
