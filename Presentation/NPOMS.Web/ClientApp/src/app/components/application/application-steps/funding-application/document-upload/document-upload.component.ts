@@ -46,6 +46,7 @@ uploadButtonDisabled: boolean = false;
 
   profile: IUser;
   documents: IDocumentStore[] = [];
+  fundAppdocuments: IDocumentStore[] = [];
   documentCols: any[];
   uploadedFileCols:any[];
   documentTypeCols: any[];
@@ -204,8 +205,6 @@ this.selectedDocTypeId =
   public onUploadChange = (files) => {
     debugger;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
-
-
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
     EntityEnum.FundingApplicationDetails, this.application.refNo, files[0].documentType.id).subscribe(
       event => {
@@ -379,7 +378,64 @@ this.selectedDocTypeId =
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-          this.documents = res;
+
+          if(res.find(x => x.documentTypeId == 18))
+          {
+            this.documentTypeName ="Application Declaration";          
+          }
+          if(res.find(x => x.documentTypeId == 8))
+          {
+            this.documentTypeName ="NPO Reg Cert";          
+          }
+          if(res.find(x => x.documentTypeId == 9))
+          {
+            this.documentTypeName ="Org Registration Certificate";          
+          }
+          if(res.find(x => x.documentTypeId == 10))
+          {
+            this.documentTypeName ="Constitution";          
+          }
+          if(res.find(x => x.documentTypeId == 11))
+          {
+            this.documentTypeName ="Supporting";          
+          }
+          if(res.find(x => x.documentTypeId == 12))
+          {
+            this.documentTypeName ="Bank Letter";          
+          }
+          if(res.find(x => x.documentTypeId == 13))
+          {
+            this.documentTypeName ="Audited Annual Financial Statement";          
+          }
+          if(res.find(x => x.documentTypeId == 14))
+          {
+            this.documentTypeName ="Certified Financial Statement";          
+          }
+          if(res.find(x => x.documentTypeId == 15))
+          {
+            this.documentTypeName ="PFMA";          
+          }
+          if(res.find(x => x.documentTypeId == 16))
+          {
+            this.documentTypeName ="Bank Statements";          
+          }
+          if(res.find(x => x.documentTypeId == 17))
+          {
+            this.documentTypeName ="BAS Entity Form";          
+          }          
+          if(res.find(x => x.documentTypeId == 19))
+          {
+            this.documentTypeName ="Enrolment Form";          
+          }
+          
+          if(res.find(x => x.documentTypeId == 7))
+          {
+            this.documentTypeName ="Signed Declaration of Interest";          
+          } 
+
+          
+          
+          this.fundAppdocuments = res;
         this._spinner.hide();
         },
         () => this._spinner.hide()

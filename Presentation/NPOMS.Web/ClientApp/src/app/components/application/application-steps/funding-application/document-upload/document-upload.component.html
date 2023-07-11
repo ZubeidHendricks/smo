@@ -46,7 +46,7 @@
 <p-dialog header="Uploaded Files" [(visible)]="displayUploadedFilesDialog" [style]="{width: '70vw'}"
     [focusOnShow]="false" showEffect="fade" [transitionOptions]="'0ms'" [modal]="true" [maximizable]="false"
     [draggable]="false" [resizable]="false">
-    <p-table [rowHover]="true" [value]="documents" styleClass="p-datatable-sm" [columns]="uploadedFileCols"
+    <p-table [rowHover]="true" [value]="fundAppdocuments" styleClass="p-datatable-sm" [columns]="uploadedFileCols"
         [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         [rowsPerPageOptions]="[10,25,50]">
         <ng-template pTemplate="header" let-columns>
