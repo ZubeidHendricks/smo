@@ -198,6 +198,7 @@ this.selectedDocTypeId =
     //this.getDocuments();
     console.log('doc from Uploaded Files',doc);
     console.log('doc from Uploaded Files',doc.id);
+    this.selectedDocTypeId = doc.id;
     this.getFundAppDocuments(doc.id);
     this.displayUploadedFilesDialog = true;
   }
@@ -214,7 +215,7 @@ this.selectedDocTypeId =
           this._spinner.hide();
           //this.getDocuments();
           console.log('Document Type Id', files[0].documentType.id);
-          this.getFundAppDocuments(files[0].documentType.id);
+          this.getFundAppDocuments(this.selectedDocTypeId);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
         }
       },
@@ -432,9 +433,6 @@ this.selectedDocTypeId =
           {
             this.documentTypeName ="Signed Declaration of Interest";          
           } 
-
-          
-          
           this.fundAppdocuments = res;
         this._spinner.hide();
         },
