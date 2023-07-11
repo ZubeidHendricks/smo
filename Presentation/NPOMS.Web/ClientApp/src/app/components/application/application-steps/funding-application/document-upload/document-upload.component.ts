@@ -100,7 +100,7 @@ uploadButtonDisabled: boolean = false;
     ];
     this.uploadedFileCols = [
       // { header: '', width: '5%' },
-      // { header: 'Document Type', width: '25%' },
+      { header: 'Document Type', width: '25%' },
       { header: 'Document Name', width: '40%' },
       { header: 'Size', width: '10%' },
       { header: 'Uploaded Date', width: '10%' },
@@ -379,11 +379,10 @@ this.selectedDocTypeId =
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-
-          if(res.find(x => x.documentTypeId == 18))
+          if(res.find(x => x.documentTypeId == 7))
           {
-            this.documentTypeName ="Application Declaration";          
-          }
+            this.documentTypeName ="Signed Declaration of Interest";          
+          } 
           if(res.find(x => x.documentTypeId == 8))
           {
             this.documentTypeName ="NPO Reg Cert";          
@@ -423,19 +422,17 @@ this.selectedDocTypeId =
           if(res.find(x => x.documentTypeId == 17))
           {
             this.documentTypeName ="BAS Entity Form";          
+          }
+          if(res.find(x => x.documentTypeId == 18))
+          {
+            this.documentTypeName ="Application Declaration";          
           }          
           if(res.find(x => x.documentTypeId == 19))
           {
             this.documentTypeName ="Enrolment Form";          
-          }
-          
-          if(res.find(x => x.documentTypeId == 7))
-          {
-            this.documentTypeName ="Signed Declaration of Interest";          
-          } 
+          }          
+    
 
-          
-          
           this.fundAppdocuments = res;
         this._spinner.hide();
         },
