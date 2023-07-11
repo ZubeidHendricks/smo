@@ -190,6 +190,8 @@ this.selectedDocTypeId =
   public uploadDocument(doc: any) {
     debugger;
     console.log('doc',doc);
+    this.selectedDocTypeId = doc.id;
+    console.log('this.selectedDocTypeId', this.selectedDocTypeId);
 
     this.element.nativeElement.click();
   }
@@ -208,15 +210,17 @@ this.selectedDocTypeId =
     debugger;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
-    EntityEnum.FundingApplicationDetails, this.application.refNo, files[0].documentType.id).subscribe(
+    EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress)
           this._spinner.show();
         else if (event.type === HttpEventType.Response) {
           this._spinner.hide();
           //this.getDocuments();
-          console.log('Document Type Id', files[0].documentType.id);
-          this.getFundAppDocuments(files[0].documentType.id);
+          console.log('Document Type Id- files[0].documentType.id', files[0].documentType.id);
+          console.log('this.selectedDocTypeId', this.selectedDocTypeId);
+
+          this.getFundAppDocuments(this.selectedDocTypeId);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
         }
       },
