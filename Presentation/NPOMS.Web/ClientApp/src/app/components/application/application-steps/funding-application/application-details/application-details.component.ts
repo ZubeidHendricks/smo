@@ -1,7 +1,7 @@
 import { IApplicationDetails, IFundAppSDADetail, IPlace, ISDA, ISubPlace,  } from './../../../../../models/interfaces';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
 import { IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion } from 'src/app/models/interfaces';

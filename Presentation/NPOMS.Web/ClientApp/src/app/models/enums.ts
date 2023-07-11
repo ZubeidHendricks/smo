@@ -7,6 +7,17 @@ export enum AccessStatusEnum {
     New = 4
 }
 
+export enum ResponseTypeEnum {
+    CloseEnded = 1,
+    Score = 2
+}
+
+export enum QuestionCategoryEnum {
+    PreEvaluation = 1,
+    Evaluation = 2,
+    Adjudication = 3
+}
+
 export enum ApplicationTypeEnum {
     FA = 1,
     SP = 2,

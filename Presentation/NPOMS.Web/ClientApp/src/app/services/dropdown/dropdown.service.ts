@@ -1,10 +1,10 @@
-import { ILanguage, IStaffCategory } from './../../../models/interfaces';
+import { ILanguage, IStaffCategory } from '../../models/interfaces';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DropdownTypeEnum } from 'src/app/models/enums';
 import { IAccessStatus, IAccountType, IActivityList, IActivityType, IAllocationType, IApplicationType, IBank, IBranch, ICompliantCycleRule, IDenodoFacilityWrapper, IDepartment, IDirectorate, IDistrictCouncil, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod, IGender, ILocalMunicipality, IOrganisationType, IPosition, IProgramme, IProvisionType, IRace, IRecipientType, IRegion, IRegistrationStatus, IResourceList, IResourceType, IRole, ISDA, IServiceType, IStatus, ISubProgramme, ISubProgrammeType, ITitle, ITrainingMaterial, IUtility } from 'src/app/models/interfaces';
-import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
+import { EnvironmentUrlService } from '../environment-url/environment-url.service';
 import { PropertyType } from 'src/app/models/PropertyType';
 
 const httpOptions = {

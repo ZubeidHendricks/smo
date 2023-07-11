@@ -6,7 +6,7 @@ import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IAccessStatus, IUser, IUserNpo } from 'src/app/models/interfaces';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { UserAccessService } from 'src/app/services/api-services/user-access/user-access.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';

@@ -9,7 +9,7 @@ import { IFundingApplicationDetails, IApplication, IPlace, ISubPlace, IApplicati
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { AuthService } from 'src/app/services/auth/auth.service';

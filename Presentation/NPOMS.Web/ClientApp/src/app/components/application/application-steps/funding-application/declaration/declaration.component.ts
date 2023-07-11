@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { DeclarationTypeEnum, DropdownTypeEnum, FundingApplicationStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IFundAppDeclaration, IFundingApplicationDetails, IUser } from 'src/app/models/interfaces';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 

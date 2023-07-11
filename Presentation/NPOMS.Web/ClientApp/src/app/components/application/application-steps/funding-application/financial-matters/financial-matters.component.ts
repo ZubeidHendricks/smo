@@ -12,7 +12,7 @@ import { IApplication, FinYear, IFundingApplicationDetails, IBankDetail, IBank, 
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 
 @Component({
   selector: 'app-financial-matters',

@@ -6,7 +6,7 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FrequencyPeriodEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IDocumentType, IFinancialYear, IFrequencyPeriod, IStatus, IUser, IWorkplanActual, IWorkplanActualAudit, IWorkplanComment, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
