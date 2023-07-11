@@ -100,7 +100,7 @@ uploadButtonDisabled: boolean = false;
     ];
     this.uploadedFileCols = [
       // { header: '', width: '5%' },
-      { header: 'Document Type', width: '25%' },
+      // { header: 'Document Type', width: '25%' },
       { header: 'Document Name', width: '40%' },
       { header: 'Size', width: '10%' },
       { header: 'Uploaded Date', width: '10%' },
@@ -206,10 +206,8 @@ this.selectedDocTypeId =
   public onUploadChange = (files) => {
     debugger;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
-    console.log('this.selectedDocTypeId', this.selectedDocTypeId);
-
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
-    EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
+    EntityEnum.FundingApplicationDetails, this.application.refNo, files[0].documentType.id).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress)
           this._spinner.show();
@@ -217,7 +215,7 @@ this.selectedDocTypeId =
           this._spinner.hide();
           //this.getDocuments();
           console.log('Document Type Id', files[0].documentType.id);
-          this.getFundAppDocuments(this.selectedDocTypeId);
+          this.getFundAppDocuments(files[0].documentType.id);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
         }
       },
@@ -435,6 +433,9 @@ this.selectedDocTypeId =
           {
             this.documentTypeName ="Signed Declaration of Interest";          
           } 
+
+          
+          
           this.fundAppdocuments = res;
         this._spinner.hide();
         },
