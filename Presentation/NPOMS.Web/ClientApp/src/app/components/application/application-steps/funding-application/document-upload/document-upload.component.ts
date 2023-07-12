@@ -359,6 +359,7 @@ this.selectedDocTypeId =
   private getFundAppDocuments(docTypeId :number) {
     debugger;
     console.log('From GetFundApp document',docTypeId);
+    this.fundAppdocuments =[];
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
