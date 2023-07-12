@@ -440,8 +440,9 @@ this.selectedDocTypeId =
 
         this._documentStore.delete(doc.resourceId).subscribe(
           event => {
-            this.getDocuments();
-            //this.getFundAppDocuments(doc.id);
+            //this.getDocuments();
+            this.getFundAppDocuments(doc.id);
+            console.log('doc.id',doc.id);
             this._spinner.hide();
           },
           (error) => this._spinner.hide()
