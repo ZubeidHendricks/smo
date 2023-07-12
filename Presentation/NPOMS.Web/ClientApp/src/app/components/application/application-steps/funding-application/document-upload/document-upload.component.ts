@@ -190,8 +190,9 @@ this.selectedDocTypeId =
 
   public uploadDocument(doc: any) {
     debugger;
-    console.log('doc',doc);
+    console.log('doc while click Upload icon',doc);
     this.selectedDocTypeId = doc.id;
+    console.log('this.selectedDocTypeId while click Upload icon',this.selectedDocTypeId);
     this.element.nativeElement.click();
   }
   public uploadedFiles(doc: any) {
@@ -207,9 +208,11 @@ this.selectedDocTypeId =
 
   public onUploadChange = (files) => {
     debugger;
+    console.log('this.selectedDocTypeId on Upload Change',this.selectedDocTypeId);
+
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
-    EntityEnum.FundingApplicationDetails, this.application.refNo, files[0].documentType.id).subscribe(
+    EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress)
           this._spinner.show();
