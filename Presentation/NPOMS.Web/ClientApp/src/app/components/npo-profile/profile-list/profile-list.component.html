@@ -12,15 +12,26 @@
         </div>
       </div>
     </div>
-    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="allProfiles" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['refNo','npo.name','npo.organisationType.name','npo.approvalStatus.name']">
+    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="allProfiles" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" 
+    [globalFilterFields]="['refNo','npo.name','npo.organisationType.name','npo.approvalStatus.name', 'npo.yearRegistered']">
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th style="width: 5%;"></th>
-          <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+          <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
               {{col.header}}
+              <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
           </th>
           <th style="width: 5%;">Actions</th>
         </tr>
+        <tr>
+          <th></th>
+          <th><p-columnFilter type="text" field="refNo"></p-columnFilter></th>
+          <th><p-columnFilter type="text" field="npo.name"></p-columnFilter></th>
+          <th><p-columnFilter type="text" field="npo.organisationType.name"></p-columnFilter></th>
+          <th><p-columnFilter type="text" field="npo.approvalStatus.name"></p-columnFilter></th>
+          <th><p-columnFilter type="text" field="npo.yearRegistered"></p-columnFilter></th>
+          <th></th>
+      </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
         <tr class="default-font">
