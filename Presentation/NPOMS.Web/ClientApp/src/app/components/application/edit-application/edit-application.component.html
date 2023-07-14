@@ -7,6 +7,23 @@
     <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
     <p-steps [model]="faItems" [readonly]="false" [activeIndex]="activeStep"
         *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
+        <p-steps [model]="qcItems" [readonly]="false" [activeIndex]="activeStep" 
+        *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.QC"></p-steps>
+
+        <div style="height: 10px;"></div>
+        <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.QC">
+            <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
+                [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details>
+            <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
+                [(activeStep)]="activeStep" [application]="application"
+                [(fundingApplicationDetails)]="fundingApplicationDetails"
+                [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" (getPlace)="places($event)"
+                (getSubPlace)=" subPlaces($event)">
+            </app-application-details>
+            <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument"
+            [(activeStep)]="activeStep" [application]="application"
+            [(fundingApplicationDetails)]="fundingApplicationDetails"></app-document-upload>
+        </div>        
     <div style="height: 10px;"></div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
         <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"

@@ -5,7 +5,7 @@ import { MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { IAffiliatedOrganisation, ISourceOfInformation } from 'src/app/models/FinancialMatters';
 import { PermissionsEnum, DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
-import { IFundingApplicationDetails, IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA } from 'src/app/models/interfaces';
+import { IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA, IQuickCaptureDetails } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
@@ -28,7 +28,9 @@ export class QcApplicationDetailsComponent implements OnInit {
   @Input() Amount: number;
 
   @Output() AmountChange = new EventEmitter();
-  @Input() fundingApplicationDetails: IFundingApplicationDetails;
+  //@Input() fundingApplicationDetails: IFundingApplicationDetails;
+  @Input() qcCaptureDetails: IQuickCaptureDetails;
+
 
   @Input() application: IApplication;
   canEdit: boolean = false;
@@ -113,7 +115,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   places: IPlace[] = [];
   subPlacesAll: ISubPlace[];
 
-  @Output() applicationDetailsChange: EventEmitter<IFundingApplicationDetails> = new EventEmitter<IFundingApplicationDetails>();
+  @Output() applicationDetailsChange: EventEmitter<IQuickCaptureDetails> = new EventEmitter<IQuickCaptureDetails>();
   selectedOption: string = '';
 
   constructor(
@@ -502,7 +504,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   
   nextPage() {
 
-    if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
+    if (this.Amount > 0 && this.qcCaptureDetails?.id != undefined) {
     
       this.activeStep = this.activeStep + 1;
       this.activeStepChange.emit(this.activeStep);
@@ -523,17 +525,17 @@ export class QcApplicationDetailsComponent implements OnInit {
       this.localMunicipalitiesAll?.length > 0 && 
       this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil.id != undefined)
-        this.OnDistrictCouncilChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil);
+      //if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.districtCouncil != undefined)
+        this.OnDistrictCouncilChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.districtCouncil);
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality.id != undefined)
-        this.onLocalMunicipalityChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality);
+      //if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality.id != undefined)
+        this.onLocalMunicipalityChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality);
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions?.length > 0)
-        this.onRegionChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions);
+      //if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions?.length > 0)
+        this.onRegionChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions);
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas?.length > 0)
-        this.onSdaChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
+      //if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas?.length > 0)
+        this.onSdaChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
     }
   }
 
@@ -543,21 +545,21 @@ export class QcApplicationDetailsComponent implements OnInit {
     this.sdas = [];
 
     if (localMunicipality.id != undefined && 
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.id != localMunicipality.id) 
+      this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality?.id != localMunicipality.id) 
       {
       this.selectedRegions = [];
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = null;
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
+      this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality = null;
+      this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions = [];
+      this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
       }
 
-    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.name != localMunicipality.name) {
+    if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality?.name != localMunicipality.name) {
       this.selectedRegions = [];
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
+      this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions = [];
+      this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
     }
 
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
+    this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
 
     if (localMunicipality.id != undefined) {
       this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
@@ -571,14 +573,14 @@ export class QcApplicationDetailsComponent implements OnInit {
     this.regions = [];
     this.sdas = [];
 
-    // if (districtCouncil.id != undefined && this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil?.id != districtCouncil.id)
+    // if (districtCouncil.id != undefined && this.qcCaptureDetails.applicationDetails.fundAppSDADetail.districtCouncil?.id != districtCouncil.id)
     //  {
-    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality =  { name: 'Select Type', id: null, districtCouncilId: null };
-    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
-    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
+    //   this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality =  { name: 'Select Type', id: null, districtCouncilId: null };
+    //   this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions = [];
+    //   this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
     //  }
 
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
+    this.qcCaptureDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
 
     if (districtCouncil.id != undefined) {
 
@@ -589,13 +591,13 @@ export class QcApplicationDetailsComponent implements OnInit {
 
 
   onRegionChange(regions: IRegion[]) {
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = regions;
+    this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions = regions;
     this.selectedRegions = [];
 
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
+    this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
     this.sdas = [];
 
     // filter items matching the selected regions
@@ -609,9 +611,9 @@ export class QcApplicationDetailsComponent implements OnInit {
     }
     this.selected = [];
     for (var i = 0; i < regions?.length; i++) {
-      for (var j = 0; j < this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length; j++) {
-        if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[j].regionId == regions[i].id) {
-          this.selected.push(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[j]);
+      for (var j = 0; j < this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length; j++) {
+        if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[j].regionId == regions[i].id) {
+          this.selected.push(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[j]);
         }
 
       }
@@ -621,7 +623,7 @@ export class QcApplicationDetailsComponent implements OnInit {
     const ids = this.selected.map(o => o.id) // remove duplicate
     const filtered = this.selected.filter(({ id }, index) => !ids.includes(id, index + 1))
     // end  make sure the selected is not redundant!!
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
+    this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
     this.selectedSdas = filtered;
     console.log('onRegionChange Selected SDA',  this.selectedSdas);
 
@@ -638,34 +640,8 @@ export class QcApplicationDetailsComponent implements OnInit {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
     console.log('onSdaChange selected sds',this.selectedSdas);
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-    console.log('onSdaChange',  this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
-
-    let count = 0;
-    if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 
-      let isPlace = [];
-      this.fundingApplicationDetails.implementations.find(x => {
-        x.places;
-        isPlace = x.places
-      });
-
-      if (isPlace != null) {
-        this.fundingApplicationDetails.implementations.forEach(x => {
-          sdas.forEach(i => {
-            // place already pushed to fundingApplicationDetails must be cleared out  if sda is no longer selected
-            x.places.forEach(o => {
-              if (o.serviceDeliveryAreaId == i.id) {
-                count++;
-              }
-            })
-          })
-        })
-      }
-    }
-
-    if (count == 0)
-      this.fundingApplicationDetails.implementations.filter(x => { x.places = []; x.subPlaces = []; });
-
+    this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
+    console.log('onSdaChange',  this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
   }
 
   private setPlaces(sdas: ISDA[]): void {
