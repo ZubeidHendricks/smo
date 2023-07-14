@@ -13,7 +13,7 @@
 
     <div style="height: 10px;"></div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.QC">
-        <!-- <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
+        <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
             [(activeStep)]="activeStep" [application]="application" [newApplication]="true"></app-npo-details>
         <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
         [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
@@ -25,8 +25,8 @@
         </app-application-details>
         <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument" 
             [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" >
-        </app-document-upload> -->
-  <app-npo-details *ngIf="activeStep == QuickCaptureStepsEnum.NpoConfirmationDetails"
+        </app-document-upload>
+  <!-- <app-npo-details *ngIf="activeStep == QuickCaptureStepsEnum.NpoConfirmationDetails"
             [(activeStep)]="activeStep" [application]="application" [newApplication]="true"></app-npo-details>
         <app-qc-application-details *ngIf="activeStep == QuickCaptureStepsEnum.AmountYouApplyingFor"
         [(activeStep)]="activeStep" [application]="application" [(quickCaptureDetails)]="quickCaptureDetails" [(Amount)]="quickCaptureDetails.applicationDetails.amountApplyingFor"
@@ -38,7 +38,7 @@
         </app-qc-application-details>
         <app-qc-document-upload *ngIf="activeStep == QuickCaptureStepsEnum.ApplicationDocument" 
             [(activeStep)]="activeStep" [application]="application" [(quickCaptureDetails)]="quickCaptureDetails" >
-        </app-qc-document-upload>         
+        </app-qc-document-upload>          -->
 
     </div>    
 
