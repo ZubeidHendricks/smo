@@ -24,7 +24,7 @@
                     <tr>
                         <td style="text-align: left;">{{rowIndex + 1}}</td>
                         <td>{{document.name}}</td>
-                        <td>{{fileName}}</td>
+                        <td></td>
                         <td class="ui-fluid" style="text-align: left;">
                             <button pButton pRipple type="button" class="p-button-text p-button-success action-button"
                                 icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top"
@@ -32,7 +32,7 @@
                             <button pButton pRipple type="button" class="p-button-text action-button"
                                 icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left"
                                 (click)="uploadDocument(rowData)"></button>
-                            <input type="file" #addDoc (change)="onUploadChange(addDoc.files)"  placeholder="Browse"
+                            <input type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse"
                                 accept="*" style="display:none;">
                         </td>
                     </tr>
@@ -59,10 +59,10 @@
         <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
             <tr>
                 <!-- <td style="text-align: center;">{{documentTypeName}}</td>     -->
-                <td >{{document.documentType.name}}</td>             
-                <td>{{document.name}}</td>
-                <td>{{document.fileSize}}</td>
-                <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                <td >{{document?.documentType?.name}}</td>             
+                <td>{{document?.name}}</td>
+                <td>{{document?.fileSize}}</td>
+                <td>{{document?.createdDateTime | date: 'yyyy-MM-dd'}}</td>
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text p-button-success action-button"
                         icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download"

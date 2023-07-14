@@ -65,6 +65,9 @@ uploadButtonDisabled: boolean = false;
   selectedDocumentType: IDocumentType;
   userId: number;
   _profile:IUser;
+
+  selectedFile :any;
+  selectedFilename :string;
   constructor(
     private _spinner: NgxSpinnerService,
     private _documentStore: DocumentStoreService,
@@ -209,7 +212,7 @@ this.selectedDocTypeId =
   public onUploadChange = (files) => {
     debugger;
     console.log('this.selectedDocTypeId on Upload Change',this.selectedDocTypeId);
-
+   // this.selectedFilename =this.selectedFile.name;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
     EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
@@ -230,6 +233,14 @@ this.selectedDocTypeId =
       }
     );
   }
+
+  // onFileSelected(event){
+  //   console.log('event',event);
+  //   this.selectedFile = <File>event.target.files[0];
+  //   console.log('this.selectedFile',this.selectedFile);
+  //   console.log('this.selectedFile',this.selectedFile.name);
+  //   this.selectedFilename =this.selectedFile.name;
+  // }
   
   public onUploadChange1 = (event, form) => {
     if (event.files[0]) {
@@ -274,7 +285,7 @@ this.selectedDocTypeId =
         else if (event.type === HttpEventType.Response) {
           // this.message = 'Uploaded!';
           
-           this.downloadButtonColor = 'p-button-success';
+      this.downloadButtonColor = 'p-button-success';
       this.downloadButtonColor = 'ui-button-info';
           this._spinner.hide();
           // console.log(event.body);
@@ -295,63 +306,7 @@ this.selectedDocTypeId =
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.get(Number(this.fundingApplicationDetails?.id), EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-        
-          // if(res.find(x => x.documentTypeId == 18))
-          // {
-          //   this.documentTypeName ="Application Declaration";          
-          // }
-          // if(res.find(x => x.documentTypeId == 8))
-          // {
-          //   this.documentTypeName ="NPO Reg Cert";          
-          // }
-          // if(res.find(x => x.documentTypeId == 9))
-          // {
-          //   this.documentTypeName ="Org Registration Certificate";          
-          // }
-          // if(res.find(x => x.documentTypeId == 10))
-          // {
-          //   this.documentTypeName ="Constitution";          
-          // }
-          // if(res.find(x => x.documentTypeId == 11))
-          // {
-          //   this.documentTypeName ="Supporting";          
-          // }
-          // if(res.find(x => x.documentTypeId == 12))
-          // {
-          //   this.documentTypeName ="Bank Letter";          
-          // }
-          // if(res.find(x => x.documentTypeId == 13))
-          // {
-          //   this.documentTypeName ="Audited Annual Financial Statement";          
-          // }
-          // if(res.find(x => x.documentTypeId == 14))
-          // {
-          //   this.documentTypeName ="Certified Financial Statement";          
-          // }
-          // if(res.find(x => x.documentTypeId == 15))
-          // {
-          //   this.documentTypeName ="PFMA";          
-          // }
-          // if(res.find(x => x.documentTypeId == 16))
-          // {
-          //   this.documentTypeName ="Bank Statements";          
-          // }
-          // if(res.find(x => x.documentTypeId == 17))
-          // {
-          //   this.documentTypeName ="BAS Entity Form";          
-          // }          
-          // if(res.find(x => x.documentTypeId == 19))
-          // {
-          //   this.documentTypeName ="Enrolment Form";          
-          // }
-          
-          // if(res.find(x => x.documentTypeId == 7))
-          // {
-          //   this.documentTypeName ="Signed Declaration of Interest";          
-          // } 
-          
-          this.documents = res;
-      
+          this.documents = res;      
         this._spinner.hide();
         },
         () => this._spinner.hide()
@@ -366,63 +321,9 @@ this.selectedDocTypeId =
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-          // if(res.find(x => x.documentTypeId == 7))
-          // {
-          //   this.documentTypeName ="Signed Declaration of Interest";          
-          // } 
-          // if(res.find(x => x.documentTypeId == 8))
-          // {
-          //   this.documentTypeName ="NPO Reg Cert";          
-          // }
-          // if(res.find(x => x.documentTypeId == 9))
-          // {
-          //   this.documentTypeName ="Org Registration Certificate";          
-          // }
-          // if(res.find(x => x.documentTypeId == 10))
-          // {
-          //   this.documentTypeName ="Constitution";          
-          // }
-          // if(res.find(x => x.documentTypeId == 11))
-          // {
-          //   this.documentTypeName ="Supporting";          
-          // }
-          // if(res.find(x => x.documentTypeId == 12))
-          // {
-          //   this.documentTypeName ="Bank Letter";          
-          // }
-          // if(res.find(x => x.documentTypeId == 13))
-          // {
-          //   this.documentTypeName ="Audited Annual Financial Statement";          
-          // }
-          // if(res.find(x => x.documentTypeId == 14))
-          // {
-          //   this.documentTypeName ="Certified Financial Statement";          
-          // }
-          // if(res.find(x => x.documentTypeId == 15))
-          // {
-          //   this.documentTypeName ="PFMA";          
-          // }
-          // if(res.find(x => x.documentTypeId == 16))
-          // {
-          //   this.documentTypeName ="Bank Statements";          
-          // }
-          // if(res.find(x => x.documentTypeId == 17))
-          // {
-          //   this.documentTypeName ="BAS Entity Form";          
-          // }
-          // if(res.find(x => x.documentTypeId == 18))
-          // {
-          //   this.documentTypeName ="Application Declaration";          
-          // }          
-          // if(res.find(x => x.documentTypeId == 19))
-          // {
-          //   this.documentTypeName ="Enrolment Form";          
-          // }          
-    
-
           this.fundAppdocuments = res;
           console.log('Get FundApp',this.fundAppdocuments);
-        this._spinner.hide();
+          this._spinner.hide();
         },
         () => this._spinner.hide()
       );
