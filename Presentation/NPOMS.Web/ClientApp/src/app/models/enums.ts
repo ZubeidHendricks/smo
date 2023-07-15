@@ -364,6 +364,13 @@ export enum QuickCaptureStepsEnum {
     ApplicationDocument = 2
 }
 
+export enum QCStepsEnum {
+    NpoCreate = 0,
+    Applications =1,
+    AmountYouApplyingFor = 2,
+    ApplicationDocument = 3
+}
+
 export enum DocumentUploadLocationsEnum {
     NpoProfile = 'NpoProfile',
     Workplan = 'Workplan',
