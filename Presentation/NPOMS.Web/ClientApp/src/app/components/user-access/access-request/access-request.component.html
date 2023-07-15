@@ -13,13 +13,24 @@
           </div>
         </div>
     </div>
-    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="accessRequests" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['npo.name','accessStatus.name','updatedUser.fullName']">
+    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" sortMode="multiple" [columns]="cols" [paginator]="true" [rows]="10" [value]="accessRequests" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" 
+    [globalFilterFields]="['npo.name','accessStatus.name','createdDateTime', 'updatedUser.fullName', 'updatedDateTime']">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th style="width: 5%;"></th>
-                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
                     {{col.header}}
+                    <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                 </th>
+            </tr>
+            <tr>
+                <th></th>
+                <th><p-columnFilter type="text" field="npo.name"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="accessStatus.name"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="createdDateTime"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="updatedUser.fullName"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="updatedDateTime"></p-columnFilter></th>
+                <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">

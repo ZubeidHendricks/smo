@@ -234,13 +234,13 @@ this.selectedDocTypeId =
     );
   }
 
-  onFileSelected(event){
-    console.log('event',event);
-    this.selectedFile = <File>event.target.files[0];
-    console.log('this.selectedFile',this.selectedFile);
-    console.log('this.selectedFile',this.selectedFile.name);
-    this.selectedFilename =this.selectedFile.name;
-  }
+  // onFileSelected(event){
+  //   console.log('event',event);
+  //   this.selectedFile = <File>event.target.files[0];
+  //   console.log('this.selectedFile',this.selectedFile);
+  //   console.log('this.selectedFile',this.selectedFile.name);
+  //   this.selectedFilename =this.selectedFile.name;
+  // }
   
   public onUploadChange1 = (event, form) => {
     if (event.files[0]) {
