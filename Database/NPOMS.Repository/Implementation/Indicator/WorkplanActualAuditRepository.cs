@@ -24,7 +24,7 @@ namespace NPOMS.Repository.Implementation.Indicator
 		public async Task<IEnumerable<WorkplanActualAudit>> GetByWorkplanActualId(int workplanActualId)
 		{
 			return await FindByCondition(x => x.WorkplanActualId.Equals(workplanActualId))
-							.Include(x => x.Status).Include(x => x.CreatedUser)
+							.Include(x => x.StatusId).Include(x => x.CreatedUser)
 							.OrderByDescending(x => x.CreatedDateTime).AsNoTracking().ToListAsync();
 		}
 

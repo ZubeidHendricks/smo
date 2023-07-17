@@ -24,6 +24,7 @@ using NPOMS.Services.Infrastructure.Implementation;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Mappings;
 using NPOMS.Services.PowerBI;
+using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
 
 namespace NPOMS.Services.Extensions
 {

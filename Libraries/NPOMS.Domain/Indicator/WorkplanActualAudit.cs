@@ -16,7 +16,7 @@ namespace NPOMS.Domain.Indicator
 
 		public DateTime CreatedDateTime { get; set; }
 
-		public Status Status { get; set; }
+		//public Status Status { get; set; }
 
 		public User CreatedUser { get; set; }
 	}

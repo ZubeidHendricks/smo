@@ -7,6 +7,11 @@
 		Applicant = 3,
 		Reviewer = 4,
 		MainReviewer = 5,
-		Approver = 6
-	}
+		Approver = 6,
+        DEDATRep = 7,
+        PreEvaluator = 8,
+		Evaluator = 9,
+		Adjudicator = 10,
+		Verifier = 11
+    }
 }

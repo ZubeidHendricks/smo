@@ -94,7 +94,7 @@ namespace NPOMS.Repository
 		public DbSet<Gender> Genders { get; set; }
 		public DbSet<Race> Races { get; set; }
         public DbSet<Language> Languages { get; set; }
-        public DbSet<Programme> Programmes { get; set; }
+       // public DbSet<Programme> Programmes { get; set; }
 		public DbSet<ProvisionType> ProvisionTypes { get; set; }
 		public DbSet<RecipientType> RecipientTypes { get; set; }
 		public DbSet<ResourceType> ResourceTypes { get; set; }
@@ -144,7 +144,7 @@ namespace NPOMS.Repository
 
         public DbSet<FundAppSDADetail> FundAppSDADetails { get; set; }
         public DbSet<Resource> Resources { get; set; }
-		public DbSet<Status> Statuses { get; set; }
+		//public DbSet<Status> Statuses { get; set; }
 		public DbSet<SustainabilityPlan> SustainabilityPlans { get; set; }
 		public DbSet<ServicesRendered> ServicesRendered { get; set; }
 		public DbSet<BankDetail> BankDetails { get; set; }
@@ -200,10 +200,10 @@ namespace NPOMS.Repository
 				.WithMany(x => x.Roles)
 				.HasForeignKey(x => x.PermissionId);
 
-			modelBuilder.Entity<ObjectiveProgramme>()
-				.HasOne(x => x.Programme)
-				.WithMany(x => x.SubProgrammes)
-				.HasForeignKey(x => x.ProgrammeId);
+			//modelBuilder.Entity<ObjectiveProgramme>()
+			//	.HasOne(x => x.Programme)
+			//	.WithMany(x => x.SubProgrammes)
+			//	.HasForeignKey(x => x.ProgrammeId);
 
 			modelBuilder.Entity<ObjectiveProgramme>()
 				.HasOne(x => x.SubProgramme)

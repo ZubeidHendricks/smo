@@ -12,6 +12,7 @@ using NPOMS.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
 
 namespace NPOMS.Services.Implementation
 {

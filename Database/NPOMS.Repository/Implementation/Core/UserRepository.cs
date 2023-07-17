@@ -49,8 +49,13 @@ namespace NPOMS.Repository.Implementation.Core
 		{
 			await CreateAsync(user);
 		}
-
-		public async Task UpdateEntity(User user, int currentUserId)
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await FindAll().AsNoTracking()
+                .Include(x => x.Roles).ThenInclude(x => x.Role)
+                .OrderBy(ow => ow.UserName).ToListAsync();
+        }
+        public async Task UpdateEntity(User user, int currentUserId)
 		{
 			var oldEntity = await this.RepositoryContext.Users.FindAsync(user.Id);
 			await UpdateAsync(oldEntity, user, true, currentUserId);
@@ -116,11 +121,20 @@ namespace NPOMS.Repository.Implementation.Core
 							.Where(x => x.IsActive).ToListAsync();
 		}
 
-		public async Task<IEnumerable<User>> GetByUserIds(List<int> userIds)
+        public async Task<User> GetUserByIdAsync(int id)
+        {
+            return await FindByCondition(sp => sp.Id.Equals(id))
+                .FirstOrDefaultAsync();
+        }
+        public async Task<IEnumerable<User>> GetByUserIds(List<int> userIds)
 		{
 			return await FindByCondition(x => userIds.Contains(x.Id) && x.IsActive).AsNoTracking().ToListAsync();
 		}
+        public async Task<IEnumerable<User>> GetUsersByRoleId(int roleId)
+        {
+            return await FindByCondition(x => x.Roles.Any(x => x.RoleId.Equals(roleId))).AsNoTracking().ToListAsync();
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

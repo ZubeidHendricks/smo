@@ -77,7 +77,14 @@ export enum DropdownTypeEnum {
     Gender = 45,
     Languages = 46,
     RegistrationStatus = 47,
-    StaffCategory = 48
+    StaffCategory = 48,
+    FundingTemplateType = 49,
+    QuestionCategory = 50,
+    QuestionSection = 51,
+    ResponseType = 52,
+    Question = 53,
+    ResponseOption = 54,
+    WorkflowAssessment = 55
 }
 
 export enum EntityTypeEnum {
@@ -297,7 +304,12 @@ export enum PermissionsEnum {
     ApproveWorkplanActual = "Indicators.ApproveActual",
 
     ViewSummaryOption = "Indicators.Summary",
-    ExportSummary = "Indicators.ExportSummary"
+    ExportSummary = "Indicators.ExportSummary",
+
+      /* Utilities Management */
+      ViewUtilityList = "UM.List",
+      AddUtility = "UM.Add",
+      EditUtility = "UM.Edit"
 }
 
 export enum ReportTypeEnum {

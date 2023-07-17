@@ -7,8 +7,9 @@ namespace NPOMS.Repository.Interfaces.Core
 	public interface IUserRepository : IBaseRepository<User>
 	{
 		Task<User> GetById(int id);
-
-		Task<User> GetActiveUserById(int id);
+        Task<User> GetUserByIdAsync(int id);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<User> GetActiveUserById(int id);
 
 		Task<IEnumerable<User>> GetEntities();
 
@@ -36,5 +37,6 @@ namespace NPOMS.Repository.Interfaces.Core
 		/// <param name="roleIds"></param>
 		/// <returns></returns>
 		Task<IEnumerable<User>> GetByUserIds(List<int> userIds);
-	}
+        Task<IEnumerable<User>> GetUsersByRoleId(int roleId);
+    }
 }
