@@ -495,11 +495,11 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-        // if (this.application.statusId ==StatusEnum.PendingReview ||
-        //  this.application.statusId == StatusEnum.Approved )
-        //  return true;
-        // else return false;
-return false;
+        if (this.application.statusId ==StatusEnum.PendingReview ||
+         this.application.statusId == StatusEnum.Approved )
+         return true;
+        else return false;
+
       }
   
   nextPage() {
@@ -573,12 +573,12 @@ return false;
     this.regions = [];
     this.sdas = [];
 
-    if (districtCouncil.id != undefined && this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil?.id != districtCouncil.id)
-     {
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality =  { name: 'Select Type', id: null, districtCouncilId: null };
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
-     }
+    // if (districtCouncil.id != undefined && this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil?.id != districtCouncil.id)
+    //  {
+    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality =  { name: 'Select Type', id: null, districtCouncilId: null };
+    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
+    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
+    //  }
 
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
 

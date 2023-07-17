@@ -85,9 +85,7 @@
             </ng-template>
         </p-table>
     </p-panel>
-    <div style="height: 10px;"></div>
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowNpoActions)"></p-menubar>
-</p-panel>
+  
 
 <p-dialog header="Contact / Stakeholder Details" 
           [(visible)]="displayContactDialog" 
@@ -330,6 +328,15 @@
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveContactInfo() (click)="saveContactInformation()"></button>
     </ng-template>
 </p-dialog>
+
+<div style="height: 10px;"></div>
+<p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowNpoActions)"></p-menubar>
+
+<div style="height: 10px;"></div>
+<div class="p-grid p-nogutter p-justify-end">
+    <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
+</div>
+</p-panel>
 
 <div class="content-section implementation">
     <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">

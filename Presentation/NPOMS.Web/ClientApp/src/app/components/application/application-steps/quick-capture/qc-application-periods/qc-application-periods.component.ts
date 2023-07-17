@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Table } from 'primeng/table';
@@ -16,6 +16,9 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   styleUrls: ['./qc-application-periods.component.css']
 })
 export class QcApplicationPeriodsComponent implements OnInit {
+
+  @Input() activeStep: number;
+  @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();  
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -119,6 +122,14 @@ export class QcApplicationPeriodsComponent implements OnInit {
     );
   }
 
+
+  nextPage() {
+    this.activeStep = this.activeStep + 1;
+    this.activeStepChange.emit(this.activeStep);  
+}
+
+
+
   private loadApplicationPeriods() {
     this._spinner.show();
     this._applicationPeriodRepo.getAllApplicationPeriods().subscribe(
@@ -173,8 +184,10 @@ export class QcApplicationPeriodsComponent implements OnInit {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
-  edit(applicationPeriod: IApplicationPeriod) {
-    this._router.navigateByUrl('applicationDetails/' + applicationPeriod.id);
+  edit(applicationPeriod: IApplicationPeriod) {   
+
+    
+    //this._router.navigateByUrl('applicationDetails/' + applicationPeriod.id);
   }
 
   onRowSelect(applicationPeriod: IApplicationPeriod) {

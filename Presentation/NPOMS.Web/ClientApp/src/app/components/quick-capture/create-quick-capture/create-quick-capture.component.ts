@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
@@ -18,6 +18,8 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class CreateQuickCaptureComponent implements OnInit {
 
+  @Input() activeStep: number;
+  @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
  
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -333,6 +335,13 @@ export class CreateQuickCaptureComponent implements OnInit {
       );
     }
   }
+
+
+  nextPage() {
+      this.activeStep = this.activeStep + 1;
+      this.activeStepChange.emit(this.activeStep);  
+  }
+
 
   private canContinue() {
     this.formValidate();

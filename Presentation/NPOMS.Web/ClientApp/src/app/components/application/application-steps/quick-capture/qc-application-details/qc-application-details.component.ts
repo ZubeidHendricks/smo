@@ -505,14 +505,14 @@ export class QcApplicationDetailsComponent implements OnInit {
   
   nextPage() {
 
-    if (this.Amount > 0 && this.qcCaptureDetails?.id != undefined) {
+    // if (this.Amount > 0 && this.qcCaptureDetails?.id != undefined) {
     
       this.activeStep = this.activeStep + 1;
       this.activeStepChange.emit(this.activeStep);
 
-    }
-    else
-      this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
+    // }
+    // else
+    //   this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
   }
 
 
