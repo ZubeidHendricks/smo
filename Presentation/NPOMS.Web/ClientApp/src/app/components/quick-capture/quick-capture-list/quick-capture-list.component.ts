@@ -3,7 +3,7 @@ import { Table } from 'primeng/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PermissionsEnum, AccessStatusEnum, ApplicationTypeEnum, QCStepsEnum, FundingApplicationStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IUser, INpo, IApplicationPeriod, IFundingApplicationDetails, IDistrictCouncil, ILocalMunicipality, IFundAppSDADetail, IApplicationDetails, IApplication, IPlace, ISubPlace, ISDA, IRegion, IObjective, IActivity, ISustainabilityPlan, IResource } from 'src/app/models/interfaces';
+import { IUser, INpo, IApplicationPeriod, IFundingApplicationDetails, IDistrictCouncil, ILocalMunicipality, IFundAppSDADetail, IApplicationDetails, IApplication, IPlace, ISubPlace, ISDA, IRegion, IObjective, IActivity, ISustainabilityPlan, IResource, IQuickCaptureDetails } from 'src/app/models/interfaces';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -107,6 +107,19 @@ export class QuickCaptureListComponent implements OnInit {
 
   } as IFundingApplicationDetails;
 
+  quickCaptureDetails: IQuickCaptureDetails = {
+    applicationDetails: {
+      fundAppSDADetail: {
+        districtCouncil: {} as IDistrictCouncil,
+        localMunicipality: {} as ILocalMunicipality,
+        regions: [],
+        serviceDeliveryAreas: [],
+      } as IFundAppSDADetail,
+    } as IApplicationDetails,  
+    npo:{}  as INpo,
+
+  } as IQuickCaptureDetails;  
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -121,14 +134,16 @@ export class QuickCaptureListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      this.id = params.get('id');
-      this.loadfundingDropdowns();
-      this.applicationPeriodId = +this.id;
-      this.fundingApplicationDetails.applicationPeriodId = +this.id;
-      this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-      });
-    });
+    // this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+    //   this.id = params.get('id');
+    //   this.loadfundingDropdowns();
+    //   this.applicationPeriodId = +this.id;
+    //   this.fundingApplicationDetails.applicationPeriodId = +this.id;
+    //   this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
+    //   });
+    // });
+console.log('ng onInit');
+    this.qCSteps();
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -385,10 +400,11 @@ export class QuickCaptureListComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         if (results != null) {
+          console.log('loadfundingDropdowns',results);
           this.application = results;
           this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
           this.fundingApplicationDetails.applicationId = this.application?.id;
-          this.qCSteps(results.applicationPeriod);
+          this.qCSteps1(results.applicationPeriod);
           this.isApplicationAvailable = true;
         }
         this._spinner.hide();
@@ -397,7 +413,17 @@ export class QuickCaptureListComponent implements OnInit {
     );
   }
 
-  private qCSteps(applicationPeriod: IApplicationPeriod) {
+  private qCSteps() {
+    debugger;
+   
+        this.qcItems = [
+          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
+          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
+          { label: 'Application Document', command: (event: any) => { this.activeStep = 2; } }
+        ];
+      }
+   
+  private qCSteps1(applicationPeriod: IApplicationPeriod) {
     debugger;
     if (applicationPeriod != null) {
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {

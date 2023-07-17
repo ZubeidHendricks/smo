@@ -18,9 +18,10 @@
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
         (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
-        </app-application-details>        
+        </app-application-details>         
+
         <app-document-upload 
-            [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" >
+            [(activeStep)]="activeStep" [application]="application" [(quickCaptureDetails)]="quickCaptureDetails" >
         </app-document-upload>
     </div>      
 

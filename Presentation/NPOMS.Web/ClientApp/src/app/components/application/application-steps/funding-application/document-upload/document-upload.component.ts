@@ -342,7 +342,10 @@ this.selectedDocTypeId =
         this._documentStore.delete(doc.resourceId).subscribe(
           event => {
             //this.getDocuments();
-            this.getFundAppDocuments(doc.id);
+            console.log('doc during delete',doc);
+            console.log('this.seletedDocTypeId',this.selectedDocTypeId);
+
+            this.getFundAppDocuments(this.selectedDocTypeId);
             console.log('doc.id',doc.id);
             this._spinner.hide();
             this.displayUploadedFilesDialog =false;

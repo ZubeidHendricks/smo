@@ -575,7 +575,8 @@ export interface IQuickCaptureDetails {
     applicationId: number;
     applicationPeriodId: number;
     applicationPeriod: IApplicationPeriod;
-    applicationDetails: IApplicationDetails;   
+    applicationDetails: IApplicationDetails;  
+    npo:INpo;    
 }
 
 // export interface IDeclaration {

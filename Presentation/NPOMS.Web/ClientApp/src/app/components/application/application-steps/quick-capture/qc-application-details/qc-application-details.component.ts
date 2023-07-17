@@ -496,10 +496,11 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-        if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved )          
-          return true;
-        else return false;
+        // if (this.application.statusId ==StatusEnum.PendingReview ||  
+        //   this.application.statusId == StatusEnum.Approved )          
+        //   return true;
+        // else return false;
+        return false;
       }
   
   nextPage() {
