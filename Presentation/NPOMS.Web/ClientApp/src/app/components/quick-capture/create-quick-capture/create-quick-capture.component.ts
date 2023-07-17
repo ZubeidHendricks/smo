@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MenuItem, Message, ConfirmationService } from 'primeng/api';
-import { PermissionsEnum, DropdownTypeEnum, AccessStatusEnum } from 'src/app/models/enums';
-import { INpo, IContactInformation, IUser, IOrganisationType, IRegistrationStatus, ITitle, IPosition, IRace, IGender, ILanguage } from 'src/app/models/interfaces';
+import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
+import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, IRegistrationStatus, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
@@ -18,8 +18,9 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class CreateQuickCaptureComponent implements OnInit {
 
-   /* Permission logic */
-   public IsAuthorized(permission: PermissionsEnum): boolean {
+ 
+  /* Permission logic */
+  public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
@@ -31,7 +32,7 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   npo: INpo = {
     section18Receipts: false,
-    isQuickCapture:true,
+    isQuickCapture : true,
     contactInformation: [] as IContactInformation[]
   } as INpo;
 
@@ -317,7 +318,7 @@ export class CreateQuickCaptureComponent implements OnInit {
           this._npoProfileRepo.getNpoProfileByNpoId(Number(resp.id)).subscribe(
             (results) => {
               this._spinner.hide();
-              this._router.navigateByUrl('npo-profile/edit/' + results.id);
+              this._router.navigateByUrl('applicationDetails/' + results.id);
             },
             (err) => {
               this._loggerService.logException(err);

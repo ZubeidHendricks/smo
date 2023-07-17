@@ -3,21 +3,22 @@
 </ngx-spinner>
 <p-toast></p-toast>
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Quick Captures">
-
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>
     <p-steps [model]="qcItems" [readonly]="false" [activeIndex]="activeStep"></p-steps>
+
     <div style="height: 10px;"></div>
     <div>
-        <app-create-npo [(activeStep)]="activeStep" [application]="application" ></app-create-npo>
-        <app-qc-application-periods [(activeStep)]="activeStep" [application]="application"> </app-qc-application-periods>        
-        <app-application-details 
-        [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
+        <!-- <app-create-npo [(activeStep)]="activeStep" [application]="application" [newApplication]="true" ></app-create-npo> -->
+        <app-create-quick-capture [(activeStep)]="activeStep" [application]="application" [newApplication]="true" ></app-create-quick-capture>
+        <app-qc-application-periods [(activeStep)]="activeStep" [application]="application" > </app-qc-application-periods>        
+         <app-application-details [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
         (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
-        </app-application-details>
+        </app-application-details>        
         <app-document-upload 
             [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" >
         </app-document-upload>

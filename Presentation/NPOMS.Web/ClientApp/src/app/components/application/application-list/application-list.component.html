@@ -1,4 +1,4 @@
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Applications">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Submissions">
     <div class="p-grid">
         <div class="p-col-fixed">
 
@@ -18,7 +18,7 @@
             <tr>
               <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">Options</th>
               <th style="width: 5%;"></th>
-              <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
+              <th *ngFor="let col of columns" [ngStyle]="{'width': fit-content}" [pSortableColumn]="col.field">
                   {{col.header}}
                   <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
               </th>
@@ -38,7 +38,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
-                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">
+                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions"> 
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedApplication=rowData; menu.toggle($event)" pTooltip="Options" tooltipPosition="right" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && rowData.statusId === StatusEnum.AcceptedSLA"></button>
                     <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
                 </td>

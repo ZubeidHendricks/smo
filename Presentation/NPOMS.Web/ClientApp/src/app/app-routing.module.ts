@@ -71,6 +71,7 @@ import { QuickCaptureListComponent } from './components/quick-capture/quick-capt
 import { CreateQuickCaptureComponent } from './components/quick-capture/create-quick-capture/create-quick-capture.component';
 import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick-capture/edit-quick-capture.component';
 import { ApplicationDetailsComponent } from './components/application/application-steps/funding-application/application-details/application-details.component';
+import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -95,6 +96,8 @@ const routes: Routes = [
 
   { path: 'applications', component: ApplicationListComponent },
   { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },
+  { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
+
   
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id', component: EditApplicationComponent },
