@@ -204,7 +204,7 @@ this.selectedDocTypeId =
     //this.getDocuments();
     console.log('doc from Uploaded Files',doc);
     console.log('doc from Uploaded Files',doc.id);
-
+    this.selectedDocTypeId = doc.id;
     this.getFundAppDocuments(doc.id);
     this.displayUploadedFilesDialog = true;
   }
@@ -348,7 +348,6 @@ this.selectedDocTypeId =
             this.getFundAppDocuments(this.selectedDocTypeId);
             console.log('doc.id',doc.id);
             this._spinner.hide();
-            this.displayUploadedFilesDialog =false;
           },
           (error) => this._spinner.hide()
         );
