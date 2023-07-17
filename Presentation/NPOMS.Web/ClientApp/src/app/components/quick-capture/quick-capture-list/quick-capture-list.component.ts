@@ -337,19 +337,7 @@ console.log('ng onInit');
   }
 
 
-  private buildSteps(applicationPeriod: IApplicationPeriod) {
-    if (applicationPeriod != null) {
-      if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
-        this.items = [
-          { label: 'Organisation Details' },
-          { label: 'Objectives' },
-          { label: 'Activities' },
-          { label: 'Sustainability' },
-          { label: 'Resourcing' }
-        ];
-      }
-    }
-  }
+
   places(place: IPlace[]) {
     this.placeAll = place;
   }
@@ -357,19 +345,7 @@ console.log('ng onInit');
   subPlaces(subPlaces: ISubPlace[]) {
     this.subPlacesAll = subPlaces;
   }
-  private loadNPOs() {
-    this._spinner.show();
-    this._npoRepo.getAllNpos(AccessStatusEnum.AllStatuses).subscribe(
-      (results) => {
-        this.allNPOs = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+
 
   getCellData(row: any, col: any): any {
     const nestedProperties: string[] = col.field.split('.');
@@ -418,8 +394,9 @@ console.log('ng onInit');
    
         this.qcItems = [
           { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
-          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Application Document', command: (event: any) => { this.activeStep = 2; } }
+          { label: 'Applications', command: (event: any) => { this.activeStep = 1; } },
+          { label: 'Application Details', command: (event: any) => { this.activeStep = 2; } },
+          { label: 'Application Document', command: (event: any) => { this.activeStep = 3; } }
         ];
       }
    
@@ -429,8 +406,9 @@ console.log('ng onInit');
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
         this.qcItems = [
           { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
-          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Application Document', command: (event: any) => { this.activeStep = 2; } }
+          { label: 'Applications', command: (event: any) => { this.activeStep = 1; } },
+          { label: 'Application Details', command: (event: any) => { this.activeStep = 2; } },
+          { label: 'Application Document', command: (event: any) => { this.activeStep = 3; } }
         ];
       }
     }

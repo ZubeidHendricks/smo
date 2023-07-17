@@ -366,7 +366,7 @@ export enum QuickCaptureStepsEnum {
 
 export enum QCStepsEnum {
     NpoCreate = 0,
-    Applications =1,
+    Applications = 1,
     AmountYouApplyingFor = 2,
     ApplicationDocument = 3
 }

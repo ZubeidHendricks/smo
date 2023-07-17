@@ -10,9 +10,10 @@
     <div style="height: 10px;"></div>
     <div>
         <!-- <app-create-npo [(activeStep)]="activeStep" [application]="application" [newApplication]="true" ></app-create-npo> -->
-        <app-create-quick-capture [(activeStep)]="activeStep" [application]="application" [newApplication]="true" ></app-create-quick-capture>
-        <app-qc-application-periods [(activeStep)]="activeStep" [application]="application" > </app-qc-application-periods>        
-         <app-application-details [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
+        <app-create-quick-capture *ngIf="activeStep == QCStepsEnum.NpoCreate"
+         [(activeStep)]="activeStep" [application]="application" [newApplication]="true" ></app-create-quick-capture>
+        <app-qc-application-periods *ngIf="activeStep == QCStepsEnum.Applications" [(activeStep)]="activeStep" [application]="application"> </app-qc-application-periods>        
+        <app-application-details *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor" [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
@@ -20,7 +21,7 @@
         (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
         </app-application-details>         
 
-        <app-document-upload 
+        <app-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
             [(activeStep)]="activeStep" [application]="application" [(quickCaptureDetails)]="quickCaptureDetails" >
         </app-document-upload>
     </div>      
