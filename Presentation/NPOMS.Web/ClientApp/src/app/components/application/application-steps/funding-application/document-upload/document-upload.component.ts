@@ -345,7 +345,7 @@ this.selectedDocTypeId =
             this.getFundAppDocuments(doc.id);
             console.log('doc.id',doc.id);
             this._spinner.hide();
-            this.displayUploadedFilesDialog =true;
+            this.displayUploadedFilesDialog =false;
           },
           (error) => this._spinner.hide()
         );
