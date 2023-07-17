@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Core;
 using NPOMS.Repository.Interfaces.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -84,14 +85,22 @@ namespace NPOMS.Repository.Implementation.Core
 
 		public async Task<User> GetByUserName(string userName)
 		{
-			return await FindByCondition(sp => sp.UserName.Equals(userName))
-							.Include(x => x.Roles.Where(y => y.IsActive))
-								.ThenInclude(x => x.Role)
-									.ThenInclude(x => x.Permissions)
-										.ThenInclude(x => x.Permission)
-							.Include(x => x.Departments)
-								.ThenInclude(x => x.Department)
-							.FirstOrDefaultAsync();
+			//try
+			//{
+                return await FindByCondition(sp => sp.UserName.Equals(userName))
+                            .Include(x => x.Roles.Where(y => y.IsActive))
+                                .ThenInclude(x => x.Role)
+                                    .ThenInclude(x => x.Permissions)
+                                        .ThenInclude(x => x.Permission)
+                            .Include(x => x.Departments)
+                                .ThenInclude(x => x.Department)
+                            .FirstOrDefaultAsync();
+   //         }
+			//catch(Exception ex)
+			//{
+
+			//}
+			//return null;
 		}
 
 		public async Task<IEnumerable<User>> GetByIds(int roleId, int departmentId)

@@ -330,6 +330,11 @@ export class CreateApplicationComponent implements OnInit {
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
               this.bidForm(StatusEnum.Saved);
             }
+
+
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
+              this.bidForm(StatusEnum.Saved);
+            }              
           }
         },
 
@@ -344,6 +349,10 @@ export class CreateApplicationComponent implements OnInit {
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
               this.bidForm(StatusEnum.PendingReview);
             }
+
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
+              this.bidForm(StatusEnum.PendingReview);
+            }            
 
           },
           disabled: true

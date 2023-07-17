@@ -46,6 +46,7 @@ uploadButtonDisabled: boolean = false;
 
   profile: IUser;
   documents: IDocumentStore[] = [];
+  fundAppdocuments: IDocumentStore[] = [];
   documentCols: any[];
   uploadedFileCols:any[];
   documentTypeCols: any[];
@@ -53,6 +54,7 @@ uploadButtonDisabled: boolean = false;
   compulsoryDocuments: IDocumentType[] = [];
   nonCompulsoryDocuments: IDocumentType[] = [];
   docTypeNames : any[];
+  documentTypeName : string;
 
   validationErrors: Message[];
   menuActions: MenuItem[];
@@ -60,8 +62,12 @@ uploadButtonDisabled: boolean = false;
   //uploadedFiles: boolean = false;
   indicatorDetailsId: number;
   selectedDocTypeId: number;
+  selectedDocumentType: IDocumentType;
   userId: number;
   _profile:IUser;
+
+  selectedFile :any;
+  selectedFilename :string;
   constructor(
     private _spinner: NgxSpinnerService,
     private _documentStore: DocumentStoreService,
@@ -85,16 +91,16 @@ uploadButtonDisabled: boolean = false;
           this._profile = x;
           this.userId = x.id;
       }});
-    this.getDocuments();
+    //this.getDocuments();
     //this.getFundAppDocuments(this.selectedDocTypeId);
        this._spinner.hide();
     this.documentCols = [
-      // { header: '', width: '5%' },
-      { header: 'Document Type', width: '25%' },
-      // { header: 'Document Name', width: '40%' },
+      { header: 'Id', width: '5%' },
+      { header: 'Document Type', width: '35%' },
+      { header: 'Document Name', width: '45%' },
       // { header: 'Size', width: '10%' },
       // { header: 'Uploaded Date', width: '10%' },
-      { header: 'Actions', width: '15%' }
+      { header: 'Actions', width: '10%' }
     ];
     this.uploadedFileCols = [
       // { header: '', width: '5%' },
@@ -134,11 +140,12 @@ uploadButtonDisabled: boolean = false;
   }
 
   onRowSelect(event) {
+    debugger;
     if (event.files[0]) {
 this.selectedDocTypeId =      
         event.files[0].documentType.id;
-        console.log('this.selectedDocTypeId',this.selectedDocTypeId);
-        console.log('event.files[0].documentType.id',event.files[0].documentType.id);
+        console.log('this.selectedDocTypeId from onRowSelect',this.selectedDocTypeId);
+        console.log('event.files[0].documentType.id from onRowSelect',event.files[0].documentType.id);
 
     }
     else {
@@ -185,26 +192,37 @@ this.selectedDocTypeId =
   }
 
   public uploadDocument(doc: any) {
+    debugger;
+    console.log('doc while click Upload icon',doc);
+    this.selectedDocTypeId = doc.id;
+    console.log('this.selectedDocTypeId while click Upload icon',this.selectedDocTypeId);
     this.element.nativeElement.click();
   }
   public uploadedFiles(doc: any) {
+    debugger;
     this._spinner.show();
     //this.getDocuments();
-    this.getFundAppDocuments(this.selectedDocTypeId);
+    console.log('doc from Uploaded Files',doc);
+    console.log('doc from Uploaded Files',doc.id);
+
+    this.getFundAppDocuments(doc.id);
     this.displayUploadedFilesDialog = true;
   }
 
   public onUploadChange = (files) => {
+    debugger;
+    console.log('this.selectedDocTypeId on Upload Change',this.selectedDocTypeId);
+   // this.selectedFilename =this.selectedFile.name;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
-
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
-    EntityEnum.FundingApplicationDetails, this.application.refNo, files[0].documentType.id).subscribe(
+    EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress)
           this._spinner.show();
         else if (event.type === HttpEventType.Response) {
           this._spinner.hide();
           //this.getDocuments();
+          console.log('Document Type Id', files[0].documentType.id);
           this.getFundAppDocuments(files[0].documentType.id);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
         }
@@ -215,6 +233,14 @@ this.selectedDocTypeId =
       }
     );
   }
+
+  // onFileSelected(event){
+  //   console.log('event',event);
+  //   this.selectedFile = <File>event.target.files[0];
+  //   console.log('this.selectedFile',this.selectedFile);
+  //   console.log('this.selectedFile',this.selectedFile.name);
+  //   this.selectedFilename =this.selectedFile.name;
+  // }
   
   public onUploadChange1 = (event, form) => {
     if (event.files[0]) {
@@ -259,7 +285,7 @@ this.selectedDocTypeId =
         else if (event.type === HttpEventType.Response) {
           // this.message = 'Uploaded!';
           
-           this.downloadButtonColor = 'p-button-success';
+      this.downloadButtonColor = 'p-button-success';
       this.downloadButtonColor = 'ui-button-info';
           this._spinner.hide();
           // console.log(event.body);
@@ -275,33 +301,12 @@ this.selectedDocTypeId =
   });
 }
 
-  // public onUploadCloudClick = (event) => {
-  //   if (event.files[0]) {
-  //     this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments,
-  //       Number(this.fundingApplicationDetails.id), EntityEnum.FundingApplicationDetails,
-  //       this.application.refNo, event.files[0].documentType.id).subscribe(
-  //         event => {
-  //           if (event.type === HttpEventType.UploadProgress)
-  //             this._spinner.show();
-  //           else if (event.type === HttpEventType.Response) {
-  //             this.getDocuments();
-  //             this._spinner.hide();
-  //           }
-  //         },
-  //         () => this._spinner.hide()
-  //       );
-  //     //form.clear();
-  //   }
-  //   else {
-  //     this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please specify the document type.' });
-  //   }
-  // }
-
   private getDocuments() {
+    debugger;
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.get(Number(this.fundingApplicationDetails?.id), EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-          this.documents = res;
+          this.documents = res;      
         this._spinner.hide();
         },
         () => this._spinner.hide()
@@ -310,11 +315,15 @@ this.selectedDocTypeId =
   }
 
   private getFundAppDocuments(docTypeId :number) {
+    debugger;
+    console.log('From GetFundApp document',docTypeId);
+    //this.fundAppdocuments =[];
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-          this.documents = res;
-        this._spinner.hide();
+          this.fundAppdocuments = res;
+          console.log('Get FundApp',this.fundAppdocuments);
+          this._spinner.hide();
         },
         () => this._spinner.hide()
       );
@@ -322,6 +331,7 @@ this.selectedDocTypeId =
   }
 
   onDeleteDocument(doc: any) {
+    debugger;
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this document?',
       header: 'Confirmation',
@@ -332,7 +342,8 @@ this.selectedDocTypeId =
         this._documentStore.delete(doc.resourceId).subscribe(
           event => {
             //this.getDocuments();
-            this.getFundAppDocuments(this.selectedDocTypeId);
+            this.getFundAppDocuments(doc.id);
+            console.log('doc.id',doc.id);
             this._spinner.hide();
           },
           (error) => this._spinner.hide()
