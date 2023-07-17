@@ -1,17 +1,14 @@
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DatePipe } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MenuItem } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationPeriod, IFinancialYear, INpo, IUser } from 'src/app/models/interfaces';
-import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
+import { AccessStatusEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
+import { IApplication, IApplicationPeriod, INpo, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
-import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-qc-application-periods',
@@ -19,9 +16,8 @@ import { ConfirmationService } from 'primeng/api';
   styleUrls: ['./qc-application-periods.component.css']
 })
 export class QcApplicationPeriodsComponent implements OnInit {
-
- /* Permission logic */
- public IsAuthorized(permission: PermissionsEnum): boolean {
+/* Permission logic */
+public IsAuthorized(permission: PermissionsEnum): boolean {
   if (this.profile != null && this.profile.permissions.length > 0) {
     return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
   }
@@ -31,45 +27,37 @@ public get PermissionsEnum(): typeof PermissionsEnum {
   return PermissionsEnum;
 }
 
-public get ApplicationTypeEnum(): typeof ApplicationTypeEnum {
-  return ApplicationTypeEnum;
+public get StatusEnum(): typeof StatusEnum {
+  return StatusEnum;
 }
 
 profile: IUser;
 
 cols: any[];
-allApplicationPeriods: IApplicationPeriod[];
-applicationPeriodId: number;
-displayDialog: boolean;
+allApplications: IApplication[];
+
+// This is the selected application when clicking on option buttons...
+selectedApplication: IApplication;
 
 isSystemAdmin: boolean = true;
 isAdmin: boolean = false;
 hasAdminRole: boolean = false;
 
 allNpos: INpo[];
-selectedNPO: INpo;
 
-application: IApplication = {} as IApplication;
-
-selectedApplicationPeriod: IApplicationPeriod;
-stateOptions: any[];
-selectedOption: boolean;
-
-financialYears: IFinancialYear[];
-selectedFinancialYear: IFinancialYear;
+buttonItems: MenuItem[];
 
 // Used for table filtering
 @ViewChild('dt') dt: Table | undefined;
+
+canShowOptions: boolean = false;
 
 constructor(
   private _router: Router,
   private _authService: AuthService,
   private _spinner: NgxSpinnerService,
-  private _applicationPeriodRepo: ApplicationPeriodService,
-  private _npoRepo: NpoService,
-  private _datepipe: DatePipe,
   private _applicationRepo: ApplicationService,
-  private _confirmationService: ConfirmationService,
+  private _npoRepo: NpoService,
   private _loggerService: LoggerService
 ) { }
 
@@ -78,7 +66,7 @@ ngOnInit(): void {
     if (profile != null && profile.isActive) {
       this.profile = profile;
 
-      if (!this.IsAuthorized(PermissionsEnum.ViewApplicationPeriods))
+      if (!this.IsAuthorized(PermissionsEnum.ViewApplications))
         this._router.navigate(['401']);
 
       this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
@@ -88,30 +76,25 @@ ngOnInit(): void {
         this.hasAdminRole = true;
 
       this.loadNpos();
-      this.loadApplicationPeriods();
+      this.loadApplications();
+      this.buildButtonItems();
     }
   });
 
   this.cols = [
     { field: 'refNo', header: 'Ref. No.', width: '10%' },
-    { field: 'department.name', header: 'Department', width: '10%' },
-    { field: 'name', header: 'Name', width: '20%' },
-    { field: 'applicationType.name', header: 'Type', width: '15%' },
-    { field: 'financialYear.name', header: 'Financial Year', width: '8%' },
-    { field: 'openingDate', header: 'Opening Date', width: '10%' },
-    { field: 'closingDate', header: 'Closing Date', width: '10%' },
-    { field: 'status', header: 'Status', width: '5%' }
-  ];
-
-  this.stateOptions = [
-    { label: 'Create New Workplan', value: true },
-    { label: 'Use Existing Workplan', value: false }
+    { field: 'npo.name', header: 'Organisation', width: '25%' },
+    { field: 'applicationPeriod.applicationType.name', header: 'Type', width: '10%' },
+    { field: 'applicationPeriod.subProgramme.name', header: 'Sub-Programme', width: '10%' },
+    { field: 'applicationPeriod.financialYear.name', header: 'Financial Year', width: '10%' },
+    { field: 'applicationPeriod.closingDate', header: 'Closing Date', width: '10%' },
+    { field: 'status.name', header: 'Application Status', width: '10%' }
   ];
 }
 
 private loadNpos() {
   this._spinner.show();
-  this._npoRepo.getAllNpos(AccessStatusEnum.Approved).subscribe(
+  this._npoRepo.getAllNpos(AccessStatusEnum.AllStatuses).subscribe(
     (results) => {
       this.allNpos = results;
       this._spinner.hide();
@@ -123,16 +106,16 @@ private loadNpos() {
   );
 }
 
-private loadApplicationPeriods() {
+private loadApplications() {
   this._spinner.show();
-  this._applicationPeriodRepo.getAllApplicationPeriods().subscribe(
+  this._applicationRepo.getAllApplications().subscribe(
     (results) => {
-
-      results.forEach(period => {
-        this.setStatus(period);
+      results.forEach(application => {
+        this.setStatus(application.applicationPeriod);
       });
-      console.log('results-For Status',results);
-      this.allApplicationPeriods = results;
+
+      this.allApplications = results;
+      this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA });
       this._spinner.hide();
     },
     (err) => {
@@ -153,112 +136,70 @@ private setStatus(applicationPeriod: IApplicationPeriod) {
     applicationPeriod.status = 'Closed';
 }
 
+private buildButtonItems() {
+  this.buttonItems = [];
+
+  if (this.profile) {
+
+    this.buttonItems = [{
+      label: 'Options',
+      items: []
+    }];
+
+    if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
+      this.buttonItems[0].items.push({
+        label: 'Manage Indicators',
+        icon: 'fa fa-tags wcg-icon',
+        command: () => {
+          this._router.navigateByUrl('workplan-indicator/manage/' + this.selectedApplication.npoId);
+        }
+      });
+    }
+
+    if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
+      this.buttonItems[0].items.push({
+        label: 'Summary',
+        icon: 'fa fa-tasks wcg-icon',
+        command: () => {
+          this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.npoId);
+        }
+      });
+    }
+  }
+}
+
 getCellData(row: any, col: any): any {
   const nestedProperties: string[] = col.field.split('.');
   let value: any = row;
 
   for (const prop of nestedProperties) {
     value = value[prop];
-
-    if (col.field == 'openingDate' || col.field == 'closingDate')
-      value = this._datepipe.transform(value, 'yyyy-MM-dd HH:mm:ss');
   }
 
   return value;
-}
-
-add() {
-  this._router.navigateByUrl('application-period/create');
 }
 
 applyFilterGlobal($event: any, stringVal: any) {
   this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
 }
 
-edit(applicationPeriod: IApplicationPeriod) {
-  this._router.navigateByUrl('application-period/edit/' + applicationPeriod.id);
+edit(application: IApplication) {
+  this._router.navigateByUrl('applicationDetails/' + application.id);
 }
 
-onRowSelect(applicationPeriod: IApplicationPeriod) {
-  console.log('Selected Application Period', applicationPeriod);
-  this.selectedApplicationPeriod = applicationPeriod;
-  this.applicationPeriodId = applicationPeriod.id;
-  this.selectedOption = true;
-  this.selectedFinancialYear = null;
-  this.selectedNPO = null;
-  this.displayDialog = true;
+review(application: IApplication) {
+  this._router.navigateByUrl('application/review/' + application.id);
 }
 
-disableSelect() {
-  if (!this.selectedNPO)
-    return true;
-
-  if (this.selectedApplicationPeriod.applicationType.id === ApplicationTypeEnum.SP && !this.selectedOption) {
-    if (!this.selectedFinancialYear)
-      return true
-  }
-  return false;
+approve(application: IApplication) {
+  this._router.navigateByUrl('application/approve/' + application.id);
 }
 
-selectNPO() {
-  this.displayDialog = false;
-  this._spinner.show();
-  this.autoCreateApplication();
+uploadSLA(application: IApplication) {
+  this._router.navigateByUrl('application/upload-sla/' + application.id);
 }
 
-private autoCreateApplication() {
-  this.application.npoId = this.selectedNPO.id;
-  this.application.applicationPeriodId = this.applicationPeriodId;
-  this.application.statusId = StatusEnum.New;
-
-  this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
-    (resp) => {
-      this._router.navigateByUrl('application/create/' + resp.id);
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
-
-search(event) {
-  let query = event.query;
-  this._npoRepo.getNpoByName(query).subscribe((results) => {
-    this.allNpos = results;
-  });
-}
-
-selectedOptionChange() {
-  this.financialYears = [];
-  this.selectedFinancialYear = null;
-  this.getExistingWorkplanFinancialYear();
-}
-
-selectedNPOChange() {
-  this.getExistingWorkplanFinancialYear();
-}
-
-private getExistingWorkplanFinancialYear() {
-  if (!this.selectedOption && this.selectedNPO) {
-    this._spinner.show();
-    this._applicationRepo.getApplicationsByNpoId(this.selectedNPO.id).subscribe(
-      (results) => {
-        let filteredApplications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP);
-
-        filteredApplications.forEach(item => {
-          var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
-          if (!isPresent)
-            this.financialYears.push(item.applicationPeriod.financialYear);
-        });
-
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+view(application: IApplication) {
+  this._router.navigateByUrl('application/view/' + application.id);
 }
 }

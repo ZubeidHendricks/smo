@@ -10,7 +10,7 @@
     <div>
         <app-create-npo [(activeStep)]="activeStep" [application]="application" ></app-create-npo>
         <app-qc-application-periods [(activeStep)]="activeStep" [application]="application"> </app-qc-application-periods>        
-        <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
+        <app-application-details 
         [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"

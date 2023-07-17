@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PermissionsEnum, AccessStatusEnum, ApplicationTypeEnum, QCStepsEnum, FundingApplicationStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IUser, INpo, IApplicationPeriod, IFundingApplicationDetails, IDistrictCouncil, ILocalMunicipality, IFundAppSDADetail, IApplicationDetails, IApplication, IPlace, ISubPlace, ISDA, IRegion } from 'src/app/models/interfaces';
+import { IUser, INpo, IApplicationPeriod, IFundingApplicationDetails, IDistrictCouncil, ILocalMunicipality, IFundAppSDADetail, IApplicationDetails, IApplication, IPlace, ISubPlace, ISDA, IRegion, IObjective, IActivity, ISustainabilityPlan, IResource } from 'src/app/models/interfaces';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -19,6 +19,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./quick-capture-list.component.css']
 })
 export class QuickCaptureListComponent implements OnInit {
+
   canEdit: boolean = false;
   applicationIdOnBid: any;
   // subPlacesAll: ISubPlace[];
@@ -26,9 +27,9 @@ export class QuickCaptureListComponent implements OnInit {
 
   placesAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
-  /* Permission logic */
   
-  
+  dropdownTouched: boolean = false;  
+
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -62,14 +63,12 @@ export class QuickCaptureListComponent implements OnInit {
 
   menuActions: MenuItem[];
   validationErrors: Message[];
-  qcItems: MenuItem[];
-  activeStep: number = 0;
-  application: IApplication;
+
   applicationPeriod: IApplicationPeriod;
   isApplicationAvailable: boolean;
   placeAll: IPlace[] = [];
 
-    // funding dropdowns
+  // funding dropdowns
   // funding dropdowns
   districtCouncils: IDistrictCouncil[] = [];
   localMunicipalitiesAll: ILocalMunicipality[] = [];
@@ -82,9 +81,16 @@ export class QuickCaptureListComponent implements OnInit {
 
   items: MenuItem[];
   faItems: MenuItem[];
+  qcItems: MenuItem[];
+
+  activeStep: number = 0;
+  application: IApplication;
+ 
 
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
+
+  // funding dropdowns
 
   fundingApplicationDetails: IFundingApplicationDetails = {
     applicationDetails: {
@@ -110,62 +116,31 @@ export class QuickCaptureListComponent implements OnInit {
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
-    private _fundAppService: FundingApplicationService,   
-    private _bidService: BidService       
+    private _fundAppService: FundingApplicationService,
+    private _bidService: BidService
   ) { }
 
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
-      this.loadApplication();
-      this.loadfundingDropdowns();     
+      this.loadfundingDropdowns();
       this.applicationPeriodId = +this.id;
       this.fundingApplicationDetails.applicationPeriodId = +this.id;
       this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-      });   
+      });
     });
-
-    this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      this.id = params.get('id');
-      this.loadApplication();
-      this.loadfundingDropdowns();     
-      this.applicationPeriodId = +this.id;
-      this.fundingApplicationDetails.applicationPeriodId = +this.id;
-      this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-      });   
-    });
-
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewNpo))
+        if (!this.IsAuthorized(PermissionsEnum.AddApplication))
           this._router.navigate(['401']);
-          this.buildMenu();
-        this.loadNPOs();
+
+        this.buildMenu();
       }
     });
   }
 
-  private loadApplication() {
-    this._spinner.show();
-    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
-      (results) => {
-        if (results != null) {
-          this.application = results;
-          this.buildSteps(results.applicationPeriod);
-    
-          this.isApplicationAvailable = true;
-        }
-
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
 
   private buildMenu() {
     if (this.profile) {
@@ -190,10 +165,9 @@ export class QuickCaptureListComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-                if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+            //if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
               this.bidForm(StatusEnum.Saved);
-            }
-            
+           // }
           }
         },
 
@@ -220,7 +194,8 @@ export class QuickCaptureListComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
-    this.application.status =null;
+    debugger;
+    this.application.status = null;
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
     }
@@ -273,33 +248,33 @@ export class QuickCaptureListComponent implements OnInit {
   private formValidate() {
     this.validationErrors = [];
 
-    if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length == 0 || this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
-        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please capture Application info and save." });
-      if (this.fundingApplicationDetails.financialMatters.length === 0)
-        this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
+    // if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
+    //   if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length == 0 || this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
+    //     this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please capture Application info and save." });
+    //   if (this.fundingApplicationDetails.financialMatters.length === 0)
+    //     this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
 
-      if (this.fundingApplicationDetails.implementations.length === 0)
-        this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
-      if (this.fundingApplicationDetails.projectInformation?.initiatedQuestion == undefined &&
-        this.fundingApplicationDetails.projectInformation?.considerQuestion == undefined &&
-        this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
-        this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
+    //   if (this.fundingApplicationDetails.implementations.length === 0)
+    //     this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+    //   if (this.fundingApplicationDetails.projectInformation?.initiatedQuestion == undefined &&
+    //     this.fundingApplicationDetails.projectInformation?.considerQuestion == undefined &&
+    //     this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
+    //     this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
 
-      if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
-        this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+    //   if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
+    //     this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
 
-    }
+    // }
 
 
-    if (this.validationErrors.length == 0) {
-      this.menuActions[3].disabled = false;
-      this.menuActions[1].visible = false;
-    }
-    else {
-      this.menuActions[3].disabled = true;
-      this.menuActions[1].visible = true;
-    }
+    // if (this.validationErrors.length == 0) {
+    //   this.menuActions[3].disabled = false;
+    //   this.menuActions[1].visible = false;
+    // }
+    // else {
+    //   this.menuActions[3].disabled = true;
+    //   this.menuActions[1].visible = true;
+    // }
 
   }
 
@@ -344,7 +319,7 @@ export class QuickCaptureListComponent implements OnInit {
       return true;
 
     return false;
-  }  
+  }
 
 
   private buildSteps(applicationPeriod: IApplicationPeriod) {
@@ -359,7 +334,7 @@ export class QuickCaptureListComponent implements OnInit {
         ];
       }
     }
-  }  
+  }
   places(place: IPlace[]) {
     this.placeAll = place;
   }
@@ -405,6 +380,7 @@ export class QuickCaptureListComponent implements OnInit {
   }
 
   private loadfundingDropdowns() {
+    debugger;
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
@@ -422,11 +398,12 @@ export class QuickCaptureListComponent implements OnInit {
   }
 
   private qCSteps(applicationPeriod: IApplicationPeriod) {
+    debugger;
     if (applicationPeriod != null) {
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
         this.qcItems = [
           { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
-          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },        
+          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
           { label: 'Application Document', command: (event: any) => { this.activeStep = 2; } }
         ];
       }

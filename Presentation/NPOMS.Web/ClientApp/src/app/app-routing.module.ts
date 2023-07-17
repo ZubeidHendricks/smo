@@ -70,6 +70,7 @@ import { PaymentSchedulesComponent } from './components/admin/payment-schedules/
 import { QuickCaptureListComponent } from './components/quick-capture/quick-capture-list/quick-capture-list.component';
 import { CreateQuickCaptureComponent } from './components/quick-capture/create-quick-capture/create-quick-capture.component';
 import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick-capture/edit-quick-capture.component';
+import { ApplicationDetailsComponent } from './components/application/application-steps/funding-application/application-details/application-details.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -93,6 +94,8 @@ const routes: Routes = [
   { path: 'npo/edit/:id', component: EditNpoComponent },
 
   { path: 'applications', component: ApplicationListComponent },
+  { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },
+  
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },
