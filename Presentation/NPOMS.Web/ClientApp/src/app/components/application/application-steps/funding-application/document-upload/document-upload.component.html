@@ -12,12 +12,24 @@
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}">
         <ng-template pTemplate="content">
             <div style="height: 10px;"></div>
-            <p-table [rowHover]="true" [value]="documentTypes" styleClass="p-datatable-sm" [columns]="documentCols" >
+            <p-table [rowHover]="true" #dt [style]="{'border':'none'}" sortMode="multiple" [value]="documentTypes" 
+            [showCurrentPageReport]="true" 
+            styleClass="p-datatable-sm" [columns]="documentCols" 
+            [globalFilterFields]="['name']">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
                             {{col.header}}
+                            <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
+                            ariaLabelDesc="Activate to sort in descending order" 
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>                            
                         </th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th><p-columnFilter type="text" field="name"></p-columnFilter></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-file let-document let-rowData let-rowIndex="rowIndex">
@@ -31,9 +43,9 @@
                                 (click)="uploadedFiles(rowData)"></button>
                             <button pButton pRipple type="button" class="p-button-text action-button"
                                 icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left"
-                                (click)="uploadDocument(rowData)"></button>
+                                (click)="uploadDocument(rowData)" ></button>
                             <input type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse"
-                                accept="*" style="display:none;">
+                                accept="*" style="display:none;" (change)="onFileSelected($event)">
                         </td>
                     </tr>
                 </ng-template>

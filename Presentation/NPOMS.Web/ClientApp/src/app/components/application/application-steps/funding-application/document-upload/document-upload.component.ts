@@ -1,3 +1,4 @@
+import { Table } from 'primeng/table';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -26,6 +27,10 @@ export class DocumentUploadComponent implements OnInit {
     }
   }
   @ViewChild('fileAdDoc') el:ElementRef;
+
+  
+  // Used for table filtering
+  @ViewChild('dt') dt: Table | undefined;
 acutalGrid: string;
 downloadButtonColor: string;
 uploadButtonDisabled: boolean = false;
@@ -65,7 +70,7 @@ uploadButtonDisabled: boolean = false;
   selectedDocumentType: IDocumentType;
   userId: number;
   _profile:IUser;
-
+  list : any[];
   selectedFile :any;
   selectedFilename :string;
   constructor(
@@ -96,7 +101,7 @@ uploadButtonDisabled: boolean = false;
        this._spinner.hide();
     this.documentCols = [
       { header: 'Id', width: '5%' },
-      { header: 'Document Type', width: '35%' },
+      {  field: 'name', header: 'Document Type', width: '35%' },
       { header: 'Document Name', width: '45%' },
       // { header: 'Size', width: '10%' },
       // { header: 'Uploaded Date', width: '10%' },
@@ -125,7 +130,21 @@ uploadButtonDisabled: boolean = false;
   ];
     this.loadDocumentTypes();
   }
+  onFilesUpload(event){
 
+    // Iterate over selected files
+    for( let file of event.target.files ) {
+      
+        // Append to a list
+        this.list.push({
+            name : file.name,
+            type : file.type
+            // Other specs
+        });
+
+console.log('this.list',this.list);        
+    }
+}
   readonly(): boolean {
 
     if (this.application.statusId == StatusEnum.PendingReview ||
@@ -234,13 +253,14 @@ this.selectedDocTypeId =
     );
   }
 
-  // onFileSelected(event){
-  //   console.log('event',event);
-  //   this.selectedFile = <File>event.target.files[0];
-  //   console.log('this.selectedFile',this.selectedFile);
-  //   console.log('this.selectedFile',this.selectedFile.name);
-  //   this.selectedFilename =this.selectedFile.name;
-  // }
+  onFileSelected(event){
+    console.log('event',event);
+    this.selectedFile = <File>event.target.files[0];
+    console.log('this.selectedFile',this.selectedFile);
+    console.log('this.selectedFile',this.selectedFile.name);
+    this.selectedFilename =this.selectedFile.name;
+    this.loadDocumentTypes();
+  }
   
   public onUploadChange1 = (event, form) => {
     if (event.files[0]) {
