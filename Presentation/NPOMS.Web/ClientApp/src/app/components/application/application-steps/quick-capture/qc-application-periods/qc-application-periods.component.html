@@ -42,7 +42,7 @@
                     <span>{{getCellData(rowData, col)}}</span>
                 </td>
                 <td style="text-align: center;">
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="nextPage()" pTooltip="Select Application" tooltipPosition="top" *ngIf="IsAuthorized(PermissionsEnum.EditApplicationPeriod)" ></button>
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="onRowSelect(rowData)"  (click)="nextPage()" pTooltip="Select Application" tooltipPosition="top" *ngIf="IsAuthorized(PermissionsEnum.EditApplicationPeriod)"></button>
                     <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-plus" (click)="onRowSelect(rowData)" *ngIf="IsAuthorized(PermissionsEnum.AddApplication) && rowData.status == 'Open'" pTooltip="Create Application" tooltipPosition="left"></button> -->
                 </td>
             </tr>

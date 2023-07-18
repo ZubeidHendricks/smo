@@ -90,6 +90,8 @@ const routes: Routes = [
   { path: 'quick-capture/create', component: CreateQuickCaptureComponent },
   { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },  
 
+  { path: 'quick-captures/:id', component: QuickCaptureListComponent },
+
   { path: 'npos', component: NpoListComponent },
   { path: 'npo/create', component: CreateNpoComponent },
   { path: 'npo/edit/:id', component: EditNpoComponent },
