@@ -146,11 +146,11 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
   nextPage() {
 
+    this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
     this.activeStep = this.activeStep + 1;
     this.activeStepChange.emit(this.activeStep);
     console.log(' From next Page click', this.applicationPeriodId);
 
-    this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
     //this.autoCreateApplication();
   }
 

@@ -93,6 +93,7 @@ export class CreateQuickCaptureComponent implements OnInit {
     private _npoRepo: NpoService,
     private _npoProfileRepo: NpoProfileService,
     private _loggerService: LoggerService,
+    private _messageService: MessageService,
     private _addressLookupService: AddressLookupService
   ) { }
 
@@ -321,6 +322,8 @@ export class CreateQuickCaptureComponent implements OnInit {
             (results) => {
               this._spinner.hide();
               //this._router.navigateByUrl('applicationDetails/' + results.id);
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+
             },
             (err) => {
               this._loggerService.logException(err);
