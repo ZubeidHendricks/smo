@@ -656,8 +656,29 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "Export Summary",
 					SystemName = "Indicators.ExportSummary",
 					CategoryName = "Workplan Indicators"
-				}
-			);
+				},
+                new Permission
+                {
+                    Id = 93,
+                    Name = "Pre-evaluate Application",
+                    SystemName = "FA.PreEvaluate",
+                    CategoryName = "Funding Application"
+                },
+                new Permission
+                {
+                    Id = 94,
+                    Name = "Evaluate Application",
+                    SystemName = "FA.Evaluate",
+                    CategoryName = "Funding Application"
+                },
+                new Permission
+                {
+                    Id = 95,
+                    Name = "Adjudicate Application",
+                    SystemName = "FA.Adjudicate",
+                    CategoryName = "Funding Application"
+                }
+            );
 		}
 	}
 }

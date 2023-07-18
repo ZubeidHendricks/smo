@@ -7,6 +7,7 @@ using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
+using NPOMS.Domain.Evaluation;
 using NPOMS.Domain.Indicator;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
@@ -162,8 +163,20 @@ namespace NPOMS.Repository
 		public DbSet<FacilityList> FacilityList { get; set; }
 		public DbSet<ResourceList> ResourceList { get; set; }
 
-		/* Mapping */
-		public DbSet<ActivitySubProgramme> ActivitySubProgrammes { get; set; }
+        /* Evaluation */
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<QuestionCategory> QuestionCategories { get; set; }
+        public DbSet<QuestionProperty> QuestionProperties { get; set; }
+        public DbSet<QuestionSection> QuestionSections { get; set; }
+        public DbSet<Response> Responses { get; set; }
+        public DbSet<ResponseHistory> ResponseHistory { get; set; }
+        public DbSet<ResponseOption> ResponseOptions { get; set; }
+        public DbSet<ResponseType> ResponseTypes { get; set; }
+        public DbSet<WorkflowAssessment> WorkflowAssessments { get; set; }
+        public DbSet<CapturedResponse> CapturedResponses { get; set; }
+
+        /* Mapping */
+        public DbSet<ActivitySubProgramme> ActivitySubProgrammes { get; set; }
 		public DbSet<NpoProfileFacilityList> NpoProfileFacilityLists { get; set; }
 		public DbSet<ObjectiveProgramme> ObjectiveProgrammes { get; set; }
 		public DbSet<RolePermission> RolePermissions { get; set; }

@@ -29,6 +29,7 @@ export class UtilitiesComponent implements OnInit {
 
   systemAdminUtilities: IUtility[];
   utilities: IUtility[];
+  evaluationUtilities: IUtility[];
   isSystemAdmin: boolean = false;
 
   constructor(
@@ -47,8 +48,8 @@ export class UtilitiesComponent implements OnInit {
         this.profile = profile;
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewUtilities))
-          this._router.navigate(['401']);
+        // if (!this.IsAuthorized(PermissionsEnum.ViewUtilitiesSubMenu))
+        //   this._router.navigate(['401']);
 
         this.loadUtilities();
       }
@@ -59,7 +60,9 @@ export class UtilitiesComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Utilities, false).subscribe(
       (results) => {
         this.systemAdminUtilities = results.filter(x => x.systemAdminUtility === true);
-        this.utilities = results.filter(x => x.systemAdminUtility === false);
+        this.utilities = results.filter(x => x.systemAdminUtility === false && x.isActive && !x.name.includes('Question') && !x.name.includes('Response') && !x.name.includes('Assessments'));
+        this.evaluationUtilities = results.filter(x => x.systemAdminUtility === false && x.isActive && (x.name.includes('Question') || x.name.includes('Response') || x.name.includes('Assessments')));
+     
         this._spinner.hide();
       },
       (err) => {
