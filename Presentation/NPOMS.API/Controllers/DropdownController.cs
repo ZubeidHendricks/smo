@@ -20,19 +20,22 @@ namespace NPOMS.API.Controllers
 
 		private ILogger<DropdownController> _logger;
 		private IDropdownService _dropdownService;
+		private IDocumentStoreService _documentStoreService;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		public DropdownController(
+        public DropdownController(
 			ILogger<DropdownController> logger,
-			IDropdownService dropdownService
+			IDropdownService dropdownService,
+			IDocumentStoreService documentStoreService
 			)
 		{
 			_logger = logger;
 			_dropdownService = dropdownService;
-		}
+			_documentStoreService = documentStoreService;
+        }
 
 		#endregion
 
@@ -104,6 +107,21 @@ namespace NPOMS.API.Controllers
 						return Ok(facilityList);
 					case DropdownTypeEnum.DocumentTypes:
 						var documentTypes = await _dropdownService.GetDocumentTypes(returnInactive);
+						var documents = await _documentStoreService.GetAllDocuments();
+						foreach(var type in documentTypes)
+						{
+							foreach(var doc in documents)
+							{
+								if (doc.DocumentTypeId != null)
+								{
+									if (doc.DocumentTypeId == type.Id)
+									{
+										type.DocumentName = doc.Name;
+									}
+								}
+							}
+
+						}
 						return Ok(documentTypes);
 					case DropdownTypeEnum.FacilityTypes:
 						var facilityTypes = await _dropdownService.GetFacilityTypes(returnInactive);

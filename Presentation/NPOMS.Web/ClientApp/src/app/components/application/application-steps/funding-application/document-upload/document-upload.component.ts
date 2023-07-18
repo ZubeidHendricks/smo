@@ -180,6 +180,7 @@ this.selectedDocTypeId =
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
         console.log('this.documentTypes', this.documentTypes);
+        
         console.log('results', results);
       },
       (err) => {
@@ -259,7 +260,6 @@ this.selectedDocTypeId =
     console.log('this.selectedFile',this.selectedFile);
     console.log('this.selectedFile',this.selectedFile.name);
     this.selectedFilename =this.selectedFile.name;
-    this.loadDocumentTypes();
   }
   
   public onUploadChange1 = (event, form) => {
