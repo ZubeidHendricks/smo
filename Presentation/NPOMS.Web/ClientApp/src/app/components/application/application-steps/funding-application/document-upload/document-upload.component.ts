@@ -104,8 +104,7 @@ uploadButtonDisabled: boolean = false;
           this._profile = x;
           this.userId = x.id;
       }});
-    //this.getDocuments();
-    //this.getFundAppDocuments(this.selectedDocTypeId);
+
        this._spinner.hide();
     this.documentCols = [
       { header: 'Id', width: '5%' },
@@ -212,11 +211,9 @@ this.selectedDocTypeId =
     });
   }
   selectCarWithButton(plan: any) {
-    //this.indicatorDetailsId = plan.id; 
-    this.indicatorDetailsId =  Number(this.fundingApplicationDetails.id); 
-    
+    this.indicatorDetailsId =  Number(this.fundingApplicationDetails.id);     
     this.el.nativeElement.click();
-    //  console.log(plan);
+
   }
 
   public uploadDocument(doc: any) {
@@ -229,7 +226,6 @@ this.selectedDocTypeId =
   public uploadedFiles(doc: any) {
     debugger;
     this._spinner.show();
-    //this.getDocuments();
     console.log('doc from Uploaded Files',doc);
     console.log('doc from Uploaded Files',doc.id);
     this.selectedDocTypeId = doc.id;
@@ -249,7 +245,7 @@ this.selectedDocTypeId =
         else if (event.type === HttpEventType.Response) {
           this._spinner.hide();
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
-          this.getFundAppDocuments(files[0].documentType.id);
+          this.loadDocumentTypes();
         }
       },
       (err) => {
