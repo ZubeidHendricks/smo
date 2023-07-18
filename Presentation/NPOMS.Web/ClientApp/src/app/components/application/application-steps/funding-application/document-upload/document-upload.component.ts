@@ -12,6 +12,7 @@ import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { EnvironmentUrlService } from 'src/app/services/environment-url/environment-url.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-document-upload',
@@ -73,6 +74,8 @@ uploadButtonDisabled: boolean = false;
   list : any[];
   selectedFile :any;
   selectedFilename :string;
+
+  selectedApplicationId: string;
   constructor(
     private _spinner: NgxSpinnerService,
     private _documentStore: DocumentStoreService,
@@ -83,12 +86,17 @@ uploadButtonDisabled: boolean = false;
     private http: HttpClient,
     private fb: FormBuilder,
     private envUrl: EnvironmentUrlService,
-    private _authService: AuthService,    
+    private _authService: AuthService,  
+    private _activeRouter: ActivatedRoute  
   ) { }
 
   ngOnInit(): void {
 
     this._spinner.show();
+
+     this._activeRouter.paramMap.subscribe(params => {
+      this.selectedApplicationId = params.get('id');
+    });
     this._authService.profile$.subscribe(x=>{
 
       if(x)
@@ -174,7 +182,7 @@ this.selectedDocTypeId =
 
   private loadDocumentTypes() {
     debugger;
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
+    this._dropdownRepo.getEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.selectedApplicationId), false).subscribe(
       (results) => {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
@@ -232,7 +240,6 @@ this.selectedDocTypeId =
   public onUploadChange = (files) => {
     debugger;
     console.log('this.selectedDocTypeId on Upload Change',this.selectedDocTypeId);
-   // this.selectedFilename =this.selectedFile.name;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
     EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
@@ -241,10 +248,8 @@ this.selectedDocTypeId =
           this._spinner.show();
         else if (event.type === HttpEventType.Response) {
           this._spinner.hide();
-          //this.getDocuments();
-          console.log('Document Type Id', files[0].documentType.id);
-          this.getFundAppDocuments(files[0].documentType.id);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
+          this.getFundAppDocuments(files[0].documentType.id);
         }
       },
       (err) => {

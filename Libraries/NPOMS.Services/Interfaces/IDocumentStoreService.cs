@@ -19,6 +19,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task<FileStreamResult> Download(string resourceId);
         Task<List<DocumentStore>> GetAllDocuments();
+        Task<List<DocumentStore>> GetDocumnetByRefNo(string refNo);
+
 
         Task<PagedList<DocumentStoreViewModel>> Get(DocumentStoreResourceParameters documentStoreResourceParameters);
 

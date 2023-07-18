@@ -8,6 +8,7 @@ namespace NPOMS.Repository.Interfaces.Core
 	{
 		IQueryable<DocumentStore> GetEntities();
         IQueryable<DocumentStore> GetEntitiesByDocId(int docTypeId);
+        IQueryable<DocumentStore> GetDocumentByRefNo(string docTypeId);        
 
         Task CreateEntity(DocumentStore entity);
 

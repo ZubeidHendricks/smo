@@ -21,6 +21,7 @@ namespace NPOMS.API.Controllers
 		private ILogger<DropdownController> _logger;
 		private IDropdownService _dropdownService;
 		private IDocumentStoreService _documentStoreService;
+		private IApplicationService _applicationService;
 
         #endregion
 
@@ -29,20 +30,23 @@ namespace NPOMS.API.Controllers
         public DropdownController(
 			ILogger<DropdownController> logger,
 			IDropdownService dropdownService,
-			IDocumentStoreService documentStoreService
+			IDocumentStoreService documentStoreService,
+			IApplicationService applicationService
+
 			)
 		{
 			_logger = logger;
 			_dropdownService = dropdownService;
 			_documentStoreService = documentStoreService;
+			_applicationService = applicationService;
         }
 
 		#endregion
 
 		#region Methods
 
-		[HttpGet("dropdownTypeEnum/{dropdownType}/returnInactive/{returnInactive}", Name = "GetEntities")]
-		public async Task<IActionResult> GetEntities(DropdownTypeEnum dropdownType, bool returnInactive)
+		[HttpGet("dropdownTypeEnum/{dropdownType}/id/{id}/returnInactive/{returnInactive}", Name = "GetEntities")]
+		public async Task<IActionResult> GetEntities(DropdownTypeEnum dropdownType,int id, bool returnInactive)
 		{
 			try
 			{
@@ -106,15 +110,18 @@ namespace NPOMS.API.Controllers
 						var facilityList = await _dropdownService.GetFacilityList(returnInactive);
 						return Ok(facilityList);
 					case DropdownTypeEnum.DocumentTypes:
+						var refNo = await _applicationService.GetApplicationById(id);
 						var documentTypes = await _dropdownService.GetDocumentTypes(returnInactive);
-						var documents = await _documentStoreService.GetAllDocuments();
-						foreach(var type in documentTypes)
+						//var documents = await _documentStoreService.GetAllDocuments();
+                        var docByRefNo = await _documentStoreService.GetDocumnetByRefNo(refNo.RefNo);
+
+                        foreach (var type in documentTypes)
 						{
-							foreach(var doc in documents)
+							foreach(var doc in docByRefNo)
 							{
 								if (doc.DocumentTypeId != null)
 								{
-									if (doc.DocumentTypeId == type.Id)
+									if (doc.DocumentTypeId == type.Id )
 									{
 										type.DocumentName = doc.Name;
 									}
