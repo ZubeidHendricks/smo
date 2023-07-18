@@ -3,7 +3,7 @@ import { Table } from 'primeng/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PermissionsEnum, AccessStatusEnum, ApplicationTypeEnum, QCStepsEnum, FundingApplicationStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IUser, INpo, IApplicationPeriod, IFundingApplicationDetails, IDistrictCouncil, ILocalMunicipality, IFundAppSDADetail, IApplicationDetails, IApplication, IPlace, ISubPlace, ISDA, IRegion, IObjective, IActivity, ISustainabilityPlan, IResource, IQuickCaptureDetails } from 'src/app/models/interfaces';
+import { IUser, INpo, IApplicationPeriod, IFundingApplicationDetails, IDistrictCouncil, ILocalMunicipality, IFundAppSDADetail, IApplicationDetails, IApplication, IPlace, ISubPlace, ISDA, IRegion, IObjective, IActivity, ISustainabilityPlan, IResource, IQuickCaptureDetails, IFinancialYear } from 'src/app/models/interfaces';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -86,6 +86,10 @@ export class QuickCaptureListComponent implements OnInit {
   activeStep: number = 0;
   application: IApplication;
  
+  selectedOption: boolean;
+
+  financialYears: IFinancialYear[];
+  selectedFinancialYear: IFinancialYear;
 
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
@@ -155,7 +159,21 @@ console.log('ng onInit');
       }
     });
   }
+  // private autoCreateApplication() {
+  //   //this.application.npoId = this.selectedNPO.id;
+  //   this.application.applicationPeriodId = this.applicationPeriodId;
+  //   this.application.statusId = StatusEnum.New;
 
+  //   this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
+  //     (resp) => {
+  //       this._router.navigateByUrl('application/create/' + resp.id);
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
 
   private buildMenu() {
     if (this.profile) {

@@ -320,7 +320,7 @@ export class CreateQuickCaptureComponent implements OnInit {
           this._npoProfileRepo.getNpoProfileByNpoId(Number(resp.id)).subscribe(
             (results) => {
               this._spinner.hide();
-              this._router.navigateByUrl('applicationDetails/' + results.id);
+              //this._router.navigateByUrl('applicationDetails/' + results.id);
             },
             (err) => {
               this._loggerService.logException(err);

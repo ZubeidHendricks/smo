@@ -38,7 +38,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
   @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
 
-  dropdownTouched: boolean = false;  
+  dropdownTouched: boolean = false;
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -73,7 +73,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   entity: IDistrictCouncil = {} as IDistrictCouncil;
   sourceOfInformationText: string;
   financialYears: IFinancialYear[];
-  
+
   selectedFinancialYear: IFinancialYear;
   departments: IDepartment[];
   selectedDepartment: IDepartment;
@@ -126,21 +126,22 @@ export class QcApplicationDetailsComponent implements OnInit {
     private _applicationRepo: ApplicationService,
     private _applicationPeriodRepo: ApplicationPeriodService,
     private _activeRouter: ActivatedRoute,
-    private _fundAppService: FundingApplicationService,  
+    private _fundAppService: FundingApplicationService,
     private _bidService: BidService,
-    private _messageService:MessageService,  
+    private _messageService: MessageService,
     private _loggerService: LoggerService,
     private _npoProfile: NpoProfileService,
   ) { }
 
-   getSelectedValue(value:string){
-  
+  getSelectedValue(value: string) {
+
     this.selectedDropdownValue = value;
   }
   ngOnInit(): void {
     this._spinner.show();
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
+      console.log(' this.selectedApplicationId', this.selectedApplicationId);
     });
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -161,9 +162,9 @@ export class QcApplicationDetailsComponent implements OnInit {
         //Get all regions
         this.regionDropdown();
         //Get all service delivery areas
-        this. loadServiceDeliveryAreas();     
+        this.loadServiceDeliveryAreas();
         this.GetAffiliatedOrganisation();
-        this.GetSourceOfInformation(); 
+        this.GetSourceOfInformation();
       }
     });
 
@@ -206,7 +207,7 @@ export class QcApplicationDetailsComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-         //            this.saveFundingApplicationDetails();
+            //            this.saveFundingApplicationDetails();
           }
         },
         {
@@ -220,12 +221,11 @@ export class QcApplicationDetailsComponent implements OnInit {
     }
   }
 
-  showTable(obj:any)
-  {
-    if(obj.value === "Yes")
-      document.getElementById('affliatedOrganisationInfoTable').hidden = false;  
+  showTable(obj: any) {
+    if (obj.value === "Yes")
+      document.getElementById('affliatedOrganisationInfoTable').hidden = false;
     else
-      document.getElementById('affliatedOrganisationInfoTable').hidden = true;  
+      document.getElementById('affliatedOrganisationInfoTable').hidden = true;
   }
 
   private formValidate() {
@@ -234,7 +234,7 @@ export class QcApplicationDetailsComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear )
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear)
       this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -376,17 +376,11 @@ export class QcApplicationDetailsComponent implements OnInit {
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
-
-
-       
-
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
           this.selectedSubProgramme = results.subProgramme;
           this.selectedFinancialYear = results.financialYear;
           this.selectedApplicationType = results.applicationType;
-
-
           this.applicationPeriod = results;
           this.isDataAvailable = true;
           this._spinner.hide();
@@ -416,9 +410,7 @@ export class QcApplicationDetailsComponent implements OnInit {
 
   programmeChange(programme: IProgramme) {
     this.selectedSubProgramme = null;
-
     this.subProgrammes = [];
-
     if (programme.id != null) {
       for (var i = 0; i < this.allSubProgrammes.length; i++) {
         if (this.allSubProgrammes[i].programmeId == programme.id) {
@@ -428,13 +420,9 @@ export class QcApplicationDetailsComponent implements OnInit {
     }
   }
 
-
   financialYearChange(finYear: IFinancialYear) {
-
     this.getFinancialYearRange(finYear);
-
   }
-
 
 
   private getFinancialYearRange(finYear: IFinancialYear) {
@@ -486,7 +474,7 @@ export class QcApplicationDetailsComponent implements OnInit {
       (results) => {
         this.sdasAll = results;
         this.allDropdownsLoaded();
-        
+
       },
       (err) => {
         this._loggerService.logException(err);
@@ -496,19 +484,19 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-        // if (this.application.statusId ==StatusEnum.PendingReview ||  
-        //   this.application.statusId == StatusEnum.Approved )          
-        //   return true;
-        // else return false;
-        return false;
-      }
-  
+    // if (this.application.statusId ==StatusEnum.PendingReview ||  
+    //   this.application.statusId == StatusEnum.Approved )          
+    //   return true;
+    // else return false;
+    return false;
+  }
+
   nextPage() {
 
     // if (this.Amount > 0 && this.qcCaptureDetails?.id != undefined) {
-    
-      this.activeStep = this.activeStep + 1;
-      this.activeStepChange.emit(this.activeStep);
+
+    this.activeStep = this.activeStep + 1;
+    this.activeStepChange.emit(this.activeStep);
 
     // }
     // else
@@ -522,21 +510,21 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   private allDropdownsLoaded() {
-    if (this.allDistrictCouncils?.length > 0 && 
-      this.localMunicipalitiesAll?.length > 0 && 
+    if (this.allDistrictCouncils?.length > 0 &&
+      this.localMunicipalitiesAll?.length > 0 &&
       this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
 
       //if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.districtCouncil != undefined)
-        this.OnDistrictCouncilChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.districtCouncil);
+      this.OnDistrictCouncilChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.districtCouncil);
 
       //if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality.id != undefined)
-        this.onLocalMunicipalityChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality);
+      this.onLocalMunicipalityChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality);
 
       //if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions?.length > 0)
-        this.onRegionChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions);
+      this.onRegionChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions);
 
       //if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas?.length > 0)
-        this.onSdaChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
+      this.onSdaChange(this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
     }
   }
 
@@ -545,14 +533,13 @@ export class QcApplicationDetailsComponent implements OnInit {
     this.regions = [];
     this.sdas = [];
 
-    if (localMunicipality.id != undefined && 
-      this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality?.id != localMunicipality.id) 
-      {
+    if (localMunicipality.id != undefined &&
+      this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality?.id != localMunicipality.id) {
       this.selectedRegions = [];
       this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality = null;
       this.qcCaptureDetails.applicationDetails.fundAppSDADetail.regions = [];
       this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
-      }
+    }
 
     if (this.qcCaptureDetails.applicationDetails.fundAppSDADetail.localMunicipality?.name != localMunicipality.name) {
       this.selectedRegions = [];
@@ -565,7 +552,7 @@ export class QcApplicationDetailsComponent implements OnInit {
     if (localMunicipality.id != undefined) {
       this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
     }
-  }  
+  }
 
 
   OnDistrictCouncilChange(districtCouncil: IDistrictCouncil) {
@@ -588,7 +575,7 @@ export class QcApplicationDetailsComponent implements OnInit {
       this.localMunicipalities = this.localMunicipalitiesAll?.filter(x => x.districtCouncilId == districtCouncil.id);
       this.localMunicipalities.unshift({ name: 'Select Type', id: null, districtCouncilId: null });
     }
-  }  
+  }
 
 
   onRegionChange(regions: IRegion[]) {
@@ -626,7 +613,7 @@ export class QcApplicationDetailsComponent implements OnInit {
     // end  make sure the selected is not redundant!!
     this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
     this.selectedSdas = filtered;
-    console.log('onRegionChange Selected SDA',  this.selectedSdas);
+    console.log('onRegionChange Selected SDA', this.selectedSdas);
 
   }
 
@@ -640,9 +627,9 @@ export class QcApplicationDetailsComponent implements OnInit {
     sdas.forEach(item => {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
-    console.log('onSdaChange selected sds',this.selectedSdas);
+    console.log('onSdaChange selected sds', this.selectedSdas);
     this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-    console.log('onSdaChange',  this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
+    console.log('onSdaChange', this.qcCaptureDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
   }
 
   private setPlaces(sdas: ISDA[]): void {
@@ -658,26 +645,22 @@ export class QcApplicationDetailsComponent implements OnInit {
       });
     }
   }
-  
+
   private GetSourceOfInformation() {
     this._npoProfile.getSourceOfInformationById(this.selectedApplicationId).subscribe(
       (results) => {
         this.sourceOfInformation = results;
         this.sourceOfInformationText = "Printed newspaper";
-        if(results.find(results => results.selectedSourceValue ===1))
-        {
+        if (results.find(results => results.selectedSourceValue === 1)) {
           this.sourceOfInformationText = "Printed newspaper";
         }
-        if(results.find(results => results.selectedSourceValue ===2))
-        {
+        if (results.find(results => results.selectedSourceValue === 2)) {
           this.sourceOfInformationText = "Online";
         }
-        if(results.find(results => results.selectedSourceValue ===3))
-        {
+        if (results.find(results => results.selectedSourceValue === 3)) {
           this.sourceOfInformationText = "DSD circular to NPOs";
         }
-        if(results.find(results => results.selectedSourceValue ===4))
-        {
+        if (results.find(results => results.selectedSourceValue === 4)) {
           this.sourceOfInformationText = "Other (specify)";
         }
       },
@@ -691,9 +674,8 @@ export class QcApplicationDetailsComponent implements OnInit {
     this._npoProfile.getAffiliatedOrganisationById(this.selectedApplicationId).subscribe(
       (results) => {
         this.affliatedOrganisationInfo = results;
-        if(results.length > 0)
-        {
-          document.getElementById('affliatedOrganisationInfoTable').hidden = false; 
+        if (results.length > 0) {
+          document.getElementById('affliatedOrganisationInfoTable').hidden = false;
         }
       },
       (err) => {
@@ -703,7 +685,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   updateDetail(rowData: IAffiliatedOrganisation) {
-   
+
     this._npoProfile.updateAffiliatedOrganisationData(this.affliatedOrganisationInfo, this.selectedApplicationId).subscribe(
       (resp) => {
         this.GetAffiliatedOrganisation();
@@ -715,8 +697,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
 
-  updateSourceOfInformation(sourceOfInfo: ISourceOfInformation)
-  {
+  updateSourceOfInformation(sourceOfInfo: ISourceOfInformation) {
     this._npoProfile.updateSourceOfInformation(sourceOfInfo, this.selectedApplicationId).subscribe(
       (resp) => {
         this.GetSourceOfInformation();
@@ -732,14 +713,13 @@ export class QcApplicationDetailsComponent implements OnInit {
     } as IAffiliatedOrganisation);
   }
 
-  save()
-  {
+  save() {
     var today = this.getCurrentDateTime();
     this.sourceOfInformations.npoProfileId = Number(this.selectedApplicationId);
     this.sourceOfInformations.selectedSourceValue = Number(this.selectedDropdownValue);
     this.sourceOfInformations.additionalSourceInformation = this.specify;
     this.updateSourceOfInformation(this.sourceOfInformations);
-   
+
   }
 
   private getCurrentDateTime() {
@@ -748,7 +728,7 @@ export class QcApplicationDetailsComponent implements OnInit {
     today.setHours(nextTwoHours);
 
     return today;
-  } 
+  }
 
 
 }

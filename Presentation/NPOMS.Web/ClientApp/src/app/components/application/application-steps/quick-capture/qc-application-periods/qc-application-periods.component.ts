@@ -1,8 +1,9 @@
 import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Table } from 'primeng/table';
+import { Subscription } from 'rxjs';
 import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IApplicationPeriod, IFinancialYear, INpo, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
@@ -18,7 +19,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 export class QcApplicationPeriodsComponent implements OnInit {
 
   @Input() activeStep: number;
-  @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();  
+  @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -57,7 +58,8 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
-
+  paramSubcriptions: Subscription;
+  id: string;
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -69,10 +71,13 @@ export class QcApplicationPeriodsComponent implements OnInit {
     private _npoRepo: NpoService,
     private _datepipe: DatePipe,
     private _applicationRepo: ApplicationService,
+    private _activeRouter: ActivatedRoute,
     private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
+
+
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -88,6 +93,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
         this.loadNpos();
         this.loadApplicationPeriods();
+        this.autoCreateApplication();
       }
     });
 
@@ -108,6 +114,22 @@ export class QcApplicationPeriodsComponent implements OnInit {
     ];
   }
 
+  private autoCreateApplication() {
+    //this.application.npoId = this.selectedNPO.id;
+    this.application.applicationPeriodId = this.applicationPeriodId;
+    this.application.statusId = StatusEnum.New;
+
+    this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
+      (resp) => {
+        this._router.navigateByUrl('application/create/' + resp.id);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadNpos() {
     this._spinner.show();
     this._npoRepo.getAllNpos(AccessStatusEnum.Approved).subscribe(
@@ -122,13 +144,20 @@ export class QcApplicationPeriodsComponent implements OnInit {
     );
   }
 
-
   nextPage() {
+
     this.activeStep = this.activeStep + 1;
-    this.activeStepChange.emit(this.activeStep);  
-}
+    this.activeStepChange.emit(this.activeStep);
+    //console.log(' From next Page click', this.applicationPeriodId);
 
+    //this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
+    //this.autoCreateApplication();
+  }
 
+  prevPage() {
+    this.activeStep = this.activeStep - 1;
+    this.activeStepChange.emit(this.activeStep);
+  }
 
   private loadApplicationPeriods() {
     this._spinner.show();
@@ -141,7 +170,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
         //this.allApplicationPeriods = results;
         this.allApplicationPeriods = results.filter(X => X.status === "Open")
-        
+
         this._spinner.hide();
       },
       (err) => {
@@ -184,9 +213,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
-  edit(applicationPeriod: IApplicationPeriod) {   
-
-    
+  edit(applicationPeriod: IApplicationPeriod) {
     //this._router.navigateByUrl('applicationDetails/' + applicationPeriod.id);
   }
 
@@ -212,27 +239,9 @@ export class QcApplicationPeriodsComponent implements OnInit {
   }
 
   selectNPO() {
-    // this.displayDialog = false;
-    // this._spinner.show();
-    // this.autoCreateApplication();
-    this._router.navigateByUrl('applicationDetails/' + this.selectedNPO.id);
-
-  }
-
-  private autoCreateApplication() {
-    this.application.npoId = this.selectedNPO.id;
-    this.application.applicationPeriodId = this.applicationPeriodId;
-    this.application.statusId = StatusEnum.New;
-
-    this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
-      (resp) => {
-        this._router.navigateByUrl('application/create/' + resp.id);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+    this.displayDialog = false;
+    this._spinner.show();
+    this.autoCreateApplication();
   }
 
   search(event) {
