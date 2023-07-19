@@ -6,7 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { FinancialMatters } from 'src/app/models/FinancialMatters';
-import { ApplicationTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, QuickCaptureStepsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { ApplicationTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
@@ -44,10 +44,6 @@ export class EditApplicationComponent implements OnInit {
     return FundingApplicationStepsEnum;
   }
 
-  public get QuickCaptureStepsEnum(): typeof QuickCaptureStepsEnum {
-    return QuickCaptureStepsEnum;
-  }
-
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
@@ -62,7 +58,6 @@ export class EditApplicationComponent implements OnInit {
 
   items: MenuItem[];
   faItems: MenuItem[];
-  qcItems: MenuItem[];
 
   activeStep: number = 0;
   application: IApplication;
@@ -72,6 +67,7 @@ export class EditApplicationComponent implements OnInit {
   activities: IActivity[] = [];
   sustainabilityPlans: ISustainabilityPlan[] = [];
   resources: IResource[] = [];
+
 
   fundingApplicationDetails: IFundingApplicationDetails = {
     financialMatters: [],
@@ -115,7 +111,9 @@ export class EditApplicationComponent implements OnInit {
     //    this.selectedApplicationId = resp.applicationId;
     //    console.log('response',this.selectedApplicationId )
     //  });    
-this.loadQCSteps();
+
+
+
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -154,18 +152,6 @@ this.loadQCSteps();
       }
     );
   }
-
-  private qCSteps(applicationPeriod: IApplicationPeriod) {
-    if (applicationPeriod != null) {
-      if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
-        this.qcItems = [
-          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
-          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },        
-          { label: 'Application Document', command: (event: any) => { this.activeStep =6; } }
-        ];
-      }
-    }
-  }  
 
   private buildSteps(applicationPeriod: IApplicationPeriod) {
     if (applicationPeriod != null) {
@@ -276,10 +262,6 @@ this.loadQCSteps();
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
               this.bidForm(StatusEnum.Saved);
             }
-
-            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
-              this.bidForm(StatusEnum.Saved);
-            }            
           }
         },
         {
@@ -293,10 +275,6 @@ this.loadQCSteps();
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
               this.bidForm(StatusEnum.PendingReview);
             }
-
-            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
-              this.bidForm(StatusEnum.PendingReview);
-            }            
           },
           disabled: true
         },
@@ -383,29 +361,6 @@ this.loadQCSteps();
     );
   }
 
-  //Quick Capture drop downs
-  private loadQCSteps() {
-
-    this._spinner.show();
-    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
-      (results) => {
-        if (results != null) {
-          this.application = results;
-          this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
-            if (response.id != null) {
-              this.getQCApplicationDetails(response);
-              console.log('loadQCSteps', response);
-            }
-          });
-          this.qCSteps(results.applicationPeriod);
-          this.isApplicationAvailable = true;
-        }
-        this._spinner.hide();
-      },
-      (err) => this._spinner.hide()
-    );
-  }  
-
   private getFundingApplicationDetails(data) {
     this._bidService.getBid(data.id).subscribe(response => {
 
@@ -413,21 +368,6 @@ this.loadQCSteps();
     });
 
   }
-
-  private getQCApplicationDetails(data) {
-    this._bidService.getBid(data.id).subscribe(response => {
-
-      this.getQCFullObject(response)
-    });
-
-  }
-
-  private getQCFullObject(data) {
-    this.fundingApplicationDetails = data;
-    this.fundingApplicationDetails.id = data.id;
-    this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor; 
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;   
-  }  
 
   private getBidFullObject(data) {
     this.fundingApplicationDetails = data;

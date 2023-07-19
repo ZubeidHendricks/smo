@@ -23,7 +23,6 @@ export class DropdownService {
     private _http: HttpClient
   ) { }
 
-
   public getEntities(dropdownType: DropdownTypeEnum, returnInactive: boolean) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}/returnInactive/${returnInactive}`;
     var data;
@@ -86,9 +85,9 @@ export class DropdownService {
       case DropdownTypeEnum.FacilityList:
         data = this._http.get<IFacilityList[]>(url, httpOptions);
         break;
-      // case DropdownTypeEnum.DocumentTypes:
-      //   data = this._http.get<IDocumentType[]>(url, httpOptions);
-      //   break;
+      case DropdownTypeEnum.DocumentTypes:
+        data = this._http.get<IDocumentType[]>(url, httpOptions);
+        break;
       case DropdownTypeEnum.FacilityTypes:
         data = this._http.get<IFacilityType[]>(url, httpOptions);
         break;
@@ -110,14 +109,72 @@ export class DropdownService {
       case DropdownTypeEnum.TrainingMaterial:
         data = this._http.get<ITrainingMaterial[]>(url, httpOptions);
         break;
- 
+      case DropdownTypeEnum.Frequencies:
+        data = this._http.get<IFrequency[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.FrequencyPeriods:
+        data = this._http.get<IFrequencyPeriod[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.SubProgrammeTypes:
+        data = this._http.get<ISubProgrammeType[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Directorates:
+        data = this._http.get<IDirectorate[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Banks:
+        data = this._http.get<IBank[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Branches:
+        data = this._http.get<IBranch[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.AccountTypes:
+        data = this._http.get<IAccountType[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.CompliantCycleRules:
+        data = this._http.get<ICompliantCycleRule[]>(url, httpOptions);
+        break;
 
+      case DropdownTypeEnum.DistrictCouncil:
+        data = this._http.get<IDistrictCouncil[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.LocalMunicipality:
+        data = this._http.get<ILocalMunicipality[]>(url, httpOptions);
+        break;
 
+      case DropdownTypeEnum.Region:
+        data = this._http.get<IRegion[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.ServiceDeliveryArea:
+        data = this._http.get<ISDA[]>(url, httpOptions);
+        break;
+
+      case DropdownTypeEnum.PropertyType:
+        data = this._http.get<PropertyType[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.PropertySubType:
+        data = this._http.get<PropertySubType[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Race:
+        data = this._http.get<IRace[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Gender:
+        data = this._http.get<IGender[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Languages:
+        data = this._http.get<ILanguage[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.RegistrationStatus:
+        data = this._http.get<IRegistrationStatus[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.StaffCategory:
+        data = this._http.get<IStaffCategory[]>(url, httpOptions);
+        break;
     }
 
     return data;
   }
-  public getEntitiesForDoc(dropdownType: DropdownTypeEnum, id:number, returnInactive: boolean) {
+
+  public GetEntitiesForDoc(dropdownType: DropdownTypeEnum, id:number, returnInactive: boolean) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}/id/${id}/returnInactive/${returnInactive}`;
     var data;
 

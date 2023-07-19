@@ -128,7 +128,7 @@ export class ApplicationDetailsComponent implements OnInit {
     private _fundAppService: FundingApplicationService,  
     private _bidService: BidService,
     private _messageService:MessageService,  
-    private _loggerService: LoggerService,
+    private _loggerService: LoggerService, 
     private _npoProfile: NpoProfileService,
   ) { }
 
