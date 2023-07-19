@@ -513,6 +513,7 @@ export interface INpo {
     registrationStatusId: number;
     pboNumber: string;
     section18Receipts: boolean;
+    isQuickCapture: boolean;
     cCode: string;
 
     organisationType: IOrganisationType;
@@ -574,7 +575,8 @@ export interface IQuickCaptureDetails {
     applicationId: number;
     applicationPeriodId: number;
     applicationPeriod: IApplicationPeriod;
-    applicationDetails: IApplicationDetails;   
+    applicationDetails: IApplicationDetails;  
+    npo:INpo;    
 }
 
 // export interface IDeclaration {

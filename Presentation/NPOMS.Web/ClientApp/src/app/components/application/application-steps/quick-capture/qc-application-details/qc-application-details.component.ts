@@ -5,7 +5,7 @@ import { MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { IAffiliatedOrganisation, ISourceOfInformation } from 'src/app/models/FinancialMatters';
 import { PermissionsEnum, DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
-import { IFundingApplicationDetails, IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA } from 'src/app/models/interfaces';
+import { IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA, IQuickCaptureDetails, IFundingApplicationDetails } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
@@ -29,6 +29,8 @@ export class QcApplicationDetailsComponent implements OnInit {
 
   @Output() AmountChange = new EventEmitter();
   @Input() fundingApplicationDetails: IFundingApplicationDetails;
+  //@Input() qcCaptureDetails: IQuickCaptureDetails;
+
 
   @Input() application: IApplication;
   canEdit: boolean = false;
@@ -36,7 +38,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
   @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
 
-  dropdownTouched: boolean = false;  
+  dropdownTouched: boolean = false;
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -71,7 +73,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   entity: IDistrictCouncil = {} as IDistrictCouncil;
   sourceOfInformationText: string;
   financialYears: IFinancialYear[];
-  
+
   selectedFinancialYear: IFinancialYear;
   departments: IDepartment[];
   selectedDepartment: IDepartment;
@@ -113,7 +115,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   places: IPlace[] = [];
   subPlacesAll: ISubPlace[];
 
-  @Output() applicationDetailsChange: EventEmitter<IFundingApplicationDetails> = new EventEmitter<IFundingApplicationDetails>();
+  @Output() applicationDetailsChange: EventEmitter<IQuickCaptureDetails> = new EventEmitter<IQuickCaptureDetails>();
   selectedOption: string = '';
 
   constructor(
@@ -124,21 +126,23 @@ export class QcApplicationDetailsComponent implements OnInit {
     private _applicationRepo: ApplicationService,
     private _applicationPeriodRepo: ApplicationPeriodService,
     private _activeRouter: ActivatedRoute,
-    private _fundAppService: FundingApplicationService,  
+    private _fundAppService: FundingApplicationService,
     private _bidService: BidService,
-    private _messageService:MessageService,  
+    private _messageService: MessageService,
     private _loggerService: LoggerService,
     private _npoProfile: NpoProfileService,
   ) { }
 
-   getSelectedValue(value:string){
-  
+  getSelectedValue(value: string) {
+
     this.selectedDropdownValue = value;
   }
   ngOnInit(): void {
     this._spinner.show();
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
+      console.log(' this.selectedApplicationId from QC-Application Details Screen', this.selectedApplicationId);
+      
     });
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -494,10 +498,11 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-        if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved )          
-          return true;
-        else return false;
+        // if (this.application.statusId ==StatusEnum.PendingReview ||
+        //  this.application.statusId == StatusEnum.Approved )
+        //  return true;
+        // else return false;
+        return false;
       }
   
   nextPage() {

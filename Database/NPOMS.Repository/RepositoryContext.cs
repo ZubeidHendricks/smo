@@ -67,7 +67,9 @@ namespace NPOMS.Repository
 		/* Core */
 		public DbSet<Department> Departments { get; set; }
 		public DbSet<DocumentStore> DocumentStores { get; set; }
-		public DbSet<DocumentType> DocumentTypes { get; set; }
+        public DbSet<FundAppDocuments> FundAppDocuments { get; set; }
+
+        public DbSet<DocumentType> DocumentTypes { get; set; }
 		public DbSet<EmailAccount> EmailAccounts { get; set; }
 		public DbSet<EmailQueue> EmailQueues { get; set; }
 		public DbSet<EmailTemplate> EmailTemplates { get; set; }

@@ -27,8 +27,13 @@ export class NpoService {
 
   public getAllQuickCaptures(accessStatus: AccessStatusEnum) {
     const url = `${this._envUrl.urlAddress}/api/npos/quick-captures/access-status/${accessStatus}`;
-    return this._http.get<IQuickCaptureDetails[]>(url, httpOptions);
-  }  
+    return this._http.get<INpo[]>(url, httpOptions);
+  }    
+
+  // public getAllQuickCaptures(accessStatus: AccessStatusEnum) {
+  //   const url = `${this._envUrl.urlAddress}/api/npos/quick-captures/access-status/${accessStatus}`;
+  //   return this._http.get<IQuickCaptureDetails[]>(url, httpOptions);
+  // }  
 
   public getNpoById(npoId: number) {
     const url = `${this._envUrl.urlAddress}/api/npos/npoId/${npoId}`;

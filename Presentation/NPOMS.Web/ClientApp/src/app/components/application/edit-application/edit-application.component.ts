@@ -68,6 +68,7 @@ export class EditApplicationComponent implements OnInit {
   sustainabilityPlans: ISustainabilityPlan[] = [];
   resources: IResource[] = [];
 
+
   fundingApplicationDetails: IFundingApplicationDetails = {
     financialMatters: [],
     implementations: [],
@@ -110,6 +111,8 @@ export class EditApplicationComponent implements OnInit {
     //    this.selectedApplicationId = resp.applicationId;
     //    console.log('response',this.selectedApplicationId )
     //  });    
+
+
 
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {

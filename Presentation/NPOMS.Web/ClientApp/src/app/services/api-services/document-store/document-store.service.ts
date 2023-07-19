@@ -24,6 +24,7 @@ export class DocumentStoreService {
   ) { }
 
   public upload(files: File[], entityType: EntityTypeEnum, entityId: number, entity: string, refNo: string, documentTypeId: number) {
+    console.log('documentTypeId',documentTypeId);
     const formData = new FormData();
 
     if (files.length === 0) {
@@ -41,6 +42,8 @@ export class DocumentStoreService {
       DocumentTypeId: documentTypeId,
       RefNo: refNo
     });
+    console.log('documentStoreViewModel',documentStoreViewModel);
+    console.log('documentTypeId',documentTypeId);
 
     formData.append("documentStoreViewModel", documentStoreViewModel);
 
@@ -53,6 +56,14 @@ export class DocumentStoreService {
   public get(entityId: number, entityType: EntityTypeEnum): Observable<IDocumentStore[]> {
 
     return this._http.get<IDocumentStore[]>(`${this._envUrl.urlAddress}/api/documentstore/entitytypes/${entityType}/entities/${entityId}`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  public getFundApp(entityId: number, docTypeId: number, entityType: EntityTypeEnum): Observable<IDocumentStore[]> {
+
+    return this._http.get<IDocumentStore[]>(`${this._envUrl.urlAddress}/api/documentstore/entitytypes/${entityType}/entities/${entityId}/documentTypeId/${docTypeId}`)
       .pipe(
         catchError(this.handleError)
       );

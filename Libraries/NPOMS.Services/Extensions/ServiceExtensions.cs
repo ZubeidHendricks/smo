@@ -184,11 +184,10 @@ namespace NPOMS.Services.Extensions
 
 			services.AddScoped<IProjectImplementationPlaceRepository, ProjectImplementationPlaceRepository>();
 			services.AddScoped<IProjectImplementationSubPlaceRepository, ProjectImplementationSubPlaceRepository>();
+            services.AddScoped<IFundAppDocumentRepository, FundAppDocumentsRepository>();
 
-
-
-			/* Indicator */
-			services.AddScoped<IWorkplanTargetRepository, WorkplanTargetRepository>();
+            /* Indicator */
+            services.AddScoped<IWorkplanTargetRepository, WorkplanTargetRepository>();
 			services.AddScoped<IWorkplanActualRepository, WorkplanActualRepository>();
 			services.AddScoped<IWorkplanCommentRepository, WorkplanCommentRepository>();
 			services.AddScoped<IWorkplanActualAuditRepository, WorkplanActualAuditRepository>();
@@ -215,14 +214,17 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IApplicationService, ApplicationService>();
 			services.AddScoped<IDenodoService, DenodoService>();
 			services.AddScoped<IDocumentStoreService, DocumentStoreService>();
-			services.AddScoped<IIndicatorService, IndicatorService>();
+            services.AddScoped<IFundAppDocumentService, FundAppDocumentService>();
+            services.AddScoped<IIndicatorService, IndicatorService>();
 			services.AddScoped<IBudgetService, BudgetService>();
 			services.AddScoped<IAdminService, AdminService>();
 			services.AddScoped<IBidService, BidService>();
 
+            services.AddConfiguration<dtoBlobConfig>(builder.Configuration, "BlobStorageSettings");
 
-			//PowerBI
-			services.AddScoped(typeof(AadService))
+
+            //PowerBI
+            services.AddScoped(typeof(AadService))
 					.AddScoped(typeof(PbiEmbedService));
 			services.AddScoped<IEmbeddedReportService, EmbeddedReportService>();
 
@@ -230,6 +232,17 @@ namespace NPOMS.Services.Extensions
 
 			var engine = EngineContext.Create();
 			engine.ConfigureServices(services, builder.Configuration);
-		}
-	}
+
+
+
+//#if !DEBUG
+//	            builder.Services.Configure<dtoBlobConfig>(blobConfig =>
+//	            {
+//		            blobConfig.Storage01 = Environment.GetEnvironmentVariable("APPSETTING_Storage01");
+//	                blobConfig.FolderPath01 = Environment.GetEnvironmentVariable("APPSETTING_FolderPath01");
+//	            });
+//#endif
+
+        }
+    }
 }

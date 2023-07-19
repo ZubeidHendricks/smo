@@ -128,7 +128,7 @@ export class ApplicationDetailsComponent implements OnInit {
     private _fundAppService: FundingApplicationService,  
     private _bidService: BidService,
     private _messageService:MessageService,  
-    private _loggerService: LoggerService,
+    private _loggerService: LoggerService, 
     private _npoProfile: NpoProfileService,
   ) { }
 
@@ -495,10 +495,11 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-        if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved )          
-          return true;
-        else return false;
+        // if (this.application.statusId ==StatusEnum.PendingReview ||
+        //  this.application.statusId == StatusEnum.Approved )
+        //  return true;
+        // else return false;
+        return false;
       }
   
   nextPage() {

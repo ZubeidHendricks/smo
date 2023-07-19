@@ -7,8 +7,10 @@ namespace NPOMS.Repository.Interfaces.Core
 	public interface IDocumentStoreRepository : IBaseRepository<DocumentStore>
 	{
 		IQueryable<DocumentStore> GetEntities();
+        IQueryable<DocumentStore> GetEntitiesByDocId(int docTypeId);
+        IQueryable<DocumentStore> GetDocumentByRefNo(string docTypeId);        
 
-		Task CreateEntity(DocumentStore entity);
+        Task CreateEntity(DocumentStore entity);
 
 		Task UpdateEntity(DocumentStore entity, int currentUserId);
 

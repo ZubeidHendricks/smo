@@ -295,7 +295,14 @@
             </div>
         </div>
         <div class="p-col">
-            <p-calendar [minDate]="minDate" [maxDate]="maxDate" [(ngModel)]="contactInformation.dateOfEmployment" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [style]="{'width': '50%'}" inputId="time" appendTo="body" [disabled]="true"></p-calendar>
+            <p-calendar 
+            [(ngModel)]="seletedDateofEmployment"  
+            [ngModelOptions]="{standalone: true}" dateFormat="MM yy" [style]="{'width': '50%'}"   
+            
+             inputId="time" appendTo="body" [disabled]="true"></p-calendar>
+
+            
+
         </div>
     </div>        
     <div class="p-grid">

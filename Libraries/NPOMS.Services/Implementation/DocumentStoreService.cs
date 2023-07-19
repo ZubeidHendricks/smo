@@ -167,7 +167,55 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
-		public async Task<PagedList<DocumentStoreViewModel>> Get(DocumentStoreResourceParameters documentStoreResourceParameters)
+
+        public async Task<List<DocumentStore>> DocumentByRefNo(string refNo)
+        {
+            try
+            {
+                var query = _documentStoreRepository.GetEntities();           
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDocuments action: {ex.Message} Inner Exception: {ex.InnerException}");
+                throw;
+            }
+        }
+
+        public async Task<List<DocumentStore>> GetAllDocuments()
+        {
+            try
+            {
+                var query = _documentStoreRepository.GetEntities();
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDocuments action: {ex.Message} Inner Exception: {ex.InnerException}");
+                throw;
+            }
+        }
+
+        public async Task<List<DocumentStore>> GetDocumnetByRefNo(string refNo)
+        {
+            try
+            {
+                var query = _documentStoreRepository.GetDocumentByRefNo(refNo);
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDocuments action: {ex.Message} Inner Exception: {ex.InnerException}");
+                throw;
+            }
+        }
+
+
+        
+        public async Task<PagedList<DocumentStoreViewModel>> Get(DocumentStoreResourceParameters documentStoreResourceParameters)
 		{
 			try
 			{
@@ -199,7 +247,39 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
-		public async Task Update(DocumentStore model, string userIdentifier)
+        public async Task<PagedList<DocumentStoreViewModel>> GetFundApp(DocumentStoreResourceParameters documentStoreResourceParameters, int docTypeId)
+        {
+            try
+            {
+                List<DocumentStoreViewModel> viewModel = new List<DocumentStoreViewModel>();
+                if (documentStoreResourceParameters == null)
+                {
+                    throw new ArgumentNullException(nameof(documentStoreResourceParameters));
+                }
+
+                var query = _documentStoreRepository.GetEntitiesByDocId(docTypeId);
+
+                if (Enum.IsDefined(typeof(EntityTypeEnum), documentStoreResourceParameters.EntityType))
+                {
+                    int entityTypeId = (int)documentStoreResourceParameters.EntityType;
+                    query = query.Where(x => x.EntityTypeId == entityTypeId);
+                }
+
+                query = query.Where(x => x.EntityId == documentStoreResourceParameters.EntityId);
+
+                var pageList = await PagedList<DocumentStore>.Create(query, documentStoreResourceParameters.PageNumber, documentStoreResourceParameters.PageSize);
+                var viewModelItems = _mapper.Map<List<DocumentStoreViewModel>>(pageList.Items);
+
+                return PagedList<DocumentStoreViewModel>.CreateForView(viewModelItems, documentStoreResourceParameters.PageNumber, documentStoreResourceParameters.PageSize);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDocuments action: {ex.Message} Inner Exception: {ex.InnerException}");
+                throw;
+            }
+        }
+
+        public async Task Update(DocumentStore model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 

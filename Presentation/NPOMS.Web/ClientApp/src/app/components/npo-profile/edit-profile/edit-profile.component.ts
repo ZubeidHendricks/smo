@@ -297,7 +297,7 @@ export class EditProfileComponent implements OnInit {
       (results) => {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
-        this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.NpoProfile);
+        this.documentTypes = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
       },
       (err) => {
         this._loggerService.logException(err);
