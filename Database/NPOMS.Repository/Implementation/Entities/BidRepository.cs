@@ -31,6 +31,7 @@ namespace NPOMS.Repository.Implementation.Entities
 
            return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
                 .Include(x => x.FinancialMatters)
+                .Include(x =>x.ApplicationDetails)
                 .Include(impl => impl.Implementations).FirstOrDefaultAsync();
         }
 

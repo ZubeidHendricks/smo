@@ -1112,11 +1112,11 @@ export interface ISDA {
     isActive: boolean;
     regionId: number;
 }
-export interface ILocalMunicipality {
-    id: number;
-    name: string;
-    districtCouncilId: number;
-}
+// export interface ILocalMunicipality {
+//     id: number;
+//     name: string;
+//     districtCouncilId: number;
+// }
 
 export interface IDistrictCouncil {
     id: number;

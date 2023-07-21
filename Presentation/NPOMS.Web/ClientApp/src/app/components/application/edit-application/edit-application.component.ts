@@ -290,6 +290,7 @@ export class EditApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
+    debugger;
     this.application.status = null;
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
@@ -370,6 +371,7 @@ export class EditApplicationComponent implements OnInit {
   }
 
   private getBidFullObject(data) {
+    debugger;
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;

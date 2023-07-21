@@ -84,25 +84,25 @@ namespace NPOMS.Repository.Implementation
 			}
 		}
 
-        public async Task UpdateAsync( T newEntity, bool trackChanges, int currentUserId)
-        {
-            // Only add to AuditLog table if trackChanges is true
-            if (trackChanges)
-            {
+		public async Task UpdateAsync(T newEntity, bool trackChanges, int currentUserId)
+		{
+			// Only add to AuditLog table if trackChanges is true
+			if (trackChanges)
+			{
 
-                //this.RepositoryContext.Entry(oldEntity).CurrentValues.SetValues(newEntity);
-                this.RepositoryContext.Set<T>().Update(newEntity);
-                await this.RepositoryContext.SaveChangesAsync();
-               
-            }
-            else
-            {
-                this.RepositoryContext.Set<T>().Update(newEntity);
-                await this.RepositoryContext.SaveChangesAsync();
-            }
-        }
+				//this.RepositoryContext.Entry(oldEntity).CurrentValues.SetValues(newEntity);
+				this.RepositoryContext.Set<T>().Update(newEntity);
+				await this.RepositoryContext.SaveChangesAsync();
 
-        public async Task DeleteAsync(T entity)
+			}
+			else
+			{
+				this.RepositoryContext.Set<T>().Update(newEntity);
+				await this.RepositoryContext.SaveChangesAsync();
+			}
+		}
+
+		public async Task DeleteAsync(T entity)
 		{
 			this.RepositoryContext.Set<T>().Remove(entity);
 			await this.RepositoryContext.SaveChangesAsync();
@@ -113,17 +113,40 @@ namespace NPOMS.Repository.Implementation
 			await this.RepositoryContext.SaveChangesAsync();
 		}
 
-        public void InsertMultiItemsAsync(List<T> entity)
-        {
-            this.RepositoryContext.Set<T>().AddRange(entity);
-            this.RepositoryContext.SaveChangesAsync();
-        }
+		public void InsertMultiItemsAsync(List<T> entity)
+		{
+			this.RepositoryContext.Set<T>().AddRange(entity);
+			this.RepositoryContext.SaveChangesAsync();
+		}
 
 
-        public async Task UpdateAsync(T entity)
-        {
-            this.RepositoryContext.Set<T>().Update(entity);
-            await this.RepositoryContext.SaveChangesAsync();
-        }
-    }
+		public async Task UpdateAsync(T entity)
+		{
+			try
+			{
+				this.RepositoryContext.Set<T>().Update(entity);
+				await this.RepositoryContext.SaveChangesAsync();
+
+			}
+			catch (Exception ex)
+			{
+
+			}
+		}
+
+		public async Task UpdateAsync1(T entity)
+		{
+			// Only add to AuditLog table if trackChanges is true
+
+			try
+			{
+				this.RepositoryContext.Set<T>().Update(entity);
+				await this.RepositoryContext.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+
+			}
+		}
+	}
 }

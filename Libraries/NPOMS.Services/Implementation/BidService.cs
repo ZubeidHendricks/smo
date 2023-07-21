@@ -233,8 +233,8 @@ namespace NPOMS.Services.Implementation
             bid.ApplicationDetails = await _applicationDetailsRepository.GetById(bid.ApplicationDetailId);
             bid.ProjectInformation = await _projectInformationRepository.GetById(bid.ProjectInformationId);
             bid.MonitoringEvaluation = await _monitoringEvaluationRepository.GetById(bid.MonitoringEvaluationId);
-            var bidRegions = await _bidRegionRepository.GetBidRegionByGeographicalDetailId(bid.ApplicationDetails.FundAppSDADetailId);
-            var serviceDeliveryArea = await _BidServiceDeliveryAreaRepository.GetBidServiceDeliveryAreaByGeographicalDetailId(bid.ApplicationDetails.FundAppSDADetailId);
+            var bidRegions = await _bidRegionRepository.GetBidRegionByGeographicalDetailId(bid.ApplicationDetails.FundAppSDADetail.Id);
+            var serviceDeliveryArea = await _BidServiceDeliveryAreaRepository.GetBidServiceDeliveryAreaByGeographicalDetailId(bid.ApplicationDetails.FundAppSDADetail.Id);
             
             // return active places and subplaces
             foreach (var imple in bid.Implementations)
@@ -285,11 +285,11 @@ namespace NPOMS.Services.Implementation
 
             applicationDetails.FundAppSDADetail.DistrictCouncilId = applicationDetails.FundAppSDADetail.DistrictCouncil.Id;
 
-            applicationDetails.FundAppSDADetail.DistrictCouncil = null;
+            //applicationDetails.FundAppSDADetail.DistrictCouncil = null;
 
             applicationDetails.FundAppSDADetail.LocalMunicipalityId = applicationDetails.FundAppSDADetail.LocalMunicipality.Id;
 
-            applicationDetails.FundAppSDADetail.LocalMunicipality = null;
+            //applicationDetails.FundAppSDADetail.LocalMunicipality = null;
 
             foreach (var item in model.FundAppSDADetail.Regions)
             {
@@ -347,6 +347,22 @@ namespace NPOMS.Services.Implementation
                 return monitoring;
             }
         }
+
+        private async Task UpdateDistrictLocalMunicipal(FundAppSDADetailViewModel model, FundAppSDADetail existingRegionsAndSdas)
+        {
+            var mapping = await _geographicalDetailsRepositoryRepository.GetById(existingRegionsAndSdas.Id);
+            //mapping.DistrictCouncilId = 0; mapping.LocalMunicipalityId = 0;
+            //mapping.DistrictCouncilId = model.DistrictCouncil.Id;
+            //mapping.LocalMunicipalityId = model.LocalMunicipality.ID;
+            mapping.DistrictCouncil.Id = model.DistrictCouncil.Id;
+            mapping.LocalMunicipality.Id = model.LocalMunicipality.ID;
+            mapping.DistrictCouncil = null;
+            mapping.LocalMunicipality = null;
+
+            await _geographicalDetailsRepositoryRepository.UpdateAsync1(mapping);
+        }
+
+        
 
         private async Task UpdateGeoDetails(FundAppSDADetailViewModel model, FundAppSDADetail existingRegionsAndSdas)
         {
@@ -451,15 +467,18 @@ namespace NPOMS.Services.Implementation
             var existingBidRegionsAndSdas = await _geographicalDetailsRepositoryRepository.GetById(model.ApplicationDetails.FundAppSDADetailId);
             existingBidRegionsAndSdas.Regions = bidRegions.ToList();
             existingBidRegionsAndSdas.ServiceDeliveryAreas = bidSDAs.ToList();
+            bid.ApplicationDetails.FundAppSDADetail = existingBidRegionsAndSdas;
+            bid.ApplicationDetails.FundAppSDADetail.Id = model.ApplicationDetails.FundAppSDADetailId;
 
             await UpdateGeoDetails(model.ApplicationDetails.FundAppSDADetail, existingBidRegionsAndSdas);
+            await UpdateDistrictLocalMunicipal(model.ApplicationDetails.FundAppSDADetail, existingBidRegionsAndSdas);
 
             ProjectInformationUpdate(model, bid);
             MonitoringEvalutionUpdate(model, bid);
 
-            bid.ApplicationDetails.FundAppSDADetail = existingBidRegionsAndSdas;
-            bid.ApplicationDetails.FundAppSDADetail.Id = model.ApplicationDetails.FundAppSDADetailId;
+
             bid.ApplicationDetails.AmountApplyingFor = model.ApplicationDetails.AmountApplyingFor;
+
 
             foreach (var imple in model.Implementations)
             {

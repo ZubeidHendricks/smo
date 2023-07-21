@@ -19,8 +19,8 @@ export class MonitoringEvaluationPlanComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    let amountStringId = (<HTMLInputElement>document.getElementById("monEvalDescription"));
-    amountStringId.focus();
+    let monEvalDescription = (<HTMLInputElement>document.getElementById("monEvalDescription"));
+    //monEvalDescription.focus();
 
   }
 
