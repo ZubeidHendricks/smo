@@ -25,9 +25,6 @@ export class ProjectInformationComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-
-
-    console.log('bit status', this.fundingApplicationDetails)
   }
 
   onInitiatedQuestionChange($event) {

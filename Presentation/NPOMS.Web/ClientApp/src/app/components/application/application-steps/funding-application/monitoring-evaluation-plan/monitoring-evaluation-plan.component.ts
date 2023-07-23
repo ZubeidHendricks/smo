@@ -19,9 +19,7 @@ export class MonitoringEvaluationPlanComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    let monEvalDescription = (<HTMLInputElement>document.getElementById("monEvalDescription"));
-    //monEvalDescription.focus();
-
+    //let monEvalDescription = (<HTMLInputElement>document.getElementById("monEvalDescription"));
   }
 
   readonly(): boolean {

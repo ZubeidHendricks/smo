@@ -1,5 +1,5 @@
-<p-table [rowHover]="true" [columns]="cols" [value]="implementations" selectionMode="single" [(selection)]="selectedImplementation"
-  (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+<p-table [rowHover]="true" [columns]="cols" [value]="implementations" selectionMode="single"
+  [(selection)]="selectedImplementation" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
   <ng-template pTemplate="caption">
     Project Activities
   </ng-template>
@@ -17,8 +17,10 @@
       <td>{{rowData.beneficiaries}}</td>
       <td>{{rowData.budget}}</td>
       <td style="text-align: center;">
-        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"   (click)="editProjImpl(rowData)"  pTooltip="Edit" tooltipPosition="top"></button>
-        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProjImpl(rowData.id)"  pTooltip="Delete" tooltipPosition="top"></button>
+        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"
+          (click)="editProjImpl(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash"
+          (click)="deleteProjImpl(rowData.id)" pTooltip="Delete" tooltipPosition="top"></button>
       </td>
     </tr>
   </ng-template>
@@ -52,18 +54,18 @@
     </div>
     <div class="p-col">
       <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="projectObjective" [disabled]="readonly()"
-        [(ngModel)]="implementation.projectObjective" [ngModelOptions]="{standalone: true}" ></textarea>
+        [(ngModel)]="implementation.projectObjective" [ngModelOptions]="{standalone: true}"></textarea>
     </div>
   </div>
   <div class="p-grid">
     <div class="p-col-fixed form-label">
       <div class="box">
-        <span class="mandatory-content">Number of Beneficiaries  (disaggregate where relevant)</span>
+        <span class="mandatory-content">Number of Beneficiaries (disaggregate where relevant)</span>
       </div>
     </div>
     <div class="p-col">
-      <input type="text" class="form-text" pInputText pKeyFilter="int" id="beneficiaries" [disabled]="readonly()"autocomplete="off"
-        [(ngModel)]="implementation.beneficiaries" [ngModelOptions]="{standalone: true}">
+      <input type="text" class="form-text" pInputText pKeyFilter="int" id="beneficiaries" [disabled]="readonly()"
+        autocomplete="off" [(ngModel)]="implementation.beneficiaries" [ngModelOptions]="{standalone: true}">
     </div>
   </div>
 
@@ -75,7 +77,7 @@
     </div>
     <div class="p-col">
       <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="results" [disabled]="readonly()"
-        [(ngModel)]="implementation.results" [ngModelOptions]="{standalone: true}" ></textarea>
+        [(ngModel)]="implementation.results" [ngModelOptions]="{standalone: true}"></textarea>
     </div>
   </div>
 
@@ -87,7 +89,7 @@
     </div>
     <div class="p-col">
       <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="resources" [disabled]="readonly()"
-        [(ngModel)]="implementation.resources" [ngModelOptions]="{standalone: true}" ></textarea>
+        [(ngModel)]="implementation.resources" [ngModelOptions]="{standalone: true}"></textarea>
     </div>
   </div>
 
@@ -113,7 +115,8 @@
     </div>
     <div class="p-col">
       <p-inputNumber inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
-        [style]="{'width':'100%'}" [(ngModel)]="implementation.budget" [disabled]="readonly()" (onselect)="verifyDialog($event)" autocomplete="off"></p-inputNumber>
+        [style]="{'width':'100%'}" [(ngModel)]="implementation.budget" [disabled]="readonly()"
+        (onselect)="verifyDialog($event)" autocomplete="off"></p-inputNumber>
     </div>
   </div>
 
@@ -143,19 +146,20 @@
         [(ngModel)]="selectedSubPlaces" (onChange)="subPlacesChange($event.value)" [style]="{'width':'100%'}"
         [ngModelOptions]="{standalone: true}" [disabled]="disableSubPlacesOrPlace()" appendTo="body"></p-multiSelect>
     </div>
-  </div> 
+  </div>
 
   <ng-template pTemplate="footer">
 
     <button pButton pRipple type="button" class="p-button-text" icon="pi pi-check" [disabled]="disableSave()"
-      (click)="save()" (click)="displayDialogImpl=false" label="Save" ></button>
+      (click)="save()" (click)="displayDialogImpl=false" label="Save"></button>
   </ng-template>
 </p-dialog>
 <div style="height: 10px;"></div>
 <div class="content-section implementation">
   <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
     <p-footer>
-      <button type="button" pButton icon="pi pi-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+      <button type="button" pButton icon="pi pi-check" class="ui-button-info" label="Yes"
+        (click)="cd.accept()"></button>
       <button type="button" pButton icon="pi pi-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
     </p-footer>
   </p-confirmDialog>
