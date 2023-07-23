@@ -13,7 +13,6 @@ namespace NPOMS.Domain.Mapping
     {
         public bool IsActive { get; set; }
         public int FundAppSDADetailId { get; set; }
-        public virtual FundAppSDADetail FundAppSDADetail { get; set; }
         public int RegionId { get; set; }
         public virtual Region Region { get; set; }
     }

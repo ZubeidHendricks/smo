@@ -543,8 +543,16 @@ export class ApplicationDetailsComponent implements OnInit {
 
   onLocalMunicipalityChange(localMunicipality: ILocalMunicipality) {
     this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === localMunicipality.id);
-    // this.regions = [];
-    // this.sdas = [];
+    if(this.selectedLocalMunicipality == null)
+    {
+    this.regions = null;
+    this.sdas = null;
+    }
+    //this.selectedSdas = [];
+    //this.selected =null;
+    //this.sdasAll =null;
+    //this.regionDropdown();
+    //this.loadServiceDeliveryAreas();
 
     // if (localMunicipality.id != undefined && 
     //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.id != localMunicipality.id) 
@@ -568,11 +576,11 @@ export class ApplicationDetailsComponent implements OnInit {
       this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
     }
     
-    // this.regions = [];
-    // // filter items matching the selected regions
+    //this.regions = [];
+    // filter items matching the selected regions
     // if (localMunicipality != null && localMunicipality.id != 0) {
     //   for (var i = 0; i < this.regionsAll.length; i++) {
-    //     if (this.regionsAll.filter(r => r.id === this.regionsAll[i].id).length != 0) {
+    //     if (this.regionsAll?.filter(r => r.localMunicipalityId === localMunicipality.id)) {
     //       this.regions.push(this.regionsAll[i]);
     //     }
     //   }
@@ -580,23 +588,23 @@ export class ApplicationDetailsComponent implements OnInit {
     //   console.log('this.regions new',this.regions);
     // }
 
-    this.selectedRegs = [];
-    for (var i = 0; i < this.regions?.length; i++) {
-      for (var j = 0; j < this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions.length; j++) {
-        if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions[j].id == this.regions[i].id) {
-          this.selectedRegs.push(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions[j]);
-        }
+    // this.selectedRegs = [];
+    // for (var i = 0; i < this.regions?.length; i++) {
+    //   for (var j = 0; j < this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions.length; j++) {
+    //     if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions[j].id == this.regions[i].id) {
+    //       this.selectedRegs.push(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions[j]);
+    //     }
 
-      }
-    }
+    //   }
+    // }
 
-    // make sure the selected is not redundant!!
-    const ids = this.selectedRegs.map(o => o.id) // remove duplicate
-    const filtered = this.selectedRegs.filter(({ id }, index) => !ids.includes(id, index + 1))
-    // end  make sure the selected is not redundant!!
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = filtered;
-    this.selectedRegions = filtered;
-    console.log('onRegionChange Selected REgions',  this.selectedRegions);
+    // // make sure the selected is not redundant!!
+    // const ids = this.selectedRegs.map(o => o.id) // remove duplicate
+    // const filtered = this.selectedRegs.filter(({ id }, index) => !ids.includes(id, index + 1))
+    // // end  make sure the selected is not redundant!!
+    // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = filtered;
+    // this.selectedRegions = filtered;
+    // console.log('onRegionChange Selected REgions',  this.selectedRegions);
 
   }  
 
@@ -604,9 +612,19 @@ export class ApplicationDetailsComponent implements OnInit {
   OnDistrictCouncilChange(districtCouncil: IDistrictCouncil) {
     this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === districtCouncil.id);
     this.localMunicipalities = [];
-    this.regions = [];
-    this.sdas = [];
+    // this.regions = [];
 
+    this.sdas = null;
+    this.selectedRegions =null;
+    this.selectedSdas =null;
+    this.selected =null;
+    this.regions = null;
+    this.sdas = null;
+    
+
+    //this.loadMunicipalities();
+    //this.regionDropdown();
+   //this.loadServiceDeliveryAreas();
     // if (districtCouncil.id != undefined && this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil?.id != districtCouncil.id)
     //  {
     //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality =  { name: 'Select Type', id: null, districtCouncilId: null };
@@ -624,15 +642,18 @@ export class ApplicationDetailsComponent implements OnInit {
 
 
   onRegionChange(regions: IRegion[]) {
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = regions;
+
+    // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = regions;
     this.selectedRegions = [];
+    this.selectedSdas =[];
+    this.selected =[];
+    this.sdas = [];
 
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
 
-    this.sdas = [];
 
     // filter items matching the selected regions
     if (regions != null && regions.length != 0) {
@@ -671,11 +692,13 @@ export class ApplicationDetailsComponent implements OnInit {
     this.places = [];
     this.subPlacesAll = [];
     this.selectedSdas = [];
+ 
+   // this.sdas =[];
+    
     this.setPlaces(sdas); // populate specific locations where the service will be delivered to
     sdas.forEach(item => {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
-    console.log('onSdaChange selected sds',this.selectedSdas);
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
     console.log('onSdaChange',  this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
 

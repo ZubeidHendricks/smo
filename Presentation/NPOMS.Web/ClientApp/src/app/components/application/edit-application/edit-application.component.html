@@ -15,14 +15,9 @@
             [(activeStep)]="activeStep" [application]="application"
             [(fundingApplicationDetails)]="fundingApplicationDetails"
             [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
-            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
-            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
-            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
-            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"            
             (getPlace)="places($event)"
             (getSubPlace)=" subPlaces($event)">
         </app-application-details>
-
         <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
             [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
             [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">

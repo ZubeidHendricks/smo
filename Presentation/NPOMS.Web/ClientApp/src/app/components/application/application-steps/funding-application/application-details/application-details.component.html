@@ -59,8 +59,8 @@
 
             <div class="p-field p-col-12 p-md-3">
                 <label class="mandatory-content">Service Delivery Area</label>
-                <p-multiSelect defaultLabel="Choose"  optionLabel="name" [options]="sdas" [ngModelOptions]="{standalone: true}" 
-                appendTo="body" [(ngModel)]="selectedSdas"  (onChange)="onSdaChange($event.value)" 
+                <p-multiSelect defaultLabel="Choose"  optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
+                 [ngModelOptions]="{standalone: true}" appendTo="body"   (onChange)="onSdaChange($event.value)" 
                  [style]="{'width':'100%'}"  [disabled]="readonly()"></p-multiSelect> 
             </div>     
         </div>

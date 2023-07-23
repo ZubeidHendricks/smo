@@ -55,8 +55,15 @@ namespace NPOMS.Repository.Implementation
 
 		public async Task CreateAsync(T entity)
 		{
-			this.RepositoryContext.Set<T>().Add(entity);
-			await this.RepositoryContext.SaveChangesAsync();
+			try
+			{
+				this.RepositoryContext.Set<T>().Add(entity);
+				await this.RepositoryContext.SaveChangesAsync();
+			}
+			catch(Exception ex)
+			{
+
+			}
 		}
 
 		public async Task CreateAndDetachAsync(T entity)
@@ -136,8 +143,6 @@ namespace NPOMS.Repository.Implementation
 
 		public async Task UpdateAsync1(T entity)
 		{
-			// Only add to AuditLog table if trackChanges is true
-
 			try
 			{
 				this.RepositoryContext.Set<T>().Update(entity);
