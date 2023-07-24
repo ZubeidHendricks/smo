@@ -481,12 +481,12 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   nextPage() {
-    // if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
+    if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
       this.activeStep = this.activeStep + 1;
       this.activeStepChange.emit(this.activeStep);
-    // }
-    //   this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
-    // else
+    }
+    else
+      this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
   }
 
   prevPage() {
@@ -519,6 +519,7 @@ export class ApplicationDetailsComponent implements OnInit {
       this.regions = null;
       this.sdas = null;
     }
+    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality != null)
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
 
     if (localMunicipality.id != undefined) {
