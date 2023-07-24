@@ -48,7 +48,8 @@ export class ResourceTypeComponent implements OnInit {
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
     private _messageService: MessageService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _dropdownService: DropdownService,
   ) { }
 
   ngOnInit(): void {
@@ -161,6 +162,20 @@ export class ResourceTypeComponent implements OnInit {
     );
   }
 
+  delete(data: IResourceType) {
+    let text = "Are you sure that you want to delete this?";
+
+    if (confirm(text) == true) 
+    {      
+      this._dropdownService.delete(data, DropdownTypeEnum.ResourceTypes).subscribe();
+      this.loadEntities();
+    } 
+    else 
+    {
+      return false;
+    }
+  }
+  
   goBack() {
     this._router.navigateByUrl('admin/utilities');
   }

@@ -7,5 +7,6 @@ namespace NPOMS.Repository.Interfaces.Evaluation
 	public interface IResponseTypeRepository : IBaseRepository<ResponseType>
 	{
 		Task<IEnumerable<ResponseType>> GetAllAsync(bool returnInactive);
-	}
+        Task<ResponseType> DeleteById(int id);
+    }
 }

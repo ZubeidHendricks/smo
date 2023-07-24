@@ -7,7 +7,7 @@ namespace NPOMS.Repository.Interfaces.Evaluation
 	public interface IQuestionSectionRepository : IBaseRepository<QuestionSection>
 	{
 		Task<IEnumerable<QuestionSection>> GetAllAsync(bool returnInactive);
-
-		Task<IEnumerable<QuestionSection>> GetByQuestionCategoryId(int questioncategoryId);
+        Task<QuestionSection> DeleteById(int id);
+        Task<IEnumerable<QuestionSection>> GetByQuestionCategoryId(int questioncategoryId);
 	}
 }

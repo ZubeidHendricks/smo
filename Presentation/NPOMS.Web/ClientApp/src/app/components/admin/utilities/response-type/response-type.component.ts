@@ -53,7 +53,7 @@ export class ResponseTypeComponent implements OnInit {
         this._spinner.show();
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewUtilityList))
+        if (!this.IsAuthorized(PermissionsEnum.ViewUtilities))
           this._router.navigate(['401']);
 
         this.loadEntities();
@@ -88,6 +88,20 @@ export class ResponseTypeComponent implements OnInit {
     }
 
     return value;
+  }
+
+  delete(data: IResponseType) {
+    let text = "Are you sure that you want to delete this?";
+
+    if (confirm(text) == true) 
+    {      
+      this._dropdownService.delete(data, DropdownTypeEnum.ResponseType).subscribe();
+      this.loadEntities();
+    } 
+    else 
+    {
+      return false;
+    }
   }
 
   public add() {

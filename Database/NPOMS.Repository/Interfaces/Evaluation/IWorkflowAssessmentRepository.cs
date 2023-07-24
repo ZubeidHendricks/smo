@@ -9,5 +9,6 @@ namespace NPOMS.Repository.Interfaces.Evaluation
 		Task<IEnumerable<WorkflowAssessment>> GetAllAsync(bool returnInactive);
 
 		Task<WorkflowAssessment> GetByQuestionCategoryId(int questionCategoryId);
-	}
+        Task<WorkflowAssessment> DeleteById(int id);
+    }
 }

@@ -11,7 +11,7 @@ namespace NPOMS.Repository.Interfaces.Evaluation
 		Task<IEnumerable<Response>> GetByFundingApplicationId(int fundingApplicationId);
 
 		Task<Response> GetResponseByIds(int fundingApplicationId, int questionId, int currentUserId);
-
-		Task<IEnumerable<Response>> GetResponseCollectionByIds(int fundingApplicationId, List<int> questionIds, int createdUserId);
+        Task<Response> DeleteById(int id);
+        Task<IEnumerable<Response>> GetResponseCollectionByIds(int fundingApplicationId, List<int> questionIds, int createdUserId);
 	}
 }

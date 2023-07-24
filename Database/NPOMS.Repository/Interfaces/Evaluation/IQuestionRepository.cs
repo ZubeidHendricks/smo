@@ -11,7 +11,7 @@ namespace NPOMS.Repository.Interfaces.Evaluation
 		Task<IEnumerable<Question>> GetAllWithDetails();
 
 		Task<Question> GetById(int id);
-
-		Task<IEnumerable<Question>> GetByQuestionSectionIds(List<int> questionSectionIds);
+        Task<Question> DeleteById(int id);
+        Task<IEnumerable<Question>> GetByQuestionSectionIds(List<int> questionSectionIds);
 	}
 }

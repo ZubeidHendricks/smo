@@ -305,7 +305,7 @@ export enum PermissionsEnum {
 
     ViewSummaryOption = "Indicators.Summary",
     ExportSummary = "Indicators.ExportSummary",
-
+    EvaluateFundingApplication = "FA.Evaluate",
       /* Utilities Management */
       ViewUtilityList = "UM.List",
       AddUtility = "UM.Add",
@@ -393,6 +393,7 @@ export enum QCStepsEnum {
     AmountYouApplyingFor = 2,
     ApplicationDocument = 3
 }
+
 
 export enum DocumentUploadLocationsEnum {
     NpoProfile = 'NpoProfile',

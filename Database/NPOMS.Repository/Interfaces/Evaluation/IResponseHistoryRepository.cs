@@ -7,5 +7,6 @@ namespace NPOMS.Repository.Interfaces.Evaluation
 	public interface IResponseHistoryRepository : IBaseRepository<ResponseHistory>
 	{
 		Task<IEnumerable<ResponseHistory>> GetByIds(int fundingApplicationId, int questionId, int currentUserId);
-	}
+        Task<ResponseHistory> DeleteById(int id);
+    }
 }

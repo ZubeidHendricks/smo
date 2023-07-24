@@ -5,6 +5,7 @@ using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
+using NPOMS.Domain.Evaluation;
 using NPOMS.Domain.Lookup;
 using NPOMS.Services.Interfaces;
 using System;
@@ -20,8 +21,6 @@ namespace NPOMS.API.Controllers
 
         private ILogger<DropdownController> _logger;
         private IDropdownService _dropdownService;
-        private IDocumentStoreService _documentStoreService;
-        private IApplicationService _applicationService;
 
         #endregion
 
@@ -29,16 +28,11 @@ namespace NPOMS.API.Controllers
 
         public DropdownController(
             ILogger<DropdownController> logger,
-            IDropdownService dropdownService,
-            IDocumentStoreService documentStoreService,
-            IApplicationService applicationService
+            IDropdownService dropdownService
             )
         {
             _logger = logger;
             _dropdownService = dropdownService;
-            _documentStoreService = documentStoreService;
-            _applicationService = applicationService;
-
         }
 
         #endregion
@@ -111,21 +105,6 @@ namespace NPOMS.API.Controllers
                         return Ok(facilityList);
                     case DropdownTypeEnum.DocumentTypes:
                         var documentTypes = await _dropdownService.GetDocumentTypes(returnInactive);
-                        var documents = await _documentStoreService.GetAllDocuments();
-                        foreach (var type in documentTypes)
-                        {
-                            foreach (var doc in documents)
-                            {
-                                if (doc.DocumentTypeId != null)
-                                {
-                                    if (doc.DocumentTypeId == type.Id)
-                                    {
-                                        type.DocumentName = doc.Name;
-                                    }
-                                }
-                            }
-
-                        }
                         return Ok(documentTypes);
                     case DropdownTypeEnum.FacilityTypes:
                         var facilityTypes = await _dropdownService.GetFacilityTypes(returnInactive);
@@ -211,6 +190,27 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.StaffCategory:
                         var staffCategories = await _dropdownService.GetStaffCategories(returnInactive);
                         return Ok(staffCategories);
+                    case DropdownTypeEnum.FundingTemplateType:
+                        var fundingTemplateTypes = await _dropdownService.GetAllFundingTemplateTypes(returnInactive);
+                        return Ok(fundingTemplateTypes);
+                    case DropdownTypeEnum.QuestionCategory:
+                        var categories = await _dropdownService.GetQuestionCategories(returnInactive);
+                        return Ok(categories);
+                    case DropdownTypeEnum.QuestionSection:
+                        var sections = await _dropdownService.GetQuestionSections(returnInactive);
+                        return Ok(sections);
+                    case DropdownTypeEnum.Question:
+                        var questions = await _dropdownService.GetQuestions(returnInactive);
+                        return Ok(questions);
+                    case DropdownTypeEnum.ResponseType:
+                        var responseTypes = await _dropdownService.GetResponseTypes(returnInactive);
+                        return Ok(responseTypes);
+                    case DropdownTypeEnum.ResponseOption:
+                        var responseOptions = await _dropdownService.GetResponseOptions(returnInactive);
+                        return Ok(responseOptions);
+                    case DropdownTypeEnum.WorkflowAssessment:
+                        var assessments = await _dropdownService.GetWorkflowAssessments(returnInactive);
+                        return Ok(assessments);
                 }
 
                 return Ok();
@@ -221,49 +221,6 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-
-
-        [HttpGet("dropdownTypeEnum/{dropdownType}/id/{id}/returnInactive/{returnInactive}", Name = "GetEntitiesForDoc")]
-        public async Task<IActionResult> GetEntitiesForDoc(DropdownTypeEnum dropdownType, int id, bool returnInactive)
-        {
-            try
-            {
-                switch (dropdownType)
-                {
-                    case DropdownTypeEnum.DocumentTypes:
-                        var refNo = await _applicationService.GetApplicationById(id);
-                        var documentTypes = await _dropdownService.GetDocumentTypes(returnInactive);
-                        //var documents = await _documentStoreService.GetAllDocuments();
-                        var docByRefNo = await _documentStoreService.GetDocumnetByRefNo(refNo.RefNo);
-
-                        foreach (var type in documentTypes)
-                        {
-                            foreach (var doc in docByRefNo)
-                            {
-                                if (doc.DocumentTypeId != null)
-                                {
-                                    if (doc.DocumentTypeId == type.Id)
-                                    {
-                                        type.DocumentName = doc.Name;
-                                    }
-                                }
-                            }
-
-                        }
-                        return Ok(documentTypes);
-                    
-                }
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside GetEntities-{dropdownType} action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
 
         [HttpPost("dropdownTypeEnum/{dropdownType}", Name = "CreateEntity")]
         public async Task<IActionResult> CreateEntity(object entity, DropdownTypeEnum dropdownType)
@@ -411,6 +368,30 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.StaffCategory:
                         var staffCategory = JsonConvert.DeserializeObject<StaffCategory>(Convert.ToString(entity));
                         await _dropdownService.CreateStaffCategory(staffCategory, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.QuestionCategory:
+                        var category = JsonConvert.DeserializeObject<QuestionCategory>(Convert.ToString(entity));
+                        await _dropdownService.CreateQuestionCategory(category, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.QuestionSection:
+                        var section = JsonConvert.DeserializeObject<QuestionSection>(Convert.ToString(entity));
+                        await _dropdownService.CreateQuestionSection(section, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.Question:
+                        var question = JsonConvert.DeserializeObject<Question>(Convert.ToString(entity));
+                        await _dropdownService.CreateQuestion(question, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.ResponseType:
+                        var responseType = JsonConvert.DeserializeObject<ResponseType>(Convert.ToString(entity));
+                        await _dropdownService.CreateResponseType(responseType, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.ResponseOption:
+                        var responseOption = JsonConvert.DeserializeObject<ResponseOption>(Convert.ToString(entity));
+                        await _dropdownService.CreateResponseOption(responseOption, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.WorkflowAssessment:
+                        var assessment = JsonConvert.DeserializeObject<WorkflowAssessment>(Convert.ToString(entity));
+                        await _dropdownService.CreateWorkflowAssessment(assessment, base.GetUserIdentifier());
                         break;
                 }
 
@@ -569,6 +550,72 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.StaffCategory:
                         var staffCategory = JsonConvert.DeserializeObject<StaffCategory>(Convert.ToString(entity));
                         await _dropdownService.UpdateStaffCategory(staffCategory, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.QuestionCategory:
+                        var category = JsonConvert.DeserializeObject<QuestionCategory>(Convert.ToString(entity));
+                        await _dropdownService.UpdateQuestionCategory(category, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.QuestionSection:
+                        var section = JsonConvert.DeserializeObject<QuestionSection>(Convert.ToString(entity));
+                        await _dropdownService.UpdateQuestionSection(section, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.Question:
+                        var question = JsonConvert.DeserializeObject<Question>(Convert.ToString(entity));
+                        await _dropdownService.UpdateQuestion(question, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.ResponseType:
+                        var responseType = JsonConvert.DeserializeObject<ResponseType>(Convert.ToString(entity));
+                        await _dropdownService.UpdateResponseType(responseType, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.ResponseOption:
+                        var responseOption = JsonConvert.DeserializeObject<ResponseOption>(Convert.ToString(entity));
+                        await _dropdownService.UpdateResponseOption(responseOption, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.WorkflowAssessment:
+                        var assessment = JsonConvert.DeserializeObject<WorkflowAssessment>(Convert.ToString(entity));
+                        await _dropdownService.UpdateWorkflowAssessment(assessment, base.GetUserIdentifier());
+                        break;
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateEntity action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("dropdownTypeEnum/{dropdownType}/id/{id}", Name = "delete")]
+        public async Task<IActionResult> Delete(int id, DropdownTypeEnum dropdownType)
+        {
+            try
+            {
+                switch (dropdownType)
+                {
+                   case DropdownTypeEnum.QuestionCategory:
+                       // var category = JsonConvert.DeserializeObject<QuestionCategory>(Convert.ToString(entity));
+                        await _dropdownService.DeleteQuestionCategory(id, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.QuestionSection:
+                       // var section = JsonConvert.DeserializeObject<QuestionSection>(Convert.ToString(entity));
+                        await _dropdownService.DeleteQuestionSection(id, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.Question:
+                       // var question = JsonConvert.DeserializeObject<Question>(Convert.ToString(entity));
+                        await _dropdownService.DeleteQuestion(id, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.ResponseType:
+                      //  var responseType = JsonConvert.DeserializeObject<ResponseType>(Convert.ToString(entity));
+                        await _dropdownService.DeleteResponseType(id, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.ResponseOption:
+                      //  var responseOption = JsonConvert.DeserializeObject<ResponseOption>(Convert.ToString(entity));
+                        await _dropdownService.DeleteResponseOption(id, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.WorkflowAssessment:
+                       // var assessment = JsonConvert.DeserializeObject<WorkflowAssessment>(Convert.ToString(entity));
+                        await _dropdownService.DeleteWorkflowAssessment(id, base.GetUserIdentifier());
                         break;
                 }
 

@@ -56,6 +56,13 @@ namespace NPOMS.Repository.Implementation.Evaluation
 							.AsNoTracking().ToListAsync();
 		}
 
-		#endregion
-	}
+        public async Task<Question> DeleteById(int id)
+        {
+            var model = await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+            await DeleteAsync(model);
+            return model;
+        }
+
+        #endregion
+    }
 }

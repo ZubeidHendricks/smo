@@ -57,7 +57,7 @@ export class ResponseOptionComponent implements OnInit {
         this._spinner.show();
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewUtilityList))
+        if (!this.IsAuthorized(PermissionsEnum.ViewUtilities))
           this._router.navigate(['401']);
 
         this.loadResponseTypes();
@@ -177,6 +177,20 @@ export class ResponseOptionComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  delete(data: IResponseOption) {
+    let text = "Are you sure that you want to delete this?";
+
+    if (confirm(text) == true) 
+    {      
+      this._dropdownService.delete(data, DropdownTypeEnum.ResponseOption).subscribe();
+      this.loadEntities();
+    } 
+    else 
+    {
+      return false;
+    }
   }
 
   public goBack() {

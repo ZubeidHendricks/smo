@@ -9,7 +9,7 @@ namespace NPOMS.Repository.Interfaces.Evaluation
 		Task<IEnumerable<CapturedResponse>> GetAllAsync(bool returnInactive);
 
 		Task<IEnumerable<CapturedResponse>> GetByFundingApplicationId(int fundingApplicationId);
-
-		Task<IEnumerable<CapturedResponse>> GetByIds(int fundingApplicationId, int questionCategoryId);
+        Task<CapturedResponse> DeleteById(int id);
+        Task<IEnumerable<CapturedResponse>> GetByIds(int fundingApplicationId, int questionCategoryId);
 	}
 }

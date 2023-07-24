@@ -48,8 +48,8 @@ export class UtilitiesComponent implements OnInit {
         this.profile = profile;
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
 
-        // if (!this.IsAuthorized(PermissionsEnum.ViewUtilitiesSubMenu))
-        //   this._router.navigate(['401']);
+        if (!this.IsAuthorized(PermissionsEnum.ViewUtilitiesSubMenu))
+          this._router.navigate(['401']);
 
         this.loadUtilities();
       }

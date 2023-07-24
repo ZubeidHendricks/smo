@@ -285,8 +285,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     EditQuickCaptureComponent,
     QcApplicationDetailsComponent,
     QcDocumentUploadComponent,
-    QcApplicationPeriodsComponent
-    QcDocumentUploadComponent,
+    QcApplicationPeriodsComponent,
     QuestionComponent,
     ResponseTypeComponent,
     WorkflowAssessmentComponent,

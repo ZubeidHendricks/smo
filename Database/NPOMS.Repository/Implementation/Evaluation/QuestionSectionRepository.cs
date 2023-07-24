@@ -35,6 +35,13 @@ namespace NPOMS.Repository.Implementation.Evaluation
 										.OrderBy(x => x.SortOrder).AsNoTracking().ToListAsync();
 		}
 
-		#endregion
-	}
+        public async Task<QuestionSection> DeleteById(int id)
+        {
+            var model = await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+            await DeleteAsync(model);
+            return model;
+        }
+
+        #endregion
+    }
 }
