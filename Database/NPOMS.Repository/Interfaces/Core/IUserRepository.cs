@@ -24,8 +24,8 @@ namespace NPOMS.Repository.Interfaces.Core
 		Task<User> GetByIdWithDetails(int id);
 
 		Task<User> GetByUserNameWithDetails(string userName);
-
-		Task<User> GetByUserName(string userName);
+        Task<User> GetUserByUserNameWithDetailsAsync(string userName);
+        Task<User> GetByUserName(string userName);
 
 		Task<IEnumerable<User>> GetByIds(int roleId, int departmentId);
 

@@ -95,8 +95,8 @@ namespace NPOMS.Repository
 		public DbSet<Gender> Genders { get; set; }
 		public DbSet<Race> Races { get; set; }
         public DbSet<Language> Languages { get; set; }
-       // public DbSet<Programme> Programmes { get; set; }
-		public DbSet<ProvisionType> ProvisionTypes { get; set; }
+        public DbSet<FundingTemplateType> FundingTemplateType { get; set; }
+        public DbSet<ProvisionType> ProvisionTypes { get; set; }
 		public DbSet<RecipientType> RecipientTypes { get; set; }
 		public DbSet<ResourceType> ResourceTypes { get; set; }
 		public DbSet<ServiceType> ServiceTypes { get; set; }
@@ -164,6 +164,7 @@ namespace NPOMS.Repository
 		public DbSet<ResourceList> ResourceList { get; set; }
 
         /* Evaluation */
+        public DbSet<FundingTemplateType> FundingTemplateTypes { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<QuestionCategory> QuestionCategories { get; set; }
         public DbSet<QuestionProperty> QuestionProperties { get; set; }

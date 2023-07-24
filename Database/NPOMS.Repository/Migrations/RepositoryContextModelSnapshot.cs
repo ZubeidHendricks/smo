@@ -191,7 +191,7 @@ namespace NPOMS.Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments", "core");
-
+                    b.ToTable("FundingTemplateTypes", "dropdown");
                     b.HasData(
                         new
                         {

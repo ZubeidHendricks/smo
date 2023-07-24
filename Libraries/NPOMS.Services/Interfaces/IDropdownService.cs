@@ -1,6 +1,7 @@
 ﻿using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
+using NPOMS.Domain.Evaluation;
 using NPOMS.Domain.Lookup;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -92,8 +93,8 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateRecipientType(RecipientType model, string userIdentifier);
 
 		Task<IEnumerable<ActivityType>> GetActivityTypes(bool returnInactive);
-
-		Task CreateActivityType(ActivityType model, string userIdentifier);
+        Task<IEnumerable<FundingTemplateType>> GetAllFundingTemplateTypes(bool returnInactive);
+        Task CreateActivityType(ActivityType model, string userIdentifier);
 
 		Task UpdateActivityType(ActivityType model, string userIdentifier);
 
@@ -274,5 +275,40 @@ namespace NPOMS.Services.Interfaces
 		Task CreateStaffCategory(StaffCategory model, string userIdentifier);
 
 		Task UpdateStaffCategory(StaffCategory model, string userIdentifier);
-	}
+        Task<IEnumerable<QuestionCategory>> GetQuestionCategories(bool returnInactive);
+
+        Task CreateQuestionCategory(QuestionCategory model, string userIdentifier);
+
+        Task UpdateQuestionCategory(QuestionCategory model, string userIdentifier);
+
+        Task<IEnumerable<QuestionSection>> GetQuestionSections(bool returnInactive);
+
+        Task CreateQuestionSection(QuestionSection model, string userIdentifier);
+
+        Task UpdateQuestionSection(QuestionSection model, string userIdentifier);
+
+        Task<IEnumerable<Question>> GetQuestions(bool returnInactive);
+
+        Task CreateQuestion(Question model, string userIdentifier);
+
+        Task UpdateQuestion(Question model, string userIdentifier);
+
+        Task<IEnumerable<ResponseType>> GetResponseTypes(bool returnInactive);
+
+        Task CreateResponseType(ResponseType model, string userIdentifier);
+
+        Task UpdateResponseType(ResponseType model, string userIdentifier);
+
+        Task<IEnumerable<ResponseOption>> GetResponseOptions(bool returnInactive);
+
+        Task CreateResponseOption(ResponseOption model, string userIdentifier);
+
+        Task UpdateResponseOption(ResponseOption model, string userIdentifier);
+
+        Task<IEnumerable<WorkflowAssessment>> GetWorkflowAssessments(bool returnInactive);
+
+        Task CreateWorkflowAssessment(WorkflowAssessment model, string userIdentifier);
+
+        Task UpdateWorkflowAssessment(WorkflowAssessment model, string userIdentifier);
+    }
 }

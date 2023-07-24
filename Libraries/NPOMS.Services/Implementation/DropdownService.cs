@@ -4,6 +4,7 @@ using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Lookup;
+using NPOMS.Domain.Evaluation;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
+using NPOMS.Repository.Interfaces.Evaluation;
 
 namespace NPOMS.Services.Implementation
 {
@@ -70,12 +72,18 @@ namespace NPOMS.Services.Implementation
         private ILanguageRepository _languageRepository;
 		private IRegistrationStatusRepository _registrationStatusRepository;
 		private IStaffCategoryRepository _staffCategoryRepository;
-
+        private IQuestionRepository _questionRepository;
+        private IQuestionSectionRepository _questionSectionRepository;
+        private IQuestionCategoryRepository _questionCategoryRepository;
+        private IResponseOptionRepository _responseOptionRepository;
+        private IResponseTypeRepository _responseTypeRepository;
+        private IWorkflowAssessmentRepository _workflowAssessmentRepository;
+        private IFundingTemplateTypeRepository _fundingTemplateTypeRepository;
         #endregion
 
-		#region Constructors
+        #region Constructors
 
-		public DropdownService(
+        public DropdownService(
 			IMapper mapper,
 			IRoleRepository roleRepository,
 			IDepartmentRepository departmentRepository,
@@ -125,7 +133,14 @@ namespace NPOMS.Services.Implementation
 			IGenderRepository genderRepository,
 			ILanguageRepository languageRepository,
 			IRegistrationStatusRepository registrationStatusRepository,
-			IStaffCategoryRepository staffCategoryRepository)
+			IStaffCategoryRepository staffCategoryRepository,
+            IQuestionRepository questionRepository,
+            IQuestionSectionRepository questionSectionRepository,
+            IQuestionCategoryRepository questionCategoryRepository,
+            IResponseOptionRepository responseOptionRepository,
+            IResponseTypeRepository responseTypeRepository,
+            IWorkflowAssessmentRepository workflowAssessmentRepository,
+            IFundingTemplateTypeRepository fundingTemplateTypeRepository)
 		{
 			_mapper = mapper;
 			_roleRepository = roleRepository;
@@ -177,7 +192,14 @@ namespace NPOMS.Services.Implementation
 			_languageRepository = languageRepository;
 			_registrationStatusRepository = registrationStatusRepository;
 			_staffCategoryRepository = staffCategoryRepository;
-		}
+            _questionRepository = questionRepository;
+            _questionSectionRepository = questionSectionRepository;
+            _questionCategoryRepository = questionCategoryRepository;
+            _responseOptionRepository = responseOptionRepository;
+            _responseTypeRepository = responseTypeRepository;
+            _workflowAssessmentRepository = workflowAssessmentRepository;
+            _fundingTemplateTypeRepository = fundingTemplateTypeRepository;
+        }
 
 		#endregion
 
@@ -1445,8 +1467,187 @@ namespace NPOMS.Services.Implementation
 			await _staffCategoryRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
-		#endregion
+        #endregion
 
-		#endregion
-	}
+        #region Question Category
+
+        public async Task<IEnumerable<QuestionCategory>> GetQuestionCategories(bool returnInactive)
+        {
+            return await _questionCategoryRepository.GetAllAsync(returnInactive);
+        }
+
+        public async Task CreateQuestionCategory(QuestionCategory model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.CreatedUserId = currentUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _questionCategoryRepository.CreateAsync(model);
+        }
+
+        public async Task UpdateQuestionCategory(QuestionCategory model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.UpdatedUserId = currentUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _questionCategoryRepository.UpdateAsync(model);
+        }
+
+        #endregion
+
+        #region Question Section
+
+        public async Task<IEnumerable<FundingTemplateType>> GetAllFundingTemplateTypes(bool returnInactive)
+        {
+            return await _fundingTemplateTypeRepository.GetAllAsync(returnInactive);
+        }
+
+        public async Task<IEnumerable<QuestionSection>> GetQuestionSections(bool returnInactive)
+        {
+            return await _questionSectionRepository.GetAllAsync(returnInactive);
+        }
+
+        public async Task CreateQuestionSection(QuestionSection model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.CreatedUserId = currentUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _questionSectionRepository.CreateAsync(model);
+        }
+
+        public async Task UpdateQuestionSection(QuestionSection model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.UpdatedUserId = currentUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _questionSectionRepository.UpdateAsync(model);
+        }
+
+        #endregion
+
+        #region Question
+
+        public async Task<IEnumerable<Question>> GetQuestions(bool returnInactive)
+        {
+            return await _questionRepository.GetAllAsync(returnInactive);
+        }
+
+        public async Task CreateQuestion(Question model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.CreatedUserId = currentUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _questionRepository.CreateAsync(model);
+        }
+
+        public async Task UpdateQuestion(Question model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.UpdatedUserId = currentUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _questionRepository.UpdateAsync(model);
+        }
+
+        #endregion
+
+        #region Response Type
+
+        public async Task<IEnumerable<ResponseType>> GetResponseTypes(bool returnInactive)
+        {
+            return await _responseTypeRepository.GetAllAsync(returnInactive);
+        }
+
+        public async Task CreateResponseType(ResponseType model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.CreatedUserId = currentUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _responseTypeRepository.CreateAsync(model);
+        }
+
+        public async Task UpdateResponseType(ResponseType model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.UpdatedUserId = currentUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _responseTypeRepository.UpdateAsync(model);
+        }
+
+        #endregion
+
+        #region Response Option
+
+        public async Task<IEnumerable<ResponseOption>> GetResponseOptions(bool returnInactive)
+        {
+            return await _responseOptionRepository.GetAllAsync(returnInactive);
+        }
+
+        public async Task CreateResponseOption(ResponseOption model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.CreatedUserId = currentUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _responseOptionRepository.CreateAsync(model);
+        }
+
+        public async Task UpdateResponseOption(ResponseOption model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.UpdatedUserId = currentUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _responseOptionRepository.UpdateAsync(model);
+        }
+
+        #endregion
+
+        #region Workflow Assessment
+
+        public async Task<IEnumerable<WorkflowAssessment>> GetWorkflowAssessments(bool returnInactive)
+        {
+            return await _workflowAssessmentRepository.GetAllAsync(returnInactive);
+        }
+
+        public async Task CreateWorkflowAssessment(WorkflowAssessment model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.CreatedUserId = currentUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _workflowAssessmentRepository.CreateAsync(model);
+        }
+
+        public async Task UpdateWorkflowAssessment(WorkflowAssessment model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+
+            model.UpdatedUserId = currentUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _workflowAssessmentRepository.UpdateAsync(model);
+        }
+
+        #endregion
+
+        #endregion
+    }
 }

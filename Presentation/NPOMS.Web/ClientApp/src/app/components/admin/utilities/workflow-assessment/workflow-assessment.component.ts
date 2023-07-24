@@ -57,7 +57,7 @@ export class WorkflowAssessmentComponent implements OnInit {
         this._spinner.show();
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewUtilityList))
+        if (!this.IsAuthorized(PermissionsEnum.ViewUtilities))
           this._router.navigate(['401']);
 
         this.loadQuestionCategories();
@@ -119,7 +119,7 @@ export class WorkflowAssessmentComponent implements OnInit {
 
     // Only retrieve question categories where no workflow assessment is created
     // Found at https://stackoverflow.com/questions/32965688/comparing-two-arrays-of-objects-and-exclude-the-elements-who-match-values-into
-    this.filteredQuestionCategories = this.questionCategories.filter(x => !this.entities.some(y => x.id === y.questionCategoryId) && x.isActive);
+    this.filteredQuestionCategories = this.questionCategories;//.filter(x => !this.entities.some(y => x.id === y.questionCategoryId) && x.isActive);
 
     this.showDialog = true;
   }

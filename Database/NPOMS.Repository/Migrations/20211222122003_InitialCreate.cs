@@ -225,6 +225,25 @@ namespace NPOMS.Repository.Migrations
                 {
                     table.PrimaryKey("PK_FacilityClasses", x => x.Id);
                 });
+             migrationBuilder.CreateTable(
+                name: "FundingTemplateTypes",
+                schema: "dropdown",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    SystemName = table.Column<string>(type: "nvarchar(255)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedUserId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedUserId = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FundingTemplateTypes", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "FacilityDistricts",
@@ -3002,6 +3021,10 @@ namespace NPOMS.Repository.Migrations
             migrationBuilder.DropTable(
                 name: "FacilityClasses",
                 schema: "dropdown");
+
+            migrationBuilder.DropTable(
+               name: "FundingTemplateTypes",
+               schema: "dropdown");
 
             migrationBuilder.DropTable(
                 name: "FacilitySubDistricts",

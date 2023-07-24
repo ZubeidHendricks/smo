@@ -57,7 +57,7 @@ export class QuestionSectionComponent implements OnInit {
         this._spinner.show();
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewUtilityList))
+        if (!this.IsAuthorized(PermissionsEnum.ViewUtilities))
           this._router.navigate(['401']);
 
         this.loadQuestionCategories();
