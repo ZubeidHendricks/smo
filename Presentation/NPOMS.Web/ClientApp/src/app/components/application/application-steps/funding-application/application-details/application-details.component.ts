@@ -1,4 +1,4 @@
-import { IApplicationDetails, IFundAppSDADetail, IPlace, ISDA, ISubPlace,  } from './../../../../../models/interfaces';
+import { IApplicationDetails, IFundAppSDADetail, IPlace, ISDA, ISubPlace, } from './../../../../../models/interfaces';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -37,7 +37,7 @@ export class ApplicationDetailsComponent implements OnInit {
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
   @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
 
-  dropdownTouched: boolean = false;  
+  dropdownTouched: boolean = false;
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -72,7 +72,7 @@ export class ApplicationDetailsComponent implements OnInit {
   entity: IDistrictCouncil = {} as IDistrictCouncil;
   sourceOfInformationText: string;
   financialYears: IFinancialYear[];
-  
+
   selectedFinancialYear: IFinancialYear;
   departments: IDepartment[];
   selectedDepartment: IDepartment;
@@ -101,7 +101,7 @@ export class ApplicationDetailsComponent implements OnInit {
   regionsAll: IRegion[];
   regions: IRegion[] = [];
   selectedRegions: IRegion[];
-
+  selectedRegs: IRegion[] = [];
   selectedLocalMunicipalitiesText: string;
   selectedRegionsText: string;
   selectedSDAsText: string;
@@ -125,15 +125,14 @@ export class ApplicationDetailsComponent implements OnInit {
     private _applicationRepo: ApplicationService,
     private _applicationPeriodRepo: ApplicationPeriodService,
     private _activeRouter: ActivatedRoute,
-    private _fundAppService: FundingApplicationService,  
+    private _fundAppService: FundingApplicationService,
     private _bidService: BidService,
-    private _messageService:MessageService,  
+    private _messageService: MessageService,
     private _loggerService: LoggerService,
     private _npoProfile: NpoProfileService,
   ) { }
 
-   getSelectedValue(value:string){
-  
+  getSelectedValue(value: string) {
     this.selectedDropdownValue = value;
   }
   ngOnInit(): void {
@@ -160,9 +159,9 @@ export class ApplicationDetailsComponent implements OnInit {
         //Get all regions
         this.regionDropdown();
         //Get all service delivery areas
-        this. loadServiceDeliveryAreas();     
+        this.loadServiceDeliveryAreas();
         this.GetAffiliatedOrganisation();
-        this.GetSourceOfInformation(); 
+        this.GetSourceOfInformation();
       }
     });
 
@@ -205,7 +204,7 @@ export class ApplicationDetailsComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-         //            this.saveFundingApplicationDetails();
+            //            this.saveFundingApplicationDetails();
           }
         },
         {
@@ -219,12 +218,11 @@ export class ApplicationDetailsComponent implements OnInit {
     }
   }
 
-  showTable(obj:any)
-  {
-    if(obj.value === "Yes")
-      document.getElementById('affliatedOrganisationInfoTable').hidden = false;  
+  showTable(obj: any) {
+    if (obj.value === "Yes")
+      document.getElementById('affliatedOrganisationInfoTable').hidden = false;
     else
-      document.getElementById('affliatedOrganisationInfoTable').hidden = true;  
+      document.getElementById('affliatedOrganisationInfoTable').hidden = true;
   }
 
   private formValidate() {
@@ -233,7 +231,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear )
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear)
       this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -252,15 +250,11 @@ export class ApplicationDetailsComponent implements OnInit {
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.applicationPeriod;
-
       data.departmentId = this.selectedDepartment.id;
       data.programmeId = this.selectedProgramme.id;
       data.subProgrammeId = this.selectedSubProgramme.id;
       data.financialYearId = this.selectedFinancialYear.id;
       data.applicationTypeId = this.selectedApplicationType.id;
-
-
-
       this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
         (resp) => {
           this._spinner.hide();
@@ -350,8 +344,6 @@ export class ApplicationDetailsComponent implements OnInit {
     }
   }
 
-
-
   private loadApplicationPeriod() {
     this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
@@ -375,17 +367,11 @@ export class ApplicationDetailsComponent implements OnInit {
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
-
-
-       
-
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
           this.selectedSubProgramme = results.subProgramme;
           this.selectedFinancialYear = results.financialYear;
           this.selectedApplicationType = results.applicationType;
-
-
           this.applicationPeriod = results;
           this.isDataAvailable = true;
           this._spinner.hide();
@@ -400,10 +386,8 @@ export class ApplicationDetailsComponent implements OnInit {
   departmentChange(department: IDepartment) {
     this.selectedProgramme = null;
     this.selectedSubProgramme = null;
-
     this.programmes = [];
     this.subProgrammes = [];
-
     if (department.id != null) {
       for (var i = 0; i < this.allProgrammes.length; i++) {
         if (this.allProgrammes[i].departmentId == department.id) {
@@ -415,9 +399,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
   programmeChange(programme: IProgramme) {
     this.selectedSubProgramme = null;
-
     this.subProgrammes = [];
-
     if (programme.id != null) {
       for (var i = 0; i < this.allSubProgrammes.length; i++) {
         if (this.allSubProgrammes[i].programmeId == programme.id) {
@@ -426,12 +408,8 @@ export class ApplicationDetailsComponent implements OnInit {
       }
     }
   }
-
-
   financialYearChange(finYear: IFinancialYear) {
-
     this.getFinancialYearRange(finYear);
-
   }
 
 
@@ -485,7 +463,7 @@ export class ApplicationDetailsComponent implements OnInit {
       (results) => {
         this.sdasAll = results;
         this.allDropdownsLoaded();
-        
+
       },
       (err) => {
         this._loggerService.logException(err);
@@ -495,24 +473,21 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-        if (this.application.statusId ==StatusEnum.PendingReview ||  
-          this.application.statusId == StatusEnum.Approved )          
-          return true;
-        else return false;
-      }
-  
-  nextPage() {
-
-    if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
-    
-      this.activeStep = this.activeStep + 1;
-      this.activeStepChange.emit(this.activeStep);
-
-    }
-    else
-      this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
+    // if (this.application.statusId ==StatusEnum.PendingReview ||
+    //  this.application.statusId == StatusEnum.Approved )
+    //  return true;
+    // else return false;
+    return false;
   }
 
+  nextPage() {
+    // if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
+      this.activeStep = this.activeStep + 1;
+      this.activeStepChange.emit(this.activeStep);
+    // }
+    //   this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
+    // else
+  }
 
   prevPage() {
     this.activeStep = this.activeStep - 1;
@@ -520,8 +495,8 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   private allDropdownsLoaded() {
-    if (this.allDistrictCouncils?.length > 0 && 
-      this.localMunicipalitiesAll?.length > 0 && 
+    if (this.allDistrictCouncils?.length > 0 &&
+      this.localMunicipalitiesAll?.length > 0 &&
       this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
 
       if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil.id != undefined)
@@ -540,107 +515,90 @@ export class ApplicationDetailsComponent implements OnInit {
 
   onLocalMunicipalityChange(localMunicipality: ILocalMunicipality) {
     this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === localMunicipality.id);
-    this.regions = [];
-    this.sdas = [];
-
-    if (localMunicipality.id != undefined && 
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.id != localMunicipality.id) 
-      {
-      this.selectedRegions = [];
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = null;
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
-      }
-
-    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.name != localMunicipality.name) {
-      this.selectedRegions = [];
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
+    if (this.selectedLocalMunicipality == null) {
+      this.regions = null;
+      this.sdas = null;
     }
-
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
 
     if (localMunicipality.id != undefined) {
+
       this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
     }
-  }  
+  }
 
 
   OnDistrictCouncilChange(districtCouncil: IDistrictCouncil) {
     this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === districtCouncil.id);
     this.localMunicipalities = [];
-    this.regions = [];
-    this.sdas = [];
-
-    // if (districtCouncil.id != undefined && this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil?.id != districtCouncil.id)
-    //  {
-    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality =  { name: 'Select Type', id: null, districtCouncilId: null };
-    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
-    //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
-    //  }
+    this.sdas = null;
+    this.selectedRegions = null;
+    this.selectedSdas = null;
+    this.selected = null;
+    this.regions = null;
+    this.sdas = null;
 
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
 
     if (districtCouncil.id != undefined) {
 
       this.localMunicipalities = this.localMunicipalitiesAll?.filter(x => x.districtCouncilId == districtCouncil.id);
-      this.localMunicipalities.unshift({ name: 'Select Type', id: null, districtCouncilId: null });
     }
-  }  
+  }
 
 
   onRegionChange(regions: IRegion[]) {
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = regions;
+
+    // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = regions;
     this.selectedRegions = [];
+    this.selectedSdas = [];
+    this.selected = [];
+    this.sdas = [];
 
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
-    this.sdas = [];
 
     // filter items matching the selected regions
     if (regions != null && regions.length != 0) {
       for (var i = 0; i < this.sdasAll.length; i++) {
         if (regions.filter(r => r.id === this.sdasAll[i].regionId).length != 0) {
           this.sdas.push(this.sdasAll[i]);
-
         }
       }
     }
+
     this.selected = [];
     for (var i = 0; i < regions?.length; i++) {
       for (var j = 0; j < this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length; j++) {
         if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[j].regionId == regions[i].id) {
           this.selected.push(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[j]);
         }
-
       }
     }
-
     // make sure the selected is not redundant!!
     const ids = this.selected.map(o => o.id) // remove duplicate
     const filtered = this.selected.filter(({ id }, index) => !ids.includes(id, index + 1))
     // end  make sure the selected is not redundant!!
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
     this.selectedSdas = filtered;
-    console.log('onRegionChange Selected SDA',  this.selectedSdas);
-
+    console.log('onRegionChange Selected SDA', this.selectedSdas);
   }
 
 
   onSdaChange(sdas: ISDA[]) {
-
     this.places = [];
     this.subPlacesAll = [];
     this.selectedSdas = [];
+    // this.sdas =[];
+
     this.setPlaces(sdas); // populate specific locations where the service will be delivered to
     sdas.forEach(item => {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
-    console.log('onSdaChange selected sds',this.selectedSdas);
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-    console.log('onSdaChange',  this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
+    console.log('onSdaChange', this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
 
     let count = 0;
     if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 
@@ -666,11 +624,9 @@ export class ApplicationDetailsComponent implements OnInit {
 
     if (count == 0)
       this.fundingApplicationDetails.implementations.filter(x => { x.places = []; x.subPlaces = []; });
-
   }
 
   private setPlaces(sdas: ISDA[]): void {
-
     if (sdas && sdas.length != 0) {
       this._bidService.getPlaces(sdas).subscribe(res => {
         this.places = res;
@@ -682,26 +638,22 @@ export class ApplicationDetailsComponent implements OnInit {
       });
     }
   }
-  
+
   private GetSourceOfInformation() {
     this._npoProfile.getSourceOfInformationById(this.selectedApplicationId).subscribe(
       (results) => {
         this.sourceOfInformation = results;
         this.sourceOfInformationText = "Printed newspaper";
-        if(results.find(results => results.selectedSourceValue ===1))
-        {
+        if (results.find(results => results.selectedSourceValue === 1)) {
           this.sourceOfInformationText = "Printed newspaper";
         }
-        if(results.find(results => results.selectedSourceValue ===2))
-        {
+        if (results.find(results => results.selectedSourceValue === 2)) {
           this.sourceOfInformationText = "Online";
         }
-        if(results.find(results => results.selectedSourceValue ===3))
-        {
+        if (results.find(results => results.selectedSourceValue === 3)) {
           this.sourceOfInformationText = "DSD circular to NPOs";
         }
-        if(results.find(results => results.selectedSourceValue ===4))
-        {
+        if (results.find(results => results.selectedSourceValue === 4)) {
           this.sourceOfInformationText = "Other (specify)";
         }
       },
@@ -715,9 +667,8 @@ export class ApplicationDetailsComponent implements OnInit {
     this._npoProfile.getAffiliatedOrganisationById(this.selectedApplicationId).subscribe(
       (results) => {
         this.affliatedOrganisationInfo = results;
-        if(results.length > 0)
-        {
-          document.getElementById('affliatedOrganisationInfoTable').hidden = false; 
+        if (results.length > 0) {
+          document.getElementById('affliatedOrganisationInfoTable').hidden = false;
         }
       },
       (err) => {
@@ -727,7 +678,7 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   updateDetail(rowData: IAffiliatedOrganisation) {
-   
+
     this._npoProfile.updateAffiliatedOrganisationData(this.affliatedOrganisationInfo, this.selectedApplicationId).subscribe(
       (resp) => {
         this.GetAffiliatedOrganisation();
@@ -738,9 +689,7 @@ export class ApplicationDetailsComponent implements OnInit {
     );
   }
 
-
-  updateSourceOfInformation(sourceOfInfo: ISourceOfInformation)
-  {
+  updateSourceOfInformation(sourceOfInfo: ISourceOfInformation) {
     this._npoProfile.updateSourceOfInformation(sourceOfInfo, this.selectedApplicationId).subscribe(
       (resp) => {
         this.GetSourceOfInformation();
@@ -756,23 +705,18 @@ export class ApplicationDetailsComponent implements OnInit {
     } as IAffiliatedOrganisation);
   }
 
-  save()
-  {
+  save() {
     var today = this.getCurrentDateTime();
     this.sourceOfInformations.npoProfileId = Number(this.selectedApplicationId);
     this.sourceOfInformations.selectedSourceValue = Number(this.selectedDropdownValue);
     this.sourceOfInformations.additionalSourceInformation = this.specify;
     this.updateSourceOfInformation(this.sourceOfInformations);
-   
   }
 
   private getCurrentDateTime() {
     let today = new Date();
     let nextTwoHours = today.getHours() + 2;
     today.setHours(nextTwoHours);
-
     return today;
-  } 
-
-
+  }
 }

@@ -1,7 +1,7 @@
 import { EditorModule } from 'primeng/editor';
 import { BrowserModule } from '@angular/platform-browser';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ToastModule } from 'primeng/toast';
 import { PanelModule } from 'primeng/panel';
@@ -140,6 +140,7 @@ import { CreateQuickCaptureComponent } from './components/quick-capture/create-q
 import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick-capture/edit-quick-capture.component';
 import { QcApplicationDetailsComponent } from './components/application/application-steps/quick-capture/qc-application-details/qc-application-details.component';
 import { QcDocumentUploadComponent } from './components/application/application-steps/quick-capture/qc-document-upload/qc-document-upload.component';
+import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
 
 import { QuestionComponent } from './components/admin/utilities/question/question.component';
 import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
@@ -284,6 +285,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     EditQuickCaptureComponent,
     QcApplicationDetailsComponent,
     QcDocumentUploadComponent,
+    QcApplicationPeriodsComponent
+    QcDocumentUploadComponent,
     QuestionComponent,
     ResponseTypeComponent,
     WorkflowAssessmentComponent,
@@ -338,7 +341,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   providers: [
     {
       provide: LocationStrategy,
-      useClass: HashLocationStrategy
+      useClass: HashLocationStrategy 
     },
     DatePipe,
     {
@@ -356,7 +359,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     },
     MsalService,
     MsalBroadcastService,
-    MessageService
+    MessageService,
+   ConfirmationService
   ],
   bootstrap: [AppComponent]
 })

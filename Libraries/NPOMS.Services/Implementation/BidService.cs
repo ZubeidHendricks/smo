@@ -18,6 +18,7 @@ using System.Globalization;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Implementation.Entities;
+using System.Data;
 
 namespace NPOMS.Services.Implementation
 {
@@ -233,8 +234,8 @@ namespace NPOMS.Services.Implementation
             bid.ApplicationDetails = await _applicationDetailsRepository.GetById(bid.ApplicationDetailId);
             bid.ProjectInformation = await _projectInformationRepository.GetById(bid.ProjectInformationId);
             bid.MonitoringEvaluation = await _monitoringEvaluationRepository.GetById(bid.MonitoringEvaluationId);
-            var bidRegions = await _bidRegionRepository.GetBidRegionByGeographicalDetailId(bid.ApplicationDetails.FundAppSDADetailId);
-            var serviceDeliveryArea = await _BidServiceDeliveryAreaRepository.GetBidServiceDeliveryAreaByGeographicalDetailId(bid.ApplicationDetails.FundAppSDADetailId);
+            var bidRegions = await _bidRegionRepository.GetBidRegionByGeographicalDetailId(bid.ApplicationDetails.FundAppSDADetail.Id);
+            var serviceDeliveryArea = await _BidServiceDeliveryAreaRepository.GetBidServiceDeliveryAreaByGeographicalDetailId(bid.ApplicationDetails.FundAppSDADetail.Id);
             
             // return active places and subplaces
             foreach (var imple in bid.Implementations)
@@ -325,8 +326,8 @@ namespace NPOMS.Services.Implementation
             else
             {
                 var projectInformationViewModel = new ProjectInformation();
-                projectInformationViewModel.InitiatedQuestion = viewModel.InitiatedQuestion;
-                projectInformationViewModel.considerQuestion = viewModel.considerQuestion;
+                //projectInformationViewModel.InitiatedQuestion = viewModel.InitiatedQuestion;
+                //projectInformationViewModel.considerQuestion = viewModel.considerQuestion;
                 projectInformationViewModel.purposeQuestion = viewModel.purposeQuestion;
 
                 return projectInformationViewModel;
@@ -348,22 +349,36 @@ namespace NPOMS.Services.Implementation
             }
         }
 
-        private async Task UpdateGeoDetails(FundAppSDADetailViewModel model, FundAppSDADetail existingRegionsAndSdas)
+        private async Task UpdateDistrictLocalMunicipal(FundAppSDADetailViewModel model, FundAppSDADetail existingRegionsAndSdas)
         {
+            var mapping = await _geographicalDetailsRepositoryRepository.GetById(existingRegionsAndSdas.Id);
+            mapping.DistrictCouncilId = model.DistrictCouncil.Id;
+            mapping.LocalMunicipalityId = model.LocalMunicipality.ID;
+            mapping.DistrictCouncil = null;
+            mapping.LocalMunicipality = null;
+
+            await _geographicalDetailsRepositoryRepository.UpdateAsync1(mapping);
+        }
+
+        
+
+        private async Task UpdateGeoDetails(FundAppSDADetailViewModel model, FundAppSDADetail existingRegionsAndSdas)
+        {          
             // Create new mappings
-            foreach (var item in model.Regions)
+            foreach (var region in model.Regions)
             {
-                var mapping = await _bidRegionRepository.GetById(item.ID, model.Id);
+                var mapping = await _bidRegionRepository.GetById(region.ID, model.Id);
 
                 if (mapping == null)
-
+                {
                     existingRegionsAndSdas.Regions.Add(new FundAppSDADetail_Region
                     {
-                        FundAppSDADetailId = item.ID,
+                        FundAppSDADetailId = existingRegionsAndSdas.Id,
                         IsActive = true,
-                        RegionId = item.ID,
+                        RegionId = region.ID,
                     });
-
+                                                   
+                }
             }
 
             // Update is active state
@@ -372,10 +387,9 @@ namespace NPOMS.Services.Implementation
             foreach (var mapping in existingRegionsAndSdas.Regions)
             {
                 mapping.IsActive = newIds.Contains(mapping.RegionId) ? true : false;
-
+                await _bidRegionRepository.UpdateAsync(mapping);
 
             }
-
 
 
             // service delivery area
@@ -387,7 +401,7 @@ namespace NPOMS.Services.Implementation
 
                     existingRegionsAndSdas.ServiceDeliveryAreas.Add(new FundAppServiceDeliveryArea
                     {
-                        FundAppSDADetailId = item.ID,
+                       FundAppSDADetailId = model.Id,
                         IsActive = true,
                         ServiceDeliveryAreaId = item.ID,
                     });
@@ -400,10 +414,9 @@ namespace NPOMS.Services.Implementation
             foreach (var mapping in existingRegionsAndSdas.ServiceDeliveryAreas)
             {
                 mapping.IsActive = Ids.Contains(mapping.ServiceDeliveryAreaId) ? true : false;
+               await _BidServiceDeliveryAreaRepository.UpdateAsync(mapping);
 
             }
-
-
 
         }
         private void ProjectInformationUpdate(FundAppDetailViewModel model, FundingApplicationDetail bid)
@@ -444,22 +457,29 @@ namespace NPOMS.Services.Implementation
 
             if (bid == null)
                 throw new ArgumentNullException(nameof(FundingApplicationDetail));
+            if (model.ApplicationDetails.FundAppSDADetail != null)
+            {
+                var bidRegions = await _bidRegionRepository.GetAllBidRegionByGeographicalDetailId(model.ApplicationDetails.FundAppSDADetail.Id);
+                var bidSDAs = await _BidServiceDeliveryAreaRepository.GetAllBidSdasByGeographicalDetailId(model.ApplicationDetails.FundAppSDADetail.Id);
 
-            var bidRegions = await _bidRegionRepository.GetAllBidRegionByGeographicalDetailId(model.ApplicationDetails.FundAppSDADetailId);
-            var bidSDAs = await _BidServiceDeliveryAreaRepository.GetAllBidSdasByGeographicalDetailId(model.ApplicationDetails.FundAppSDADetailId);
 
-            var existingBidRegionsAndSdas = await _geographicalDetailsRepositoryRepository.GetById(model.ApplicationDetails.FundAppSDADetailId);
-            existingBidRegionsAndSdas.Regions = bidRegions.ToList();
-            existingBidRegionsAndSdas.ServiceDeliveryAreas = bidSDAs.ToList();
+                var existingBidRegionsAndSdas = await _geographicalDetailsRepositoryRepository.GetById(model.ApplicationDetails.FundAppSDADetail.Id);
+                existingBidRegionsAndSdas.Regions = bidRegions.ToList();
+                existingBidRegionsAndSdas.ServiceDeliveryAreas = bidSDAs.ToList();
+                if (model.ApplicationDetails.FundAppSDADetail.DistrictCouncil != null)
+                {
+                    await UpdateDistrictLocalMunicipal(model.ApplicationDetails.FundAppSDADetail, existingBidRegionsAndSdas);
+                }
 
-            await UpdateGeoDetails(model.ApplicationDetails.FundAppSDADetail, existingBidRegionsAndSdas);
-
+                await UpdateGeoDetails(model.ApplicationDetails.FundAppSDADetail, existingBidRegionsAndSdas);
+            }
             ProjectInformationUpdate(model, bid);
             MonitoringEvalutionUpdate(model, bid);
+            //bid.ApplicationDetails.FundAppSDADetail = existingBidRegionsAndSdas;
+            //bid.ApplicationDetails.FundAppSDADetailId = model.ApplicationDetails.FundAppSDADetailId;
 
-            bid.ApplicationDetails.FundAppSDADetail = existingBidRegionsAndSdas;
-            bid.ApplicationDetails.FundAppSDADetail.Id = model.ApplicationDetails.FundAppSDADetailId;
             bid.ApplicationDetails.AmountApplyingFor = model.ApplicationDetails.AmountApplyingFor;
+
 
             foreach (var imple in model.Implementations)
             {
@@ -514,6 +534,7 @@ namespace NPOMS.Services.Implementation
                     // Create new mappings
                     foreach (var plac in imple.Places)
                     {
+                        if (plac != null) { 
 
                         var mapping = await _implementationPlaceRepository.GetById(plac.Id, imple.ID);
                         if (mapping == null)
@@ -523,6 +544,7 @@ namespace NPOMS.Services.Implementation
                                 PlaceId = plac.Id,
                                 ImplementationId = imple.ID,
                             });
+                    }
                     }
 
                     // Update is active state

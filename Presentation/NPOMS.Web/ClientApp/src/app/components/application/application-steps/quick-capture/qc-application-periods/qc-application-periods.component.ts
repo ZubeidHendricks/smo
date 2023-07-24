@@ -1,8 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Table } from 'primeng/table';
+import { Subscription } from 'rxjs';
 import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IApplicationPeriod, IFinancialYear, INpo, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
@@ -10,13 +11,15 @@ import { ApplicationService } from 'src/app/services/api-services/application/ap
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
-
 @Component({
-  selector: 'app-application-period-list',
-  templateUrl: './application-period-list.component.html',
-  styleUrls: ['./application-period-list.component.css']
+  selector: 'app-qc-application-periods',
+  templateUrl: './qc-application-periods.component.html',
+  styleUrls: ['./qc-application-periods.component.css']
 })
-export class ApplicationPeriodListComponent implements OnInit {
+export class QcApplicationPeriodsComponent implements OnInit {
+
+  @Input() activeStep: number;
+  @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -55,7 +58,8 @@ export class ApplicationPeriodListComponent implements OnInit {
 
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
-
+  paramSubcriptions: Subscription;
+  id: string;
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -67,10 +71,13 @@ export class ApplicationPeriodListComponent implements OnInit {
     private _npoRepo: NpoService,
     private _datepipe: DatePipe,
     private _applicationRepo: ApplicationService,
+    private _activeRouter: ActivatedRoute,
     private _loggerService: LoggerService
   ) { }
 
   ngOnInit(): void {
+
+
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -86,14 +93,15 @@ export class ApplicationPeriodListComponent implements OnInit {
 
         this.loadNpos();
         this.loadApplicationPeriods();
+        this.autoCreateApplication();
       }
     });
 
     this.cols = [
-      // { field: 'refNo', header: 'Ref. No.', width: '10%' },
+      { field: 'refNo', header: 'Ref. No.', width: '10%' },
       { field: 'department.name', header: 'Department', width: '10%' },
-      { field: 'applicationType.name', header: 'Type', width: '15%' },
       { field: 'name', header: 'Name', width: '20%' },
+      { field: 'applicationType.name', header: 'Type', width: '15%' },
       { field: 'financialYear.name', header: 'Financial Year', width: '8%' },
       { field: 'openingDate', header: 'Opening Date', width: '10%' },
       { field: 'closingDate', header: 'Closing Date', width: '10%' },
@@ -104,6 +112,22 @@ export class ApplicationPeriodListComponent implements OnInit {
       { label: 'Create New Workplan', value: true },
       { label: 'Use Existing Workplan', value: false }
     ];
+  }
+
+  private autoCreateApplication() {
+    //this.application.npoId = this.selectedNPO.id;
+    this.application.applicationPeriodId = this.applicationPeriodId;
+    this.application.statusId = StatusEnum.New;
+
+    this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
+      (resp) => {
+        this._router.navigateByUrl('application/create/' + resp.id);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private loadNpos() {
@@ -120,6 +144,21 @@ export class ApplicationPeriodListComponent implements OnInit {
     );
   }
 
+  nextPage() {
+
+    this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
+    this.activeStep = this.activeStep + 1;
+    this.activeStepChange.emit(this.activeStep);
+    console.log(' From next Page click', this.applicationPeriodId);
+
+    //this.autoCreateApplication();
+  }
+
+  prevPage() {
+    this.activeStep = this.activeStep - 1;
+    this.activeStepChange.emit(this.activeStep);
+  }
+
   private loadApplicationPeriods() {
     this._spinner.show();
     this._applicationPeriodRepo.getAllApplicationPeriods().subscribe(
@@ -129,7 +168,9 @@ export class ApplicationPeriodListComponent implements OnInit {
           this.setStatus(period);
         });
 
-        this.allApplicationPeriods = results;
+        //this.allApplicationPeriods = results;
+        this.allApplicationPeriods = results.filter(X => X.status === "Open")
+
         this._spinner.hide();
       },
       (err) => {
@@ -173,7 +214,7 @@ export class ApplicationPeriodListComponent implements OnInit {
   }
 
   edit(applicationPeriod: IApplicationPeriod) {
-    this._router.navigateByUrl('application-period/edit/' + applicationPeriod.id);
+    //this._router.navigateByUrl('applicationDetails/' + applicationPeriod.id);
   }
 
   onRowSelect(applicationPeriod: IApplicationPeriod) {
@@ -201,22 +242,6 @@ export class ApplicationPeriodListComponent implements OnInit {
     this.displayDialog = false;
     this._spinner.show();
     this.autoCreateApplication();
-  }
-
-  private autoCreateApplication() {
-    this.application.npoId = this.selectedNPO.id;
-    this.application.applicationPeriodId = this.applicationPeriodId;
-    this.application.statusId = StatusEnum.New;
-
-    this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
-      (resp) => {
-        this._router.navigateByUrl('application/create/' + resp.id);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
   }
 
   search(event) {

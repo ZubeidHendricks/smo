@@ -174,6 +174,21 @@ export class DropdownService {
     return data;
   }
 
+  public GetEntitiesForDoc(dropdownType: DropdownTypeEnum, id:number, returnInactive: boolean) {
+    const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}/id/${id}/returnInactive/${returnInactive}`;
+    var data;
+
+    switch (dropdownType) {
+
+      case DropdownTypeEnum.DocumentTypes:
+        data = this._http.get<IDocumentType[]>(url, httpOptions);
+        break;
+
+    }
+
+    return data;
+  }
+
   public createEntity(data: any, dropdownType: DropdownTypeEnum) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}`;
     var entity;

@@ -1,3 +1,4 @@
+import { Table } from 'primeng/table';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -11,6 +12,7 @@ import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { EnvironmentUrlService } from 'src/app/services/environment-url/environment-url.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-document-upload',
@@ -26,6 +28,10 @@ export class DocumentUploadComponent implements OnInit {
     }
   }
   @ViewChild('fileAdDoc') el:ElementRef;
+
+  
+  // Used for table filtering
+  @ViewChild('dt') dt: Table | undefined;
 acutalGrid: string;
 downloadButtonColor: string;
 uploadButtonDisabled: boolean = false;
@@ -65,9 +71,11 @@ uploadButtonDisabled: boolean = false;
   selectedDocumentType: IDocumentType;
   userId: number;
   _profile:IUser;
-
+  list : any[];
   selectedFile :any;
   selectedFilename :string;
+
+  selectedApplicationId: string;
   constructor(
     private _spinner: NgxSpinnerService,
     private _documentStore: DocumentStoreService,
@@ -78,12 +86,17 @@ uploadButtonDisabled: boolean = false;
     private http: HttpClient,
     private fb: FormBuilder,
     private envUrl: EnvironmentUrlService,
-    private _authService: AuthService,    
+    private _authService: AuthService,  
+    private _activeRouter: ActivatedRoute  
   ) { }
 
   ngOnInit(): void {
 
     this._spinner.show();
+
+     this._activeRouter.paramMap.subscribe(params => {
+      this.selectedApplicationId = params.get('id');
+    });
     this._authService.profile$.subscribe(x=>{
 
       if(x)
@@ -91,12 +104,11 @@ uploadButtonDisabled: boolean = false;
           this._profile = x;
           this.userId = x.id;
       }});
-    //this.getDocuments();
-    //this.getFundAppDocuments(this.selectedDocTypeId);
+
        this._spinner.hide();
     this.documentCols = [
       { header: 'Id', width: '5%' },
-      { header: 'Document Type', width: '35%' },
+      {  field: 'name', header: 'Document Type', width: '35%' },
       { header: 'Document Name', width: '45%' },
       // { header: 'Size', width: '10%' },
       // { header: 'Uploaded Date', width: '10%' },
@@ -125,7 +137,21 @@ uploadButtonDisabled: boolean = false;
   ];
     this.loadDocumentTypes();
   }
+  onFilesUpload(event){
 
+    // Iterate over selected files
+    for( let file of event.target.files ) {
+      
+        // Append to a list
+        this.list.push({
+            name : file.name,
+            type : file.type
+            // Other specs
+        });
+
+console.log('this.list',this.list);        
+    }
+}
   readonly(): boolean {
 
     if (this.application.statusId == StatusEnum.PendingReview ||
@@ -155,12 +181,13 @@ this.selectedDocTypeId =
 
   private loadDocumentTypes() {
     debugger;
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
+    this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.selectedApplicationId), false).subscribe(
       (results) => {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
         console.log('this.documentTypes', this.documentTypes);
+        
         console.log('results', results);
       },
       (err) => {
@@ -184,11 +211,9 @@ this.selectedDocTypeId =
     });
   }
   selectCarWithButton(plan: any) {
-    //this.indicatorDetailsId = plan.id; 
-    this.indicatorDetailsId =  Number(this.fundingApplicationDetails.id); 
-    
+    this.indicatorDetailsId =  Number(this.fundingApplicationDetails.id);     
     this.el.nativeElement.click();
-    //  console.log(plan);
+
   }
 
   public uploadDocument(doc: any) {
@@ -201,10 +226,9 @@ this.selectedDocTypeId =
   public uploadedFiles(doc: any) {
     debugger;
     this._spinner.show();
-    //this.getDocuments();
     console.log('doc from Uploaded Files',doc);
     console.log('doc from Uploaded Files',doc.id);
-
+    this.selectedDocTypeId = doc.id;
     this.getFundAppDocuments(doc.id);
     this.displayUploadedFilesDialog = true;
   }
@@ -212,7 +236,6 @@ this.selectedDocTypeId =
   public onUploadChange = (files) => {
     debugger;
     console.log('this.selectedDocTypeId on Upload Change',this.selectedDocTypeId);
-   // this.selectedFilename =this.selectedFile.name;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
     EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
@@ -221,10 +244,8 @@ this.selectedDocTypeId =
           this._spinner.show();
         else if (event.type === HttpEventType.Response) {
           this._spinner.hide();
-          //this.getDocuments();
-          console.log('Document Type Id', files[0].documentType.id);
-          this.getFundAppDocuments(files[0].documentType.id);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
+          this.loadDocumentTypes();
         }
       },
       (err) => {
@@ -234,13 +255,13 @@ this.selectedDocTypeId =
     );
   }
 
-  // onFileSelected(event){
-  //   console.log('event',event);
-  //   this.selectedFile = <File>event.target.files[0];
-  //   console.log('this.selectedFile',this.selectedFile);
-  //   console.log('this.selectedFile',this.selectedFile.name);
-  //   this.selectedFilename =this.selectedFile.name;
-  // }
+  onFileSelected(event){
+    console.log('event',event);
+    this.selectedFile = <File>event.target.files[0];
+    console.log('this.selectedFile',this.selectedFile);
+    console.log('this.selectedFile',this.selectedFile.name);
+    this.selectedFilename =this.selectedFile.name;
+  }
   
   public onUploadChange1 = (event, form) => {
     if (event.files[0]) {
@@ -342,7 +363,10 @@ this.selectedDocTypeId =
         this._documentStore.delete(doc.resourceId).subscribe(
           event => {
             //this.getDocuments();
-            this.getFundAppDocuments(doc.id);
+            console.log('doc during delete',doc);
+            console.log('this.seletedDocTypeId',this.selectedDocTypeId);
+
+            this.getFundAppDocuments(this.selectedDocTypeId);
             console.log('doc.id',doc.id);
             this._spinner.hide();
           },

@@ -70,6 +70,9 @@ import { PaymentSchedulesComponent } from './components/admin/payment-schedules/
 import { QuickCaptureListComponent } from './components/quick-capture/quick-capture-list/quick-capture-list.component';
 import { CreateQuickCaptureComponent } from './components/quick-capture/create-quick-capture/create-quick-capture.component';
 import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick-capture/edit-quick-capture.component';
+import { ApplicationDetailsComponent } from './components/application/application-steps/funding-application/application-details/application-details.component';
+import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
+
 import { QuestionComponent } from './components/admin/utilities/question/question.component';
 import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
 import { WorkflowAssessmentComponent } from './components/admin/utilities/workflow-assessment/workflow-assessment.component';
@@ -93,11 +96,17 @@ const routes: Routes = [
   { path: 'quick-capture/create', component: CreateQuickCaptureComponent },
   { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },  
 
+  { path: 'quick-captures/:id', component: QuickCaptureListComponent },
+
   { path: 'npos', component: NpoListComponent },
   { path: 'npo/create', component: CreateNpoComponent },
   { path: 'npo/edit/:id', component: EditNpoComponent },
 
   { path: 'applications', component: ApplicationListComponent },
+  { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },
+  { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
+
+  
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },

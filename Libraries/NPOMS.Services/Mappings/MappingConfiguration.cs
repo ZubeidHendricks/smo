@@ -205,14 +205,14 @@ namespace NPOMS.Services.Mappings
 
             CreateMap<ProjectInformation, ProjectInformationViewModel>()
             .ForMember(model => model.Id, op => op.MapFrom(c => c.Id))
-            .ForMember(model => model.InitiatedQuestion, op => op.MapFrom(c => c.InitiatedQuestion))
-            .ForMember(model => model.considerQuestion, op => op.MapFrom(c => c.considerQuestion))
+            //.ForMember(model => model.InitiatedQuestion, op => op.MapFrom(c => c.InitiatedQuestion))
+            //.ForMember(model => model.considerQuestion, op => op.MapFrom(c => c.considerQuestion))
             .ForMember(model => model.purposeQuestion, op => op.MapFrom(c => c.purposeQuestion));
 
             CreateMap<ProjectInformationViewModel, ProjectInformation>()
             .ForMember(model => model.Id, op => op.MapFrom(c => c.Id))
-            .ForMember(model => model.InitiatedQuestion, op => op.MapFrom(c => c.InitiatedQuestion))
-            .ForMember(model => model.considerQuestion, op => op.MapFrom(c => c.considerQuestion))
+            //.ForMember(model => model.InitiatedQuestion, op => op.MapFrom(c => c.InitiatedQuestion))
+           // .ForMember(model => model.considerQuestion, op => op.MapFrom(c => c.considerQuestion))
             .ForMember(model => model.purposeQuestion, op => op.MapFrom(c => c.purposeQuestion));
 
             CreateMap<MonitoringEvaluation, MonitoringEvaluationViewModel>()

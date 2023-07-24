@@ -1,4 +1,4 @@
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Applications">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Submissions">
     <div class="p-grid">
         <div class="p-col-fixed">
 
@@ -12,23 +12,31 @@
           </div>
         </div>
     </div>
-    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" sortMode="multiple" [columns]="cols" [paginator]="true" [rows]="10" [value]="allApplications" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" 
-    [globalFilterFields]="['refNo','Organisation','applicationPeriod.applicationType.name','applicationPeriod.subProgramme.name','applicationPeriod.financialYear.name', 'applicationPeriod.closingDate', 'status.name']">
+    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" sortMode="multiple" [columns]="cols" [paginator]="true" 
+    [rows]="10" [value]="allApplications" [showCurrentPageReport]="true" 
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" 
+    [globalFilterFields]="['refNo','npo.name','applicationPeriod.applicationType.name',
+    'applicationPeriod.subProgramme.name','applicationPeriod.financialYear.name', 
+    'applicationPeriod.closingDate', 'status.name']">
         <ng-template pTemplate="header" let-columns>
             <tr>
               <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">Options</th>
               <th style="width: 5%;"></th>
-              <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
+              <th *ngFor="let col of columns" [ngStyle]="{'width': fit-content}" [pSortableColumn]="col.field">
                   {{col.header}}
-                  <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                  <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
+                  ariaLabelDesc="Activate to sort in descending order" 
+                  ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
               </th>
               <th style="width: 5%;">Actions</th>
             </tr>
             <tr>
                 <th></th>
+                <th></th>
                 <th><p-columnFilter type="text" field="refNo"></p-columnFilter></th>
-                <th><p-columnFilter type="text" field="Organisation"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="npo.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.applicationType.name"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="applicationPeriod.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.subProgramme.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.financialYear.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.closingDate"></p-columnFilter></th>
@@ -38,7 +46,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
-                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">
+                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions"> 
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedApplication=rowData; menu.toggle($event)" pTooltip="Options" tooltipPosition="right" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && rowData.statusId === StatusEnum.AcceptedSLA"></button>
                     <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
                 </td>

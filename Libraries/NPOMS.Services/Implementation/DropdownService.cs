@@ -903,7 +903,7 @@ namespace NPOMS.Services.Implementation
 			return await _documentTypeRepository.GetEntities(returnInactive);
 		}
 
-		public async Task CreateDocumentType(DocumentType model, string userIdentifier)
+        public async Task CreateDocumentType(DocumentType model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 

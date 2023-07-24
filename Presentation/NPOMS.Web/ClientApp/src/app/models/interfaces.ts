@@ -575,7 +575,8 @@ export interface IQuickCaptureDetails {
     applicationId: number;
     applicationPeriodId: number;
     applicationPeriod: IApplicationPeriod;
-    applicationDetails: IApplicationDetails;   
+    applicationDetails: IApplicationDetails;  
+    npo:INpo;    
 }
 
 // export interface IDeclaration {
@@ -598,8 +599,8 @@ export interface IProjectInformation {
     isActive: boolean;
     changeRequired: boolean;
     isNew: boolean;
-    initiatedQuestion: string;
-    considerQuestion: string;
+    //initiatedQuestion: string;
+    //considerQuestion: string;
     purposeQuestion: string;
 }
 export interface IMonitoringAndEvaluation {
@@ -1111,11 +1112,11 @@ export interface ISDA {
     isActive: boolean;
     regionId: number;
 }
-export interface ILocalMunicipality {
-    id: number;
-    name: string;
-    districtCouncilId: number;
-}
+// export interface ILocalMunicipality {
+//     id: number;
+//     name: string;
+//     districtCouncilId: number;
+// }
 
 export interface IDistrictCouncil {
     id: number;

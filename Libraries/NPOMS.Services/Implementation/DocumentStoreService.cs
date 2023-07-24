@@ -167,7 +167,55 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
-		public async Task<PagedList<DocumentStoreViewModel>> Get(DocumentStoreResourceParameters documentStoreResourceParameters)
+
+        public async Task<List<DocumentStore>> DocumentByRefNo(string refNo)
+        {
+            try
+            {
+                var query = _documentStoreRepository.GetEntities();           
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDocuments action: {ex.Message} Inner Exception: {ex.InnerException}");
+                throw;
+            }
+        }
+
+        public async Task<List<DocumentStore>> GetAllDocuments()
+        {
+            try
+            {
+                var query = _documentStoreRepository.GetEntities();
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDocuments action: {ex.Message} Inner Exception: {ex.InnerException}");
+                throw;
+            }
+        }
+
+        public async Task<List<DocumentStore>> GetDocumnetByRefNo(string refNo)
+        {
+            try
+            {
+                var query = _documentStoreRepository.GetDocumentByRefNo(refNo);
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDocuments action: {ex.Message} Inner Exception: {ex.InnerException}");
+                throw;
+            }
+        }
+
+
+        
+        public async Task<PagedList<DocumentStoreViewModel>> Get(DocumentStoreResourceParameters documentStoreResourceParameters)
 		{
 			try
 			{

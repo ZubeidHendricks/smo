@@ -7,23 +7,6 @@
     <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
     <p-steps [model]="faItems" [readonly]="false" [activeIndex]="activeStep"
         *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
-        <p-steps [model]="qcItems" [readonly]="false" [activeIndex]="activeStep" 
-        *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.QC"></p-steps>
-
-        <div style="height: 10px;"></div>
-        <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.QC">
-            <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
-                [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details>
-            <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
-                [(activeStep)]="activeStep" [application]="application"
-                [(fundingApplicationDetails)]="fundingApplicationDetails"
-                [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" (getPlace)="places($event)"
-                (getSubPlace)=" subPlaces($event)">
-            </app-application-details>
-            <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument"
-            [(activeStep)]="activeStep" [application]="application"
-            [(fundingApplicationDetails)]="fundingApplicationDetails"></app-document-upload>
-        </div>        
     <div style="height: 10px;"></div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
         <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
@@ -31,10 +14,10 @@
         <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
             [(activeStep)]="activeStep" [application]="application"
             [(fundingApplicationDetails)]="fundingApplicationDetails"
-            [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" (getPlace)="places($event)"
+            [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
+            (getPlace)="places($event)"
             (getSubPlace)=" subPlaces($event)">
         </app-application-details>
-
         <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
             [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
             [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
@@ -42,9 +25,7 @@
 
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
             [(activeStep)]="activeStep" [application]="application"
-            [(initiatedQuestion)]="fundingApplicationDetails.projectInformation.initiatedQuestion"
             [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion"
-            [(considerQuestion)]="fundingApplicationDetails.projectInformation.considerQuestion"
             [(fundingApplicationDetails)]="fundingApplicationDetails">
         </app-project-information>
         <app-monitoring-evaluation-plan *ngIf="activeStep == FundingApplicationStepsEnum.Monitoring_And_Evaluation"

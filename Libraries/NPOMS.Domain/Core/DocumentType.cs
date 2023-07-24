@@ -22,6 +22,9 @@ namespace NPOMS.Domain.Core
 		[Column(TypeName = "nvarchar(255)")]
 		public string Location { get; set; }
 
+		[NotMapped]
+		public string DocumentName { get; set; }
+
 		public int CreatedUserId { get; set; }
 
 		public DateTime CreatedDateTime { get; set; }
