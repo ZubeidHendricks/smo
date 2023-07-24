@@ -305,7 +305,7 @@ export enum PermissionsEnum {
 
     ViewSummaryOption = "Indicators.Summary",
     ExportSummary = "Indicators.ExportSummary",
-    EvaluateFundingApplication = "FA.Evaluate",
+
       /* Utilities Management */
       ViewUtilityList = "UM.List",
       AddUtility = "UM.Add",

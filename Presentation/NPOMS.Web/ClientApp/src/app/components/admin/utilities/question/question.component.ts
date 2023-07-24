@@ -70,8 +70,9 @@ export class QuestionComponent implements OnInit {
       if (profile != null && profile.isActive) {
         this._spinner.show();
         this.profile = profile;
-        if (!this.IsAuthorized(PermissionsEnum.ViewUtilities))
-          this._router.navigate(['401']);
+
+        // if (!this.IsAuthorized(PermissionsEnum.ViewUtilityList))
+        //   this._router.navigate(['401']);
 
         this.loadQuestionSections();
       }
@@ -95,8 +96,9 @@ export class QuestionComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.QuestionSection, true).subscribe(
       (results) => {
         this.questionSections = results;
-        this.filteredQuestionSections = this.questionSections.filter(x => x.isActive);
-        this.loadResponseTypes();
+console.log('results', results);
+      //  this.filteredQuestionSections = this.questionSections.filter(x => x.isActive);
+      //  this.loadResponseTypes();
       },
       (err) => {
         this._loggerService.logException(err);

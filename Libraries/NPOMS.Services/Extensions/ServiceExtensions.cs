@@ -7,7 +7,6 @@ using NPOMS.Repository.Implementation.Budget;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Implementation.Dropdown;
 using NPOMS.Repository.Implementation.Entities;
-using NPOMS.Repository.Implementation.Evaluation;
 using NPOMS.Repository.Implementation.Indicator;
 using NPOMS.Repository.Implementation.Lookup;
 using NPOMS.Repository.Implementation.Mapping;
@@ -15,7 +14,6 @@ using NPOMS.Repository.Interfaces.Budget;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
-using NPOMS.Repository.Interfaces.Evaluation;
 using NPOMS.Repository.Interfaces.Indicator;
 using NPOMS.Repository.Interfaces.Lookup;
 using NPOMS.Repository.Interfaces.Mapping;
@@ -73,9 +71,8 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IUtilityRepository, UtilityRepository>();
 			services.AddScoped<IEmbeddedReportRepository, EmbeddedReportRepository>();
 
-            /* Dropdown */
-			services.AddScoped<IFundingTemplateTypeRepository, FundingTemplateTypeRepository>();	
-            services.AddScoped<IActivityTypeRepository, ActivityTypeRepository>();
+			/* Dropdown */
+			services.AddScoped<IActivityTypeRepository, ActivityTypeRepository>();
 			services.AddScoped<IAllocationTypeRepository, AllocationTypeRepository>();
 			services.AddScoped<IApplicationTypeRepository, ApplicationTypeRepository>();
 			services.AddScoped<IFacilityClassRepository, FacilityClassRepository>();
@@ -201,23 +198,11 @@ namespace NPOMS.Services.Extensions
 			services.AddScoped<IDirectorateBudgetRepository, DirectorateBudgetRepository>();
 			services.AddScoped<IProgrammeBudgetRepository, ProgrammeBudgetRepository>();
 
-            /* Evaluation */
-            services.AddScoped<IQuestionRepository, QuestionRepository>();
-            services.AddScoped<IQuestionSectionRepository, QuestionSectionRepository>();
-            services.AddScoped<IQuestionCategoryRepository, QuestionCategoryRepository>();
-            services.AddScoped<IResponseOptionRepository, ResponseOptionRepository>();
-            services.AddScoped<IResponseTypeRepository, ResponseTypeRepository>();
-            services.AddScoped<IWorkflowAssessmentRepository, WorkflowAssessmentRepository>();
-            services.AddScoped<IResponseRepository, ResponseRepository>();
-            services.AddScoped<IResponseHistoryRepository, ResponseHistoryRepository>();
-            services.AddScoped<ICapturedResponseRepository, CapturedResponseRepository>();
+			#endregion
 
+			#region Services
 
-            #endregion
-
-            #region Services
-
-            services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IUserService, UserService>();
 			services.AddScoped<IRolePermissionService, RolePermissionService>();
 			services.AddScoped<IEmailQueueService, EmailQueueService>();
 			services.AddScoped<IEmailService, EmailService>();

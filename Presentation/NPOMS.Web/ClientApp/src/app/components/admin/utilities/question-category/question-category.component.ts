@@ -57,7 +57,7 @@ export class QuestionCategoryComponent implements OnInit {
         this._spinner.show();
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewUtilities))
+        if (!this.IsAuthorized(PermissionsEnum.ViewUtilityList))
           this._router.navigate(['401']);
 
         this.loadFundingTemplateTypes();

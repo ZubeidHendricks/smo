@@ -3,13 +3,7 @@ import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DropdownTypeEnum } from 'src/app/models/enums';
-import { IAccessStatus, IAccountType, IActivityList, IActivityType, IAllocationType, IApplicationType, IBank, IBranch, 
-  ICompliantCycleRule, IDenodoFacilityWrapper, IDepartment, IDirectorate, IDistrictCouncil, IDocumentType, IFacilityClass,
-   IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod,
-    IGender, ILocalMunicipality, IOrganisationType, IPosition, IProgramme, IProvisionType, IRace, IRecipientType, IRegion,
-     IRegistrationStatus, IResourceList, IResourceType, IRole, ISDA, IServiceType, IStatus, ISubProgramme, 
-     ISubProgrammeType, ITitle, ITrainingMaterial, IUtility,IWorkflowAssessment,IFundingTemplateType,
-     IQuestion, IQuestionCategory, IQuestionProperty, IQuestionSection, IResponseOption, IResponseType } from 'src/app/models/interfaces';
+import { IAccessStatus, IAccountType, IActivityList, IActivityType, IAllocationType, IApplicationType, IBank, IBranch, ICompliantCycleRule, IDenodoFacilityWrapper, IDepartment, IDirectorate, IDistrictCouncil, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod, IGender, ILocalMunicipality, IOrganisationType, IPosition, IProgramme, IProvisionType, IRace, IRecipientType, IRegion, IRegistrationStatus, IResourceList, IResourceType, IRole, ISDA, IServiceType, IStatus, ISubProgramme, ISubProgrammeType, ITitle, ITrainingMaterial, IUtility } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../environment-url/environment-url.service';
 import { PropertyType } from 'src/app/models/PropertyType';
 
@@ -175,27 +169,6 @@ export class DropdownService {
       case DropdownTypeEnum.StaffCategory:
         data = this._http.get<IStaffCategory[]>(url, httpOptions);
         break;
-      case DropdownTypeEnum.FundingTemplateType:
-          data = this._http.get<IFundingTemplateType[]>(url, httpOptions);
-          break;
-      case DropdownTypeEnum.Question:
-        data = this._http.get<IQuestion[]>(url, httpOptions);
-        break;
-      case DropdownTypeEnum.QuestionCategory:
-        data = this._http.get<IQuestionCategory[]>(url, httpOptions);
-        break;
-      case DropdownTypeEnum.QuestionSection:
-        data = this._http.get<IQuestionSection[]>(url, httpOptions);
-        break;
-      case DropdownTypeEnum.ResponseOption:
-        data = this._http.get<IResponseOption[]>(url, httpOptions);
-        break;
-      case DropdownTypeEnum.ResponseType:
-        data = this._http.get<IResponseType[]>(url, httpOptions);
-        break;
-      case DropdownTypeEnum.WorkflowAssessment:
-        data = this._http.get<IWorkflowAssessment[]>(url, httpOptions);
-        break;
     }
 
     return data;
@@ -305,24 +278,6 @@ export class DropdownService {
       case DropdownTypeEnum.StaffCategory:
         entity = this._http.post<IStaffCategory>(url, data, httpOptions);
         break;
-      case DropdownTypeEnum.Question:
-        entity = this._http.post<IQuestion>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.QuestionCategory:
-        entity = this._http.post<IQuestionCategory>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.QuestionSection:
-        entity = this._http.post<IQuestionSection>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.ResponseOption:
-        entity = this._http.post<IResponseOption>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.ResponseType:
-        entity = this._http.post<IResponseType>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.WorkflowAssessment:
-        entity = this._http.post<IWorkflowAssessment>(url, data, httpOptions);
-        break;
     }
 
     return entity;
@@ -431,24 +386,6 @@ export class DropdownService {
         break;
       case DropdownTypeEnum.StaffCategory:
         entity = this._http.put<IStaffCategory>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.Question:
-        entity = this._http.put<IQuestion>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.QuestionCategory:
-        entity = this._http.put<IQuestionCategory>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.QuestionSection:
-        entity = this._http.put<IQuestionSection>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.ResponseOption:
-        entity = this._http.put<IResponseOption>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.ResponseType:
-        entity = this._http.put<IResponseType>(url, data, httpOptions);
-        break;
-      case DropdownTypeEnum.WorkflowAssessment:
-        entity = this._http.put<IWorkflowAssessment>(url, data, httpOptions);
         break;
     }
 
