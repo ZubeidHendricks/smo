@@ -25,9 +25,7 @@
 
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
             [(activeStep)]="activeStep" [application]="application"
-            [(initiatedQuestion)]="fundingApplicationDetails.projectInformation.initiatedQuestion"
             [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion"
-            [(considerQuestion)]="fundingApplicationDetails.projectInformation.considerQuestion"
             [(fundingApplicationDetails)]="fundingApplicationDetails">
         </app-project-information>
         <app-monitoring-evaluation-plan *ngIf="activeStep == FundingApplicationStepsEnum.Monitoring_And_Evaluation"

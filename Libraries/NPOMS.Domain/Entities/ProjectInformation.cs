@@ -10,8 +10,8 @@ namespace NPOMS.Domain.Entities
     public class ProjectInformation : BaseEntity
     {
 
-        public string InitiatedQuestion { get; set; }
-        public string considerQuestion { get; set; }
+        //public string InitiatedQuestion { get; set; }
+        //public string considerQuestion { get; set; }
         public string purposeQuestion { get; set; }
 
     }

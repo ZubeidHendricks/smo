@@ -599,8 +599,8 @@ export interface IProjectInformation {
     isActive: boolean;
     changeRequired: boolean;
     isNew: boolean;
-    initiatedQuestion: string;
-    considerQuestion: string;
+    //initiatedQuestion: string;
+    //considerQuestion: string;
     purposeQuestion: string;
 }
 export interface IMonitoringAndEvaluation {

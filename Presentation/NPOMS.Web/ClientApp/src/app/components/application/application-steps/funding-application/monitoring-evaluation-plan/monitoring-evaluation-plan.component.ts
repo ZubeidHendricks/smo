@@ -1,3 +1,4 @@
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { StatusEnum } from 'src/app/models/enums';
 import { IApplication, IFundingApplicationDetails } from 'src/app/models/interfaces';
@@ -16,10 +17,14 @@ export class MonitoringEvaluationPlanComponent implements OnInit {
   @Input() isReadOnly: boolean;
   @Output() monEvalDescriptionChange = new EventEmitter();
 
-  constructor() { }
+  constructor(
+    private _spinner: NgxSpinnerService,
+  ) { }
 
   ngOnInit(): void {
+  
     //let monEvalDescription = (<HTMLInputElement>document.getElementById("monEvalDescription"));
+
   }
 
   readonly(): boolean {
@@ -31,6 +36,7 @@ export class MonitoringEvaluationPlanComponent implements OnInit {
 
   onMonEvalDescription($event) {
     this.monEvalDescriptionChange.emit($event);
+ 
   }
 
   nextPage() {

@@ -297,7 +297,7 @@ export class EditApplicationComponent implements OnInit {
       const applicationIdOnBid = this.fundingApplicationDetails
       console.log('applicationIdOnBid', this.fundingApplicationDetails);
 
-      this._applicationRepo.updateApplication(this.application).subscribe();
+      this._applicationRepo.updateApplication(this.application).subscribe(resp => {this._applicationRepo.getApplicationById(Number(this.id))});
       this.application.statusId = status;
 
       if (applicationIdOnBid.id == null) {

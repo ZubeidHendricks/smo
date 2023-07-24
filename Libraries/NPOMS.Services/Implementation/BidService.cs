@@ -326,8 +326,8 @@ namespace NPOMS.Services.Implementation
             else
             {
                 var projectInformationViewModel = new ProjectInformation();
-                projectInformationViewModel.InitiatedQuestion = viewModel.InitiatedQuestion;
-                projectInformationViewModel.considerQuestion = viewModel.considerQuestion;
+                //projectInformationViewModel.InitiatedQuestion = viewModel.InitiatedQuestion;
+                //projectInformationViewModel.considerQuestion = viewModel.considerQuestion;
                 projectInformationViewModel.purposeQuestion = viewModel.purposeQuestion;
 
                 return projectInformationViewModel;
@@ -457,19 +457,25 @@ namespace NPOMS.Services.Implementation
 
             if (bid == null)
                 throw new ArgumentNullException(nameof(FundingApplicationDetail));
+            if (model.ApplicationDetails.FundAppSDADetail != null)
+            {
+                var bidRegions = await _bidRegionRepository.GetAllBidRegionByGeographicalDetailId(model.ApplicationDetails.FundAppSDADetail.Id);
+                var bidSDAs = await _BidServiceDeliveryAreaRepository.GetAllBidSdasByGeographicalDetailId(model.ApplicationDetails.FundAppSDADetail.Id);
 
-            var bidRegions = await _bidRegionRepository.GetAllBidRegionByGeographicalDetailId(model.ApplicationDetails.FundAppSDADetail.Id);
-            var bidSDAs = await _BidServiceDeliveryAreaRepository.GetAllBidSdasByGeographicalDetailId(model.ApplicationDetails.FundAppSDADetail.Id);
 
-            var existingBidRegionsAndSdas = await _geographicalDetailsRepositoryRepository.GetById(model.ApplicationDetails.FundAppSDADetail.Id);
-            existingBidRegionsAndSdas.Regions = bidRegions.ToList();
-            existingBidRegionsAndSdas.ServiceDeliveryAreas = bidSDAs.ToList();
-            await UpdateDistrictLocalMunicipal(model.ApplicationDetails.FundAppSDADetail, existingBidRegionsAndSdas);
-            await UpdateGeoDetails(model.ApplicationDetails.FundAppSDADetail, existingBidRegionsAndSdas);
+                var existingBidRegionsAndSdas = await _geographicalDetailsRepositoryRepository.GetById(model.ApplicationDetails.FundAppSDADetail.Id);
+                existingBidRegionsAndSdas.Regions = bidRegions.ToList();
+                existingBidRegionsAndSdas.ServiceDeliveryAreas = bidSDAs.ToList();
+                if (model.ApplicationDetails.FundAppSDADetail.DistrictCouncil != null)
+                {
+                    await UpdateDistrictLocalMunicipal(model.ApplicationDetails.FundAppSDADetail, existingBidRegionsAndSdas);
+                }
 
+                await UpdateGeoDetails(model.ApplicationDetails.FundAppSDADetail, existingBidRegionsAndSdas);
+            }
             ProjectInformationUpdate(model, bid);
             MonitoringEvalutionUpdate(model, bid);
-            //           bid.ApplicationDetails.FundAppSDADetail = existingBidRegionsAndSdas;
+            //bid.ApplicationDetails.FundAppSDADetail = existingBidRegionsAndSdas;
             //bid.ApplicationDetails.FundAppSDADetailId = model.ApplicationDetails.FundAppSDADetailId;
 
             bid.ApplicationDetails.AmountApplyingFor = model.ApplicationDetails.AmountApplyingFor;
@@ -528,6 +534,7 @@ namespace NPOMS.Services.Implementation
                     // Create new mappings
                     foreach (var plac in imple.Places)
                     {
+                        if (plac != null) { 
 
                         var mapping = await _implementationPlaceRepository.GetById(plac.Id, imple.ID);
                         if (mapping == null)
@@ -537,6 +544,7 @@ namespace NPOMS.Services.Implementation
                                 PlaceId = plac.Id,
                                 ImplementationId = imple.ID,
                             });
+                    }
                     }
 
                     // Update is active state
