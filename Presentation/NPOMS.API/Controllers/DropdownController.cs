@@ -21,6 +21,8 @@ namespace NPOMS.API.Controllers
 
         private ILogger<DropdownController> _logger;
         private IDropdownService _dropdownService;
+        private IDocumentStoreService _documentStoreService;
+        private IApplicationService _applicationService;
 
         #endregion
 
@@ -28,11 +30,14 @@ namespace NPOMS.API.Controllers
 
         public DropdownController(
             ILogger<DropdownController> logger,
-            IDropdownService dropdownService
-            )
+            IDropdownService dropdownService,
+            IDocumentStoreService documentStoreService,
+            IApplicationService applicationService)
         {
             _logger = logger;
             _dropdownService = dropdownService;
+            _documentStoreService = documentStoreService;
+            _applicationService = applicationService;
         }
 
         #endregion
@@ -105,6 +110,20 @@ namespace NPOMS.API.Controllers
                         return Ok(facilityList);
                     case DropdownTypeEnum.DocumentTypes:
                         var documentTypes = await _dropdownService.GetDocumentTypes(returnInactive);
+                        var documents = await _documentStoreService.GetAllDocuments();
+                        foreach (var type in documentTypes)
+                        {
+                            foreach (var doc in documents)
+                            {
+                                if (doc.DocumentTypeId != null)
+                                {
+                                    if (doc.DocumentTypeId == type.Id)
+                                    {
+                                        type.DocumentName = doc.Name;
+                                    }
+                                }
+                            }
+                        }
                         return Ok(documentTypes);
                     case DropdownTypeEnum.FacilityTypes:
                         var facilityTypes = await _dropdownService.GetFacilityTypes(returnInactive);
@@ -211,6 +230,44 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.WorkflowAssessment:
                         var assessments = await _dropdownService.GetWorkflowAssessments(returnInactive);
                         return Ok(assessments);
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetEntities-{dropdownType} action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("dropdownTypeEnum/{dropdownType}/id/{id}/returnInactive/{returnInactive}", Name = "GetEntitiesForDoc")]
+        public async Task<IActionResult> GetEntitiesForDoc(DropdownTypeEnum dropdownType, int id, bool returnInactive)
+        {
+            try
+            {
+                switch (dropdownType)
+                {
+                    case DropdownTypeEnum.DocumentTypes:
+                        var refNo = await _applicationService.GetApplicationById(id);
+                        var documentTypes = await _dropdownService.GetDocumentTypes(returnInactive);
+                        //var documents = await _documentStoreService.GetAllDocuments();
+                        var docByRefNo = await _documentStoreService.GetDocumnetByRefNo(refNo.RefNo);
+                        foreach (var type in documentTypes)
+                        {
+                            foreach (var doc in docByRefNo)
+                            {
+                                if (doc.DocumentTypeId != null)
+                                {
+                                    if (doc.DocumentTypeId == type.Id)
+                                    {
+                                        type.DocumentName = doc.Name;
+                                    }
+                                }
+                            }
+                        }
+                        return Ok(documentTypes);
                 }
 
                 return Ok();
