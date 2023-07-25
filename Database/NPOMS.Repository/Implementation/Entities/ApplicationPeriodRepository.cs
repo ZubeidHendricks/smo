@@ -26,6 +26,7 @@ namespace NPOMS.Repository.Implementation.Entities
 			return await FindAll().Include(x => x.ApplicationType)
 								  .Include(x => x.Department)
 								  .Include(x => x.FinancialYear)
+								  .Include(x => x.SubProgramme)
 								  .AsNoTracking()
 								  .ToListAsync();
 		}

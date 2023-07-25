@@ -91,12 +91,13 @@ export class ApplicationPeriodListComponent implements OnInit {
 
     this.cols = [
       // { field: 'refNo', header: 'Ref. No.', width: '10%' },
-      { field: 'department.name', header: 'Department', width: '10%' },
-      { field: 'applicationType.name', header: 'Type', width: '15%' },
+      { field: 'department.name', header: 'Department', width: '15%' },
+      { field: 'applicationType.name', header: 'Type', width: '10%' },
       { field: 'name', header: 'Name', width: '20%' },
+      { field: 'subProgramme.name', header: 'SubProgramme', width: '26%' },
       { field: 'financialYear.name', header: 'Financial Year', width: '8%' },
-      { field: 'openingDate', header: 'Opening Date', width: '10%' },
-      { field: 'closingDate', header: 'Closing Date', width: '10%' },
+      { field: 'openingDate', header: 'Opening Date', width: '8%' },
+      { field: 'closingDate', header: 'Closing Date', width: '8%' },
       { field: 'status', header: 'Status', width: '5%' }
     ];
 
@@ -124,12 +125,14 @@ export class ApplicationPeriodListComponent implements OnInit {
     this._spinner.show();
     this._applicationPeriodRepo.getAllApplicationPeriods().subscribe(
       (results) => {
-
         results.forEach(period => {
           this.setStatus(period);
         });
-
+        
         this.allApplicationPeriods = results;
+        console.log('results',results);
+        console.log('this.allApplicationPeriods ',this.allApplicationPeriods );
+
         this._spinner.hide();
       },
       (err) => {
