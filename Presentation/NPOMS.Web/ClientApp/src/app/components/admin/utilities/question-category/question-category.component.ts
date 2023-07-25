@@ -190,6 +190,7 @@ export class QuestionCategoryComponent implements OnInit {
     {
       return false;
     }
+    this.loadEntities();
   }
 
   public goBack() {
