@@ -13,10 +13,10 @@ export enum ResponseTypeEnum {
 }
 
 export enum QuestionCategoryEnum {
-    PreAdjudication = 7, 
-    Adjudication = 8,
-    Evaluation = 9,
-    Approval = 10
+    PreAdjudication = 1, 
+    Adjudication = 2,
+    Evaluation = 3,
+    Approval = 4
   
 }
 
