@@ -15,31 +15,17 @@ export class ProjectInformationComponent implements OnInit {
   @Input() initiatedQuestion: string;
   @Input() fundingApplicationDetails: IFundingApplicationDetails;
   @Input() application: IApplication;
-  @Output() initiatedQuestionChange = new EventEmitter();
   @Input() purposeQuestion: string;
   @Output() purposeQuestionChange = new EventEmitter();
-  @Input() considerQuestion: string;
-  @Output() considerQuestionChange = new EventEmitter();
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   constructor() { }
 
   ngOnInit(): void {
-
-
-    console.log('bit status', this.fundingApplicationDetails)
-  }
-
-  onInitiatedQuestionChange($event) {
-    this.initiatedQuestionChange.emit($event);
   }
 
   onPurposeQuestionChange($event) {
     this.purposeQuestionChange.emit($event);
-  }
-
-  onConsiderQuestionChange($event) {
-    this.considerQuestionChange.emit($event);
   }
 
   readonly(): boolean {

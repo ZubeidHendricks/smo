@@ -290,13 +290,14 @@ export class EditApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
+    debugger;
     this.application.status = null;
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails
       console.log('applicationIdOnBid', this.fundingApplicationDetails);
 
-      this._applicationRepo.updateApplication(this.application).subscribe();
+      this._applicationRepo.updateApplication(this.application).subscribe(resp => {this._applicationRepo.getApplicationById(Number(this.id))});
       this.application.statusId = status;
 
       if (applicationIdOnBid.id == null) {
@@ -370,6 +371,7 @@ export class EditApplicationComponent implements OnInit {
   }
 
   private getBidFullObject(data) {
+    debugger;
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;

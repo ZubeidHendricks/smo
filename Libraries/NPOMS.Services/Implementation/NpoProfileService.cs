@@ -396,50 +396,6 @@ namespace NPOMS.Services.Implementation
 			await _auditorOrAffiliationRepository.CreateAsync(model);
 		}
 
-		public async Task UpdateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier)
-		{
-			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
-			model.UpdatedUserId = loggedInUser.Id;
-			model.UpdatedDateTime = DateTime.Now;
-
-			await _auditorOrAffiliationRepository.UpdateEntity(model, loggedInUser.Id);
-		}
-
-		public async Task<IEnumerable<StaffMemberProfile>> GetStaffMemberProfiles(int npoProfileId)
-		{
-			return await _staffMemberProfileRepository.GetByNpoProfileId(npoProfileId);
-		}
-
-		public async Task CreateStaffMemberProfile(StaffMemberProfile model, string userIdentifier)
-		{
-			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
-			model.CreatedUserId = loggedInUser.Id;
-			model.CreatedDateTime = DateTime.Now;
-
-			await _staffMemberProfileRepository.CreateAsync(model);
-		}
-
-		public async Task UpdateStaffMemberProfile(StaffMemberProfile model, string userIdentifier)
-		{
-			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
-			model.UpdatedUserId = loggedInUser.Id;
-			model.UpdatedDateTime = DateTime.Now;
-
-			await _staffMemberProfileRepository.UpdateEntity(model, loggedInUser.Id);
-		}
-
-        public async Task<IEnumerable<AffiliatedOrganisationInformation>> GetAffiliatedOrganisationById(int id)
-		{
-            return await _affiliatedOrganisationInformationRepository.GetAffiliatedOrganisationByIdAsync(id);
-        }
-        public async Task<IEnumerable<SourceOfInformation>> GetSourceOfInformationById(int id)
-		{
-            return await _sourceOfInformationRepository.GetSourceOfInformationByIdAsync(id);
-        }
-
         public async Task Update(List<AffiliatedOrganisationInformation> model, string userIdentifier, string id)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
@@ -474,6 +430,50 @@ namespace NPOMS.Services.Implementation
                 await _sourceOfInformationRepository.CreateAsync(model);
             }
         }
+
+        public async Task<IEnumerable<AffiliatedOrganisationInformation>> GetAffiliatedOrganisationById(int id)
+        {
+            return await _affiliatedOrganisationInformationRepository.GetAffiliatedOrganisationByIdAsync(id);
+        }
+        public async Task<IEnumerable<SourceOfInformation>> GetSourceOfInformationById(int id)
+        {
+            return await _sourceOfInformationRepository.GetSourceOfInformationByIdAsync(id);
+        }
+
+        public async Task UpdateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _auditorOrAffiliationRepository.UpdateEntity(model, loggedInUser.Id);
+		}
+
+		public async Task<IEnumerable<StaffMemberProfile>> GetStaffMemberProfiles(int npoProfileId)
+		{
+			return await _staffMemberProfileRepository.GetByNpoProfileId(npoProfileId);
+		}
+
+		public async Task CreateStaffMemberProfile(StaffMemberProfile model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
+
+			await _staffMemberProfileRepository.CreateAsync(model);
+		}
+
+		public async Task UpdateStaffMemberProfile(StaffMemberProfile model, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await _staffMemberProfileRepository.UpdateEntity(model, loggedInUser.Id);
+		}
 
         #endregion
     }

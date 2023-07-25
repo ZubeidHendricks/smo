@@ -153,6 +153,11 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
+		public Task CreateEmailQueue(EmailQueue entity)
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 	}
 }

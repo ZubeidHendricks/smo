@@ -7,6 +7,19 @@ export enum AccessStatusEnum {
     New = 4
 }
 
+export enum ResponseTypeEnum {
+    CloseEnded = 1,
+    Score = 2
+}
+
+export enum QuestionCategoryEnum {
+    PreAdjudication = 1, 
+    Adjudication = 2,
+    Evaluation = 3,
+    Approval = 4
+  
+}
+
 export enum ApplicationTypeEnum {
     FA = 1,
     SP = 2,
@@ -66,7 +79,14 @@ export enum DropdownTypeEnum {
     Gender = 45,
     Languages = 46,
     RegistrationStatus = 47,
-    StaffCategory = 48
+    StaffCategory = 48,
+    FundingTemplateType = 49,
+    QuestionCategory = 50,
+    QuestionSection = 51,
+    ResponseType = 52,
+    Question = 53,
+    ResponseOption = 54,
+    WorkflowAssessment = 55
 }
 
 export enum EntityTypeEnum {
@@ -286,7 +306,12 @@ export enum PermissionsEnum {
     ApproveWorkplanActual = "Indicators.ApproveActual",
 
     ViewSummaryOption = "Indicators.Summary",
-    ExportSummary = "Indicators.ExportSummary"
+    ExportSummary = "Indicators.ExportSummary",
+    EvaluateFundingApplication = "FA.Evaluate",
+      /* Utilities Management */
+      ViewUtilityList = "UM.List",
+      AddUtility = "UM.Add",
+      EditUtility = "UM.Edit"
 }
 
 export enum ReportTypeEnum {
@@ -370,6 +395,7 @@ export enum QCStepsEnum {
     AmountYouApplyingFor = 2,
     ApplicationDocument = 3
 }
+
 
 export enum DocumentUploadLocationsEnum {
     NpoProfile = 'NpoProfile',

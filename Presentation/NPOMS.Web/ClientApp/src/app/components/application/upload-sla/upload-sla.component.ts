@@ -9,7 +9,7 @@ import { ApplicationTypeEnum, DocumentTypeEnum, DocumentUploadLocationsEnum, Dro
 import { IActivity, IApplication, IApplicationAudit, IApplicationComment, IApplicationPeriod, IDocumentStore, IDocumentType, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 

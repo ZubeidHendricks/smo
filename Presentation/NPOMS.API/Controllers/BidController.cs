@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Graph;
-using Newtonsoft.Json;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Services.Interfaces;
@@ -9,7 +7,6 @@ using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using Place = NPOMS.Domain.Dropdown.Place;
 

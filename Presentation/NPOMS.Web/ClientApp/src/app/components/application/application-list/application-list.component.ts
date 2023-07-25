@@ -86,6 +86,7 @@ export class ApplicationListComponent implements OnInit {
       { field: 'refNo', header: 'Ref. No.', width: '10%' },
       { field: 'npo.name', header: 'Organisation', width: '25%' },
       { field: 'applicationPeriod.applicationType.name', header: 'Type', width: '10%' },
+      { field: 'applicationPeriod.name', header: 'Application Name', width: '10%' },      
       { field: 'applicationPeriod.subProgramme.name', header: 'Sub-Programme', width: '10%' },
       { field: 'applicationPeriod.financialYear.name', header: 'Financial Year', width: '10%' },
       { field: 'applicationPeriod.closingDate', header: 'Closing Date', width: '10%' },

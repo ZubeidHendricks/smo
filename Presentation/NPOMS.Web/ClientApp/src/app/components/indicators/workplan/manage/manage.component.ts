@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IFinancialYear, IFrequencyPeriod, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 

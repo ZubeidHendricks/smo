@@ -16,7 +16,7 @@
      [paginator]="true" [rows]="10" [value]="allApplicationPeriods" 
      [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
      [rowsPerPageOptions]="[10,25,50]"
-      [globalFilterFields]="['refNo','department.name','name','applicationType.name','financialYear.name', 'openingDate', 'closingDate','status']">
+      [globalFilterFields]="['department.name','name','applicationType.name','financialYear.name', 'openingDate', 'closingDate','status']">
         <ng-template pTemplate="header" let-columns>
             <tr>
               <th style="width: 5%;"></th>
@@ -30,10 +30,10 @@
             </tr>
             <tr>
                 <th></th>
-                <th><p-columnFilter type="text" field="refNo"></p-columnFilter></th>
+                <!-- <th><p-columnFilter type="text" field="refNo"></p-columnFilter></th> -->
                 <th><p-columnFilter type="text" field="department.name"></p-columnFilter></th>
-                <th><p-columnFilter type="text" field="name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationType.name"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="financialYear.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="openingDate"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="closingDate"></p-columnFilter></th>

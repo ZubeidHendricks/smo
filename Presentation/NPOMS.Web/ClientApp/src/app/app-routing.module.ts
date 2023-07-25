@@ -73,6 +73,12 @@ import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick
 import { ApplicationDetailsComponent } from './components/application/application-steps/funding-application/application-details/application-details.component';
 import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
 
+import { QuestionComponent } from './components/admin/utilities/question/question.component';
+import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
+import { WorkflowAssessmentComponent } from './components/admin/utilities/workflow-assessment/workflow-assessment.component';
+import { ResponseOptionComponent } from './components/admin/utilities/response-option/response-option.component';
+import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
+import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
 
@@ -145,6 +151,12 @@ const routes: Routes = [
   { path: 'utilities/bank', component: BankComponent },
   { path: 'utilities/branch', component: BranchComponent },
   { path: 'utilities/account-type', component: AccountTypeComponent },
+  { path: 'utilities/question', component: QuestionComponent },
+  { path: 'utilities/question-category', component: QuestionCategoryComponent },
+  { path: 'utilities/question-section', component: QuestionSectionComponent },
+  { path: 'utilities/response-option', component: ResponseOptionComponent },
+  { path: 'utilities/response-type', component: ResponseTypeComponent },
+  { path: 'utilities/workflow-assessment', component: WorkflowAssessmentComponent },
 
   // Error Pages
   { path: '401', component: Page401Component },

@@ -6,7 +6,7 @@ import { DropdownTypeEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } fro
 import { IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IDepartment, IObjective, IObjectiveProgramme, IProgramme, IRecipientType, ISubProgramme } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({

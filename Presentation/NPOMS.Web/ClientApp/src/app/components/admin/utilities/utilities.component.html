@@ -15,3 +15,12 @@
         </a>
     </div>
 </p-panel>
+<br *ngIf="isSystemAdmin">
+<p-panel header="Evaluation and Assessment utilities" [toggleable]="false" [style]="{'font-size':'12px'}">
+    <div class="row">
+        <a class="tile text-dark" *ngFor="let tile of evaluationUtilities" (click)="redirectToUtility(tile)">
+            <p class="heading">{{tile.name}}</p>
+            <p>{{tile.description}}</p>
+        </a>
+    </div>
+</p-panel>

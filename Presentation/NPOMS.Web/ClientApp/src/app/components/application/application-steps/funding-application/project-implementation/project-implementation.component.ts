@@ -62,15 +62,15 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
-      console.log('ng OnInit Id',params.get('id'));
-      console.log('this.selectedApplicationId ',this.selectedApplicationId );
+      console.log('ng OnInit Id', params.get('id'));
+      console.log('this.selectedApplicationId ', this.selectedApplicationId);
     });
 
     this.cols = [
-      { header: 'Description' },
-      { header: 'Beneficiaries' },
-      { header: 'Budget' },
-      {header: 'Actions'}
+      {header: 'Description', width: '45%' },
+      {  header: 'Beneficiaries', width: '25%' },
+      {header: 'Budget', width: '15%' },
+      {  header: 'Actions', width: '10%' }
     ];
     this.setYearRange();
 
@@ -102,9 +102,9 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     console.log('data', data);
     this.newImplementation = false;
     this.implementation = this.cloneImplementation(data);
-   // this.implementation.timeframe = [];
+    // this.implementation.timeframe = [];
     //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
-   // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
+    // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
     this.implementation.places = this.implementation.places;
     this.implementation.subPlaces = this.implementation.subPlaces;
     console.log('bit after', this.fundingApplicationDetails)
@@ -113,15 +113,15 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     //if(this.application.statusId == 3 || 22||23){ this.displayDialogImpl = false;}
     this.displayDialogImpl = true;
   }
-  
+
   private updateProjImplementations() {
-    if ( this.places && this.subPlaces && this.projectImplementations) {
+    if (this.places && this.subPlaces && this.projectImplementations) {
       this.projectImplementations.forEach(item => {
-        item.places = this.implementation.places;      
+        item.places = this.implementation.places;
         item.subPlaces = this.implementation.subPlaces;
         item.beneficiaries = this.implementation.beneficiaries;
         item.budget = this.implementation.budget;
-        item.description = this.implementation.description;        
+        item.description = this.implementation.description;
       });
     }
   }
@@ -136,7 +136,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
         //
       }
     );
-  }  
+  }
 
   deleteProjImpl(projImpl) {
     debugger;
@@ -152,7 +152,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
           (err) => {
             //
           }
-        );        
+        );
       },
       reject: () => {
         //
@@ -191,16 +191,16 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   disableSave(): boolean {
-if( //(!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
-    !this.implementation.beneficiaries || !this.implementation.budget ||
-    !this.implementation.results ! || !this.implementation.projectObjective||
-    !this.implementation.resources||
-    !this.implementation.description||
-    (this.places.length>0 && this.selectedPlaces.length== 0) ||
-    (this.allsubPlaces.length>0 && this.selectedSubPlaces.length== 0)
-    ) 
-    return true;
-  
+    if ( //(!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
+      !this.implementation.beneficiaries || !this.implementation.budget ||
+      !this.implementation.results! || !this.implementation.projectObjective ||
+      !this.implementation.resources ||
+      !this.implementation.description ||
+      (this.places.length > 0 && this.selectedPlaces.length == 0) ||
+      (this.allsubPlaces.length > 0 && this.selectedSubPlaces.length == 0)
+    )
+      return true;
+
     return false;
 
   }
@@ -239,9 +239,9 @@ if( //(!this.implementation.timeframe ||this.implementation.timeframe.length <2)
     console.log('data', event.data);
     this.newImplementation = false;
     this.implementation = this.cloneImplementation(event.data);
-   // this.implementation.timeframe = [];
+    // this.implementation.timeframe = [];
     //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
-   // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
+    // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
     this.implementation.places = this.implementation.places;
     this.implementation.subPlaces = this.implementation.subPlaces;
     console.log('bit after', this.fundingApplicationDetails)

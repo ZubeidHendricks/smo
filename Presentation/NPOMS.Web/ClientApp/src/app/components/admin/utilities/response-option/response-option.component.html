@@ -1,0 +1,105 @@
+<p-toast></p-toast>
+<p-panel [toggleable]="false" header="Response Option">
+    <div class="p-grid">
+        <div class="p-col-fixed">
+            <button pButton pRipple type="button" label="Add" class="p-button-text black-button" icon="fa fa-plus" (click)="add()"></button>
+            <button pButton pRipple type="button" label="Go Back" class="p-button-text black-button" icon="fa fa-step-backward" (click)="goBack()"></button>
+        </div>
+    </div>
+    <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="entities" *ngIf="entities" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th style="width:5%;"></th>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" pSortableColumn="{{col.field}}">
+                    {{col.header}} <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                </th>
+                <th style="text-align: center; width:10%;">Inactive</th>
+                <th style="text-align: center; width:5%;">Actions</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>
+                    <p-columnFilter field="responseType" matchMode="in" [showMenu]="false">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-multiSelect [ngModel]="value" [options]="responseTypes" placeholder="Any" (onChange)="filter($event.value)" optionLabel="name">
+                                <ng-template let-option pTemplate="item">
+                                    <span class="p-ml-1">{{option.name}}</span>
+                                </ng-template>
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>
+                <th><p-columnFilter type="text" field="name"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="systemName"></p-columnFilter></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td *ngFor="let col of columns">
+                    <span>{{getCellData(rowData, col)}}</span>
+                </td>
+                <td style="text-align: center;">
+                    <p-checkbox [ngModel]="!rowData.isActive" [binary]="true" [disabled]="true"></p-checkbox>
+                </td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                    <button pButton type="button" class="p-button-text action-button" icon="pi pi-trash" (click)="delete(rowData)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="5" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
+
+<p-dialog header="Response Option" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Response Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="filteredResponseTypes" placeholder="Select a Response Type" optionLabel="name" [(ngModel)]="selectedResponseType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="entity.name" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">System Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="entity.systemName" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Inactive</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox id="inActive" [binary]="true" [(ngModel)]="inActive" [ngModelOptions]="{standalone: true}"></p-checkbox>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSave() (click)="save()"></button>
+    </ng-template>
+</p-dialog>

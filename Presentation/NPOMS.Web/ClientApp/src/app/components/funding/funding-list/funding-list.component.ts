@@ -6,7 +6,7 @@ import { IFinancialYear, INpo, INpoProfile, IProgramme, IUser } from 'src/app/mo
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { Table } from 'primeng/table';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';

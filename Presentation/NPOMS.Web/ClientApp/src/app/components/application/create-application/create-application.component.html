@@ -62,14 +62,11 @@
         </app-financial-matters>
 
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
-            [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails"
-            [(initiatedQuestion)]="fundingApplicationDetails.projectInformation.initiatedQuestion"
-            [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion" 
-            [(considerQuestion)]="fundingApplicationDetails.projectInformation.considerQuestion">
-        </app-project-information>
+            [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails"></app-project-information>
+          
         <app-monitoring-evaluation-plan *ngIf="activeStep == FundingApplicationStepsEnum.Monitoring_And_Evaluation"
             [(activeStep)]="activeStep" [application]="application" 
-            [(monEvalDescription)]="fundingApplicationDetails.monitoringEvaluation.monEvalDescription"
+        
             [(fundingApplicationDetails)]="fundingApplicationDetails">
         </app-monitoring-evaluation-plan>  
         <app-project-implementation *ngIf="activeStep == FundingApplicationStepsEnum.ProjectImplementationPlan"

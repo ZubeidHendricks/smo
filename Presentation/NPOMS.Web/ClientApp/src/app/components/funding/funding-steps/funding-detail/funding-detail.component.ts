@@ -4,7 +4,7 @@ import { Message, MessageService } from 'primeng/api';
 import { AccessStatusEnum, DropdownTypeEnum } from 'src/app/models/enums';
 import { IFinancialYear, IFrequency, INpo, INpoProfile, IProgramme, IProgrammeBudget, ISubProgramme, ISubProgrammeType } from 'src/app/models/interfaces';
 import { BudgetService } from 'src/app/services/api-services/budget/budget.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';

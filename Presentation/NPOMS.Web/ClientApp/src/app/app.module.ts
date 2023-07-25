@@ -142,6 +142,12 @@ import { QcApplicationDetailsComponent } from './components/application/applicat
 import { QcDocumentUploadComponent } from './components/application/application-steps/quick-capture/qc-document-upload/qc-document-upload.component';
 import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
 
+import { QuestionComponent } from './components/admin/utilities/question/question.component';
+import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
+import { WorkflowAssessmentComponent } from './components/admin/utilities/workflow-assessment/workflow-assessment.component';
+import { ResponseOptionComponent } from './components/admin/utilities/response-option/response-option.component';
+import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
+import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -279,7 +285,13 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     EditQuickCaptureComponent,
     QcApplicationDetailsComponent,
     QcDocumentUploadComponent,
-    QcApplicationPeriodsComponent
+    QcApplicationPeriodsComponent,
+    QuestionComponent,
+    ResponseTypeComponent,
+    WorkflowAssessmentComponent,
+    ResponseOptionComponent,
+    QuestionSectionComponent,
+    QuestionCategoryComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

@@ -90,10 +90,10 @@ export class ApplicationPeriodListComponent implements OnInit {
     });
 
     this.cols = [
-      { field: 'refNo', header: 'Ref. No.', width: '10%' },
+      // { field: 'refNo', header: 'Ref. No.', width: '10%' },
       { field: 'department.name', header: 'Department', width: '10%' },
-      { field: 'name', header: 'Name', width: '20%' },
       { field: 'applicationType.name', header: 'Type', width: '15%' },
+      { field: 'name', header: 'Name', width: '20%' },
       { field: 'financialYear.name', header: 'Financial Year', width: '8%' },
       { field: 'openingDate', header: 'Opening Date', width: '10%' },
       { field: 'closingDate', header: 'Closing Date', width: '10%' },

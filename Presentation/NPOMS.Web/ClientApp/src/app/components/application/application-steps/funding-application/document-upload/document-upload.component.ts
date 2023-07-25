@@ -8,7 +8,7 @@ import { FileUpload } from 'primeng/fileupload';
 import { DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IUser, IDocumentStore, IDocumentType, IFundingApplicationDetails } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { EnvironmentUrlService } from 'src/app/services/environment-url/environment-url.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
