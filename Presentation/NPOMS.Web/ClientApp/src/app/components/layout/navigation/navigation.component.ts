@@ -101,19 +101,10 @@ export class NavigationComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewApplyForAccessMenu)) {
-        this.mainMenu.push({
-          label: 'Apply for Access',
-          icon: 'fa fa-user-o wcg-icon',
-          command: () => {
-            this._router.navigateByUrl('access-request');
-          }
-        });
-      }
 
       if (this.IsAuthorized(PermissionsEnum.ViewNpoMenu)) {
         this.mainMenu.push({
-          label: 'Organisations',
+          label: '1. Organisations',
           icon: 'fa fa-university wcg-icon',
           command: () => {
             this._router.navigateByUrl('npos');
@@ -123,26 +114,26 @@ export class NavigationComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.ViewProfileMenu)) {
         this.mainMenu.push({
-          label: 'Profiles',
+          label: '2. Profiles',
           icon: 'fa fa-address-card wcg-icon',
           command: () => {
             this._router.navigateByUrl('npo-profiles');
           }
         });
       }
-      if (this.IsAuthorized(PermissionsEnum.ViewNpoMenu)) {
-        this.mainMenu.push({
-          label: 'Quick Capture',
-          icon: 'fa fa-camera wcg-icon',
-          command: () => {
-            this._router.navigateByUrl('quick-captures');
-          }
-        });
-      }        
+      // if (this.IsAuthorized(PermissionsEnum.ViewNpoMenu)) {
+      //   this.mainMenu.push({
+      //     label: 'Quick Capture',
+      //     icon: 'fa fa-camera wcg-icon',
+      //     command: () => {
+      //       this._router.navigateByUrl('quick-captures');
+      //     }
+      //   });
+      // }        
 
       if (this.IsAuthorized(PermissionsEnum.ViewApplicationPeriodMenu)) {
         this.mainMenu.push({
-          label: 'Applications',
+          label: ' 3. Applications',
           icon: 'fa fa-briefcase wcg-icon',
           command: () => {
             this._router.navigateByUrl('application-periods');
@@ -152,7 +143,7 @@ export class NavigationComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.ViewApplicationMenu)) {
         this.mainMenu.push({
-          label: 'Submissions',
+          label: '4. Submissions',
           icon: 'fa fa-file-text wcg-icon',
           command: () => {
             this._router.navigateByUrl('applications');
@@ -162,7 +153,7 @@ export class NavigationComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.ViewFundingMenu)) {
         this.mainMenu.push({
-          label: 'Funding',
+          label: '5. Funding',
           icon: 'fa fa-money wcg-icon',
           command: () => {
             this._router.navigateByUrl('npo-funding');
@@ -170,9 +161,20 @@ export class NavigationComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.ViewApplyForAccessMenu)) {
+        this.mainMenu.push({
+          label: '5. Apply for Access',
+          icon: 'fa fa-user-o wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('access-request');
+          }
+        });
+      }
+
+
       if (this.IsAuthorized(PermissionsEnum.ViewDashboardMenu)) {
         this.mainMenu.push({
-          label: 'Dashboard',
+          label: '6. Dashboard',
           icon: 'fa fa-bar-chart wcg-icon',
           command: () => {
             this._router.navigateByUrl('pbi-dashboard');
@@ -182,7 +184,7 @@ export class NavigationComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.ViewAccessReviewMenu)) {
         this.mainMenu.push({
-          label: 'Access Review',
+          label: '7. Access Review',
           icon: 'fa fa-user wcg-icon',
           command: () => {
             this._router.navigateByUrl('access-review');
@@ -192,7 +194,7 @@ export class NavigationComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.ViewNpoApprovalMenu)) {
         this.mainMenu.push({
-          label: 'Organisation Approval',
+          label: '8. Organisation Approval',
           icon: 'fa fa-legal wcg-icon',
           command: () => {
             this._router.navigateByUrl('npo-approval');
@@ -202,7 +204,7 @@ export class NavigationComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.ViewAdminMenu)) {
         this.mainMenu.push({
-          label: 'Admin',
+          label: '9. Admin',
           icon: 'fa fa-cogs wcg-icon',
           command: () => {
             this.displaySideMenu = true;
