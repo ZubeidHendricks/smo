@@ -519,7 +519,7 @@ export class ApplicationDetailsComponent implements OnInit {
       this.regions = null;
       this.sdas = null;
     }
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality != null)
+    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
 
     if (localMunicipality.id != undefined) {
@@ -538,7 +538,8 @@ export class ApplicationDetailsComponent implements OnInit {
     this.selected = null;
     this.regions = null;
     this.sdas = null;
-
+    
+    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
 
     if (districtCouncil.id != undefined) {
@@ -559,6 +560,7 @@ export class ApplicationDetailsComponent implements OnInit {
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
+    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
 
     // filter items matching the selected regions
