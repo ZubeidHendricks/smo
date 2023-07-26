@@ -67,10 +67,10 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     });
 
     this.cols = [
-      { header: 'Description' },
-      { header: 'Beneficiaries' },
-      { header: 'Budget' },
-      { header: 'Actions' }
+      {header: 'Description', width: '45%' },
+      {  header: 'Beneficiaries', width: '25%' },
+      {header: 'Budget', width: '15%' },
+      {  header: 'Actions', width: '10%' }
     ];
     this.setYearRange();
 
