@@ -294,7 +294,7 @@ export class EditApplicationComponent implements OnInit {
     this.application.status = null;
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
-      const applicationIdOnBid = this.fundingApplicationDetails
+      const applicationIdOnBid = this.fundingApplicationDetails;
       console.log('applicationIdOnBid', this.fundingApplicationDetails);
 
       this._applicationRepo.updateApplication(this.application).subscribe(resp => {this._applicationRepo.getApplicationById(Number(this.id))});
@@ -312,9 +312,8 @@ export class EditApplicationComponent implements OnInit {
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
           if (resp) {
             this._router.navigateByUrl(`application/edit/${this.application.id}`);
-            this.getBidFullObject(resp);
+            //this.getBidFullObject(resp);
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
           }
         });
       }
@@ -377,9 +376,7 @@ export class EditApplicationComponent implements OnInit {
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
     this.fundingApplicationDetails.implementations = data.implementations;
     if (this.fundingApplicationDetails.projectInformation != null) {
-      this.fundingApplicationDetails.projectInformation.considerQuestion = data.projectInformation.considerQuestion;
       this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
-      this.fundingApplicationDetails.projectInformation.initiatedQuestion = data.projectInformation.initiatedQuestion;
     }
     else {
       this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
@@ -531,7 +528,7 @@ export class EditApplicationComponent implements OnInit {
 
           if (resp.statusId === StatusEnum.PendingReview) {
             this._spinner.hide();
-            this._router.navigateByUrl('applications');
+            //this._router.navigateByUrl('applications');
           }
         },
         (err) => {
