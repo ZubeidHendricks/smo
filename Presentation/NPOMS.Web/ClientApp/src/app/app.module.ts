@@ -148,6 +148,14 @@ import { WorkflowAssessmentComponent } from './components/admin/utilities/workfl
 import { ResponseOptionComponent } from './components/admin/utilities/response-option/response-option.component';
 import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
 import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
+import { PrintFundingApplicatonComponent } from './components/application/application-steps/funding-application/print-funding-applicaton/print-funding-applicaton.component';
+import { ViewApplicationDetailsComponent } from './components/application/application-steps/funding-application/view-application-details/view-application-details.component';
+import { ViewProjectInformationComponent } from './components/application/application-steps/funding-application/view-project-information/view-project-information.component';
+import { ViewProjectImplementationComponent } from './components/application/application-steps/funding-application/view-project-implementation/view-project-implementation.component';
+import { ViewDocumentUploadComponent } from './components/application/application-steps/funding-application/view-document-upload/view-document-upload.component';
+import { ViewFundingApplicationComponent } from './components/application/application-steps/funding-application/view-funding-application/view-funding-application.component';
+import { ViewMonitoringEvaluationComponent } from './components/application/application-steps/funding-application/view-monitoring-evaluation/view-monitoring-evaluation.component';
+import { ViewFinancialMattersComponent } from './components/application/application-steps/funding-application/view-financial-matters/view-financial-matters.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -291,7 +299,15 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     WorkflowAssessmentComponent,
     ResponseOptionComponent,
     QuestionSectionComponent,
-    QuestionCategoryComponent
+    QuestionCategoryComponent,
+    PrintFundingApplicatonComponent,
+    ViewApplicationDetailsComponent,
+    ViewProjectInformationComponent,
+    ViewProjectImplementationComponent,
+    ViewDocumentUploadComponent,
+    ViewFundingApplicationComponent,
+    ViewMonitoringEvaluationComponent,
+    ViewFinancialMattersComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

@@ -1,3 +1,4 @@
+import { PrintFundingApplicatonComponent } from './components/application/application-steps/funding-application/print-funding-applicaton/print-funding-applicaton.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PermissionsComponent } from './components/admin/permissions/permissions.component';
@@ -88,7 +89,7 @@ const routes: Routes = [
 
   { path: 'npo-profiles', component: ProfileListComponent },
   { path: 'npo-profile/edit/:id', component: EditProfileComponent },
-
+  { path: 'print/:id', outlet: 'print', component: PrintFundingApplicatonComponent },
   { path: 'access-request', component: AccessRequestComponent },
   { path: 'access-review', component: AccessReviewComponent },
 
@@ -105,7 +106,6 @@ const routes: Routes = [
   { path: 'applications', component: ApplicationListComponent },
   { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },
   { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
-
   
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id', component: EditApplicationComponent },
