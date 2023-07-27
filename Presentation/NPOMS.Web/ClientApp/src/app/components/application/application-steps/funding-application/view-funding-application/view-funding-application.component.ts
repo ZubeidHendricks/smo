@@ -351,7 +351,7 @@ export class ViewFundingApplicationComponent implements OnInit {
               console.log('data.result', response);
             }
           });
-          this.fASteps(results.applicationPeriod);
+          //this.fASteps(results.applicationPeriod);
           this.isApplicationAvailable = true;
         }
         this._spinner.hide();
