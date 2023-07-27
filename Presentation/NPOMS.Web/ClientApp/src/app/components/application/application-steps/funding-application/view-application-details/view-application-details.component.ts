@@ -1,27 +1,26 @@
-import { IApplicationDetails, IFundAppSDADetail, IPlace, ISDA, ISubPlace, } from './../../../../../models/interfaces';
-import { LoggerService } from 'src/app/services/logger/logger.service';
-import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
-import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion } from 'src/app/models/interfaces';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import { IAffiliatedOrganisation, ISourceOfInformation } from 'src/app/models/FinancialMatters';
+import { PermissionsEnum, DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
+import { IFundingApplicationDetails, IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA } from 'src/app/models/interfaces';
+import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
-import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
+import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
-import { FinancialMatters, IPreviousFinancialYear, ISourceOfInformation, IAffiliatedOrganisation } from 'src/app/models/FinancialMatters';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
+import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-application-details',
-  templateUrl: './application-details.component.html',
-  styleUrls: ['./application-details.component.css']
+  selector: 'app-view-application-details',
+  templateUrl: './view-application-details.component.html',
+  styleUrls: ['./view-application-details.component.css']
 })
-export class ApplicationDetailsComponent implements OnInit {
+export class ViewApplicationDetailsComponent implements OnInit {
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
 
@@ -473,11 +472,11 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-    // if (this.application.statusId == StatusEnum.PendingReview ||
-    //  this.application.statusId == StatusEnum.Approved )
-    //  return true;
-    // else return false;
-    return false;
+    if (this.application.statusId == StatusEnum.PendingReview ||
+     this.application.statusId == StatusEnum.Approved )
+     return true;
+    else return false;
+    //return false;
   }
 
   nextPage() {

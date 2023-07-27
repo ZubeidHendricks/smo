@@ -1,21 +1,70 @@
 <div *ngIf="isApplicationAvailable">
-    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
     <p-panel [style]="{'font-size':'12px'}" header="Organisation Details">
-        <app-view-npo [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)">
+        <app-view-npo
+            [npoId]="application.npoId"
+            (retrievedNpo)="updateNpo($event)">
         </app-view-npo>
         <div style="height: 10px;"></div>
-        <app-view-profile [npoId]="application.npoId" (retrievedNpoProfile)="updateNpoProfile($event)">
+        <app-view-profile
+            [npoId]="application.npoId"
+            (retrievedNpoProfile)="updateNpoProfile($event)">
         </app-view-profile>
     </p-panel>
-    </div>
     <br>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
-        <p-panel [style]="{'font-size':'12px'}" header="Funding Application Details">
+        <p-panel [style]="{'font-size':'12px'}" header="Organisation Details">
+            <app-view-npo
+            [npoId]="application.npoId"
+            (retrievedNpo)="updateNpo($event)">
+        </app-view-npo>
+        <div style="height: 10px;"></div>
+        <app-view-profile
+            [npoId]="application.npoId"
+            (retrievedNpoProfile)="updateNpoProfile($event)">
+        </app-view-profile>            
+            <app-view-application-details
+                [npoId]="application.npoId"
+                (retrievedNpo)="updateNpo($event)">
+            </app-view-application-details>
             <div style="height: 10px;"></div>
-            <app-view-funding-application [npoId]="application.npoId"  (retrievedNpo)="updateNpo($event)">
-            </app-view-funding-application>
-            <div style="height: 10px;"></div>
+          <app-view-project-information>
+            [npoId]="application.npoId"
+            (retrievedNpo)="updateProjInfo($event)">
+          </app-view-project-information>
+          <app-view-project-implementation>
+            [npoId]="application.npoId"
+            (retrievedNpo)="updateProjImpl($event)">
+          </app-view-project-implementation>          
         </p-panel>
+        <!-- <p-panel [style]="{'font-size':'12px'}" header="Funding Application Information">
+            <p-panel [style]="{'font-size':'12px'}" header="Application Details" >
+                <p-table [rowHover]="true" [columns]="objectiveCols" [value]="objectives" styleClass="p-datatable-sm">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                {{col.header}}
+                            </th>
+                            <th style="width: 7%;">Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-columns="columns">
+                        <tr class="default-font">
+                            <td>{{rowData.name}}</td>
+                            <td>{{rowData.fundingSource}}</td>
+                            <td>{{rowData.fundingPeriodStartDate}} to {{rowData.fundingPeriodEndDate}}</td>
+                            <td>{{rowData.recipientType.name}}</td>
+                            <td>{{rowData.budget}}</td>
+                            <td style="text-align: center;">
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-info-circle" (click)="editObjective(rowData)" pTooltip="View" tooltipPosition="top"></button>
+                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, ServiceProvisionStepsEnum.Objectives)" pTooltip="Comments" tooltipPosition="top"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-panel>
+            <div style="height: 10px;"></div>            
+        </p-panel>         -->
+      
     </div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
         <p-panel [style]="{'font-size':'12px'}" header="Workplan Information">
@@ -37,13 +86,8 @@
                             <td>{{rowData.recipientType.name}}</td>
                             <td>{{rowData.budget}}</td>
                             <td style="text-align: center;">
-                                <button pButton pRipple type="button" class="p-button-text action-button"
-                                    icon="fa fa-info-circle" (click)="editObjective(rowData)" pTooltip="View"
-                                    tooltipPosition="top"></button>
-                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
-                                    class="p-button-text action-button" icon="fa fa-comments-o"
-                                    (click)="viewComments(rowData, ServiceProvisionStepsEnum.Objectives)"
-                                    pTooltip="Comments" tooltipPosition="top"></button>
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-info-circle" (click)="editObjective(rowData)" pTooltip="View" tooltipPosition="top"></button>
+                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, ServiceProvisionStepsEnum.Objectives)" pTooltip="Comments" tooltipPosition="top"></button>
                             </td>
                         </tr>
                     </ng-template>
@@ -69,18 +113,12 @@
                         <tr class="default-font">
                             <td>{{rowData.activityList.name}}</td>
                             <td>{{rowData.activityType.name}}</td>
-                            <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date:
-                                'yyyy-MM-dd'}}</td>
+                            <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date: 'yyyy-MM-dd'}}</td>
                             <td>{{rowData.target}}</td>
                             <td>{{rowData.facilityListText}}</td>
                             <td style="text-align: center;">
-                                <button pButton pRipple type="button" class="p-button-text action-button"
-                                    icon="fa fa-info-circle" (click)="editActivity(rowData)" pTooltip="View"
-                                    tooltipPosition="top"></button>
-                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
-                                    class="p-button-text action-button" icon="fa fa-comments-o"
-                                    (click)="viewComments(rowData, ServiceProvisionStepsEnum.Activities)"
-                                    pTooltip="Comments" tooltipPosition="top"></button>
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-info-circle" (click)="editActivity(rowData)" pTooltip="View" tooltipPosition="top"></button>
+                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, ServiceProvisionStepsEnum.Activities)" pTooltip="Comments" tooltipPosition="top"></button>
                             </td>
                         </tr>
                     </ng-template>
@@ -88,8 +126,7 @@
             </p-panel>
             <div style="height: 10px;"></div>
             <p-panel [style]="{'font-size':'12px'}" header="Sustainability Plans" *ngIf="isSustainabilityAvailable">
-                <p-table [rowHover]="true" [columns]="sustainabilityPlanCols" [value]="sustainabilityPlans"
-                    styleClass="p-datatable-sm">
+                <p-table [rowHover]="true" [columns]="sustainabilityPlanCols" [value]="sustainabilityPlans" styleClass="p-datatable-sm">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -100,8 +137,7 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                         <tr class="heading">
-                            <td *ngIf="rowGroupMetadataSustainability[rowIndex].itemExists === false"
-                                [attr.colspan]="3">
+                            <td *ngIf="rowGroupMetadataSustainability[rowIndex].itemExists === false" [attr.colspan]="3">
                                 <span class="p-text-bold">Activity: {{rowData.activity.activityList.description}}</span>
                             </td>
                         </tr>
@@ -109,13 +145,8 @@
                             <td>{{rowData.risk}}</td>
                             <td>{{rowData.mitigation}}</td>
                             <td style="text-align: center;">
-                                <button pButton pRipple type="button" class="p-button-text action-button"
-                                    icon="fa fa-info-circle" (click)="editSustainabilityPlan(rowData)" pTooltip="View"
-                                    tooltipPosition="top"></button>
-                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
-                                    class="p-button-text action-button" icon="fa fa-comments-o"
-                                    (click)="viewComments(rowData, ServiceProvisionStepsEnum.Sustainability)"
-                                    pTooltip="Comments" tooltipPosition="top"></button>
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-info-circle" (click)="editSustainabilityPlan(rowData)" pTooltip="View" tooltipPosition="top"></button>
+                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, ServiceProvisionStepsEnum.Sustainability)" pTooltip="Comments" tooltipPosition="top"></button>
                             </td>
                         </tr>
                     </ng-template>
@@ -143,13 +174,8 @@
                                 <span>{{getCellData(rowData, col)}}</span>
                             </td>
                             <td style="text-align: center;">
-                                <button pButton pRipple type="button" class="p-button-text action-button"
-                                    icon="fa fa-info-circle" (click)="editResource(rowData)" pTooltip="View"
-                                    tooltipPosition="top"></button>
-                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
-                                    class="p-button-text action-button" icon="fa fa-comments-o"
-                                    (click)="viewComments(rowData, ServiceProvisionStepsEnum.Resourcing)"
-                                    pTooltip="Comments" tooltipPosition="top"></button>
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-info-circle" (click)="editResource(rowData)" pTooltip="View" tooltipPosition="top"></button>
+                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, ServiceProvisionStepsEnum.Resourcing)" pTooltip="Comments" tooltipPosition="top"></button>
                             </td>
                         </tr>
                     </ng-template>
@@ -158,8 +184,7 @@
             <div style="height: 10px;"></div>
             <p-panel [style]="{'font-size':'12px'}" header="Approvals">
                 <div *ngIf="mainReview">
-                    <p>As the <span class="approval-details">Main Reviewer</span>, I hereby confirm that the information
-                        captured on the application has been reviewed and accepted as accurate.</p>
+                    <p>As the <span class="approval-details">Main Reviewer</span>, I hereby confirm that the information captured on the application has been reviewed and accepted as accurate.</p>
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
@@ -187,15 +212,13 @@
                             </div>
                         </div>
                         <div class="p-col">
-                            <span class="form-text approval-details">{{mainReview.createdDateTime | date:
-                                'yyyy-MM-dd'}}</span>
+                            <span class="form-text approval-details">{{mainReview.createdDateTime | date: 'yyyy-MM-dd'}}</span>
                         </div>
                     </div>
                 </div>
                 <br>
                 <div *ngIf="approveFromCoCT">
-                    <p>On behalf of the <span class="approval-details">City of Cape Town</span>, I hereby confirm that
-                        the information captured on the application has been reviewed and approved as accurate.</p>
+                    <p>On behalf of the <span class="approval-details">City of Cape Town</span>, I hereby confirm that the information captured on the application has been reviewed and approved as accurate.</p>
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
@@ -223,15 +246,13 @@
                             </div>
                         </div>
                         <div class="p-col">
-                            <span class="form-text approval-details">{{approveFromCoCT.createdDateTime | date:
-                                'yyyy-MM-dd'}}</span>
+                            <span class="form-text approval-details">{{approveFromCoCT.createdDateTime | date: 'yyyy-MM-dd'}}</span>
                         </div>
                     </div>
                 </div>
                 <br>
                 <div *ngIf="approveFromDoH">
-                    <p>On behalf of the <span class="approval-details">Department of Health</span>, I hereby confirm
-                        that the information captured on the application has been reviewed and approved as accurate.</p>
+                    <p>On behalf of the <span class="approval-details">Department of Health</span>, I hereby confirm that the information captured on the application has been reviewed and approved as accurate.</p>
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
@@ -259,8 +280,7 @@
                             </div>
                         </div>
                         <div class="p-col">
-                            <span class="form-text approval-details">{{approveFromDoH.createdDateTime | date:
-                                'yyyy-MM-dd'}}</span>
+                            <span class="form-text approval-details">{{approveFromDoH.createdDateTime | date: 'yyyy-MM-dd'}}</span>
                         </div>
                     </div>
                 </div>
@@ -279,17 +299,14 @@
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
-                        <tr class="default-font">
+                        <tr class="default-font"> 
                             <td style="text-align: center;">{{rowIndex + 1}}</td>
                             <td>{{document.name}}</td>
                             <td>{{document.documentType.name}}</td>
                             <td>{{document.fileSize}}</td>
                             <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
                             <td style="text-align: center;">
-                                <button pButton pRipple type="button"
-                                    class="p-button-text p-button-success action-button" icon="fa fa-cloud-download"
-                                    (click)="onDownloadDocument(document)" pTooltip="Download"
-                                    tooltipPosition="top"></button>
+                                <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
                             </td>
                         </tr>
                     </ng-template>
@@ -299,8 +316,13 @@
     </div>
 </div>
 
-<p-dialog header="Objective" [(visible)]="displayObjectiveDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
-    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+<p-dialog header="Objective" 
+          [(visible)]="displayObjectiveDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -308,8 +330,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="objective.name"
-                [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText [(ngModel)]="objective.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -319,8 +340,7 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="objective.description"
-                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="objective.description" [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
         </div>
     </div>
     <div class="p-grid">
@@ -330,8 +350,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="objective.fundingSource"
-                [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText [(ngModel)]="objective.fundingSource" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -341,8 +360,7 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedProgrammesText"
-                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
         </div>
     </div>
     <div class="p-grid">
@@ -352,8 +370,7 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText"
-                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
         </div>
     </div>
     <div class="p-grid">
@@ -363,8 +380,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText *ngIf="objective.recipientType"
-                [(ngModel)]="objective.recipientType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText *ngIf="objective.recipientType" [(ngModel)]="objective.recipientType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -374,13 +390,9 @@
             </div>
         </div>
         <div class="p-col">
-            <p-calendar [(ngModel)]="objective.fundingPeriodStartDate" placeholder="Select a Start Date" inputId="time"
-                [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}"
-                [disabled]="true"></p-calendar>
+            <p-calendar [(ngModel)]="objective.fundingPeriodStartDate" placeholder="Select a Start Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}" [disabled]="true"></p-calendar>
             &nbsp; to &nbsp;
-            <p-calendar [(ngModel)]="objective.fundingPeriodEndDate" placeholder="Select a End Date" inputId="time"
-                [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}"
-                [disabled]="true"></p-calendar>
+            <p-calendar [(ngModel)]="objective.fundingPeriodEndDate" placeholder="Select a End Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}" [disabled]="true"></p-calendar>
         </div>
     </div>
     <div class="p-grid">
@@ -390,15 +402,18 @@
             </div>
         </div>
         <div class="p-col">
-            <p-inputNumber [(ngModel)]="objective.budget" inputId="minmaxfraction" mode="decimal"
-                [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}"
-                [disabled]="true"></p-inputNumber>
+            <p-inputNumber [(ngModel)]="objective.budget" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}" [disabled]="true"></p-inputNumber>
         </div>
     </div>
 </p-dialog>
 
-<p-dialog header="Activity" [(visible)]="displayActivityDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
-    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+<p-dialog header="Activity" 
+          [(visible)]="displayActivityDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
     <div class="p-grid" *ngIf="selectedObjective">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -406,8 +421,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="selectedObjective.name"
-                [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedObjective.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid" *ngIf="selectedObjective">
@@ -417,9 +431,7 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
-                [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}"
-                [disabled]="true"></textarea>
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
         </div>
     </div>
     <div class="p-grid">
@@ -429,8 +441,7 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText"
-                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
         </div>
     </div>
     <div class="p-grid">
@@ -440,8 +451,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="activity.name"
-                [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -451,8 +461,7 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="activity.description"
-                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="activity.description" [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
         </div>
     </div>
     <div class="p-grid">
@@ -462,8 +471,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText *ngIf="activity.activityType"
-                [(ngModel)]="activity.activityType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText *ngIf="activity.activityType" [(ngModel)]="activity.activityType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -473,13 +481,9 @@
             </div>
         </div>
         <div class="p-col">
-            <p-calendar [(ngModel)]="activity.timelineStartDate" placeholder="Select a Start Date" inputId="time"
-                [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}"
-                [disabled]="true"></p-calendar>
+            <p-calendar [(ngModel)]="activity.timelineStartDate" placeholder="Select a Start Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}" [disabled]="true"></p-calendar>
             &nbsp; to &nbsp;
-            <p-calendar [(ngModel)]="activity.timelineEndDate" placeholder="Select a End Date" inputId="time"
-                [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}"
-                [disabled]="true"></p-calendar>
+            <p-calendar [(ngModel)]="activity.timelineEndDate" placeholder="Select a End Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}" [disabled]="true"></p-calendar>
         </div>
     </div>
     <div class="p-grid">
@@ -489,8 +493,7 @@
             </div>
         </div>
         <div class="p-col">
-            <p-inputNumber [(ngModel)]="activity.target" inputId="integeronly" [style]="{'width':'100%'}"
-                [disabled]="true"></p-inputNumber>
+            <p-inputNumber [(ngModel)]="activity.target" inputId="integeronly" [style]="{'width':'100%'}" [disabled]="true"></p-inputNumber>
         </div>
     </div>
     <div class="p-grid">
@@ -500,8 +503,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator"
-                [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -511,14 +513,18 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText"
-                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
         </div>
     </div>
 </p-dialog>
 
-<p-dialog header="Sustainability Plan" [(visible)]="displaySustainabilityPlanDialog" [style]="{width: '50vw'}"
-    [focusOnShow]="false" showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+<p-dialog header="Sustainability Plan" 
+          [(visible)]="displaySustainabilityPlanDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
     <div class="p-grid" *ngIf="selectedActivity">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -526,9 +532,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText *ngIf="selectedActivity.activityList"
-                [(ngModel)]="selectedActivity.activityList.name" [ngModelOptions]="{standalone: true}"
-                [disabled]="true">
+            <input type="text" class="form-text" pInputText *ngIf="selectedActivity.activityList" [(ngModel)]="selectedActivity.activityList.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid" *ngIf="selectedActivity">
@@ -538,9 +542,7 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
-                [(ngModel)]="selectedActivity.activityList.description" [ngModelOptions]="{standalone: true}"
-                [disabled]="true"></textarea>
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedActivity.activityList.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
         </div>
     </div>
     <div class="p-grid">
@@ -550,9 +552,7 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
-                [(ngModel)]="sustainabilityPlan.description" [ngModelOptions]="{standalone: true}"
-                [disabled]="true"></textarea>
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="sustainabilityPlan.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
         </div>
     </div>
     <div class="p-grid">
@@ -562,8 +562,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="sustainabilityPlan.risk"
-                [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText [(ngModel)]="sustainabilityPlan.risk" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -573,14 +572,18 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="sustainabilityPlan.mitigation"
-                [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText [(ngModel)]="sustainabilityPlan.mitigation" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
 </p-dialog>
 
-<p-dialog header="Resource" [(visible)]="displayResourceDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
-    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+<p-dialog header="Resource" 
+          [(visible)]="displayResourceDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
     <div class="p-grid" *ngIf="selectedActivity">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -588,9 +591,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText *ngIf="selectedActivity.activityList"
-                [(ngModel)]="selectedActivity.activityList.name" [ngModelOptions]="{standalone: true}"
-                [disabled]="true">
+            <input type="text" class="form-text" pInputText *ngIf="selectedActivity.activityList" [(ngModel)]="selectedActivity.activityList.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid" *ngIf="selectedActivity">
@@ -600,9 +601,7 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
-                [(ngModel)]="selectedActivity.activityList.description" [ngModelOptions]="{standalone: true}"
-                [disabled]="true"></textarea>
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedActivity.activityList.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
         </div>
     </div>
     <div class="p-grid">
@@ -612,8 +611,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText *ngIf="resource.resourceType"
-                [(ngModel)]="resource.resourceType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText *ngIf="resource.resourceType" [(ngModel)]="resource.resourceType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -623,8 +621,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText *ngIf="resource.serviceType"
-                [(ngModel)]="resource.serviceType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText *ngIf="resource.serviceType" [(ngModel)]="resource.serviceType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -634,8 +631,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText *ngIf="resource.allocationType"
-                [(ngModel)]="resource.allocationType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText *ngIf="resource.allocationType" [(ngModel)]="resource.allocationType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -645,8 +641,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText *ngIf="resource.provisionType"
-                [(ngModel)]="resource.provisionType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText *ngIf="resource.provisionType" [(ngModel)]="resource.provisionType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -656,8 +651,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="resource.name"
-                [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText [(ngModel)]="resource.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
     <div class="p-grid">
@@ -667,8 +661,7 @@
             </div>
         </div>
         <div class="p-col">
-            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="resource.description"
-                [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="resource.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
         </div>
     </div>
     <div class="p-grid">
@@ -678,17 +671,19 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="resource.numberOfResources"
-                [ngModelOptions]="{standalone: true}" [disabled]="true">
+            <input type="text" class="form-text" pInputText [(ngModel)]="resource.numberOfResources" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>
 </p-dialog>
 
-<p-dialog header="View Comments" [(visible)]="displayAllCommentDialog" [style]="{width: '70vw'}" [focusOnShow]="false"
-    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
-    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10"
-        [value]="filteredApplicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+<p-dialog header="View Comments" 
+          [(visible)]="displayAllCommentDialog" 
+          [style]="{width: '70vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="filteredApplicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -707,11 +702,14 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Audit History" [(visible)]="displayHistory" [style]="{width: '50vw'}" [focusOnShow]="false"
-    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
-    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10"
-        [value]="applicationAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+<p-dialog header="Audit History" 
+          [(visible)]="displayHistory" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="applicationAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -733,10 +731,8 @@
 <div class="content-section implementation">
     <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
         <p-footer>
-            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes"
-                (click)="cd.accept()"></button>
-            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No"
-                (click)="cd.reject()"></button>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
         </p-footer>
     </p-confirmDialog>
 </div>

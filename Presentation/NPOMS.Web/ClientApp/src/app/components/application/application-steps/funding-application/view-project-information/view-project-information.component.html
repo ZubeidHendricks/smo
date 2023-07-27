@@ -1,0 +1,24 @@
+<p-panel [style]="{'font-size':'12px'}" header="Project Background">
+
+    <!-- Taken from primeng begin...
+    <p-editor [(ngModel)]="initiatedQuestion" [style]="{'height':'320px'}" [ngModelOptions]="{standalone: true}"></p-editor>
+    Taken from primeng end... -->
+      <div style="height: 15px;"></div>
+      <div class="p-fluid">
+        <div class="p-field">
+          <label for="purposeQuestion" style="font-weight:bold">What is the purpose of the project? <span
+              class="bid-required">*</span></label>
+              <div style="height: 15px;"></div>
+          <p-editor [(ngModel)]="purposeQuestion" [ngModelOptions]="{standalone: true}"
+            (ngModelChange)="onPurposeQuestionChange($event)" [(ngModel)]="purposeQuestion" [disabled]="myMethod()" >
+          </p-editor>
+        </div>
+      </div>
+      <div style="height: 15px;"></div>
+  </p-panel>
+  
+  <div style="height: 10px;"></div>
+  <div class="p-grid p-nogutter p-justify-between">
+    <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+    <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
+  </div>

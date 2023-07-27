@@ -94,7 +94,7 @@ export class ApplicationPeriodListComponent implements OnInit {
       { field: 'department.name', header: 'Department', width: '13%' },
       { field: 'applicationType.name', header: 'Type', width: '12%' },
       { field: 'name', header: 'Name', width: '15%' },
-      { field: 'subProgramme.name', header: 'SubProgramme', width: '15%' },
+      { field: 'subProgramme.name', header: 'Sub-Programme', width: '15%' },
       { field: 'financialYear.name', header: 'Financial Year', width: '12%' },
       { field: 'openingDate', header: 'Opening Date', width: '12%' },
       { field: 'closingDate', header: 'Closing Date', width: '13%' },

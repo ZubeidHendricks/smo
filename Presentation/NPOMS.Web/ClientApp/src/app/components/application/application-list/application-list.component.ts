@@ -204,4 +204,8 @@ export class ApplicationListComponent implements OnInit {
   view(application: IApplication) {
     this._router.navigateByUrl('application/view/' + application.id);
   }
+
+  download(application: IApplication) {
+    this._router.navigate(['/', { outlets: { 'print': ['print', application.id] } }]);
+  }
 }

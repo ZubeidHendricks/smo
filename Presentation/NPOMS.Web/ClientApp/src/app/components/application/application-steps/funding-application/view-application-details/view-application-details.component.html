@@ -114,7 +114,7 @@
                     </th>
                     <th>
                         <label class="mandatory-content">&nbsp;</label>
-                        <select #ref (change)="getSelectedValue(ref.value)">
+                        <select #ref (change)="getSelectedValue(ref.value)" [disabled]="readonly()">
                             <option value="">Please Select</option>
                             <option value="1">Printed newspaper</option>
                             <option value="2">Online</option>
@@ -127,7 +127,7 @@
                         <input [ngStyle]="{'width': 100 + '%'}" type="text" class="form-text" pInputText
                             [(ngModel)]="specify" [ngModelOptions]="{standalone: true}" [disabled]="false">
                         <button pButton pRipple type="button" label="Save Information" class="p-button-text"
-                            icon="fa fa-floppy-o" (click)="save()"></button>
+                            icon="fa fa-floppy-o" (click)="save()" [disabled]="readonly()"></button>
                     </th>
                 </tr>
             </ng-template>
