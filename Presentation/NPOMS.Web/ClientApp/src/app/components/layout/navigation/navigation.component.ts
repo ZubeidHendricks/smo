@@ -130,7 +130,7 @@ export class NavigationComponent implements OnInit {
           }
         });
       }
-      if (this.IsAuthorized(PermissionsEnum.ViewNpoMenu)) {
+      if (this.IsAuthorized(PermissionsEnum.ViewQC)) {
         this.mainMenu.push({
           label: 'Quick Capture',
           icon: 'fa fa-camera wcg-icon',
