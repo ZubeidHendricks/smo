@@ -295,7 +295,7 @@ export enum PermissionsEnum {
     DeletePaymentSchedules = "PS.Delete",
 
     /* Workplan Indicators */
-    ViewOptions = "Indicators.Options",
+   
 
     ViewManageIndicatorsOption = "Indicators.Manage",
     CaptureWorkplanTarget = "Indicators.CaptureTarget",
@@ -307,11 +307,34 @@ export enum PermissionsEnum {
 
     ViewSummaryOption = "Indicators.Summary",
     ExportSummary = "Indicators.ExportSummary",
-    EvaluateFundingApplication = "FA.Evaluate",
-      /* Utilities Management */
-      ViewUtilityList = "UM.List",
-      AddUtility = "UM.Add",
-      EditUtility = "UM.Edit"
+
+   
+
+    /* Workflow Action */
+
+    ViewOptions = "WFA.View",
+    EditOption = "WFA.Edit",
+    DownloadOption = "WFA.Download",
+    DeleteOption = "WFA.Delete",
+
+    PendingPreAdjudicateOption = "watchFile.PendingPreAdjudication",
+    PreAdjudicateOption = "WFA.PreAdjudicate",
+    PendingAdjudicateOption = "WFA.PendingAdjudication",
+    AdjudicateOption = "WFA.Adjudicate",
+    PendingEvaluationOption = "WFA.PendingEvaluation",
+    EvaluateOption = "WFA.Evaluate",
+    PendingApprovalOption = "WFA.PendingApproval",
+    ApproveOPtion = "WFA.Approve",
+    
+    /* Utilities Management */
+
+    ViewUtilityList = "UM.List",
+    AddUtility = "UM.Add",
+    EditUtility = "UM.Edit",
+    
+    /* Quick Capture*/
+
+    ViewQC = "QC.View"
 }
 
 export enum ReportTypeEnum {

@@ -20,7 +20,7 @@
     'applicationPeriod.closingDate', 'status.name']">
         <ng-template pTemplate="header" let-columns>
             <tr>
-              <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">Options</th>
+              <!-- <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">Options</th> -->
               <th style="width: 5%;"></th>
               <th *ngFor="let col of columns" [ngStyle]="{'width': fit-content}" [pSortableColumn]="col.field">
                   {{col.header}}
@@ -31,7 +31,7 @@
               <th style="width: 5%;">Actions</th>
             </tr>
             <tr>
-                <th></th>
+                <!-- <th></th> -->
                 <th></th>
                 <th><p-columnFilter type="text" field="refNo"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="npo.name"></p-columnFilter></th>
@@ -46,21 +46,18 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
-                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions"> 
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedApplication=rowData; menu.toggle($event)" pTooltip="Options" tooltipPosition="right" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && rowData.statusId === StatusEnum.AcceptedSLA"></button>
-                    <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
-                </td>
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
                 <td *ngFor="let col of columns">
                     <span>{{getCellData(rowData, col)}}</span>
                 </td>
                 <td style="text-align: center;">
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit Application" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.EditApplication) && rowData.applicationPeriod.status == 'Open' && (rowData.statusId === StatusEnum.Saved || rowData.statusId === StatusEnum.AmendmentsRequired)"></button>
+                    <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit Application" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.EditApplication) && rowData.applicationPeriod.status == 'Open' && (rowData.statusId === StatusEnum.Saved || rowData.statusId === StatusEnum.AmendmentsRequired)"></button>
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="review(rowData)" pTooltip="Review Application" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.ReviewApplication) && rowData.statusId === StatusEnum.PendingReview"></button>
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="approve(rowData)" pTooltip="Approve Application" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.ApproveApplication) && (rowData.statusId === StatusEnum.PendingApproval || rowData.statusId === StatusEnum.ApprovalInProgress)"></button>
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="uploadSLA(rowData)" pTooltip="Upload SLA" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.UploadSLA) && (rowData.statusId === StatusEnum.PendingSLA || rowData.statusId === StatusEnum.PendingSignedSLA || rowData.statusId === StatusEnum.DeptComments || rowData.statusId === StatusEnum.OrgComments)"></button>
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-text-o" (click)="view(rowData)" pTooltip="View Application" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.ViewAcceptedApplication) && rowData.statusId === StatusEnum.PendingReview || rowData.statusId === StatusEnum.AcceptedSLA"></button>    
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-download" (click)="download(rowData)" pTooltip="Download Application" tooltipPosition="top" placeholder="Top" *ngIf="rowData.statusId === StatusEnum.PendingReview"></button>
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-text-o" (click)="view(rowData)" pTooltip="View Application" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.ViewAcceptedApplication) && rowData.statusId === StatusEnum.AcceptedSLA"></button>                     -->
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedApplication=rowData; menu.toggle($event); updateButtonItems();" pTooltip="Options" tooltipPosition="left" *ngIf="canShowOptions"></button>
+                    <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
                 </td>
             </tr>
         </ng-template>
