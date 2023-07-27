@@ -62,20 +62,15 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
-      console.log('ng OnInit Id', params.get('id'));
-      console.log('this.selectedApplicationId ', this.selectedApplicationId);
     });
 
     this.cols = [
-      {header: 'Description', width: '45%' },
-      {  header: 'Beneficiaries', width: '25%' },
-      {header: 'Budget', width: '15%' },
-      {  header: 'Actions', width: '10%' }
+      { header: 'Description', width: '45%' },
+      { header: 'Beneficiaries', width: '25%' },
+      { header: 'Budget', width: '15%' },
+      { header: 'Actions', width: '10%' }
     ];
     this.setYearRange();
-
-    console.log('Places coming from Edit component on ProjImpl', this.places);
-    console.log('Places coming from ProjectImpsubPlacesAll', this.allsubPlaces);
     this.allDropdownsLoaded();
   }
 
@@ -130,7 +125,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         this.projectImplementations = results;
-        this.updateProjImplementations();
+        //this.updateProjImplementations();
       },
       (err) => {
         //
@@ -323,3 +318,4 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
 
 
+ 

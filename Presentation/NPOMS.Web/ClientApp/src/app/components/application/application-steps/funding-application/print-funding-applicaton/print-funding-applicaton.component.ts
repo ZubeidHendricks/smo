@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { PermissionsEnum, ApplicationTypeEnum, ServiceProvisionStepsEnum, FacilityTypeEnum, DropdownTypeEnum, EntityTypeEnum, StatusEnum } from 'src/app/models/enums';
-import { IUser, IApplication, INpo, INpoProfile, IObjective, IActivity, ISustainabilityPlan, IResource, IProgramme, ISubProgramme, IFacilityList, IApplicationComment, IApplicationAudit, IDocumentStore, IApplicationApproval, IDepartment, IApplicationDetails, IMonitoringAndEvaluation, IProjectImplementation, IProjectInformation } from 'src/app/models/interfaces';
+import { FinancialMatters } from 'src/app/models/FinancialMatters';
+import { PermissionsEnum, ApplicationTypeEnum, ServiceProvisionStepsEnum, FacilityTypeEnum, DropdownTypeEnum, EntityTypeEnum, StatusEnum, FundingApplicationStepsEnum } from 'src/app/models/enums';
+import { IUser, IApplication, INpo, INpoProfile, IObjective, IActivity, ISustainabilityPlan, IResource, IProgramme, ISubProgramme, IFacilityList, IApplicationComment, IApplicationAudit, IDocumentStore, IApplicationApproval, IDepartment, IApplicationDetails, IMonitoringAndEvaluation, IProjectImplementation, IProjectInformation, IApplicationPeriod, IFundingApplicationDetails, IPlace, ISubPlace } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
+import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
+import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -18,680 +21,540 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   styleUrls: ['./print-funding-applicaton.component.css']
 })
 export class PrintFundingApplicatonComponent implements OnInit {
-/* Permission logic */
-public IsAuthorized(permission: PermissionsEnum): boolean {
-  if (this.profile != null && this.profile.permissions.length > 0) {
-    return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+ 
+  /* Permission logic */
+  public IsAuthorized(permission: PermissionsEnum): boolean {
+    if (this.profile != null && this.profile.permissions.length > 0) {
+      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    }
   }
-}
 
-public get PermissionsEnum(): typeof PermissionsEnum {
-  return PermissionsEnum;
-}
-
-public get ApplicationTypeEnum(): typeof ApplicationTypeEnum {
-  return ApplicationTypeEnum;
-}
-
-public get ServiceProvisionStepsEnum(): typeof ServiceProvisionStepsEnum {
-  return ServiceProvisionStepsEnum;
-}
-
-public get FacilityTypeEnum(): typeof FacilityTypeEnum {
-  return FacilityTypeEnum;
-}
-
-paramSubcriptions: Subscription;
-id: string;
-
-profile: IUser;
-application: IApplication;
-isApplicationAvailable: boolean;
-
-npo: INpo;
-npoProfile: INpoProfile;
-
-applicationDetailView: IApplicationDetails;
-projInfoView:IProjectInformation;
-projImplView:IProjectImplementation;
-
-isObjectivesAvailable: boolean;
-isActivitiesAvailable: boolean;
-isSustainabilityAvailable: boolean;
-isResourcesAvailable: boolean;
-
-isApplicationDetailsAvailable: boolean;
-isProjectInformationAvailable: boolean;
-isProjectImplementationAvailable: boolean;
-isMonAndEvalAvailable: boolean;
-
-objectives: IObjective[] = [];
-activities: IActivity[] = [];
-sustainabilityPlans: ISustainabilityPlan[] = [];
-resources: IResource[] = [];
-
-applicationDetails: IApplicationDetails[] = [];
-projectInformations: IProjectInformation[] = [];
-projectImplementations: IProjectImplementation[] =[];
-monitoringAndEvaluations: IMonitoringAndEvaluation[] =[];
-
-applicationDetailsCols: any[];
-projectInformationCols: any[];
-projectImplementationCols: any[];
-monitoringAndEvaluationCols: any[];
-
-objectiveCols: any[];
-commentCols: any;
-activityCols: any[];
-sustainabilityPlanCols: any[];
-resourceCols: any[];
-auditCols: any[];
-documentCols: any[];
-
-objective: IObjective = {} as IObjective;
-activity: IActivity = {} as IActivity;
-sustainabilityPlan: ISustainabilityPlan = {} as ISustainabilityPlan;
-resource: IResource = {} as IResource;
-
-applicationDetail: IApplicationDetails = {} as IApplicationDetails;
-projectInformation: IProjectInformation = {} as IProjectInformation;
-projectImplementation: IProjectImplementation = {} as IProjectImplementation;
-monitoringAndEvaluation: IMonitoringAndEvaluation = {} as IMonitoringAndEvaluation;
-
-displayObjectiveDialog: boolean;
-displayActivityDialog: boolean;
-displaySustainabilityPlanDialog: boolean;
-displayResourceDialog: boolean;
-displayAllCommentDialog: boolean;
-displayHistory: boolean;
-
-displayApplicationDetaileDialog: boolean;
-displayProjectInformationDialog: boolean;
-displayProjectImplementationDialog: boolean;
-displayMonitoringAndEvaluationDialog: boolean;
-
-allProgrammes: IProgramme[];
-programmes: IProgramme[] = [];
-selectedProgrammes: IProgramme[];
-allSubProgrammes: ISubProgramme[];
-subProgrammes: ISubProgramme[] = [];
-selectedSubProgrammes: ISubProgramme[];
-selectedProgrammesText: string;
-selectedSubProgrammesText: string;
-
-selectedFacilities: IFacilityList[];
-
-allApplicationComments: IApplicationComment[] = [];
-filteredApplicationComments: IApplicationComment[] = [];
-
-selectedObjective: IObjective;
-selectedActivity: IActivity;
-
-rowGroupMetadataActivities: any[];
-rowGroupMetadataSustainability: any[];
-rowGroupMetadataResources: any[];
-
-allAssignedFacilities: IFacilityList[];
-
-applicationAudits: IApplicationAudit[];
-documents: IDocumentStore[];
-
-mainReview: IApplicationAudit;
-approveFromCoCT: IApplicationApproval;
-approveFromDoH: IApplicationApproval;
-
-selectedFacilitiesText: string;
-
-constructor(
-  private _router: Router,
-  private _authService: AuthService,
-  private _spinner: NgxSpinnerService,
-  private _activeRouter: ActivatedRoute,
-  private _applicationRepo: ApplicationService,
-  private _dropdownRepo: DropdownService,
-  private _applicationPeriodRepo: ApplicationPeriodService,
-  private _confirmationService: ConfirmationService,
-  private _documentStore: DocumentStoreService,
-  private _loggerService: LoggerService
-) { }
-
-ngOnInit(): void {
-  this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-    this.id = params.get('id');
-    this.loadApplication();
-  });
-
-  this._authService.profile$.subscribe(profile => {
-    if (profile != null && profile.isActive) {
-      this.profile = profile;
-
-      if (!this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication))
-        this._router.navigate(['401']);
-    }
-  });
-
-  this.objectiveCols = [
-    { header: 'Objective Name', width: '20%' },
-    { header: 'Funding Source', width: '15%' },
-    { header: 'Funding Period', width: '25%' },
-    { header: 'Recipient Type', width: '15%' },
-    { header: 'Budget', width: '15%' }
-  ];
-
-  this.commentCols = [
-    { header: '', width: '5%' },
-    { header: 'Comment', width: '55%' },
-    { header: 'Created User', width: '20%' },
-    { header: 'Created Date', width: '20%' }
-  ];
-
-  this.activityCols = [
-    { header: 'Activity Name', width: '20%' },
-    { header: 'Activity Type', width: '10%' },
-    { header: 'Timeline', width: '15%' },
-    { header: 'Target', width: '10%' },
-    { header: 'Facilities and/or Community Places', width: '38%' }
-  ];
-
-  this.sustainabilityPlanCols = [
-    { header: 'Risk', width: '47%' },
-    { header: 'Mitigation', width: '46%' }
-  ];
-
-  this.resourceCols = [
-    { field: 'resourceType.name', header: 'Resource Type', width: '10%' },
-    { field: 'serviceType.name', header: 'Service Type', width: '15%' },
-    { field: 'allocationType.name', header: 'Allocation Type', width: '10%' },
-    { field: 'provisionType.name', header: 'Provided vs Required', width: '12%' },
-    { field: 'resourceList.name', header: 'Resource', width: '35%' },
-    { field: 'numberOfResources', header: 'Number of Resources', width: '11%' }
-  ];
-
-  this.auditCols = [
-    { header: '', width: '5%' },
-    { header: 'Status', width: '55%' },
-    { header: 'Created User', width: '20%' },
-    { header: 'Created Date', width: '20%' }
-  ];
-
-  this.documentCols = [
-    { header: '', width: '5%' },
-    { header: 'Document Name', width: '45%' },
-    { header: 'Document Type', width: '25%' },
-    { header: 'Size', width: '10%' },
-    { header: 'Uploaded Date', width: '10%' },
-    { header: 'Actions', width: '5%' }
-  ];
-
-  this.applicationDetailsCols = [
-    { header: 'Objective Name', width: '20%' },
-    { header: 'Funding Source', width: '15%' },
-    { header: 'Funding Period', width: '25%' },
-    { header: 'Recipient Type', width: '15%' },
-    { header: 'Budget', width: '15%' }
-  ];
-
-}
-
-private loadApplication() {
-  this._spinner.show();
-  this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
-    (results) => {
-      this.application = results;
-      this.loadAllProgrammes();
-      this.loadAllSubProgrammes();
-      this.loadFacilities();
-
-      this.loadObjectives();
-      this.loadActivities();
-      this.loadSustainabilityPlans();
-      this.loadResources();
-
-      this.loadApplicationComments();
-      this.getDocuments();
-      this.getAuditHistory();
-      this.loadApplicationApprovals();
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
-
-private allDataLoaded() {
-  if (this.allProgrammes && this.allSubProgrammes && this.allAssignedFacilities && this.objectives && this.activities && this.sustainabilityPlans && this.resources) {
-    this.isApplicationAvailable = true;
-    this._spinner.hide();
+  public get PermissionsEnum(): typeof PermissionsEnum {
+    return PermissionsEnum;
   }
-}
 
-private loadObjectives() {
-  this._applicationRepo.getAllObjectives(this.application).subscribe(
-    (results) => {
-      this.objectives = results.filter(x => x.isActive === true);
-      this.isObjectivesAvailable = true;
-      this.allDataLoaded();
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
+  public get ApplicationTypeEnum(): typeof ApplicationTypeEnum {
+    return ApplicationTypeEnum;
+  }
 
-private loadActivities() {
-  this._applicationRepo.getAllActivities(this.application).subscribe(
-    (results) => {
-      this.activities = results.filter(x => x.isActive === true);
-      this.getFacilityListText(results);
-      this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Activities);
-      this.isActivitiesAvailable = true;
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
+  public get ServiceProvisionStepsEnum(): typeof ServiceProvisionStepsEnum {
+    return ServiceProvisionStepsEnum;
+  }
 
-private getFacilityListText(activities: IActivity[]) {
-  activities.forEach(activity => {
-    let allFacilityLists: string = "";
+  public get FundingApplicationStepsEnum(): typeof FundingApplicationStepsEnum {
+    return FundingApplicationStepsEnum;
+  }
 
-    activity.activityFacilityLists.forEach(item => {
-      allFacilityLists += item.facilityList.name + "; ";
+  applicationPeriodId: number;
+  paramSubcriptions: Subscription;
+  id: string;
+  bidId: number;
+  placeAll: IPlace[] = [];
+  subPlacesAll: ISubPlace[] = [];
+  applicationIdOnBid: any;
+  selectedApplicationId: number;
+  menuActions: MenuItem[];
+  profile: IUser;
+  validationErrors: Message[];
+
+  items: MenuItem[];
+  faItems: MenuItem[];
+
+  activeStep: number = 0;
+  application: IApplication;
+  isApplicationAvailable: boolean;
+
+  objectives: IObjective[] = [];
+  activities: IActivity[] = [];
+  sustainabilityPlans: ISustainabilityPlan[] = [];
+  resources: IResource[] = [];
+
+
+  fundingApplicationDetails: IFundingApplicationDetails = {
+    financialMatters: [],
+    implementations: [],
+    projectInformation: {} as IProjectInformation,
+    monitoringEvaluation: {} as IMonitoringAndEvaluation,
+    applicationDetails: {} as IApplicationDetails
+  } as IFundingApplicationDetails;
+
+  constructor(
+    private _router: Router,
+    private _authService: AuthService,
+    private _spinner: NgxSpinnerService,
+    private _activeRouter: ActivatedRoute,
+    private _applicationRepo: ApplicationService,
+    private _messageService: MessageService,
+    private _fundAppService: FundingApplicationService,
+    private _bidService: BidService,
+    private _loggerService: LoggerService
+  ) { }
+  places(place: IPlace[]) {
+    this.placeAll = place;
+  }
+
+  subPlaces(subPlaces: ISubPlace[]) {
+    this.subPlacesAll = subPlaces;
+  }
+  ngOnInit(): void {
+    this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+      this.id = params.get('id');
+      this.loadApplication();
     });
 
-    activity.facilityListText = allFacilityLists.slice(0, -2);
-  });
-}
 
-private loadSustainabilityPlans() {
-  this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
-    (results) => {
-      this.sustainabilityPlans = results.filter(x => x.isActive === true);
-      this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Sustainability);
-      this.isSustainabilityAvailable = true;
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
+    this.loadfundingSteps();
+    this.applicationPeriodId = +this.id;
+    this.fundingApplicationDetails.applicationPeriodId = +this.id;
 
-private loadResources() {
-  this._applicationRepo.getAllResources(this.application).subscribe(
-    (results) => {
-      this.resources = results.filter(x => x.isActive === true);
-      this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Resourcing);
-      this.isResourcesAvailable = true;
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
+    //  this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
+    //   console.log('response',resp)
+    //    this.selectedApplicationId = resp.applicationId;
+    //    console.log('response',this.selectedApplicationId )
+    //  });    
 
-private loadAllProgrammes() {
-  this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
-    (results) => {
-      this.allProgrammes = results;
-      this.loadApplicationPeriod();
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
 
-private loadApplicationPeriod() {
-  this._applicationPeriodRepo.getApplicationPeriodById(Number(this.application.applicationPeriodId)).subscribe(
-    (results) => {
-      this.loadProgrammesForDepartment(results.department);
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
 
-private loadProgrammesForDepartment(department: IDepartment) {
-  this.programmes = [];
-  this.subProgrammes = [];
+    this._authService.profile$.subscribe(profile => {
+      if (profile != null && profile.isActive) {
+        this.profile = profile;
 
-  if (department.id != null) {
-    for (var i = 0; i < this.allProgrammes.length; i++) {
-      if (this.allProgrammes[i].departmentId == department.id) {
-        this.programmes.push(this.allProgrammes[i]);
+        if (!this.IsAuthorized(PermissionsEnum.EditApplication))
+          this._router.navigate(['401']);
+
+        this.buildMenu();
       }
-    }
-  }
-
-  this.allDataLoaded();
-}
-
-private loadAllSubProgrammes() {
-  this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
-    (results) => {
-      this.allSubProgrammes = results;
-      this.allDataLoaded();
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
-
-private loadApplicationComments() {
-  this._applicationRepo.getAllApplicationComments(this.application.id).subscribe(
-    (results) => {
-      this.allApplicationComments = results;
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
-
-private loadFacilities() {
-  this._applicationRepo.getAssignedFacilities(this.application).subscribe(
-    (results) => {
-      this.allAssignedFacilities = results;
-      this.allDataLoaded();
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
-
-updateNpo(data) {
-  this.npo = data
-}
-
-updateNpoProfile(data) {
-  this.npoProfile = data;
-}
-
-updateApplicationDetail(data) {
-  this.applicationDetail = data
-}
-
-updateProjInfo(data) {
-  this.projInfoView = data
-}
-
-updateProjImpl(data) {
-  this.projImplView = data
-}
-
-editObjective(data: IObjective) {
-  this.objective = this.cloneObjective(data);
-  this.displayObjectiveDialog = true;
-}
-
-private cloneObjective(data: IObjective): IObjective {
-  let obj = {} as IObjective;
-
-  for (let prop in data)
-    obj[prop] = data[prop];
-
-  const programmeIds = data.objectiveProgrammes.map(({ programmeId }) => programmeId);
-  this.selectedProgrammes = this.programmes.filter(item => programmeIds.includes(item.id));
-  this.programmeChange(this.selectedProgrammes);
-
-  const subProgrammeIds = data.objectiveProgrammes.map(({ subProgrammeId }) => subProgrammeId);
-  this.selectedSubProgrammes = this.subProgrammes.filter(item => subProgrammeIds.includes(item.id));
-
-  this.getTextValues(ServiceProvisionStepsEnum.Objectives);
-
-  return obj;
-}
-
-private getTextValues(serviceProvisionStepId: ServiceProvisionStepsEnum) {
-  if (serviceProvisionStepId === ServiceProvisionStepsEnum.Objectives) {
-    let allProgrammes: string = "";
-
-    this.selectedProgrammes.forEach(item => {
-      allProgrammes += item.name + ";\n";
     });
-
-    this.selectedProgrammesText = allProgrammes;
+    console.log('fundingApplicationDetails after initialization', this.fundingApplicationDetails);
+  }
+  getfinFund(event: FinancialMatters) {
+    console.log('event from Edit', JSON.stringify(event));
   }
 
-  if (serviceProvisionStepId === ServiceProvisionStepsEnum.Activities) {
-    let allFacilities: string = "";
-
-    this.selectedFacilities.forEach(item => {
-      allFacilities += item.name + ";\n";
-    });
-
-    this.selectedFacilitiesText = allFacilities;
-  }
-
-  let allSubProgrammes: string = "";
-
-  this.selectedSubProgrammes.forEach(item => {
-    allSubProgrammes += item.name + ";\n";
-  });
-
-  this.selectedSubProgrammesText = allSubProgrammes;
-}
-
-programmeChange(programmes: IProgramme[]) {
-  this.subProgrammes = [];
-
-  programmes.forEach(item => {
-    if (item.id != null) {
-      for (var i = 0; i < this.allSubProgrammes.length; i++) {
-        if (this.allSubProgrammes[i].programmeId == item.id) {
-          this.subProgrammes.push(this.allSubProgrammes[i]);
+  private loadApplication() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.application = results;
+          this.buildSteps(results.applicationPeriod);
+          this.loadObjectives();
+          this.loadActivities();
+          this.loadSustainabilityPlans();
+          this.loadResources();
+          this.isApplicationAvailable = true;
         }
+
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
-    }
-  });
-}
-
-editActivity(data: IActivity) {
-  this.activity = this.cloneActivity(data);
-  this.displayActivityDialog = true;
-}
-
-private cloneActivity(data: IActivity): IActivity {
-  data.name = data.activityList.name;
-  data.description = data.activityList.description;
-
-  let activity = {} as IActivity;
-
-  for (let prop in data)
-    activity[prop] = data[prop];
-
-  this.selectedObjective = this.objectives.find(x => x.id === data.objectiveId);
-  this.objectiveChange(this.selectedObjective);
-
-  const facilityListIds = data.activityFacilityLists.map(({ facilityListId }) => facilityListId);
-  this.selectedFacilities = this.allAssignedFacilities.filter(item => facilityListIds.includes(item.id));
-
-  const subProgrammeIds = data.activitySubProgrammes.map(({ subProgrammeId }) => subProgrammeId);
-  this.selectedSubProgrammes = this.subProgrammes.filter(item => subProgrammeIds.includes(item.id));
-
-  this.getTextValues(ServiceProvisionStepsEnum.Activities);
-
-  return activity;
-}
-
-objectiveChange(objective: IObjective) {
-  this.subProgrammes = [];
-
-  const subProgrammeIds = objective.objectiveProgrammes.map(({ subProgrammeId }) => subProgrammeId);
-  this.subProgrammes = this.allSubProgrammes.filter(item => subProgrammeIds.includes(item.id));
-}
-
-editSustainabilityPlan(data: ISustainabilityPlan) {
-  this.sustainabilityPlan = this.cloneSustainabilityPlan(data);
-  this.displaySustainabilityPlanDialog = true;
-}
-
-private cloneSustainabilityPlan(data: ISustainabilityPlan): ISustainabilityPlan {
-  let plan = {} as ISustainabilityPlan;
-
-  for (let prop in data)
-    plan[prop] = data[prop];
-
-  this.selectedActivity = this.activities.find(x => x.id === data.activityId);
-
-  return plan;
-}
-
-editResource(data: IResource) {
-  this.resource = this.cloneResource(data);
-  this.displayResourceDialog = true;
-}
-
-private cloneResource(data: IResource): IResource {
-  data.name = data.resourceList.name;
-  data.description = data.resourceList.description;
-
-  let resource = {} as IResource;
-
-  for (let prop in data)
-    resource[prop] = data[prop];
-
-  this.selectedActivity = this.activities.find(x => x.id === data.activityId);
-
-  return resource;
-}
-
-private updateRowGroupMetaData(serviceProvisionStepId: ServiceProvisionStepsEnum) {
-
-  switch (serviceProvisionStepId) {
-    case ServiceProvisionStepsEnum.Activities:
-      this.rowGroupMetadataActivities = [];
-      this.activities = this.activities.sort((a, b) => a.objectiveId - b.objectiveId);
-
-      if (this.activities) {
-        this.activities.forEach(element => {
-          var itemExists = this.rowGroupMetadataActivities.some(function (data) { return data.itemName === element.objective.name });
-
-          this.rowGroupMetadataActivities.push({
-            itemName: element.objective.name,
-            itemExists: itemExists
-          });
-        });
-      }
-      break;
-    case ServiceProvisionStepsEnum.Sustainability:
-      this.rowGroupMetadataSustainability = [];
-      this.sustainabilityPlans = this.sustainabilityPlans.sort((a, b) => a.activityId - b.activityId);
-
-      if (this.sustainabilityPlans) {
-        this.sustainabilityPlans.forEach(element => {
-          var itemExists = this.rowGroupMetadataSustainability.some(function (data) { return data.itemName === element.activity.activityList.description });
-
-          this.rowGroupMetadataSustainability.push({
-            itemName: element.activity.activityList.description,
-            itemExists: itemExists
-          });
-        });
-      }
-      break;
-    case ServiceProvisionStepsEnum.Resourcing:
-      this.rowGroupMetadataResources = [];
-      this.resources = this.resources.sort((a, b) => a.activityId - b.activityId);
-
-      if (this.resources) {
-        this.resources.forEach(element => {
-          var itemExists = this.rowGroupMetadataResources.some(function (data) { return data.itemName === element.activity.activityList.description });
-
-          this.rowGroupMetadataResources.push({
-            itemName: element.activity.activityList.description,
-            itemExists: itemExists
-          });
-        });
-      }
-      break;
+    );
   }
 
-  this.allDataLoaded();
-}
-
-getCellData(row: any, col: any): any {
-  const nestedProperties: string[] = col.field.split('.');
-  let value: any = row;
-
-  for (const prop of nestedProperties) {
-    value = value[prop];
+  private buildSteps(applicationPeriod: IApplicationPeriod) {
+    if (applicationPeriod != null) {
+      if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
+        this.items = [
+          { label: 'Organisation Details' },
+          { label: 'Objectives' },
+          { label: 'Activities' },
+          { label: 'Sustainability' },
+          { label: 'Resourcing' }
+        ];
+      }
+    }
   }
 
-  return value;
-}
+  private loadObjectives() {
+    this._applicationRepo.getAllObjectives(this.application).subscribe(
+      (results) => {
+        this.objectives = results.filter(x => x.isActive === true);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
-viewComments(data: any, serviceProvisionStepId: ServiceProvisionStepsEnum) {
-  this.filteredApplicationComments = [];
-  this.filteredApplicationComments = this.allApplicationComments.filter(x => x.serviceProvisionStepId === serviceProvisionStepId && x.entityId === data.id);
-  this.displayAllCommentDialog = true;
-}
+  private loadActivities() {
+    this._applicationRepo.getAllActivities(this.application).subscribe(
+      (results) => {
+        this.activities = results.filter(x => x.isActive === true);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
-viewAuditHistory() {
-  this.displayHistory = true;
-}
+  private loadSustainabilityPlans() {
+    this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
+      (results) => {
+        this.sustainabilityPlans = results.filter(x => x.isActive === true);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
-private getDocuments() {
-  this._documentStore.get(Number(this.application.id), EntityTypeEnum.SLA).subscribe(
-    (res) => {
-      this.documents = res;
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
+  private loadResources() {
+    this._applicationRepo.getAllResources(this.application).subscribe(
+      (results) => {
+        this.resources = results.filter(x => x.isActive === true);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private fASteps(applicationPeriod: IApplicationPeriod) {
+
+    if (applicationPeriod != null) {
+      if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+        this.faItems = [
+          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
+          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
+          { label: 'Financial Matters', command: (event: any) => { this.activeStep = 2; } },
+          { label: 'Project Information', command: (event: any) => { this.activeStep = 3; } },
+          { label: 'Monitoring and Evaluation', command: (event: any) => { this.activeStep = 4; } },
+          { label: 'Project Implementation Plan', command: (event: any) => { this.activeStep = 5; } },
+          { label: 'Application Document', command: (event: any) => { this.activeStep = 6; } }
+        ];
+      }
     }
-  );
-}
+  }
 
-private getAuditHistory() {
-  this._applicationRepo.getApplicationAudits(this.application.id).subscribe(
-    (results) => {
-      this.applicationAudits = results;
-      this.mainReview = results.filter(x => x.statusId === StatusEnum.PendingApproval)[0];
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
 
-onDownloadDocument(doc: any) {
-  this._confirmationService.confirm({
-    message: 'Are you sure that you want to download document?',
-    header: 'Confirmation',
-    icon: 'pi pi-info-circle',
-    accept: () => {
-      this._documentStore.download(doc).subscribe();
-    },
-    reject: () => {
-    }
-  });
-}
+  private buildMenu() {
+    if (this.profile) {
+      this.menuActions = [
+        {
+          label: 'Validate',
+          icon: 'fa fa-check',
+          command: () => {
+            this.formValidate();
+          }
+        },
+        {
+          label: 'Clear Messages',
+          icon: 'fa fa-undo',
+          command: () => {
+            this.clearMessages();
+          },
+          visible: false
+        },
+        {
+          label: 'Save',
+          icon: 'fa fa-floppy-o',
+          command: () => {
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
+              this.saveItems(StatusEnum.Saved);
+            }
 
-private loadApplicationApprovals() {
-  this._applicationRepo.getApplicationApprovals(this.application.id).subscribe(
-    (results) => {
-      this.approveFromCoCT = results.filter(x => x.approvedFrom === 'CoCT')[0];
-      this.approveFromDoH = results.filter(x => x.approvedFrom === 'DoH')[0];
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+              this.bidForm(StatusEnum.Saved);
+            }
+          }
+        },
+        {
+          label: 'Submit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
+              this.saveItems(StatusEnum.PendingReview);
+            }
+
+            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+              this.bidForm(StatusEnum.PendingReview);
+            }
+          },
+          disabled: true
+        },
+        {
+          label: 'Go Back',
+          icon: 'fa fa-step-backward',
+          command: () => {
+            this._router.navigateByUrl('applications');
+          }
+        }
+      ];
     }
-  );
-}
+  }
+
+  private bidForm(status: StatusEnum) {
+    debugger;
+    this.application.status = null;
+    if (this.bidCanContinue(status)) {
+      this.application.statusId = status;
+      const applicationIdOnBid = this.fundingApplicationDetails;
+      console.log('applicationIdOnBid', this.fundingApplicationDetails);
+
+      this._applicationRepo.updateApplication(this.application).subscribe(resp => {this._applicationRepo.getApplicationById(Number(this.id))});
+      this.application.statusId = status;
+
+      if (applicationIdOnBid.id == null) {
+        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+          this.menuActions[1].visible = false;
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          resp;
+        });
+      }
+
+      else {
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+          if (resp) {
+            this._router.navigateByUrl(`application/edit/${this.application.id}`);
+            //this.getBidFullObject(resp);
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          }
+        });
+      }
+
+      if (status == StatusEnum.PendingReview) {
+
+        this.application.statusId = status;
+        this._applicationRepo.updateApplication(this.application).subscribe();
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+        this._router.navigateByUrl('applications');
+      };
+    }
+  }
+  // bid continue form
+  private bidCanContinue(status: StatusEnum) {
+    this.validationErrors = [];
+    if (status === StatusEnum.PendingReview)
+      this.formValidate();
+    if (this.validationErrors.length == 0)
+      return true;
+    return false;
+  }
+
+
+  //funding drop downs
+  private loadfundingSteps() {
+
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.application = results;
+          this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
+            if (response.id != null) {
+              this.getFundingApplicationDetails(response);
+              console.log('data.result', response);
+            }
+          });
+          this.fASteps(results.applicationPeriod);
+          this.isApplicationAvailable = true;
+        }
+        this._spinner.hide();
+      },
+      (err) => this._spinner.hide()
+    );
+  }
+
+  private getFundingApplicationDetails(data) {
+    this._bidService.getBid(data.id).subscribe(response => {
+
+      this.getBidFullObject(response)
+
+      setTimeout(() => {
+        document.title = "DSD - Online Funding Application  ";
+        window.print();
+        this._router.navigate([{ outlets: { print: null } }]);
+      }, 2500);
+    });
+
+  }
+
+  private getBidFullObject(data) {
+    debugger;
+    this.fundingApplicationDetails = data;
+    this.fundingApplicationDetails.id = data.id;
+    this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
+    this.fundingApplicationDetails.implementations = data.implementations;
+    if (this.fundingApplicationDetails.projectInformation != null) {
+      this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
+    }
+    else {
+      this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
+    }
+
+    if (this.fundingApplicationDetails.monitoringEvaluation != null) {
+      this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
+
+    }
+    else {
+      this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
+    }
+    this.fundingApplicationDetails.financialMatters = data.financialMatters;
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
+
+    this.fundingApplicationDetails.implementations?.forEach(c => {
+
+      let a = new Date(c.timeframeFrom);
+      c.timeframe?.push(new Date(c.timeframeTo));
+      c.timeframe?.push(new Date(c.timeframeFrom))
+    });
+
+  }
+
+
+  private formValidate() {
+    this.validationErrors = [];
+    if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {
+
+      if (this.objectives.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
+
+      if (this.objectives.length > 0) {
+        let changesRequiredOnObjectives = this.objectives.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnObjectives.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Objectives:", detail: "New comments added." });
+      }
+
+      if (this.activities.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Activities:", detail: "Activity table cannot be empty." });
+      else {
+        let hasActivityErrors: boolean[] = [];
+
+        this.objectives.forEach(item => {
+          var isPresent = this.activities.some(function (activity) { return activity.objectiveId === item.id });
+          hasActivityErrors.push(isPresent);
+        });
+
+        if (hasActivityErrors.includes(false))
+          this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "Please capture an activity for each objective." });
+      }
+
+      if (this.activities.length > 0) {
+        let changesRequiredOnActivities = this.activities.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnActivities.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "New comments added." });
+      }
+
+      if (this.sustainabilityPlans.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Sustainability:", detail: "Sustainability Plan table cannot be empty." });
+      else {
+        let hasSustainabilityErrors: boolean[] = [];
+
+        this.activities.forEach(item => {
+          var isPresent = this.sustainabilityPlans.some(function (sustainabilityPlan) { return sustainabilityPlan.activityId === item.id });
+          hasSustainabilityErrors.push(isPresent);
+        });
+
+        if (hasSustainabilityErrors.includes(false))
+          this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "Please capture a sustainability plan for each activity." });
+      }
+
+      if (this.sustainabilityPlans.length > 0) {
+        let changesRequiredOnSustainabilityPlans = this.sustainabilityPlans.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnSustainabilityPlans.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "New comments added." });
+      }
+
+      if (this.resources.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Resourcing:", detail: "Resourcing table cannot be empty." });
+      else {
+        let hasResourcingErrors: boolean[] = [];
+
+        this.activities.forEach(item => {
+          var isPresent = this.resources.some(function (resource) { return resource.activityId === item.id });
+          hasResourcingErrors.push(isPresent);
+        });
+
+        if (hasResourcingErrors.includes(false))
+          this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "Please capture a resource for each activity." });
+      }
+
+      if (this.resources.length > 0) {
+        let changesRequiredOnResources = this.resources.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnResources.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "New comments added." });
+      }
+    }
+
+
+    if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+
+      if (this.fundingApplicationDetails.implementations.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+      if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
+        this.fundingApplicationDetails.projectInformation.purposeQuestion == null)
+        this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
+
+      if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
+        this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+
+    }
+
+    // if (this.validationErrors.length == 0)
+    //   this.menuActions[1].visible = false;
+    // else
+    //   this.menuActions[1].visible = true;
+    if (this.validationErrors.length == 0) {
+      this.menuActions[3].disabled = false;
+      this.menuActions[1].visible = false;
+    }
+    else {
+      this.menuActions[3].disabled = true;
+      this.menuActions[1].visible = true;
+    }
+  }
+
+  private clearMessages() {
+    this.validationErrors = [];
+    this.menuActions[1].visible = false;
+  }
+
+  private saveItems(status: StatusEnum) {
+    if (this.canContinue(status)) {
+      this._spinner.show();
+      this.application.statusId = status;
+
+      this._applicationRepo.updateApplication(this.application).subscribe(
+        (resp) => {
+          if (resp.statusId === StatusEnum.Saved) {
+            this._spinner.hide();
+            this.menuActions[1].visible = false;
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          }
+
+          if (resp.statusId === StatusEnum.PendingReview) {
+            this._spinner.hide();
+            //this._router.navigateByUrl('applications');
+          }
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+  }
+
+  private canContinue(status: StatusEnum) {
+    this.validationErrors = [];
+
+    if (status === StatusEnum.PendingReview)
+      this.formValidate();
+
+    if (this.validationErrors.length == 0)
+      return true;
+
+    return false;
+  }
 }
