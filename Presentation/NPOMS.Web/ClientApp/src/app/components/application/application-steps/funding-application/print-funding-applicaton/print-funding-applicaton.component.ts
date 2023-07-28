@@ -107,13 +107,6 @@ export class PrintFundingApplicatonComponent implements OnInit {
     this.applicationPeriodId = +this.id;
     this.fundingApplicationDetails.applicationPeriodId = +this.id;
 
-    //  this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-    //   console.log('response',resp)
-    //    this.selectedApplicationId = resp.applicationId;
-    //    console.log('response',this.selectedApplicationId )
-    //  });    
-
-
 
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -124,8 +117,17 @@ export class PrintFundingApplicatonComponent implements OnInit {
 
         this.buildMenu();
       }
+      
     });
     console.log('fundingApplicationDetails after initialization', this.fundingApplicationDetails);
+
+
+    setTimeout(() => {
+      document.title = "DSD - Online Funding Application - " ;
+      window.print();
+      this._router.navigate([{ outlets: { print: null } }]);
+    }, 2500);
+
   }
   getfinFund(event: FinancialMatters) {
     console.log('event from Edit', JSON.stringify(event));
@@ -353,7 +355,7 @@ export class PrintFundingApplicatonComponent implements OnInit {
               console.log('data.result', response);
             }
           });
-          this.fASteps(results.applicationPeriod);
+          //this.fASteps(results.applicationPeriod);
           this.isApplicationAvailable = true;
         }
         this._spinner.hide();
@@ -364,15 +366,10 @@ export class PrintFundingApplicatonComponent implements OnInit {
 
   private getFundingApplicationDetails(data) {
     this._bidService.getBid(data.id).subscribe(response => {
-
-      this.getBidFullObject(response)
-
-      setTimeout(() => {
-        document.title = "DSD - Online Funding Application  ";
-        window.print();
-        this._router.navigate([{ outlets: { print: null } }]);
-      }, 2500);
+      console.log('response from Funding App',response);
+      this.getBidFullObject(response);
     });
+
 
   }
 

@@ -1,12 +1,6 @@
 <p-toast></p-toast>
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Organisation Details" *ngIf="isApplicationAvailable">
-    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
-    <div style="height: 10px;"></div>
-    <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
-    <p-steps [model]="faItems" [readonly]="false" [activeIndex]="activeStep"
-        *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
-    <div style="height: 10px;"></div>
-    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" *ngIf="isApplicationAvailable">
+     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
         <app-npo-details 
         [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details>
         <app-view-application-details 
