@@ -22,13 +22,13 @@
             <tr>
               <!-- <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">Options</th> -->
               <th style="width: 5%;"></th>
-              <th *ngFor="let col of columns" [ngStyle]="{'width': fit-content}" [pSortableColumn]="col.field">
+              <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
                   {{col.header}}
                   <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
                   ariaLabelDesc="Activate to sort in descending order" 
                   ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
               </th>
-              <th style="width: 5%;">Actions</th>
+              <th style="width: 10%;">Actions</th>
             </tr>
             <tr>
                 <!-- <th></th> -->
