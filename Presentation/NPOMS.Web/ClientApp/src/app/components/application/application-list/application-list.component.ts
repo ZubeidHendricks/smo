@@ -220,40 +220,40 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
-        this.buttonItems[0].items.push({
-          label: 'Delete Application',
-          icon: 'fa fa-trash',
-          command: () => {
-            this._confirmationService.confirm({
-              message: 'Are you sure that you want to delete this item?',
-              header: 'Confirmation',
-              icon: 'pi pi-info-circle',
-              accept: () => {
-                this._spinner.show();
-                this._applicationRepo.deleteFundingApplication(this.selectedApplication.id).subscribe(
-                  (resp) => {
-                    this.loadApplications();
-                    this._messageService.add({ severity: 'info', detail: 'Record ' + this.selectedApplication.refNo + ' deleted.' });
-                    this._spinner.hide();
-                  },
-                  (err) => {
-                    this._loggerService.logException(err);
-                    this._spinner.hide();
-                  }
-                );
-              },
-              reject: () => {
-              }
-            });
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Delete Application',
+      //     icon: 'fa fa-trash',
+      //     command: () => {
+      //       this._confirmationService.confirm({
+      //         message: 'Are you sure that you want to delete this item?',
+      //         header: 'Confirmation',
+      //         icon: 'pi pi-info-circle',
+      //         accept: () => {
+      //           this._spinner.show();
+      //           this._applicationRepo.deleteFundingApplication(this.selectedApplication.id).subscribe(
+      //             (resp) => {
+      //               this.loadApplications();
+      //               this._messageService.add({ severity: 'info', detail: 'Record ' + this.selectedApplication.refNo + ' deleted.' });
+      //               this._spinner.hide();
+      //             },
+      //             (err) => {
+      //               this._loggerService.logException(err);
+      //               this._spinner.hide();
+      //             }
+      //           );
+      //         },
+      //         reject: () => {
+      //         }
+      //       });
+      //     }
+      //   });
+      // }
     }
   }
   
   get canShowOptions() {
-    return this.IsAuthorized(PermissionsEnum.EditOption) || this.IsAuthorized(PermissionsEnum.ViewOptions) || this.IsAuthorized(PermissionsEnum.DownloadOption) || this.IsAuthorized(PermissionsEnum.DeleteOption);
+    return this.IsAuthorized(PermissionsEnum.EditOption) || this.IsAuthorized(PermissionsEnum.ViewOptions) || this.IsAuthorized(PermissionsEnum.DownloadOption);
   }
   public updateButtonItems() {
     // Show all buttons
@@ -277,37 +277,37 @@ export class ApplicationListComponent implements OnInit {
         this.buttonItemExists('Edit Application');
         this.buttonItemExists('Evaluate Application');
         this.buttonItemExists('Adjudicate Application');
-        this.buttonItemExists('Delete Application');
+       // this.buttonItemExists('Delete Application');
         break;
       }
-      case StatusEnum.Submitted:
-      case StatusEnum.Submitted: {
-        this.buttonItemExists('Edit Application');
-        this.buttonItemExists('Pre-evaluate Application');
-        this.buttonItemExists('Adjudicate Application');
-        this.buttonItemExists('Delete Application');
-        break;
-      }
-      case StatusEnum.Submitted:
-      case StatusEnum.Evaluated:
-      case StatusEnum.Submitted: {
-        this.buttonItemExists('Edit Application');
-        this.buttonItemExists('Pre-evaluate Application');
-        this.buttonItemExists('Evaluate Application');
-        this.buttonItemExists('Delete Application');
-        break;
-      }
-      case StatusEnum.Submitted:
-      case StatusEnum.Submitted:
-      case StatusEnum.Submitted:
-      case StatusEnum.Submitted: {
-        this.buttonItemExists('Edit Application');
-        this.buttonItemExists('Pre-evaluate Application');
-        this.buttonItemExists('Evaluate Application');
-        this.buttonItemExists('Adjudicate Application');
-        this.buttonItemExists('Delete Application');
-        break;
-      }
+      // case StatusEnum.Submitted:
+      // case StatusEnum.Submitted: {
+      //   this.buttonItemExists('Edit Application');
+      //   this.buttonItemExists('Pre-evaluate Application');
+      //   this.buttonItemExists('Adjudicate Application');
+      //   this.buttonItemExists('Delete Application');
+      //   break;
+      // }
+      // case StatusEnum.Submitted:
+      // case StatusEnum.Evaluated:
+      // case StatusEnum.Submitted: {
+      //   this.buttonItemExists('Edit Application');
+      //   this.buttonItemExists('Pre-evaluate Application');
+      //   this.buttonItemExists('Evaluate Application');
+      //  // this.buttonItemExists('Delete Application');
+      //   break;
+      // }
+      // case StatusEnum.Submitted:
+      // case StatusEnum.Submitted:
+      // case StatusEnum.Submitted:
+      // case StatusEnum.Submitted: {
+      //   this.buttonItemExists('Edit Application');
+      //   this.buttonItemExists('Pre-evaluate Application');
+      //   this.buttonItemExists('Evaluate Application');
+      //   this.buttonItemExists('Adjudicate Application');
+      // //  this.buttonItemExists('Delete Application');
+      //   break;
+      // }
     }
   }
 

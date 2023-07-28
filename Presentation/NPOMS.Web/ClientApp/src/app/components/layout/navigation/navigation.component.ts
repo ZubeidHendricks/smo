@@ -121,15 +121,16 @@ export class NavigationComponent implements OnInit {
           }
         });
       }
-      // if (this.IsAuthorized(PermissionsEnum.ViewQC)) {
-      //   this.mainMenu.push({
-      //     label: 'Quick Capture',
-      //     icon: 'fa fa-camera wcg-icon',
-      //     command: () => {
-      //       this._router.navigateByUrl('quick-captures');
-      //     }
-      //   });
-      // }        
+      
+      if (this.IsAuthorized(PermissionsEnum.ViewQC)) {
+        this.mainMenu.push({
+          label: 'Quick Capture',
+          icon: 'fa fa-camera wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('quick-captures');
+          }
+        });
+      }        
 
       if (this.IsAuthorized(PermissionsEnum.ViewApplicationPeriodMenu)) {
         this.mainMenu.push({
