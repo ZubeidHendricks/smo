@@ -23,18 +23,12 @@ export class ViewProjectInformationComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  @ViewChild(Editor)
-editor:Editor; // "Editor" is the prime-ng class definition
-
   onPurposeQuestionChange($event) {
     this.purposeQuestionChange.emit($event);
   }
 
-  myMethod() {
-    this.editor.quill.disable();
-}
-
   readonly(): boolean {
+
     if (this.application.statusId == StatusEnum.PendingReview ||
       this.application.statusId == StatusEnum.Approved)
       return true;
@@ -42,11 +36,13 @@ editor:Editor; // "Editor" is the prime-ng class definition
   }
 
   nextPage() {
+
     this.activeStep = this.activeStep + 1;
     this.activeStepChange.emit(this.activeStep);
   }
 
   prevPage() {
+
     this.activeStep = this.activeStep - 1;
     this.activeStepChange.emit(this.activeStep);
   }

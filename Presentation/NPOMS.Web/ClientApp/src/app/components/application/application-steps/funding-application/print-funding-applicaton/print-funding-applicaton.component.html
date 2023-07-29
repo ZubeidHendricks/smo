@@ -1,12 +1,32 @@
-<p-toast></p-toast>
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Organisation Details" *ngIf="isApplicationAvailable">
-    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
-    <div style="height: 10px;"></div>
-    <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
-    <p-steps [model]="faItems" [readonly]="false" [activeIndex]="activeStep"
-        *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
-    <div style="height: 10px;"></div>
-    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<!-- <div class="navbar navbar-default navbar-fixed-top navbar-white bg-white shadow-sm">      
+    <div id="navbar-container">
+        <div class="navbar-header">
+            <img src="../../../assets/Images/wcg_logo_new.png" class="img-responsive" style="height: 70px;" alt="" />
+            <span class="navbar-text" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: bold; font-size: 2.5em">DSD Online Funding Application</span>
+        </div>
+    </div>
+    <app-navigation></app-navigation>
+</div> -->
+<!-- <div>
+    <div class="navbar navbar-default navbar-fixed-top navbar-white bg-white shadow-sm">      
+        <div id="navbar-container">
+            <div class="navbar-header">
+                <a target="_blank" class="navbar-brand" href="https://www.westerncape.gov.za/" style="display:flex;">
+                    <img src="../../assets/Images/wc_logo-small.png" class="d-lg-none" alt=""/>
+                    <img src="../../assets/Images/wc_logo-small.png" class="d-none d-lg-block" alt=""/>
+                    <span class="navbar-text" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: bold; font-size: 1.5em">NPO Management System</span>
+                  </a>
+            </div>
+        </div>
+    </div>
+    <app-navigation></app-navigation>
+</div> -->
+
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" >
+     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
         <app-npo-details 
         [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details>
         <app-view-application-details 
@@ -20,11 +40,11 @@
             [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
             [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
         </app-view-financial-matters>
-        <app-project-information 
+        <app-view-project-information 
             [(activeStep)]="activeStep" [application]="application"
             [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion"
             [(fundingApplicationDetails)]="fundingApplicationDetails">
-        </app-project-information>
+        </app-view-project-information>
         <app-view-monitoring-evaluation 
             [(activeStep)]="activeStep" [application]="application"
             [(monEvalDescription)]="fundingApplicationDetails.monitoringEvaluation.monEvalDescription"
