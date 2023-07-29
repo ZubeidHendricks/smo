@@ -528,7 +528,7 @@ export class EditApplicationComponent implements OnInit {
 
           if (resp.statusId === StatusEnum.PendingReview) {
             this._spinner.hide();
-            //this._router.navigateByUrl('applications');
+            this._router.navigateByUrl('applications');
           }
         },
         (err) => {
