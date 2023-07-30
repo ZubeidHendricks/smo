@@ -50,7 +50,7 @@
             [(monEvalDescription)]="fundingApplicationDetails.monitoringEvaluation.monEvalDescription"
             [(fundingApplicationDetails)]="fundingApplicationDetails">
         </app-view-monitoring-evaluation>
-        <app-view-project-implementation *ngIf="activeStep == FundingApplicationStepsEnum.ProjectImplementationPlan"
+        <app-view-project-implementation 
             [(activeStep)]="activeStep" [application]="application"
             [(implementations)]="fundingApplicationDetails.implementations"
             [(fundingApplicationDetails)]="fundingApplicationDetails" [places]="placeAll" [allsubPlaces]="subPlacesAll">
