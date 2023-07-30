@@ -264,22 +264,23 @@ export class ApplicationListComponent implements OnInit {
     // Hide buttons based on status
     switch (this.selectedApplication.statusId) {
       case StatusEnum.Saved:
-      case StatusEnum.AmendmentsRequired: {
-        this.buttonItemExists('Pre-evaluate Application');
-        this.buttonItemExists('Evaluate Application');
-        this.buttonItemExists('Adjudicate Application');
-        this.buttonItemExists('View Application');
-        this.buttonItemExists('Download Application');
-        break;
-      }
-      case StatusEnum.Submitted:
       case StatusEnum.Submitted: {
-        this.buttonItemExists('Edit Application');
-        this.buttonItemExists('Evaluate Application');
-        this.buttonItemExists('Adjudicate Application');
-       // this.buttonItemExists('Delete Application');
+       this.buttonItemExists('Pre-evaluate Application');
+       this.buttonItemExists('Evaluate Application');
+       this.buttonItemExists('Adjudicate Application');
+      //this.buttonItemExists('Edit Application');
+      //  this.buttonItemExists('View Application');
+       // this.buttonItemExists('Download Application');
         break;
       }
+    //  case StatusEnum.Saved:
+      // case StatusEnum.Saved: {
+      //   this.buttonItemExists('Edit Application');
+      //   this.buttonItemExists('Evaluate Application');
+      //   this.buttonItemExists('Adjudicate Application');
+      //  // this.buttonItemExists('Delete Application');
+      //   break;
+      // }
       // case StatusEnum.Submitted:
       // case StatusEnum.Submitted: {
       //   this.buttonItemExists('Edit Application');

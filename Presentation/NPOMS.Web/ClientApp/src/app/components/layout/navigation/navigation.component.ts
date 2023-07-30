@@ -144,7 +144,7 @@ export class NavigationComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.ViewFundingMenu)) {
         this.mainMenu.push({
-          label: '5. Funding',
+          label: 'Funding',
           icon: 'fa fa-money wcg-icon',
           command: () => {
             this._router.navigateByUrl('npo-funding');
