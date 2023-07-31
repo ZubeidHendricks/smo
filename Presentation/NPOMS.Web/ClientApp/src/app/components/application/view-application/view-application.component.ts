@@ -713,4 +713,4 @@ export class ViewApplicationComponent implements OnInit {
       }
     );
   }
-}
+} 

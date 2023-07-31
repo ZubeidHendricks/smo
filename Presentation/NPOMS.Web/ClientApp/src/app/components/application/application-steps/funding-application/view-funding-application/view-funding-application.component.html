@@ -1,36 +1,42 @@
-
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" *ngIf="isApplicationAvailable">
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Organisation Details" *ngIf="isApplicationAvailable">
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+    <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
+    <p-steps [model]="faItems" [readonly]="false" [activeIndex]="activeStep"
+        *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
+    <div style="height: 10px;"></div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
-        <app-npo-details 
+        <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
         [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details>
-        <app-view-application-details 
+        <app-view-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
             [(activeStep)]="activeStep" [application]="application"
             [(fundingApplicationDetails)]="fundingApplicationDetails"
             [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
             (getPlace)="places($event)"
             (getSubPlace)=" subPlaces($event)">
         </app-view-application-details>
-        <app-view-financial-matters 
+        <app-view-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
             [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
             [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
         </app-view-financial-matters>
 
-        <app-view-project-information
+        <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
             [(activeStep)]="activeStep" [application]="application"
             [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion"
             [(fundingApplicationDetails)]="fundingApplicationDetails">
-        </app-view-project-information>
-        <app-view-monitoring-evaluation 
+        </app-project-information>
+        <app-view-monitoring-evaluation *ngIf="activeStep == FundingApplicationStepsEnum.Monitoring_And_Evaluation"
             [(activeStep)]="activeStep" [application]="application"
             [(monEvalDescription)]="fundingApplicationDetails.monitoringEvaluation.monEvalDescription"
             [(fundingApplicationDetails)]="fundingApplicationDetails">
         </app-view-monitoring-evaluation>
-        <app-view-project-implementation 
+        <app-view-project-implementation *ngIf="activeStep == FundingApplicationStepsEnum.ProjectImplementationPlan"
             [(activeStep)]="activeStep" [application]="application"
             [(implementations)]="fundingApplicationDetails.implementations"
             [(fundingApplicationDetails)]="fundingApplicationDetails" [places]="placeAll" [allsubPlaces]="subPlacesAll">
         </app-view-project-implementation>
-        <app-view-document-upload 
+        <app-view-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument"
             [(activeStep)]="activeStep" [application]="application"
             [(fundingApplicationDetails)]="fundingApplicationDetails"></app-view-document-upload>
     </div>
@@ -52,4 +58,6 @@
             [application]="application" (resourceChange)="loadResources()" [reviewApplication]="false"
             [canReviewOrApprove]="false" [canAddComments]="true" [isReview]="false"></app-resourcing>
     </div>
+    <div style="height: 10px;"></div>
+
 </p-panel>
