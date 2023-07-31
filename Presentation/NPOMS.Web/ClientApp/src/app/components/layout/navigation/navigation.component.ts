@@ -93,7 +93,7 @@ export class NavigationComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.ViewTrainingMenu)) {
         this.mainMenu.push({
-          label: 'Library',
+          label: 'Training',
           icon: 'fa fa-graduation-cap wcg-icon',
           command: () => {
             this._router.navigateByUrl('training-material');

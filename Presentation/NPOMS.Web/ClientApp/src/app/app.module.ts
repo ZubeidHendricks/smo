@@ -156,6 +156,7 @@ import { ViewDocumentUploadComponent } from './components/application/applicatio
 import { ViewFundingApplicationComponent } from './components/application/application-steps/funding-application/view-funding-application/view-funding-application.component';
 import { ViewMonitoringEvaluationComponent } from './components/application/application-steps/funding-application/view-monitoring-evaluation/view-monitoring-evaluation.component';
 import { ViewFinancialMattersComponent } from './components/application/application-steps/funding-application/view-financial-matters/view-financial-matters.component';
+import { FundingApplicationViewComponent } from './components/application/application-steps/funding-application/funding-application-view/funding-application-view.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -307,7 +308,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ViewDocumentUploadComponent,
     ViewFundingApplicationComponent,
     ViewMonitoringEvaluationComponent,
-    ViewFinancialMattersComponent
+    ViewFinancialMattersComponent,
+    FundingApplicationViewComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
