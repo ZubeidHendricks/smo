@@ -5,7 +5,7 @@
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="General Information" *ngIf="npo">
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-12 p-md-6">
-                <label class="mandatory-content">Organisation Name</label>
+                <label class="mandatory-content">Organisation Name </label>
                 <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" required>
                 <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small>
             </div>

@@ -4,7 +4,8 @@ import { ApplicationPeriodService } from 'src/app/services/api-services/applicat
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion } from 'src/app/models/interfaces';
+import { IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod,
+  IMonitoringAndEvaluation, IProjectInformation, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion } from 'src/app/models/interfaces';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -31,7 +32,7 @@ export class ApplicationDetailsComponent implements OnInit {
   @Output() AmountChange = new EventEmitter();
   @Input() fundingApplicationDetails: IFundingApplicationDetails;
 
-  @Input() application: IApplication;
+  application: IApplication;
   canEdit: boolean = false;
 
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
@@ -144,6 +145,7 @@ export class ApplicationDetailsComponent implements OnInit {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
+       
         // if (!this.IsAuthorized(PermissionsEnum.EditApplicationPeriod))
         //   this._router.navigate(['401']);
         this.loadDepartments();
@@ -162,6 +164,7 @@ export class ApplicationDetailsComponent implements OnInit {
         this.loadServiceDeliveryAreas();
         this.GetAffiliatedOrganisation();
         this.GetSourceOfInformation();
+        this.loadApplication();
       }
     });
 
@@ -176,6 +179,113 @@ export class ApplicationDetailsComponent implements OnInit {
       }
     ];
   }
+
+
+
+
+  private loadApplication() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.application = results;
+          this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
+            if (response.id != null) {
+              this.getFundingApplicationDetails(response);
+              console.log('data.result', response);
+            }
+          });
+        //  this.fASteps(results.applicationPeriod);
+        //  this.isApplicationAvailable = true;
+        }
+        this._spinner.hide();
+      },
+      (err) => this._spinner.hide()
+    );
+  }
+
+  private getFundingApplicationDetails(data) {
+    this._bidService.getBid(data.id).subscribe(response => {
+
+      this.getBidFullObject(response)
+    });
+
+  }
+
+  private getBidFullObject(data) {
+    debugger;
+    this.fundingApplicationDetails = data;
+    this.fundingApplicationDetails.id = data.id;
+    this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
+    this.fundingApplicationDetails.implementations = data.implementations;
+    if (this.fundingApplicationDetails.projectInformation != null) {
+      this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
+    }
+    else {
+      this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
+    }
+
+    if (this.fundingApplicationDetails.monitoringEvaluation != null) {
+      this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
+
+    }
+    else {
+      this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
+    }
+    this.fundingApplicationDetails.financialMatters = data.financialMatters;
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
+
+    this.fundingApplicationDetails.implementations?.forEach(c => {
+
+      let a = new Date(c.timeframeFrom);
+      c.timeframe?.push(new Date(c.timeframeTo));
+      c.timeframe?.push(new Date(c.timeframeFrom))
+    });
+
+  }
+
+
+  private bidForm(status: StatusEnum) {
+    debugger;
+    this.application.status = null;
+    //if (this.bidCanContinue(status)) {
+      this.application.statusId = status;
+      const applicationIdOnBid = this.fundingApplicationDetails;
+      // console.log('applicationIdOnBid', this.fundingApplicationDetails);
+
+      // this._applicationRepo.updateApplication(this.application).subscribe(resp => {this._applicationRepo.getApplicationById(Number(this.id))});
+      // this.application.statusId = status;
+
+      // if (applicationIdOnBid.id == null) {
+      //   this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+      //     this.menuActions[1].visible = false;
+      //     this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+      //     resp;
+      //   });
+      // }
+
+    //  else {
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+          if (resp) {
+            this._router.navigateByUrl(`application/edit/${this.application.id}`);
+            //this.getBidFullObject(resp);
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          }
+        });
+    //  }
+
+      if (status == StatusEnum.PendingReview) {
+
+        this.application.statusId = status;
+        this._applicationRepo.updateApplication(this.application).subscribe();
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+        this._router.navigateByUrl('applications');
+      };
+   // }
+  }
+
+
+
   onAmountChange(event) {
     let amount = Number(event).valueOf();
     this.Amount = amount;
@@ -249,22 +359,46 @@ export class ApplicationDetailsComponent implements OnInit {
   private saveItems() {
     if (this.canContinue()) {
       this._spinner.show();
-      let data = this.applicationPeriod;
-      data.departmentId = this.selectedDepartment.id;
-      data.programmeId = this.selectedProgramme.id;
-      data.subProgrammeId = this.selectedSubProgramme.id;
-      data.financialYearId = this.selectedFinancialYear.id;
-      data.applicationTypeId = this.selectedApplicationType.id;
-      this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
+
+      this.application.statusId = StatusEnum.Saved;
+      
+      // let data = this.applicationPeriod;
+      // data.departmentId = this.selectedDepartment.id;
+      // data.programmeId = this.selectedProgramme.id;
+      // data.subProgrammeId = this.selectedSubProgramme.id;
+      // data.financialYearId = this.selectedFinancialYear.id;
+      // data.applicationTypeId = this.selectedApplicationType.id;
+
+      this._applicationRepo.updateApplication(this.application).subscribe(
         (resp) => {
-          this._spinner.hide();
-          this._router.navigateByUrl('application-periods');
+        //  if (resp.statusId === StatusEnum.Saved) {
+            this._spinner.hide();
+            this.menuActions[1].visible = false;
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+       //   }
+
+          if (resp.statusId === StatusEnum.PendingReview) {
+            this._spinner.hide();
+            this._router.navigateByUrl('applications');
+          }
         },
         (err) => {
           this._loggerService.logException(err);
           this._spinner.hide();
         }
       );
+   
+      
+      // this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
+      //   (resp) => {
+      //     this._spinner.hide();
+      //     this._router.navigateByUrl('application-periods');
+      //   },
+      //   (err) => {
+      //     this._loggerService.logException(err);
+      //     this._spinner.hide();
+      //   }
+      // );
     }
   }
 
@@ -480,9 +614,12 @@ export class ApplicationDetailsComponent implements OnInit {
     return false;
   }
 
+  
+
   nextPage() {
     if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
       this.activeStep = this.activeStep + 1;
+      this.bidForm(StatusEnum.Saved);
       this.activeStepChange.emit(this.activeStep);
      }
      else
