@@ -21,11 +21,11 @@
             [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
         </app-view-financial-matters>
 
-        <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
+        <app-view-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
             [(activeStep)]="activeStep" [application]="application"
             [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion"
             [(fundingApplicationDetails)]="fundingApplicationDetails">
-        </app-project-information>
+        </app-view-project-information>
         <app-view-monitoring-evaluation *ngIf="activeStep == FundingApplicationStepsEnum.Monitoring_And_Evaluation"
             [(activeStep)]="activeStep" [application]="application"
             [(monEvalDescription)]="fundingApplicationDetails.monitoringEvaluation.monEvalDescription"
