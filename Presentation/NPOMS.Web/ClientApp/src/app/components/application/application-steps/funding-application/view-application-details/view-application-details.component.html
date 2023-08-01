@@ -66,7 +66,7 @@
                 <p-dropdown [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name"
                     [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}"
                     [style]="{'width':'100%'}" appendTo="body" (onChange)="OnDistrictCouncilChange($event.value)"
-                    [disabled]="readonly()"></p-dropdown>
+                    [disabled]="true"></p-dropdown>
 
             </div>
 
@@ -76,7 +76,7 @@
                     [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}"
                     placeholder="Select Local Municipalities" [style]="{'width':'100%'}" appendTo="body"
                     (onChange)="onLocalMunicipalityChange($event.value)" selectedItemsLabel="{0} items selected"
-                    [disabled]="readonly()"></p-dropdown>
+                    [disabled]="true"></p-dropdown>
             </div>
 
             <div class="p-field p-col-12 p-md-3">
@@ -84,7 +84,7 @@
                 <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="regions"
                     [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body"
                     (onChange)="onRegionChange($event.value)" [style]="{'width':'100%'}"
-                    [disabled]="readonly()"></p-multiSelect>
+                    [disabled]="true"></p-multiSelect>
             </div>
 
 
@@ -92,7 +92,7 @@
                 <label class="mandatory-content">Service Delivery Area</label>
                 <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
                     [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="onSdaChange($event.value)"
-                    [style]="{'width':'100%'}" [disabled]="readonly()"></p-multiSelect>
+                    [style]="{'width':'100%'}"[disabled]="true"></p-multiSelect>
             </div>
         </div>
         <div class="p-field p-col-12 p-md-6">
@@ -100,7 +100,7 @@
             <input type="text" class="form-text" pKeyFilter="int" pInputText name="amountApplyingFor"
                 id="amountApplyingFor" (ngModelChange)="onAmountChange($event)" [(ngModel)]="Amount"
                 [ngModelOptions]="{standalone: true}" [ngModelOptions]="{standalone: true}" autofocus autocomplete="off"
-                [disabled]="readonly()" />
+                [disabled]="true" />
         </div>
 
         <p-table [value]="sourceOfInformation">
@@ -111,7 +111,7 @@
                     </th>
                     <th>
                         <label class="mandatory-content">&nbsp;</label>
-                        <select #ref (change)="getSelectedValue(ref.value)" [disabled]="readonly()">
+                        <select #ref (change)="getSelectedValue(ref.value)" [disabled]="true">
                             <option value="">Please Select</option>
                             <option value="1">Printed newspaper</option>
                             <option value="2">Online</option>
@@ -122,9 +122,9 @@
                     <th>
                         <label class="mandatory-content">Please Specify</label>
                         <input [ngStyle]="{'width': 100 + '%'}" type="text" class="form-text" pInputText
-                            [(ngModel)]="specify" [ngModelOptions]="{standalone: true}" [disabled]="false">
+                            [(ngModel)]="specify" [ngModelOptions]="{standalone: true}" [disabled]="true">
                         <button pButton pRipple type="button" label="Save Information" class="p-button-text"
-                            icon="fa fa-floppy-o" (click)="save()" [disabled]="readonly()"></button>
+                            icon="fa fa-floppy-o" (click)="save()"[disabled]="true"></button>
                     </th>
                 </tr>
             </ng-template>
