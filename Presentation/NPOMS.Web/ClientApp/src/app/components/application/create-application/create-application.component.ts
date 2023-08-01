@@ -386,7 +386,8 @@ export class CreateApplicationComponent implements OnInit {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
           this.menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          this._router.navigateByUrl('applications');
+         // this._router.navigateByUrl('applications');
+          this._router.navigateByUrl(`application/edit/${this.application.id}`);
           resp;
         });
       }

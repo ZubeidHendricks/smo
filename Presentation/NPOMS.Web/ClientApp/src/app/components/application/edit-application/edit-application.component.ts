@@ -302,7 +302,7 @@ export class EditApplicationComponent implements OnInit {
 
       if (applicationIdOnBid.id == null) {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-          this.menuActions[1].visible = false;
+          this.menuActions[1].visible = false;        
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           resp;
         });

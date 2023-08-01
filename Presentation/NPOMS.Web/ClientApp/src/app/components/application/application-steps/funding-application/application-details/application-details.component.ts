@@ -256,23 +256,22 @@ export class ApplicationDetailsComponent implements OnInit {
       // this._applicationRepo.updateApplication(this.application).subscribe(resp => {this._applicationRepo.getApplicationById(Number(this.id))});
       // this.application.statusId = status;
 
-      // if (applicationIdOnBid.id == null) {
-      //   this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-      //     this.menuActions[1].visible = false;
-      //     this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-      //     resp;
-      //   });
-      // }
+      if (applicationIdOnBid.id == null) {
+        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+          this.menuActions[1].visible = false;
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          resp;
+        });
+      }
 
-    //  else {
+     else {
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
           if (resp) {
             this._router.navigateByUrl(`application/edit/${this.application.id}`);
-            //this.getBidFullObject(resp);
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           }
         });
-    //  }
+     }
 
       if (status == StatusEnum.PendingReview) {
 
@@ -617,13 +616,15 @@ export class ApplicationDetailsComponent implements OnInit {
   
 
   nextPage() {
-    if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
+    //if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
       this.activeStep = this.activeStep + 1;
       this.bidForm(StatusEnum.Saved);
       this.activeStepChange.emit(this.activeStep);
-     }
-     else
-       this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
+    // }
+    //  else
+    //  {
+    //    this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
+    //  }
   }
 
   prevPage() {
