@@ -219,13 +219,13 @@ export class ViewFundingApplicationComponent implements OnInit {
     if (applicationPeriod != null) {
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
         this.faItems = [
-          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
-          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Financial Matters', command: (event: any) => { this.activeStep = 2; } },
-          { label: 'Project Information', command: (event: any) => { this.activeStep = 3; } },
-          { label: 'Monitoring and Evaluation', command: (event: any) => { this.activeStep = 4; } },
-          { label: 'Project Implementation Plan', command: (event: any) => { this.activeStep = 5; } },
-          { label: 'Application Document', command: (event: any) => { this.activeStep = 6; } }
+          // { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
+          // { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
+          // { label: 'Financial Matters', command: (event: any) => { this.activeStep = 2; } },
+          // { label: 'Project Information', command: (event: any) => { this.activeStep = 3; } },
+          // { label: 'Monitoring and Evaluation', command: (event: any) => { this.activeStep = 4; } },
+          // { label: 'Project Implementation Plan', command: (event: any) => { this.activeStep = 5; } },
+          // { label: 'Application Document', command: (event: any) => { this.activeStep = 6; } }
         ];
       }
     }
