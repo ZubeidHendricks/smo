@@ -22,6 +22,9 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   @Input() implementations: IProjectImplementation[];
   @Output() implementationsChange = new EventEmitter();
 
+  projImpls: IProjectImplementation[] = [];
+  filteredProjImpls: IProjectImplementation[] = [];
+
   pint: RegExp = /^[0-9]\d*$/;
   yearRange: string;
   displayDialogImpl: boolean;
@@ -63,15 +66,24 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
     });
-this.GetProjImpl();
+
     this.cols = [
       { header: 'Description', width: '45%' },
       { header: 'Beneficiaries', width: '25%' },
       { header: 'Budget', width: '15%' },
       { header: 'Actions', width: '10%' }
     ];
+
+   // if (this.clubDevelopmentIntake != null && this.clubDevelopmentIntake.length > 0) {
+      // this.projImpls = this.implementations;
+      // this.filterClubDevelopmentIntakes();
+   // }
     this.setYearRange();
     this.allDropdownsLoaded();
+  }
+
+  private filterClubDevelopmentIntakes() {
+    this.filteredProjImpls = this.projImpls;
   }
 
   disableSubPlacesOrPlace(): boolean {
@@ -151,7 +163,7 @@ this.GetProjImpl();
       accept: () => {
         this._npoProfile.deleteProjImpl(projImpl).subscribe(
           (resp) => {
-            this.GetProjImpl();
+            this.filterClubDevelopmentIntakes();
           },
           (err) => {
             //
