@@ -63,7 +63,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
     });
-
+this.GetProjImpl();
     this.cols = [
       { header: 'Description', width: '45%' },
       { header: 'Beneficiaries', width: '25%' },
@@ -119,13 +119,22 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
         item.description = this.implementation.description;
       });
     }
+    else{
+      this.projectImplementations.forEach(item => {
+        item.beneficiaries = this.implementation.beneficiaries;
+        item.budget = this.implementation.budget;
+        item.description = this.implementation.description;
+    });
   }
+}
 
   private GetProjImpl() {
+    debugger;
+    this.projectImplementations =null;
     this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         this.projectImplementations = results;
-        //this.updateProjImplementations();
+        this.updateProjImplementations();
       },
       (err) => {
         //
@@ -148,6 +157,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
             //
           }
         );
+ 
       },
       reject: () => {
         //
@@ -222,8 +232,14 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     this.fundingApplicationDetails.implementations.length = 0;
     this.fundingApplicationDetails.implementations = this.implementations;
     this.implementationsChange.emit(this.implementations);
-    this.implementation = null;
-    console.log('bit after', this.fundingApplicationDetails)
+    // this.implementation = null;
+    // this.implementations = null;
+    // this.projectImplementations = null;
+    // this.fundingApplicationDetails.implementations  = null;
+    // this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
+    //   (results) => {
+    //     this.fundingApplicationDetails.implementations = results;
+    //   });
   }
 
 
