@@ -175,7 +175,7 @@ export class ApplicationListComponent implements OnInit {
           label: 'Pre-adjudicate Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/pre-adjudicate/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/edit/' + this.selectedApplication.id);
           }
         });
       }
@@ -219,7 +219,7 @@ export class ApplicationListComponent implements OnInit {
           }
         });
       }
-
+// window.print();
       // if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
       //   this.buttonItems[0].items.push({
       //     label: 'Delete Application',
@@ -265,7 +265,7 @@ export class ApplicationListComponent implements OnInit {
     switch (this.selectedApplication.statusId) {
       case StatusEnum.Saved:
       case StatusEnum.Submitted: {
-       this.buttonItemExists('Pre-evaluate Application');
+      // this.buttonItemExists('Pre-evaluate Application');
        this.buttonItemExists('Evaluate Application');
        this.buttonItemExists('Adjudicate Application');
       //this.buttonItemExists('Edit Application');

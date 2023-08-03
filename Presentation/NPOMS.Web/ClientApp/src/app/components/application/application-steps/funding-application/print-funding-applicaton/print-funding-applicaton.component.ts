@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Compiler, Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
@@ -53,6 +53,11 @@ export class PrintFundingApplicatonComponent implements OnInit {
   application: IApplication;
   isApplicationAvailable: boolean;
 
+  createdBy: any;
+  createdDate: any;
+  modifiedBy: any;
+  modifiedDate: any;
+
   objectives: IObjective[] = [];
   activities: IActivity[] = [];
   sustainabilityPlans: ISustainabilityPlan[] = [];
@@ -74,7 +79,8 @@ export class PrintFundingApplicatonComponent implements OnInit {
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
     private _bidService: BidService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _compiler: Compiler,
   ) { }
   places(place: IPlace[]) {
     this.placeAll = place;
@@ -84,6 +90,9 @@ export class PrintFundingApplicatonComponent implements OnInit {
     this.subPlacesAll = subPlaces;
   }
   ngOnInit(): void {
+
+    this._compiler.clearCache();
+    
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
@@ -97,7 +106,7 @@ export class PrintFundingApplicatonComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-
+console.log('profile', this.profile);
         if (!this.IsAuthorized(PermissionsEnum.EditApplication))
           this._router.navigate(['401']);
       }
@@ -112,6 +121,7 @@ export class PrintFundingApplicatonComponent implements OnInit {
         if (results != null) {
           this.application = results;
           this.isApplicationAvailable = true;
+
         }
 
         this._spinner.hide();
@@ -162,6 +172,7 @@ export class PrintFundingApplicatonComponent implements OnInit {
 
   private getBidFullObject(data) {
     debugger;
+    console.log('data', data);
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;

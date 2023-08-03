@@ -34,6 +34,10 @@ namespace NPOMS.Services.Models
         public virtual Npo Npo { get; set; }
         public virtual User User { get; set; }
         public ApplicationPeriod ApplicationPeriod { get; set; }
+        public string CreatedUser { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public string UpdatedUser { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }
 
     }
 }
