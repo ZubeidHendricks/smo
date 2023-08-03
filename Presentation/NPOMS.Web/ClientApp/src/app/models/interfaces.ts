@@ -575,22 +575,11 @@ export interface IQuickCaptureDetails {
     applicationId: number;
     applicationPeriodId: number;
     applicationPeriod: IApplicationPeriod;
-    applicationDetails: IApplicationDetails;  
+    //applicationDetails: IApplicationDetails;  
+    fundingApplicationDetails :IFundingApplicationDetails;
     npo:INpo;    
 }
 
-// export interface IDeclaration {
-//     id: number;
-//     fundingApplicationDetailId: number;
-//     declarationType: string;
-//     comments: string;
-//     acceptSignOff: boolean;
-//     isActing: boolean;   
-//     isActive: boolean;
-//     createdUserId: number;
-//     createdDateTime: Date;
-//     createdUser: IUser;
-// }
 
 
 export interface IProjectInformation {

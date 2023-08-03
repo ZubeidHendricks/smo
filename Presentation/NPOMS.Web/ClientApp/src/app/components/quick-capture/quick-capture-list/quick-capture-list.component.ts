@@ -112,14 +112,20 @@ export class QuickCaptureListComponent implements OnInit {
   } as IFundingApplicationDetails;
 
   quickCaptureDetails: IQuickCaptureDetails = {
-    applicationDetails: {
-      fundAppSDADetail: {
-        districtCouncil: {} as IDistrictCouncil,
-        localMunicipality: {} as ILocalMunicipality,
-        regions: [],
-        serviceDeliveryAreas: [],
-      } as IFundAppSDADetail,
-    } as IApplicationDetails,  
+    fundingApplicationDetails: {
+      applicationDetails: {
+        fundAppSDADetail: {
+          districtCouncil: {} as IDistrictCouncil,
+          localMunicipality: {} as ILocalMunicipality,
+          regions: [],
+          serviceDeliveryAreas: [],
+        } as IFundAppSDADetail,
+      } as IApplicationDetails,   
+  
+      financialMatters: [],
+      implementations: [],
+  
+    } as IFundingApplicationDetails,
     npo:{}  as INpo,
 
   } as IQuickCaptureDetails;  

@@ -11,24 +11,22 @@
     <div>
         <!-- <app-create-npo [(activeStep)]="activeStep" [application]="application" [newApplication]="true" ></app-create-npo> -->
         <app-create-quick-capture *ngIf="activeStep == QCStepsEnum.NpoCreate"
-         [(activeStep)]="activeStep" [application]="application" [newApplication]="true" ></app-create-quick-capture>
-        <app-qc-application-periods *ngIf="activeStep == QCStepsEnum.Applications" [(activeStep)]="activeStep" [application]="application"> </app-qc-application-periods>        
-        <app-qc-application-details *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor" [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
-        [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
-        [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
-        [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
-        [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
-        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
+            [(activeStep)]="activeStep" [(newlySavedNpoId)]="newlySavedNpoId" [application]="application" [newApplication]="true" ></app-create-quick-capture>
+        <app-qc-application-periods *ngIf="activeStep == QCStepsEnum.Applications" 
+            [(activeStep)]="activeStep" [application]="application">
+         </app-qc-application-periods>        
+        <app-qc-application-details *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor" 
+        [(activeStep)]="activeStep" [application]="application" 
+            [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
+            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
+            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
+            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
+            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
+            (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
         </app-qc-application-details>         
-        <!-- <app-qc-application-details *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor"
-        [(activeStep)]="activeStep" [application]="application"
-        [(quickCaptureDetails)]="fundingApplicationDetails"
-        [(Amount)]="quickCaptureDetails.applicationDetails.amountApplyingFor" (getPlace)="places($event)"
-        (getSubPlace)=" subPlaces($event)">
-    </app-qc-application-details>         -->
-
         <app-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
-            [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" >
+            [(activeStep)]="activeStep" [application]="application" 
+            [(fundingApplicationDetails)]="fundingApplicationDetails" >
         </app-document-upload>
     </div>      
 

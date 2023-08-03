@@ -102,17 +102,17 @@ export class CreateApplicationComponent implements OnInit {
 
   } as IFundingApplicationDetails;
 
-  quickCaptureDetails: IQuickCaptureDetails = {
-    applicationDetails: {
-      fundAppSDADetail: {
-        districtCouncil: {} as IDistrictCouncil,
-        localMunicipality: {} as ILocalMunicipality,
-        regions: [],
-        serviceDeliveryAreas: [],
-      } as IFundAppSDADetail,
-    } as IApplicationDetails,    
+  // quickCaptureDetails: IQuickCaptureDetails = {
+  //   applicationDetails: {
+  //     fundAppSDADetail: {
+  //       districtCouncil: {} as IDistrictCouncil,
+  //       localMunicipality: {} as ILocalMunicipality,
+  //       regions: [],
+  //       serviceDeliveryAreas: [],
+  //     } as IFundAppSDADetail,
+  //   } as IApplicationDetails,    
 
-  } as IQuickCaptureDetails;  
+  // } as IQuickCaptureDetails;  
 
   constructor(
     private _router: Router,
@@ -136,7 +136,7 @@ export class CreateApplicationComponent implements OnInit {
       this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
       });   
       this.loadQuickCaptureDropdowns();   
-      this.quickCaptureDetails.applicationPeriodId = +this.id;
+      //this.quickCaptureDetails.applicationPeriodId = +this.id;
     });
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -192,8 +192,8 @@ export class CreateApplicationComponent implements OnInit {
 
         if (results != null) {
           this.application = results;
-          this.quickCaptureDetails.applicationPeriodId = this.application?.applicationPeriodId;
-          this.quickCaptureDetails.applicationId = this.application?.id;
+          // this.quickCaptureDetails.applicationPeriodId = this.application?.applicationPeriodId;
+          // this.quickCaptureDetails.applicationId = this.application?.id;
           this.qCSteps(results.applicationPeriod);
           this.isApplicationAvailable = true;
         }
