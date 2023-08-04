@@ -47,7 +47,7 @@ namespace NPOMS.Repository.Configurations.Core
 
                 new DocumentType
                 {
-                    Id = 9,
+                    Id = 20,
                     Name = "Org Registration Certificate",
                     Description = "NPC/ Trust / PBO Registration Certificate (copies of all applicable)",
                     Location = "FundApp",

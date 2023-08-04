@@ -470,7 +470,7 @@ namespace NPOMS.Repository.Migrations
                         },
                         new
                         {
-                            Id = 7,
+                            Id = 20,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             Description = "Signed Declaration of Interest",
