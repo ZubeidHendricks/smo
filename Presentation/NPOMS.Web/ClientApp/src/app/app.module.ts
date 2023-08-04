@@ -157,6 +157,7 @@ import { ViewFundingApplicationComponent } from './components/application/applic
 import { ViewMonitoringEvaluationComponent } from './components/application/application-steps/funding-application/view-monitoring-evaluation/view-monitoring-evaluation.component';
 import { ViewFinancialMattersComponent } from './components/application/application-steps/funding-application/view-financial-matters/view-financial-matters.component';
 import { FundingApplicationViewComponent } from './components/application/application-steps/funding-application/funding-application-view/funding-application-view.component';
+import { WorkflowComponentComponent } from './components/application/workflow-component/workflow-component.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -311,6 +312,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ViewMonitoringEvaluationComponent,
     ViewFinancialMattersComponent,
     FundingApplicationViewComponent,
+    WorkflowComponentComponent,
+
     QuickCaptureEditListComponent
   ],
   schemas: [

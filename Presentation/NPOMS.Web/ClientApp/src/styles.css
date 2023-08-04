@@ -6,3 +6,11 @@
 @import 'assets/wcg-css/wcg-body.css';
 @import 'assets/wcg-css/wcg-footer.css';
 @import 'assets/wcg-css/wcg-header.css';
+
+@media print {
+    app-header,
+    app-footer,
+    app-application-list {
+      display: none;
+    }
+  }
