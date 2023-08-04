@@ -105,6 +105,8 @@ export class QcApplicationPeriodsComponent implements OnInit {
         this.loadApplicationPeriods();
         this.autoCreateApplication();
       }
+      console.log('Ng- onInit- application Period screeen',this.newlySavedApplicationId);
+
     });
 
     this.cols = [
@@ -173,7 +175,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
           this.newlySavedApplicationIdChange.emit(this.newlySavedApplicationId);
           console.log('Newly Saved Application After Click Select',this.newlySavedApplicationId);
           this.applnPeriodId = resp.applicationPeriodId;
-          //this._router.navigateByUrl('quick-captures/' + this.applnPeriodId);
+          //this._router.navigateByUrl('quick-captures/' + this.newlySavedApplicationId);
          // this._router.navigateByUrl('Application Period Id passing from Applications Screen to Application Details/' + this.applicationPeriodId);
 
         }
