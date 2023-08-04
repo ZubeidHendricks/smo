@@ -21,12 +21,22 @@ export class QcApplicationPeriodsComponent implements OnInit {
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
 
+  @Input() newlySavedNpoId: number;
+  @Output() newlySavedNpoIdChange: EventEmitter<number> = new EventEmitter<number>();
+
+  @Input() newlySavedApplicationId: number;
+  @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
+
+  @Input() applnPeriodId: number;
+  @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
+  
+
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
-  }
+  }  
 
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
@@ -112,23 +122,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
       { label: 'Create New Workplan', value: true },
       { label: 'Use Existing Workplan', value: false }
     ];
-  }
-
-  private autoCreateApplication() {
-    //this.application.npoId = this.selectedNPO.id;
-    this.application.applicationPeriodId = this.applicationPeriodId;
-    this.application.statusId = StatusEnum.New;
-
-    this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
-      (resp) => {
-        this._router.navigateByUrl('application/create/' + resp.id);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+  }  
 
   private loadNpos() {
     this._spinner.show();
@@ -146,12 +140,49 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
   nextPage() {
 
-    this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
+    //this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
     this.activeStep = this.activeStep + 1;
     this.activeStepChange.emit(this.activeStep);
-    console.log(' From next Page click', this.applicationPeriodId);
+    this.newlySavedNpoIdChange.emit(this.activeStep);
 
-    //this.autoCreateApplication();
+        console.log(' From next Page click', this.applicationPeriodId);
+
+    this.autoCreateApplication();
+    this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
+
+  }
+
+  private autoCreateApplication() {
+    debugger;
+    this.application.npoId = this.newlySavedNpoId;
+    this.application.applicationPeriodId = this.applicationPeriodId;
+    this.application.statusId = StatusEnum.New;
+
+    this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
+      (resp) => {
+        //this._router.navigateByUrl('application/create/' + resp.id);
+
+        this.activeStep = this.activeStep + 1;
+        this.activeStepChange.emit(this.activeStep);
+        this.newlySavedNpoIdChange.emit(this.newlySavedNpoId);
+        this.applnPeriodIdChange.emit(this.applicationPeriodId);
+        console.log('applnPeriodIdChange-From Application Period',this.applicationPeriodId);
+
+        if(resp.id != null){
+          this.newlySavedApplicationId = resp.id;
+          this.newlySavedApplicationIdChange.emit(this.newlySavedApplicationId);
+          console.log('Newly Saved Application After Click Select',this.newlySavedApplicationId);
+          this.applnPeriodId = resp.applicationPeriodId;
+          //this._router.navigateByUrl('quick-captures/' + this.applnPeriodId);
+         // this._router.navigateByUrl('Application Period Id passing from Applications Screen to Application Details/' + this.applicationPeriodId);
+
+        }
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   prevPage() {

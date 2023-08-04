@@ -24,6 +24,13 @@ export class QcApplicationDetailsComponent implements OnInit {
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
 
+  @Input() newlySavedApplicationId: number;
+  @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
+
+  @Input() applnPeriodId: number;
+  @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
+  
+
   @Input() isReadOnly: boolean;
   @Input() Amount: number;
 
@@ -56,7 +63,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
-  selectedApplicationId: string;
+  selectedApplicationId: any;
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   isDataAvailable: boolean = false;
@@ -138,12 +145,18 @@ export class QcApplicationDetailsComponent implements OnInit {
     this.selectedDropdownValue = value;
   }
   ngOnInit(): void {
+
+    console.log('ng on init-applnPeriodId',this.applnPeriodId);
     this._spinner.show();
-    this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      this.selectedApplicationId = params.get('id');
-      console.log(' this.selectedApplicationId from QC-Application Details Screen', this.selectedApplicationId);
+    // this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+    //   this.selectedApplicationId = params.get('this.applnPeriodId');
+    //   console.log(' this.selectedApplicationId from QC-Application Details Screen', Number(this.selectedApplicationId));
+    //   console.log(' Reciving Newly created application Id from  QC _Period Screen to QC-Application Details Screen', Number(this.newlySavedApplicationId));
+
       
-    });
+    // });
+    this.selectedApplicationId = this.newlySavedApplicationId;
+    
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -507,14 +520,14 @@ export class QcApplicationDetailsComponent implements OnInit {
   
   nextPage() {
 
-    if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
+    // if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
     
       this.activeStep = this.activeStep + 1;
       this.activeStepChange.emit(this.activeStep);
 
-    }
-    else
-      this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
+    // }
+    // else
+    //   this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
   }
 
 

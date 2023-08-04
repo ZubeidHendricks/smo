@@ -253,16 +253,19 @@ namespace NPOMS.API.Controllers
                         var refNo = await _applicationService.GetApplicationById(id);
                         var documentTypes = await _dropdownService.GetDocumentTypes(returnInactive);
                         //var documents = await _documentStoreService.GetAllDocuments();
-                        var docByRefNo = await _documentStoreService.GetDocumnetByRefNo(refNo.RefNo);
-                        foreach (var type in documentTypes)
+                        if (refNo != null)
                         {
-                            foreach (var doc in docByRefNo)
+                            var docByRefNo = await _documentStoreService.GetDocumnetByRefNo(refNo.RefNo);
+                            foreach (var type in documentTypes)
                             {
-                                if (doc.DocumentTypeId != null)
+                                foreach (var doc in docByRefNo)
                                 {
-                                    if (doc.DocumentTypeId == type.Id)
+                                    if (doc.DocumentTypeId != null)
                                     {
-                                        type.DocumentName = doc.Name;
+                                        if (doc.DocumentTypeId == type.Id)
+                                        {
+                                            type.DocumentName = doc.Name;
+                                        }
                                     }
                                 }
                             }
