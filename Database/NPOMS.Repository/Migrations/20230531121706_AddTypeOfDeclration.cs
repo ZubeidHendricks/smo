@@ -9,11 +9,11 @@ namespace NPOMS.Repository.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.InsertData(
-                schema: "core",
-                table: "DocumentTypes",
-                columns: new[] { "Id", "Description", "IsActive", "Location", "Name", "UpdatedDateTime", "UpdatedUserId" },
-                values: new object[] { 20, "Signed Declaration of Interest", true, "FundApp", "Signed Declaration of Interest", null, null });
+            //migrationBuilder.InsertData(
+            //    schema: "core",
+            //    table: "DocumentTypes",
+            //    columns: new[] { "Id", "Description", "IsActive", "Location", "Name", "UpdatedDateTime", "UpdatedUserId" },
+            //    values: new object[] { 20, "Signed Declaration of Interest", true, "FundApp", "Signed Declaration of Interest", null, null });
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
