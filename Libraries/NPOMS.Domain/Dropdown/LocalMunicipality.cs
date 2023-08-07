@@ -19,6 +19,8 @@ namespace NPOMS.Domain.Dropdown
         [Column(TypeName = "nvarchar(255)")]
         public string Name { get; set; }
 
+        public string SystemName { get; set; }
+
         public bool IsActive { get; set; }
 
         public int CreatedUserId { get; set; }
