@@ -8,7 +8,7 @@ namespace NPOMS.Test.Config
         public static RepositoryContext GetContext()
         {
             var builder = new DbContextOptionsBuilder<RepositoryContext>();
-            builder.UseSqlServer(@"Data Source=NB-R90NMLM3\\LOCALDEV;Initial Catalog=NPOMS;Integrated Security=True");
+            builder.UseSqlServer(@"Data Source=.;Initial Catalog=NPOMS-Mixed;Integrated Security=True");
             DbContextOptions<RepositoryContext> options = builder.Options;
             return new RepositoryContext(options);
         }
