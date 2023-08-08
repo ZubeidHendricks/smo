@@ -81,6 +81,14 @@ namespace NPOMS.Repository.Configurations.Entities
                 new TrainingMaterial
                 {
                     Id = 9,
+                    Name = "DSD NPO Application Form",
+                    Description = "DSD NPO Application Form with Annexures (collated)",
+                    Link = "https://www.westerncape.gov.za/assets/departments/social-development/CFP/dsd_npo_application_form.pdf",
+                    IsActive = true
+                },
+                new TrainingMaterial
+                {
+                    Id = 10,
                     Name = "Application Form - Declaration of interest",
                     Description = "DSD NPO Application Form - Declaration of interest",
                     Link = "https://www.westerncape.gov.za/assets/departments/social-development/CFP/npo_application_form_-_declaration_of_interest.pdf",
@@ -88,7 +96,7 @@ namespace NPOMS.Repository.Configurations.Entities
                 },
                 new TrainingMaterial
                 {
-                    Id = 10,
+                    Id = 11,
                     Name = "Application Form - BAS entity bank details form",
                     Description = "DSD NPO Application Form - BAS entity bank details form",
                     Link = "https://www.westerncape.gov.za/assets/departments/social-development/CFP/npo_application_form_-_dsd_bas_entity_bank_details_form.pdf",
@@ -96,7 +104,7 @@ namespace NPOMS.Repository.Configurations.Entities
                 },
                 new TrainingMaterial
                 {
-                    Id = 11,
+                    Id = 12,
                     Name = "Application Form - Schedule A Enrolment form (After School Care only)",
                     Description = "DSD NPO Application Form - Schedule A Enrolment form (After School Care only)",
                     Link = "https://www.westerncape.gov.za/assets/departments/social-development/CFP/npo_application_form_-_schedule_a_enrolment_form_-_afterschool_care_only.pdf",
@@ -104,7 +112,7 @@ namespace NPOMS.Repository.Configurations.Entities
                 },
                 new TrainingMaterial
                 {
-                    Id = 12,
+                    Id = 13,
                     Name = "Application Form - Written Assurance",
                     Description = "DSD NPO Application Form - Written Assurance",
                     Link = "https://www.westerncape.gov.za/assets/departments/social-development/CFP/npo_application_form_-_written_assurance.pdf",
@@ -112,7 +120,16 @@ namespace NPOMS.Repository.Configurations.Entities
                 },
                 new TrainingMaterial
                 {
-                    Id = 13,
+                    Id = 14,
+                    Name = "Application Declaration - Online Applications only",
+                    Description = "DSD NPO Application Declaration - Online Applications only",
+                    Link = "https://www.westerncape.gov.za/assets/departments/social-development/dsd_npo_application_declaration_-_online_applications_only.pdf",
+                    IsActive = true
+                },
+
+                new TrainingMaterial
+                {
+                    Id = 15,
                     Name = "Frequently Asked Questions",
                     Description = "DSD Call For Proposal Frequently Asked Questions",
                     Link = "https://www.westerncape.gov.za/assets/departments/social-development/CFP/frequently_asked_questions_-_2023_call_for_proposals.pdf",
