@@ -13,11 +13,11 @@ export enum ResponseTypeEnum {
 }
 
 export enum QuestionCategoryEnum {
-    PreAdjudication = 1, 
+    PreAdjudication = 1,
     Adjudication = 2,
     Evaluation = 3,
     Approval = 4
-  
+
 }
 
 export enum ApplicationTypeEnum {
@@ -295,7 +295,7 @@ export enum PermissionsEnum {
     DeletePaymentSchedules = "PS.Delete",
 
     /* Workplan Indicators */
-   
+    ViewOptions = "Indicators.Options",
 
     ViewManageIndicatorsOption = "Indicators.Manage",
     CaptureWorkplanTarget = "Indicators.CaptureTarget",
@@ -308,32 +308,22 @@ export enum PermissionsEnum {
     ViewSummaryOption = "Indicators.Summary",
     ExportSummary = "Indicators.ExportSummary",
 
-   
-
     /* Workflow Action */
-
-    ViewOptions = "WFA.View",
+    ViewOption = "WFA.View",
     EditOption = "WFA.Edit",
     DownloadOption = "WFA.Download",
     DeleteOption = "WFA.Delete",
 
-    PendingPreAdjudicateOption = "watchFile.PendingPreAdjudication",
+    PendingPreAdjudicateOption = "WFA.PendingPreAdjudication",
     PreAdjudicateOption = "WFA.PreAdjudicate",
     PendingAdjudicateOption = "WFA.PendingAdjudication",
     AdjudicateOption = "WFA.Adjudicate",
     PendingEvaluationOption = "WFA.PendingEvaluation",
     EvaluateOption = "WFA.Evaluate",
     PendingApprovalOption = "WFA.PendingApproval",
-    ApproveOPtion = "WFA.Approve",
-    
-    /* Utilities Management */
+    ApproveOption = "WFA.Approve",
 
-    ViewUtilityList = "UM.List",
-    AddUtility = "UM.Add",
-    EditUtility = "UM.Edit",
-    
     /* Quick Capture*/
-
     ViewQC = "QC.View"
 }
 
