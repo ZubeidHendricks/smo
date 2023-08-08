@@ -18,6 +18,13 @@
     color: rgb(3, 20, 141);
 }
 
+.section3 {
+    text-align: center;
+    width: 100%;
+    font-size: large;
+    color: rgb(3, 20, 141); 
+}
+
 .process {
     background-color: rgb(3, 20, 141);
     border-radius: 10px;
@@ -25,6 +32,17 @@
     text-transform: uppercase;
     margin: 1%;
     padding-top: 5px;
+}
+
+.process1 {
+    background-color: rgb(3, 20, 141);
+    border-radius: 5px;
+    height: 80px;
+    text-transform: uppercase;
+    margin: 1%;
+    padding-top: 5px;
+    vertical-align: middle;
+    text-align: center;
 }
 
 .process-number {
@@ -46,8 +64,24 @@
     padding-top: 5px;
 }
 
+.branding1-box {
+    background-color: rgb(3, 20, 141);
+    border-radius: 10px;
+    height: 100%;
+    text-transform: uppercase;
+    margin: 1%;
+}
+
 .branding {
     background-image: url("../../../assets/Images/new-branding.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    height: 100%;
+}
+
+.branding1 {
+    background-image: url("../../../assets/Images/MicrosoftTeams-image.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -106,3 +140,4 @@ a:link, a:visited, a:hover, a:active {
     background-color: white !important;
     margin: 0 10%;
 }
+

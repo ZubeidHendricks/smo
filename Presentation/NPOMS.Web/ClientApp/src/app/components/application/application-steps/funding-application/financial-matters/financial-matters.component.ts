@@ -12,7 +12,7 @@ import { IApplication, FinYear, IFundingApplicationDetails, IBankDetail, IBank, 
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 
 @Component({
   selector: 'app-financial-matters',
@@ -191,7 +191,7 @@ this.calculateOthrSourceFundingTotal();
 
       ];
       this.colsOther = [
-        { field: 'property', header: 'Name of Organisation', width: '40%' },
+        { field: 'property', header: 'Name of Organisation from whom funding has been received', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
         { field: 'year1', header: this.finYears[2].name, width: '15%' },
         { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },

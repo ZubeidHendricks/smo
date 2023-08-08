@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { IContactInformation, INpo } from 'src/app/models/interfaces';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
@@ -30,6 +30,7 @@ export class ViewNpoComponent implements OnInit {
   selectedRace: string;
   selectedGender: string;
   selectedLanguage: string;
+  seletedDateofEmployment:string;
 
   minDate: Date;
   maxDate: Date;
@@ -99,6 +100,8 @@ export class ViewNpoComponent implements OnInit {
 
   viewContactInformation(data: IContactInformation) {
     this.contactInformation = this.cloneContactInformation(data);
+    console.log('Date Of Employment',this.contactInformation.dateOfEmployment);
+    this.seletedDateofEmployment = this.contactInformation.dateOfEmployment.toString();
     this.displayContactDialog = true;
   }
 
@@ -110,14 +113,14 @@ export class ViewNpoComponent implements OnInit {
 
     this.selectedTitle = data.title.name;
     this.selectedPosition = data.position.name;
-    // console.log('data',data);
-    // console.log('data',data.gender.name);
-    // console.log('data',data.race.name);
-    // console.log('data',data.language.name);
-    // this.selectedGender = data.gender.name;
-    // this.selectedRace = data.race.name;
-    // this.selectedLanguage = data.language.name;
-
+    console.log('data',data);
+     if(data.gender != null)
+    this.selectedGender = data.gender.name;
+    if(data.race != null)
+    this.selectedRace = data.race.name;
+    if(data.language != null)    
+    this.selectedLanguage = data.language.name;
+this.seletedDateofEmployment = data.dateOfEmployment.toString();
     return contactInfo;
   }
 }

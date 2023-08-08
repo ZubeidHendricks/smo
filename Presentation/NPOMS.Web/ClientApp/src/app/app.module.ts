@@ -1,7 +1,7 @@
 import { EditorModule } from 'primeng/editor';
 import { BrowserModule } from '@angular/platform-browser';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ToastModule } from 'primeng/toast';
 import { PanelModule } from 'primeng/panel';
@@ -135,7 +135,30 @@ import { ProjectImplementationComponent } from './components/application/applica
 import { DocumentUploadComponent } from './components/application/application-steps/funding-application/document-upload/document-upload.component';
 import { DeclarationComponent } from './components/application/application-steps/funding-application/declaration/declaration.component';
 import { FinancialMattersComponent } from './components/application/application-steps/funding-application/financial-matters/financial-matters.component';
+import { QuickCaptureListComponent } from './components/quick-capture/quick-capture-list/quick-capture-list.component';
+import { CreateQuickCaptureComponent } from './components/quick-capture/create-quick-capture/create-quick-capture.component';
+import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick-capture/edit-quick-capture.component';
+import { QcApplicationDetailsComponent } from './components/application/application-steps/quick-capture/qc-application-details/qc-application-details.component';
+import { QcDocumentUploadComponent } from './components/application/application-steps/quick-capture/qc-document-upload/qc-document-upload.component';
+import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
 
+import { QuestionComponent } from './components/admin/utilities/question/question.component';
+import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
+import { WorkflowAssessmentComponent } from './components/admin/utilities/workflow-assessment/workflow-assessment.component';
+import { ResponseOptionComponent } from './components/admin/utilities/response-option/response-option.component';
+import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
+import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
+import { PrintFundingApplicatonComponent } from './components/application/application-steps/funding-application/print-funding-applicaton/print-funding-applicaton.component';
+import { ViewApplicationDetailsComponent } from './components/application/application-steps/funding-application/view-application-details/view-application-details.component';
+import { ViewProjectInformationComponent } from './components/application/application-steps/funding-application/view-project-information/view-project-information.component';
+import { ViewProjectImplementationComponent } from './components/application/application-steps/funding-application/view-project-implementation/view-project-implementation.component';
+import { ViewDocumentUploadComponent } from './components/application/application-steps/funding-application/view-document-upload/view-document-upload.component';
+import { ViewFundingApplicationComponent } from './components/application/application-steps/funding-application/view-funding-application/view-funding-application.component';
+import { ViewMonitoringEvaluationComponent } from './components/application/application-steps/funding-application/view-monitoring-evaluation/view-monitoring-evaluation.component';
+import { ViewFinancialMattersComponent } from './components/application/application-steps/funding-application/view-financial-matters/view-financial-matters.component';
+import { FundingApplicationViewComponent } from './components/application/application-steps/funding-application/funding-application-view/funding-application-view.component';
+import { WorkflowComponentComponent } from './components/application/workflow-component/workflow-component.component';
+import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -267,7 +290,31 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ProjectImplementationComponent,
     DocumentUploadComponent,
     DeclarationComponent,
-    FinancialMattersComponent
+    FinancialMattersComponent,
+    QuickCaptureListComponent,
+    CreateQuickCaptureComponent,
+    EditQuickCaptureComponent,
+    QcApplicationDetailsComponent,
+    QcDocumentUploadComponent,
+    QcApplicationPeriodsComponent,
+    QuestionComponent,
+    ResponseTypeComponent,
+    WorkflowAssessmentComponent,
+    ResponseOptionComponent,
+    QuestionSectionComponent,
+    QuestionCategoryComponent,
+    PrintFundingApplicatonComponent,
+    ViewApplicationDetailsComponent,
+    ViewProjectInformationComponent,
+    ViewProjectImplementationComponent,
+    ViewDocumentUploadComponent,
+    ViewFundingApplicationComponent,
+    ViewMonitoringEvaluationComponent,
+    ViewFinancialMattersComponent,
+    FundingApplicationViewComponent,
+    WorkflowComponentComponent,
+
+    QuickCaptureEditListComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
@@ -316,7 +363,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   providers: [
     {
       provide: LocationStrategy,
-      useClass: HashLocationStrategy
+      useClass: HashLocationStrategy 
     },
     DatePipe,
     {
@@ -334,7 +381,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     },
     MsalService,
     MsalBroadcastService,
-    MessageService
+    MessageService,
+   ConfirmationService
   ],
   bootstrap: [AppComponent]
 })

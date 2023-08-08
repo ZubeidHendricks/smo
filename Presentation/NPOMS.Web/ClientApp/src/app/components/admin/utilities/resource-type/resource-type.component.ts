@@ -5,7 +5,7 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IResourceType, IUser } from 'src/app/models/interfaces';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from  'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
@@ -48,7 +48,8 @@ export class ResourceTypeComponent implements OnInit {
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
     private _messageService: MessageService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _dropdownService: DropdownService,
   ) { }
 
   ngOnInit(): void {
@@ -161,6 +162,20 @@ export class ResourceTypeComponent implements OnInit {
     );
   }
 
+  delete(data: IResourceType) {
+    let text = "Are you sure that you want to delete this?";
+
+    if (confirm(text) == true) 
+    {      
+      this._dropdownService.delete(data, DropdownTypeEnum.ResourceTypes).subscribe();
+      this.loadEntities();
+    } 
+    else 
+    {
+      return false;
+    }
+  }
+  
   goBack() {
     this._router.navigateByUrl('admin/utilities');
   }

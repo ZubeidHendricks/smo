@@ -78,7 +78,8 @@
             </div>
         </div>
     </div>
-    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="filteredFunding" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="[]">
+    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="filteredFunding" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" 
+    [globalFilterFields]="[]">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">

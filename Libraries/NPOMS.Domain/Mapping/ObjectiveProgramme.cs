@@ -15,7 +15,7 @@ namespace NPOMS.Domain.Mapping
 
 		public Objective Objective { get; set; }
 
-		public Programme Programme { get; set; }
+	//	public Programme Programme { get; set; }
 
 		public SubProgramme SubProgramme { get; set; }
 	}

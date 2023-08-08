@@ -14,6 +14,12 @@
 		ApprovalInProgress = 10,
 		DeptComments = 11,
 		OrgComments = 12,
-		Approved = 13
-	}
+		Approved = 13,
+        PreEvaluationInProgress = 14,
+        PreEvaluated = 15,
+        EvaluationInProgress = 16,
+        Evaluated = 16,
+        AdjudicationInProgress = 17,
+        Adjudicated = 18,
+    }
 }

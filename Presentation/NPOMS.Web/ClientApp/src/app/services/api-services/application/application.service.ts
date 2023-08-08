@@ -194,4 +194,9 @@ export class ApplicationService {
     const url = `${this._envUrl.urlAddress}/api/applications/subplaces`;
     return this._http.post<ISubPlace[]>(url, JSON.stringify(places), httpOptions);
   }
+
+  public deleteFundingApplication(fundingApplicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/fundingapplication/fundingApplicationId/${fundingApplicationId}`;
+    return this._http.delete<IApplication>(url, httpOptions);
+  }
 }

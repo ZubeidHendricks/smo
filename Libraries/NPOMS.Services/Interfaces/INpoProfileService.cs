@@ -29,15 +29,23 @@ namespace NPOMS.Services.Interfaces
 
 		Task Update(ServicesRendered model, string userIdentifier);
 
-		Task<IEnumerable<BankDetail>> GetBankDetailsByNpoProfileId(int npoProfileId);
+        Task<IEnumerable<BankDetail>> GetBankDetailsByNpoProfileId(int npoProfileId);
 
-		Task Create(BankDetail model, string userIdentifier);
+        Task<IEnumerable<ProjectImplementation>> GetProjImplByNpoProfileId(int npoProfileId);
+
+
+        Task Create(BankDetail model, string userIdentifier);
 
 		Task Update(BankDetail model, string userIdentifier);
+
+		Task Update(ProjectImplementation model, string userIdentifier);
+       
 
         Task<IEnumerable<PreviousYearFinance>> GetByNpoProfileIdAsync(int npoProfileId);
         Task<PreviousYearFinance> DeleteById(int id);
         Task<BankDetail> DeleteBankDetailById(int id);
+
+        Task<ProjectImplementation> DeleteProjectImplementationById(int id);
 
         Task Update(List<PreviousYearFinance> model, string userIdentifier, string npoProfileId);
 
@@ -53,9 +61,12 @@ namespace NPOMS.Services.Interfaces
         Task<FinancialMattersExpenditure> DeleteExpenditureById(int id);
         Task<FinancialMattersIncome> DeleteIncomeById(int id);
         Task<FinancialMattersOthers> DeleteOthersById(int id);
+        Task Update(List<AffiliatedOrganisationInformation> model, string userIdentifier, string npoProfileId);
+        Task Update(SourceOfInformation model, string userIdentifier, string npoProfileId);
+        Task<IEnumerable<AffiliatedOrganisationInformation>> GetAffiliatedOrganisationById(int npoProfileId);
+        Task<IEnumerable<SourceOfInformation>> GetSourceOfInformationById(int npoProfileId);
 
-
-		Task<IEnumerable<AuditorOrAffiliation>> GetAuditorOrAffiliations(int entityId);
+        Task<IEnumerable<AuditorOrAffiliation>> GetAuditorOrAffiliations(int entityId);
 
 		Task CreateAuditorOrAffiliation(AuditorOrAffiliation model, string userIdentifier);
 
@@ -66,10 +77,5 @@ namespace NPOMS.Services.Interfaces
 		Task CreateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
 
 		Task UpdateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
-        Task<IEnumerable<AffiliatedOrganisationInformation>> GetAffiliatedOrganisationById(int npoProfileId);
-        Task<IEnumerable<SourceOfInformation>> GetSourceOfInformationById(int npoProfileId);
-
-        Task Update(List<AffiliatedOrganisationInformation> model, string userIdentifier, string npoProfileId);
-        Task Update(SourceOfInformation model, string userIdentifier, string npoProfileId);
-     }
+    }
 }

@@ -33,7 +33,17 @@ namespace NPOMS.Repository.Implementation.Entities
 							.Where(x => x.IsActive).OrderBy(x => x.Name).AsNoTracking().ToListAsync();
 		}
 
-		public async Task<Npo> GetById(int id)
+        public async Task<IEnumerable<Npo>> GetQuickCapturers()
+        {
+            return await FindAll().Include(x => x.OrganisationType)
+                                  .Include(x => x.ApprovalStatus)
+                                  .Include(x => x.CreatedUser)
+                                  .Include(x => x.ApprovalUser)
+                                  .Include(x => x.RegistrationStatus)
+                            .Where(x => x.IsQuickCapture).OrderBy(x => x.Name).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<Npo> GetById(int id)
 		{
 			return await FindByCondition(x => x.Id.Equals(id))
 							.AsNoTracking()

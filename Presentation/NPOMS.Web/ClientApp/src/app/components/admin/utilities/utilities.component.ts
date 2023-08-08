@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
 import { IUser, IUtility } from 'src/app/models/interfaces';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
@@ -29,6 +29,7 @@ export class UtilitiesComponent implements OnInit {
 
   systemAdminUtilities: IUtility[];
   utilities: IUtility[];
+  evaluationUtilities: IUtility[];
   isSystemAdmin: boolean = false;
 
   constructor(
@@ -47,7 +48,7 @@ export class UtilitiesComponent implements OnInit {
         this.profile = profile;
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewUtilities))
+        if (!this.IsAuthorized(PermissionsEnum.ViewUtilitiesSubMenu))
           this._router.navigate(['401']);
 
         this.loadUtilities();
@@ -59,7 +60,9 @@ export class UtilitiesComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Utilities, false).subscribe(
       (results) => {
         this.systemAdminUtilities = results.filter(x => x.systemAdminUtility === true);
-        this.utilities = results.filter(x => x.systemAdminUtility === false);
+        this.utilities = results.filter(x => x.systemAdminUtility === false && x.isActive && !x.name.includes('Question') && !x.name.includes('Response') && !x.name.includes('Assessments'));
+        this.evaluationUtilities = results.filter(x => x.systemAdminUtility === false && x.isActive && (x.name.includes('Question') || x.name.includes('Response') || x.name.includes('Assessments')));
+     
         this._spinner.hide();
       },
       (err) => {

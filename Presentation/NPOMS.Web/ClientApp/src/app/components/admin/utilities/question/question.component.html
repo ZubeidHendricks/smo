@@ -1,0 +1,337 @@
+<p-toast></p-toast>
+<p-panel [toggleable]="false" header="Question">
+    <div class="p-grid">
+        <div class="p-col-fixed">
+            <button pButton pRipple type="button" label="Add" class="p-button-text black-button" icon="fa fa-plus" (click)="add()"></button>
+            <button pButton pRipple type="button" label="Go Back" class="p-button-text black-button" icon="fa fa-step-backward" (click)="goBack()"></button>
+        </div>
+    </div>
+    <div *ngIf="entities">
+        <div class="heading">
+            <span><b>Pre Adjudication</b></span>
+        </div>
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.PreAdjudication)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th style="width:5%;"></th>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" pSortableColumn="{{col.field}}">
+                        {{col.header}} <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                    </th>
+                    <th style="text-align: center; width:10%;">Inactive</th>
+                    <th style="text-align: center; width:5%;">Actions</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th><p-columnFilter type="text" field="name"></p-columnFilter></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="default-font">
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td *ngFor="let col of columns">
+                        <span>{{getCellData(rowData, col)}}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <p-checkbox [ngModel]="!rowData.isActive" [binary]="true" [disabled]="true"></p-checkbox>
+                    </td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                        <button pButton type="button" class="p-button-text action-button" icon="pi pi-trash" (click)="delete(rowData)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="footer" *ngIf="hasWeighting(QuestionCategoryEnum.PreEvaluation)">
+                <tr>
+                    <td colspan="4"><span style="font-weight: bold;">Total</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.PreAdjudication)}}</span></td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div style="height: 10px;"></div>
+        <div class="heading">
+            <span><b>Adjudication</b></span>
+        </div>
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.Adjudication)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th style="width:5%;"></th>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" pSortableColumn="{{col.field}}">
+                        {{col.header}} <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                    </th>
+                    <th style="text-align: center; width:10%;">Inactive</th>
+                    <th style="text-align: center; width:5%;">Actions</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th><p-columnFilter type="text" field="name"></p-columnFilter></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="default-font">
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td *ngFor="let col of columns">
+                        <span>{{getCellData(rowData, col)}}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <p-checkbox [ngModel]="!rowData.isActive" [binary]="true" [disabled]="true"></p-checkbox>
+                    </td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                        <button pButton type="button" class="p-button-text action-button" icon="pi pi-trash" (click)="delete(rowData)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="footer" *ngIf="hasWeighting(QuestionCategoryEnum.PreAdjudication)">
+                <tr>
+                    <td colspan="4"><span style="font-weight: bold;">Total</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.Adjudication)}}</span></td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div style="height: 10px;"></div>
+        <div class="heading">
+            <span><b>Evaluation</b></span>
+        </div>
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.Evaluation)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th style="width:5%;"></th>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" pSortableColumn="{{col.field}}">
+                        {{col.header}} <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                    </th>
+                    <th style="text-align: center; width:10%;">Inactive</th>
+                    <th style="text-align: center; width:5%;">Actions</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th><p-columnFilter type="text" field="name"></p-columnFilter></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="default-font">
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td *ngFor="let col of columns">
+                        <span>{{getCellData(rowData, col)}}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <p-checkbox [ngModel]="!rowData.isActive" [binary]="true" [disabled]="true"></p-checkbox>
+                    </td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                        <button pButton type="button" class="p-button-text action-button" icon="pi pi-trash" (click)="delete(rowData)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="footer" *ngIf="hasWeighting(QuestionCategoryEnum.Evaluation)">
+                <tr>
+                    <td colspan="4"><span style="font-weight: bold;">Total</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.Evaluation)}}</span></td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div style="height: 10px;"></div>
+        <div class="heading">
+            <span><b>Approval</b></span>
+        </div>
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.Approval)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th style="width:5%;"></th>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" pSortableColumn="{{col.field}}">
+                        {{col.header}} <p-sortIcon field="{{col.field}}"></p-sortIcon>
+                    </th>
+                    <th style="text-align: center; width:10%;">Inactive</th>
+                    <th style="text-align: center; width:5%;">Actions</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th><p-columnFilter type="text" field="name"></p-columnFilter></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="default-font">
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td *ngFor="let col of columns">
+                        <span>{{getCellData(rowData, col)}}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <p-checkbox [ngModel]="!rowData.isActive" [binary]="true" [disabled]="true"></p-checkbox>
+                    </td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                        <button pButton type="button" class="p-button-text action-button" icon="pi pi-trash" (click)="delete(rowData)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <tr>
+                    <td colspan="4"><span style="font-weight: bold;">Total</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.Approval)}}</span></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</p-panel>
+
+<p-dialog header="Question" [(visible)]="showDialog" [modal]="true" [style]="{width: '50vw'}">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Question Section</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="filteredQuestionSections" placeholder="Select a Question Category" optionLabel="name" [(ngModel)]="selectedQuestionSection" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Response Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="filteredResponseTypes" placeholder="Select a Response Type" optionLabel="name" [(ngModel)]="selectedResponseType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Response Type Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <span *ngIf="selectedResponseType">{{selectedResponseType.description}}</span>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="entity.name" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Sort Order</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="entity.sortOrder" [ngModelOptions]="{standalone: true}"></p-inputNumber>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Inactive</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox id="inActive" [binary]="true" [(ngModel)]="inActive" [ngModelOptions]="{standalone: true}"></p-checkbox>
+        </div>
+    </div>
+    <hr>
+    <div *ngIf="entity.questionProperty">
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Has Comment</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="entity.questionProperty.hasComment" [ngModelOptions]="{standalone: true}"></p-selectButton>
+            </div>
+        </div>
+        <div class="p-grid" *ngIf="entity.questionProperty.hasComment">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Is Comment Required</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="entity.questionProperty.commentRequired" [ngModelOptions]="{standalone: true}"></p-selectButton>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Has Document?</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="entity.questionProperty.hasDocument" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-selectButton>
+            </div>
+        </div>
+        <div class="p-grid" *ngIf="entity.questionProperty.hasDocument">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Is Document Required?</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="entity.questionProperty.documentRequired" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-selectButton>
+            </div>
+        </div>
+        <div class="p-grid" *ngIf="selectedResponseType && selectedResponseType.id === ResponseTypeEnum.Score">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Weighting</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="entity.questionProperty.weighting" [ngModelOptions]="{standalone: true}"></p-inputNumber>
+            </div>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSave() (click)="save()"></button>
+    </ng-template>
+</p-dialog>

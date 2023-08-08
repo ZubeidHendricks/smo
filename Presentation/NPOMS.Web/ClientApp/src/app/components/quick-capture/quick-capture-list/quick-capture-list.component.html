@@ -1,0 +1,45 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Quick Captures">
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" 
+    >
+
+    </p-menubar>
+
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+    <p-steps [model]="qcItems" [readonly]="false" [activeIndex]="activeStep"></p-steps>
+
+    <div style="height: 10px;"></div>
+    <div>
+        <!-- <app-create-npo [(activeStep)]="activeStep" [application]="application" [newApplication]="true" ></app-create-npo> -->
+        <app-create-quick-capture *ngIf="activeStep == QCStepsEnum.NpoCreate"
+            [(activeStep)]="activeStep" [(newlySavedNpoId)]="newlySavedNpoId" [application]="application" [newApplication]="true" ></app-create-quick-capture>
+        <app-qc-application-periods *ngIf="activeStep == QCStepsEnum.Applications" 
+            [(activeStep)]="activeStep" [(newlySavedNpoId)]="newlySavedNpoId" 
+            [(newlySavedApplicationId)]="newlySavedApplicationId"  
+            [(applnPeriodId)]="applnPeriodId"  
+            [application]="application">
+         </app-qc-application-periods>        
+        <app-qc-application-details *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor" 
+        [(activeStep)]="activeStep" 
+        [(newlySavedApplicationId)]="newlySavedApplicationId"
+        [(applnPeriodId)]="applnPeriodId" 
+        [application]="application" 
+            [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
+            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
+            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
+            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
+            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
+            (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
+        </app-qc-application-details>         
+        <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
+            [(activeStep)]="activeStep" [application]="application"         [(newlySavedApplicationId)]="newlySavedApplicationId"
+            [(applnPeriodId)]="applnPeriodId" 
+            [(fundingApplicationDetails)]="fundingApplicationDetails" >
+        </app-qc-document-upload>
+    </div>      
+
+</p-panel>

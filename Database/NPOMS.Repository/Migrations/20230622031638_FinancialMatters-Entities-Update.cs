@@ -9,65 +9,65 @@ namespace NPOMS.Repository.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "TotalFundingAmountE",
-                schema: "fa",
-                table: "FinancialMattersOthers",
-                newName: "TotalFundingAmountO");
+            //migrationBuilder.RenameColumn(
+            //    name: "TotalFundingAmountE",
+            //    schema: "fa",
+            //    table: "FinancialMattersOthers",
+            //    newName: "TotalFundingAmountO");
 
-            migrationBuilder.RenameColumn(
-                name: "ExpenditureDescription",
-                schema: "fa",
-                table: "FinancialMattersOthers",
-                newName: "OtherDescription");
+            //migrationBuilder.RenameColumn(
+            //    name: "ExpenditureDescription",
+            //    schema: "fa",
+            //    table: "FinancialMattersOthers",
+            //    newName: "OtherDescription");
 
-            migrationBuilder.RenameColumn(
-                name: "AmountTwoE",
-                schema: "fa",
-                table: "FinancialMattersOthers",
-                newName: "AmountTwoO");
+            //migrationBuilder.RenameColumn(
+            //    name: "AmountTwoE",
+            //    schema: "fa",
+            //    table: "FinancialMattersOthers",
+            //    newName: "AmountTwoO");
 
-            migrationBuilder.RenameColumn(
-                name: "AmountThreeE",
-                schema: "fa",
-                table: "FinancialMattersOthers",
-                newName: "AmountThreeO");
+            //migrationBuilder.RenameColumn(
+            //    name: "AmountThreeE",
+            //    schema: "fa",
+            //    table: "FinancialMattersOthers",
+            //    newName: "AmountThreeO");
 
-            migrationBuilder.RenameColumn(
-                name: "AmountOneE",
-                schema: "fa",
-                table: "FinancialMattersOthers",
-                newName: "AmountOneO");
+            //migrationBuilder.RenameColumn(
+            //    name: "AmountOneE",
+            //    schema: "fa",
+            //    table: "FinancialMattersOthers",
+            //    newName: "AmountOneO");
 
-            migrationBuilder.RenameColumn(
-                name: "TotalFundingAmountO",
-                schema: "fa",
-                table: "FinancialMattersExpenditure",
-                newName: "TotalFundingAmountE");
+            //migrationBuilder.RenameColumn(
+            //    name: "TotalFundingAmountO",
+            //    schema: "fa",
+            //    table: "FinancialMattersExpenditure",
+            //    newName: "TotalFundingAmountE");
 
-            migrationBuilder.RenameColumn(
-                name: "OthersDescription",
-                schema: "fa",
-                table: "FinancialMattersExpenditure",
-                newName: "ExpenditureDescription");
+            //migrationBuilder.RenameColumn(
+            //    name: "OthersDescription",
+            //    schema: "fa",
+            //    table: "FinancialMattersExpenditure",
+            //    newName: "ExpenditureDescription");
 
-            migrationBuilder.RenameColumn(
-                name: "AmountTwoO",
-                schema: "fa",
-                table: "FinancialMattersExpenditure",
-                newName: "AmountTwoE");
+            //migrationBuilder.RenameColumn(
+            //    name: "AmountTwoO",
+            //    schema: "fa",
+            //    table: "FinancialMattersExpenditure",
+            //    newName: "AmountTwoE");
 
-            migrationBuilder.RenameColumn(
-                name: "AmountThreeO",
-                schema: "fa",
-                table: "FinancialMattersExpenditure",
-                newName: "AmountThreeE");
+            //migrationBuilder.RenameColumn(
+            //    name: "AmountThreeO",
+            //    schema: "fa",
+            //    table: "FinancialMattersExpenditure",
+            //    newName: "AmountThreeE");
 
-            migrationBuilder.RenameColumn(
-                name: "AmountOneO",
-                schema: "fa",
-                table: "FinancialMattersExpenditure",
-                newName: "AmountOneE");
+            //migrationBuilder.RenameColumn(
+            //    name: "AmountOneO",
+            //    schema: "fa",
+            //    table: "FinancialMattersExpenditure",
+            //    newName: "AmountOneE");
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",

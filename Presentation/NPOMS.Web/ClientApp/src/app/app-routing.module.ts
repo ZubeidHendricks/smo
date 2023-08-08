@@ -1,3 +1,4 @@
+import { PrintFundingApplicatonComponent } from './components/application/application-steps/funding-application/print-funding-applicaton/print-funding-applicaton.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PermissionsComponent } from './components/admin/permissions/permissions.component';
@@ -67,7 +68,18 @@ import { BranchComponent } from './components/admin/utilities/branch/branch.comp
 import { AccountTypeComponent } from './components/admin/utilities/account-type/account-type.component';
 import { CompliantCyclesComponent } from './components/admin/compliant-cycles/compliant-cycles.component';
 import { PaymentSchedulesComponent } from './components/admin/payment-schedules/payment-schedules.component';
+import { QuickCaptureListComponent } from './components/quick-capture/quick-capture-list/quick-capture-list.component';
+import { CreateQuickCaptureComponent } from './components/quick-capture/create-quick-capture/create-quick-capture.component';
+import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick-capture/edit-quick-capture.component';
+import { ApplicationDetailsComponent } from './components/application/application-steps/funding-application/application-details/application-details.component';
+import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
 
+import { QuestionComponent } from './components/admin/utilities/question/question.component';
+import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
+import { WorkflowAssessmentComponent } from './components/admin/utilities/workflow-assessment/workflow-assessment.component';
+import { ResponseOptionComponent } from './components/admin/utilities/response-option/response-option.component';
+import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
+import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
 
@@ -77,15 +89,24 @@ const routes: Routes = [
 
   { path: 'npo-profiles', component: ProfileListComponent },
   { path: 'npo-profile/edit/:id', component: EditProfileComponent },
-
+  { path: 'print/:id', outlet: 'print', component: PrintFundingApplicatonComponent },
   { path: 'access-request', component: AccessRequestComponent },
   { path: 'access-review', component: AccessReviewComponent },
+
+  { path: 'quick-captures', component: QuickCaptureListComponent },
+  { path: 'quick-capture/create', component: CreateQuickCaptureComponent },
+  { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },  
+
+  { path: 'quick-captures/:id', component: QuickCaptureListComponent },
 
   { path: 'npos', component: NpoListComponent },
   { path: 'npo/create', component: CreateNpoComponent },
   { path: 'npo/edit/:id', component: EditNpoComponent },
 
   { path: 'applications', component: ApplicationListComponent },
+  { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },
+  { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
+  
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },
@@ -130,6 +151,12 @@ const routes: Routes = [
   { path: 'utilities/bank', component: BankComponent },
   { path: 'utilities/branch', component: BranchComponent },
   { path: 'utilities/account-type', component: AccountTypeComponent },
+  { path: 'utilities/question', component: QuestionComponent },
+  { path: 'utilities/question-category', component: QuestionCategoryComponent },
+  { path: 'utilities/question-section', component: QuestionSectionComponent },
+  { path: 'utilities/response-option', component: ResponseOptionComponent },
+  { path: 'utilities/response-type', component: ResponseTypeComponent },
+  { path: 'utilities/workflow-assessment', component: WorkflowAssessmentComponent },
 
   // Error Pages
   { path: '401', component: Page401Component },

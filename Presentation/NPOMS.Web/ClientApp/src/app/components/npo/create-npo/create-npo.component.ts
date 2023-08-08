@@ -5,7 +5,7 @@ import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/
 import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, IRegistrationStatus, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -32,6 +32,7 @@ export class CreateNpoComponent implements OnInit {
 
   npo: INpo = {
     section18Receipts: false,
+    isQuickCapture : true,
     contactInformation: [] as IContactInformation[]
   } as INpo;
 
@@ -294,6 +295,7 @@ export class CreateNpoComponent implements OnInit {
   }
 
   private saveItems() {
+    debugger;
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npo;
@@ -306,6 +308,9 @@ export class CreateNpoComponent implements OnInit {
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
         item.positionId = item.position.id;
+        item.genderId =item.gender.id;
+        item.raceId = item.race.id;
+        item.languageId =item.language.id;
       });
 
       this._npoRepo.createNpo(data).subscribe(
@@ -367,6 +372,7 @@ export class CreateNpoComponent implements OnInit {
   }
 
   saveContactInformation() {
+    debugger;
     this.contactInformation.title = this.selectedTitle;
     this.contactInformation.position = this.selectedPosition;
     this.contactInformation.race = this.selectedRace;
@@ -399,6 +405,7 @@ export class CreateNpoComponent implements OnInit {
   }
 
   private cloneContactInformation(data: IContactInformation): IContactInformation {
+    debugger;
     let contactInfo = {} as IContactInformation;
 
     for (let prop in data)
@@ -406,8 +413,11 @@ export class CreateNpoComponent implements OnInit {
 
     this.selectedTitle = data.title;
     this.selectedPosition = data.position;
-    this.selectedRace = data.race;
+
+    this.selectedRace = data.race;   
+
     this.selectedGender = data.gender;
+    
     this.selectedLanguage = data.language;
 
     return contactInfo;

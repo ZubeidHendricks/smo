@@ -18,9 +18,15 @@ namespace NPOMS.Services.Interfaces
 		Task Delete(string resourceId, string userIdentifier);
 
 		Task<FileStreamResult> Download(string resourceId);
+        Task<List<DocumentStore>> GetAllDocuments();
+        Task<List<DocumentStore>> GetDocumnetByRefNo(string refNo);
 
-		Task<PagedList<DocumentStoreViewModel>> Get(DocumentStoreResourceParameters documentStoreResourceParameters);
 
-		Task Update(DocumentStore model, string userIdentifier);
+        Task<PagedList<DocumentStoreViewModel>> Get(DocumentStoreResourceParameters documentStoreResourceParameters);
+
+        Task<PagedList<DocumentStoreViewModel>> GetFundApp(DocumentStoreResourceParameters documentStoreResourceParameters, int docTypeId);
+
+
+        Task Update(DocumentStore model, string userIdentifier);
 	}
 }

@@ -7,9 +7,23 @@ export enum AccessStatusEnum {
     New = 4
 }
 
+export enum ResponseTypeEnum {
+    CloseEnded = 1,
+    Score = 2
+}
+
+export enum QuestionCategoryEnum {
+    PreAdjudication = 1, 
+    Adjudication = 2,
+    Evaluation = 3,
+    Approval = 4
+  
+}
+
 export enum ApplicationTypeEnum {
     FA = 1,
-    SP = 2
+    SP = 2,
+    QC = 3
 }
 
 export enum DocumentTypeEnum {
@@ -65,7 +79,14 @@ export enum DropdownTypeEnum {
     Gender = 45,
     Languages = 46,
     RegistrationStatus = 47,
-    StaffCategory = 48
+    StaffCategory = 48,
+    FundingTemplateType = 49,
+    QuestionCategory = 50,
+    QuestionSection = 51,
+    ResponseType = 52,
+    Question = 53,
+    ResponseOption = 54,
+    WorkflowAssessment = 55
 }
 
 export enum EntityTypeEnum {
@@ -137,6 +158,7 @@ export enum StatusEnum {
     EvaluationDecline = 21,
     Evaluated = 22,
     EvaluationApproved = 23,
+    Submitted = 24,
     GetName
 }
 
@@ -273,7 +295,7 @@ export enum PermissionsEnum {
     DeletePaymentSchedules = "PS.Delete",
 
     /* Workplan Indicators */
-    ViewOptions = "Indicators.Options",
+   
 
     ViewManageIndicatorsOption = "Indicators.Manage",
     CaptureWorkplanTarget = "Indicators.CaptureTarget",
@@ -284,7 +306,35 @@ export enum PermissionsEnum {
     ApproveWorkplanActual = "Indicators.ApproveActual",
 
     ViewSummaryOption = "Indicators.Summary",
-    ExportSummary = "Indicators.ExportSummary"
+    ExportSummary = "Indicators.ExportSummary",
+
+   
+
+    /* Workflow Action */
+
+    ViewOptions = "WFA.View",
+    EditOption = "WFA.Edit",
+    DownloadOption = "WFA.Download",
+    DeleteOption = "WFA.Delete",
+
+    PendingPreAdjudicateOption = "watchFile.PendingPreAdjudication",
+    PreAdjudicateOption = "WFA.PreAdjudicate",
+    PendingAdjudicateOption = "WFA.PendingAdjudication",
+    AdjudicateOption = "WFA.Adjudicate",
+    PendingEvaluationOption = "WFA.PendingEvaluation",
+    EvaluateOption = "WFA.Evaluate",
+    PendingApprovalOption = "WFA.PendingApproval",
+    ApproveOPtion = "WFA.Approve",
+    
+    /* Utilities Management */
+
+    ViewUtilityList = "UM.List",
+    AddUtility = "UM.Add",
+    EditUtility = "UM.Edit",
+    
+    /* Quick Capture*/
+
+    ViewQC = "QC.View"
 }
 
 export enum ReportTypeEnum {
@@ -355,6 +405,20 @@ export enum FundingApplicationStepsEnum {
     ApplicationDocument = 6,
     Declaration = 7
 }
+
+export enum QuickCaptureStepsEnum {
+    NpoConfirmationDetails = 0,
+    AmountYouApplyingFor = 1,
+    ApplicationDocument = 2
+}
+
+export enum QCStepsEnum {
+    NpoCreate = 0,
+    Applications = 1,
+    AmountYouApplyingFor = 2,
+    ApplicationDocument = 3
+}
+
 
 export enum DocumentUploadLocationsEnum {
     NpoProfile = 'NpoProfile',

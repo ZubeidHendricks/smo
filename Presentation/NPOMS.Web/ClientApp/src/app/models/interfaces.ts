@@ -513,6 +513,7 @@ export interface INpo {
     registrationStatusId: number;
     pboNumber: string;
     section18Receipts: boolean;
+    isQuickCapture: boolean;
     cCode: string;
 
     organisationType: IOrganisationType;
@@ -569,18 +570,16 @@ export interface IFundingApplicationDetails {
     //fundAppDeclaration :IFundAppDeclaration;     
 }
 
-// export interface IDeclaration {
-//     id: number;
-//     fundingApplicationDetailId: number;
-//     declarationType: string;
-//     comments: string;
-//     acceptSignOff: boolean;
-//     isActing: boolean;   
-//     isActive: boolean;
-//     createdUserId: number;
-//     createdDateTime: Date;
-//     createdUser: IUser;
-// }
+export interface IQuickCaptureDetails {
+    id: number;
+    applicationId: number;
+    applicationPeriodId: number;
+    applicationPeriod: IApplicationPeriod;
+    //applicationDetails: IApplicationDetails;  
+    fundingApplicationDetails :IFundingApplicationDetails;
+    npo:INpo;    
+}
+
 
 
 export interface IProjectInformation {
@@ -589,8 +588,8 @@ export interface IProjectInformation {
     isActive: boolean;
     changeRequired: boolean;
     isNew: boolean;
-    initiatedQuestion: string;
-    considerQuestion: string;
+    //initiatedQuestion: string;
+    //considerQuestion: string;
     purposeQuestion: string;
 }
 export interface IMonitoringAndEvaluation {
@@ -1102,11 +1101,11 @@ export interface ISDA {
     isActive: boolean;
     regionId: number;
 }
-export interface ILocalMunicipality {
-    id: number;
-    name: string;
-    districtCouncilId: number;
-}
+// export interface ILocalMunicipality {
+//     id: number;
+//     name: string;
+//     districtCouncilId: number;
+// }
 
 export interface IDistrictCouncil {
     id: number;
@@ -1141,6 +1140,7 @@ export interface IProjectImplementation {
     results: string;
     resources: string;
     budget: number;
+    npoProfileId: number;
 }
 
 export interface IFundAppDeclaration {
@@ -1158,6 +1158,80 @@ export interface IFundAppDeclaration {
     createdUserId: number;
 }
 
+/* Evaluation */
+export interface IQuestionCategory {
+    id: number;
+    fundingTemplateTypeId: number;
+    name: string;
+    isActive: boolean;
+
+    fundingTemplateType: IFundingTemplateType;
+}
+
+export interface IQuestionSection {
+    id: number;
+    questionCategoryId: number;
+    name: string;
+    sortOrder: number;
+    isActive: boolean;
+
+    questionCategory: IQuestionCategory;
+}
+
+export interface IQuestion {
+    id: number;
+    questionSectionId: number;
+    responseTypeId: number;
+    name: string;
+    sortOrder: number;
+    isActive: boolean;
+
+    questionSection: IQuestionSection;
+    responseType: IResponseType;
+    questionProperty: IQuestionProperty;
+}
+
+export interface IQuestionProperty {
+    id: number;
+    questionId: number;
+    hasComment: boolean;
+    commentRequired: boolean;
+    hasDocument: boolean;
+    documentRequired: boolean;
+    weighting: number;
+}
+export interface IResponseType {
+    id: number;
+    name: string;
+    description: string;
+    isActive: boolean;
+}
+
+export interface IFundingTemplateType {
+    id: number;
+    name: string;
+    systemName: string;
+    isActive: boolean;
+}
+
+export interface IResponseOption {
+    id: number;
+    responseTypeId: number;
+    name: string;
+    systemName: string;
+    isActive: boolean;
+
+    responseType: IResponseType;
+}
+
+export interface IWorkflowAssessment {
+    id: number;
+    questionCategoryId: number;
+    numberOfAssessments: number;
+    isActive: boolean;
+
+    questionCategory: IQuestionCategory;
+}
 
 //export interface IBudget {
 //    id: number;

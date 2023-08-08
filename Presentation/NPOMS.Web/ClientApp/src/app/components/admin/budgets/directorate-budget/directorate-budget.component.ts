@@ -6,7 +6,7 @@ import { Table } from 'primeng/table';
 import { DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
 import { IDepartment, IDirectorate, IDirectorateBudget, IFinancialYear, IProgramme, IUser } from 'src/app/models/interfaces';
 import { BudgetService } from 'src/app/services/api-services/budget/budget.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 

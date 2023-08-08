@@ -9,7 +9,7 @@ import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliat
 import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDenodoFacility, IDepartment, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, INpo, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
-import { DropdownService } from 'src/app/services/api-services/dropdown/dropdown.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -297,7 +297,7 @@ export class EditProfileComponent implements OnInit {
       (results) => {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
-        this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.NpoProfile);
+        this.documentTypes = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
       },
       (err) => {
         this._loggerService.logException(err);

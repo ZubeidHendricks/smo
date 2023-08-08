@@ -469,18 +469,20 @@ namespace NPOMS.Repository.Migrations
                             IsCompulsory = false,
                             Location = "Workplan",
                             Name = "Signed SLA"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            Description = "Signed Declaration of Interest",
-                            IsActive = true,
-                            IsCompulsory = false,
-                            Location = "FundApp",
-                            Name = "Signed Declaration of Interest"
-                        });
+                        }
+                        //,
+                        //new
+                        //{
+                        //    Id = 20,
+                        //    CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                        //    CreatedUserId = 0,
+                        //    Description = "Signed Declaration of Interest",
+                        //    IsActive = true,
+                        //    IsCompulsory = false,
+                        //    Location = "FundApp",
+                        //    Name = "Signed Declaration of Interest"
+                        //}
+                        );
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Core.EmailAccount", b =>

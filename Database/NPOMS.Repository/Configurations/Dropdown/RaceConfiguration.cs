@@ -21,12 +21,12 @@ namespace NPOMS.Repository.Configurations.Dropdown
                 new Race
                 {
                     Id = 1,
-                    Name = "African"
+                    Name = " Black African"
                 },
                 new Race
                 {
                     Id = 2,
-                    Name = "Asian"
+                    Name = "Indian"
                 },
                 new Race
                 {
@@ -37,7 +37,12 @@ namespace NPOMS.Repository.Configurations.Dropdown
                 {
                     Id = 4,
                     Name = "White"
-                }               
+                },
+                new Race
+                {
+                    Id = 5,
+                    Name = "Other"
+                }
             );
         }
     }

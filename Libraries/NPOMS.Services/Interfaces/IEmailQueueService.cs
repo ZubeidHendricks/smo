@@ -9,6 +9,7 @@ namespace NPOMS.Services.Interfaces
 {
 	public interface IEmailQueueService
     {
+        Task CreateEmailQueue(EmailQueue entity);
         IQueryable<EmailQueue> Get(EmailQueueResourceParameters emailQueueResourceParameters);
 
         Task<PagedList<EmailQueueViewModel>> GetAll(EmailQueueResourceParameters emailQueueResourceParameters);
