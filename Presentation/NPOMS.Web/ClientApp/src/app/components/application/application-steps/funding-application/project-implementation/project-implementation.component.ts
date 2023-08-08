@@ -42,8 +42,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   @Input() places: IPlace[];
   @Input() allsubPlaces: ISubPlace[];
-
-
   subPlaces: ISubPlace[];
   selectedSubPlaces: ISubPlace[];
   selectedPlaces: IPlace[];
@@ -79,10 +77,13 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       { header: 'Beneficiaries', width: '25%' },
       { header: 'Budget', width: '15%' },
       { header: 'Actions', width: '10%' }
-    ];
-   
+    ];   
     this.setYearRange();
     this.allDropdownsLoaded();
+  }
+  
+  private filterClubDevelopmentIntakes() {
+    this.filteredProjImpls = this.projImpls;
   }
 
   disableSubPlacesOrPlace(): boolean {
@@ -156,7 +157,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       accept: () => {
         this._npoProfile.deleteProjImpl(projImpl).subscribe(
           (resp) => {
-            this.filterClubDevelopmentIntakes();
+            this.filterClubDevelopmentIntakes();     
           },
           (err) => {
             //
@@ -169,6 +170,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       }
     });
   }
+
 
   nextPage() {
 
