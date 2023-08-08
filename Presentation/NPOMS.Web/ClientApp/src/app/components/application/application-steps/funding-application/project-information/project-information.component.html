@@ -39,7 +39,7 @@
             class="bid-required">*</span></label>
             <div style="height: 15px;"></div>
         <p-editor [(ngModel)]="purposeQuestion" [ngModelOptions]="{standalone: true}"
-          (ngModelChange)="onPurposeQuestionChange($event)" [(ngModel)]="purposeQuestion">
+          (ngModelChange)="onPurposeQuestionChange($event)" [(ngModel)]="purposeQuestion" [disabled]="readonly()">
         </p-editor>
       </div>
     </div>

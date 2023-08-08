@@ -1,0 +1,63 @@
+
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}"  *ngIf="isApplicationAvailable">
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <!-- <div style="height: 10px;"></div> -->
+    <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
+    <p-steps [model]="faItems" [readonly]="false" [activeIndex]="activeStep"
+        *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA"></p-steps>
+    <!-- <div style="height: 10px;"></div> -->
+    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
+        <!-- <app-npo-details 
+        [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details> -->
+        <app-view-application-details 
+            [(activeStep)]="activeStep" [application]="application"
+            [(fundingApplicationDetails)]="fundingApplicationDetails"
+            [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
+            (getPlace)="places($event)"
+            (getSubPlace)=" subPlaces($event)">
+        </app-view-application-details>
+        <app-view-financial-matters 
+            [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
+            [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
+        </app-view-financial-matters>
+
+        <app-view-project-information
+            [(activeStep)]="activeStep" [application]="application"
+            [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion"
+            [(fundingApplicationDetails)]="fundingApplicationDetails">
+        </app-view-project-information>
+        <app-view-monitoring-evaluation 
+            [(activeStep)]="activeStep" [application]="application"
+            [(monEvalDescription)]="fundingApplicationDetails.monitoringEvaluation.monEvalDescription"
+            [(fundingApplicationDetails)]="fundingApplicationDetails">
+        </app-view-monitoring-evaluation>
+        <app-view-project-implementation 
+            [(activeStep)]="activeStep" [application]="application"
+            [(implementations)]="fundingApplicationDetails.implementations"
+            [(fundingApplicationDetails)]="fundingApplicationDetails" [places]="placeAll" [allsubPlaces]="subPlacesAll">
+        </app-view-project-implementation>
+        <app-view-document-upload 
+            [(activeStep)]="activeStep" [application]="application"
+            [(fundingApplicationDetails)]="fundingApplicationDetails"></app-view-document-upload>
+    </div>
+    <!-- <div style="height: 10px;"></div> -->
+
+    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
+        <app-npo-details *ngIf="activeStep == ServiceProvisionStepsEnum.NpoConfirmation" [(activeStep)]="activeStep"
+            [application]="application" [newApplication]="false"></app-npo-details>
+        <app-objectives *ngIf="activeStep == ServiceProvisionStepsEnum.Objectives" [(activeStep)]="activeStep"
+            [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"
+            [isReview]="false"></app-objectives>
+        <app-activities *ngIf="activeStep == ServiceProvisionStepsEnum.Activities" [(activeStep)]="activeStep"
+            [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
+            [isReview]="false"></app-activities>
+        <app-sustainability *ngIf="activeStep == ServiceProvisionStepsEnum.Sustainability" [(activeStep)]="activeStep"
+            [application]="application" (sustainabilityPlanChange)="loadSustainabilityPlans()" [canAddComments]="true"
+            [isReview]="false"></app-sustainability>
+        <app-resourcing *ngIf="activeStep == ServiceProvisionStepsEnum.Resourcing" [(activeStep)]="activeStep"
+            [application]="application" (resourceChange)="loadResources()" [reviewApplication]="false"
+            [canReviewOrApprove]="false" [canAddComments]="true" [isReview]="false"></app-resourcing>
+    </div>
+    <div style="height: 10px;"></div>
+
+</p-panel>

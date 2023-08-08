@@ -22,13 +22,13 @@
             <tr>
               <!-- <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">Options</th> -->
               <th style="width: 5%;"></th>
-              <th *ngFor="let col of columns" [ngStyle]="{'width': fit-content}" [pSortableColumn]="col.field">
+              <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
                   {{col.header}}
                   <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
                   ariaLabelDesc="Activate to sort in descending order" 
                   ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
               </th>
-              <th style="width: 5%;">Actions</th>
+              <th style="width: 10%;">Actions</th>
             </tr>
             <tr>
                 <!-- <th></th> -->
@@ -51,11 +51,6 @@
                     <span>{{getCellData(rowData, col)}}</span>
                 </td>
                 <td style="text-align: center;">
-                    <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit Application" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.EditApplication) && rowData.applicationPeriod.status == 'Open' && (rowData.statusId === StatusEnum.Saved || rowData.statusId === StatusEnum.AmendmentsRequired)"></button>
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="review(rowData)" pTooltip="Review Application" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.ReviewApplication) && rowData.statusId === StatusEnum.PendingReview"></button>
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="approve(rowData)" pTooltip="Approve Application" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.ApproveApplication) && (rowData.statusId === StatusEnum.PendingApproval || rowData.statusId === StatusEnum.ApprovalInProgress)"></button>
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="uploadSLA(rowData)" pTooltip="Upload SLA" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.UploadSLA) && (rowData.statusId === StatusEnum.PendingSLA || rowData.statusId === StatusEnum.PendingSignedSLA || rowData.statusId === StatusEnum.DeptComments || rowData.statusId === StatusEnum.OrgComments)"></button>
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-text-o" (click)="view(rowData)" pTooltip="View Application" tooltipPosition="left" *ngIf="IsAuthorized(PermissionsEnum.ViewAcceptedApplication) && rowData.statusId === StatusEnum.AcceptedSLA"></button>                     -->
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedApplication=rowData; menu.toggle($event); updateButtonItems();" pTooltip="Options" tooltipPosition="left" *ngIf="canShowOptions"></button>
                     <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
                 </td>

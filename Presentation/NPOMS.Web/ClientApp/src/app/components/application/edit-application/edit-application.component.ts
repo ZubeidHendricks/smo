@@ -1,3 +1,4 @@
+import { NpoProfileService } from './../../../services/api-services/npo-profile/npo-profile.service';
 import { FundingApplicationService } from './../../../services/api-services/funding-application/funding-application.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,7 +8,7 @@ import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/
 import { Subscription } from 'rxjs';
 import { FinancialMatters } from 'src/app/models/FinancialMatters';
 import { ApplicationTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -86,6 +87,7 @@ export class EditApplicationComponent implements OnInit {
     private _messageService: MessageService,
     private _fundAppService: FundingApplicationService,
     private _bidService: BidService,
+    private _npoProfileServie: NpoProfileService,
     private _loggerService: LoggerService
   ) { }
   places(place: IPlace[]) {
@@ -294,7 +296,7 @@ export class EditApplicationComponent implements OnInit {
     this.application.status = null;
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
-      const applicationIdOnBid = this.fundingApplicationDetails
+      const applicationIdOnBid = this.fundingApplicationDetails;
       console.log('applicationIdOnBid', this.fundingApplicationDetails);
 
       this._applicationRepo.updateApplication(this.application).subscribe(resp => {this._applicationRepo.getApplicationById(Number(this.id))});
@@ -302,7 +304,7 @@ export class EditApplicationComponent implements OnInit {
 
       if (applicationIdOnBid.id == null) {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-          this.menuActions[1].visible = false;
+          this.menuActions[1].visible = false;        
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           resp;
         });
@@ -312,9 +314,10 @@ export class EditApplicationComponent implements OnInit {
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
           if (resp) {
             this._router.navigateByUrl(`application/edit/${this.application.id}`);
-            this.getBidFullObject(resp);
+            this.loadfundingSteps();
+            //this.getBidFullObject(resp);            
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
+            this.fundingApplicationDetails.implementations =null;
           }
         });
       }
@@ -325,6 +328,7 @@ export class EditApplicationComponent implements OnInit {
         this._applicationRepo.updateApplication(this.application).subscribe();
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
         this._router.navigateByUrl('applications');
+        this.fundingApplicationDetails.implementations =null;
       };
     }
   }
@@ -372,14 +376,13 @@ export class EditApplicationComponent implements OnInit {
 
   private getBidFullObject(data) {
     debugger;
+    this.fundingApplicationDetails.implementations =null;
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
     this.fundingApplicationDetails.implementations = data.implementations;
     if (this.fundingApplicationDetails.projectInformation != null) {
-      this.fundingApplicationDetails.projectInformation.considerQuestion = data.projectInformation.considerQuestion;
       this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
-      this.fundingApplicationDetails.projectInformation.initiatedQuestion = data.projectInformation.initiatedQuestion;
     }
     else {
       this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;

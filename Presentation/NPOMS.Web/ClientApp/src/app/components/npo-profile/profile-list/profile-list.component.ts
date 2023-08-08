@@ -75,8 +75,8 @@ export class ProfileListComponent implements OnInit {
     this.cols = [
       { field: 'refNo', header: 'Ref. No.', width: '15%' },
       { field: 'npo.name', header: 'Organisation', width: '40%' },
-      { field: 'npo.organisationType.name', header: 'Organisation Type', width: '15%' },
-      { field: 'npo.approvalStatus.name', header: 'Organisation Status', width: '10%' },
+      { field: 'npo.organisationType.name', header: 'Organisation Type', width: '12%' },
+      { field: 'npo.approvalStatus.name', header: 'Organisation Status', width: '13%' },
       { field: 'npo.yearRegistered', header: 'Year Registered', width: '10%' }
     ];
   }

@@ -5,6 +5,7 @@
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Department</label>
+                
                 <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name"
                     [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
                     appendTo="body" (onChange)="departmentChange($event.value)" #department="ngModel"
@@ -159,7 +160,7 @@
                     </th>
                     <th>
                         <p-selectButton [options]="stateOptions" optionLabel="label" (onChange)="showTable($event)"
-                            optionValue="value" [style]="{'font-size': '12px'}" [ngModelOptions]="{standalone: true}"
+                            optionValue="value" [style]="{'font-size': '12px'}" [ngModelOptions]="{standalone: true}" [disabled]="readonly()"
                             [required]="true"></p-selectButton>
                     </th>
                 </tr>

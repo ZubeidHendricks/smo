@@ -9,101 +9,101 @@ namespace NPOMS.Repository.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "FinancialMattersExpenditure",
-                schema: "fa",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    npoProfileId = table.Column<int>(type: "int", nullable: true),
-                    OthersDescription = table.Column<string>(type: "nvarchar(255)", nullable: true),
-                    AmountOneO = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
-                    AmountTwoO = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
-                    AmountThreeO = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
-                    TotalFundingAmountO = table.Column<int>(type: "int", nullable: false),
-                    FundingApplicationDetailId = table.Column<int>(type: "int", nullable: true),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
-                    CreatedUserId = table.Column<int>(type: "int", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedUserId = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FinancialMattersExpenditure", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FinancialMattersExpenditure_FundingApplicationDetails_FundingApplicationDetailId",
-                        column: x => x.FundingApplicationDetailId,
-                        principalSchema: "fa",
-                        principalTable: "FundingApplicationDetails",
-                        principalColumn: "Id");
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "FinancialMattersExpenditure",
+            //    schema: "fa",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("SqlServer:Identity", "1, 1"),
+            //        npoProfileId = table.Column<int>(type: "int", nullable: true),
+            //        OthersDescription = table.Column<string>(type: "nvarchar(255)", nullable: true),
+            //        AmountOneO = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
+            //        AmountTwoO = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
+            //        AmountThreeO = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
+            //        TotalFundingAmountO = table.Column<int>(type: "int", nullable: false),
+            //        FundingApplicationDetailId = table.Column<int>(type: "int", nullable: true),
+            //        Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+            //        IsActive = table.Column<bool>(type: "bit", nullable: true),
+            //        CreatedUserId = table.Column<int>(type: "int", nullable: true),
+            //        CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+            //        UpdatedUserId = table.Column<int>(type: "int", nullable: true),
+            //        UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_FinancialMattersExpenditure", x => x.Id);
+            //        table.ForeignKey(
+            //            name: "FK_FinancialMattersExpenditure_FundingApplicationDetails_FundingApplicationDetailId",
+            //            column: x => x.FundingApplicationDetailId,
+            //            principalSchema: "fa",
+            //            principalTable: "FundingApplicationDetails",
+            //            principalColumn: "Id");
+            //    });
 
-            migrationBuilder.CreateTable(
-                name: "FinancialMattersIncome",
-                schema: "fa",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    npoProfileId = table.Column<int>(type: "int", nullable: true),
-                    IncomeDescription = table.Column<string>(type: "nvarchar(50)", nullable: true),
-                    AmountOneI = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
-                    AmountTwoI = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
-                    AmountThreeI = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
-                    TotalFundingAmountI = table.Column<int>(type: "int", nullable: false),
-                    FundingApplicationDetailId = table.Column<int>(type: "int", nullable: true),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
-                    CreatedUserId = table.Column<int>(type: "int", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedUserId = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FinancialMattersIncome", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FinancialMattersIncome_FundingApplicationDetails_FundingApplicationDetailId",
-                        column: x => x.FundingApplicationDetailId,
-                        principalSchema: "fa",
-                        principalTable: "FundingApplicationDetails",
-                        principalColumn: "Id");
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "FinancialMattersIncome",
+            //    schema: "fa",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("SqlServer:Identity", "1, 1"),
+            //        npoProfileId = table.Column<int>(type: "int", nullable: true),
+            //        IncomeDescription = table.Column<string>(type: "nvarchar(50)", nullable: true),
+            //        AmountOneI = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
+            //        AmountTwoI = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
+            //        AmountThreeI = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
+            //        TotalFundingAmountI = table.Column<int>(type: "int", nullable: false),
+            //        FundingApplicationDetailId = table.Column<int>(type: "int", nullable: true),
+            //        Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+            //        IsActive = table.Column<bool>(type: "bit", nullable: true),
+            //        CreatedUserId = table.Column<int>(type: "int", nullable: true),
+            //        CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+            //        UpdatedUserId = table.Column<int>(type: "int", nullable: true),
+            //        UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_FinancialMattersIncome", x => x.Id);
+            //        table.ForeignKey(
+            //            name: "FK_FinancialMattersIncome_FundingApplicationDetails_FundingApplicationDetailId",
+            //            column: x => x.FundingApplicationDetailId,
+            //            principalSchema: "fa",
+            //            principalTable: "FundingApplicationDetails",
+            //            principalColumn: "Id");
+            //    });
 
-            migrationBuilder.CreateTable(
-                name: "FinancialMattersOthers",
-                schema: "fa",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    npoProfileId = table.Column<int>(type: "int", nullable: true),
-                    ExpenditureDescription = table.Column<string>(type: "nvarchar(255)", nullable: true),
-                    AmountOneE = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
-                    AmountTwoE = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
-                    AmountThreeE = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
-                    TotalFundingAmountE = table.Column<int>(type: "int", nullable: false),
-                    FundingApplicationDetailId = table.Column<int>(type: "int", nullable: true),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
-                    CreatedUserId = table.Column<int>(type: "int", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedUserId = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FinancialMattersOthers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FinancialMattersOthers_FundingApplicationDetails_FundingApplicationDetailId",
-                        column: x => x.FundingApplicationDetailId,
-                        principalSchema: "fa",
-                        principalTable: "FundingApplicationDetails",
-                        principalColumn: "Id");
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "FinancialMattersOthers",
+            //    schema: "fa",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("SqlServer:Identity", "1, 1"),
+            //        npoProfileId = table.Column<int>(type: "int", nullable: true),
+            //        ExpenditureDescription = table.Column<string>(type: "nvarchar(255)", nullable: true),
+            //        AmountOneE = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
+            //        AmountTwoE = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
+            //        AmountThreeE = table.Column<decimal>(type: "numeric(18,6)", nullable: false),
+            //        TotalFundingAmountE = table.Column<int>(type: "int", nullable: false),
+            //        FundingApplicationDetailId = table.Column<int>(type: "int", nullable: true),
+            //        Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+            //        IsActive = table.Column<bool>(type: "bit", nullable: true),
+            //        CreatedUserId = table.Column<int>(type: "int", nullable: true),
+            //        CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+            //        UpdatedUserId = table.Column<int>(type: "int", nullable: true),
+            //        UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_FinancialMattersOthers", x => x.Id);
+            //        table.ForeignKey(
+            //            name: "FK_FinancialMattersOthers_FundingApplicationDetails_FundingApplicationDetailId",
+            //            column: x => x.FundingApplicationDetailId,
+            //            principalSchema: "fa",
+            //            principalTable: "FundingApplicationDetails",
+            //            principalColumn: "Id");
+            //    });
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -417,23 +417,23 @@ namespace NPOMS.Repository.Migrations
                 column: "CreatedDateTime",
                 value: new DateTime(2023, 6, 21, 20, 11, 49, 412, DateTimeKind.Local).AddTicks(7924));
 
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancialMattersExpenditure_FundingApplicationDetailId",
-                schema: "fa",
-                table: "FinancialMattersExpenditure",
-                column: "FundingApplicationDetailId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_FinancialMattersExpenditure_FundingApplicationDetailId",
+            //    schema: "fa",
+            //    table: "FinancialMattersExpenditure",
+            //    column: "FundingApplicationDetailId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancialMattersIncome_FundingApplicationDetailId",
-                schema: "fa",
-                table: "FinancialMattersIncome",
-                column: "FundingApplicationDetailId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_FinancialMattersIncome_FundingApplicationDetailId",
+            //    schema: "fa",
+            //    table: "FinancialMattersIncome",
+            //    column: "FundingApplicationDetailId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancialMattersOthers_FundingApplicationDetailId",
-                schema: "fa",
-                table: "FinancialMattersOthers",
-                column: "FundingApplicationDetailId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_FinancialMattersOthers_FundingApplicationDetailId",
+            //    schema: "fa",
+            //    table: "FinancialMattersOthers",
+            //    column: "FundingApplicationDetailId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -4,7 +4,8 @@ import { ApplicationPeriodService } from 'src/app/services/api-services/applicat
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion } from 'src/app/models/interfaces';
+import { IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod,
+  IMonitoringAndEvaluation, IProjectInformation, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion } from 'src/app/models/interfaces';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -31,7 +32,7 @@ export class ApplicationDetailsComponent implements OnInit {
   @Output() AmountChange = new EventEmitter();
   @Input() fundingApplicationDetails: IFundingApplicationDetails;
 
-  @Input() application: IApplication;
+  application: IApplication;
   canEdit: boolean = false;
 
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
@@ -159,6 +160,7 @@ export class ApplicationDetailsComponent implements OnInit {
         this.loadServiceDeliveryAreas();
         this.GetAffiliatedOrganisation();
         this.GetSourceOfInformation();
+        this.loadApplication();
       }
     });
 
@@ -350,8 +352,16 @@ export class ApplicationDetailsComponent implements OnInit {
 
       this._applicationRepo.updateApplication(this.application).subscribe(
         (resp) => {
-          this._spinner.hide();
-          this._router.navigateByUrl('application-periods');
+        //  if (resp.statusId === StatusEnum.Saved) {
+            this._spinner.hide();
+            this.menuActions[1].visible = false;
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+       //   }
+
+          if (resp.statusId === StatusEnum.PendingReview) {
+            this._spinner.hide();
+            this._router.navigateByUrl('applications');
+          }
         },
         (err) => {
           this._loggerService.logException(err);
@@ -567,15 +577,18 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-    // if (this.application.statusId ==StatusEnum.PendingReview ||
+    // if (this.application.statusId == StatusEnum.PendingReview ||
     //  this.application.statusId == StatusEnum.Approved )
     //  return true;
     // else return false;
     return false;
   }
 
+  
+
   nextPage() {
       this.activeStep = this.activeStep + 1;
+      this.bidForm(StatusEnum.Saved);
       this.activeStepChange.emit(this.activeStep);
   }
 
@@ -609,7 +622,7 @@ export class ApplicationDetailsComponent implements OnInit {
       this.regions = null;
       this.sdas = null;
     }
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality != null)
+    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
 
     if (localMunicipality.id != undefined) {
@@ -628,7 +641,8 @@ export class ApplicationDetailsComponent implements OnInit {
     this.selected = null;
     this.regions = null;
     this.sdas = null;
-
+    
+    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
 
     if (districtCouncil.id != undefined) {
@@ -649,6 +663,7 @@ export class ApplicationDetailsComponent implements OnInit {
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
+    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
 
     // filter items matching the selected regions

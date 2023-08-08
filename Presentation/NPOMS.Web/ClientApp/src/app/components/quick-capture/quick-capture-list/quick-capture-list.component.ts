@@ -20,10 +20,12 @@ import { Subscription } from 'rxjs';
 })
 export class QuickCaptureListComponent implements OnInit {
 
+
+  @Input() newlySavedApplicationId: number;
+  @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
+
   canEdit: boolean = false;
   applicationIdOnBid: any;
-  // subPlacesAll: ISubPlace[];
-  // place: IPlace[];
 
   placesAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
@@ -112,14 +114,20 @@ export class QuickCaptureListComponent implements OnInit {
   } as IFundingApplicationDetails;
 
   quickCaptureDetails: IQuickCaptureDetails = {
-    applicationDetails: {
-      fundAppSDADetail: {
-        districtCouncil: {} as IDistrictCouncil,
-        localMunicipality: {} as ILocalMunicipality,
-        regions: [],
-        serviceDeliveryAreas: [],
-      } as IFundAppSDADetail,
-    } as IApplicationDetails,  
+    fundingApplicationDetails: {
+      applicationDetails: {
+        fundAppSDADetail: {
+          districtCouncil: {} as IDistrictCouncil,
+          localMunicipality: {} as ILocalMunicipality,
+          regions: [],
+          serviceDeliveryAreas: [],
+        } as IFundAppSDADetail,
+      } as IApplicationDetails,   
+  
+      financialMatters: [],
+      implementations: [],
+  
+    } as IFundingApplicationDetails,
     npo:{}  as INpo,
 
   } as IQuickCaptureDetails;  
@@ -147,6 +155,9 @@ export class QuickCaptureListComponent implements OnInit {
     //   });
     // });
 console.log('ng onInit');
+console.log('newlySavedApplicationId',this.newlySavedApplicationId);
+
+this.loadfundingDropdowns();
     this.qCSteps();
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -159,21 +170,26 @@ console.log('ng onInit');
       }
     });
   }
-  // private autoCreateApplication() {
-  //   //this.application.npoId = this.selectedNPO.id;
-  //   this.application.applicationPeriodId = this.applicationPeriodId;
-  //   this.application.statusId = StatusEnum.New;
 
-  //   this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
-  //     (resp) => {
-  //       this._router.navigateByUrl('application/create/' + resp.id);
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
+  private loadfundingDropdowns() {
+    debugger;
+    this._spinner.show();
+    
+    this._applicationRepo.getApplicationById(this.newlySavedApplicationId).subscribe(
+      (results) => {
+        console.log('results',results);
+        if (results != null) {
+          this.application = results;
+          this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
+          this.qCSteps();
+          this.isApplicationAvailable = true;
+        }
+        this._spinner.hide();
+      },
+      (err) => this._spinner.hide()
+    );
+  }
+
 
   private buildMenu() {
     if (this.profile) {
@@ -240,30 +256,15 @@ console.log('ng onInit');
       if (this.validationErrors.length == 0) {
         this._applicationRepo.updateApplication(this.application).subscribe();
       }
-      if (!this.applicationIdOnBid) {
-        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-          this.menuActions[1].visible = false;
-          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          this._router.navigateByUrl('applications');
-          resp;
-        });
-      }
-
-      else {
-
+    }
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
 
-      }
-
       if (status == StatusEnum.PendingReview) {
         this.application.status.name = "PendingReview";
-        this._applicationRepo.updateApplication(this.application).subscribe();
-
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._router.navigateByUrl('applications');
-      };
-    }
+             this._router.navigateByUrl('applications');
+      }
+    
   }
 
 
@@ -279,37 +280,7 @@ console.log('ng onInit');
 
 
   private formValidate() {
-    this.validationErrors = [];
-
-    // if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
-    //   if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length == 0 || this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
-    //     this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please capture Application info and save." });
-    //   if (this.fundingApplicationDetails.financialMatters.length === 0)
-    //     this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
-
-    //   if (this.fundingApplicationDetails.implementations.length === 0)
-    //     this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
-    //   if (this.fundingApplicationDetails.projectInformation?.initiatedQuestion == undefined &&
-    //     this.fundingApplicationDetails.projectInformation?.considerQuestion == undefined &&
-    //     this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
-    //     this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
-
-    //   if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
-    //     this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
-
-    // }
-
-
-    // if (this.validationErrors.length == 0) {
-    //   this.menuActions[3].disabled = false;
-    //   this.menuActions[1].visible = false;
-    // }
-    // else {
-    //   this.menuActions[3].disabled = true;
-    //   this.menuActions[1].visible = true;
-    // }
-
-  }
+    this.validationErrors = [];  }
 
   private clearMessages() {
     this.validationErrors = [];
@@ -324,7 +295,7 @@ console.log('ng onInit');
       this._applicationRepo.updateApplication(this.application).subscribe(
         (resp) => {
           if (resp.statusId === StatusEnum.Saved) {
-            this.menuActions[1].visible = false;
+            this.menuActions[3].visible = true;
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           }
 
@@ -388,25 +359,6 @@ console.log('ng onInit');
     this._router.navigateByUrl('npo/edit/' + npo.id);
   }
 
-  private loadfundingDropdowns() {
-    debugger;
-    this._spinner.show();
-    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
-      (results) => {
-        if (results != null) {
-          console.log('loadfundingDropdowns',results);
-          this.application = results;
-          this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
-          this.fundingApplicationDetails.applicationId = this.application?.id;
-          this.qCSteps1(results.applicationPeriod);
-          this.isApplicationAvailable = true;
-        }
-        this._spinner.hide();
-      },
-      (err) => this._spinner.hide()
-    );
-  }
-
   private qCSteps() {
     debugger;
    
@@ -416,19 +368,6 @@ console.log('ng onInit');
           { label: 'Application Details', command: (event: any) => { this.activeStep = 2; } },
           { label: 'Application Document', command: (event: any) => { this.activeStep = 3; } }
         ];
-      }
-   
-  private qCSteps1(applicationPeriod: IApplicationPeriod) {
-    debugger;
-    if (applicationPeriod != null) {
-      if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
-        this.qcItems = [
-          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
-          { label: 'Applications', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Application Details', command: (event: any) => { this.activeStep = 2; } },
-          { label: 'Application Document', command: (event: any) => { this.activeStep = 3; } }
-        ];
-      }
-    }
-  }
+      }  
+
 }

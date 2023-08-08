@@ -1,10 +1,11 @@
+import { ProjectImplementationComponent } from './../application-steps/funding-application/project-implementation/project-implementation.component';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IDepartment, IDocumentStore, IFacilityList, INpo, INpoProfile, IObjective, IProgramme, IResource, ISubProgramme, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationDetails, IDepartment, IDocumentStore, IFacilityList, IMonitoringAndEvaluation, INpo, INpoProfile, IObjective, IProgramme, IProjectImplementation, IProjectInformation, IResource, ISubProgramme, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -53,15 +54,34 @@ export class ViewApplicationComponent implements OnInit {
   npo: INpo;
   npoProfile: INpoProfile;
 
+  applicationDetailView: IApplicationDetails;
+  projInfoView:IProjectInformation;
+  projImplView:IProjectImplementation;
+
   isObjectivesAvailable: boolean;
   isActivitiesAvailable: boolean;
   isSustainabilityAvailable: boolean;
   isResourcesAvailable: boolean;
 
+  isApplicationDetailsAvailable: boolean;
+  isProjectInformationAvailable: boolean;
+  isProjectImplementationAvailable: boolean;
+  isMonAndEvalAvailable: boolean;
+
   objectives: IObjective[] = [];
   activities: IActivity[] = [];
   sustainabilityPlans: ISustainabilityPlan[] = [];
   resources: IResource[] = [];
+
+  applicationDetails: IApplicationDetails[] = [];
+  projectInformations: IProjectInformation[] = [];
+  projectImplementations: IProjectImplementation[] =[];
+  monitoringAndEvaluations: IMonitoringAndEvaluation[] =[];
+
+  applicationDetailsCols: any[];
+  projectInformationCols: any[];
+  projectImplementationCols: any[];
+  monitoringAndEvaluationCols: any[];
 
   objectiveCols: any[];
   commentCols: any;
@@ -70,11 +90,18 @@ export class ViewApplicationComponent implements OnInit {
   resourceCols: any[];
   auditCols: any[];
   documentCols: any[];
+  documentCols1: any[];
+
 
   objective: IObjective = {} as IObjective;
   activity: IActivity = {} as IActivity;
   sustainabilityPlan: ISustainabilityPlan = {} as ISustainabilityPlan;
   resource: IResource = {} as IResource;
+
+  applicationDetail: IApplicationDetails = {} as IApplicationDetails;
+  projectInformation: IProjectInformation = {} as IProjectInformation;
+  projectImplementation: IProjectImplementation = {} as IProjectImplementation;
+  monitoringAndEvaluation: IMonitoringAndEvaluation = {} as IMonitoringAndEvaluation;
 
   displayObjectiveDialog: boolean;
   displayActivityDialog: boolean;
@@ -82,6 +109,11 @@ export class ViewApplicationComponent implements OnInit {
   displayResourceDialog: boolean;
   displayAllCommentDialog: boolean;
   displayHistory: boolean;
+
+  displayApplicationDetaileDialog: boolean;
+  displayProjectInformationDialog: boolean;
+  displayProjectImplementationDialog: boolean;
+  displayMonitoringAndEvaluationDialog: boolean;
 
   allProgrammes: IProgramme[];
   programmes: IProgramme[] = [];
@@ -151,6 +183,13 @@ export class ViewApplicationComponent implements OnInit {
       { header: 'Budget', width: '15%' }
     ];
 
+    this.projectImplementationCols = [
+      { header: 'Description', width: '45%' },
+      { header: 'Beneficiaries', width: '25%' },
+      { header: 'Budget', width: '15%' },
+      { header: 'Actions', width: '10%' }
+    ];
+
     this.commentCols = [
       { header: '', width: '5%' },
       { header: 'Comment', width: '55%' },
@@ -195,6 +234,22 @@ export class ViewApplicationComponent implements OnInit {
       { header: 'Uploaded Date', width: '10%' },
       { header: 'Actions', width: '5%' }
     ];
+    this.documentCols1 = [
+      { header: 'Id', width: '5%' },
+      {  field: 'name', header: 'Document Type', width: '35%' },
+      { header: 'Document Name', width: '45%' },
+      // { header: 'Size', width: '10%' },
+      // { header: 'Uploaded Date', width: '10%' },
+      { header: 'Actions', width: '10%' }
+    ];
+    this.applicationDetailsCols = [
+      { header: 'Objective Name', width: '20%' },
+      { header: 'Funding Source', width: '15%' },
+      { header: 'Funding Period', width: '25%' },
+      { header: 'Recipient Type', width: '15%' },
+      { header: 'Budget', width: '15%' }
+    ];
+
   }
 
   private loadApplication() {
@@ -383,6 +438,18 @@ export class ViewApplicationComponent implements OnInit {
 
   updateNpoProfile(data) {
     this.npoProfile = data;
+  }
+
+  updateApplicationDetail(data) {
+    this.applicationDetail = data
+  }
+
+  updateProjInfo(data) {
+    this.projInfoView = data
+  }
+
+  updateProjImpl(data) {
+    this.projImplView = data
   }
 
   editObjective(data: IObjective) {
@@ -646,4 +713,4 @@ export class ViewApplicationComponent implements OnInit {
       }
     );
   }
-}
+} 

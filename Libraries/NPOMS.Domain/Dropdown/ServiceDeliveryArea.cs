@@ -18,7 +18,8 @@ namespace NPOMS.Domain.Dropdown
         [Required]
         [Column(TypeName = "nvarchar(255)")]
         public string Name { get; set; }
-
+        public string SystemName { get; set; }
+        
         public bool IsActive { get; set; }
 
         public int CreatedUserId { get; set; }
@@ -29,6 +30,8 @@ namespace NPOMS.Domain.Dropdown
 
         public DateTime? UpdatedDateTime { get; set; }
 
+        public int? ExternalId { get; set; }
+   
         public Region Region { get; set; }
 
     }

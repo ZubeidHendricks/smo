@@ -28,7 +28,7 @@ namespace NPOMS.Repository.Configurations.Core
 				},
                 new DocumentType
                 {
-                    Id = 7,
+                    Id = 20,
                     Name = "Signed Declaration of Interest",
 					Description = "Signed Declaration of Interest",
 					IsActive = true,
@@ -45,15 +45,15 @@ namespace NPOMS.Repository.Configurations.Core
                     IsCompulsory = false
                 },
 
-                new DocumentType
-                {
-                    Id = 9,
-                    Name = "Org Registration Certificate",
-                    Description = "NPC/ Trust / PBO Registration Certificate (copies of all applicable)",
-                    Location = "FundApp",
-                    IsActive = true,
-                    IsCompulsory = false
-                },
+                //new DocumentType
+                //{
+                //    Id = 21,
+                //    Name = "Org Registration Certificate",
+                //    Description = "NPC/ Trust / PBO Registration Certificate (copies of all applicable)",
+                //    Location = "FundApp",
+                //    IsActive = true,
+                //    IsCompulsory = false
+                //},
                 new DocumentType
                 {
                     Id = 10,

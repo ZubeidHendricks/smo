@@ -100,27 +100,27 @@ namespace NPOMS.Repository.Migrations
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2");
 
-            migrationBuilder.CreateTable(
-                name: "PreviousYearFinance",
-                schema: "dbo",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    npoProfileId = table.Column<int>(type: "int", nullable: true),
-                    IncomeDescription = table.Column<string>(type: "nvarchar(255)", nullable: true),
-                    IncomeAmount = table.Column<int>(type: "int", nullable: true),
-                    ExpenditureDescription = table.Column<string>(type: "nvarchar(255)", nullable: true),
-                    ExpenditureAmount = table.Column<int>(type: "int", nullable: true),
-                    CreatedUserId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedUserId = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PreviousYearFinance", x => x.Id);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "PreviousYearFinance",
+            //    schema: "dbo",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("SqlServer:Identity", "1, 1"),
+            //        npoProfileId = table.Column<int>(type: "int", nullable: true),
+            //        IncomeDescription = table.Column<string>(type: "nvarchar(255)", nullable: true),
+            //        IncomeAmount = table.Column<int>(type: "int", nullable: true),
+            //        ExpenditureDescription = table.Column<string>(type: "nvarchar(255)", nullable: true),
+            //        ExpenditureAmount = table.Column<int>(type: "int", nullable: true),
+            //        CreatedUserId = table.Column<int>(type: "int", nullable: false),
+            //        CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+            //        UpdatedUserId = table.Column<int>(type: "int", nullable: true),
+            //        UpdatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_PreviousYearFinance", x => x.Id);
+            //    });
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -451,9 +451,9 @@ namespace NPOMS.Repository.Migrations
                 schema: "fa",
                 table: "FinancialMatters");
 
-            migrationBuilder.DropTable(
-                name: "PreviousYearFinance",
-                schema: "dbo");
+            //migrationBuilder.DropTable(
+            //    name: "PreviousYearFinance",
+            //    schema: "dbo");
 
             migrationBuilder.AlterColumn<bool>(
                 name: "IsActive",

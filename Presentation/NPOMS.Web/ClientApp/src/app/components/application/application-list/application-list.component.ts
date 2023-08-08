@@ -86,13 +86,13 @@ export class ApplicationListComponent implements OnInit {
 
     this.cols = [
       { field: 'refNo', header: 'Ref. No.', width: '10%' },
-      { field: 'npo.name', header: 'Organisation', width: '25%' },
+      { field: 'npo.name', header: 'Organisation', width: '20%' },
       { field: 'applicationPeriod.applicationType.name', header: 'Type', width: '10%' },
-      { field: 'applicationPeriod.name', header: 'Application Name', width: '10%' },      
-      { field: 'applicationPeriod.subProgramme.name', header: 'Sub-Programme', width: '10%' },
+      { field: 'applicationPeriod.name', header: 'Application Name', width: '12%' },      
+      { field: 'applicationPeriod.subProgramme.name', header: 'Sub-Programme', width: '11%' },
       { field: 'applicationPeriod.financialYear.name', header: 'Financial Year', width: '10%' },
       { field: 'applicationPeriod.closingDate', header: 'Closing Date', width: '10%' },
-      { field: 'status.name', header: 'Application Status', width: '10%' }
+      { field: 'status.name', header: 'Application Status', width: '12%' }
     ];
   }
 
@@ -175,7 +175,7 @@ export class ApplicationListComponent implements OnInit {
           label: 'Pre-adjudicate Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/pre-adjudicate/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/edit/' + this.selectedApplication.id);
           }
         });
       }
@@ -219,41 +219,41 @@ export class ApplicationListComponent implements OnInit {
           }
         });
       }
-
-      if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
-        this.buttonItems[0].items.push({
-          label: 'Delete Application',
-          icon: 'fa fa-trash',
-          command: () => {
-            this._confirmationService.confirm({
-              message: 'Are you sure that you want to delete this item?',
-              header: 'Confirmation',
-              icon: 'pi pi-info-circle',
-              accept: () => {
-                this._spinner.show();
-                this._applicationRepo.deleteFundingApplication(this.selectedApplication.id).subscribe(
-                  (resp) => {
-                    this.loadApplications();
-                    this._messageService.add({ severity: 'info', detail: 'Record ' + this.selectedApplication.refNo + ' deleted.' });
-                    this._spinner.hide();
-                  },
-                  (err) => {
-                    this._loggerService.logException(err);
-                    this._spinner.hide();
-                  }
-                );
-              },
-              reject: () => {
-              }
-            });
-          }
-        });
-      }
+// window.print();
+      // if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Delete Application',
+      //     icon: 'fa fa-trash',
+      //     command: () => {
+      //       this._confirmationService.confirm({
+      //         message: 'Are you sure that you want to delete this item?',
+      //         header: 'Confirmation',
+      //         icon: 'pi pi-info-circle',
+      //         accept: () => {
+      //           this._spinner.show();
+      //           this._applicationRepo.deleteFundingApplication(this.selectedApplication.id).subscribe(
+      //             (resp) => {
+      //               this.loadApplications();
+      //               this._messageService.add({ severity: 'info', detail: 'Record ' + this.selectedApplication.refNo + ' deleted.' });
+      //               this._spinner.hide();
+      //             },
+      //             (err) => {
+      //               this._loggerService.logException(err);
+      //               this._spinner.hide();
+      //             }
+      //           );
+      //         },
+      //         reject: () => {
+      //         }
+      //       });
+      //     }
+      //   });
+      // }
     }
   }
   
   get canShowOptions() {
-    return this.IsAuthorized(PermissionsEnum.EditOption) || this.IsAuthorized(PermissionsEnum.ViewOptions) || this.IsAuthorized(PermissionsEnum.DownloadOption) || this.IsAuthorized(PermissionsEnum.DeleteOption);
+    return this.IsAuthorized(PermissionsEnum.EditOption) || this.IsAuthorized(PermissionsEnum.ViewOptions) || this.IsAuthorized(PermissionsEnum.DownloadOption);
   }
   public updateButtonItems() {
     // Show all buttons
@@ -264,50 +264,51 @@ export class ApplicationListComponent implements OnInit {
     // Hide buttons based on status
     switch (this.selectedApplication.statusId) {
       case StatusEnum.Saved:
-      case StatusEnum.AmendmentsRequired: {
-        this.buttonItemExists('Pre-evaluate Application');
-        this.buttonItemExists('Evaluate Application');
-        this.buttonItemExists('Adjudicate Application');
-        this.buttonItemExists('View Application');
-        this.buttonItemExists('Download Application');
-        break;
-      }
-      case StatusEnum.Submitted:
       case StatusEnum.Submitted: {
-        this.buttonItemExists('Edit Application');
-        this.buttonItemExists('Evaluate Application');
-        this.buttonItemExists('Adjudicate Application');
-        this.buttonItemExists('Delete Application');
+      // this.buttonItemExists('Pre-evaluate Application');
+       this.buttonItemExists('Evaluate Application');
+       this.buttonItemExists('Adjudicate Application');
+      //this.buttonItemExists('Edit Application');
+      //  this.buttonItemExists('View Application');
+       // this.buttonItemExists('Download Application');
         break;
       }
-      case StatusEnum.Submitted:
-      case StatusEnum.Submitted: {
-        this.buttonItemExists('Edit Application');
-        this.buttonItemExists('Pre-evaluate Application');
-        this.buttonItemExists('Adjudicate Application');
-        this.buttonItemExists('Delete Application');
-        break;
-      }
-      case StatusEnum.Submitted:
-      case StatusEnum.Evaluated:
-      case StatusEnum.Submitted: {
-        this.buttonItemExists('Edit Application');
-        this.buttonItemExists('Pre-evaluate Application');
-        this.buttonItemExists('Evaluate Application');
-        this.buttonItemExists('Delete Application');
-        break;
-      }
-      case StatusEnum.Submitted:
-      case StatusEnum.Submitted:
-      case StatusEnum.Submitted:
-      case StatusEnum.Submitted: {
-        this.buttonItemExists('Edit Application');
-        this.buttonItemExists('Pre-evaluate Application');
-        this.buttonItemExists('Evaluate Application');
-        this.buttonItemExists('Adjudicate Application');
-        this.buttonItemExists('Delete Application');
-        break;
-      }
+    //  case StatusEnum.Saved:
+      // case StatusEnum.Saved: {
+      //   this.buttonItemExists('Edit Application');
+      //   this.buttonItemExists('Evaluate Application');
+      //   this.buttonItemExists('Adjudicate Application');
+      //  // this.buttonItemExists('Delete Application');
+      //   break;
+      // }
+      // case StatusEnum.Submitted:
+      // case StatusEnum.Submitted: {
+      //   this.buttonItemExists('Edit Application');
+      //   this.buttonItemExists('Pre-evaluate Application');
+      //   this.buttonItemExists('Adjudicate Application');
+      //   this.buttonItemExists('Delete Application');
+      //   break;
+      // }
+      // case StatusEnum.Submitted:
+      // case StatusEnum.Evaluated:
+      // case StatusEnum.Submitted: {
+      //   this.buttonItemExists('Edit Application');
+      //   this.buttonItemExists('Pre-evaluate Application');
+      //   this.buttonItemExists('Evaluate Application');
+      //  // this.buttonItemExists('Delete Application');
+      //   break;
+      // }
+      // case StatusEnum.Submitted:
+      // case StatusEnum.Submitted:
+      // case StatusEnum.Submitted:
+      // case StatusEnum.Submitted: {
+      //   this.buttonItemExists('Edit Application');
+      //   this.buttonItemExists('Pre-evaluate Application');
+      //   this.buttonItemExists('Evaluate Application');
+      //   this.buttonItemExists('Adjudicate Application');
+      // //  this.buttonItemExists('Delete Application');
+      //   break;
+      // }
     }
   }
 
@@ -383,5 +384,9 @@ export class ApplicationListComponent implements OnInit {
 
   view(application: IApplication) {
     this._router.navigateByUrl('application/view/' + application.id);
+  }
+
+  download(application: IApplication) {
+    this._router.navigate(['/', { outlets: { 'print': ['print', application.id] } }]);
   }
 }

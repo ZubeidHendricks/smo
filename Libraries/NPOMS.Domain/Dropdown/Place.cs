@@ -27,6 +27,9 @@ namespace NPOMS.Domain.Dropdown
 
         public int? UpdatedUserId { get; set; }
 
+        public int? ExternalId { get; set; }
+
+
         public DateTime? UpdatedDateTime { get; set; }
 
         public virtual ICollection<SubPlace> SubPlaces

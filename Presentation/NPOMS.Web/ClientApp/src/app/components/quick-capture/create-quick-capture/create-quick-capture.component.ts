@@ -20,6 +20,9 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
+
+  @Input() newlySavedNpoId: number;
+  @Output() newlySavedNpoIdChange: EventEmitter<number> = new EventEmitter<number>();
  
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -40,7 +43,6 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   menuActions: MenuItem[];
   profile: IUser;
-
   validationErrors: Message[];
   stateOptions: any[];
 
@@ -80,7 +82,7 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   selectedNPO: INpo;
   NPOs: INpo[];
-
+  
   // Highlight required fields on validate click
   validated: boolean = false;
 
@@ -321,6 +323,8 @@ export class CreateQuickCaptureComponent implements OnInit {
           this._npoProfileRepo.getNpoProfileByNpoId(Number(resp.id)).subscribe(
             (results) => {
               this._spinner.hide();
+             if(results != null) this.newlySavedNpoId = results.id;
+              console.log('this.newlySavedNpoId',this.newlySavedNpoId);
               //this._router.navigateByUrl('applicationDetails/' + results.id);
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
 
@@ -341,8 +345,9 @@ export class CreateQuickCaptureComponent implements OnInit {
 
 
   nextPage() {
-      this.activeStep = this.activeStep + 1;
-      this.activeStepChange.emit(this.activeStep);  
+    this.activeStep = this.activeStep + 1;
+    this.activeStepChange.emit(this.activeStep);  
+    this.newlySavedNpoIdChange.emit(this.newlySavedNpoId);
   }
 
 

@@ -15,7 +15,7 @@
     <tr [pSelectableRow]="rowData">
       <td>{{rowData.description}}</td>
       <td>{{rowData.beneficiaries}}</td>
-      <td>{{rowData.budget}}</td>
+      <td>{{rowData.budget}}</td> 
       <td style="text-align: center;">
         <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"
           (click)="editProjImpl(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
@@ -93,20 +93,6 @@
     </div>
   </div>
 
-  <!-- <div class="p-grid">
-    <div class="p-col-fixed form-label">
-      <div class="box">
-        <span class="mandatory-content">Funding Period</span>
-
-      </div>
-    </div>
-    <div class="p-col">
-      <p-calendar [(ngModel)]="implementation.timeframe" dateFormat="dd/M/yy" selectionMode="range"
-        [readonlyInput]="true" placeholder="Select a Start Date and End Date" [ngModelOptions]="{standalone: true}"
-        appendTo="body" [style]="{'width':'47%'}" [monthNavigator]="true" [yearRange]="yearRange" [yearNavigator]="true"
-        (onSelect)="updateTimeframe(implementation.timeframe)" [disabled]="readonly()" ></p-calendar>
-    </div>
-  </div> -->
   <div class="p-grid">
     <div class="p-col-fixed form-label">
       <div class="box">
@@ -151,7 +137,7 @@
   <ng-template pTemplate="footer">
 
     <button pButton pRipple type="button" class="p-button-text" icon="pi pi-check" [disabled]="disableSave()"
-      (click)="save()" (click)="displayDialogImpl=false" label="Save"></button>
+      (click)="save(implementation)" (click)="displayDialogImpl=false" label="Save"></button>
   </ng-template>
 </p-dialog>
 <div style="height: 10px;"></div>

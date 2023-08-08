@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NPOMS.Domain.Core;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace NPOMS.Repository.Configurations.Core
 {
@@ -675,8 +678,50 @@ namespace NPOMS.Repository.Configurations.Core
                 {
                     Id = 95,
                     Name = "Adjudicate Application",
-                    SystemName = "FA.Adjudicate",
+					SystemName = "FA.Adjudicate",
                     CategoryName = "Funding Application"
+                },
+                new Permission
+                {
+                    Id = 96,
+                    Name = "View Quick Capture",
+                    SystemName = "QC.View",
+                    CategoryName = "Quick Capture"
+                },
+                new Permission
+                {
+                    Id = 97,
+                    Name = "View Quick Capture",
+                    SystemName = "QC.View",
+                    CategoryName = "Quick Capture"
+                },
+                new Permission
+                {
+                    Id = 98,
+                    Name = "View Submitted Application",
+                    SystemName = "WFA.View",
+                    CategoryName = "View Application"
+                },
+                new Permission
+                {
+                    Id = 99,
+                    Name = "Download Submitted Application",
+                    SystemName = "WFA.Download",
+                    CategoryName = "Download Application"
+                },
+                new Permission
+                {
+                    Id = 100,
+                    Name = "Edit Application",
+                    SystemName = "WFA.Edit",
+                    CategoryName = "Download Application"
+                },
+                new Permission
+                {
+                    Id = 101,
+                    Name = "Delete Application",
+                    SystemName = "WFA.Delete",
+                    CategoryName = "Delete Application"
                 }
             );
 		}

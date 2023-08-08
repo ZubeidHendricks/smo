@@ -25,6 +25,9 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   @Output() implementationsChange = new EventEmitter();
   _menuActions: MenuItem[];
 
+  projImpls: IProjectImplementation[] = [];
+  filteredProjImpls: IProjectImplementation[] = [];
+
   pint: RegExp = /^[0-9]\d*$/;
   yearRange: string;
   displayDialogImpl: boolean;
@@ -69,15 +72,13 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
-      console.log('ng OnInit Id', params.get('id'));
-      console.log('this.selectedApplicationId ', this.selectedApplicationId);
     });
 
     this.cols = [
-      {header: 'Description', width: '45%' },
-      {  header: 'Beneficiaries', width: '25%' },
-      {header: 'Budget', width: '15%' },
-      {  header: 'Actions', width: '10%' }
+      { header: 'Description', width: '45%' },
+      { header: 'Beneficiaries', width: '25%' },
+      { header: 'Budget', width: '15%' },
+      { header: 'Actions', width: '10%' }
     ];
    
     this.setYearRange();
@@ -123,9 +124,18 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
         item.description = this.implementation.description;
       });
     }
+    else{
+      this.projectImplementations.forEach(item => {
+        item.beneficiaries = this.implementation.beneficiaries;
+        item.budget = this.implementation.budget;
+        item.description = this.implementation.description;
+    });
   }
+}
 
   private GetProjImpl() {
+    debugger;
+    this.projectImplementations =null;
     this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         this.projectImplementations = results;
@@ -146,12 +156,13 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       accept: () => {
         this._npoProfile.deleteProjImpl(projImpl).subscribe(
           (resp) => {
-            this.GetProjImpl();
+            this.filterClubDevelopmentIntakes();
           },
           (err) => {
             //
           }
         );
+ 
       },
       reject: () => {
         //
@@ -347,3 +358,4 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
 
 
+ 
