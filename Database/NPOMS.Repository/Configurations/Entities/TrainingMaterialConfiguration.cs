@@ -14,22 +14,22 @@ namespace NPOMS.Repository.Configurations.Entities
 			builder.Property("CreatedDateTime").HasDefaultValueSql("GetDate()");
 
 			builder.HasData(
-				new TrainingMaterial
-				{
-					Id = 1,
-					Name = "Applicant Guide",
-					Description = "This guide illustrates how to capture workplans",
-					Link = "https://www.westerncape.gov.za/dept/health",
-					IsActive= false
-				},
-				new TrainingMaterial
-				{
-					Id = 2,
-					Name = "Reviewer Guide",
-					Description = "This guide illustrates how to review workplans",
-					Link = "https://www.westerncape.gov.za/dept/health",
-					IsActive= false
-				},
+				//new TrainingMaterial
+				//{
+				//	Id = 1,
+				//	Name = "Applicant Guide",
+				//	Description = "This guide illustrates how to capture workplans",
+				//	Link = "https://www.westerncape.gov.za/dept/health",
+				//	IsActive= false
+				//},
+				//new TrainingMaterial
+				//{
+				//	Id = 2,
+				//	Name = "Reviewer Guide",
+				//	Description = "This guide illustrates how to review workplans",
+				//	Link = "https://www.westerncape.gov.za/dept/health",
+				//	IsActive= false
+				//},
                 new TrainingMaterial
                 {
                     Id = 3,
