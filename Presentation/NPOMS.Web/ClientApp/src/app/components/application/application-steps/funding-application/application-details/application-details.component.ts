@@ -144,10 +144,6 @@ export class ApplicationDetailsComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-
-       
-        // if (!this.IsAuthorized(PermissionsEnum.EditApplicationPeriod))
-        //   this._router.navigate(['401']);
         this.loadDepartments();
         this.loadApplicationTypes();
         this.loadApplicationPeriod();
@@ -189,14 +185,12 @@ export class ApplicationDetailsComponent implements OnInit {
       (results) => {
         if (results != null) {
           this.application = results;
-          this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
+          this._bidService.getApplicationBiId(results.id).subscribe(response => { 
             if (response.id != null) {
               this.getFundingApplicationDetails(response);
               console.log('data.result', response);
             }
           });
-        //  this.fASteps(results.applicationPeriod);
-        //  this.isApplicationAvailable = true;
         }
         this._spinner.hide();
       },
@@ -248,13 +242,8 @@ export class ApplicationDetailsComponent implements OnInit {
   private bidForm(status: StatusEnum) {
     debugger;
     this.application.status = null;
-    //if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;
-      // console.log('applicationIdOnBid', this.fundingApplicationDetails);
-
-      // this._applicationRepo.updateApplication(this.application).subscribe(resp => {this._applicationRepo.getApplicationById(Number(this.id))});
-      // this.application.statusId = status;
 
       if (applicationIdOnBid.id == null) {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
@@ -360,13 +349,6 @@ export class ApplicationDetailsComponent implements OnInit {
       this._spinner.show();
 
       this.application.statusId = StatusEnum.Saved;
-      
-      // let data = this.applicationPeriod;
-      // data.departmentId = this.selectedDepartment.id;
-      // data.programmeId = this.selectedProgramme.id;
-      // data.subProgrammeId = this.selectedSubProgramme.id;
-      // data.financialYearId = this.selectedFinancialYear.id;
-      // data.applicationTypeId = this.selectedApplicationType.id;
 
       this._applicationRepo.updateApplication(this.application).subscribe(
         (resp) => {
@@ -387,17 +369,6 @@ export class ApplicationDetailsComponent implements OnInit {
         }
       );
    
-      
-      // this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
-      //   (resp) => {
-      //     this._spinner.hide();
-      //     this._router.navigateByUrl('application-periods');
-      //   },
-      //   (err) => {
-      //     this._loggerService.logException(err);
-      //     this._spinner.hide();
-      //   }
-      // );
     }
   }
 
@@ -616,15 +587,9 @@ export class ApplicationDetailsComponent implements OnInit {
   
 
   nextPage() {
-    //if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
       this.activeStep = this.activeStep + 1;
       this.bidForm(StatusEnum.Saved);
       this.activeStepChange.emit(this.activeStep);
-    // }
-    //  else
-    //  {
-    //    this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
-    //  }
   }
 
   prevPage() {

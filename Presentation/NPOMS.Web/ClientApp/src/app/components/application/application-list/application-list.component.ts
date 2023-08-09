@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { AccessStatusEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
+import { ActionSequence } from 'protractor';
+import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IApplicationPeriod, INpo, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
@@ -47,11 +48,12 @@ export class ApplicationListComponent implements OnInit {
   allNpos: INpo[];
 
   buttonItems: MenuItem[];
+  optionItems: MenuItem[];
 
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
-  //canShowOptions: boolean = false;
+  canShowOptions: boolean = false;
 
   constructor(
     private _router: Router,
@@ -67,6 +69,7 @@ export class ApplicationListComponent implements OnInit {
   ngOnInit(): void {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
+        this._spinner.show();
         this.profile = profile;
 
         if (!this.IsAuthorized(PermissionsEnum.ViewApplications))
@@ -79,29 +82,26 @@ export class ApplicationListComponent implements OnInit {
           this.hasAdminRole = true;
 
         this.loadNpos();
-        this.loadApplications();
-        this.buildButtonItems();
       }
     });
 
     this.cols = [
       { field: 'refNo', header: 'Ref. No.', width: '10%' },
-      { field: 'npo.name', header: 'Organisation', width: '20%' },
-      { field: 'applicationPeriod.applicationType.name', header: 'Type', width: '10%' },
-      { field: 'applicationPeriod.name', header: 'Application Name', width: '12%' },      
-      { field: 'applicationPeriod.subProgramme.name', header: 'Sub-Programme', width: '11%' },
+      { field: 'npo.name', header: 'Organisation', width: '15%' },
+      { field: 'applicationPeriod.applicationType.name', header: 'Type', width: '8%' },
+      { field: 'applicationPeriod.name', header: 'Application Name', width: '11%' },
+      { field: 'applicationPeriod.subProgramme.name', header: 'Sub-Programme', width: '10%' },
       { field: 'applicationPeriod.financialYear.name', header: 'Financial Year', width: '10%' },
       { field: 'applicationPeriod.closingDate', header: 'Closing Date', width: '10%' },
-      { field: 'status.name', header: 'Application Status', width: '12%' }
+      { field: 'status.name', header: 'Application Status', width: '11%' }
     ];
   }
 
   private loadNpos() {
-    this._spinner.show();
     this._npoRepo.getAllNpos(AccessStatusEnum.AllStatuses).subscribe(
       (results) => {
         this.allNpos = results;
-        this._spinner.hide();
+        this.loadApplications();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -111,7 +111,6 @@ export class ApplicationListComponent implements OnInit {
   }
 
   private loadApplications() {
-    this._spinner.show();
     this._applicationRepo.getAllApplications().subscribe(
       (results) => {
         results.forEach(application => {
@@ -119,7 +118,11 @@ export class ApplicationListComponent implements OnInit {
         });
 
         this.allApplications = results;
-      //  this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA });
+        this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA });
+
+        this.buildButtonItems();
+        this.buildOptionItems();
+
         this._spinner.hide();
       },
       (err) => {
@@ -140,29 +143,77 @@ export class ApplicationListComponent implements OnInit {
       applicationPeriod.status = 'Closed';
   }
 
-  
+
   private buildButtonItems() {
     this.buttonItems = [];
 
     if (this.profile) {
       this.buttonItems = [{
-        label: 'Options',
+        label: 'Actions',
         items: []
       }];
 
-      if (this.IsAuthorized(PermissionsEnum.ViewOptions)) {
+      /* Service Provision Actions */
+      if (this.IsAuthorized(PermissionsEnum.EditApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Edit Application',
+          target: 'Service Provision',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this._router.navigateByUrl('application/edit/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Review Application',
+          target: 'Service Provision',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this._router.navigateByUrl('application/review/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Approve Application',
+          target: 'Service Provision',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this._router.navigateByUrl('application/approve/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.UploadSLA)) {
+        this.buttonItems[0].items.push({
+          label: 'Upload SLA',
+          target: 'Service Provision',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this._router.navigateByUrl('application/upload-sla/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication)) {
         this.buttonItems[0].items.push({
           label: 'View Application',
-          icon: 'fa fa-pencil-square-o',
+          target: 'Service Provision',
+          icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
           }
         });
       }
 
+      /* Funding Application Actions */
       if (this.IsAuthorized(PermissionsEnum.EditOption)) {
         this.buttonItems[0].items.push({
           label: 'Edit Application',
+          target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
             this._router.navigateByUrl('application/edit/' + this.selectedApplication.id);
@@ -173,6 +224,7 @@ export class ApplicationListComponent implements OnInit {
       if (this.IsAuthorized(PermissionsEnum.PreAdjudicateOption)) {
         this.buttonItems[0].items.push({
           label: 'Pre-adjudicate Application',
+          target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
             this._router.navigateByUrl('application/edit/' + this.selectedApplication.id);
@@ -182,7 +234,8 @@ export class ApplicationListComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.AdjudicateOption)) {
         this.buttonItems[0].items.push({
-          label: 'Adjiducate Application',
+          label: 'Adjudicate Application',
+          target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
             this._router.navigateByUrl('application/evaluate/' + this.selectedApplication.id);
@@ -193,6 +246,7 @@ export class ApplicationListComponent implements OnInit {
       if (this.IsAuthorized(PermissionsEnum.EvaluateOption)) {
         this.buttonItems[0].items.push({
           label: 'Evaluate Application',
+          target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
             this._router.navigateByUrl('application/adjudicate/' + this.selectedApplication.id);
@@ -200,9 +254,10 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ApproveOPtion)) {
+      if (this.IsAuthorized(PermissionsEnum.ApproveOption)) {
         this.buttonItems[0].items.push({
           label: 'Approve Application',
+          target: 'Funding Application',
           icon: 'fa fa-file',
           command: () => {
             this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
@@ -213,13 +268,26 @@ export class ApplicationListComponent implements OnInit {
       if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
         this.buttonItems[0].items.push({
           label: 'Download Application',
+          target: 'Funding Application',
           icon: 'fa fa-download',
           command: () => {
             this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id] } }]);
           }
         });
       }
-// window.print();
+
+      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+        this.buttonItems[0].items.push({
+          label: 'View Application',
+          target: 'Funding Application',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      // window.print();
       // if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
       //   this.buttonItems[0].items.push({
       //     label: 'Delete Application',
@@ -251,10 +319,11 @@ export class ApplicationListComponent implements OnInit {
       // }
     }
   }
-  
-  get canShowOptions() {
-    return this.IsAuthorized(PermissionsEnum.EditOption) || this.IsAuthorized(PermissionsEnum.ViewOptions) || this.IsAuthorized(PermissionsEnum.DownloadOption);
-  }
+
+  // get canShowOptions() {
+  //   return this.IsAuthorized(PermissionsEnum.EditOption) || this.IsAuthorized(PermissionsEnum.ViewOptions) || this.IsAuthorized(PermissionsEnum.DownloadOption);
+  // }
+
   public updateButtonItems() {
     // Show all buttons
     this.buttonItems[0].items.forEach(option => {
@@ -262,94 +331,131 @@ export class ApplicationListComponent implements OnInit {
     });
 
     // Hide buttons based on status
-    switch (this.selectedApplication.statusId) {
-      case StatusEnum.Saved:
-      case StatusEnum.Submitted: {
-      // this.buttonItemExists('Pre-evaluate Application');
-       this.buttonItemExists('Evaluate Application');
-       this.buttonItemExists('Adjudicate Application');
-      //this.buttonItemExists('Edit Application');
-      //  this.buttonItemExists('View Application');
-       // this.buttonItemExists('Download Application');
-        break;
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
+
+      // Hide Funding Application actions
+      this.buttonItemExists('Edit Application', 'Funding Application');
+      this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+      this.buttonItemExists('Adjudicate Application', 'Funding Application');
+      this.buttonItemExists('Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Approve Application', 'Funding Application');
+      this.buttonItemExists('Download Application', 'Funding Application');
+      this.buttonItemExists('View Application', 'Funding Application');
+
+      switch (this.selectedApplication.statusId) {
+        case StatusEnum.Saved:
+        case StatusEnum.AmendmentsRequired: {
+          if (this.selectedApplication.applicationPeriod.status === 'Closed')
+            this.buttonItemExists('Edit Application', 'Service Provision');
+
+          this.buttonItemExists('Review Application', 'Service Provision');
+          this.buttonItemExists('Approve Application', 'Service Provision');
+          this.buttonItemExists('Upload SLA', 'Service Provision');
+          this.buttonItemExists('View Application', 'Service Provision');
+          break;
+        }
+        case StatusEnum.PendingReview: {
+          this.buttonItemExists('Edit Application', 'Service Provision');
+          this.buttonItemExists('Approve Application', 'Service Provision');
+          this.buttonItemExists('Upload SLA', 'Service Provision');
+          break;
+        }
+        case StatusEnum.PendingApproval:
+        case StatusEnum.ApprovalInProgress: {
+          this.buttonItemExists('Edit Application', 'Service Provision');
+          this.buttonItemExists('Review Application', 'Service Provision');
+          this.buttonItemExists('Upload SLA', 'Service Provision');
+          break;
+        }
+        case StatusEnum.PendingSLA:
+        case StatusEnum.PendingSignedSLA:
+        case StatusEnum.DeptComments:
+        case StatusEnum.OrgComments: {
+          this.buttonItemExists('Edit Application', 'Service Provision');
+          this.buttonItemExists('Review Application', 'Service Provision');
+          this.buttonItemExists('Approve Application', 'Service Provision');
+          break;
+        }
+        case StatusEnum.AcceptedSLA:
+        case StatusEnum.Rejected: {
+          this.buttonItemExists('Edit Application', 'Service Provision');
+          this.buttonItemExists('Review Application', 'Service Provision');
+          this.buttonItemExists('Approve Application', 'Service Provision');
+          this.buttonItemExists('Upload SLA', 'Service Provision');
+          break;
+        }
       }
-    //  case StatusEnum.Saved:
-      // case StatusEnum.Saved: {
-      //   this.buttonItemExists('Edit Application');
-      //   this.buttonItemExists('Evaluate Application');
-      //   this.buttonItemExists('Adjudicate Application');
-      //  // this.buttonItemExists('Delete Application');
-      //   break;
-      // }
-      // case StatusEnum.Submitted:
-      // case StatusEnum.Submitted: {
-      //   this.buttonItemExists('Edit Application');
-      //   this.buttonItemExists('Pre-evaluate Application');
-      //   this.buttonItemExists('Adjudicate Application');
-      //   this.buttonItemExists('Delete Application');
-      //   break;
-      // }
-      // case StatusEnum.Submitted:
-      // case StatusEnum.Evaluated:
-      // case StatusEnum.Submitted: {
-      //   this.buttonItemExists('Edit Application');
-      //   this.buttonItemExists('Pre-evaluate Application');
-      //   this.buttonItemExists('Evaluate Application');
-      //  // this.buttonItemExists('Delete Application');
-      //   break;
-      // }
-      // case StatusEnum.Submitted:
-      // case StatusEnum.Submitted:
-      // case StatusEnum.Submitted:
-      // case StatusEnum.Submitted: {
-      //   this.buttonItemExists('Edit Application');
-      //   this.buttonItemExists('Pre-evaluate Application');
-      //   this.buttonItemExists('Evaluate Application');
-      //   this.buttonItemExists('Adjudicate Application');
-      // //  this.buttonItemExists('Delete Application');
-      //   break;
-      // }
     }
+
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+
+      // Hide Service Provision actions
+      this.buttonItemExists('Edit Application', 'Service Provision');
+      this.buttonItemExists('Review Application', 'Service Provision');
+      this.buttonItemExists('Approve Application', 'Service Provision');
+      this.buttonItemExists('Upload SLA', 'Service Provision');
+      this.buttonItemExists('View Application', 'Service Provision');
+
+      switch (this.selectedApplication.statusId) {
+        case StatusEnum.Saved: {
+          this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          break;
+        }
+        case StatusEnum.Submitted: {
+          this.buttonItemExists('Edit Application', 'Funding Application');
+          this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          break;
+        }
+      }
+    }
+
+    console.log('buttonItems', this.buttonItems);
   }
 
-  private buttonItemExists(label: string) {
-    let buttonItem = this.buttonItems[0].items.find(x => x.label === label);
+  private buttonItemExists(label: string, target: string) {
+    let buttonItem = this.buttonItems[0].items.find(x => x.label === label && x.target === target);
 
     if (buttonItem)
       buttonItem.visible = false;
   }
 
-  // private buildButtonItems() {
-  //   this.buttonItems = [];
+  private buildOptionItems() {
+    this.optionItems = [];
 
-  //   if (this.profile) {
+    if (this.profile) {
 
-  //     this.buttonItems = [{
-  //       label: 'Options',
-  //       items: []
-  //     }];
+      this.optionItems = [{
+        label: 'Options',
+        items: []
+      }];
 
-  //     if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
-  //       this.buttonItems[0].items.push({
-  //         label: 'Manage Indicators',
-  //         icon: 'fa fa-tags wcg-icon',
-  //         command: () => {
-  //           this._router.navigateByUrl('workplan-indicator/manage/' + this.selectedApplication.npoId);
-  //         }
-  //       });
-  //     }
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
+        this.optionItems[0].items.push({
+          label: 'Manage Indicators',
+          icon: 'fa fa-tags wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('workplan-indicator/manage/' + this.selectedApplication.npoId);
+          }
+        });
+      }
 
-  //     if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
-  //       this.buttonItems[0].items.push({
-  //         label: 'Summary',
-  //         icon: 'fa fa-tasks wcg-icon',
-  //         command: () => {
-  //           this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.npoId);
-  //         }
-  //       });
-  //     }
-  //   }
-  // }
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
+        this.optionItems[0].items.push({
+          label: 'Summary',
+          icon: 'fa fa-tasks wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.npoId);
+          }
+        });
+      }
+    }
+  }
 
   getCellData(row: any, col: any): any {
     const nestedProperties: string[] = col.field.split('.');

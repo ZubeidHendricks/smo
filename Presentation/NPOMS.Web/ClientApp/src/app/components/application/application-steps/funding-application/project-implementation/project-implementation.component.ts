@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { StatusEnum } from 'src/app/models/enums';
 import { IApplication, IFundingApplicationDetails, IPlace, IProjectImplementation, ISubPlace, } from 'src/app/models/interfaces';
+import { ApplicationService } from 'src/app/services/api-services/application/application.service';
+import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 
 @Component({
@@ -21,6 +23,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() implementations: IProjectImplementation[];
   @Output() implementationsChange = new EventEmitter();
+  _menuActions: MenuItem[];
 
   projImpls: IProjectImplementation[] = [];
   filteredProjImpls: IProjectImplementation[] = [];
@@ -39,8 +42,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   @Input() places: IPlace[];
   @Input() allsubPlaces: ISubPlace[];
-
-
   subPlaces: ISubPlace[];
   selectedSubPlaces: ISubPlace[];
   selectedPlaces: IPlace[];
@@ -51,6 +52,10 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     private _confirmationService: ConfirmationService,
     private _npoProfile: NpoProfileService,
     private _activeRouter: ActivatedRoute,
+    private _applicationRepo: ApplicationService,
+    private _bidService: BidService,
+    private _router: Router,
+    private _messageService: MessageService
   ) {
 
   }
@@ -72,16 +77,11 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       { header: 'Beneficiaries', width: '25%' },
       { header: 'Budget', width: '15%' },
       { header: 'Actions', width: '10%' }
-    ];
-
-   // if (this.clubDevelopmentIntake != null && this.clubDevelopmentIntake.length > 0) {
-      // this.projImpls = this.implementations;
-      // this.filterClubDevelopmentIntakes();
-   // }
+    ];   
     this.setYearRange();
     this.allDropdownsLoaded();
   }
-
+  
   private filterClubDevelopmentIntakes() {
     this.filteredProjImpls = this.projImpls;
   }
@@ -106,18 +106,12 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
-    console.log('data', data);
     this.newImplementation = false;
     this.implementation = this.cloneImplementation(data);
-    // this.implementation.timeframe = [];
-    //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
-    // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
     this.implementation.places = this.implementation.places;
     this.implementation.subPlaces = this.implementation.subPlaces;
-    console.log('bit after', this.fundingApplicationDetails)
     this.placesChange(this.implementation.places);
     this.subPlacesChange(this.implementation.subPlaces);
-    //if(this.application.statusId == 3 || 22||23){ this.displayDialogImpl = false;}
     this.displayDialogImpl = true;
   }
 
@@ -163,7 +157,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       accept: () => {
         this._npoProfile.deleteProjImpl(projImpl).subscribe(
           (resp) => {
-            this.filterClubDevelopmentIntakes();
+            this.filterClubDevelopmentIntakes();     
           },
           (err) => {
             //
@@ -177,9 +171,11 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     });
   }
 
+
   nextPage() {
 
     this.activeStep = this.activeStep + 1;
+    this.bidForm(StatusEnum.Saved);
     this.activeStepChange.emit(this.activeStep);
   }
   private setYearRange() {
@@ -190,7 +186,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
     this.yearRange = `${startYear}:${endYear}`;
   }
-
 
   prevPage() {
     this.activeStep = this.activeStep - 1;
@@ -208,7 +203,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   disableSave(): boolean {
-    if ( //(!this.implementation.timeframe ||this.implementation.timeframe.length <2)||
+    if ( 
       !this.implementation.beneficiaries || !this.implementation.budget ||
       !this.implementation.results! || !this.implementation.projectObjective ||
       !this.implementation.resources ||
@@ -262,26 +257,13 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     console.log('data', event.data);
     this.newImplementation = false;
     this.implementation = this.cloneImplementation(event.data);
-    // this.implementation.timeframe = [];
-    //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
-    // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
     this.implementation.places = this.implementation.places;
     this.implementation.subPlaces = this.implementation.subPlaces;
     console.log('bit after', this.fundingApplicationDetails)
     this.placesChange(this.implementation.places);
     this.subPlacesChange(this.implementation.subPlaces);
-    //if(this.application.statusId == 3 || 22||23){ this.displayDialogImpl = false;}
     this.displayDialogImpl = true;
   }
-
-  // updateTimeframe(value: any) {
-
-  //   if (value[0] !== null && value[1] !== null) {
-  //     this.implementation.timeframeFrom = moment(value[0]).format('L');
-  //     this.implementation.timeframeTo = moment(value[1]).format('L');
-  //   }
-  // }
-
 
   cloneImplementation(c: IProjectImplementation): IProjectImplementation {
     debugger;
@@ -341,6 +323,38 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  private bidForm(status: StatusEnum) {
+    this.application.status = null;
+      this.application.statusId = status;
+      const applicationIdOnBid = this.fundingApplicationDetails;
+
+      if (applicationIdOnBid.id == null) {
+        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+          this._menuActions[1].visible = false;
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          resp;
+        });
+      }
+
+     else {
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+          if (resp) {
+            this._router.navigateByUrl(`application/edit/${this.application.id}`);
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          }
+        });
+     }
+
+      if (status == StatusEnum.PendingReview) {
+
+        this.application.statusId = status;
+        this._applicationRepo.updateApplication(this.application).subscribe();
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+        this._router.navigateByUrl('applications');
+      };
+  }
+
 }
 
 
