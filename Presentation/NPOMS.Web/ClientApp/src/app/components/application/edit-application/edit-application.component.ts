@@ -7,12 +7,13 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { FinancialMatters } from 'src/app/models/FinancialMatters';
-import { ApplicationTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 
 @Component({
   selector: 'app-edit-application',
@@ -56,7 +57,8 @@ export class EditApplicationComponent implements OnInit {
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
-
+  documentTypes: IDocumentType[] = [];
+  
   items: MenuItem[];
   faItems: MenuItem[];
 
@@ -88,6 +90,7 @@ export class EditApplicationComponent implements OnInit {
     private _fundAppService: FundingApplicationService,
     private _bidService: BidService,
     private _npoProfileServie: NpoProfileService,
+    private _dropdownRepo: DropdownService,
     private _loggerService: LoggerService
   ) { }
   places(place: IPlace[]) {
@@ -101,6 +104,7 @@ export class EditApplicationComponent implements OnInit {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
+      this.loadDocumentTypes();
     });
 
 
@@ -209,6 +213,20 @@ export class EditApplicationComponent implements OnInit {
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
         this.resources = results.filter(x => x.isActive === true);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadDocumentTypes() {
+
+    this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.selectedApplicationId), false).subscribe(
+      (results) => {
+        this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp && x.isCompulsory === true);
+
       },
       (err) => {
         this._loggerService.logException(err);
@@ -484,6 +502,7 @@ export class EditApplicationComponent implements OnInit {
         if (changesRequiredOnResources.length > 0)
           this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "New comments added." });
       }
+      
     }
 
 
