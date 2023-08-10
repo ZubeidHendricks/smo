@@ -7,7 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Message, MenuItem, ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { PermissionsEnum, StatusEnum, DropdownTypeEnum, DocumentUploadLocationsEnum, EntityTypeEnum, EntityEnum } from 'src/app/models/enums';
-import { IFundingApplicationDetails, IApplication, IUser, IDocumentStore, IDocumentType } from 'src/app/models/interfaces';
+import { IFundingApplicationDetails, IApplication, IUser, IDocumentStore, IDocumentType, IProjectInformation, IMonitoringAndEvaluation } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -56,7 +56,7 @@ uploadButtonDisabled: boolean = false;
   @Input() activeStep: number;
   @Input() fundingApplicationDetails: IFundingApplicationDetails;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
-  @Input() application: IApplication;
+  application: IApplication;
 
   profile: IUser;
   documents: IDocumentStore[] = [];
@@ -151,9 +151,65 @@ uploadButtonDisabled: boolean = false;
       {name:'Type5'}  
   ];
     this.loadDocumentTypes();
+    this.loadApplication();
+  }
+  private loadApplication() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.application = results;
+          this._bidService.getApplicationBiId(results.id).subscribe(response => { 
+            if (response.id != null) {
+              this.getFundingApplicationDetails(response);
+              console.log('data.result', response);
+            }
+          });
+        }
+        this._spinner.hide();
+      },
+      (err) => this._spinner.hide()
+    );
+  }
+  private getFundingApplicationDetails(data) {
+    this._bidService.getBid(data.id).subscribe(response => {
+
+      this.getBidFullObject(response)
+    });
 
   }
 
+  private getBidFullObject(data) {
+    debugger;
+    this.fundingApplicationDetails = data;
+    this.fundingApplicationDetails.id = data.id;
+    this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
+    this.fundingApplicationDetails.implementations = data.implementations;
+    if (this.fundingApplicationDetails.projectInformation != null) {
+      this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
+    }
+    else {
+      this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
+    }
+
+    if (this.fundingApplicationDetails.monitoringEvaluation != null) {
+      this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
+
+    }
+    else {
+      this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
+    }
+    this.fundingApplicationDetails.financialMatters = data.financialMatters;
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
+
+    this.fundingApplicationDetails.implementations?.forEach(c => {
+
+      let a = new Date(c.timeframeFrom);
+      c.timeframe?.push(new Date(c.timeframeTo));
+      c.timeframe?.push(new Date(c.timeframeFrom))
+    });
+
+  }
 
   private bidForm(status: StatusEnum) {
     debugger;
