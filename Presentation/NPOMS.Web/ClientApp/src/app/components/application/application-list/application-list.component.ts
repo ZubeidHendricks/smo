@@ -348,10 +348,12 @@ export class ApplicationListComponent implements OnInit {
           if (this.selectedApplication.applicationPeriod.status === 'Closed')
             this.buttonItemExists('Edit Application', 'Service Provision');
 
+          if (this.selectedApplication.applicationPeriod.status === 'Open')
+            this.buttonItemExists('View Application', 'Service Provision');
+
           this.buttonItemExists('Review Application', 'Service Provision');
           this.buttonItemExists('Approve Application', 'Service Provision');
           this.buttonItemExists('Upload SLA', 'Service Provision');
-          this.buttonItemExists('View Application', 'Service Provision');
           break;
         }
         case StatusEnum.PendingReview: {
@@ -414,8 +416,6 @@ export class ApplicationListComponent implements OnInit {
         }
       }
     }
-
-    console.log('buttonItems', this.buttonItems);
   }
 
   private buttonItemExists(label: string, target: string) {

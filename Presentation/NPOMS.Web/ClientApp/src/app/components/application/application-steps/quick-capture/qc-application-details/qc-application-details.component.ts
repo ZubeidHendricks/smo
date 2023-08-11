@@ -5,7 +5,7 @@ import { MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { IAffiliatedOrganisation, ISourceOfInformation } from 'src/app/models/FinancialMatters';
 import { PermissionsEnum, DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA, IQuickCaptureDetails, IFundingApplicationDetails } from 'src/app/models/interfaces';
+import { IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA, IQuickCaptureDetails, IFundingApplicationDetails, IProjectInformation, IMonitoringAndEvaluation } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
@@ -39,7 +39,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   //@Input() qcCaptureDetails: IQuickCaptureDetails;
 
 
-  @Input() application: IApplication;
+ application: IApplication;
   canEdit: boolean = false;
 
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
@@ -109,7 +109,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   regionsAll: IRegion[];
   regions: IRegion[] = [];
   selectedRegions: IRegion[];
-
+  selectedRegs: IRegion[] = [];
   selectedLocalMunicipalitiesText: string;
   selectedRegionsText: string;
   selectedSDAsText: string;
@@ -155,7 +155,12 @@ export class QcApplicationDetailsComponent implements OnInit {
 
       
     // });
+
+    console.log(' Reciving Newly created application Id from  QC _Period Screen to QC-Application Details Screen', Number(this.newlySavedApplicationId));
+
     this.selectedApplicationId = this.newlySavedApplicationId;
+    console.log('ng on init-applnPeriodId',  this.selectedApplicationId);
+
     
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -179,6 +184,7 @@ export class QcApplicationDetailsComponent implements OnInit {
         this. loadServiceDeliveryAreas();     
         this.GetAffiliatedOrganisation();
         this.GetSourceOfInformation(); 
+        this.loadApplication();
       }
     });
 
@@ -193,6 +199,102 @@ export class QcApplicationDetailsComponent implements OnInit {
       }
     ];
   }
+
+  private loadApplication() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.application = results;
+          this._bidService.getApplicationBiId(results.id).subscribe(response => { 
+            if (response.id != null) {
+              this.getFundingApplicationDetails(response);
+              console.log('data.result', response);
+            }
+          });
+        }
+        this._spinner.hide();
+      },
+      (err) => this._spinner.hide()
+    );
+  }
+
+
+  private getFundingApplicationDetails(data) {
+    this._bidService.getBid(data.id).subscribe(response => {
+
+      this.getBidFullObject(response)
+    });
+
+  }
+
+  private getBidFullObject(data) {
+    debugger;
+    this.fundingApplicationDetails = data;
+    this.fundingApplicationDetails.id = data.id;
+    this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
+    this.fundingApplicationDetails.implementations = data.implementations;
+    if (this.fundingApplicationDetails.projectInformation != null) {
+      this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
+    }
+    else {
+      this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
+    }
+
+    if (this.fundingApplicationDetails.monitoringEvaluation != null) {
+      this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
+
+    }
+    else {
+      this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
+    }
+    this.fundingApplicationDetails.financialMatters = data.financialMatters;
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
+
+    this.fundingApplicationDetails.implementations?.forEach(c => {
+
+      let a = new Date(c.timeframeFrom);
+      c.timeframe?.push(new Date(c.timeframeTo));
+      c.timeframe?.push(new Date(c.timeframeFrom))
+    });
+
+  }
+
+
+  private bidForm(status: StatusEnum) {
+    debugger;
+    this.application.status = null;
+      this.application.statusId = status;
+      const applicationIdOnBid = this.fundingApplicationDetails;
+
+      if (applicationIdOnBid.id == null) {
+        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+          this.menuActions[1].visible = false;
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          resp;
+        });
+      }
+
+     else {
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+          if (resp) {
+            this._router.navigateByUrl(`application/edit/${this.application.id}`);
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          }
+        });
+     }
+
+      if (status == StatusEnum.PendingReview) {
+
+        this.application.statusId = status;
+        this._applicationRepo.updateApplication(this.application).subscribe();
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+        this._router.navigateByUrl('applications');
+      };
+   // }
+  }
+
+
   onAmountChange(event) {
     let amount = Number(event).valueOf();
     this.Amount = amount;
@@ -523,6 +625,8 @@ export class QcApplicationDetailsComponent implements OnInit {
     // if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
     
       this.activeStep = this.activeStep + 1;
+      this.bidForm(StatusEnum.Saved);
+
       this.activeStepChange.emit(this.activeStep);
 
     // }

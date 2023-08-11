@@ -145,15 +145,7 @@ export class QuickCaptureEditListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-    //   this.id = params.get('id');
-    //   this.loadfundingDropdowns();
-    //   this.applicationPeriodId = +this.id;
-    //   this.fundingApplicationDetails.applicationPeriodId = +this.id;
-    //   this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-    //   });
-    // });
-console.log('ng onInit');
+
     this.qCSteps();
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -166,21 +158,6 @@ console.log('ng onInit');
       }
     });
   }
-  // private autoCreateApplication() {
-  //   //this.application.npoId = this.selectedNPO.id;
-  //   this.application.applicationPeriodId = this.applicationPeriodId;
-  //   this.application.statusId = StatusEnum.New;
-
-  //   this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
-  //     (resp) => {
-  //       this._router.navigateByUrl('application/create/' + resp.id);
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
 
   private buildMenu() {
     if (this.profile) {
@@ -205,19 +182,14 @@ console.log('ng onInit');
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-            //if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
               this.bidForm(StatusEnum.Saved);
-           // }
           }
         },
-
         {
           label: 'Submit',
           icon: 'fa fa-thumbs-o-up',
-          command: () => {
-            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
-              this.bidForm(StatusEnum.PendingReview);
-            }
+          command: () => {          
+             // this.bidForm(StatusEnum.PendingReview);           
           },
           disabled: true
         },
@@ -247,21 +219,8 @@ console.log('ng onInit');
       if (this.validationErrors.length == 0) {
         this._applicationRepo.updateApplication(this.application).subscribe();
       }
-      if (!this.applicationIdOnBid) {
-        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-          this.menuActions[1].visible = false;
-          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          this._router.navigateByUrl('applications');
-          resp;
-        });
-      }
-
-      else {
-
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-      }
 
       if (status == StatusEnum.PendingReview) {
         this.application.status.name = "PendingReview";
@@ -293,29 +252,6 @@ console.log('ng onInit');
     this.menuActions[1].visible = false;
   }
 
-  private saveItems(status: StatusEnum) {
-    if (this.canContinue(status)) {
-      this._spinner.show();
-      this.application.statusId = status;
-
-      this._applicationRepo.updateApplication(this.application).subscribe(
-        (resp) => {
-          if (resp.statusId === StatusEnum.Saved) {
-            this.menuActions[3].visible = true;
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          }
-
-          if (resp.statusId === StatusEnum.PendingReview) {
-            this._router.navigateByUrl('applications');
-          }
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
-        }
-      );
-    }
-  }
 
 
 
@@ -367,7 +303,6 @@ console.log('ng onInit');
 
   private qCSteps() {
     debugger;
-   
         this.qcItems = [
           { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
           { label: 'Applications', command: (event: any) => { this.activeStep = 1; } },
@@ -375,5 +310,4 @@ console.log('ng onInit');
           { label: 'Application Document', command: (event: any) => { this.activeStep = 3; } }
         ];
       }  
-
 }

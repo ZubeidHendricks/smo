@@ -20,7 +20,7 @@ namespace NPOMS.Domain.Entities
 
 		public int AllocationTypeId { get; set; }
 
-		[Column(TypeName = "nvarchar(2000)")]
+		[Column(TypeName = "nvarchar(MAX)")]
 		public string Description { get; set; }
 
 		public int ProvisionTypeId { get; set; }

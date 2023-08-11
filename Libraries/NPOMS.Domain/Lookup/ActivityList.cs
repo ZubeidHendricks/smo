@@ -11,7 +11,7 @@ namespace NPOMS.Domain.Lookup
 		[Column(TypeName = "nvarchar(50)")]
 		public string Name { get; set; }
 
-		[Column(TypeName = "nvarchar(1000)")]
+		[Column(TypeName = "nvarchar(MAX)")]
 		public string Description { get; set; }
 
 		public bool IsActive { get; set; }

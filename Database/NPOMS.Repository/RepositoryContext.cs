@@ -53,9 +53,9 @@ namespace NPOMS.Repository
             SqlConnection connection = new SqlConnection();
             connection.ConnectionString = Environment.GetEnvironmentVariable("SQLAZURECONNSTR_Conn01");
 
-#if DEBUG
+            #if DEBUG
             connection.ConnectionString = _configuration.GetConnectionString("SQLAZURECONNSTR_Conn01");
-#endif
+            #endif
 
             if (connection.ConnectionString.Contains("database.windows.net"))
             {
@@ -63,7 +63,9 @@ namespace NPOMS.Repository
             }
 
             optionsBuilder.UseSqlServer(connection, s => s.MigrationsAssembly("NPOMS.Repository"));
-        }
+            optionsBuilder.EnableSensitiveDataLogging();
+
+		}
 
         /* Core */
         public DbSet<Department> Departments { get; set; }
