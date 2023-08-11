@@ -40,7 +40,7 @@ export class NpoDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadApplication();
-    this.validationErrors.push({ severity: 'warn', summary: "Warning:", detail: "Application already captured. Please go to 'Applications' to access this application." });
+    this.validationErrors.push({ severity: 'warn', summary: "Warning:", detail: "Application already captured. Please go to 'Submissions' to access this application." });
   }
 
   private loadApplication() {
