@@ -12,7 +12,7 @@ namespace NPOMS.Domain.Entities
 
 		public int ActivityId { get; set; }
 
-		[Column(TypeName = "nvarchar(2000)")]
+		[Column(TypeName = "nvarchar(MAX)")]
 		public string Description { get; set; }
 
 		[Column(TypeName = "nvarchar(1000)")]

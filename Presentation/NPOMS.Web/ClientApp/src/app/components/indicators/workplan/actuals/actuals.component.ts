@@ -336,6 +336,9 @@ export class ActualsComponent implements OnInit {
           }
         );
       }
+      else {
+        this._spinner.hide();
+      }
     }
     else {
       this._spinner.hide();
@@ -345,7 +348,7 @@ export class ActualsComponent implements OnInit {
 
   private canContinue(workplanActual: IWorkplanActual) {
 
-    if (workplanActual.actual) {
+    if (workplanActual.actual > -1) {
       return true;
     }
 
@@ -454,74 +457,76 @@ export class ActualsComponent implements OnInit {
     if (this.selectedFinancialYear && this.selectedFrequencyPeriod) {
       this.filteredWorkplanIndicators = [];
 
-      this._workplanIndicators.forEach(indicator => {
-        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyId == this.selectedFrequencyPeriod.frequencyId);
-        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyPeriodId == this.selectedFrequencyPeriod.id);
+      if (this._workplanIndicators.length > 0) {
+        this._workplanIndicators.forEach(indicator => {
+          let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyId == this.selectedFrequencyPeriod.frequencyId);
+          let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyPeriodId == this.selectedFrequencyPeriod.id);
 
-        workplanActuals.forEach(item => {
-          item.status = this.statuses.find(x => x.id === item.statusId);
+          workplanActuals.forEach(item => {
+            item.status = this.statuses.find(x => x.id === item.statusId);
 
-          // Disable fields if WorkplanActual is not in a New, Saved or AmendmentsRequired state
-          item.isSubmitted = item.statusId == StatusEnum.New || item.statusId == StatusEnum.Saved || item.statusId == StatusEnum.AmendmentsRequired ? false : true;
-        });
+            // Disable fields if WorkplanActual is not in a New, Saved or AmendmentsRequired state
+            item.isSubmitted = item.statusId == StatusEnum.New || item.statusId == StatusEnum.Saved || item.statusId == StatusEnum.AmendmentsRequired ? false : true;
+          });
 
-        let capturedTarget = 0;
-        let targetMet = null;
-        let attentionRequired = null;
+          let capturedTarget = 0;
+          let targetMet = null;
+          let attentionRequired = null;
 
-        if (workplanActuals.length > 0) {
+          if (workplanActuals.length > 0) {
 
-          switch (workplanActuals[0].frequencyPeriodId) {
-            case FrequencyPeriodEnum.Apr:
-              capturedTarget = workplanTargets[0].apr;
-              break;
-            case FrequencyPeriodEnum.May:
-              capturedTarget = workplanTargets[0].may;
-              break;
-            case FrequencyPeriodEnum.Jun:
-              capturedTarget = workplanTargets[0].jun;
-              break;
-            case FrequencyPeriodEnum.Jul:
-              capturedTarget = workplanTargets[0].jul;
-              break;
-            case FrequencyPeriodEnum.Aug:
-              capturedTarget = workplanTargets[0].aug;
-              break;
-            case FrequencyPeriodEnum.Sep:
-              capturedTarget = workplanTargets[0].sep;
-              break;
-            case FrequencyPeriodEnum.Oct:
-              capturedTarget = workplanTargets[0].oct;
-              break;
-            case FrequencyPeriodEnum.Nov:
-              capturedTarget = workplanTargets[0].nov;
-              break;
-            case FrequencyPeriodEnum.Dec:
-              capturedTarget = workplanTargets[0].dec;
-              break;
-            case FrequencyPeriodEnum.Jan:
-              capturedTarget = workplanTargets[0].jan;
-              break;
-            case FrequencyPeriodEnum.Feb:
-              capturedTarget = workplanTargets[0].feb;
-              break;
-            case FrequencyPeriodEnum.Mar:
-              capturedTarget = workplanTargets[0].mar;
-              break;
+            switch (workplanActuals[0].frequencyPeriodId) {
+              case FrequencyPeriodEnum.Apr:
+                capturedTarget = workplanTargets[0].apr;
+                break;
+              case FrequencyPeriodEnum.May:
+                capturedTarget = workplanTargets[0].may;
+                break;
+              case FrequencyPeriodEnum.Jun:
+                capturedTarget = workplanTargets[0].jun;
+                break;
+              case FrequencyPeriodEnum.Jul:
+                capturedTarget = workplanTargets[0].jul;
+                break;
+              case FrequencyPeriodEnum.Aug:
+                capturedTarget = workplanTargets[0].aug;
+                break;
+              case FrequencyPeriodEnum.Sep:
+                capturedTarget = workplanTargets[0].sep;
+                break;
+              case FrequencyPeriodEnum.Oct:
+                capturedTarget = workplanTargets[0].oct;
+                break;
+              case FrequencyPeriodEnum.Nov:
+                capturedTarget = workplanTargets[0].nov;
+                break;
+              case FrequencyPeriodEnum.Dec:
+                capturedTarget = workplanTargets[0].dec;
+                break;
+              case FrequencyPeriodEnum.Jan:
+                capturedTarget = workplanTargets[0].jan;
+                break;
+              case FrequencyPeriodEnum.Feb:
+                capturedTarget = workplanTargets[0].feb;
+                break;
+              case FrequencyPeriodEnum.Mar:
+                capturedTarget = workplanTargets[0].mar;
+                break;
+            }
+
+            targetMet = workplanActuals[0].actual < 0 ? null : workplanActuals[0].actual >= capturedTarget;
+            attentionRequired = workplanActuals[0].statement || workplanActuals[0].deviationReason || workplanActuals[0].action ? true : false;
           }
 
-          targetMet = !workplanActuals[0].actual ? null : workplanActuals[0].actual >= capturedTarget;
-          attentionRequired = workplanActuals[0].statement || workplanActuals[0].deviationReason || workplanActuals[0].action ? true : false;
-        }
-
-        this.filteredWorkplanIndicators.push({
-          activity: indicator.activity,
-          workplanTargets: workplanTargets,
-          workplanActuals: workplanActuals,
-          targetMet: targetMet,
-          attentionRequired: attentionRequired
-        } as IWorkplanIndicator);
-      });
+          this.filteredWorkplanIndicators.push({
+            activity: indicator.activity,
+            workplanTargets: workplanTargets,
+            workplanActuals: workplanActuals,
+            targetMet: targetMet,
+            attentionRequired: attentionRequired
+          } as IWorkplanIndicator);
+        });
+      }
 
       this._spinner.hide();
     }

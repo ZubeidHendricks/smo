@@ -9,13 +9,11 @@
 
     <div style="height: 10px;"></div>
     <div>
-        <!-- <app-create-npo [(activeStep)]="activeStep" [application]="application" [newApplication]="true" ></app-create-npo> -->
         <app-edit-quick-capture *ngIf="activeStep == QCStepsEnum.NpoCreate"
-            [(activeStep)]="activeStep" [(newlySavedNpoId)]="newlySavedNpoId" 
-            [application]="application" [newApplication]="true" ></app-edit-quick-capture>
+            [(activeStep)]="activeStep" 
+            [application]="application" [newApplication]="false" ></app-edit-quick-capture>
         <app-qc-application-periods *ngIf="activeStep == QCStepsEnum.Applications" 
-            [(activeStep)]="activeStep" [(newlySavedNpoId)]="newlySavedNpoId" 
-            [(newlySavedApplicationId)]="newlySavedApplicationId"  
+            [(activeStep)]="activeStep"  
             [(applnPeriodId)]="applnPeriodId"  
             [application]="application">
          </app-qc-application-periods>        

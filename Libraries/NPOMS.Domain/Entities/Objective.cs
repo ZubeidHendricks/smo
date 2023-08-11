@@ -14,7 +14,7 @@ namespace NPOMS.Domain.Entities
 		[Column(TypeName = "nvarchar(50)")]
 		public string Name { get; set; }
 
-		[Column(TypeName = "nvarchar(1000)")]
+		[Column(TypeName = "nvarchar(MAX)")]
 		public string Description { get; set; }
 
 		[Column(TypeName = "nvarchar(255)")]
