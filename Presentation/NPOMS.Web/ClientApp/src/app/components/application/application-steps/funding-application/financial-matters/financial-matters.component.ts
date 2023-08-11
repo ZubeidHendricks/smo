@@ -1,7 +1,7 @@
 import {FinancialMatters, IFinancialMattersExpenditure, IFinancialMattersIncome, IFinancialMattersOthers } from './../../../../../models/FinancialMatters';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { CalculatedFinMatters } from 'src/app/models/CalculatedFinMatters';
 import { IPreviousFinancialYear } from 'src/app/models/FinancialMatters';
@@ -41,7 +41,7 @@ export class FinancialMattersComponent implements OnInit {
   financialMattersIncome: IFinancialMattersIncome[];
   financialMattersExpenditure: IFinancialMattersExpenditure[];
   financialMattersOthers: IFinancialMattersOthers[];
-
+  menuActions: MenuItem[];
 
   npoProfileId: string;
   displayOthrSourceFundingTotal: boolean = false;
@@ -116,6 +116,8 @@ export class FinancialMattersComponent implements OnInit {
     private _dropdownRepo: DropdownService,
     private _applicationRepo: ApplicationService,
     private _npoProfile: NpoProfileService,
+    private _bidService: BidService,
+    private _router: Router,
     private messageService: MessageService) { }
 
 
@@ -757,6 +759,7 @@ this.calculateOthrSourceFundingTotal();
   nextPage() {
 
     this.activeStep = this.activeStep + 1;
+    this.bidForm(StatusEnum.Saved);
     this.activeStepChange.emit(this.activeStep);
   }
 
@@ -927,6 +930,38 @@ this.calculateOthrSourceFundingTotal();
         //
       }
     );
+  }
+
+  private bidForm(status: StatusEnum) {
+    this.application.status = null;
+      this.application.statusId = status;
+      const applicationIdOnBid = this.fundingApplicationDetails;
+
+      if (applicationIdOnBid.id == null) {
+        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+          this.menuActions[1].visible = false;
+          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          resp;
+        });
+      }
+
+     else {
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+          if (resp) {
+            this._router.navigateByUrl(`application/edit/${this.application.id}`);
+            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          }
+        });
+     }
+
+      if (status == StatusEnum.PendingReview) {
+
+        this.application.statusId = status;
+        this._applicationRepo.updateApplication(this.application).subscribe();
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+        this._router.navigateByUrl('applications');
+      };
+   // }
   }
 
 }

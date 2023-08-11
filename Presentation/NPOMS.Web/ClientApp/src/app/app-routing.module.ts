@@ -80,6 +80,7 @@ import { WorkflowAssessmentComponent } from './components/admin/utilities/workfl
 import { ResponseOptionComponent } from './components/admin/utilities/response-option/response-option.component';
 import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
 import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
+import  {WorkflowApplicationComponent} from './components/application/workflow-application/workflow-application.component'
 const routes: Routes = [
   { path: '', component: HomeComponent },
 
@@ -116,6 +117,7 @@ const routes: Routes = [
   { path: 'application-periods', component: ApplicationPeriodListComponent },
   { path: 'application-period/create', component: CreateApplicationPeriodComponent },
   { path: 'application-period/edit/:id', component: EditApplicationPeriodComponent },
+  { path: 'application/workflow/:id', component: WorkflowApplicationComponent },
 
   { path: 'npo-approval', component: NpoApprovalComponent },
   { path: 'pbi-dashboard', component: PowerbiDashboardComponent },

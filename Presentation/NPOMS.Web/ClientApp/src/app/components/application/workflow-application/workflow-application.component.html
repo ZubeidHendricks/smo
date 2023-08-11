@@ -1,0 +1,159 @@
+<p>workflow-component works!</p>
+
+
+
+<div>
+    <p-panel header="Pre-evaluate Funding Application" [style]="{'font-size':'12px'}">
+        <div class="p-grid">
+            <div class="p-col-3 form-label">
+                <div class="box">
+                    <span class="non-mandatory-content"></span>
+                </div>
+            </div>
+            <div class="p-col-9">
+                <span class="form-text"></span>
+            </div>
+        </div>
+        <div style="height: 10px;"></div>
+        <!-- <div class="p-grid">
+            <div class="p-col-3 form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Funding required from DEDAT (R)</span>
+                </div>
+            </div>
+            <div class="p-col-9">
+                <span class="form-text">{{fundingApplication.applicationInformation.fundingRequiredFromDEDAT | number: '1.0':'en-US'}}</span>
+            </div>
+        </div>
+        <div style="height: 10px;"></div>
+        <div class="p-grid">
+            <div class="p-col-3 form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Value of own contribution (R)</span>
+                </div>
+            </div>
+            <div class="p-col-9">
+                <span class="form-text">{{fundingApplication.applicationInformation.valueOfOwnContribution | number: '1.0':'en-US'}}</span>
+            </div>
+        </div>
+        <div style="height: 10px;"></div> -->
+        <!-- <div style="font-size: 14px;">
+            An application must be pre-evaluated prior to recommendation to substantiate the recommendation outcome.
+        </div>
+        <div style="height: 10px;"></div>
+        <div *ngIf="capturePreEvaluation()">
+            <div *ngIf="this.IsAuthorized(PermissionsEnum.PreEvaluateFundingApplication)">
+                <p-table [value]="preEvaluationQuestionnaire" *ngIf="preEvaluationQuestionnaire" [rowHover]="true" styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 5%; text-align: center;">#</th>
+                            <th>Criteria</th>
+                            <th style="width: 13%;">Compliance</th>
+                            <th style="width: 25%;" *ngIf="hasComment(preEvaluationQuestionnaire)">Comment</th>
+                            <th style="width: 7%;" *ngIf="hasDocument(preEvaluationQuestionnaire)">Evidence</th>
+                            <th style="width: 3%;"></th>
+                            <th style="width: 5%;"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
+                        <tr *ngIf="updateRowGroupMetaData(preEvaluationQuestionnaire)[question.questionSectionName].index === rowIndex">
+                            <td [attr.colspan]="getColspan(preEvaluationQuestionnaire, 5)">
+                                <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                                <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
+                                <div class="pull-right"><span class="{{'product-badge status-' + getStatus(preEvaluationQuestionnaire, question)}}">{{getStatusText(preEvaluationQuestionnaire, question)}}</span></div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex">
+                        <tr class="default-font">
+                            <td style="text-align: center;">{{rowIndex + 1}}</td>
+                            <td>{{question.questionName}}</td>
+                            <td [pEditableColumn]="question" pEditableColumn>
+                                <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)" optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}" placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" (onChange)="onSaveResponse($event, question)" [disabled]="hasCapturedPreEvaluation"></p-dropdown>
+                            </td>
+                            <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(preEvaluationQuestionnaire)">
+                                <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" [autoResize]="true" [disabled]="hasCapturedPreEvaluation"></textarea>
+                            </td>
+                            <td style="text-align: center;" *ngIf="hasDocument(preEvaluationQuestionnaire)">
+                            </td>
+                            <td style="text-align: center;">
+                                <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
+                            </td>
+                            <td style="text-align: center;">
+                                <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr class="default-font">
+                            <td [attr.colspan]="getColspan(preEvaluationQuestionnaire, 5)" style="text-align: center;">No results found</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="footer" *ngIf="hasWeighting(preEvaluationQuestionnaire)">
+                        <tr>
+                            <td colspan="2"><span style="font-weight: bold;">Total</span></td>
+                            <td colspan="2"><span style="font-weight: bold;">{{getWeightingTotal(preEvaluationQuestionnaire)}}</span></td>
+                            <td [attr.colspan]="getColspan(preEvaluationQuestionnaire, 5) - 4"><span style="font-weight: bold;">{{getAverageScoreTotal(preEvaluationQuestionnaire)}}</span></td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div *ngIf="!hasCapturedPreEvaluation">
+                    <div style="height: 10px;"></div>
+                    <div class="p-grid p-nogutter p-justify-end">
+                        <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled]="disableElement(preEvaluationQuestionnaire, QuestionCategoryEnum.PreEvaluation)" (click)="submit(preEvaluationQuestionnaire, QuestionCategoryEnum.PreEvaluation)"></button>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!-- <div *ngIf="!capturePreEvaluation() && capturedResponses">
+            <div *ngFor="let capturedResponse of getCapturedResponses(QuestionCategoryEnum.PreEvaluation); let i = index; let isLast = last;">
+                <div *ngIf="capturedResponse.questionnaires">
+                    <div class="heading">
+                        <span>Completed by: <b>{{capturedResponse.createdUser.fullName}}</b></span>
+                    </div>
+                    
+                    <p-table [value]="getCompletedQuestionnaire(capturedResponse)" styleClass="p-datatable-striped" [rowHover]="true">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="width: 5%; text-align: center;">#</th>
+                                <th>Criteria</th>
+                                <th style="width: 13%;">Compliance</th>
+                                <th style="width: 25%;" *ngIf="hasComment(capturedResponse.questionnaires)">Comment</th>
+                                <th style="width: 7%;" *ngIf="hasDocument(capturedResponse.questionnaires)">Evidence</th>
+                                <th style="width: 3%;"></th>
+                                <th style="width: 5%;"></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
+                            <tr *ngIf="updateRowGroupMetaData(capturedResponse.questionnaires)[question.questionSectionName].index === rowIndex">
+                                <td [attr.colspan]="getColspan(capturedResponse.questionnaires, 5)">
+                                    <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
+                                    <div class="pull-right"><span class="{{'product-badge status-' + getStatus(getCompletedQuestionnaire(capturedResponse), question)}}">{{getStatusText(getCompletedQuestionnaire(capturedResponse), question)}}</span></div>
+                                </td>
+                            </tr>
+                            <tr class="default-font">
+                                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                                <td>{{question.questionName}}</td>
+                                <td>{{question.responseOption.name}}</td>
+                                <td *ngIf="hasComment(capturedResponse.questionnaires)">{{question.comment}}</td>
+                                <td style="text-align: center;" *ngIf="hasDocument(capturedResponse.questionnaires)">
+                                </td>
+                                <td style="text-align: center;">
+                                    <i class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
+                                </td>
+                                <td style="text-align: center;">
+                                    <p-button tooltipPosition="left" pTooltip="View History" (onClick)="onCapturedResponseViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr class="default-font">
+                                <td [attr.colspan]="getColspan(capturedResponse.questionnaires, 5)" style="text-align: center;">No results found</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <hr *ngIf="!isLast">
+                </div>
+            </div>
+        </div> -->
+    </p-panel>

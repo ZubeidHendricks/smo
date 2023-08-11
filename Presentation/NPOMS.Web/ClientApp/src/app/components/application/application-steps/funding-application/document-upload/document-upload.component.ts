@@ -14,6 +14,7 @@ import { EnvironmentUrlService } from 'src/app/services/environment-url/environm
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { ActivatedRoute } from '@angular/router';
 
+
 @Component({
   selector: 'app-document-upload',
   templateUrl: './document-upload.component.html',
@@ -32,10 +33,10 @@ export class DocumentUploadComponent implements OnInit {
   
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
-acutalGrid: string;
-downloadButtonColor: string;
-uploadButtonDisabled: boolean = false;
-
+  acutalGrid: string;
+  downloadButtonColor: string;
+  uploadButtonDisabled: boolean = false;
+  selectClass: string = "non-mandatory-content";
   // Document upload element
   @ViewChild('addDoc') element: ElementRef;
 
@@ -168,11 +169,8 @@ console.log('this.list',this.list);
   onRowSelect(event) {
     debugger;
     if (event.files[0]) {
-this.selectedDocTypeId =      
-        event.files[0].documentType.id;
-        console.log('this.selectedDocTypeId from onRowSelect',this.selectedDocTypeId);
-        console.log('event.files[0].documentType.id from onRowSelect',event.files[0].documentType.id);
-
+      this.selectedDocTypeId =      
+      event.files[0].documentType.id;
     }
     else {
       this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please specify the document type.' });
@@ -180,15 +178,22 @@ this.selectedDocTypeId =
   }
 
   private loadDocumentTypes() {
-    debugger;
+
     this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.selectedApplicationId), false).subscribe(
       (results) => {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
-        console.log('this.documentTypes', this.documentTypes);
-        
-        console.log('results', results);
+
+        this.documentTypes.forEach(element => {
+         if(element.isCompulsory)
+         {
+          if(element.isCompulsory === true)
+          this.selectClass = "mandatory-content";
+          else
+          this.selectClass = "non-mandatory-content";
+         }
+        });
       },
       (err) => {
         this._loggerService.logException(err);
@@ -197,8 +202,6 @@ this.selectedDocTypeId =
     );
   }
   onDownloadDocument(doc: any) {
-    debugger;
-    console.log('download', doc);
     this._confirmationService.confirm({
       message: 'Are you sure that you want to download document?',
       header: 'Confirmation',
