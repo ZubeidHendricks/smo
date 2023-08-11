@@ -437,3 +437,62 @@ export enum StaffCategoryEnum {
     Volunteers = 5,
     Other = 6
 }
+
+export interface IQuestionResponseViewModel {
+    questionCategoryId: number;
+    questionCategoryName: string;
+    questionSectionId: number;
+    questionSectionName: string;
+    responseTypeId: number;
+    questionId: number;
+    questionName: string;
+    questionSortOrder: number;
+
+    hasComment: boolean;
+    commentRequired: boolean;
+    hasDocument: boolean;
+    documentRequired: boolean;
+    weighting: number;
+    averageScore: number;
+
+    responseId: number;
+    fundingApplicationId: number;
+    responseOptionId: number;
+    comment: string;
+    isSaved: boolean;
+    createdUserId: number;
+    responseOption: IResponseOption;
+}
+
+export interface IResponseType {
+    id: number;
+    name: string;
+    description: string;
+    isActive: boolean;
+}
+
+export interface IResponseOption {
+    id: number;
+    responseTypeId: number;
+    name: string;
+    systemName: string;
+    isActive: boolean;
+
+    responseType: IResponseType;
+}
+
+export interface IResponse {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+}
+
+export interface IResponseHistory {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+}

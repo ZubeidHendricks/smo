@@ -64,6 +64,7 @@
             [canReviewOrApprove]="false" [canAddComments]="true" [isReview]="false"></app-resourcing>
     </div>
     <div style="height: 10px;"></div>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
         *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
 </p-panel>
