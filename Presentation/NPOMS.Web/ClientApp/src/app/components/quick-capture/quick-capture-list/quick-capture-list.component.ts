@@ -113,24 +113,24 @@ export class QuickCaptureListComponent implements OnInit {
 
   } as IFundingApplicationDetails;
 
-  quickCaptureDetails: IQuickCaptureDetails = {
-    fundingApplicationDetails: {
-      applicationDetails: {
-        fundAppSDADetail: {
-          districtCouncil: {} as IDistrictCouncil,
-          localMunicipality: {} as ILocalMunicipality,
-          regions: [],
-          serviceDeliveryAreas: [],
-        } as IFundAppSDADetail,
-      } as IApplicationDetails,   
+  // quickCaptureDetails: IQuickCaptureDetails = {
+  //   fundingApplicationDetails: {
+  //     applicationDetails: {
+  //       fundAppSDADetail: {
+  //         districtCouncil: {} as IDistrictCouncil,
+  //         localMunicipality: {} as ILocalMunicipality,
+  //         regions: [],
+  //         serviceDeliveryAreas: [],
+  //       } as IFundAppSDADetail,
+  //     } as IApplicationDetails,   
   
-      financialMatters: [],
-      implementations: [],
+  //     financialMatters: [],
+  //     implementations: [],
   
-    } as IFundingApplicationDetails,
-    npo:{}  as INpo,
+  //   } as IFundingApplicationDetails,
+  //   npo:{}  as INpo,
 
-  } as IQuickCaptureDetails;  
+  // } as IQuickCaptureDetails;  
 
   constructor(
     private _router: Router,
@@ -181,6 +181,7 @@ this.loadfundingDropdowns();
         if (results != null) {
           this.application = results;
           this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
+          //this.fundingApplicationDetails.applicationPeriod.applicationTypeId =3;
           this.qCSteps();
           this.isApplicationAvailable = true;
         }
