@@ -21,75 +21,75 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 14);
 
-            migrationBuilder.AddColumn<int>(
-                name: "ExternalId",
-                schema: "dropdown",
-                table: "SubPlaces",
-                type: "int",
-                nullable: true);
+            //migrationBuilder.AddColumn<int>(
+            //    name: "ExternalId",
+            //    schema: "dropdown",
+            //    table: "SubPlaces",
+            //    type: "int",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<int>(
-                name: "ExternalId",
-                schema: "dropdown",
-                table: "ServiceDeliveryAreas",
-                type: "int",
-                nullable: true);
+            //migrationBuilder.AddColumn<int>(
+            //    name: "ExternalId",
+            //    schema: "dropdown",
+            //    table: "ServiceDeliveryAreas",
+            //    type: "int",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "SystemName",
-                schema: "dropdown",
-                table: "ServiceDeliveryAreas",
-                type: "nvarchar(max)",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "SystemName",
+            //    schema: "dropdown",
+            //    table: "ServiceDeliveryAreas",
+            //    type: "nvarchar(max)",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "SystemName",
-                schema: "dropdown",
-                table: "Regions",
-                type: "nvarchar(max)",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "SystemName",
+            //    schema: "dropdown",
+            //    table: "Regions",
+            //    type: "nvarchar(max)",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<int>(
-                name: "ExternalId",
-                schema: "dropdown",
-                table: "Places",
-                type: "int",
-                nullable: true);
+            //migrationBuilder.AddColumn<int>(
+            //    name: "ExternalId",
+            //    schema: "dropdown",
+            //    table: "Places",
+            //    type: "int",
+            //    nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "SystemName",
-                schema: "dropdown",
-                table: "LocalMunicipalities",
-                type: "nvarchar(max)",
-                nullable: true);
+            //migrationBuilder.AddColumn<string>(
+            //    name: "SystemName",
+            //    schema: "dropdown",
+            //    table: "LocalMunicipalities",
+            //    type: "nvarchar(max)",
+            //    nullable: true);
 
             migrationBuilder.UpdateData(
                 schema: "core",
                 table: "DocumentTypes",
                 keyColumn: "Id",
-                keyValue: 20,
+                keyValue: 9,
                 columns: new[] { "Description", "Name" },
                 values: new object[] { "NPC/ Trust / PBO Registration Certificate (copies of all applicable)", "Org Registration Certificate" });
 
-            migrationBuilder.InsertData(
-                schema: "core",
-                table: "DocumentTypes",
-                columns: new[] { "Id", "Description", "IsActive", "Location", "Name", "UpdatedDateTime", "UpdatedUserId" },
-                values: new object[] { 20, "Signed Declaration of Interest", true, "FundApp", "Signed Declaration of Interest", null, null });
+            //migrationBuilder.InsertData(
+            //    schema: "core",
+            //    table: "DocumentTypes",
+            //    columns: new[] { "Id", "Description", "IsActive", "Location", "Name", "UpdatedDateTime", "UpdatedUserId" },
+            //    values: new object[] { 20, "Signed Declaration of Interest", true, "FundApp", "Signed Declaration of Interest", null, null });
 
-            migrationBuilder.InsertData(
-                schema: "core",
-                table: "Permissions",
-                columns: new[] { "Id", "CategoryName", "Name", "SystemName", "UpdatedDateTime", "UpdatedUserId" },
-                values: new object[,]
-                {
-                    { 96, "Quick Capture", "View Quick Capture", "QC.View", null, null },
-                    { 97, "Quick Capture", "View Quick Capture", "QC.View", null, null },
-                    { 98, "View Application", "View Submitted Application", "WFA.View", null, null },
-                    { 99, "Download Application", "Download Submitted Application", "WFA.Download", null, null },
-                    { 100, "Download Application", "Edit Application", "WFA.Edit", null, null },
-                    { 101, "Delete Application", "Delete Application", "WFA.Delete", null, null }
-                });
+            //migrationBuilder.InsertData(
+            //    schema: "core",
+            //    table: "Permissions",
+            //    columns: new[] { "Id", "CategoryName", "Name", "SystemName", "UpdatedDateTime", "UpdatedUserId" },
+            //    values: new object[,]
+            //    {
+            //        { 96, "Quick Capture", "View Quick Capture", "QC.View", null, null },
+            //        { 97, "Quick Capture", "View Quick Capture", "QC.View", null, null },
+            //        { 98, "View Application", "View Submitted Application", "WFA.View", null, null },
+            //        { 99, "Download Application", "Download Submitted Application", "WFA.Download", null, null },
+            //        { 100, "Download Application", "Edit Application", "WFA.Edit", null, null },
+            //        { 101, "Delete Application", "Delete Application", "WFA.Delete", null, null }
+            //    });
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -448,35 +448,35 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 101);
 
-            migrationBuilder.DropColumn(
-                name: "ExternalId",
-                schema: "dropdown",
-                table: "SubPlaces");
+            //migrationBuilder.DropColumn(
+            //    name: "ExternalId",
+            //    schema: "dropdown",
+            //    table: "SubPlaces");
 
-            migrationBuilder.DropColumn(
-                name: "ExternalId",
-                schema: "dropdown",
-                table: "ServiceDeliveryAreas");
+            //migrationBuilder.DropColumn(
+            //    name: "ExternalId",
+            //    schema: "dropdown",
+            //    table: "ServiceDeliveryAreas");
 
-            migrationBuilder.DropColumn(
-                name: "SystemName",
-                schema: "dropdown",
-                table: "ServiceDeliveryAreas");
+            //migrationBuilder.DropColumn(
+            //    name: "SystemName",
+            //    schema: "dropdown",
+            //    table: "ServiceDeliveryAreas");
 
-            migrationBuilder.DropColumn(
-                name: "SystemName",
-                schema: "dropdown",
-                table: "Regions");
+            //migrationBuilder.DropColumn(
+            //    name: "SystemName",
+            //    schema: "dropdown",
+            //    table: "Regions");
 
-            migrationBuilder.DropColumn(
-                name: "ExternalId",
-                schema: "dropdown",
-                table: "Places");
+            //migrationBuilder.DropColumn(
+            //    name: "ExternalId",
+            //    schema: "dropdown",
+            //    table: "Places");
 
-            migrationBuilder.DropColumn(
-                name: "SystemName",
-                schema: "dropdown",
-                table: "LocalMunicipalities");
+            //migrationBuilder.DropColumn(
+            //    name: "SystemName",
+            //    schema: "dropdown",
+            //    table: "LocalMunicipalities");
 
             migrationBuilder.UpdateData(
                 schema: "core",
