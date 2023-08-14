@@ -128,11 +128,8 @@ export class ApplicationPeriodListComponent implements OnInit {
         results.forEach(period => {
           this.setStatus(period);
         });
-        
-        this.allApplicationPeriods = results;
-        console.log('results',results);
-        console.log('this.allApplicationPeriods ',this.allApplicationPeriods );
 
+        this.allApplicationPeriods = results;
         this._spinner.hide();
       },
       (err) => {
@@ -180,7 +177,6 @@ export class ApplicationPeriodListComponent implements OnInit {
   }
 
   onRowSelect(applicationPeriod: IApplicationPeriod) {
-    console.log('Selected Application Period', applicationPeriod);
     this.selectedApplicationPeriod = applicationPeriod;
     this.applicationPeriodId = applicationPeriod.id;
     this.selectedOption = true;

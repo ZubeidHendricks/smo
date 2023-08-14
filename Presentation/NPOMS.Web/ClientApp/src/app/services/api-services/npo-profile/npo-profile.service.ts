@@ -92,10 +92,9 @@ export class NpoProfileService {
   }
 
   public getProjImplByNpoProfileId(npoProfileId: number) {
-    debugger;
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/projImpl/npoProfileId/${npoProfileId}`;
     return this._http.get<IProjectImplementation[]>(url, httpOptions);
-  }  
+  }
 
   public createBankDetail(bankDetail: IBankDetail) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/createBankDetail`;
@@ -115,17 +114,17 @@ export class NpoProfileService {
   public deleteProjImpl(id: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteProjImplById/id/${id}`;
     return this._http.delete<IProjectImplementation[]>(url, httpOptions);
-  }  
+  }
 
   public UpdatePreviousYearData(previousYearData: any[], npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/updatePreviousYearFinance/npoProfileId/${npoProfileId}`;
     return this._http.put<IPreviousFinancialYear[]>(url, previousYearData, httpOptions);
   }
-  
+
   public updateProjImpl(updateProjImpl: IProjectImplementation) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/UpdateProjImpl`;
     return this._http.put<IProjectImplementation[]>(url, updateProjImpl, httpOptions);
-  }  
+  }
 
   public updateFinancialMattersIncome(financialMattersIncome: any[], npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersIncome/npoProfileId/${npoProfileId}`;
@@ -135,13 +134,13 @@ export class NpoProfileService {
   public updateFinancialMattersExpenditure(financialMattersExpenditure: any[], npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersExpenditure/npoProfileId/${npoProfileId}`;
     return this._http.put<IFinancialMattersExpenditure[]>(url, financialMattersExpenditure, httpOptions);
-  }  
+  }
 
   public updateFinancialMattersOthers(financialMattersOthers: any[], npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersOthers/npoProfileId/${npoProfileId}`;
     return this._http.put<IFinancialMattersOthers[]>(url, financialMattersOthers, httpOptions);
-  }    
-  
+  }
+
   public getFinancialMattersIncomeByNpoProfileId(npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/getFinancialMattersIncomeByNpoProfileId/npoProfileId/${npoProfileId}`;
     return this._http.get<[IFinancialMattersIncome]>(url, httpOptions);
@@ -150,29 +149,29 @@ export class NpoProfileService {
   public getFinancialMattersExpenditureByNpoProfileId(npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/getFinancialMattersExpenditureByNpoProfileId/npoProfileId/${npoProfileId}`;
     return this._http.get<[IFinancialMattersExpenditure]>(url, httpOptions);
-  }  
+  }
 
   public getFinancialMattersOthersByNpoProfileId(npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/getFinancialMattersOthersByNpoProfileId/npoProfileId/${npoProfileId}`;
     return this._http.get<[IFinancialMattersOthers]>(url, httpOptions);
-  }   
+  }
 
   public deleteFinancialMattersIncomeById(id: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteIncomeById/id/${id}`;
     return this._http.delete<[IFinancialMattersIncome]>(url, httpOptions);
-  }  
+  }
 
 
   public deleteFinancialMattersExpenditureById(id: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteExpenditureById/id/${id}`;
     return this._http.delete<[IFinancialMattersExpenditure]>(url, httpOptions);
-  }    
+  }
 
 
   public deleteFinancialMattersOthersById(id: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteOthersById/id/${id}`;
     return this._http.delete<[IFinancialMattersOthers]>(url, httpOptions);
-  }      
+  }
 
   public getPreviousYearDataById(npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/getPreviousYearFinanceByNpoProfileId/npoProfileId/${npoProfileId}`;

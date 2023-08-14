@@ -29,14 +29,14 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
   @Input() applnPeriodId: number;
   @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
-  
+
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
-  }  
+  }
 
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
@@ -105,8 +105,6 @@ export class QcApplicationPeriodsComponent implements OnInit {
         this.loadApplicationPeriods();
         this.autoCreateApplication();
       }
-      console.log('Ng- onInit- application Period screeen',this.newlySavedApplicationId);
-
     });
 
     this.cols = [
@@ -124,7 +122,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
       { label: 'Create New Workplan', value: true },
       { label: 'Use Existing Workplan', value: false }
     ];
-  }  
+  }
 
   private loadNpos() {
     this._spinner.show();
@@ -147,15 +145,12 @@ export class QcApplicationPeriodsComponent implements OnInit {
     this.activeStepChange.emit(this.activeStep);
     this.newlySavedNpoIdChange.emit(this.activeStep);
 
-        console.log(' From next Page click', this.applicationPeriodId);
-
     this.autoCreateApplication();
     this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
 
   }
 
   private autoCreateApplication() {
-    debugger;
     this.application.npoId = this.newlySavedNpoId;
     this.application.applicationPeriodId = this.applicationPeriodId;
     this.application.statusId = StatusEnum.New;
@@ -168,15 +163,13 @@ export class QcApplicationPeriodsComponent implements OnInit {
         this.activeStepChange.emit(this.activeStep);
         this.newlySavedNpoIdChange.emit(this.newlySavedNpoId);
         this.applnPeriodIdChange.emit(this.applicationPeriodId);
-        console.log('applnPeriodIdChange-From Application Period',this.applicationPeriodId);
 
-        if(resp.id != null){
+        if (resp.id != null) {
           this.newlySavedApplicationId = resp.id;
           this.newlySavedApplicationIdChange.emit(this.newlySavedApplicationId);
-          console.log('Newly Saved Application After Click Select',this.newlySavedApplicationId);
           this.applnPeriodId = resp.applicationPeriodId;
           //this._router.navigateByUrl('quick-captures/' + this.newlySavedApplicationId);
-         // this._router.navigateByUrl('Application Period Id passing from Applications Screen to Application Details/' + this.applicationPeriodId);
+          // this._router.navigateByUrl('Application Period Id passing from Applications Screen to Application Details/' + this.applicationPeriodId);
 
         }
       },
@@ -251,7 +244,6 @@ export class QcApplicationPeriodsComponent implements OnInit {
   }
 
   onRowSelect(applicationPeriod: IApplicationPeriod) {
-    console.log('Selected Application Period', applicationPeriod);
     this.selectedApplicationPeriod = applicationPeriod;
     this.applicationPeriodId = applicationPeriod.id;
     this.selectedOption = true;

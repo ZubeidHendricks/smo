@@ -77,11 +77,11 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       { header: 'Beneficiaries', width: '25%' },
       { header: 'Budget', width: '15%' },
       { header: 'Actions', width: '10%' }
-    ];   
+    ];
     this.setYearRange();
     this.allDropdownsLoaded();
   }
-  
+
   private filterClubDevelopmentIntakes() {
     this.filteredProjImpls = this.projImpls;
   }
@@ -103,7 +103,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   editProjImpl(data: IProjectImplementation) {
-    debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
     this.newImplementation = false;
@@ -125,18 +124,17 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
         item.description = this.implementation.description;
       });
     }
-    else{
+    else {
       this.projectImplementations.forEach(item => {
         item.beneficiaries = this.implementation.beneficiaries;
         item.budget = this.implementation.budget;
         item.description = this.implementation.description;
-    });
+      });
+    }
   }
-}
 
   private GetProjImpl() {
-    debugger;
-    this.projectImplementations =null;
+    this.projectImplementations = null;
     this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         this.projectImplementations = results;
@@ -149,7 +147,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   deleteProjImpl(projImpl) {
-    debugger;
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
@@ -157,13 +154,13 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       accept: () => {
         this._npoProfile.deleteProjImpl(projImpl).subscribe(
           (resp) => {
-            this.filterClubDevelopmentIntakes();     
+            this.filterClubDevelopmentIntakes();
           },
           (err) => {
             //
           }
         );
- 
+
       },
       reject: () => {
         //
@@ -203,7 +200,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   disableSave(): boolean {
-    if ( 
+    if (
       !this.implementation.beneficiaries || !this.implementation.budget ||
       !this.implementation.results! || !this.implementation.projectObjective ||
       !this.implementation.resources ||
@@ -251,22 +248,18 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
 
   onRowSelect(event) {
-    debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
-    console.log('data', event.data);
     this.newImplementation = false;
     this.implementation = this.cloneImplementation(event.data);
     this.implementation.places = this.implementation.places;
     this.implementation.subPlaces = this.implementation.subPlaces;
-    console.log('bit after', this.fundingApplicationDetails)
     this.placesChange(this.implementation.places);
     this.subPlacesChange(this.implementation.subPlaces);
     this.displayDialogImpl = true;
   }
 
   cloneImplementation(c: IProjectImplementation): IProjectImplementation {
-    debugger;
     let addFun = {} as IProjectImplementation;
     for (let prop in c) {
       addFun[prop] = c[prop];
@@ -326,33 +319,33 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   private bidForm(status: StatusEnum) {
     this.application.status = null;
-      this.application.statusId = status;
-      const applicationIdOnBid = this.fundingApplicationDetails;
+    this.application.statusId = status;
+    const applicationIdOnBid = this.fundingApplicationDetails;
 
-      if (applicationIdOnBid.id == null) {
-        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-          this._menuActions[1].visible = false;
+    if (applicationIdOnBid.id == null) {
+      this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+        this._menuActions[1].visible = false;
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+        resp;
+      });
+    }
+
+    else {
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+        if (resp) {
+          this._router.navigateByUrl(`application/edit/${this.application.id}`);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          resp;
-        });
-      }
+        }
+      });
+    }
 
-     else {
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
-          if (resp) {
-            this._router.navigateByUrl(`application/edit/${this.application.id}`);
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          }
-        });
-     }
+    if (status == StatusEnum.PendingReview) {
 
-      if (status == StatusEnum.PendingReview) {
-
-        this.application.statusId = status;
-        this._applicationRepo.updateApplication(this.application).subscribe();
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._router.navigateByUrl('applications');
-      };
+      this.application.statusId = status;
+      this._applicationRepo.updateApplication(this.application).subscribe();
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+      this._router.navigateByUrl('applications');
+    };
   }
 
 }
@@ -360,4 +353,3 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
 
 
- 
