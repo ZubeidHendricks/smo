@@ -1,4 +1,4 @@
-import {FinancialMatters, IFinancialMattersExpenditure, IFinancialMattersIncome, IFinancialMattersOthers } from './../../../../../models/FinancialMatters';
+import { FinancialMatters, IFinancialMattersExpenditure, IFinancialMattersIncome, IFinancialMattersOthers } from './../../../../../models/FinancialMatters';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
@@ -127,24 +127,24 @@ export class FinancialMattersComponent implements OnInit {
       this.selectedApplicationId = params.get('id');
 
     });
-    
+
     this.GetPreviousYearFinanceData();
-       this.GetBankDetail();
+    this.GetBankDetail();
 
     if (this.previousFinancialYear != null && this.previousFinancialYear.length > 0)
-      this.calculatePreviousYearTotals(); 
-       
-this.GetFinancialMattersIncome();
-if (this.financialMattersIncome != null && this.financialMattersIncome.length > 0)
-this.calculateTotals(); 
+      this.calculatePreviousYearTotals();
 
-this.GetFinancialMattersExpenditure();
-if (this.financialMattersExpenditure != null && this.financialMattersExpenditure.length > 0)
-this.calculateExpenditureTotals(); 
+    this.GetFinancialMattersIncome();
+    if (this.financialMattersIncome != null && this.financialMattersIncome.length > 0)
+      this.calculateTotals();
 
-this.GetFinancialMattersOther();
-if (this.financialMattersOthers != null && this.financialMattersOthers.length > 0)
-this.calculateOthrSourceFundingTotal(); 
+    this.GetFinancialMattersExpenditure();
+    if (this.financialMattersExpenditure != null && this.financialMattersExpenditure.length > 0)
+      this.calculateExpenditureTotals();
+
+    this.GetFinancialMattersOther();
+    if (this.financialMattersOthers != null && this.financialMattersOthers.length > 0)
+      this.calculateOthrSourceFundingTotal();
 
     this.menuItem = [
       {
@@ -170,17 +170,15 @@ this.calculateOthrSourceFundingTotal();
     //   this.financicalMattersOthrSourceFunding = this.fundingApplicationDetails.financialMatters?.filter(x => x.type == "othersource");      
     // }
     // else {
-      this.fundingApplicationDetails.financialMatters = [];
-      this.financialMattersIncome = [];
-      this.financialMattersExpenditure = [];
-      this.financialMattersOthers =[];
-      this.financicalMattersOthrSourceFunding =[];
+    this.fundingApplicationDetails.financialMatters = [];
+    this.financialMattersIncome = [];
+    this.financialMattersExpenditure = [];
+    this.financialMattersOthers = [];
+    this.financicalMattersOthrSourceFunding = [];
     // }
 
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(res => {
       this.finYears = res;
-      console.log('this.finYears', this.finYears);
-      console.log('res', res);
 
       this.cols = [
         { field: 'property', header: 'Item Description', width: '40%' },
@@ -208,8 +206,8 @@ this.calculateOthrSourceFundingTotal();
         { header: 'Code', width: '15%' },
         { header: 'Account Type', width: '15%' },
         { header: 'Account Number', width: '23%' },
-        { header: 'Actions', width: '7%' },        
-      ];      
+        { header: 'Actions', width: '7%' },
+      ];
     });
     this.subscriptions.push(subscription);
     if (this.isEdit) {
@@ -255,7 +253,7 @@ this.calculateOthrSourceFundingTotal();
   }
 
   private updateBankDetailObjects() {
-    if ( this.banks && this.accountTypes && this.bankDetails) {
+    if (this.banks && this.accountTypes && this.bankDetails) {
       this.bankDetails.forEach(item => {
         item.bank = this.banks.find(x => x.id === item.bankId);
         this.loadBranch(item);
@@ -306,7 +304,6 @@ this.calculateOthrSourceFundingTotal();
 
 
   editBankDetail(data: IBankDetail) {
-    console.log('data from EditBankDetail',data);
     this.selectedBankDetail = data;
     this.isBankDetailEdit = true;
     this.newBankDetail = false;
@@ -316,7 +313,6 @@ this.calculateOthrSourceFundingTotal();
   }
 
   private cloneBankDetail(data: IBankDetail): IBankDetail {
-    console.log('data from clone',data);
     let bankDetail = {} as IBankDetail;
 
     for (let prop in data)
@@ -344,7 +340,7 @@ this.calculateOthrSourceFundingTotal();
           (err) => {
             //
           }
-        );        
+        );
       },
       reject: () => {
         //
@@ -403,7 +399,7 @@ this.calculateOthrSourceFundingTotal();
         // this._spinner.hide();
       }
     );
-  }  
+  }
 
   disableSaveBankDetail() {
     if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.bankDetail.accountNumber)
@@ -449,12 +445,11 @@ this.calculateOthrSourceFundingTotal();
     this.totalExpenditure = calculatedTotalExpenditure;
     this.totalDeficitSurplus = this.totalIncome - this.totalExpenditure;
   }
-  showTable(obj:any)
-  {
-    if(obj.value === "Yes")
-      document.getElementById('previousFinancialYear').hidden = false;  
+  showTable(obj: any) {
+    if (obj.value === "Yes")
+      document.getElementById('previousFinancialYear').hidden = false;
     else
-      document.getElementById('previousFinancialYear').hidden = true;  
+      document.getElementById('previousFinancialYear').hidden = true;
   }
   calculatePreviousYearTotal() {
     var calculatedTotalIncome: number = 0;
@@ -639,13 +634,13 @@ this.calculateOthrSourceFundingTotal();
   save() {
     let financialmatter = [...this.financialMatters];
     if (this.newFinancialMatter) {
-    this.financialmatterIncome.totalFundingAmountI = Number(this.financialmatterIncome.amountOneI) + Number(this.financialmatterIncome.amountTwoI) + Number(this.financialmatterIncome.amountThreeI);
+      this.financialmatterIncome.totalFundingAmountI = Number(this.financialmatterIncome.amountOneI) + Number(this.financialmatterIncome.amountTwoI) + Number(this.financialmatterIncome.amountThreeI);
 
       this.financialMatters.push(this.financialmatterIncome);
     }
     else {
-    this.financialmatterIncome.totalFundingAmountI = Number(this.financialmatterIncome.amountOneI) + Number(this.financialmatterIncome.amountTwoI) + Number(this.financialmatterIncome.amountThreeI);
-    
+      this.financialmatterIncome.totalFundingAmountI = Number(this.financialmatterIncome.amountOneI) + Number(this.financialmatterIncome.amountTwoI) + Number(this.financialmatterIncome.amountThreeI);
+
       financialmatter[this.financialMatters.indexOf(this.selectedFinancialMatterIncome)] = this.financialmatterIncome;
     }
 
@@ -655,7 +650,7 @@ this.calculateOthrSourceFundingTotal();
   }
 
   deletePreviousYearItem(previousYear) {
-    
+
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
@@ -663,13 +658,13 @@ this.calculateOthrSourceFundingTotal();
       accept: () => {
         this._npoProfile.deletePreviousYearDataById(previousYear).subscribe(
           (resp) => {
-           this.GetPreviousYearFinanceData();
+            this.GetPreviousYearFinanceData();
           },
           (err) => {
             //
           }
-        );        
-          this.calculateTotals();      
+        );
+        this.calculateTotals();
       },
       reject: () => {
       }
@@ -815,7 +810,7 @@ this.calculateOthrSourceFundingTotal();
         // {
         //   document.getElementById('previousFinancialYear').hidden = false; 
         // }
-        this.calculateTotals(); 
+        this.calculateTotals();
       },
       (err) => {
         //
@@ -847,13 +842,13 @@ this.calculateOthrSourceFundingTotal();
         // {
         //   document.getElementById('previousFinancialYear').hidden = false; 
         // }
-        this.calculateExpenditureTotals(); 
+        this.calculateExpenditureTotals();
       },
       (err) => {
         //
       }
     );
-  }  
+  }
 
   updateOthersDetail(rowData: IFinancialMattersOthers) {
     if (this.isEdit) {
@@ -879,14 +874,14 @@ this.calculateOthrSourceFundingTotal();
         // {
         //   document.getElementById('previousFinancialYear').hidden = false; 
         // }
-        this.calculateOthrSourceFundingTotal(); 
+        this.calculateOthrSourceFundingTotal();
       },
       (err) => {
         //
       }
     );
-  }    
-  
+  }
+
   updateDetail(rowData: IPreviousFinancialYear) {
     if (this.isEdit) {
       var today = this.getCurrentDateTime();
@@ -908,11 +903,10 @@ this.calculateOthrSourceFundingTotal();
     this._npoProfile.getPreviousYearDataById(this.selectedApplicationId).subscribe(
       (results) => {
         this.previousFinancialYear = results;
-        if(results.length > 0)
-        {
-          document.getElementById('previousFinancialYear').hidden = false; 
+        if (results.length > 0) {
+          document.getElementById('previousFinancialYear').hidden = false;
         }
-        this.calculatePreviousYearTotals(); 
+        this.calculatePreviousYearTotals();
       },
       (err) => {
         //
@@ -934,34 +928,34 @@ this.calculateOthrSourceFundingTotal();
 
   private bidForm(status: StatusEnum) {
     this.application.status = null;
-      this.application.statusId = status;
-      const applicationIdOnBid = this.fundingApplicationDetails;
+    this.application.statusId = status;
+    const applicationIdOnBid = this.fundingApplicationDetails;
 
-      if (applicationIdOnBid.id == null) {
-        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-          this.menuActions[1].visible = false;
+    if (applicationIdOnBid.id == null) {
+      this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+        this.menuActions[1].visible = false;
+        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+        resp;
+      });
+    }
+
+    else {
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+        if (resp) {
+          this._router.navigateByUrl(`application/edit/${this.application.id}`);
           this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          resp;
-        });
-      }
+        }
+      });
+    }
 
-     else {
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
-          if (resp) {
-            this._router.navigateByUrl(`application/edit/${this.application.id}`);
-            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          }
-        });
-     }
+    if (status == StatusEnum.PendingReview) {
 
-      if (status == StatusEnum.PendingReview) {
-
-        this.application.statusId = status;
-        this._applicationRepo.updateApplication(this.application).subscribe();
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._router.navigateByUrl('applications');
-      };
-   // }
+      this.application.statusId = status;
+      this._applicationRepo.updateApplication(this.application).subscribe();
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+      this._router.navigateByUrl('applications');
+    };
+    // }
   }
 
 }

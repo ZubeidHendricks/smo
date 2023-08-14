@@ -58,7 +58,7 @@ export class EditApplicationComponent implements OnInit {
   profile: IUser;
   validationErrors: Message[];
   documentTypes: IDocumentType[] = [];
-  
+
   items: MenuItem[];
   faItems: MenuItem[];
 
@@ -107,18 +107,9 @@ export class EditApplicationComponent implements OnInit {
       this.loadDocumentTypes();
     });
 
-
     this.loadfundingSteps();
     this.applicationPeriodId = +this.id;
     this.fundingApplicationDetails.applicationPeriodId = +this.id;
-
-    //  this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-    //   console.log('response',resp)
-    //    this.selectedApplicationId = resp.applicationId;
-    //    console.log('response',this.selectedApplicationId )
-    //  });    
-
-
 
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -130,8 +121,8 @@ export class EditApplicationComponent implements OnInit {
         this.buildMenu();
       }
     });
-    console.log('fundingApplicationDetails after initialization', this.fundingApplicationDetails);
   }
+
   getfinFund(event: FinancialMatters) {
     console.log('event from Edit', JSON.stringify(event));
   }
@@ -310,19 +301,17 @@ export class EditApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
-    debugger;
     this.application.status = null;
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;
-      console.log('applicationIdOnBid', this.fundingApplicationDetails);
 
-      this._applicationRepo.updateApplication(this.application).subscribe(resp => {this._applicationRepo.getApplicationById(Number(this.id))});
+      this._applicationRepo.updateApplication(this.application).subscribe(resp => { this._applicationRepo.getApplicationById(Number(this.id)) });
       this.application.statusId = status;
 
       if (applicationIdOnBid.id == null) {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-          this.menuActions[1].visible = false;        
+          this.menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           resp;
         });
@@ -335,7 +324,7 @@ export class EditApplicationComponent implements OnInit {
             this.loadfundingSteps();
             //this.getBidFullObject(resp);            
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-            this.fundingApplicationDetails.implementations =null;
+            this.fundingApplicationDetails.implementations = null;
           }
         });
       }
@@ -346,7 +335,7 @@ export class EditApplicationComponent implements OnInit {
         this._applicationRepo.updateApplication(this.application).subscribe();
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
         this._router.navigateByUrl('applications');
-        this.fundingApplicationDetails.implementations =null;
+        this.fundingApplicationDetails.implementations = null;
       };
     }
   }
@@ -372,7 +361,6 @@ export class EditApplicationComponent implements OnInit {
           this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
             if (response.id != null) {
               this.getFundingApplicationDetails(response);
-              console.log('data.result', response);
             }
           });
           this.fASteps(results.applicationPeriod);
@@ -393,8 +381,7 @@ export class EditApplicationComponent implements OnInit {
   }
 
   private getBidFullObject(data) {
-    debugger;
-    this.fundingApplicationDetails.implementations =null;
+    this.fundingApplicationDetails.implementations = null;
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
@@ -502,7 +489,7 @@ export class EditApplicationComponent implements OnInit {
         if (changesRequiredOnResources.length > 0)
           this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "New comments added." });
       }
-      
+
     }
 
 

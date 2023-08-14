@@ -3,8 +3,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { PermissionsEnum, ApplicationTypeEnum, ServiceProvisionStepsEnum, FundingApplicationStepsEnum } from 'src/app/models/enums';
-import { IUser, IApplication, IObjective, IActivity, ISustainabilityPlan, IResource, IApplicationDetails, 
-  IMonitoringAndEvaluation, IProjectInformation, IFundingApplicationDetails, IPlace, ISubPlace } from 'src/app/models/interfaces';
+import {
+  IUser, IApplication, IObjective, IActivity, ISustainabilityPlan, IResource, IApplicationDetails,
+  IMonitoringAndEvaluation, IProjectInformation, IFundingApplicationDetails, IPlace, ISubPlace
+} from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -16,7 +18,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   styleUrls: ['./print-funding-applicaton.component.css']
 })
 export class PrintFundingApplicatonComponent implements OnInit {
- 
+
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -92,7 +94,7 @@ export class PrintFundingApplicatonComponent implements OnInit {
   ngOnInit(): void {
 
     this._compiler.clearCache();
-    
+
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
@@ -106,13 +108,12 @@ export class PrintFundingApplicatonComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-console.log('profile', this.profile);
         if (!this.IsAuthorized(PermissionsEnum.EditApplication))
           this._router.navigate(['401']);
       }
-      
+
     });
- }
+  }
 
   private loadApplication() {
     this._spinner.show();
@@ -144,20 +145,18 @@ console.log('profile', this.profile);
           this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
             if (response.id != null) {
               this.getFundingApplicationDetails(response);
-              console.log('data.result', response);
             }
           });
           this.isApplicationAvailable = true;
-        
-        setTimeout(() => {
-          document.title = "DSD - Online Funding Application - " + results.applicationPeriod.name;
-          window.print();
-          this._router.navigate([{ outlets: { print: null } }]);
-        }, 2500);
-      }
-    },
-      (err) => 
-      {
+
+          setTimeout(() => {
+            document.title = "DSD - Online Funding Application - " + results.applicationPeriod.name;
+            window.print();
+            this._router.navigate([{ outlets: { print: null } }]);
+          }, 2500);
+        }
+      },
+      (err) => {
         this._spinner.hide()
       }
     );
@@ -171,8 +170,6 @@ console.log('profile', this.profile);
   }
 
   private getBidFullObject(data) {
-    debugger;
-    console.log('data', data);
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
@@ -202,5 +199,5 @@ console.log('profile', this.profile);
     });
 
   }
- 
+
 }
