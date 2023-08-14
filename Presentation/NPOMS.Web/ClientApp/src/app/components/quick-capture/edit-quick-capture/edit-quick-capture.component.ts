@@ -19,7 +19,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class EditQuickCaptureComponent implements OnInit {
 
- 
+
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -290,7 +290,6 @@ export class EditQuickCaptureComponent implements OnInit {
   private formValidate() {
     this.validated = true;
     this.validationErrors = [];
-    console.log('NPO-contact', this.npo);
 
     let data = this.npo;
 
@@ -319,9 +318,6 @@ export class EditQuickCaptureComponent implements OnInit {
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npo;
-      console.log('this.npo', this.npo);
-      console.log('data', data);
-
 
       // TK: Set default approval status to Approved after chat with RG on 2023-06-19
       data.approvalStatusId = AccessStatusEnum.Approved;

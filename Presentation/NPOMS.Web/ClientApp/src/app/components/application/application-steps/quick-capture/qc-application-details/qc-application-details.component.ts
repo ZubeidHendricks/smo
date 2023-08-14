@@ -29,7 +29,7 @@ export class QcApplicationDetailsComponent implements OnInit {
 
   @Input() applnPeriodId: number;
   @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
-  
+
 
   @Input() isReadOnly: boolean;
   @Input() Amount: number;
@@ -39,7 +39,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   //@Input() qcCaptureDetails: IQuickCaptureDetails;
 
 
- application: IApplication;
+  application: IApplication;
   canEdit: boolean = false;
 
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
@@ -146,22 +146,17 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
   ngOnInit(): void {
 
-    console.log('ng on init-applnPeriodId',this.applnPeriodId);
     this._spinner.show();
     // this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
     //   this.selectedApplicationId = params.get('this.applnPeriodId');
     //   console.log(' this.selectedApplicationId from QC-Application Details Screen', Number(this.selectedApplicationId));
     //   console.log(' Reciving Newly created application Id from  QC _Period Screen to QC-Application Details Screen', Number(this.newlySavedApplicationId));
 
-      
+
     // });
 
-    console.log(' Reciving Newly created application Id from  QC _Period Screen to QC-Application Details Screen', Number(this.newlySavedApplicationId));
-
     this.selectedApplicationId = this.newlySavedApplicationId;
-    console.log('ng on init-applnPeriodId',  this.selectedApplicationId);
 
-    
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -181,9 +176,9 @@ export class QcApplicationDetailsComponent implements OnInit {
         //Get all regions
         this.regionDropdown();
         //Get all service delivery areas
-        this. loadServiceDeliveryAreas();     
+        this.loadServiceDeliveryAreas();
         this.GetAffiliatedOrganisation();
-        this.GetSourceOfInformation(); 
+        this.GetSourceOfInformation();
         this.loadApplication();
       }
     });
@@ -206,10 +201,9 @@ export class QcApplicationDetailsComponent implements OnInit {
       (results) => {
         if (results != null) {
           this.application = results;
-          this._bidService.getApplicationBiId(results.id).subscribe(response => { 
+          this._bidService.getApplicationBiId(results.id).subscribe(response => {
             if (response.id != null) {
               this.getFundingApplicationDetails(response);
-              console.log('data.result', response);
             }
           });
         }
@@ -229,7 +223,6 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   private getBidFullObject(data) {
-    debugger;
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
@@ -262,36 +255,35 @@ export class QcApplicationDetailsComponent implements OnInit {
 
 
   private bidForm(status: StatusEnum) {
-    debugger;
     this.application.status = null;
-      this.application.statusId = status;
-      const applicationIdOnBid = this.fundingApplicationDetails;
+    this.application.statusId = status;
+    const applicationIdOnBid = this.fundingApplicationDetails;
 
-      if (applicationIdOnBid.id == null) {
-        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-          this.menuActions[1].visible = false;
+    if (applicationIdOnBid.id == null) {
+      this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+        this.menuActions[1].visible = false;
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+        resp;
+      });
+    }
+
+    else {
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+        if (resp) {
+          this._router.navigateByUrl(`application/edit/${this.application.id}`);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          resp;
-        });
-      }
+        }
+      });
+    }
 
-     else {
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
-          if (resp) {
-            this._router.navigateByUrl(`application/edit/${this.application.id}`);
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          }
-        });
-     }
+    if (status == StatusEnum.PendingReview) {
 
-      if (status == StatusEnum.PendingReview) {
-
-        this.application.statusId = status;
-        this._applicationRepo.updateApplication(this.application).subscribe();
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._router.navigateByUrl('applications');
-      };
-   // }
+      this.application.statusId = status;
+      this._applicationRepo.updateApplication(this.application).subscribe();
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+      this._router.navigateByUrl('applications');
+    };
+    // }
   }
 
 
@@ -323,7 +315,7 @@ export class QcApplicationDetailsComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-         //            this.saveFundingApplicationDetails();
+            //            this.saveFundingApplicationDetails();
           }
         },
         {
@@ -337,12 +329,11 @@ export class QcApplicationDetailsComponent implements OnInit {
     }
   }
 
-  showTable(obj:any)
-  {
-    if(obj.value === "Yes")
-      document.getElementById('affliatedOrganisationInfoTable').hidden = false;  
+  showTable(obj: any) {
+    if (obj.value === "Yes")
+      document.getElementById('affliatedOrganisationInfoTable').hidden = false;
     else
-      document.getElementById('affliatedOrganisationInfoTable').hidden = true;  
+      document.getElementById('affliatedOrganisationInfoTable').hidden = true;
   }
 
   private formValidate() {
@@ -351,7 +342,7 @@ export class QcApplicationDetailsComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear )
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear)
       this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -474,9 +465,7 @@ export class QcApplicationDetailsComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          console.log('results', results);
           this.applicationPeriodId = results.applicationPeriodId;
-          console.log('this.applicationPeriodId', this.applicationPeriodId);
           this.loadApplicationPeriodById(this.applicationPeriodId);
         } this._spinner.hide();
       },
@@ -488,21 +477,15 @@ export class QcApplicationDetailsComponent implements OnInit {
     if (this.applicationPeriodId != null) {
       this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
         (results) => {
-          console.log(results);
-          console.log(results.financialYear);
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
-
-
-       
 
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
           this.selectedSubProgramme = results.subProgramme;
           this.selectedFinancialYear = results.financialYear;
           this.selectedApplicationType = results.applicationType;
-
 
           this.applicationPeriod = results;
           this.isDataAvailable = true;
@@ -603,7 +586,7 @@ export class QcApplicationDetailsComponent implements OnInit {
       (results) => {
         this.sdasAll = results;
         this.allDropdownsLoaded();
-        
+
       },
       (err) => {
         this._loggerService.logException(err);
@@ -613,21 +596,21 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   readonly(): boolean {
-        // if (this.application.statusId ==StatusEnum.PendingReview ||
-        //  this.application.statusId == StatusEnum.Approved )
-        //  return true;
-        // else return false;
-        return false;
-      }
-  
+    // if (this.application.statusId ==StatusEnum.PendingReview ||
+    //  this.application.statusId == StatusEnum.Approved )
+    //  return true;
+    // else return false;
+    return false;
+  }
+
   nextPage() {
 
     // if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
-    
-      this.activeStep = this.activeStep + 1;
-      this.bidForm(StatusEnum.Saved);
 
-      this.activeStepChange.emit(this.activeStep);
+    this.activeStep = this.activeStep + 1;
+    this.bidForm(StatusEnum.Saved);
+
+    this.activeStepChange.emit(this.activeStep);
 
     // }
     // else
@@ -641,8 +624,8 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   private allDropdownsLoaded() {
-    if (this.allDistrictCouncils?.length > 0 && 
-      this.localMunicipalitiesAll?.length > 0 && 
+    if (this.allDistrictCouncils?.length > 0 &&
+      this.localMunicipalitiesAll?.length > 0 &&
       this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
 
       if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil.id != undefined)
@@ -664,14 +647,13 @@ export class QcApplicationDetailsComponent implements OnInit {
     this.regions = [];
     this.sdas = [];
 
-    if (localMunicipality.id != undefined && 
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.id != localMunicipality.id) 
-      {
+    if (localMunicipality.id != undefined &&
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.id != localMunicipality.id) {
       this.selectedRegions = [];
       this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = null;
       this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = [];
       this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = [];
-      }
+    }
 
     if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality?.name != localMunicipality.name) {
       this.selectedRegions = [];
@@ -684,7 +666,7 @@ export class QcApplicationDetailsComponent implements OnInit {
     if (localMunicipality.id != undefined) {
       this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
     }
-  }  
+  }
 
 
   OnDistrictCouncilChange(districtCouncil: IDistrictCouncil) {
@@ -707,7 +689,7 @@ export class QcApplicationDetailsComponent implements OnInit {
       this.localMunicipalities = this.localMunicipalitiesAll?.filter(x => x.districtCouncilId == districtCouncil.id);
       this.localMunicipalities.unshift({ name: 'Select Type', id: null, districtCouncilId: null });
     }
-  }  
+  }
 
 
   onRegionChange(regions: IRegion[]) {
@@ -745,8 +727,6 @@ export class QcApplicationDetailsComponent implements OnInit {
     // end  make sure the selected is not redundant!!
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
     this.selectedSdas = filtered;
-    console.log('onRegionChange Selected SDA',  this.selectedSdas);
-
   }
 
 
@@ -759,9 +739,8 @@ export class QcApplicationDetailsComponent implements OnInit {
     sdas.forEach(item => {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
-    console.log('onSdaChange selected sds',this.selectedSdas);
+
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-    console.log('onSdaChange',  this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
 
     let count = 0;
     if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 
@@ -803,26 +782,22 @@ export class QcApplicationDetailsComponent implements OnInit {
       });
     }
   }
-  
+
   private GetSourceOfInformation() {
     this._npoProfile.getSourceOfInformationById(this.selectedApplicationId).subscribe(
       (results) => {
         this.sourceOfInformation = results;
         this.sourceOfInformationText = "Printed newspaper";
-        if(results.find(results => results.selectedSourceValue ===1))
-        {
+        if (results.find(results => results.selectedSourceValue === 1)) {
           this.sourceOfInformationText = "Printed newspaper";
         }
-        if(results.find(results => results.selectedSourceValue ===2))
-        {
+        if (results.find(results => results.selectedSourceValue === 2)) {
           this.sourceOfInformationText = "Online";
         }
-        if(results.find(results => results.selectedSourceValue ===3))
-        {
+        if (results.find(results => results.selectedSourceValue === 3)) {
           this.sourceOfInformationText = "DSD circular to NPOs";
         }
-        if(results.find(results => results.selectedSourceValue ===4))
-        {
+        if (results.find(results => results.selectedSourceValue === 4)) {
           this.sourceOfInformationText = "Other (specify)";
         }
       },
@@ -836,9 +811,8 @@ export class QcApplicationDetailsComponent implements OnInit {
     this._npoProfile.getAffiliatedOrganisationById(this.selectedApplicationId).subscribe(
       (results) => {
         this.affliatedOrganisationInfo = results;
-        if(results.length > 0)
-        {
-          document.getElementById('affliatedOrganisationInfoTable').hidden = false; 
+        if (results.length > 0) {
+          document.getElementById('affliatedOrganisationInfoTable').hidden = false;
         }
       },
       (err) => {
@@ -848,7 +822,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   updateDetail(rowData: IAffiliatedOrganisation) {
-   
+
     this._npoProfile.updateAffiliatedOrganisationData(this.affliatedOrganisationInfo, this.selectedApplicationId).subscribe(
       (resp) => {
         this.GetAffiliatedOrganisation();
@@ -860,8 +834,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
 
-  updateSourceOfInformation(sourceOfInfo: ISourceOfInformation)
-  {
+  updateSourceOfInformation(sourceOfInfo: ISourceOfInformation) {
     this._npoProfile.updateSourceOfInformation(sourceOfInfo, this.selectedApplicationId).subscribe(
       (resp) => {
         this.GetSourceOfInformation();
@@ -877,14 +850,13 @@ export class QcApplicationDetailsComponent implements OnInit {
     } as IAffiliatedOrganisation);
   }
 
-  save()
-  {
+  save() {
     var today = this.getCurrentDateTime();
     this.sourceOfInformations.npoProfileId = Number(this.selectedApplicationId);
     this.sourceOfInformations.selectedSourceValue = Number(this.selectedDropdownValue);
     this.sourceOfInformations.additionalSourceInformation = this.specify;
     this.updateSourceOfInformation(this.sourceOfInformations);
-   
+
   }
 
   private getCurrentDateTime() {
@@ -893,7 +865,7 @@ export class QcApplicationDetailsComponent implements OnInit {
     today.setHours(nextTwoHours);
 
     return today;
-  } 
+  }
 
 
 }

@@ -261,7 +261,6 @@ export class FundingListComponent implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        console.log('delete funding');
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Funding successfully deleted.' });
       },
       reject: () => {

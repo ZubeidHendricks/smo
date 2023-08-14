@@ -29,8 +29,8 @@ export class QuickCaptureListComponent implements OnInit {
 
   placesAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
-  
-  dropdownTouched: boolean = false;  
+
+  dropdownTouched: boolean = false;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -87,7 +87,7 @@ export class QuickCaptureListComponent implements OnInit {
 
   activeStep: number = 0;
   application: IApplication;
- 
+
   selectedOption: boolean;
 
   financialYears: IFinancialYear[];
@@ -106,7 +106,7 @@ export class QuickCaptureListComponent implements OnInit {
         regions: [],
         serviceDeliveryAreas: [],
       } as IFundAppSDADetail,
-    } as IApplicationDetails,   
+    } as IApplicationDetails,
 
     financialMatters: [],
     implementations: [],
@@ -123,10 +123,10 @@ export class QuickCaptureListComponent implements OnInit {
   //         serviceDeliveryAreas: [],
   //       } as IFundAppSDADetail,
   //     } as IApplicationDetails,   
-  
+
   //     financialMatters: [],
   //     implementations: [],
-  
+
   //   } as IFundingApplicationDetails,
   //   npo:{}  as INpo,
 
@@ -154,10 +154,8 @@ export class QuickCaptureListComponent implements OnInit {
     //   this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
     //   });
     // });
-console.log('ng onInit');
-console.log('newlySavedApplicationId',this.newlySavedApplicationId);
 
-this.loadfundingDropdowns();
+    this.loadfundingDropdowns();
     this.qCSteps();
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -172,12 +170,10 @@ this.loadfundingDropdowns();
   }
 
   private loadfundingDropdowns() {
-    debugger;
     this._spinner.show();
-    
+
     this._applicationRepo.getApplicationById(this.newlySavedApplicationId).subscribe(
       (results) => {
-        console.log('results',results);
         if (results != null) {
           this.application = results;
           this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
@@ -216,8 +212,8 @@ this.loadfundingDropdowns();
           icon: 'fa fa-floppy-o',
           command: () => {
             //if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
-              this.bidForm(StatusEnum.Saved);
-           // }
+            this.bidForm(StatusEnum.Saved);
+            // }
           }
         },
 
@@ -244,7 +240,6 @@ this.loadfundingDropdowns();
   }
 
   private bidForm(status: StatusEnum) {
-    debugger;
     this.application.status = null;
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
@@ -258,14 +253,14 @@ this.loadfundingDropdowns();
         this._applicationRepo.updateApplication(this.application).subscribe();
       }
     }
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+    this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+    this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
 
-      if (status == StatusEnum.PendingReview) {
-        this.application.status.name = "PendingReview";
-             this._router.navigateByUrl('applications');
-      }
-    
+    if (status == StatusEnum.PendingReview) {
+      this.application.status.name = "PendingReview";
+      this._router.navigateByUrl('applications');
+    }
+
   }
 
 
@@ -281,7 +276,8 @@ this.loadfundingDropdowns();
 
 
   private formValidate() {
-    this.validationErrors = [];  }
+    this.validationErrors = [];
+  }
 
   private clearMessages() {
     this.validationErrors = [];
@@ -361,14 +357,12 @@ this.loadfundingDropdowns();
   }
 
   private qCSteps() {
-    debugger;
-   
-        this.qcItems = [
-          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
-          { label: 'Applications', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Application Details', command: (event: any) => { this.activeStep = 2; } },
-          { label: 'Application Document', command: (event: any) => { this.activeStep = 3; } }
-        ];
-      }  
+    this.qcItems = [
+      { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
+      { label: 'Applications', command: (event: any) => { this.activeStep = 1; } },
+      { label: 'Application Details', command: (event: any) => { this.activeStep = 2; } },
+      { label: 'Application Document', command: (event: any) => { this.activeStep = 3; } }
+    ];
+  }
 
 }

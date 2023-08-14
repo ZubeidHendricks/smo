@@ -165,7 +165,7 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
-				//ClearObjects(model);
+				ClearObjects(model);
 				await _npoService.Update(model, base.GetUserIdentifier());
 				return Ok(model);
 			}
