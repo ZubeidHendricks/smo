@@ -146,7 +146,7 @@ export class FundingApplicationViewComponent implements OnInit {
         let amountStringId = (<HTMLInputElement>document.getElementById("amountApplyingFor"));
         amountStringId.focus();
         this.loadDistrictCouncils();
-        this.loadMunicipalities();  
+        this.loadMunicipalities();
         this.regionDropdown();
         this.loadServiceDeliveryAreas();
         this.GetAffiliatedOrganisation();
@@ -163,7 +163,7 @@ export class FundingApplicationViewComponent implements OnInit {
         label: 'No',
         value: 'No'
       }
-    ];    
+    ];
   }
 
   save() {
@@ -265,9 +265,7 @@ export class FundingApplicationViewComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          console.log('results', results);
           this.applicationPeriodId = results.applicationPeriodId;
-          console.log('this.applicationPeriodId', this.applicationPeriodId);
           this.loadApplicationPeriodById(this.applicationPeriodId);
         } this._spinner.hide();
       },
@@ -279,8 +277,6 @@ export class FundingApplicationViewComponent implements OnInit {
     if (this.applicationPeriodId != null) {
       this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
         (results) => {
-          console.log(results);
-          console.log(results.financialYear);
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
@@ -412,8 +408,8 @@ export class FundingApplicationViewComponent implements OnInit {
       this.regions = null;
       this.sdas = null;
     }
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
+    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
 
     if (localMunicipality.id != null) {
       this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
@@ -430,9 +426,9 @@ export class FundingApplicationViewComponent implements OnInit {
     this.selected = null;
     this.regions = null;
     this.sdas = null;
-    
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
+
+    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
 
     if (districtCouncil.id != null) {
       this.localMunicipalities = this.localMunicipalitiesAll?.filter(x => x.districtCouncilId == districtCouncil.id);
@@ -451,8 +447,8 @@ export class FundingApplicationViewComponent implements OnInit {
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
+    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
 
     // filter items matching the selected regions
     if (regions != null && regions.length != 0) {
@@ -477,7 +473,6 @@ export class FundingApplicationViewComponent implements OnInit {
     // end  make sure the selected is not redundant!!
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
     this.selectedSdas = filtered;
-    console.log('onRegionChange Selected SDA', this.selectedSdas);
   }
 
 
@@ -492,7 +487,6 @@ export class FundingApplicationViewComponent implements OnInit {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-    console.log('onSdaChange', this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
 
     let count = 0;
     if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 
@@ -569,7 +563,7 @@ export class FundingApplicationViewComponent implements OnInit {
       }
     );
   }
-  
+
   updateSourceOfInformation(sourceOfInfo: ISourceOfInformation) {
     this._npoProfile.updateSourceOfInformation(sourceOfInfo, this.selectedApplicationId).subscribe(
       (resp) => {
@@ -583,8 +577,8 @@ export class FundingApplicationViewComponent implements OnInit {
 
   readonly(): boolean {
     if (this.application.statusId == StatusEnum.PendingReview ||
-     this.application.statusId == StatusEnum.Approved )
-     return true;
+      this.application.statusId == StatusEnum.Approved)
+      return true;
     else return false;
     //return false;
   }
@@ -598,9 +592,9 @@ export class FundingApplicationViewComponent implements OnInit {
     if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
       this.activeStep = this.activeStep + 1;
       this.activeStepChange.emit(this.activeStep);
-     }
-     else
-       this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
+    }
+    else
+      this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
   }
 
   prevPage() {
