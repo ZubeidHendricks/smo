@@ -313,7 +313,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ViewFinancialMattersComponent,
     FundingApplicationViewComponent,
     WorkflowApplicationComponent,
-
+    QuickCaptureEditListComponent,
     QuickCaptureEditListComponent
   ],
   schemas: [

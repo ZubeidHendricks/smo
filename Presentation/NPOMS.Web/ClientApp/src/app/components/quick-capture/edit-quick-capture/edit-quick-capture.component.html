@@ -341,4 +341,7 @@
             <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
         </p-footer>
     </p-confirmDialog>
+    <div style="height: 10px;"></div>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    
 </div>

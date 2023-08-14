@@ -217,6 +217,8 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-pencil-square-o',
           command: () => {
             this._router.navigateByUrl('application/edit/' + this.selectedApplication.id);
+           //this._router.navigateByUrl('quick-captures-editList/edit/' + this.selectedApplication.id);
+
           }
         });
       }
