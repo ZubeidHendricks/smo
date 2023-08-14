@@ -35,14 +35,14 @@ export class QcDocumentUploadComponent implements OnInit {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
   }
-  @ViewChild('fileAdDoc') el:ElementRef;
+  @ViewChild('fileAdDoc') el: ElementRef;
 
-  
+
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
-acutalGrid: string;
-downloadButtonColor: string;
-uploadButtonDisabled: boolean = false;
+  acutalGrid: string;
+  downloadButtonColor: string;
+  uploadButtonDisabled: boolean = false;
 
   // Document upload element
   @ViewChild('addDoc') element: ElementRef;
@@ -62,13 +62,13 @@ uploadButtonDisabled: boolean = false;
   documents: IDocumentStore[] = [];
   fundAppdocuments: IDocumentStore[] = [];
   documentCols: any[];
-  uploadedFileCols:any[];
+  uploadedFileCols: any[];
   documentTypeCols: any[];
   documentTypes: IDocumentType[] = [];
   compulsoryDocuments: IDocumentType[] = [];
   nonCompulsoryDocuments: IDocumentType[] = [];
-  docTypeNames : any[];
-  documentTypeName : string;
+  docTypeNames: any[];
+  documentTypeName: string;
 
   validationErrors: Message[];
   menuActions: MenuItem[];
@@ -78,10 +78,10 @@ uploadButtonDisabled: boolean = false;
   selectedDocTypeId: number;
   selectedDocumentType: IDocumentType;
   userId: number;
-  _profile:IUser;
-  list : any[];
-  selectedFile :any;
-  selectedFilename :string;
+  _profile: IUser;
+  list: any[];
+  selectedFile: any;
+  selectedFilename: string;
 
   selectedApplicationId: string;
   constructor(
@@ -94,36 +94,32 @@ uploadButtonDisabled: boolean = false;
     private http: HttpClient,
     private fb: FormBuilder,
     private envUrl: EnvironmentUrlService,
-    private _authService: AuthService,  
-    private _activeRouter: ActivatedRoute ,
+    private _authService: AuthService,
+    private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
     private _bidService: BidService,
     private _router: Router
   ) { }
 
   ngOnInit(): void {
-
-    console.log('Ng- onInit- document upload screeen',this.newlySavedApplicationId);
-
-
     this.loadfundingDropdowns();
     this._spinner.show();
 
-     this._activeRouter.paramMap.subscribe(params => {
+    this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
     });
-    this._authService.profile$.subscribe(x=>{
+    this._authService.profile$.subscribe(x => {
 
-      if(x)
-      {
-          this._profile = x;
-          this.userId = x.id;
-      }});
+      if (x) {
+        this._profile = x;
+        this.userId = x.id;
+      }
+    });
 
     this._spinner.hide();
     this.documentCols = [
       { header: 'Id', width: '5%' },
-      {  field: 'name', header: 'Document Type', width: '35%' },
+      { field: 'name', header: 'Document Type', width: '35%' },
       { header: 'Document Name', width: '45%' },
       // { header: 'Size', width: '10%' },
       // { header: 'Uploaded Date', width: '10%' },
@@ -143,13 +139,13 @@ uploadButtonDisabled: boolean = false;
       { header: 'Document Type Description', width: '75%' }
     ];
 
-    this.docTypeNames =[
-      {name:'Type1'},
-      {name:'Type2'},
-      {name:'Type3'},
-      {name:'Type4'},
-      {name:'Type5'}  
-  ];
+    this.docTypeNames = [
+      { name: 'Type1' },
+      { name: 'Type2' },
+      { name: 'Type3' },
+      { name: 'Type4' },
+      { name: 'Type5' }
+    ];
     this.loadDocumentTypes();
     this.loadApplication();
   }
@@ -159,10 +155,9 @@ uploadButtonDisabled: boolean = false;
       (results) => {
         if (results != null) {
           this.application = results;
-          this._bidService.getApplicationBiId(results.id).subscribe(response => { 
+          this._bidService.getApplicationBiId(results.id).subscribe(response => {
             if (response.id != null) {
               this.getFundingApplicationDetails(response);
-              console.log('data.result', response);
             }
           });
         }
@@ -180,7 +175,6 @@ uploadButtonDisabled: boolean = false;
   }
 
   private getBidFullObject(data) {
-    debugger;
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
@@ -212,7 +206,6 @@ uploadButtonDisabled: boolean = false;
   }
 
   private bidForm(status: StatusEnum) {
-    debugger;
     this.application.status = null;
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
@@ -226,14 +219,14 @@ uploadButtonDisabled: boolean = false;
         this._applicationRepo.updateApplication(this.application).subscribe();
       }
     }
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+    this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+    this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
 
-      if (status == StatusEnum.PendingReview) {
-        this.application.status.name = "PendingReview";
-             this._router.navigateByUrl('applications');
-      }
-    
+    if (status == StatusEnum.PendingReview) {
+      this.application.status.name = "PendingReview";
+      this._router.navigateByUrl('applications');
+    }
+
   }
 
 
@@ -249,19 +242,18 @@ uploadButtonDisabled: boolean = false;
 
 
   private formValidate() {
-    this.validationErrors = [];  }
+    this.validationErrors = [];
+  }
 
   private clearMessages() {
     this.validationErrors = [];
     this.menuActions[1].visible = false;
   }
   private loadfundingDropdowns() {
-    debugger;
     this._spinner.show();
-    
+
     this._applicationRepo.getApplicationById(this.newlySavedApplicationId).subscribe(
       (results) => {
-        console.log('results',results);
         if (results != null) {
           this.application = results;
           //this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
@@ -273,20 +265,19 @@ uploadButtonDisabled: boolean = false;
   }
 
 
-  onFilesUpload(event){
+  onFilesUpload(event) {
 
     // Iterate over selected files
-    for( let file of event.target.files ) {
-      
-        // Append to a list
-        this.list.push({
-            name : file.name,
-            type : file.type
-            // Other specs
-        });
-      console.log('this.list',this.list);        
+    for (let file of event.target.files) {
+
+      // Append to a list
+      this.list.push({
+        name: file.name,
+        type: file.type
+        // Other specs
+      });
     }
-}
+  }
   readonly(): boolean {
 
     if (this.application.statusId == StatusEnum.PendingReview ||
@@ -301,25 +292,21 @@ uploadButtonDisabled: boolean = false;
   }
 
   onRowSelect(event) {
-    debugger;
     if (event.files[0]) {
-      this.selectedDocTypeId =      
+      this.selectedDocTypeId =
         event.files[0].documentType.id;
     }
     else {
       this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please specify the document type.' });
-    }    
+    }
   }
 
   private loadDocumentTypes() {
-    debugger;
     this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, this.newlySavedApplicationId, false).subscribe(
       (results) => {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
-        console.log('this.documentTypes', this.documentTypes);        
-        console.log('results', results);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -328,7 +315,6 @@ uploadButtonDisabled: boolean = false;
     );
   }
   onDownloadDocument(doc: any) {
-    debugger;
     this._confirmationService.confirm({
       message: 'Are you sure that you want to download document?',
       header: 'Confirmation',
@@ -341,7 +327,7 @@ uploadButtonDisabled: boolean = false;
     });
   }
   selectCarWithButton(plan: any) {
-    this.indicatorDetailsId =  Number(this.fundingApplicationDetails.id);     
+    this.indicatorDetailsId = Number(this.fundingApplicationDetails.id);
     this.el.nativeElement.click();
   }
 
@@ -358,29 +344,29 @@ uploadButtonDisabled: boolean = false;
 
   public onUploadChange = (files) => {
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
-    this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
-    EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
-      event => {
-        if (event.type === HttpEventType.UploadProgress)
-          this._spinner.show();
-        else if (event.type === HttpEventType.Response) {
+    this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id),
+      EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
+        event => {
+          if (event.type === HttpEventType.UploadProgress)
+            this._spinner.show();
+          else if (event.type === HttpEventType.Response) {
+            this._spinner.hide();
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
+            this.loadDocumentTypes();
+          }
+        },
+        (err) => {
+          this._loggerService.logException(err);
           this._spinner.hide();
-          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
-          this.loadDocumentTypes();
         }
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+      );
   }
 
-  onFileSelected(event){
+  onFileSelected(event) {
     this.selectedFile = <File>event.target.files[0];
-    this.selectedFilename =this.selectedFile.name;
+    this.selectedFilename = this.selectedFile.name;
   }
-  
+
   public onUploadChange1 = (event, form) => {
     if (event.files[0]) {
       this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments,
@@ -404,57 +390,55 @@ uploadButtonDisabled: boolean = false;
   }
 
   public uploadADDocument = (files) => {
-     console.log("kurac",files);
-    if (files.length === 0) {      
-      return;   
+    if (files.length === 0) {
+      return;
     }
     this._spinner.show();
-    let filesToUpload : File[] = files;
-    const formData = new FormData();   
-  
+    let filesToUpload: File[] = files;
+    const formData = new FormData();
+
     Array.from(filesToUpload).map((fileAdDoc, index) => {
-      return formData.append('file'+index, fileAdDoc, fileAdDoc.name);
+      return formData.append('file' + index, fileAdDoc, fileAdDoc.name);
     });
-  
-    this.http.post(this.envUrl.urlAddress + `/api/documentstore/UploadDocuments?id=`+ this.indicatorDetailsId +"&userId=" + this.userId, formData, {reportProgress: true, observe: 'events'})
+
+    this.http.post(this.envUrl.urlAddress + `/api/documentstore/UploadDocuments?id=` + this.indicatorDetailsId + "&userId=" + this.userId, formData, { reportProgress: true, observe: 'events' })
       .subscribe(event => {
         if (event.type === HttpEventType.UploadProgress)
-        this._spinner.show();
+          this._spinner.show();
         else if (event.type === HttpEventType.Response) {
           // this.message = 'Uploaded!';
-          
-      this.downloadButtonColor = 'p-button-success';
-      this.downloadButtonColor = 'ui-button-info';
+
+          this.downloadButtonColor = 'p-button-success';
+          this.downloadButtonColor = 'ui-button-info';
           this._spinner.hide();
-          let filesToUpload : File[] = files;
-          this._messageService.add({severity: 'success', summary: 'Success', detail: 'File Uploaded'});
+          let filesToUpload: File[] = files;
+          this._messageService.add({ severity: 'success', summary: 'Success', detail: 'File Uploaded' });
         }
       },
-  
-  (error) => {console.log(error.error)
-   this._spinner.hide();
-  });
-}
+
+        (error) => {
+          console.log(error.error)
+          this._spinner.hide();
+        });
+  }
 
   private getDocuments() {
-    debugger;
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.get(Number(this.fundingApplicationDetails?.id), EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-          this.documents = res;      
-        this._spinner.hide();
+          this.documents = res;
+          this._spinner.hide();
         },
         () => this._spinner.hide()
       );
     }
   }
 
-  private getFundAppDocuments(docTypeId :number) {
+  private getFundAppDocuments(docTypeId: number) {
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
           this.fundAppdocuments = res;
-          console.log('Get FundApp',this.fundAppdocuments);
           this._spinner.hide();
         },
         () => this._spinner.hide()
@@ -487,10 +471,10 @@ uploadButtonDisabled: boolean = false;
   prevPage() {
     this.activeStep = this.activeStep - 1;
     this.activeStepChange.emit(this.activeStep);
-  }  
+  }
   nextPage() {
     this.bidForm(StatusEnum.Saved);
-    this._messageService.add({severity: 'success', summary: 'Success', detail: 'File(s) Saved Successfully'});
+    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'File(s) Saved Successfully' });
     this._router.navigateByUrl('applications');
   }
 }

@@ -289,7 +289,6 @@ export class EditNpoComponent implements OnInit {
   private formValidate() {
     this.validated = true;
     this.validationErrors = [];
-    console.log('NPO-contact', this.npo);
 
     let data = this.npo;
 
@@ -318,9 +317,6 @@ export class EditNpoComponent implements OnInit {
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npo;
-      console.log('this.npo', this.npo);
-      console.log('data', data);
-
 
       // TK: Set default approval status to Approved after chat with RG on 2023-06-19
       data.approvalStatusId = AccessStatusEnum.Approved;
@@ -330,8 +326,9 @@ export class EditNpoComponent implements OnInit {
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
         item.positionId = item.position.id;
-        // item.genderId = item.gender.id;
-        // item.raceId = item.race.id;
+        item.genderId = item.gender ? item.gender.id : null;
+        item.raceId = item.race ? item.race.id : null;
+        item.languageId = item.language ? item.language.id : null;
       });
 
       this._npoRepo.updateNpo(data).subscribe(

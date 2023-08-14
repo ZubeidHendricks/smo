@@ -4,8 +4,10 @@ import { ApplicationPeriodService } from 'src/app/services/api-services/applicat
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod,
-  IMonitoringAndEvaluation, IProjectInformation, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion } from 'src/app/models/interfaces';
+import {
+  IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod,
+  IMonitoringAndEvaluation, IProjectInformation, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion
+} from 'src/app/models/interfaces';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -185,10 +187,9 @@ export class ApplicationDetailsComponent implements OnInit {
       (results) => {
         if (results != null) {
           this.application = results;
-          this._bidService.getApplicationBiId(results.id).subscribe(response => { 
+          this._bidService.getApplicationBiId(results.id).subscribe(response => {
             if (response.id != null) {
               this.getFundingApplicationDetails(response);
-              console.log('data.result', response);
             }
           });
         }
@@ -207,7 +208,6 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   private getBidFullObject(data) {
-    debugger;
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
@@ -240,36 +240,35 @@ export class ApplicationDetailsComponent implements OnInit {
 
 
   private bidForm(status: StatusEnum) {
-    debugger;
     this.application.status = null;
-      this.application.statusId = status;
-      const applicationIdOnBid = this.fundingApplicationDetails;
+    this.application.statusId = status;
+    const applicationIdOnBid = this.fundingApplicationDetails;
 
-      if (applicationIdOnBid.id == null) {
-        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-          this.menuActions[1].visible = false;
+    if (applicationIdOnBid.id == null) {
+      this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+        this.menuActions[1].visible = false;
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+        resp;
+      });
+    }
+
+    else {
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+        if (resp) {
+          this._router.navigateByUrl(`application/edit/${this.application.id}`);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          resp;
-        });
-      }
+        }
+      });
+    }
 
-     else {
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
-          if (resp) {
-            this._router.navigateByUrl(`application/edit/${this.application.id}`);
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          }
-        });
-     }
+    if (status == StatusEnum.PendingReview) {
 
-      if (status == StatusEnum.PendingReview) {
-
-        this.application.statusId = status;
-        this._applicationRepo.updateApplication(this.application).subscribe();
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._router.navigateByUrl('applications');
-      };
-   // }
+      this.application.statusId = status;
+      this._applicationRepo.updateApplication(this.application).subscribe();
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+      this._router.navigateByUrl('applications');
+    };
+    // }
   }
 
 
@@ -352,11 +351,11 @@ export class ApplicationDetailsComponent implements OnInit {
 
       this._applicationRepo.updateApplication(this.application).subscribe(
         (resp) => {
-        //  if (resp.statusId === StatusEnum.Saved) {
-            this._spinner.hide();
-            this.menuActions[1].visible = false;
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-       //   }
+          //  if (resp.statusId === StatusEnum.Saved) {
+          this._spinner.hide();
+          this.menuActions[1].visible = false;
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          //   }
 
           if (resp.statusId === StatusEnum.PendingReview) {
             this._spinner.hide();
@@ -368,7 +367,7 @@ export class ApplicationDetailsComponent implements OnInit {
           this._spinner.hide();
         }
       );
-   
+
     }
   }
 
@@ -452,9 +451,7 @@ export class ApplicationDetailsComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          console.log('results', results);
           this.applicationPeriodId = results.applicationPeriodId;
-          console.log('this.applicationPeriodId', this.applicationPeriodId);
           this.loadApplicationPeriodById(this.applicationPeriodId);
         } this._spinner.hide();
       },
@@ -466,8 +463,6 @@ export class ApplicationDetailsComponent implements OnInit {
     if (this.applicationPeriodId != null) {
       this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
         (results) => {
-          console.log(results);
-          console.log(results.financialYear);
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
@@ -584,12 +579,12 @@ export class ApplicationDetailsComponent implements OnInit {
     return false;
   }
 
-  
+
 
   nextPage() {
-      this.activeStep = this.activeStep + 1;
-      this.bidForm(StatusEnum.Saved);
-      this.activeStepChange.emit(this.activeStep);
+    this.activeStep = this.activeStep + 1;
+    this.bidForm(StatusEnum.Saved);
+    this.activeStepChange.emit(this.activeStep);
   }
 
   prevPage() {
@@ -622,8 +617,8 @@ export class ApplicationDetailsComponent implements OnInit {
       this.regions = null;
       this.sdas = null;
     }
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
+    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
 
     if (localMunicipality.id != undefined) {
 
@@ -641,9 +636,9 @@ export class ApplicationDetailsComponent implements OnInit {
     this.selected = null;
     this.regions = null;
     this.sdas = null;
-    
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
+
+    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
 
     if (districtCouncil.id != undefined) {
 
@@ -663,8 +658,8 @@ export class ApplicationDetailsComponent implements OnInit {
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
+    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
 
     // filter items matching the selected regions
     if (regions != null && regions.length != 0) {
@@ -689,7 +684,6 @@ export class ApplicationDetailsComponent implements OnInit {
     // end  make sure the selected is not redundant!!
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
     this.selectedSdas = filtered;
-    console.log('onRegionChange Selected SDA', this.selectedSdas);
   }
 
 
@@ -704,7 +698,6 @@ export class ApplicationDetailsComponent implements OnInit {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-    console.log('onSdaChange', this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
 
     let count = 0;
     if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 

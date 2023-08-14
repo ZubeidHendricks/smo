@@ -24,7 +24,6 @@ export class DocumentStoreService {
   ) { }
 
   public upload(files: File[], entityType: EntityTypeEnum, entityId: number, entity: string, refNo: string, documentTypeId: number) {
-    console.log('documentTypeId',documentTypeId);
     const formData = new FormData();
 
     if (files.length === 0) {
@@ -42,8 +41,6 @@ export class DocumentStoreService {
       DocumentTypeId: documentTypeId,
       RefNo: refNo
     });
-    console.log('documentStoreViewModel',documentStoreViewModel);
-    console.log('documentTypeId',documentTypeId);
 
     formData.append("documentStoreViewModel", documentStoreViewModel);
 

@@ -30,7 +30,7 @@ export class ViewNpoComponent implements OnInit {
   selectedRace: string;
   selectedGender: string;
   selectedLanguage: string;
-  seletedDateofEmployment:string;
+  seletedDateofEmployment: string;
 
   minDate: Date;
   maxDate: Date;
@@ -100,8 +100,6 @@ export class ViewNpoComponent implements OnInit {
 
   viewContactInformation(data: IContactInformation) {
     this.contactInformation = this.cloneContactInformation(data);
-    console.log('Date Of Employment',this.contactInformation.dateOfEmployment);
-    this.seletedDateofEmployment = this.contactInformation.dateOfEmployment.toString();
     this.displayContactDialog = true;
   }
 
@@ -113,14 +111,12 @@ export class ViewNpoComponent implements OnInit {
 
     this.selectedTitle = data.title.name;
     this.selectedPosition = data.position.name;
-    console.log('data',data);
-     if(data.gender != null)
-    this.selectedGender = data.gender.name;
-    if(data.race != null)
-    this.selectedRace = data.race.name;
-    if(data.language != null)    
-    this.selectedLanguage = data.language.name;
-this.seletedDateofEmployment = data.dateOfEmployment.toString();
+
+    this.selectedGender = data.gender ? data.gender.name : null;
+    this.selectedRace = data.race ? data.race.name : null;
+    this.selectedLanguage = data.language ? data.language.name : null;
+    this.seletedDateofEmployment = data.dateOfEmployment ? data.dateOfEmployment.toString() : null;
+
     return contactInfo;
   }
 }
