@@ -19,7 +19,11 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./quick-capture-list.component.css']
 })
 export class QuickCaptureListComponent implements OnInit {
+  // @Input() activeStep: number;
+  // @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
 
+  @Input() applnPeriodId: number;
+  @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
 
   @Input() newlySavedApplicationId: number;
   @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
@@ -113,24 +117,6 @@ export class QuickCaptureListComponent implements OnInit {
 
   } as IFundingApplicationDetails;
 
-  // quickCaptureDetails: IQuickCaptureDetails = {
-  //   fundingApplicationDetails: {
-  //     applicationDetails: {
-  //       fundAppSDADetail: {
-  //         districtCouncil: {} as IDistrictCouncil,
-  //         localMunicipality: {} as ILocalMunicipality,
-  //         regions: [],
-  //         serviceDeliveryAreas: [],
-  //       } as IFundAppSDADetail,
-  //     } as IApplicationDetails,   
-  
-  //     financialMatters: [],
-  //     implementations: [],
-  
-  //   } as IFundingApplicationDetails,
-  //   npo:{}  as INpo,
-
-  // } as IQuickCaptureDetails;  
 
   constructor(
     private _router: Router,

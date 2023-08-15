@@ -16,11 +16,11 @@
     [(activeStep)]="activeStep"
             [(applnPeriodId)]="applnPeriodId" [application]="application">
     </app-qc-application-periods>
-    <app-qc-application-details *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor" [(activeStep)]="activeStep"
+    <app-qc-application-details-edit *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor" [(activeStep)]="activeStep"
             [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails"
             [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" (getPlace)="places($event)"
             (getSubPlace)=" subPlaces($event)">
-    </app-qc-application-details>
+    </app-qc-application-details-edit>
     <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument" [(activeStep)]="activeStep"
             [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails">
     </app-qc-document-upload>
