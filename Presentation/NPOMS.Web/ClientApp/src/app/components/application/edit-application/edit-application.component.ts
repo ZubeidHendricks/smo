@@ -124,7 +124,7 @@ export class EditApplicationComponent implements OnInit {
   }
 
   getfinFund(event: FinancialMatters) {
-    console.log('event from Edit', JSON.stringify(event));
+    // console.log('event from Edit', JSON.stringify(event));
   }
 
   private loadApplication() {
@@ -214,7 +214,7 @@ export class EditApplicationComponent implements OnInit {
 
   private loadDocumentTypes() {
 
-    this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.selectedApplicationId), false).subscribe(
+    this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.id), false).subscribe(
       (results) => {
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp && x.isCompulsory === true);
 
@@ -302,6 +302,7 @@ export class EditApplicationComponent implements OnInit {
 
   private bidForm(status: StatusEnum) {
     this.application.status = null;
+    console.log('fundingApplicationDetails', this.fundingApplicationDetails);
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;

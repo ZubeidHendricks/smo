@@ -143,6 +143,9 @@ export class EditProfileComponent implements OnInit {
   staffCategories: IStaffCategory[];
   staffMemberProfiles: IStaffMemberProfile[];
 
+  organisationCols: any[];
+  organisations: INpo[] = [];
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -189,14 +192,8 @@ export class EditProfileComponent implements OnInit {
     });
 
     this.stateOptions = [
-      {
-        label: 'Yes',
-        value: true
-      },
-      {
-        label: 'No',
-        value: false
-      }
+      { label: 'Yes', value: true },
+      { label: 'No', value: false }
     ];
 
     this.facilityInfoCols = [
@@ -241,6 +238,13 @@ export class EditProfileComponent implements OnInit {
       { header: 'Address', width: '23%' },
       { header: 'Telephone Number', width: '10%' },
       { header: 'Email Address', width: '25%' }
+    ];
+
+    this.organisationCols = [
+      { header: 'Name', width: '50%' },
+      { header: 'Organisation Type', width: '15%' },
+      { header: 'Registration Status', width: '15%' },
+      { header: 'Year Registered', width: '15%' }
     ];
   }
 
