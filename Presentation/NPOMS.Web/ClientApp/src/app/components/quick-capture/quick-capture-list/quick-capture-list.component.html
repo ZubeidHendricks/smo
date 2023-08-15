@@ -35,14 +35,14 @@
             [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
             (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
         </app-qc-application-details>         
-        <!-- <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
+        <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
             [(activeStep)]="activeStep" [application]="application"         [(newlySavedApplicationId)]="newlySavedApplicationId"
             [(applnPeriodId)]="applnPeriodId" 
             [(fundingApplicationDetails)]="fundingApplicationDetails" >
-        </app-qc-document-upload> -->
-        <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
+        </app-qc-document-upload>
+        <!-- <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
         [(activeStep)]="activeStep" [application]="application"
-        [(fundingApplicationDetails)]="fundingApplicationDetails"></app-qc-document-upload>
+        [(fundingApplicationDetails)]="fundingApplicationDetails"></app-qc-document-upload> -->
     </div>      
 
 </p-panel>

@@ -203,9 +203,9 @@ export class QcApplicationDetailsComponent implements OnInit {
         if (results != null) {
           this.application = results;
           this._bidService.getApplicationBiId(results.id).subscribe(response => {
-            if (response.id != null) {
+            //if (response.id != null) {
               this.getFundingApplicationDetails(response);
-            }
+            //}
           });
         }
         this._spinner.hide();
@@ -223,35 +223,58 @@ export class QcApplicationDetailsComponent implements OnInit {
 
   }
 
+  // private getBidFullObject(data) {
+  //   this.fundingApplicationDetails = data;
+  //   this.fundingApplicationDetails.id = data.id;
+  //   this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
+  //   this.fundingApplicationDetails.implementations = data.implementations;
+  //   if (this.fundingApplicationDetails.projectInformation != null) {
+  //     this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
+  //   }
+  //   else {
+  //     this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
+  //   }
+
+  //   if (this.fundingApplicationDetails.monitoringEvaluation != null) {
+  //     this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
+
+  //   }
+  //   else {
+  //     this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
+  //   }
+  //   this.fundingApplicationDetails.financialMatters = data.financialMatters;
+  //   this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
+
+  //   this.fundingApplicationDetails.implementations?.forEach(c => {
+
+  //     let a = new Date(c.timeframeFrom);
+  //     c.timeframe?.push(new Date(c.timeframeTo));
+  //     c.timeframe?.push(new Date(c.timeframeFrom))
+  //   });
+
+  // }
+
   private getBidFullObject(data) {
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
-    this.fundingApplicationDetails.implementations = data.implementations;
-    if (this.fundingApplicationDetails.projectInformation != null) {
-      this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
-    }
-    else {
-      this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
-    }
 
-    if (this.fundingApplicationDetails.monitoringEvaluation != null) {
-      this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
-
-    }
-    else {
-      this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
-    }
-    this.fundingApplicationDetails.financialMatters = data.financialMatters;
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
 
-    this.fundingApplicationDetails.implementations?.forEach(c => {
+    this.allDropdownsLoaded();
+    //alert(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail );
 
-      let a = new Date(c.timeframeFrom);
-      c.timeframe?.push(new Date(c.timeframeTo));
-      c.timeframe?.push(new Date(c.timeframeFrom))
-    });
+    //     this.selectedDistrictCouncilName =data.applicationDetails.fundAppSDADetail.districtCouncil.name;
+    //     this.selectedLocalMunicipalityName =this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality.name;
 
+    //     this.selectedRegionName =this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions[0].name;
+    //     this.selectedSdasName =this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[0].name;
+    // console.log('this.selectedDistrictCouncilName',this.selectedDistrictCouncil);
+    // console.log('this.selectedDistrictCouncilName',this.selectedLocalMunicipality);
+
+    // console.log('this.selectedDistrictCouncilName',this.selectedRegions);
+
+    // console.log('this.selectedDistrictCouncilName',this.selectedSdas);
   }
 
 
