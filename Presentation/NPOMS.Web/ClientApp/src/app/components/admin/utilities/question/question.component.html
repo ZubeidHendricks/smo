@@ -53,10 +53,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer" *ngIf="hasWeighting(QuestionCategoryEnum.PreEvaluation)">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('PreAdjudication')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.PreAdjudication)}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('PreAdjudication')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>
@@ -105,10 +105,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer" *ngIf="hasWeighting(QuestionCategoryEnum.PreAdjudication)">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('Adjudication')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.Adjudication)}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('Adjudication')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>
@@ -157,10 +157,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer" *ngIf="hasWeighting(QuestionCategoryEnum.Evaluation)">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('Evaluation')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.Evaluation)}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('Evaluation')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>
@@ -209,10 +209,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('Approval')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.Approval)}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('Approval')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>

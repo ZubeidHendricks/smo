@@ -238,8 +238,9 @@ export class QuestionComponent implements OnInit {
     this._router.navigateByUrl('admin/utilities');
   }
 
-  public hasWeighting(questionCategoryId: QuestionCategoryEnum) {
-    let questions = this.entities.filter(x => x.questionSection.questionCategoryId === questionCategoryId);
+  public hasWeighting(questionCategory: string) {
+    let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategory);
+    let questions = this.entities.filter(x => x.questionSection.questionCategoryId === id[0].id);
     return questions.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score });
   }
 
@@ -257,17 +258,9 @@ export class QuestionComponent implements OnInit {
     
     this._dropdownService.getEntities(DropdownTypeEnum.QuestionCategory, true).subscribe(
       (results) => {
-        this.QuestionCategoryentities  = results;
-       // this.QuestionCategoryentities.filter(x => x.name === "PreAdjudication");
-        //console.log("id" + id[0].id);
-       
+        this.QuestionCategoryentities  = results;       
       },
     );
-  }
-  public getPreAdjudicationQuestions() {
-    
-    return this.entities.filter(x => x.questionSection.questionCategoryId === 14);
-    
   }
 
   public getQuestions(questionCategory: string) {
@@ -277,10 +270,10 @@ export class QuestionComponent implements OnInit {
     return this.entities.filter(x => x.questionSection.questionCategoryId === id[0].id);
   }
 
-  public getWeightingTotal(questionCategoryId: QuestionCategoryEnum) {
+  public getWeightingTotal(questionCategory: string) {
     let totalWeighting = 0;
-
-    let questions = this.entities.filter(x => x.questionSection.questionCategoryId === questionCategoryId);
+    let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategory);
+    let questions = this.entities.filter(x => x.questionSection.questionCategoryId === id[0].id);
     questions.forEach(item => {
       totalWeighting += item.questionProperty.weighting;
     });
