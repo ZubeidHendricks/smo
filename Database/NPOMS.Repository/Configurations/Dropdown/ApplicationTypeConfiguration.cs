@@ -24,8 +24,14 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Id = 2,
 					Name = "Service Provision",
 					SystemName = "SP"
-				}
-			);
+				},
+                new ApplicationType
+                {
+                    Id = 3,
+                    Name = "Quick Capture",
+                    SystemName = "QC"
+                }
+            );
 		}
 	}
 }

@@ -103,8 +103,12 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
         this.loadNpos();
         this.loadApplicationPeriods();
-        this.autoCreateApplication();
+        //this.autoCreateApplication();
       }
+      console.log('Ng- onInit- application Period screeen', this.newlySavedApplicationId);
+      console.log(' Ng- onInit- application Period screeen', this.applnPeriodId);
+
+
     });
 
     this.cols = [
@@ -145,33 +149,49 @@ export class QcApplicationPeriodsComponent implements OnInit {
     this.activeStepChange.emit(this.activeStep);
     this.newlySavedNpoIdChange.emit(this.activeStep);
 
-    this.autoCreateApplication();
+    console.log(' From next Page click', this.applicationPeriodId);
+
+    //this.autoCreateApplication();
     this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
 
   }
 
   private autoCreateApplication() {
+    debugger;
+    this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
+      (applnnPeriod) => {
+        //if (applnnPeriod.applicationTypeId != null) {
+          applnnPeriod.applicationTypeId = 3;
+          this._applicationPeriodRepo.updateApplicationPeriod(applnnPeriod).subscribe();
+          alert(applnnPeriod.applicationTypeId);
+          console.log('Application Period Id- after update', applnnPeriod);
+        //}
+      });
+
     this.application.npoId = this.newlySavedNpoId;
     this.application.applicationPeriodId = this.applicationPeriodId;
+    console.log(' autoCreateApplication', this.application.applicationPeriodId);
+
     this.application.statusId = StatusEnum.New;
 
     this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
       (resp) => {
         //this._router.navigateByUrl('application/create/' + resp.id);
-
-        this.activeStep = this.activeStep + 1;
-        this.activeStepChange.emit(this.activeStep);
-        this.newlySavedNpoIdChange.emit(this.newlySavedNpoId);
-        this.applnPeriodIdChange.emit(this.applicationPeriodId);
-
         if (resp.id != null) {
           this.newlySavedApplicationId = resp.id;
           this.newlySavedApplicationIdChange.emit(this.newlySavedApplicationId);
-          this.applnPeriodId = resp.applicationPeriodId;
+          console.log('Newly Saved Application After Click Select', this.newlySavedApplicationId);
+          this.applicationPeriodId = resp.applicationPeriodId;
           //this._router.navigateByUrl('quick-captures/' + this.newlySavedApplicationId);
           // this._router.navigateByUrl('Application Period Id passing from Applications Screen to Application Details/' + this.applicationPeriodId);
 
         }
+        this.newlySavedNpoIdChange.emit(this.newlySavedNpoId);
+        this.applnPeriodIdChange.emit(this.applicationPeriodId);
+        this.activeStep = this.activeStep + 1;
+        this.activeStepChange.emit(this.activeStep);
+
+        console.log('applnPeriodIdChange-From Application Period', this.applicationPeriodId);
       },
       (err) => {
         this._loggerService.logException(err);

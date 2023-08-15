@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { PermissionsEnum, DropdownTypeEnum, AccessStatusEnum } from 'src/app/models/enums';
 import { INpo, IContactInformation, IUser, IOrganisationType, IRegistrationStatus, ITitle, IPosition, IRace, IGender, ILanguage } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
+import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -19,7 +20,8 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class EditQuickCaptureComponent implements OnInit {
 
-
+ 
+ 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -71,6 +73,7 @@ export class EditQuickCaptureComponent implements OnInit {
   NPOs: INpo[];
 
   npoId: string;
+  applicationId :string;
   paramSubcriptions: Subscription;
   isDataAvailable: boolean = false;
 
@@ -95,13 +98,16 @@ export class EditQuickCaptureComponent implements OnInit {
     private _npoRepo: NpoService,
     private _activeRouter: ActivatedRoute,
     private _loggerService: LoggerService,
+    private _applicationRepo: ApplicationService,
     private _addressLookupService: AddressLookupService
   ) { }
 
   ngOnInit(): void {
     this._spinner.show();
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      this.npoId = params.get('id');
+      //this.npoId = params.get('id');
+      this.applicationId = params.get('id');
+      console.log('ApplicationId From Edit -Org',this.applicationId);
     });
 
     this._authService.profile$.subscribe(profile => {
@@ -268,23 +274,47 @@ export class EditQuickCaptureComponent implements OnInit {
       }
     );
   }
-
   private loadNpo() {
-    if (this.npoId != null) {
-      this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
-        (results) => {
-          this.selectedOrganisationType = results.organisationType;
-          this.selectedRegistrationStatus = results.registrationStatus;
-          this.npo = results;
-          this.isDataAvailable = true;
-          this._spinner.hide();
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
+    this._applicationRepo.getApplicationById(Number(this.applicationId)).subscribe(
+      (results) => {
+        if (results != null) {
+         this.npoId = results.npoId.toString();
+         console.log('this.npoId From Edit Org',this.npoId);
+         this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
+          (resultsNpo) => {
+            this.selectedOrganisationType = resultsNpo.organisationType;
+            this.selectedRegistrationStatus = resultsNpo.registrationStatus;
+            this.npo = resultsNpo;
+            this.isDataAvailable = true;
+            this._spinner.hide();
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        ); 
         }
-      );
-    }
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );    
+
+    // this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
+    //   (resultsNpo) => {
+    //     this.selectedOrganisationType = resultsNpo.organisationType;
+    //     this.selectedRegistrationStatus = resultsNpo.registrationStatus;
+    //     this.npo = resultsNpo;
+    //     this.isDataAvailable = true;
+    //     this._spinner.hide();
+    //   },
+    //   (err) => {
+    //     this._loggerService.logException(err);
+    //     this._spinner.hide();
+    //   }
+    // ); 
   }
 
   private formValidate() {
