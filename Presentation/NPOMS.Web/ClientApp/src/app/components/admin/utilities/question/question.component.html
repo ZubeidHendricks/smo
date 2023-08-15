@@ -9,8 +9,10 @@
     <div *ngIf="entities">
         <div class="heading">
             <span><b>Pre Adjudication</b></span>
-        </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.PreAdjudication)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        </div> <!-- getQuestions(QuestionCategoryEnum.PreAdjudication)  -->
+        <p-table styleClass="p-datatable-striped" [rowHover]="true"
+         [value]="getQuestions('PreAdjudication')"        
+         sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
@@ -51,10 +53,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer" *ngIf="hasWeighting(QuestionCategoryEnum.PreEvaluation)">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('PreAdjudication')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.PreAdjudication)}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('PreAdjudication')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>
@@ -62,7 +64,7 @@
         <div class="heading">
             <span><b>Adjudication</b></span>
         </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.Adjudication)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('Adjudication')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
@@ -103,10 +105,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer" *ngIf="hasWeighting(QuestionCategoryEnum.PreAdjudication)">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('Adjudication')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.Adjudication)}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('Adjudication')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>
@@ -114,7 +116,7 @@
         <div class="heading">
             <span><b>Evaluation</b></span>
         </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.Evaluation)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('Evaluation')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
@@ -155,10 +157,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer" *ngIf="hasWeighting(QuestionCategoryEnum.Evaluation)">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('Evaluation')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.Evaluation)}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('Evaluation')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>
@@ -166,7 +168,7 @@
         <div class="heading">
             <span><b>Approval</b></span>
         </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.Approval)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('Approval')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
@@ -207,10 +209,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('Approval')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal(QuestionCategoryEnum.Approval)}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('Approval')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>
