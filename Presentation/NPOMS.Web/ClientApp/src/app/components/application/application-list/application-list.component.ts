@@ -354,7 +354,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Funding Application');
       this.buttonItemExists('Download Application', 'Funding Application');
       this.buttonItemExists('View Application', 'Funding Application');
-      this.buttonItemExists('Edit QC', 'Funding Application');
+      this.buttonItemExists('Edit QC', 'Quick Capture');
 
 
       switch (this.selectedApplication.statusId) {
@@ -412,7 +412,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Service Provision');
       this.buttonItemExists('Upload SLA', 'Service Provision');
       this.buttonItemExists('View Application', 'Service Provision');
-      this.buttonItemExists('Edit Application', 'Funding Application');
+      this.buttonItemExists('Edit QC', 'Quick Capture');
 
 
       switch (this.selectedApplication.statusId) {
