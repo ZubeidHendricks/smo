@@ -70,7 +70,6 @@ export class QuickCaptureEditListComponent implements OnInit {
   placeAll: IPlace[] = [];
 
   // funding dropdowns
-  // funding dropdowns
   districtCouncils: IDistrictCouncil[] = [];
   localMunicipalitiesAll: ILocalMunicipality[] = [];
   localMunicipalities: ILocalMunicipality[] = [];
@@ -112,24 +111,7 @@ export class QuickCaptureEditListComponent implements OnInit {
 
   } as IFundingApplicationDetails;
 
-  quickCaptureDetails: IQuickCaptureDetails = {
-    fundingApplicationDetails: {
-      applicationDetails: {
-        fundAppSDADetail: {
-          districtCouncil: {} as IDistrictCouncil,
-          localMunicipality: {} as ILocalMunicipality,
-          regions: [],
-          serviceDeliveryAreas: [],
-        } as IFundAppSDADetail,
-      } as IApplicationDetails,
 
-      financialMatters: [],
-      implementations: [],
-
-    } as IFundingApplicationDetails,
-    npo: {} as INpo,
-
-  } as IQuickCaptureDetails;
 
   constructor(
     private _router: Router,

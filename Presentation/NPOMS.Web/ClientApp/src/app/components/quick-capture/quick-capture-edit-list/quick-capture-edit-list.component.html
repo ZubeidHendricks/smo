@@ -21,11 +21,9 @@
             [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" (getPlace)="places($event)"
             (getSubPlace)=" subPlaces($event)">
     </app-qc-application-details-edit>
-    <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument" [(activeStep)]="activeStep"
-            [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails">
-    </app-qc-document-upload>
-    <!-- <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument"
-    [(activeStep)]="activeStep" [application]="application"
-    [(fundingApplicationDetails)]="fundingApplicationDetails"></app-document-upload> -->
+    <app-qc-document-upload-edit *ngIf="activeStep == QCStepsEnum.ApplicationDocument" [(activeStep)]="activeStep"
+    [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails">
+    </app-qc-document-upload-edit>
+
     </div>
 </p-panel>

@@ -1,13 +1,13 @@
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Table } from 'exceljs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Message, MenuItem, ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { PermissionsEnum, StatusEnum, DropdownTypeEnum, DocumentUploadLocationsEnum, EntityTypeEnum, EntityEnum } from 'src/app/models/enums';
-import { IFundingApplicationDetails, IApplication, IUser, IDocumentStore, IDocumentType, IProjectInformation, IMonitoringAndEvaluation } from 'src/app/models/interfaces';
+import { IFundingApplicationDetails, IApplication, IUser, IDocumentStore, IDocumentType } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -17,17 +17,11 @@ import { EnvironmentUrlService } from 'src/app/services/environment-url/environm
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-qc-document-upload',
-  templateUrl: './qc-document-upload.component.html',
-  styleUrls: ['./qc-document-upload.component.css']
+  selector: 'app-qc-document-upload-edit',
+  templateUrl: './qc-document-upload-edit.component.html',
+  styleUrls: ['./qc-document-upload-edit.component.css']
 })
-export class QcDocumentUploadComponent implements OnInit {
-
-  @Input() newlySavedApplicationId: number;
-  @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
-
-  @Input() applnPeriodId: number;
-  @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
+export class QcDocumentUploadEditComponent implements OnInit {
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -43,7 +37,7 @@ export class QcDocumentUploadComponent implements OnInit {
   acutalGrid: string;
   downloadButtonColor: string;
   uploadButtonDisabled: boolean = false;
-
+  selectClass: string = "non-mandatory-content";
   // Document upload element
   @ViewChild('addDoc') element: ElementRef;
 
@@ -98,17 +92,20 @@ export class QcDocumentUploadComponent implements OnInit {
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
     private _bidService: BidService,
-    private _router: Router
   ) { }
 
   ngOnInit(): void {
-    this.loadfundingDropdowns();
+
     this._spinner.show();
 
     this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
     });
-    console.log('this.selectedApplicationId ',this.selectedApplicationId );
+
+    console.log('Selected Application Id from document page',this.selectedApplicationId );
+    console.log('Selected fundingApplicationDetails id  from document page',this.fundingApplicationDetails.id );
+
+    
     this._authService.profile$.subscribe(x => {
 
       if (x) {
@@ -150,6 +147,7 @@ export class QcDocumentUploadComponent implements OnInit {
     this.loadDocumentTypes();
     this.loadApplication();
   }
+
   private loadApplication() {
     debugger;
     this._spinner.show();
@@ -157,10 +155,12 @@ export class QcDocumentUploadComponent implements OnInit {
       (results) => {
         if (results != null) {
           this.application = results;
-          this._bidService.getApplicationBiId(results.id).subscribe(response => {
-            if (response.id != null) {
+          alert(results.id);
+                 this._bidService.getApplicationBiId(results.id).subscribe(response => {
+          
               this.getFundingApplicationDetails(response);
-            }
+ 
+           
           });
         }
         this._spinner.hide();
@@ -168,7 +168,10 @@ export class QcDocumentUploadComponent implements OnInit {
       (err) => this._spinner.hide()
     );
   }
+  
+  
   private getFundingApplicationDetails(data) {
+    alert(data)
     this._bidService.getBid(data.id).subscribe(response => {
 
       this.getBidFullObject(response)
@@ -180,93 +183,8 @@ export class QcDocumentUploadComponent implements OnInit {
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
-    this.fundingApplicationDetails.implementations = data.implementations;
-    if (this.fundingApplicationDetails.projectInformation != null) {
-      this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
-    }
-    else {
-      this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
-    }
-
-    if (this.fundingApplicationDetails.monitoringEvaluation != null) {
-      this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
-
-    }
-    else {
-      this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
-    }
-    this.fundingApplicationDetails.financialMatters = data.financialMatters;
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
-
-    this.fundingApplicationDetails.implementations?.forEach(c => {
-
-      let a = new Date(c.timeframeFrom);
-      c.timeframe?.push(new Date(c.timeframeTo));
-      c.timeframe?.push(new Date(c.timeframeFrom))
-    });
-
-  }
-
-  private bidForm(status: StatusEnum) {
-    this.application.status = null;
-    if (status === StatusEnum.Saved) {
-      this.application.statusId = status;
-    }
-    if (status === StatusEnum.PendingReview) {
-      this.application.statusId = status;
-    }
-    if (this.bidCanContinue(status)) {
-      this.application.statusId = status;
-      if (this.validationErrors.length == 0) {
-        this._applicationRepo.updateApplication(this.application).subscribe();
-      }
-    }
-    this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-    this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-    if (status == StatusEnum.PendingReview) {
-      this.application.status.name = "PendingReview";
-      this._router.navigateByUrl('applications');
-    }
-
-  }
-
-
-  private bidCanContinue(status: StatusEnum) {
-    this.validationErrors = [];
-    if (status === StatusEnum.PendingReview)
-      this.formValidate();
-    if (this.validationErrors.length == 0)
-      return true;
-
-    return false;
-  }
-
-
-  private formValidate() {
-    this.validationErrors = [];
-  }
-
-  private clearMessages() {
-    this.validationErrors = [];
-    this.menuActions[1].visible = false;
-  }
-  private loadfundingDropdowns() {
-    this._spinner.show();
-
-    this._applicationRepo.getApplicationById(this.newlySavedApplicationId).subscribe(
-      (results) => {
-        if (results != null) {
-          this.application = results;
-          //this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
-        }
-        this._spinner.hide();
-      },
-      (err) => this._spinner.hide()
-    );
-  }
-
-
+  }  
   onFilesUpload(event) {
 
     // Iterate over selected files
@@ -304,11 +222,21 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   private loadDocumentTypes() {
-    this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, this.newlySavedApplicationId, false).subscribe(
+
+    this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.selectedApplicationId), false).subscribe(
       (results) => {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
+
+        this.documentTypes.forEach(element => {
+          if (element.isCompulsory) {
+            if (element.isCompulsory === true)
+              this.selectClass = "mandatory-content";
+            else
+              this.selectClass = "non-mandatory-content";
+          }
+        });
       },
       (err) => {
         this._loggerService.logException(err);
@@ -331,10 +259,10 @@ export class QcDocumentUploadComponent implements OnInit {
   selectCarWithButton(plan: any) {
     this.indicatorDetailsId = Number(this.fundingApplicationDetails.id);
     this.el.nativeElement.click();
+
   }
 
   public uploadDocument(doc: any) {
-    debugger;
     this.selectedDocTypeId = doc.id;
     this.element.nativeElement.click();
   }
@@ -348,7 +276,7 @@ export class QcDocumentUploadComponent implements OnInit {
   public onUploadChange = (files) => {
     debugger;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
-    this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id),
+    this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.selectedApplicationId),
       EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
         event => {
           if (event.type === HttpEventType.UploadProgress)
@@ -422,7 +350,9 @@ export class QcDocumentUploadComponent implements OnInit {
 
         (error) => {
           console.log(error.error)
+          // this.errMessage= error.error;
           this._spinner.hide();
+          // this.display1 = true;     
         });
   }
 
@@ -439,6 +369,7 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   private getFundAppDocuments(docTypeId: number) {
+    //this.fundAppdocuments =[];
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
@@ -461,6 +392,7 @@ export class QcDocumentUploadComponent implements OnInit {
         this._documentStore.delete(doc.resourceId).subscribe(
           event => {
             //this.getDocuments();
+
             this.getFundAppDocuments(this.selectedDocTypeId);
             this._spinner.hide();
           },
@@ -475,10 +407,5 @@ export class QcDocumentUploadComponent implements OnInit {
   prevPage() {
     this.activeStep = this.activeStep - 1;
     this.activeStepChange.emit(this.activeStep);
-  }
-  nextPage() {
-    this.bidForm(StatusEnum.Saved);
-    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'File(s) Saved Successfully' });
-    this._router.navigateByUrl('applications');
   }
 }
