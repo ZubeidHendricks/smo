@@ -184,10 +184,10 @@ export class QcApplicationDetailsEditComponent implements OnInit {
         if (results != null) {
           this.application = results;
           this._bidService.getApplicationBiId(results.id).subscribe(response => { 
-            if (response.id != null) {
+           // if (response.id != null) {
               this.getFundingApplicationDetails(response);
               console.log('data.result', response);
-            }
+            //}
           });
         }
         this._spinner.hide();
@@ -197,10 +197,12 @@ export class QcApplicationDetailsEditComponent implements OnInit {
   }
 
   private getFundingApplicationDetails(data) {
+    if(data != null){
     this._bidService.getBid(data.id).subscribe(response => {
 
       this.getBidFullObject(response)
     });
+  }
 
   }
 
