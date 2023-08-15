@@ -150,22 +150,16 @@ export class QcApplicationPeriodsComponent implements OnInit {
     this.newlySavedNpoIdChange.emit(this.activeStep);
 
     console.log(' From next Page click', this.applicationPeriodId);
-
-    //this.autoCreateApplication();
     this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
 
   }
 
   private autoCreateApplication() {
-    debugger;
+
     this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
       (applnnPeriod) => {
-        //if (applnnPeriod.applicationTypeId != null) {
           applnnPeriod.applicationTypeId = 3;
           this._applicationPeriodRepo.updateApplicationPeriod(applnnPeriod).subscribe();
-          alert(applnnPeriod.applicationTypeId);
-          console.log('Application Period Id- after update', applnnPeriod);
-        //}
       });
 
     this.application.npoId = this.newlySavedNpoId;
