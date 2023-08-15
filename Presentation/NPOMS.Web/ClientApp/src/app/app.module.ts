@@ -159,7 +159,7 @@ import { ViewFinancialMattersComponent } from './components/application/applicat
 import { FundingApplicationViewComponent } from './components/application/application-steps/funding-application/funding-application-view/funding-application-view.component';
 import { WorkflowApplicationComponent } from './components/application/workflow-component/workflow-application.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
-import { QcApplicationDetailsEditComponent } from './components/application/application-steps/quick-capture/qc-application-details/qc-application-details-edit/qc-application-details-edit.component';
+import { QcApplicationDetailsEditComponent } from './components/application/application-steps/quick-capture/qc-application-details-edit/qc-application-details-edit.component';
 import { QcDocumentUploadEditComponent } from './components/application/application-steps/quick-capture/qc-document-upload-edit/qc-document-upload-edit.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 

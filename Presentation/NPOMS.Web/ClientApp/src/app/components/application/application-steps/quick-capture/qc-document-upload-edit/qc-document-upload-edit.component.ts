@@ -155,11 +155,8 @@ export class QcDocumentUploadEditComponent implements OnInit {
       (results) => {
         if (results != null) {
           this.application = results;
-          alert(results.id);
-                 this._bidService.getApplicationBiId(results.id).subscribe(response => {
-          
-              this.getFundingApplicationDetails(response);
- 
+                 this._bidService.getApplicationBiId(results.id).subscribe(response => {          
+              this.getFundingApplicationDetails(response); 
            
           });
         }
@@ -171,11 +168,13 @@ export class QcDocumentUploadEditComponent implements OnInit {
   
   
   private getFundingApplicationDetails(data) {
-    alert(data)
+    if(data != null){
+
     this._bidService.getBid(data.id).subscribe(response => {
 
       this.getBidFullObject(response)
     });
+  }
 
   }
 
@@ -371,7 +370,7 @@ export class QcDocumentUploadEditComponent implements OnInit {
   private getFundAppDocuments(docTypeId: number) {
     //this.fundAppdocuments =[];
     if (this.fundingApplicationDetails?.id != undefined) {
-      this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
+      this._documentStore.getFundApp(Number(this.selectedApplicationId), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
           this.fundAppdocuments = res;
           this._spinner.hide();
