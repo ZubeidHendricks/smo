@@ -264,7 +264,6 @@ export class QcApplicationPeriodsComponent implements OnInit {
   }
 
   onRowSelect(applicationPeriod: IApplicationPeriod) {
-    console.log('Selected Application Period', applicationPeriod);
     this.selectedApplicationPeriod = applicationPeriod;
     this.applicationPeriodId = applicationPeriod.id;
     this.selectedOption = true;

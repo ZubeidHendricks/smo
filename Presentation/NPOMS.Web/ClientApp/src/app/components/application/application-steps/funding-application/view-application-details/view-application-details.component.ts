@@ -356,9 +356,7 @@ export class ViewApplicationDetailsComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          console.log('results', results);
           this.applicationPeriodId = results.applicationPeriodId;
-          console.log('this.applicationPeriodId', this.applicationPeriodId);
           this.loadApplicationPeriodById(this.applicationPeriodId);
         } this._spinner.hide();
       },
@@ -370,8 +368,6 @@ export class ViewApplicationDetailsComponent implements OnInit {
     if (this.applicationPeriodId != null) {
       this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
         (results) => {
-          console.log(results);
-          console.log(results.financialYear);
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
@@ -400,7 +396,6 @@ export class ViewApplicationDetailsComponent implements OnInit {
           this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
             if (response.id != null) {
               this.getFundingApplicationDetails(response);
-              console.log('data.result', response);
             }
           });
         }
@@ -419,15 +414,11 @@ export class ViewApplicationDetailsComponent implements OnInit {
   }
 
   private getBidFullObject(data) {
-    debugger;
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
 
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
-
-    console.log('data.applicationDetails.fundAppSDADetail', data.applicationDetails.fundAppSDADetail);
-    console.log('this.fundingApplicationDetails.applicationDetails.fundAppSDADetail', this.fundingApplicationDetails.applicationDetails.fundAppSDADetail);
 
     this.allDropdownsLoaded();
     //alert(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail );
@@ -648,7 +639,6 @@ export class ViewApplicationDetailsComponent implements OnInit {
     // end  make sure the selected is not redundant!!
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
     this.selectedSdas = filtered;
-    console.log('onRegionChange Selected SDA', this.selectedSdas);
   }
 
 
@@ -663,7 +653,6 @@ export class ViewApplicationDetailsComponent implements OnInit {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-    console.log('onSdaChange', this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
 
     let count = 0;
     if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 
