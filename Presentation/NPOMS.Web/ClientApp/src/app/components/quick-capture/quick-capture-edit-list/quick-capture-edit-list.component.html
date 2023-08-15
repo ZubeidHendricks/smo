@@ -24,5 +24,8 @@
     <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument" [(activeStep)]="activeStep"
             [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails">
     </app-qc-document-upload>
+    <!-- <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument"
+    [(activeStep)]="activeStep" [application]="application"
+    [(fundingApplicationDetails)]="fundingApplicationDetails"></app-document-upload> -->
     </div>
 </p-panel>
