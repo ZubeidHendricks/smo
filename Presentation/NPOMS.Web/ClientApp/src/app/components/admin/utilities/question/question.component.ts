@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MessageService } from 'primeng/api';
 import { DropdownTypeEnum, PermissionsEnum, QuestionCategoryEnum, ResponseTypeEnum } from 'src/app/models/enums';
-import { IQuestion, IQuestionProperty, IQuestionSection, IResponseType, IUser } from 'src/app/models/interfaces';
+import { IQuestion, IQuestionCategory, IQuestionProperty, IQuestionSection, IResponseType, IUser } from 'src/app/models/interfaces';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -46,7 +46,7 @@ export class QuestionComponent implements OnInit {
   responseTypes: IResponseType[];
   filteredResponseTypes: IResponseType[];
   selectedResponseType: IResponseType;
-
+  QuestionCategoryentities: IQuestionCategory[];
   entities: IQuestion[];
   entity: IQuestion = {} as IQuestion;
 
@@ -74,6 +74,8 @@ export class QuestionComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.loadQuestionSections();
+        this.getQuestionCategory();
+      //  this.getPreAdjudicationQuestions();
       }
     });
 
@@ -241,10 +243,38 @@ export class QuestionComponent implements OnInit {
     return questions.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score });
   }
 
+  public loadQuestionCategory()
+  {
+  this._dropdownService.getEntities(DropdownTypeEnum.QuestionCategory, true).subscribe(
+    (results) => {
+      this.entities = results;
+    },
+  );
+  }
 
+  public getQuestionCategory()
+  {
+    
+    this._dropdownService.getEntities(DropdownTypeEnum.QuestionCategory, true).subscribe(
+      (results) => {
+        this.QuestionCategoryentities  = results;
+       // this.QuestionCategoryentities.filter(x => x.name === "PreAdjudication");
+        //console.log("id" + id[0].id);
+       
+      },
+    );
+  }
+  public getPreAdjudicationQuestions() {
+    
+    return this.entities.filter(x => x.questionSection.questionCategoryId === 14);
+    
+  }
 
-  public getQuestions(questionCategoryId: QuestionCategoryEnum) {
-    return this.entities.filter(x => x.questionSection.questionCategoryId === questionCategoryId);
+  public getQuestions(questionCategory: string) {
+ 
+    let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategory);
+
+    return this.entities.filter(x => x.questionSection.questionCategoryId === id[0].id);
   }
 
   public getWeightingTotal(questionCategoryId: QuestionCategoryEnum) {

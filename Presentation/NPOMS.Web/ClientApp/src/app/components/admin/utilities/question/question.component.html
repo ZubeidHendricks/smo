@@ -9,8 +9,10 @@
     <div *ngIf="entities">
         <div class="heading">
             <span><b>Pre Adjudication</b></span>
-        </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.PreAdjudication)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        </div> <!-- getQuestions(QuestionCategoryEnum.PreAdjudication)  -->
+        <p-table styleClass="p-datatable-striped" [rowHover]="true"
+         [value]="getQuestions('PreAdjudication')"        
+         sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
@@ -62,7 +64,7 @@
         <div class="heading">
             <span><b>Adjudication</b></span>
         </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.Adjudication)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('Adjudication')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
@@ -114,7 +116,7 @@
         <div class="heading">
             <span><b>Evaluation</b></span>
         </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.Evaluation)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('Evaluation')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
@@ -166,7 +168,7 @@
         <div class="heading">
             <span><b>Approval</b></span>
         </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions(QuestionCategoryEnum.Approval)" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('Approval')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
