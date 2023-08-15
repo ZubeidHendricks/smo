@@ -157,7 +157,7 @@ import { ViewFundingApplicationComponent } from './components/application/applic
 import { ViewMonitoringEvaluationComponent } from './components/application/application-steps/funding-application/view-monitoring-evaluation/view-monitoring-evaluation.component';
 import { ViewFinancialMattersComponent } from './components/application/application-steps/funding-application/view-financial-matters/view-financial-matters.component';
 import { FundingApplicationViewComponent } from './components/application/application-steps/funding-application/funding-application-view/funding-application-view.component';
-import { WorkflowApplicationComponent } from './components/application/workflow-application/workflow-application.component';
+import { WorkflowApplicationComponent } from './components/application/workflow-component/workflow-application.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 import { QcApplicationDetailsEditComponent } from './components/application/application-steps/quick-capture/qc-application-details/qc-application-details-edit/qc-application-details-edit.component';
 import { QcDocumentUploadEditComponent } from './components/application/application-steps/quick-capture/qc-document-upload-edit/qc-document-upload-edit.component';

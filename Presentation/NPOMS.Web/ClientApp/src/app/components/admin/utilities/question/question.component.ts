@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MessageService } from 'primeng/api';
 import { DropdownTypeEnum, PermissionsEnum, QuestionCategoryEnum, ResponseTypeEnum } from 'src/app/models/enums';
-import { IQuestion, IQuestionProperty, IQuestionSection, IResponseType, IUser } from 'src/app/models/interfaces';
+import { IQuestion, IQuestionCategory, IQuestionProperty, IQuestionSection, IResponseType, IUser } from 'src/app/models/interfaces';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -46,7 +46,7 @@ export class QuestionComponent implements OnInit {
   responseTypes: IResponseType[];
   filteredResponseTypes: IResponseType[];
   selectedResponseType: IResponseType;
-
+  QuestionCategoryentities: IQuestionCategory[];
   entities: IQuestion[];
   entity: IQuestion = {} as IQuestion;
 
@@ -74,6 +74,8 @@ export class QuestionComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.loadQuestionSections();
+        this.getQuestionCategory();
+      //  this.getPreAdjudicationQuestions();
       }
     });
 
@@ -236,21 +238,42 @@ export class QuestionComponent implements OnInit {
     this._router.navigateByUrl('admin/utilities');
   }
 
-  public hasWeighting(questionCategoryId: QuestionCategoryEnum) {
-    let questions = this.entities.filter(x => x.questionSection.questionCategoryId === questionCategoryId);
+  public hasWeighting(questionCategory: string) {
+    let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategory);
+    let questions = this.entities.filter(x => x.questionSection.questionCategoryId === id[0].id);
     return questions.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score });
   }
 
-
-
-  public getQuestions(questionCategoryId: QuestionCategoryEnum) {
-    return this.entities.filter(x => x.questionSection.questionCategoryId === questionCategoryId);
+  public loadQuestionCategory()
+  {
+  this._dropdownService.getEntities(DropdownTypeEnum.QuestionCategory, true).subscribe(
+    (results) => {
+      this.entities = results;
+    },
+  );
   }
 
-  public getWeightingTotal(questionCategoryId: QuestionCategoryEnum) {
-    let totalWeighting = 0;
+  public getQuestionCategory()
+  {
+    
+    this._dropdownService.getEntities(DropdownTypeEnum.QuestionCategory, true).subscribe(
+      (results) => {
+        this.QuestionCategoryentities  = results;       
+      },
+    );
+  }
 
-    let questions = this.entities.filter(x => x.questionSection.questionCategoryId === questionCategoryId);
+  public getQuestions(questionCategory: string) {
+ 
+    let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategory);
+
+    return this.entities.filter(x => x.questionSection.questionCategoryId === id[0].id);
+  }
+
+  public getWeightingTotal(questionCategory: string) {
+    let totalWeighting = 0;
+    let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategory);
+    let questions = this.entities.filter(x => x.questionSection.questionCategoryId === id[0].id);
     questions.forEach(item => {
       totalWeighting += item.questionProperty.weighting;
     });
