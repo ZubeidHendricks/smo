@@ -23,27 +23,21 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class QcDocumentUploadComponent implements OnInit {
 
-  @Input() newlySavedApplicationId: number;
-  @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
-
-  @Input() applnPeriodId: number;
-  @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
-
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
   }
-  @ViewChild('fileAdDoc') el: ElementRef;
+  @ViewChild('fileAdDoc') el:ElementRef;
 
-
+  
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
   acutalGrid: string;
   downloadButtonColor: string;
   uploadButtonDisabled: boolean = false;
-
+  selectClass: string = "non-mandatory-content";
   // Document upload element
   @ViewChild('addDoc') element: ElementRef;
 
@@ -56,19 +50,19 @@ export class QcDocumentUploadComponent implements OnInit {
   @Input() activeStep: number;
   @Input() fundingApplicationDetails: IFundingApplicationDetails;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
-  application: IApplication;
+  @Input() application: IApplication;
 
   profile: IUser;
   documents: IDocumentStore[] = [];
   fundAppdocuments: IDocumentStore[] = [];
   documentCols: any[];
-  uploadedFileCols: any[];
+  uploadedFileCols:any[];
   documentTypeCols: any[];
   documentTypes: IDocumentType[] = [];
   compulsoryDocuments: IDocumentType[] = [];
   nonCompulsoryDocuments: IDocumentType[] = [];
-  docTypeNames: any[];
-  documentTypeName: string;
+  docTypeNames : any[];
+  documentTypeName : string;
 
   validationErrors: Message[];
   menuActions: MenuItem[];
@@ -78,10 +72,10 @@ export class QcDocumentUploadComponent implements OnInit {
   selectedDocTypeId: number;
   selectedDocumentType: IDocumentType;
   userId: number;
-  _profile: IUser;
-  list: any[];
-  selectedFile: any;
-  selectedFilename: string;
+  _profile:IUser;
+  list : any[];
+  selectedFile :any;
+  selectedFilename :string;
 
   selectedApplicationId: string;
   constructor(
@@ -94,32 +88,29 @@ export class QcDocumentUploadComponent implements OnInit {
     private http: HttpClient,
     private fb: FormBuilder,
     private envUrl: EnvironmentUrlService,
-    private _authService: AuthService,
-    private _activeRouter: ActivatedRoute,
-    private _applicationRepo: ApplicationService,
-    private _bidService: BidService,
-    private _router: Router
+    private _authService: AuthService,  
+    private _activeRouter: ActivatedRoute  
   ) { }
 
   ngOnInit(): void {
-    this.loadfundingDropdowns();
+
     this._spinner.show();
 
-    this._activeRouter.paramMap.subscribe(params => {
+     this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
     });
-    this._authService.profile$.subscribe(x => {
+    this._authService.profile$.subscribe(x=>{
 
-      if (x) {
-        this._profile = x;
-        this.userId = x.id;
-      }
-    });
+      if(x)
+      {
+          this._profile = x;
+          this.userId = x.id;
+      }});
 
-    this._spinner.hide();
+       this._spinner.hide();
     this.documentCols = [
       { header: 'Id', width: '5%' },
-      { field: 'name', header: 'Document Type', width: '35%' },
+      {  field: 'name', header: 'Document Type', width: '35%' },
       { header: 'Document Name', width: '45%' },
       // { header: 'Size', width: '10%' },
       // { header: 'Uploaded Date', width: '10%' },
@@ -139,145 +130,30 @@ export class QcDocumentUploadComponent implements OnInit {
       { header: 'Document Type Description', width: '75%' }
     ];
 
-    this.docTypeNames = [
-      { name: 'Type1' },
-      { name: 'Type2' },
-      { name: 'Type3' },
-      { name: 'Type4' },
-      { name: 'Type5' }
-    ];
+    this.docTypeNames =[
+      {name:'Type1'},
+      {name:'Type2'},
+      {name:'Type3'},
+      {name:'Type4'},
+      {name:'Type5'}  
+  ];
     this.loadDocumentTypes();
-    this.loadApplication();
   }
-  private loadApplication() {
-    this._spinner.show();
-    this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
-      (results) => {
-        if (results != null) {
-          this.application = results;
-          this._bidService.getApplicationBiId(results.id).subscribe(response => {
-            if (response.id != null) {
-              this.getFundingApplicationDetails(response);
-            }
-          });
-        }
-        this._spinner.hide();
-      },
-      (err) => this._spinner.hide()
-    );
-  }
-  private getFundingApplicationDetails(data) {
-    this._bidService.getBid(data.id).subscribe(response => {
-
-      this.getBidFullObject(response)
-    });
-
-  }
-
-  private getBidFullObject(data) {
-    this.fundingApplicationDetails = data;
-    this.fundingApplicationDetails.id = data.id;
-    this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
-    this.fundingApplicationDetails.implementations = data.implementations;
-    if (this.fundingApplicationDetails.projectInformation != null) {
-      this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
-    }
-    else {
-      this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
-    }
-
-    if (this.fundingApplicationDetails.monitoringEvaluation != null) {
-      this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
-
-    }
-    else {
-      this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
-    }
-    this.fundingApplicationDetails.financialMatters = data.financialMatters;
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
-
-    this.fundingApplicationDetails.implementations?.forEach(c => {
-
-      let a = new Date(c.timeframeFrom);
-      c.timeframe?.push(new Date(c.timeframeTo));
-      c.timeframe?.push(new Date(c.timeframeFrom))
-    });
-
-  }
-
-  private bidForm(status: StatusEnum) {
-    this.application.status = null;
-    if (status === StatusEnum.Saved) {
-      this.application.statusId = status;
-    }
-    if (status === StatusEnum.PendingReview) {
-      this.application.statusId = status;
-    }
-    if (this.bidCanContinue(status)) {
-      this.application.statusId = status;
-      if (this.validationErrors.length == 0) {
-        this._applicationRepo.updateApplication(this.application).subscribe();
-      }
-    }
-    this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-    this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-    if (status == StatusEnum.PendingReview) {
-      this.application.status.name = "PendingReview";
-      this._router.navigateByUrl('applications');
-    }
-
-  }
-
-
-  private bidCanContinue(status: StatusEnum) {
-    this.validationErrors = [];
-    if (status === StatusEnum.PendingReview)
-      this.formValidate();
-    if (this.validationErrors.length == 0)
-      return true;
-
-    return false;
-  }
-
-
-  private formValidate() {
-    this.validationErrors = [];
-  }
-
-  private clearMessages() {
-    this.validationErrors = [];
-    this.menuActions[1].visible = false;
-  }
-  private loadfundingDropdowns() {
-    this._spinner.show();
-
-    this._applicationRepo.getApplicationById(this.newlySavedApplicationId).subscribe(
-      (results) => {
-        if (results != null) {
-          this.application = results;
-          //this.fundingApplicationDetails.applicationPeriodId = this.application?.applicationPeriodId;
-        }
-        this._spinner.hide();
-      },
-      (err) => this._spinner.hide()
-    );
-  }
-
-
-  onFilesUpload(event) {
+  onFilesUpload(event){
 
     // Iterate over selected files
-    for (let file of event.target.files) {
+    for( let file of event.target.files ) {
+      
+        // Append to a list
+        this.list.push({
+            name : file.name,
+            type : file.type
+            // Other specs
+        });
 
-      // Append to a list
-      this.list.push({
-        name: file.name,
-        type: file.type
-        // Other specs
-      });
+console.log('this.list',this.list);        
     }
-  }
+}
   readonly(): boolean {
 
     if (this.application.statusId == StatusEnum.PendingReview ||
@@ -292,21 +168,33 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   onRowSelect(event) {
+    debugger;
     if (event.files[0]) {
-      this.selectedDocTypeId =
-        event.files[0].documentType.id;
+      this.selectedDocTypeId =      
+      event.files[0].documentType.id;
     }
     else {
       this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please specify the document type.' });
-    }
+    }    
   }
 
   private loadDocumentTypes() {
-    this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, this.newlySavedApplicationId, false).subscribe(
+
+    this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.selectedApplicationId), false).subscribe(
       (results) => {
         this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
+
+        this.documentTypes.forEach(element => {
+         if(element.isCompulsory)
+         {
+          if(element.isCompulsory === true)
+          this.selectClass = "mandatory-content";
+          else
+          this.selectClass = "non-mandatory-content";
+         }
+        });
       },
       (err) => {
         this._loggerService.logException(err);
@@ -327,46 +215,58 @@ export class QcDocumentUploadComponent implements OnInit {
     });
   }
   selectCarWithButton(plan: any) {
-    this.indicatorDetailsId = Number(this.fundingApplicationDetails.id);
+    this.indicatorDetailsId =  Number(this.fundingApplicationDetails.id);     
     this.el.nativeElement.click();
+
   }
 
   public uploadDocument(doc: any) {
+    debugger;
+    console.log('doc while click Upload icon',doc);
     this.selectedDocTypeId = doc.id;
+    console.log('this.selectedDocTypeId while click Upload icon',this.selectedDocTypeId);
     this.element.nativeElement.click();
   }
   public uploadedFiles(doc: any) {
+    debugger;
     this._spinner.show();
+    console.log('doc from Uploaded Files',doc);
+    console.log('doc from Uploaded Files',doc.id);
     this.selectedDocTypeId = doc.id;
     this.getFundAppDocuments(doc.id);
     this.displayUploadedFilesDialog = true;
   }
 
   public onUploadChange = (files) => {
+    debugger;
+    console.log('this.selectedDocTypeId on Upload Change',this.selectedDocTypeId);
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
-    this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id),
-      EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
-        event => {
-          if (event.type === HttpEventType.UploadProgress)
-            this._spinner.show();
-          else if (event.type === HttpEventType.Response) {
-            this._spinner.hide();
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
-            this.loadDocumentTypes();
-          }
-        },
-        (err) => {
-          this._loggerService.logException(err);
+    this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id), 
+    EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
+      event => {
+        if (event.type === HttpEventType.UploadProgress)
+          this._spinner.show();
+        else if (event.type === HttpEventType.Response) {
           this._spinner.hide();
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
+          this.loadDocumentTypes();
         }
-      );
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
-  onFileSelected(event) {
+  onFileSelected(event){
+    console.log('event',event);
     this.selectedFile = <File>event.target.files[0];
-    this.selectedFilename = this.selectedFile.name;
+    console.log('this.selectedFile',this.selectedFile);
+    console.log('this.selectedFile',this.selectedFile.name);
+    this.selectedFilename =this.selectedFile.name;
   }
-
+  
   public onUploadChange1 = (event, form) => {
     if (event.files[0]) {
       this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments,
@@ -390,55 +290,64 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   public uploadADDocument = (files) => {
-    if (files.length === 0) {
-      return;
+     console.log("kurac",files);
+    if (files.length === 0) {      
+      return;   
     }
     this._spinner.show();
-    let filesToUpload: File[] = files;
-    const formData = new FormData();
-
+    let filesToUpload : File[] = files;
+    const formData = new FormData();   
+  
     Array.from(filesToUpload).map((fileAdDoc, index) => {
-      return formData.append('file' + index, fileAdDoc, fileAdDoc.name);
+      // console.log(files);
+      return formData.append('file'+index, fileAdDoc, fileAdDoc.name);
     });
-
-    this.http.post(this.envUrl.urlAddress + `/api/documentstore/UploadDocuments?id=` + this.indicatorDetailsId + "&userId=" + this.userId, formData, { reportProgress: true, observe: 'events' })
+  
+    this.http.post(this.envUrl.urlAddress + `/api/documentstore/UploadDocuments?id=`+ this.indicatorDetailsId +"&userId=" + this.userId, formData, {reportProgress: true, observe: 'events'})
       .subscribe(event => {
         if (event.type === HttpEventType.UploadProgress)
-          this._spinner.show();
+        this._spinner.show();
         else if (event.type === HttpEventType.Response) {
           // this.message = 'Uploaded!';
-
-          this.downloadButtonColor = 'p-button-success';
-          this.downloadButtonColor = 'ui-button-info';
+          
+      this.downloadButtonColor = 'p-button-success';
+      this.downloadButtonColor = 'ui-button-info';
           this._spinner.hide();
-          let filesToUpload: File[] = files;
-          this._messageService.add({ severity: 'success', summary: 'Success', detail: 'File Uploaded' });
+          // console.log(event.body);
+          let filesToUpload : File[] = files;
+          this._messageService.add({severity: 'success', summary: 'Success', detail: 'File Uploaded'});
         }
       },
-
-        (error) => {
-          console.log(error.error)
-          this._spinner.hide();
-        });
-  }
+  
+  (error) => {console.log(error.error)
+  // this.errMessage= error.error;
+   this._spinner.hide();
+  // this.display1 = true;     
+  });
+}
 
   private getDocuments() {
+    debugger;
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.get(Number(this.fundingApplicationDetails?.id), EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-          this.documents = res;
-          this._spinner.hide();
+          this.documents = res;      
+        this._spinner.hide();
         },
         () => this._spinner.hide()
       );
     }
   }
 
-  private getFundAppDocuments(docTypeId: number) {
+  private getFundAppDocuments(docTypeId :number) {
+    debugger;
+    console.log('From GetFundApp document',docTypeId);
+    //this.fundAppdocuments =[];
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
           this.fundAppdocuments = res;
+          console.log('Get FundApp',this.fundAppdocuments);
           this._spinner.hide();
         },
         () => this._spinner.hide()
@@ -447,6 +356,7 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   onDeleteDocument(doc: any) {
+    debugger;
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this document?',
       header: 'Confirmation',
@@ -457,7 +367,11 @@ export class QcDocumentUploadComponent implements OnInit {
         this._documentStore.delete(doc.resourceId).subscribe(
           event => {
             //this.getDocuments();
+            console.log('doc during delete',doc);
+            console.log('this.seletedDocTypeId',this.selectedDocTypeId);
+
             this.getFundAppDocuments(this.selectedDocTypeId);
+            console.log('doc.id',doc.id);
             this._spinner.hide();
           },
           (error) => this._spinner.hide()
@@ -471,10 +385,5 @@ export class QcDocumentUploadComponent implements OnInit {
   prevPage() {
     this.activeStep = this.activeStep - 1;
     this.activeStepChange.emit(this.activeStep);
-  }
-  nextPage() {
-    this.bidForm(StatusEnum.Saved);
-    this._messageService.add({ severity: 'success', summary: 'Success', detail: 'File(s) Saved Successfully' });
-    this._router.navigateByUrl('applications');
   }
 }
