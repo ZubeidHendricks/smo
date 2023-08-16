@@ -184,10 +184,10 @@ export class QcApplicationDetailsEditComponent implements OnInit {
         if (results != null) {
           this.application = results;
           this._bidService.getApplicationBiId(results.id).subscribe(response => { 
-           // if (response.id != null) {
+            if (response.id != null) {
               this.getFundingApplicationDetails(response);
               console.log('data.result', response);
-            //}
+           }
           });
         }
         this._spinner.hide();
@@ -207,8 +207,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
   }
 
   private getBidFullObject(data) {
-    debugger;
-    this.fundingApplicationDetails = data;
+      this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
     this.fundingApplicationDetails.implementations = data.implementations;
@@ -245,7 +244,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;
 
-      if (applicationIdOnBid.id == null) {
+      if (this.application.id == null) {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
           this.menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
@@ -254,9 +253,12 @@ export class QcApplicationDetailsEditComponent implements OnInit {
       }
 
      else {
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+        this._bidService.editBid(this.application.id, this.fundingApplicationDetails).subscribe(resp => {
           if (resp) {
-            this._router.navigateByUrl(`application/edit/${this.application.id}`);
+        
+            this._router.navigateByUrl(`quick-captures-editList/edit/${this.application.id}`);
+
+            //this._router.navigateByUrl(`application/edit/${this.application.id}`);
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           }
         });
@@ -587,6 +589,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
   
 
   nextPage() {
+    debugger;
       this.activeStep = this.activeStep + 1;
       this.bidForm(StatusEnum.Saved);
       this.activeStepChange.emit(this.activeStep);

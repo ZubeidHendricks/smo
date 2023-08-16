@@ -106,6 +106,25 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        //[HttpPut("{id}/applicationDetail")]
+        //public void Put(int id, [FromBody] ApplicationDetail value)
+        //{
+        //    try
+        //    {
+        //        var userIdentifier = GetUserIdentifier();
+        //        _bidService.UpdateIncome(value);
+
+        //        _logger.LogError($"Edit Application,Id: {id}, User Identifier: {userIdentifier}, Data: {value}");
+
+        //        // return Ok(bid);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Create Application, data: {value}", ex);
+        //        //return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
         //[HttpPut("{id}", Name = "UpdateIncome")]
         //public async Task<IActionResult> UpdateFundingApplicationEntity(int id, [FromBody] FinancialMattersViewModel value)
         //{
