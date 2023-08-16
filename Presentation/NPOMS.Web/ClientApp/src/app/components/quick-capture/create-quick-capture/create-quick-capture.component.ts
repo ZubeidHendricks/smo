@@ -162,14 +162,15 @@ export class CreateQuickCaptureComponent implements OnInit {
           command: () => {
             this.saveItems();
           }
-        },
-        {
-          label: 'Go Back',
-          icon: 'fa fa-step-backward',
-          command: () => {
-            this._router.navigateByUrl('npos');
-          }
         }
+        // ,
+        // {
+        //   label: 'Go Back',
+        //   icon: 'fa fa-step-backward',
+        //   command: () => {
+        //     this._router.navigateByUrl('npos');
+        //   }
+        // }
       ];
     }
   }
