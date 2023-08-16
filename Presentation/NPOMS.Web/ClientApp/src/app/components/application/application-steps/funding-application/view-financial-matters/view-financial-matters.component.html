@@ -44,7 +44,7 @@
           <td pEditableColumn>
               <p-cellEditor>
                   <ng-template pTemplate="input">
-                      <input type="text" class="form-text" pInputText [(ngModel)]="rowData.incomeDescription" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">                                   
+                      <input type="text" class="form-text" pInputText [(ngModel)]="rowData.incomeDescription" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">                                   
                   </ng-template>
                   <ng-template pTemplate="output">
                       {{rowData.incomeDescription}}
@@ -54,7 +54,7 @@
           <td pEditableColumn>
               <p-cellEditor>
                   <ng-template pTemplate="input">
-                      <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()" [(ngModel)]="rowData.incomeAmount" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">
+                      <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()" [(ngModel)]="rowData.incomeAmount" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
                   </ng-template>
                   <ng-template pTemplate="output">
                       {{rowData.incomeAmount}}
@@ -64,7 +64,7 @@
           <td pEditableColumn>
               <p-cellEditor>
                   <ng-template pTemplate="input">
-                      <input type="text" class="form-text" pInputText [(ngModel)]="rowData.expenditureDescription" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">                                   
+                      <input type="text" class="form-text" pInputText [(ngModel)]="rowData.expenditureDescription" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">                                   
                   </ng-template>
                   <ng-template pTemplate="output">
                       {{rowData.expenditureDescription}}
@@ -74,7 +74,7 @@
           <td pEditableColumn>
               <p-cellEditor>
                   <ng-template pTemplate="input">
-                      <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculatePreviousYearTotal()" [(ngModel)]="rowData.expenditureAmount" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">
+                      <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculatePreviousYearTotal()" [(ngModel)]="rowData.expenditureAmount" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
                   </ng-template>
                   <ng-template pTemplate="output">
                       {{rowData.expenditureAmount}}
@@ -149,7 +149,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financialMattersIncome.incomeDescription"
-              [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail()" autoResize="autoResize" >
+              [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail(financialMattersIncome)" autoResize="autoResize" >
             </textarea>
           </ng-template>
           <ng-template pTemplate="output">
@@ -162,7 +162,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()"
-              [(ngModel)]="financialMattersIncome.amountOneI" [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail()"
+              [(ngModel)]="financialMattersIncome.amountOneI" [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail(financialMattersIncome)"
               placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -174,7 +174,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()"
-              [(ngModel)]="financialMattersIncome.amountTwoI" [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail()"
+              [(ngModel)]="financialMattersIncome.amountTwoI" [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail(financialMattersIncome)"
               placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -186,7 +186,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()" 
-              [(ngModel)]="financialMattersIncome.amountThreeI" [ngModelOptions]="{standalone: true}"  (change)="updateIncomeDetail()"
+              [(ngModel)]="financialMattersIncome.amountThreeI" [ngModelOptions]="{standalone: true}"  (change)="updateIncomeDetail(financialMattersIncome)"
               placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -258,7 +258,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financialMattersExpenditure.expenditureDescription"
-              [ngModelOptions]="{standalone: true}" (change)="updateExpenditureDetail()" autoResize="autoResize">
+              [ngModelOptions]="{standalone: true}" (change)="updateExpenditureDetail(financialMattersExpenditure)" autoResize="autoResize">
             </textarea>
           </ng-template>
           <ng-template pTemplate="output">
@@ -270,7 +270,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountOneE" (change)="updateExpenditureDetail()"
+              (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountOneE" (change)="updateExpenditureDetail(financialMattersExpenditure)"
               [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -282,7 +282,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountTwoE" (change)="updateExpenditureDetail()"
+              (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountTwoE" (change)="updateExpenditureDetail(financialMattersExpenditure)"
               [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -294,7 +294,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountThreeE" (change)="updateExpenditureDetail()"
+              (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountThreeE" (change)="updateExpenditureDetail(financialMattersExpenditure)"
               [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -366,7 +366,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financialMattersOthers.otherDescription"
-              [ngModelOptions]="{standalone: true}" (change) = "updateOthersDetail()" autoResize="autoResize">
+              [ngModelOptions]="{standalone: true}" (change) = "updateOthersDetail(financialMattersOthers)" autoResize="autoResize">
             </textarea>
           </ng-template>
           <ng-template pTemplate="output">
@@ -378,7 +378,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountOneO" (change) = "updateOthersDetail()"
+              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountOneO" (change) = "updateOthersDetail(financialMattersOthers)"
               [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -390,7 +390,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountTwoO" (change) = "updateOthersDetail()"
+              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountTwoO" (change) = "updateOthersDetail(financialMattersOthers)"
               [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">
@@ -402,7 +402,7 @@
         <p-cellEditor>
           <ng-template pTemplate="input">
             <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountThreeO" (change) = "updateOthersDetail()"
+              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountThreeO" (change) = "updateOthersDetail(financialMattersOthers)"
               [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
           </ng-template>
           <ng-template pTemplate="output">

@@ -33,7 +33,12 @@ namespace NPOMS.Repository.Implementation.Entities
 			return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
 							.AsNoTracking().ToListAsync();
 		}
-        
+
+		public async Task<BankDetail> GetById(int id)
+		{
+			return await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+		}
+
 
 		#endregion
 	}

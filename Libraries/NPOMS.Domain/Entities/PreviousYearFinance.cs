@@ -10,7 +10,7 @@ namespace NPOMS.Domain.Entities
     [Table("PreviousYearFinance", Schema = "dbo")]
     public class PreviousYearFinance : BaseEntity
     {
-        public int? npoProfileId { get; set; }
+        public int npoProfileId { get; set; }
 
         [Column(TypeName = "nvarchar(255)")]
         public string IncomeDescription { get; set; }
@@ -21,6 +21,8 @@ namespace NPOMS.Domain.Entities
         public string ExpenditureDescription { get; set; }
 
         public int? ExpenditureAmount { get; set; }
+
+        public bool IsActive { get; set; }
 
         public int CreatedUserId { get; set; }
 
