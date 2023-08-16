@@ -103,7 +103,7 @@ export class NpoProfileService {
 
   public getFinancialMattersExpenditureByNpoProfileId(npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/getFinancialMattersExpenditureByNpoProfileId/npoProfileId/${npoProfileId}`;
-    return this._http.get<[IFinancialMattersExpenditure]>(url, httpOptions);
+    return this._http.get<IFinancialMattersExpenditure[]>(url, httpOptions);
   }
 
   public createFinancialMattersExpenditure(fundingApplicationId: number) {
@@ -222,7 +222,7 @@ export class NpoProfileService {
 
   public deleteFinancialMattersIncomeById(id: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteIncomeById/id/${id}`;
-    return this._http.delete<[IFinancialMattersIncome]>(url, httpOptions);
+    return this._http.put<IFinancialMattersIncome>(url, httpOptions);
   }
 
   public getBankDetailByNpoProfileId(npoProfileId: number) {
@@ -242,6 +242,6 @@ export class NpoProfileService {
 
   public deleteBankDetail(id: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteBankDetailById/id/${id}`;
-    return this._http.delete<IBankDetail>(url, httpOptions);
+    return this._http.put<IBankDetail>(url, httpOptions);
   }
 }
