@@ -488,7 +488,7 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpDelete("deleteBankDetailById/id/{id}", Name = "DeleteBankDetailById")]
+        [HttpPut("deleteBankDetailById/id/{id}", Name = "DeleteBankDetailById")]
         public async Task<IActionResult> DeleteBankDetailById(int id)
         {
             try
