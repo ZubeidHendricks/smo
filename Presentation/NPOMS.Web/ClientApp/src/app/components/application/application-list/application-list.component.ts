@@ -269,7 +269,18 @@ export class ApplicationListComponent implements OnInit {
         this.buttonItems[0].items.push({
           label: 'Approve Application',
           target: 'Funding Application',
-          icon: 'fa fa-file',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+        this.buttonItems[0].items.push({
+          label: 'View Application',
+          target: 'Funding Application',
+          icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
           }
@@ -283,17 +294,6 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-download',
           command: () => {
             this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id] } }]);
-          }
-        });
-      }
-
-      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
-        this.buttonItems[0].items.push({
-          label: 'View Application',
-          target: 'Funding Application',
-          icon: 'fa fa-pencil-square-o',
-          command: () => {
-            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
           }
         });
       }
