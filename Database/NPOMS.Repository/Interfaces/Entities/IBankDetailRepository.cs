@@ -9,6 +9,8 @@ namespace NPOMS.Repository.Interfaces.Entities
 		Task<IEnumerable<BankDetail>> GetByNpoProfileId(int npoProfileId);
         //Task CreateEntity(BankDetail model, int currentUserId);
         Task<BankDetail> DeleteBankDetailById(int id);
-        //  Task UpdateEntity(BankDetail model, int currentUserId);
-    }
+
+		Task<BankDetail> GetById(int id);
+		//  Task UpdateEntity(BankDetail model, int currentUserId);
+	}
 }

@@ -10,7 +10,7 @@ namespace NPOMS.Domain.Entities
     public class FinancialMattersOthers : BaseEntity
     {
 
-        public int? npoProfileId { get; set; }
+        public int npoProfileId { get; set; }
         [Column(TypeName = "nvarchar(255)")]
         public string OtherDescription { get; set; }
         [Column(TypeName = "numeric(18,6)")]
@@ -22,9 +22,9 @@ namespace NPOMS.Domain.Entities
         public int TotalFundingAmountO { get; set; }
         public int? FundingApplicationDetailId { get; set; }
         public string Type { get; set; }
-        public bool? IsActive { get; set; }
-        public int? CreatedUserId { get; set; }
-        public DateTime? CreatedDateTime { get; set; }
+        public bool IsActive { get; set; }
+        public int CreatedUserId { get; set; }
+        public DateTime CreatedDateTime { get; set; }
         public int? UpdatedUserId { get; set; }
         public DateTime? UpdatedDateTime { get; set; }
         public FundingApplicationDetail FundingApplicationDetail { get; set; }

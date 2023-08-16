@@ -221,6 +221,17 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.EditQC)) {
+        this.buttonItems[0].items.push({
+          label: 'Edit QC',
+          target: 'Quick Capture',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+           this._router.navigateByUrl('quick-captures-editList/edit/' + this.selectedApplication.id);
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.PreAdjudicateOption)) {
         this.buttonItems[0].items.push({
           label: 'Pre-adjudicate Application',
@@ -258,7 +269,18 @@ export class ApplicationListComponent implements OnInit {
         this.buttonItems[0].items.push({
           label: 'Approve Application',
           target: 'Funding Application',
-          icon: 'fa fa-file',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+        this.buttonItems[0].items.push({
+          label: 'View Application',
+          target: 'Funding Application',
+          icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
           }
@@ -272,17 +294,6 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-download',
           command: () => {
             this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id] } }]);
-          }
-        });
-      }
-
-      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
-        this.buttonItems[0].items.push({
-          label: 'View Application',
-          target: 'Funding Application',
-          icon: 'fa fa-pencil-square-o',
-          command: () => {
-            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
           }
         });
       }
@@ -341,6 +352,8 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Funding Application');
       this.buttonItemExists('Download Application', 'Funding Application');
       this.buttonItemExists('View Application', 'Funding Application');
+      this.buttonItemExists('Edit QC', 'Quick Capture');
+
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
@@ -397,6 +410,8 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Service Provision');
       this.buttonItemExists('Upload SLA', 'Service Provision');
       this.buttonItemExists('View Application', 'Service Provision');
+      this.buttonItemExists('Edit QC', 'Quick Capture');
+
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved: {
@@ -416,6 +431,37 @@ export class ApplicationListComponent implements OnInit {
         }
       }
     }
+
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
+
+      // Hide Service Provision actions
+      this.buttonItemExists('Edit Application', 'Service Provision');
+      this.buttonItemExists('Review Application', 'Service Provision');
+      this.buttonItemExists('Approve Application', 'Service Provision');
+      this.buttonItemExists('Upload SLA', 'Service Provision');
+      this.buttonItemExists('View Application', 'Service Provision');
+
+      switch (this.selectedApplication.statusId) {
+        case StatusEnum.Saved: {
+          this.buttonItemExists('Edit Application', 'Funding Application');
+          this.buttonItemExists('Download Application', 'Funding Application');
+          this.buttonItemExists('View Application', 'Funding Application');
+          this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          break;
+        }
+        case StatusEnum.Submitted: {
+          this.buttonItemExists('Edit Application', 'Funding Application');
+          this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          break;
+        }
+      }
+    }    
   }
 
   private buttonItemExists(label: string, target: string) {

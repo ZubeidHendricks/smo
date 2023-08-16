@@ -44,7 +44,7 @@
           <td pEditableColumn>
               <p-cellEditor>
                   <ng-template pTemplate="input">
-                      <input type="text" class="form-text" pInputText [(ngModel)]="rowData.incomeDescription" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">                                   
+                      <input type="text" class="form-text" pInputText [(ngModel)]="rowData.incomeDescription" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">                                   
                   </ng-template>
                   <ng-template pTemplate="output">
                       {{rowData.incomeDescription}}
@@ -54,7 +54,7 @@
           <td pEditableColumn>
               <p-cellEditor>
                   <ng-template pTemplate="input">
-                      <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()" [(ngModel)]="rowData.incomeAmount" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">
+                      <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()" [(ngModel)]="rowData.incomeAmount" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
                   </ng-template>
                   <ng-template pTemplate="output">
                       {{rowData.incomeAmount}}
@@ -64,7 +64,7 @@
           <td pEditableColumn>
               <p-cellEditor>
                   <ng-template pTemplate="input">
-                      <input type="text" class="form-text" pInputText [(ngModel)]="rowData.expenditureDescription" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">                                   
+                      <input type="text" class="form-text" pInputText [(ngModel)]="rowData.expenditureDescription" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">                                   
                   </ng-template>
                   <ng-template pTemplate="output">
                       {{rowData.expenditureDescription}}
@@ -74,7 +74,7 @@
           <td pEditableColumn>
               <p-cellEditor>
                   <ng-template pTemplate="input">
-                      <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculatePreviousYearTotal()" [(ngModel)]="rowData.expenditureAmount" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">
+                      <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculatePreviousYearTotal()" [(ngModel)]="rowData.expenditureAmount" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
                   </ng-template>
                   <ng-template pTemplate="output">
                       {{rowData.expenditureAmount}}
@@ -109,335 +109,346 @@
 
 <div style="height: 10px;"></div>
 
-<p-table [columns]="cols" [value]="financialMattersIncome"  >
-  <ng-template pTemplate="header" let-columns>
-    <tr>
-      <th style="text-align:center">
-        Budgeted Income for the current financial year and Estimated Income for the next 2 financial years
-      </th>
-    </tr>
-    <tr>
-      <th style="text-align:left">
-        Please provide the Organisation's Budgeted Income for the financial years indicated below.
-      </th>
-    </tr>    
-  </ng-template>
-</p-table>
-
-<p-table [rowHover]="true" [columns]="cols" [value]="financialMattersIncome" selectionMode="single"  styleClass="p-datatable-sm" [(selection)]="selectedFinancialMatterIncome" (onRowSelect)="onRowSelect($event)"
- [paginator]="true" [rows]="15">
-  <ng-template pTemplate="header" let-columns>
-    <tr>
-      <th style="width: 40%;"></th>
-      <th style="width: 15%;"></th>
-      <th style="width: 15%;"></th>
-      <th style="width: 15%;"></th>
-      <th style="width: 10%;"></th>
-      <th style="width: 5%;"></th>
-    </tr>
-    <tr>
-      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-        {{col.header}}
-        <p-sortIcon [field]="col.field"></p-sortIcon>
-      </th>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="body" let-financialMattersIncome let-rowData let-columns="columns">
-    <tr [pSelectableRow]="financialMattersIncome">
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financialMattersIncome.incomeDescription"
-              [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail()" autoResize="autoResize" >
-            </textarea>
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersIncome.incomeDescription}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-   
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()"
-              [(ngModel)]="financialMattersIncome.amountOneI" [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail()"
-              placeholder="Number Only Field">
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersIncome.amountOneI}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()"
-              [(ngModel)]="financialMattersIncome.amountTwoI" [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail()"
-              placeholder="Number Only Field">
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersIncome.amountTwoI}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()" 
-              [(ngModel)]="financialMattersIncome.amountThreeI" [ngModelOptions]="{standalone: true}"  (change)="updateIncomeDetail()"
-              placeholder="Number Only Field">
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersIncome.amountThreeI}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td>R{{financialMattersIncome.totalFundingAmountI | number: '1.0':'en-US'}}</td>
-      <td style="text-align: center;">
-        <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
-          class="p-button-text p-button-danger" icon="pi pi-trash" (click)="deleteBudgetItem(financialMattersIncome)"
-          pTooltip="Delete" tooltipPosition="top"></button>
-      </td>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <tr>
-      <td colspan="1">
-        <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus"
-          (click)="addBudgetIncomeItem()"></button>
-      </td>
-      <td>R{{totalAmountOne | number: '1.0':'en-US'}}</td>
-      <td>R{{totalAmountTwo | number: '1.0':'en-US'}}</td>
-      <td>R{{totalAmountThree | number: '1.0':'en-US'}}</td>
-      <td>R{{fundingTotal | number: '1.0':'en-US'}}</td>
-      <td></td>
-    </tr>
-  </ng-template>
-
-</p-table>
-<div style="height: 15px;"></div>
-<!-- Expenditure -->
-<p-table [columns]="cols" [value]="financialMattersExpenditure">
-  <ng-template pTemplate="header" let-columns>
-    <tr>
-      <th style="text-align:center">
-        Budgeted Expenditure for the current financial year and Estimated Expenditure for the next 2 financial years
-      </th>
-    </tr>
-    <tr>
-      <th style="text-align:left">
-        Please provide the Organisation's Budgeted Expenditure for the financial years indicated below.
-      </th>
-    </tr>      
-  </ng-template>
-</p-table>
-<p-table [rowHover]="true" [columns]="cols" [value]="financialMattersExpenditure" selectionMode="single"
-  [(selection)]="selectedFinancialMatterExpenditure" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
-  <ng-template pTemplate="header" let-columns>
-    <tr>
-      <th style="width: 40%;"></th>
-      <th style="width: 15%;"></th>
-      <th style="width: 15%;"></th>
-      <th style="width: 15%;"></th>
-      <th style="width: 10%;"></th>
-      <th style="width: 5%;"></th>
-    </tr>
-    <tr>
-      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-        {{col.header}}
-        <p-sortIcon [field]="col.field"></p-sortIcon>
-      </th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-financialMattersExpenditure let-rowData let-columns="columns">
-    <tr [pSelectableRow]="financialMattersExpenditure">
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financialMattersExpenditure.expenditureDescription"
-              [ngModelOptions]="{standalone: true}" (change)="updateExpenditureDetail()" autoResize="autoResize">
-            </textarea>
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersExpenditure.expenditureDescription}}
-          </ng-template>
-        </p-cellEditor>        
-      </td>
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountOneE" (change)="updateExpenditureDetail()"
-              [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersExpenditure.amountOneE}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountTwoE" (change)="updateExpenditureDetail()"
-              [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersExpenditure.amountTwoE}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountThreeE" (change)="updateExpenditureDetail()"
-              [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersExpenditure.amountThreeE}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td>R{{financialMattersExpenditure.totalFundingAmountE | number: '1.0':'en-US'}}</td>
-      <td style="text-align: center;">
-        <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
-          class="p-button-text p-button-danger" icon="pi pi-trash"
-          (click)="deleteBudgetExpenditureItem(financialMattersExpenditure)" pTooltip="Delete"
-          tooltipPosition="top"></button>
-      </td>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="footer">
-    <tr>
-      <td colspan="1">
-        <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus"
-          (click)="addBudgetExpenditureItem()"></button>
-      </td>
-      <td>R{{totalAmountOneE | number: '1.0':'en-US'}}</td>
-      <td>R{{totalAmountTwoE | number: '1.0':'en-US'}}</td>
-      <td>R{{totalAmountThreeE | number: '1.0':'en-US'}}</td>
-      <td>R{{fundingTotalE | number: '1.0':'en-US'}}</td>
-      <td></td>
-    </tr>
-  </ng-template>
-</p-table>
-
-<div style="height: 15px;"></div>
-<!-- OtherSources of Funding  -->
-<p-table [columns]="colsOther" [value]="financialMattersOthers">
-  <ng-template pTemplate="header" let-columns>
-    <tr>
-      <th style="text-align:center">
-        Other Sources of Funding
-      </th>
-    </tr>
-    <tr>
-      <th style="text-align:left">
-        Please provide information about other sources of funding for the project that you are requesting DSD to fund.
-      </th>
-    </tr>
-  </ng-template>
-</p-table>
-<p-table [rowHover]="true" [columns]="colsOther" [value]="financialMattersOthers" selectionMode="single"
-  [(selection)]="selectedFinancialMatterOthers" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
-  <ng-template pTemplate="header" let-columns>
-    <tr>
-      <th style="width: 40%;"></th>
-      <th style="width: 15%;"></th>
-      <th style="width: 15%;"></th>
-      <th style="width: 15%;"></th>
-      <th style="width: 10%;"></th>
-      <th style="width: 5%;"></th>
-    </tr>   
-    <tr>
-      <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-        {{col.header}}
-        <p-sortIcon [field]="col.field"></p-sortIcon>
-      </th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-financialMattersOthers let-rowData let-columns="columns">
-    <tr [pSelectableRow]="financialMattersOthers">
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financialMattersOthers.otherDescription"
-              [ngModelOptions]="{standalone: true}" (change) = "updateOthersDetail()" autoResize="autoResize">
-            </textarea>
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersOthers.otherDescription}}
-          </ng-template>
-        </p-cellEditor>          
-      </td>
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountOneO" (change) = "updateOthersDetail()"
-              [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersOthers.amountOneO}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountTwoO" (change) = "updateOthersDetail()"
-              [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersOthers.amountTwoO}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td pEditableColumn>
-        <p-cellEditor>
-          <ng-template pTemplate="input">
-            <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
-              (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountThreeO" (change) = "updateOthersDetail()"
-              [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
-          </ng-template>
-          <ng-template pTemplate="output">
-            {{financialMattersOthers.amountThreeO}}
-          </ng-template>
-        </p-cellEditor>
-      </td>
-      <td>R{{financialMattersOthers.totalFundingAmountO | number: '1.0':'en-US'}}</td>
-      <td style="text-align: center;">
-        <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
-          class="p-button-text p-button-danger" icon="pi pi-trash"
-          (click)="deleteBudgetOthrSourceFunding(financialMattersOthers)" pTooltip="Delete"
-          tooltipPosition="top"></button>
-      </td>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <tr>
-      <td colspan="1">
-        <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus"
-          (click)="addBudgetOthrSourceFunding()"></button>
-      </td>
-      <td>R{{totalAmountOneO | number: '1.0':'en-US'}}</td>
-      <td>R{{totalAmountTwoO | number: '1.0':'en-US'}}</td>
-      <td>R{{totalAmountThreeO | number: '1.0':'en-US'}}</td>
-      <td>R{{fundingTotalO | number: '1.0':'en-US'}}</td>
-      <td></td>
-    </tr>
-  </ng-template>
-</p-table>
+<p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Budgeted Income">
+  <p-table [columns]="cols" [value]="financialMattersIncome"  >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th style="text-align:center">
+          Budgeted Income for the current financial year and Estimated Income for the next 2 financial years
+        </th>
+      </tr>
+      <tr>
+        <th style="text-align:left">
+          Please provide the Organisation's Budgeted Income for the financial years indicated below.
+        </th>
+      </tr>    
+    </ng-template>
+  </p-table>
+  
+  <p-table [rowHover]="true" [columns]="cols" [value]="financialMattersIncome" selectionMode="single"  styleClass="p-datatable-sm" [(selection)]="selectedFinancialMatterIncome" (onRowSelect)="onRowSelect($event)"
+   [paginator]="true" [rows]="15" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th style="width: 40%;"></th>
+        <th style="width: 15%;"></th>
+        <th style="width: 15%;"></th>
+        <th style="width: 15%;"></th>
+        <th style="width: 10%;"></th>
+        <th style="width: 5%;"></th>
+      </tr>
+      <tr>
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+  
+    <ng-template pTemplate="body" let-financialMattersIncome let-rowData let-columns="columns">
+      <tr [pSelectableRow]="financialMattersIncome">
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financialMattersIncome.incomeDescription"
+                [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail(financialMattersIncome)" autoResize="autoResize" >
+              </textarea>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersIncome.incomeDescription}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+     
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()"
+                [(ngModel)]="financialMattersIncome.amountOneI" [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail(financialMattersIncome)"
+                placeholder="Number Only Field">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersIncome.amountOneI}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()"
+                [(ngModel)]="financialMattersIncome.amountTwoI" [ngModelOptions]="{standalone: true}" (change)="updateIncomeDetail(financialMattersIncome)"
+                placeholder="Number Only Field">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersIncome.amountTwoI}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()" 
+                [(ngModel)]="financialMattersIncome.amountThreeI" [ngModelOptions]="{standalone: true}"  (change)="updateIncomeDetail(financialMattersIncome)"
+                placeholder="Number Only Field">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersIncome.amountThreeI}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>R{{financialMattersIncome.totalFundingAmountI | number: '1.0':'en-US'}}</td>
+        <td style="text-align: center;">
+          <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
+            class="p-button-text p-button-danger" icon="pi pi-trash" (click)="deleteBudgetItem(financialMattersIncome)"
+            pTooltip="Delete" tooltipPosition="top"></button>
+        </td>
+      </tr>
+    </ng-template>
+  
+    <ng-template pTemplate="footer">
+      <tr>
+        <td colspan="1">
+          <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus"
+            (click)="addBudgetIncomeItem()"></button>
+        </td>
+        <td>R{{totalAmountOne | number: '1.0':'en-US'}}</td>
+        <td>R{{totalAmountTwo | number: '1.0':'en-US'}}</td>
+        <td>R{{totalAmountThree | number: '1.0':'en-US'}}</td>
+        <td>R{{fundingTotal | number: '1.0':'en-US'}}</td>
+        <td></td>
+      </tr>
+    </ng-template>
+  
+  </p-table>
+</p-panel>
 
 <div style="height: 10px;"></div>
+
+<p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Budgeted Expenditure">
+  <p-table [columns]="cols" [value]="financialMattersExpenditure">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th style="text-align:center">
+          Budgeted Expenditure for the current financial year and Estimated Expenditure for the next 2 financial years
+        </th>
+      </tr>
+      <tr>
+        <th style="text-align:left">
+          Please provide the Organisation's Budgeted Expenditure for the financial years indicated below.
+        </th>
+      </tr>      
+    </ng-template>
+  </p-table>
+  <p-table [rowHover]="true" [columns]="cols" [value]="financialMattersExpenditure" selectionMode="single"
+    [(selection)]="selectedFinancialMatterExpenditure" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15"
+    [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th style="width: 40%;"></th>
+        <th style="width: 15%;"></th>
+        <th style="width: 15%;"></th>
+        <th style="width: 15%;"></th>
+        <th style="width: 10%;"></th>
+        <th style="width: 5%;"></th>
+      </tr>
+      <tr>
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-financialMattersExpenditure let-rowData let-columns="columns">
+      <tr [pSelectableRow]="financialMattersExpenditure">
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financialMattersExpenditure.expenditureDescription"
+                [ngModelOptions]="{standalone: true}" (change)="updateExpenditureDetail(financialMattersExpenditure)" autoResize="autoResize">
+              </textarea>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersExpenditure.expenditureDescription}}
+            </ng-template>
+          </p-cellEditor>        
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
+                (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountOneE" (change)="updateExpenditureDetail(financialMattersExpenditure)"
+                [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersExpenditure.amountOneE}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
+                (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountTwoE" (change)="updateExpenditureDetail(financialMattersExpenditure)"
+                [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersExpenditure.amountTwoE}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
+                (change)="calculateExpenditureTotals()" [(ngModel)]="financialMattersExpenditure.amountThreeE" (change)="updateExpenditureDetail(financialMattersExpenditure)"
+                [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersExpenditure.amountThreeE}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>R{{financialMattersExpenditure.totalFundingAmountE | number: '1.0':'en-US'}}</td>
+        <td style="text-align: center;">
+          <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
+            class="p-button-text p-button-danger" icon="pi pi-trash"
+            (click)="deleteBudgetExpenditureItem(financialMattersExpenditure)" pTooltip="Delete"
+            tooltipPosition="top"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <tr>
+        <td colspan="1">
+          <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus"
+            (click)="addBudgetExpenditureItem()"></button>
+        </td>
+        <td>R{{totalAmountOneE | number: '1.0':'en-US'}}</td>
+        <td>R{{totalAmountTwoE | number: '1.0':'en-US'}}</td>
+        <td>R{{totalAmountThreeE | number: '1.0':'en-US'}}</td>
+        <td>R{{fundingTotalE | number: '1.0':'en-US'}}</td>
+        <td></td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-panel>
+
+<div style="height: 10px;"></div>
+
+<p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Other Funding">
+  <p-table [columns]="colsOther" [value]="financialMattersOthers">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th style="text-align:center">
+          Other Sources of Funding
+        </th>
+      </tr>
+      <tr>
+        <th style="text-align:left">
+          Please provide information about other sources of funding for the project that you are requesting DSD to fund.
+        </th>
+      </tr>
+    </ng-template>
+  </p-table>
+  <p-table [rowHover]="true" [columns]="colsOther" [value]="financialMattersOthers" selectionMode="single"
+    [(selection)]="selectedFinancialMatterOthers" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15"
+    [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th style="width: 40%;"></th>
+        <th style="width: 15%;"></th>
+        <th style="width: 15%;"></th>
+        <th style="width: 15%;"></th>
+        <th style="width: 10%;"></th>
+        <th style="width: 5%;"></th>
+      </tr>   
+      <tr>
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+          {{col.header}}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-financialMattersOthers let-rowData let-columns="columns">
+      <tr [pSelectableRow]="financialMattersOthers">
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <textarea [rows]="1" [cols]="90" pInputTextarea class="form-text" [(ngModel)]="financialMattersOthers.otherDescription"
+                [ngModelOptions]="{standalone: true}" (change) = "updateOthersDetail(financialMattersOthers)" autoResize="autoResize">
+              </textarea>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersOthers.otherDescription}}
+            </ng-template>
+          </p-cellEditor>          
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
+                (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountOneO" (change) = "updateOthersDetail(financialMattersOthers)"
+                [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersOthers.amountOneO}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
+                (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountTwoO" (change) = "updateOthersDetail(financialMattersOthers)"
+                [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersOthers.amountTwoO}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td pEditableColumn>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
+                (change)="calculateOthrSourceFundingTotal()" [(ngModel)]="financialMattersOthers.amountThreeO" (change) = "updateOthersDetail(financialMattersOthers)"
+                [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{financialMattersOthers.amountThreeO}}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>R{{financialMattersOthers.totalFundingAmountO | number: '1.0':'en-US'}}</td>
+        <td style="text-align: center;">
+          <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
+            class="p-button-text p-button-danger" icon="pi pi-trash"
+            (click)="deleteBudgetOthrSourceFunding(financialMattersOthers)" pTooltip="Delete"
+            tooltipPosition="top"></button>
+        </td>
+      </tr>
+    </ng-template>
+  
+    <ng-template pTemplate="footer">
+      <tr>
+        <td colspan="1">
+          <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus"
+            (click)="addBudgetOthrSourceFunding()"></button>
+        </td>
+        <td>R{{totalAmountOneO | number: '1.0':'en-US'}}</td>
+        <td>R{{totalAmountTwoO | number: '1.0':'en-US'}}</td>
+        <td>R{{totalAmountThreeO | number: '1.0':'en-US'}}</td>
+        <td>R{{fundingTotalO | number: '1.0':'en-US'}}</td>
+        <td></td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-panel>
+
+<div style="height: 10px;"></div>
+
  <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Bank Details">
-    <p-table [rowHover]="true" [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
+    <p-table [rowHover]="true" [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm"
+    [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
           <tr>
             <th style="width: 15%;"></th>

@@ -22,6 +22,7 @@ export interface IPreviousFinancialYear {
   incomeAmount: number;
   expenditureDescription: string;
   expenditureAmount: number;
+  isActive: boolean;
   createdUserId: number;
   createdDateTime: Date;
   updatedUserId: number;

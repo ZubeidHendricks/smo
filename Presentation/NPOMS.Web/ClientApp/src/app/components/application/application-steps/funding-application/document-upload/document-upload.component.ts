@@ -301,10 +301,8 @@ export class DocumentUploadComponent implements OnInit {
       },
 
         (error) => {
-          console.log(error.error)
-          // this.errMessage= error.error;
+          this._loggerService.logException(error);
           this._spinner.hide();
-          // this.display1 = true;     
         });
   }
 

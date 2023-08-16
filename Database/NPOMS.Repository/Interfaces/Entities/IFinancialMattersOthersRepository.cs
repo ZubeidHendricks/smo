@@ -11,5 +11,8 @@ namespace NPOMS.Repository.Interfaces.Entities
     {
         Task<FinancialMattersOthers> DeleteById(int id);
         Task<IEnumerable<FinancialMattersOthers>> GetByNpoProfileIdAsync(int npoProfileId);
-    }
+
+        Task<FinancialMattersOthers> GetById(int id);
+
+	}
 }
