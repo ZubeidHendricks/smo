@@ -20,7 +20,7 @@ namespace NPOMS.Repository.Implementation.Entities
         }
         public async Task<IEnumerable<FinancialMattersExpenditure>> GetByNpoProfileIdAsync(int fundingApplicationId)
         {
-            return await FindByCondition(x => x.npoProfileId.Equals(fundingApplicationId)).OrderBy(x => x.CreatedDateTime).AsNoTracking().ToListAsync();
+            return await FindByCondition(x => x.npoProfileId.Equals(fundingApplicationId) && x.IsActive).OrderBy(x => x.CreatedDateTime).AsNoTracking().ToListAsync();
         }
         public async Task<FinancialMattersExpenditure> GetById(int id)
         {

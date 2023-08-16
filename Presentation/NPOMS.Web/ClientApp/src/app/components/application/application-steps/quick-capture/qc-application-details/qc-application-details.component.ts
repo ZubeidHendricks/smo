@@ -149,12 +149,6 @@ export class QcApplicationDetailsComponent implements OnInit {
     console.log('ng on init-applnPeriodId',this.applnPeriodId);
     console.log('ng on init-newlySavedApplnId',this.newlySavedApplicationId);
     this._spinner.show();
-    // this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-    //   this.selectedApplicationId = params.get('this.applnPeriodId');
-    //   console.log(' this.selectedApplicationId from QC-Application Details Screen', Number(this.selectedApplicationId));
-    //   console.log(' Reciving Newly created application Id from  QC _Period Screen to QC-Application Details Screen', Number(this.newlySavedApplicationId));
-    // });
-    console.log(' Reciving Newly created application Id from  QC _Period Screen to QC-Application Details Screen', Number(this.newlySavedApplicationId));
 
     this.selectedApplicationId = this.newlySavedApplicationId;
 

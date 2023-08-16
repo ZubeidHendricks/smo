@@ -421,19 +421,6 @@ export class ViewApplicationDetailsComponent implements OnInit {
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
 
     this.allDropdownsLoaded();
-    //alert(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail );
-
-    //     this.selectedDistrictCouncilName =data.applicationDetails.fundAppSDADetail.districtCouncil.name;
-    //     this.selectedLocalMunicipalityName =this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality.name;
-
-    //     this.selectedRegionName =this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions[0].name;
-    //     this.selectedSdasName =this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[0].name;
-    // console.log('this.selectedDistrictCouncilName',this.selectedDistrictCouncil);
-    // console.log('this.selectedDistrictCouncilName',this.selectedLocalMunicipality);
-
-    // console.log('this.selectedDistrictCouncilName',this.selectedRegions);
-
-    // console.log('this.selectedDistrictCouncilName',this.selectedSdas);
   }
 
   departmentChange(department: IDepartment) {
