@@ -360,7 +360,7 @@ export class EditApplicationComponent implements OnInit {
         if (results != null) {
           this.application = results;
           this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
-            if (response.id != null) {
+            if (response && response.id != null) {
               this.getFundingApplicationDetails(response);
             }
           });
