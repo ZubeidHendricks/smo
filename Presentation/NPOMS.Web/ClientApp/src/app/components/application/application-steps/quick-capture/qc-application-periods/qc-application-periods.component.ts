@@ -106,6 +106,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
         //this.autoCreateApplication();
       }
       console.log('Ng- onInit- application Period screeen', this.newlySavedApplicationId);
+      console.log('Ng- onInit- application Period screeen', this.newlySavedNpoId);
       console.log(' Ng- onInit- application Period screeen', this.applnPeriodId);
 
 

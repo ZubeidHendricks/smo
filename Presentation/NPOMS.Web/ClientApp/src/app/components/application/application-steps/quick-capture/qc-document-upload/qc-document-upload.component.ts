@@ -348,7 +348,7 @@ export class QcDocumentUploadComponent implements OnInit {
   public onUploadChange = (files) => {
     debugger;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
-    this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id),
+    this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.selectedApplicationId),
       EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
         event => {
           if (event.type === HttpEventType.UploadProgress)
@@ -439,8 +439,8 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   private getFundAppDocuments(docTypeId: number) {
-    if (this.fundingApplicationDetails?.id != undefined) {
-      this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
+    if (this.selectedApplicationId != undefined) {
+      this._documentStore.getFundApp(Number(this.selectedApplicationId), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
           this.fundAppdocuments = res;
           this._spinner.hide();

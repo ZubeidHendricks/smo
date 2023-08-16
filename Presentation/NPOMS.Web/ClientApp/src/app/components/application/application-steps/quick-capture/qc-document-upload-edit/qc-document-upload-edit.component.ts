@@ -369,7 +369,7 @@ export class QcDocumentUploadEditComponent implements OnInit {
 
   private getFundAppDocuments(docTypeId: number) {
     //this.fundAppdocuments =[];
-    if (this.fundingApplicationDetails?.id != undefined) {
+    if (this.selectedApplicationId != undefined) {
       this._documentStore.getFundApp(Number(this.selectedApplicationId), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
           this.fundAppdocuments = res;
