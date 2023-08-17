@@ -125,19 +125,10 @@
     </ng-template>
   </p-table>
   
-  <p-table [rowHover]="true" [columns]="cols" [value]="financialMattersIncome" selectionMode="single"  styleClass="p-datatable-sm" [(selection)]="selectedFinancialMatterIncome" (onRowSelect)="onRowSelect($event)"
-   [paginator]="true" [rows]="15" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+  <p-table [rowHover]="true" [columns]="cols" [value]="financialMattersIncome" selectionMode="single"  styleClass="p-datatable-sm" [(selection)]="selectedFinancialMatterIncome" (onRowSelect)="onRowSelect($event)">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th style="width: 40%;"></th>
-        <th style="width: 15%;"></th>
-        <th style="width: 15%;"></th>
-        <th style="width: 15%;"></th>
-        <th style="width: 10%;"></th>
-        <th style="width: 5%;"></th>
-      </tr>
-      <tr>
-        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
           {{col.header}}
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
@@ -239,19 +230,10 @@
     </ng-template>
   </p-table>
   <p-table [rowHover]="true" [columns]="cols" [value]="financialMattersExpenditure" selectionMode="single"
-    [(selection)]="selectedFinancialMatterExpenditure" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15"
-    [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    [(selection)]="selectedFinancialMatterExpenditure" (onRowSelect)="onRowSelect($event)">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th style="width: 40%;"></th>
-        <th style="width: 15%;"></th>
-        <th style="width: 15%;"></th>
-        <th style="width: 15%;"></th>
-        <th style="width: 10%;"></th>
-        <th style="width: 5%;"></th>
-      </tr>
-      <tr>
-        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
           {{col.header}}
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
@@ -350,19 +332,10 @@
     </ng-template>
   </p-table>
   <p-table [rowHover]="true" [columns]="colsOther" [value]="financialMattersOthers" selectionMode="single"
-    [(selection)]="selectedFinancialMatterOthers" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15"
-    [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    [(selection)]="selectedFinancialMatterOthers" (onRowSelect)="onRowSelect($event)">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th style="width: 40%;"></th>
-        <th style="width: 15%;"></th>
-        <th style="width: 15%;"></th>
-        <th style="width: 15%;"></th>
-        <th style="width: 10%;"></th>
-        <th style="width: 5%;"></th>
-      </tr>   
-      <tr>
-        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
           {{col.header}}
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
@@ -451,15 +424,7 @@
     [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
           <tr>
-            <th style="width: 15%;"></th>
-            <th style="width: 25%;"></th>
-            <th style="width: 15%;"></th>
-            <th style="width: 15%;"></th>
-            <th style="width: 23%;"></th>
-            <th style="width: 7%;"></th>
-          </tr>             
-          <tr>
-              <th *ngFor="let col of columns">
+              <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                   {{col.header}}
               </th>           
           </tr>

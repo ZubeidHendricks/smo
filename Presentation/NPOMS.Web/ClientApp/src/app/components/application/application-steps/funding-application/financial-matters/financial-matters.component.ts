@@ -787,7 +787,7 @@ export class FinancialMattersComponent implements OnInit {
   updateIncomeDetail(rowData: IFinancialMattersIncome) {
     this._npoProfile.updateFinancialMattersIncome(rowData, this.selectedApplicationId).subscribe(
       (resp) => {
-        this.GetFinancialMattersIncome();
+        // this.GetFinancialMattersIncome();
       },
       (err) => {
         //
@@ -809,7 +809,7 @@ export class FinancialMattersComponent implements OnInit {
   updateExpenditureDetail(rowData: IFinancialMattersExpenditure) {
     this._npoProfile.updateFinancialMattersExpenditure(rowData, this.selectedApplicationId).subscribe(
       (resp) => {
-        this.GetFinancialMattersExpenditure();
+        // this.GetFinancialMattersExpenditure();
       },
       (err) => {
         //
@@ -831,7 +831,7 @@ export class FinancialMattersComponent implements OnInit {
   updateOthersDetail(rowData: IFinancialMattersOthers) {
     this._npoProfile.updateFinancialMattersOthers(rowData, this.selectedApplicationId).subscribe(
       (resp) => {
-        this.GetFinancialMattersOther();
+        // this.GetFinancialMattersOther();
       },
       (err) => {
         //
@@ -853,7 +853,7 @@ export class FinancialMattersComponent implements OnInit {
   updateDetail(rowData: IPreviousFinancialYear) {
     this._npoProfile.UpdatePreviousYearData(rowData, this.selectedApplicationId).subscribe(
       (resp) => {
-        this.GetPreviousYearFinanceData();
+        // this.GetPreviousYearFinanceData();
       },
       (err) => {
         //
