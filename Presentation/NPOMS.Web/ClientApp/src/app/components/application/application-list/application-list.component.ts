@@ -517,28 +517,4 @@ export class ApplicationListComponent implements OnInit {
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
-
-  edit(application: IApplication) {
-    this._router.navigateByUrl('application/edit/' + application.id);
-  }
-
-  review(application: IApplication) {
-    this._router.navigateByUrl('application/review/' + application.id);
-  }
-
-  approve(application: IApplication) {
-    this._router.navigateByUrl('application/approve/' + application.id);
-  }
-
-  uploadSLA(application: IApplication) {
-    this._router.navigateByUrl('application/upload-sla/' + application.id);
-  }
-
-  view(application: IApplication) {
-    this._router.navigateByUrl('application/view/' + application.id);
-  }
-
-  download(application: IApplication) {
-    this._router.navigate(['/', { outlets: { 'print': ['print', application.id] } }]);
-  }
 }
