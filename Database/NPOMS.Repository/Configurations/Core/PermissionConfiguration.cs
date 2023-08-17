@@ -691,8 +691,8 @@ namespace NPOMS.Repository.Configurations.Core
                 new Permission
                 {
                     Id = 97,
-                    Name = "View Quick Capture",
-                    SystemName = "QC.View",
+                    Name = "Edit Quick Capture",
+                    SystemName = "QC.Edit",
                     CategoryName = "Quick Capture"
                 },
                 new Permission

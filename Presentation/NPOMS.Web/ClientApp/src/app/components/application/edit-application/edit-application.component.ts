@@ -49,6 +49,7 @@ export class EditApplicationComponent implements OnInit {
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
+  
   bidId: number;
   placeAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
@@ -105,6 +106,10 @@ export class EditApplicationComponent implements OnInit {
       this.id = params.get('id');
       this.loadApplication();
       this.loadDocumentTypes();
+      if(Number(params.get('activeStep')) === 2)
+      {
+        this.activeStep = Number(params.get('activeStep'));
+      }
     });
 
     this.loadfundingSteps();
@@ -124,7 +129,7 @@ export class EditApplicationComponent implements OnInit {
   }
 
   getfinFund(event: FinancialMatters) {
-    console.log('event from Edit', JSON.stringify(event));
+    // console.log('event from Edit', JSON.stringify(event));
   }
 
   private loadApplication() {
@@ -214,7 +219,7 @@ export class EditApplicationComponent implements OnInit {
 
   private loadDocumentTypes() {
 
-    this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.selectedApplicationId), false).subscribe(
+    this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.id), false).subscribe(
       (results) => {
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp && x.isCompulsory === true);
 
@@ -302,6 +307,7 @@ export class EditApplicationComponent implements OnInit {
 
   private bidForm(status: StatusEnum) {
     this.application.status = null;
+    console.log('fundingApplicationDetails', this.fundingApplicationDetails);
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;
@@ -320,7 +326,7 @@ export class EditApplicationComponent implements OnInit {
       else {
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
           if (resp) {
-            this._router.navigateByUrl(`application/edit/${this.application.id}`);
+            this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
             this.loadfundingSteps();
             //this.getBidFullObject(resp);            
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
@@ -359,7 +365,7 @@ export class EditApplicationComponent implements OnInit {
         if (results != null) {
           this.application = results;
           this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
-            if (response.id != null) {
+            if (response && response.id != null) {
               this.getFundingApplicationDetails(response);
             }
           });

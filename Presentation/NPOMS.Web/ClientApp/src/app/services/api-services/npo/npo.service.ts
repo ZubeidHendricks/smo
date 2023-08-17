@@ -55,6 +55,13 @@ export class NpoService {
     return this._http.post<INpo>(url, npo, httpOptions);
   }
 
+
+  public createQCNpo(npo: INpo, isQuickCapture: boolean) {
+    const url = `${this._envUrl.urlAddress}/api/npos/isQuickCapture/${isQuickCapture}`;
+
+    return this._http.post<INpo>(url, npo, httpOptions);
+  }
+
   public updateNpo(npo: INpo) {
     const url = `${this._envUrl.urlAddress}/api/npos`;
     return this._http.put<INpo>(url, npo, httpOptions);

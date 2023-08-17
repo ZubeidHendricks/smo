@@ -229,12 +229,14 @@ export class ViewFinancialMattersComponent implements OnInit {
   }
 
   addIncomeExpenditure() {
-    var today = this.getCurrentDateTime();
-
-    this.previousFinancialYear.push({
-      createdUserId: this.currentUserId,
-      createdDateTime: today
-    } as IPreviousFinancialYear);
+    this._npoProfile.createPreviousYearData(this.application.id).subscribe(
+      (resp) => {
+        this.GetPreviousYearFinanceData();
+      },
+      (err) => {
+        //
+      }
+    );
   }
 
   private loadAccountTypes() {
@@ -346,24 +348,15 @@ export class ViewFinancialMattersComponent implements OnInit {
   }
 
   saveBankDetail() {
-    // this.bankDetail.npoProfileId = Number(this.selectedApplicationId);
-    // this.bankDetail.bankId = this.selectedBank.id;
-    // this.bankDetail.branchId = this.selectedBranch.id;
-    // this.bankDetail.accountTypeId = this.selectedAccountType.id;
-    // this.bankDetail.isActive = true;
-    // this.newBankDetail ? this.createBankDetail(this.bankDetail): this.updateBankDetail(this.bankDetail);
-    // this.displayBankDetailDialog = false;
-
-
     this.bankDetail.npoProfileId = Number(this.selectedApplicationId);
     this.bankDetail.bankId = this.selectedBank.id;
     this.bankDetail.branchId = this.selectedBranch.id;
     this.bankDetail.accountTypeId = this.selectedAccountType.id;
-    this.bankDetail.isActive = true;
 
     this.newBankDetail ? this.createBankDetail(this.bankDetail) : this.updateBankDetail(this.bankDetail);
     this.displayBankDetailDialog = false;
   }
+
   private createBankDetail(bankDetail: IBankDetail) {
     this._npoProfile.createBankDetail(bankDetail).subscribe(
       (resp) => {
@@ -373,6 +366,7 @@ export class ViewFinancialMattersComponent implements OnInit {
       }
     );
   }
+
   private updateBankDetail(bankDetail: IBankDetail) {
     this._npoProfile.updateBankDetail(bankDetail).subscribe(
       (resp) => {
@@ -386,7 +380,7 @@ export class ViewFinancialMattersComponent implements OnInit {
   }
 
   private loadBankDetails(npoProfileId: number) {
-    this._npoProfile.getBankDetailByNpoProfileId(npoProfileId).subscribe(
+    this._npoProfile.getBankDetailByNpoProfileId(this.application.id).subscribe(
       (results) => {
         this.bankDetails = results;
         this.updateBankDetailObjects();
@@ -545,43 +539,36 @@ export class ViewFinancialMattersComponent implements OnInit {
   }
 
   addBudgetIncomeItem() {
-    this.newFinancialMatter = true;
-    var today = this.getCurrentDateTime();
-
-    this.financialMattersIncome.push({
-      createdDateTime: today
-    } as IFinancialMattersIncome);
-
-    if (this.newFinancialMatter) {
-      this.financialmatterIncome.totalFundingAmountI = Number(this.financialmatterIncome.amountOneI) + Number(this.financialmatterIncome.amountTwoI) + Number(this.financialmatterIncome.amountThreeI);
-
-      this.financialMatters.push(this.financialmatterIncome);
-    }
-    else {
-      //this.financialmatter.property = this.selectedFoundationalEnergyStudy.description;
-      this.financialmatterIncome.totalFundingAmountI = Number(this.financialmatterIncome.amountOneI) + Number(this.financialmatterIncome.amountTwoI) + Number(this.financialmatterIncome.amountThreeI);
-      this.financialMatters[this.financialMatters.indexOf(this.selectedFinancialMatterIncome)] = this.financialmatterIncome;
-    }
+    this._npoProfile.createFinancialMattersIncome(this.application.id).subscribe(
+      (resp) => {
+        this.GetFinancialMattersIncome();
+      },
+      (err) => {
+        //
+      }
+    );
   }
 
   addBudgetExpenditureItem() {
-    this.newFinancialMatter = true;
-    var today = this.getCurrentDateTime();
-
-    this.financialMattersExpenditure.push({
-      createdDateTime: today
-    } as IFinancialMattersExpenditure);
-
+    this._npoProfile.createFinancialMattersExpenditure(this.application.id).subscribe(
+      (resp) => {
+        this.GetFinancialMattersExpenditure();
+      },
+      (err) => {
+        //
+      }
+    );
   }
 
   addBudgetOthrSourceFunding() {
-    this.newFinancialMatter = true;
-    var today = this.getCurrentDateTime();
-
-    this.financialMattersOthers.push({
-      createdDateTime: today
-    } as IFinancialMattersOthers);
-
+    this._npoProfile.createFinancialMattersOther(this.application.id).subscribe(
+      (resp) => {
+        this.GetFinancialMattersOther();
+      },
+      (err) => {
+        //
+      }
+    );
   }
 
   private getCurrentDateTime() {
@@ -674,10 +661,14 @@ export class ViewFinancialMattersComponent implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        this.financialMattersIncome.forEach(function (item, index, object) {
-          if (budget === item)
-            object.splice(index, 1);
-        });
+        this._npoProfile.deleteFinancialMattersIncomeById(budget.id).subscribe(
+          (resp) => {
+            this.GetFinancialMattersIncome();
+          },
+          (err) => {
+            //
+          }
+        );
 
         this.calculateTotals();
       },
@@ -692,10 +683,14 @@ export class ViewFinancialMattersComponent implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        this.financialMattersExpenditure.forEach(function (item, index, object) {
-          if (budget === item)
-            object.splice(index, 1);
-        });
+        this._npoProfile.deleteFinancialMattersExpenditureById(budget.id).subscribe(
+          (resp) => {
+            this.GetFinancialMattersExpenditure();
+          },
+          (err) => {
+            //
+          }
+        );
 
         this.calculateExpenditureTotals();
       },
@@ -710,10 +705,14 @@ export class ViewFinancialMattersComponent implements OnInit {
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        this.financialMattersOthers.forEach(function (item, index, object) {
-          if (budget === item)
-            object.splice(index, 1);
-        });
+        this._npoProfile.deleteFinancialMattersOthersById(budget.id).subscribe(
+          (resp) => {
+            this.GetFinancialMattersOther();
+          },
+          (err) => {
+            //
+          }
+        );
 
         this.calculateOthrSourceFundingTotal();
       },
@@ -783,15 +782,9 @@ export class ViewFinancialMattersComponent implements OnInit {
     );
   }
   updateIncomeDetail(rowData: IFinancialMattersIncome) {
-    if (this.isEdit) {
-      var today = this.getCurrentDateTime();
-
-      this.financialMattersIncome[0].updatedUserId = this.currentUserId;
-      this.financialMattersIncome[0].updatedDateTime = today;
-    }
-    this._npoProfile.updateFinancialMattersIncome(this.financialMattersIncome, this.selectedApplicationId).subscribe(
+    this._npoProfile.updateFinancialMattersIncome(rowData, this.selectedApplicationId).subscribe(
       (resp) => {
-        this.GetFinancialMattersIncome();
+        // this.GetFinancialMattersIncome();
       },
       (err) => {
         //
@@ -802,10 +795,6 @@ export class ViewFinancialMattersComponent implements OnInit {
     this._npoProfile.getFinancialMattersIncomeByNpoProfileId(this.selectedApplicationId).subscribe(
       (results) => {
         this.financialMattersIncome = results;
-        // if(results.length > 0)
-        // {
-        //   document.getElementById('previousFinancialYear').hidden = false; 
-        // }
         this.calculateTotals();
       },
       (err) => {
@@ -815,15 +804,9 @@ export class ViewFinancialMattersComponent implements OnInit {
   }
 
   updateExpenditureDetail(rowData: IFinancialMattersExpenditure) {
-    if (this.isEdit) {
-      var today = this.getCurrentDateTime();
-
-      this.financialMattersExpenditure[0].updatedUserId = this.currentUserId;
-      this.financialMattersExpenditure[0].updatedDateTime = today;
-    }
-    this._npoProfile.updateFinancialMattersExpenditure(this.financialMattersExpenditure, this.selectedApplicationId).subscribe(
+    this._npoProfile.updateFinancialMattersExpenditure(rowData, this.selectedApplicationId).subscribe(
       (resp) => {
-        this.GetFinancialMattersExpenditure();
+        // this.GetFinancialMattersExpenditure();
       },
       (err) => {
         //
@@ -834,10 +817,6 @@ export class ViewFinancialMattersComponent implements OnInit {
     this._npoProfile.getFinancialMattersExpenditureByNpoProfileId(this.selectedApplicationId).subscribe(
       (results) => {
         this.financialMattersExpenditure = results;
-        // if(results.length > 0)
-        // {
-        //   document.getElementById('previousFinancialYear').hidden = false; 
-        // }
         this.calculateExpenditureTotals();
       },
       (err) => {
@@ -847,15 +826,9 @@ export class ViewFinancialMattersComponent implements OnInit {
   }
 
   updateOthersDetail(rowData: IFinancialMattersOthers) {
-    if (this.isEdit) {
-      var today = this.getCurrentDateTime();
-
-      this.financialMattersOthers[0].updatedUserId = this.currentUserId;
-      this.financialMattersOthers[0].updatedDateTime = today;
-    }
-    this._npoProfile.updateFinancialMattersOthers(this.financialMattersOthers, this.selectedApplicationId).subscribe(
+    this._npoProfile.updateFinancialMattersOthers(rowData, this.selectedApplicationId).subscribe(
       (resp) => {
-        this.GetFinancialMattersOther();
+        // this.GetFinancialMattersOther();
       },
       (err) => {
         //
@@ -866,10 +839,6 @@ export class ViewFinancialMattersComponent implements OnInit {
     this._npoProfile.getFinancialMattersOthersByNpoProfileId(this.selectedApplicationId).subscribe(
       (results) => {
         this.financialMattersOthers = results;
-        // if(results.length > 0)
-        // {
-        //   document.getElementById('previousFinancialYear').hidden = false; 
-        // }
         this.calculateOthrSourceFundingTotal();
       },
       (err) => {
@@ -879,15 +848,9 @@ export class ViewFinancialMattersComponent implements OnInit {
   }
 
   updateDetail(rowData: IPreviousFinancialYear) {
-    if (this.isEdit) {
-      var today = this.getCurrentDateTime();
-
-      this.previousFinancialYear[0].updatedUserId = this.currentUserId;
-      this.previousFinancialYear[0].updatedDateTime = today;
-    }
-    this._npoProfile.UpdatePreviousYearData(this.previousFinancialYear, this.selectedApplicationId).subscribe(
+    this._npoProfile.UpdatePreviousYearData(rowData, this.selectedApplicationId).subscribe(
       (resp) => {
-        this.GetPreviousYearFinanceData();
+        // this.GetPreviousYearFinanceData();
       },
       (err) => {
         //

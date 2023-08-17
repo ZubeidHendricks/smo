@@ -18,6 +18,8 @@ namespace NPOMS.Services.Interfaces
 
         IEnumerable<FinYearViewModel> GetFinYears();
         Task<FundAppDetailViewModel> Update(string userIdentifier, int bidId, FundAppDetailViewModel model);
+        //Task<FundAppDetailViewModel> UpdateSDA(string userIdentifier, int bidId, FundAppDetailViewModel model);
+
         void UpdateIncome(FinancialMatters model);
         Task<FundAppDetailViewModel> GetById(int bidId);
         IEnumerable<Place> GetPlaces(List<int> sdaIds);

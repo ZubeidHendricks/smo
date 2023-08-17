@@ -80,7 +80,8 @@ import { WorkflowAssessmentComponent } from './components/admin/utilities/workfl
 import { ResponseOptionComponent } from './components/admin/utilities/response-option/response-option.component';
 import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
 import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
-import  {WorkflowApplicationComponent} from './components/application/workflow-application/workflow-application.component'
+import  {WorkflowApplicationComponent} from './components/application/workflow-component/workflow-application.component';
+import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
 
@@ -95,6 +96,8 @@ const routes: Routes = [
   { path: 'access-review', component: AccessReviewComponent },
 
   { path: 'quick-captures', component: QuickCaptureListComponent },
+  { path: 'quick-captures-editList/edit/:id', component: QuickCaptureEditListComponent },
+
   { path: 'quick-capture/create', component: CreateQuickCaptureComponent },
   { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },  
 
@@ -109,7 +112,7 @@ const routes: Routes = [
   { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
   
   { path: 'application/create/:id', component: CreateApplicationComponent },
-  { path: 'application/edit/:id', component: EditApplicationComponent },
+  { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },
   { path: 'application/approve/:id', component: ApproveApplicationComponent },
   { path: 'application/upload-sla/:id', component: UploadSLAComponent },

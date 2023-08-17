@@ -105,14 +105,6 @@ export class ViewFundingApplicationComponent implements OnInit {
     this.applicationPeriodId = +this.id;
     this.fundingApplicationDetails.applicationPeriodId = +this.id;
 
-    //  this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-    //   console.log('response',resp)
-    //    this.selectedApplicationId = resp.applicationId;
-    //    console.log('response',this.selectedApplicationId )
-    //  });    
-
-
-
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -124,8 +116,9 @@ export class ViewFundingApplicationComponent implements OnInit {
       }
     });
   }
+
   getfinFund(event: FinancialMatters) {
-    console.log('event from Edit', JSON.stringify(event));
+    // console.log('event from Edit', JSON.stringify(event));
   }
 
   private loadApplication() {
@@ -307,7 +300,7 @@ export class ViewFundingApplicationComponent implements OnInit {
       else {
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
           if (resp) {
-            this._router.navigateByUrl(`application/edit/${this.application.id}`);
+            this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
             //this.getBidFullObject(resp);
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           }
