@@ -112,7 +112,7 @@ const routes: Routes = [
   { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
   
   { path: 'application/create/:id', component: CreateApplicationComponent },
-  { path: 'application/edit/:id', component: EditApplicationComponent },
+  { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },
   { path: 'application/approve/:id', component: ApproveApplicationComponent },
   { path: 'application/upload-sla/:id', component: UploadSLAComponent },
