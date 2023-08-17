@@ -19,7 +19,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class ViewFundingApplicationComponent implements OnInit {
 
-  
+
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -105,14 +105,6 @@ export class ViewFundingApplicationComponent implements OnInit {
     this.applicationPeriodId = +this.id;
     this.fundingApplicationDetails.applicationPeriodId = +this.id;
 
-    //  this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-    //   console.log('response',resp)
-    //    this.selectedApplicationId = resp.applicationId;
-    //    console.log('response',this.selectedApplicationId )
-    //  });    
-
-
-
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -123,10 +115,10 @@ export class ViewFundingApplicationComponent implements OnInit {
         this.buildMenu();
       }
     });
-    console.log('fundingApplicationDetails after initialization', this.fundingApplicationDetails);
   }
+
   getfinFund(event: FinancialMatters) {
-    console.log('event from Edit', JSON.stringify(event));
+    // console.log('event from Edit', JSON.stringify(event));
   }
 
   private loadApplication() {
@@ -289,14 +281,12 @@ export class ViewFundingApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
-    debugger;
     this.application.status = null;
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;
-      console.log('applicationIdOnBid', this.fundingApplicationDetails);
 
-      this._applicationRepo.updateApplication(this.application).subscribe(resp => {this._applicationRepo.getApplicationById(Number(this.id))});
+      this._applicationRepo.updateApplication(this.application).subscribe(resp => { this._applicationRepo.getApplicationById(Number(this.id)) });
       this.application.statusId = status;
 
       if (applicationIdOnBid.id == null) {
@@ -348,7 +338,6 @@ export class ViewFundingApplicationComponent implements OnInit {
           this._bidService.getApplicationBiId(results.id).subscribe(response => { // can you please return bid obj not DOM
             if (response.id != null) {
               this.getFundingApplicationDetails(response);
-              console.log('data.result', response);
             }
           });
           this.fASteps(results.applicationPeriod);
@@ -369,7 +358,6 @@ export class ViewFundingApplicationComponent implements OnInit {
   }
 
   private getBidFullObject(data) {
-    debugger;
     this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;

@@ -61,20 +61,16 @@ export class ViewProjectImplementationComponent implements OnInit {
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
-      console.log('ng OnInit Id', params.get('id'));
-      console.log('this.selectedApplicationId ', this.selectedApplicationId);
     });
 
     this.cols = [
-      {header: 'Description', width: '45%' },
-      {  header: 'Beneficiaries', width: '25%' },
-      {header: 'Budget', width: '15%' },
-      {  header: 'Actions', width: '10%' }
+      { header: 'Description', width: '45%' },
+      { header: 'Beneficiaries', width: '25%' },
+      { header: 'Budget', width: '15%' },
+      { header: 'Actions', width: '10%' }
     ];
     this.setYearRange();
 
-    console.log('Places coming from Edit component on ProjImpl', this.places);
-    console.log('Places coming from ProjectImpsubPlacesAll', this.allsubPlaces);
     this.allDropdownsLoaded();
   }
 
@@ -95,10 +91,8 @@ export class ViewProjectImplementationComponent implements OnInit {
   }
 
   editProjImpl(data: IProjectImplementation) {
-    debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
-    console.log('data', data);
     this.newImplementation = false;
     this.implementation = this.cloneImplementation(data);
     // this.implementation.timeframe = [];
@@ -106,7 +100,6 @@ export class ViewProjectImplementationComponent implements OnInit {
     // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
     this.implementation.places = this.implementation.places;
     this.implementation.subPlaces = this.implementation.subPlaces;
-    console.log('bit after', this.fundingApplicationDetails)
     this.placesChange(this.implementation.places);
     this.subPlacesChange(this.implementation.subPlaces);
     //if(this.application.statusId == 3 || 22||23){ this.displayDialogImpl = false;}
@@ -138,7 +131,6 @@ export class ViewProjectImplementationComponent implements OnInit {
   }
 
   deleteProjImpl(projImpl) {
-    debugger;
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
@@ -227,15 +219,12 @@ export class ViewProjectImplementationComponent implements OnInit {
     this.fundingApplicationDetails.implementations = this.implementations;
     this.implementationsChange.emit(this.implementations);
     this.implementation = null;
-    console.log('bit after', this.fundingApplicationDetails)
   }
 
 
   onRowSelect(event) {
-    debugger;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
-    console.log('data', event.data);
     this.newImplementation = false;
     this.implementation = this.cloneImplementation(event.data);
     // this.implementation.timeframe = [];
@@ -243,7 +232,6 @@ export class ViewProjectImplementationComponent implements OnInit {
     // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
     this.implementation.places = this.implementation.places;
     this.implementation.subPlaces = this.implementation.subPlaces;
-    console.log('bit after', this.fundingApplicationDetails)
     this.placesChange(this.implementation.places);
     this.subPlacesChange(this.implementation.subPlaces);
     //if(this.application.statusId == 3 || 22||23){ this.displayDialogImpl = false;}
@@ -260,7 +248,6 @@ export class ViewProjectImplementationComponent implements OnInit {
 
 
   cloneImplementation(c: IProjectImplementation): IProjectImplementation {
-    debugger;
     let addFun = {} as IProjectImplementation;
     for (let prop in c) {
       addFun[prop] = c[prop];

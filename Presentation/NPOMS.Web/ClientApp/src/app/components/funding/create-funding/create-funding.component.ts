@@ -101,7 +101,6 @@ export class CreateFundingComponent implements OnInit {
 
   private saveItems() {
     if (this.canContinue()) {
-      console.log('save information');
       this._router.navigateByUrl('npo-funding');
     }
   }

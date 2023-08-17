@@ -4,8 +4,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { IAffiliatedOrganisation, ISourceOfInformation } from 'src/app/models/FinancialMatters';
-import { DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA, IPlace, ISubPlace, IApplication, IFundingApplicationDetails } from 'src/app/models/interfaces';
+import { PermissionsEnum, StatusEnum, DropdownTypeEnum } from 'src/app/models/enums';
+import { IFundingApplicationDetails, IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA, IProjectInformation, IMonitoringAndEvaluation } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
@@ -16,12 +16,11 @@ import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-funding-application-view',
-  templateUrl: './funding-application-view.component.html',
-  styleUrls: ['./funding-application-view.component.css']
+  selector: 'app-qc-application-details-edit',
+  templateUrl: './qc-application-details-edit.component.html',
+  styleUrls: ['./qc-application-details-edit.component.css']
 })
-export class FundingApplicationViewComponent implements OnInit {
-
+export class QcApplicationDetailsEditComponent implements OnInit {
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
 
@@ -31,13 +30,26 @@ export class FundingApplicationViewComponent implements OnInit {
   @Output() AmountChange = new EventEmitter();
   @Input() fundingApplicationDetails: IFundingApplicationDetails;
 
-  @Input() application: IApplication;
+  application: IApplication;
   canEdit: boolean = false;
 
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
   @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
 
+  dropdownTouched: boolean = false;
+  /* Permission logic */
+  public IsAuthorized(permission: PermissionsEnum): boolean {
+    if (this.profile != null && this.profile.permissions.length > 0) {
+      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    }
+  }
+
+  public get PermissionsEnum(): typeof PermissionsEnum {
+    return PermissionsEnum;
+  }
+
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
+
   amountApplyingFor: number;
   menuActions: MenuItem[];
   profile: IUser;
@@ -73,7 +85,7 @@ export class FundingApplicationViewComponent implements OnInit {
   applicationTypes: IApplicationType[];
   selectedApplicationType: IApplicationType;
   stateOptions: any[];
-  dropdownTouched: boolean = false;
+
   finYearRange: string;
 
   // Highlight required fields on validate click
@@ -97,19 +109,12 @@ export class FundingApplicationViewComponent implements OnInit {
   sdas: ISDA[] = [];
   selectedSdas: ISDA[];
   selected: ISDA[] = [];
+
   places: IPlace[] = [];
   subPlacesAll: ISubPlace[];
 
-  /* Permission logic */
-  public IsAuthorized(permission: PermissionsEnum): boolean {
-    if (this.profile != null && this.profile.permissions.length > 0) {
-      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
-    }
-  }
-
-  public get PermissionsEnum(): typeof PermissionsEnum {
-    return PermissionsEnum;
-  }
+  @Output() applicationDetailsChange: EventEmitter<IFundingApplicationDetails> = new EventEmitter<IFundingApplicationDetails>();
+  selectedOption: string = '';
 
   constructor(
     private _router: Router,
@@ -129,9 +134,7 @@ export class FundingApplicationViewComponent implements OnInit {
   getSelectedValue(value: string) {
     this.selectedDropdownValue = value;
   }
-
   ngOnInit(): void {
-
     this._spinner.show();
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
@@ -139,18 +142,23 @@ export class FundingApplicationViewComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-
         this.loadDepartments();
         this.loadApplicationTypes();
         this.loadApplicationPeriod();
+        this.buildMenu();
         let amountStringId = (<HTMLInputElement>document.getElementById("amountApplyingFor"));
         amountStringId.focus();
+        //Get all district councils
         this.loadDistrictCouncils();
+        //Gel all local municipalities
         this.loadMunicipalities();
+        //Get all regions
         this.regionDropdown();
+        //Get all service delivery areas
         this.loadServiceDeliveryAreas();
         this.GetAffiliatedOrganisation();
         this.GetSourceOfInformation();
+        this.loadApplication();
       }
     });
 
@@ -166,32 +174,213 @@ export class FundingApplicationViewComponent implements OnInit {
     ];
   }
 
-  save() {
-    var today = this.getCurrentDateTime();
-    this.sourceOfInformations.npoProfileId = Number(this.selectedApplicationId);
-    this.sourceOfInformations.selectedSourceValue = Number(this.selectedDropdownValue);
-    this.sourceOfInformations.additionalSourceInformation = this.specify;
-    this.updateSourceOfInformation(this.sourceOfInformations);
+
+
+
+  private loadApplication() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.application = results;
+          this._bidService.getApplicationBiId(results.id).subscribe(response => { 
+            if (response.id != null) {
+              this.getFundingApplicationDetails(response);
+              console.log('data.result', response);
+           }
+          });
+        }
+        this._spinner.hide();
+      },
+      (err) => this._spinner.hide()
+    );
   }
 
-  private setPlaces(sdas: ISDA[]): void {
-    if (sdas && sdas.length != 0) {
-      this._bidService.getPlaces(sdas).subscribe(res => {
-        this.places = res;
-        this.getPlace.emit(this.places)
-        this._bidService.getSubPlaces(this.places).subscribe(res => {
-          this.subPlacesAll = res;
-          this.getSubPlace.emit(this.subPlacesAll)
+  private getFundingApplicationDetails(data) {
+    if(data != null){
+    this._bidService.getBid(data.id).subscribe(response => {
+
+      this.getBidFullObject(response)
+    });
+  }
+
+  }
+
+  private getBidFullObject(data) {
+      this.fundingApplicationDetails = data;
+    this.fundingApplicationDetails.id = data.id;
+    this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
+    this.fundingApplicationDetails.implementations = data.implementations;
+    if (this.fundingApplicationDetails.projectInformation != null) {
+      this.fundingApplicationDetails.projectInformation.purposeQuestion = data.projectInformation.purposeQuestion;
+    }
+    else {
+      this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
+    }
+
+    if (this.fundingApplicationDetails.monitoringEvaluation != null) {
+      this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription = data.monitoringEvaluation.monEvalDescription;
+
+    }
+    else {
+      this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
+    }
+    this.fundingApplicationDetails.financialMatters = data.financialMatters;
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
+
+    this.fundingApplicationDetails.implementations?.forEach(c => {
+
+      let a = new Date(c.timeframeFrom);
+      c.timeframe?.push(new Date(c.timeframeTo));
+      c.timeframe?.push(new Date(c.timeframeFrom))
+    });
+
+  }
+
+
+  private bidForm(status: StatusEnum) {
+    debugger;
+    this.application.status = null;
+      this.application.statusId = status;
+      const applicationIdOnBid = this.fundingApplicationDetails;
+
+      if (this.application.id == null) {
+        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+          this.menuActions[1].visible = false;
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          resp;
         });
-      });
+      }
+
+     else {
+        this._bidService.editBid(this.application.id, this.fundingApplicationDetails).subscribe(resp => {
+          if (resp) {
+        
+            this._router.navigateByUrl(`quick-captures-editList/edit/${this.application.id}`);
+
+            //this._router.navigateByUrl(`application/edit/${this.application.id}`);
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          }
+        });
+     }
+
+      if (status == StatusEnum.PendingReview) {
+
+        this.application.statusId = status;
+        this._applicationRepo.updateApplication(this.application).subscribe();
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+        this._router.navigateByUrl('applications');
+      };
+   // }
+  }
+
+
+
+  onAmountChange(event) {
+    let amount = Number(event).valueOf();
+    this.Amount = amount;
+    this.AmountChange.emit(this.Amount);
+  }
+  private buildMenu() {
+    if (this.profile) {
+      this.menuActions = [
+        {
+          label: 'Validate',
+          icon: 'fa fa-check',
+          command: () => {
+            this.formValidate();
+          },
+          visible: false
+        },
+        {
+          label: 'Clear Messages',
+          icon: 'fa fa-undo',
+          command: () => {
+            this.clearMessages();
+          },
+          visible: false
+        },
+        {
+          label: 'Save',
+          icon: 'fa fa-floppy-o',
+          command: () => {
+            //            this.saveFundingApplicationDetails();
+          }
+        },
+        {
+          label: 'Go Back',
+          icon: 'fa fa-step-backward',
+          command: () => {
+            this._router.navigateByUrl('application-periods');
+          }
+        }
+      ];
     }
   }
 
-  private getCurrentDateTime() {
-    let today = new Date();
-    let nextTwoHours = today.getHours() + 2;
-    today.setHours(nextTwoHours);
-    return today;
+  showTable(obj: any) {
+    if (obj.value === "Yes")
+      document.getElementById('affliatedOrganisationInfoTable').hidden = false;
+    else
+      document.getElementById('affliatedOrganisationInfoTable').hidden = true;
+  }
+
+  private formValidate() {
+    this.validated = true;
+    this.validationErrors = [];
+
+    let data = this.applicationPeriod;
+
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear)
+      this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Missing detail required." });
+
+    if (this.validationErrors.length == 0)
+      this.menuActions[1].visible = false;
+    else
+      this.menuActions[1].visible = true;
+  }
+
+  private clearMessages() {
+    this.validated = false;
+    this.validationErrors = [];
+    this.menuActions[1].visible = false;
+  }
+
+  private saveItems() {
+    if (this.canContinue()) {
+      this._spinner.show();
+
+      this.application.statusId = StatusEnum.Saved;
+
+      this._applicationRepo.updateApplication(this.application).subscribe(
+        (resp) => {
+        //  if (resp.statusId === StatusEnum.Saved) {
+            this._spinner.hide();
+            this.menuActions[1].visible = false;
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+       //   }
+
+          if (resp.statusId === StatusEnum.PendingReview) {
+            this._spinner.hide();
+            this._router.navigateByUrl('applications');
+          }
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+   
+    }
+  }
+
+  private canContinue() {
+    this.formValidate();
+
+    if (this.validationErrors.length == 0)
+      return true;
+
+    return false;
   }
 
   private loadFinancialYears(financialYear: IFinancialYear) {
@@ -265,7 +454,9 @@ export class FundingApplicationViewComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
+          console.log('results', results);
           this.applicationPeriodId = results.applicationPeriodId;
+          console.log('this.applicationPeriodId', this.applicationPeriodId);
           this.loadApplicationPeriodById(this.applicationPeriodId);
         } this._spinner.hide();
       },
@@ -277,6 +468,8 @@ export class FundingApplicationViewComponent implements OnInit {
     if (this.applicationPeriodId != null) {
       this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
         (results) => {
+          console.log(results);
+          console.log(results.financialYear);
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
@@ -324,6 +517,8 @@ export class FundingApplicationViewComponent implements OnInit {
   financialYearChange(finYear: IFinancialYear) {
     this.getFinancialYearRange(finYear);
   }
+
+
 
   private getFinancialYearRange(finYear: IFinancialYear) {
     if (this.financialYears.length > 0) {
@@ -383,21 +578,43 @@ export class FundingApplicationViewComponent implements OnInit {
     );
   }
 
+  readonly(): boolean {
+    // if (this.application.statusId == StatusEnum.PendingReview ||
+    //  this.application.statusId == StatusEnum.Approved )
+    //  return true;
+    // else return false;
+    return false;
+  }
+
+  
+
+  nextPage() {
+    debugger;
+      this.activeStep = this.activeStep + 1;
+      this.bidForm(StatusEnum.Saved);
+      this.activeStepChange.emit(this.activeStep);
+  }
+
+  prevPage() {
+    this.activeStep = this.activeStep - 1;
+    this.activeStepChange.emit(this.activeStep);
+  }
+
   private allDropdownsLoaded() {
     if (this.allDistrictCouncils?.length > 0 &&
       this.localMunicipalitiesAll?.length > 0 &&
       this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil.id != undefined)
         this.OnDistrictCouncilChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil);
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality.id != undefined)
         this.onLocalMunicipalityChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality);
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions?.length > 0)
         this.onRegionChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions);
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas?.length > 0)
         this.onSdaChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
     }
   }
@@ -408,10 +625,11 @@ export class FundingApplicationViewComponent implements OnInit {
       this.regions = null;
       this.sdas = null;
     }
-    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
+    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
 
-    if (localMunicipality.id != null) {
+    if (localMunicipality.id != undefined) {
+
       this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
     }
   }
@@ -426,11 +644,12 @@ export class FundingApplicationViewComponent implements OnInit {
     this.selected = null;
     this.regions = null;
     this.sdas = null;
+    
+    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
 
-    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
+    if (districtCouncil.id != undefined) {
 
-    if (districtCouncil.id != null) {
       this.localMunicipalities = this.localMunicipalitiesAll?.filter(x => x.districtCouncilId == districtCouncil.id);
     }
   }
@@ -447,8 +666,8 @@ export class FundingApplicationViewComponent implements OnInit {
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
-    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
+    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
 
     // filter items matching the selected regions
     if (regions != null && regions.length != 0) {
@@ -473,6 +692,7 @@ export class FundingApplicationViewComponent implements OnInit {
     // end  make sure the selected is not redundant!!
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
     this.selectedSdas = filtered;
+    console.log('onRegionChange Selected SDA', this.selectedSdas);
   }
 
 
@@ -487,6 +707,7 @@ export class FundingApplicationViewComponent implements OnInit {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
+    console.log('onSdaChange', this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
 
     let count = 0;
     if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 
@@ -512,6 +733,19 @@ export class FundingApplicationViewComponent implements OnInit {
 
     if (count == 0)
       this.fundingApplicationDetails.implementations.filter(x => { x.places = []; x.subPlaces = []; });
+  }
+
+  private setPlaces(sdas: ISDA[]): void {
+    if (sdas && sdas.length != 0) {
+      this._bidService.getPlaces(sdas).subscribe(res => {
+        this.places = res;
+        this.getPlace.emit(this.places)
+        this._bidService.getSubPlaces(this.places).subscribe(res => {
+          this.subPlacesAll = res;
+          this.getSubPlace.emit(this.subPlacesAll)
+        });
+      });
+    }
   }
 
   private GetSourceOfInformation() {
@@ -575,31 +809,23 @@ export class FundingApplicationViewComponent implements OnInit {
     );
   }
 
-  readonly(): boolean {
-    if (this.application.statusId == StatusEnum.PendingReview ||
-      this.application.statusId == StatusEnum.Approved)
-      return true;
-    else return false;
-    //return false;
-  }
-  onAmountChange(event) {
-    let amount = Number(event).valueOf();
-    this.Amount = amount;
-    this.AmountChange.emit(this.Amount);
+  addNewRow() {
+    this.affliatedOrganisationInfo.push({
+    } as IAffiliatedOrganisation);
   }
 
-  nextPage() {
-    if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
-      this.activeStep = this.activeStep + 1;
-      this.activeStepChange.emit(this.activeStep);
-    }
-    else
-      this._messageService.add({ severity: 'warn', summary: 'Warning', detail: '  Please capture application details info and Save first' });
+  save() {
+    var today = this.getCurrentDateTime();
+    this.sourceOfInformations.npoProfileId = Number(this.selectedApplicationId);
+    this.sourceOfInformations.selectedSourceValue = Number(this.selectedDropdownValue);
+    this.sourceOfInformations.additionalSourceInformation = this.specify;
+    this.updateSourceOfInformation(this.sourceOfInformations);
   }
 
-  prevPage() {
-    this.activeStep = this.activeStep - 1;
-    this.activeStepChange.emit(this.activeStep);
+  private getCurrentDateTime() {
+    let today = new Date();
+    let nextTwoHours = today.getHours() + 2;
+    today.setHours(nextTwoHours);
+    return today;
   }
-
 }

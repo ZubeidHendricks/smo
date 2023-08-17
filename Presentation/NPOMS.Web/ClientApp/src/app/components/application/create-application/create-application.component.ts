@@ -95,7 +95,7 @@ export class CreateApplicationComponent implements OnInit {
         regions: [],
         serviceDeliveryAreas: [],
       } as IFundAppSDADetail,
-    } as IApplicationDetails,   
+    } as IApplicationDetails,
 
     financialMatters: [],
     implementations: [],
@@ -130,12 +130,12 @@ export class CreateApplicationComponent implements OnInit {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
-      this.loadfundingDropdowns();     
+      this.loadfundingDropdowns();
       this.applicationPeriodId = +this.id;
       this.fundingApplicationDetails.applicationPeriodId = +this.id;
       this._bidService.getApplicationBiId(+this.id).subscribe(resp => {
-      });   
-      this.loadQuickCaptureDropdowns();   
+      });
+      this.loadQuickCaptureDropdowns();
       //this.quickCaptureDetails.applicationPeriodId = +this.id;
     });
     this._authService.profile$.subscribe(profile => {
@@ -171,20 +171,20 @@ export class CreateApplicationComponent implements OnInit {
     if (applicationPeriod != null) {
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
         this.faItems = [
-          { label: 'Organisation Details' , command: (event: any) => { this.activeStep = 0; } },
+          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
           { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Financial Matters', command: (event: any) => { this.activeStep = 2; } },
-          { label: 'Project Information', command: (event: any) => { this.activeStep = 3; } },
-          { label: 'Monitoring and Evaluation', command: (event: any) => { this.activeStep = 4; } },
-          { label: 'Project Implementation Plan', command: (event: any) => { this.activeStep = 5; } },
-          { label: 'Application Document', command: (event: any) => { this.activeStep = 6; } }
+          { label: 'Financial Matters' },
+          { label: 'Project Information' },
+          { label: 'Monitoring and Evaluation'},
+          { label: 'Project Implementation Plan'},
+          { label: 'Application Document'}
         ];
       }
     }
   }
 
-  
-  
+
+
   private loadQuickCaptureDropdowns() {
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
@@ -208,14 +208,14 @@ export class CreateApplicationComponent implements OnInit {
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
         this.qcItems = [
           { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
-          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },        
+          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
           { label: 'Application Document', command: (event: any) => { this.activeStep = 2; } }
         ];
       }
     }
   }
-  
- private loadApplication() {
+
+  private loadApplication() {
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
@@ -334,7 +334,7 @@ export class CreateApplicationComponent implements OnInit {
 
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
               this.bidForm(StatusEnum.Saved);
-            }              
+            }
           }
         },
 
@@ -352,7 +352,7 @@ export class CreateApplicationComponent implements OnInit {
 
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
               this.bidForm(StatusEnum.PendingReview);
-            }            
+            }
 
           },
           disabled: true
@@ -370,7 +370,7 @@ export class CreateApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
-    this.application.status =null;
+    this.application.status = null;
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
     }
@@ -386,8 +386,8 @@ export class CreateApplicationComponent implements OnInit {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
           this.menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-         // this._router.navigateByUrl('applications');
-          this._router.navigateByUrl(`application/edit/${this.application.id}`);
+          // this._router.navigateByUrl('applications');
+          this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
           resp;
         });
       }

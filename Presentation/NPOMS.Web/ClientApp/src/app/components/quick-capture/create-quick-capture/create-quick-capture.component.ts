@@ -23,7 +23,7 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   @Input() newlySavedNpoId: number;
   @Output() newlySavedNpoIdChange: EventEmitter<number> = new EventEmitter<number>();
- 
+
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -37,7 +37,7 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   npo: INpo = {
     section18Receipts: false,
-    isQuickCapture : true,
+    isQuickCapture: true,
     contactInformation: [] as IContactInformation[]
   } as INpo;
 
@@ -82,7 +82,7 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   selectedNPO: INpo;
   NPOs: INpo[];
-  
+
   // Highlight required fields on validate click
   validated: boolean = false;
 
@@ -162,14 +162,15 @@ export class CreateQuickCaptureComponent implements OnInit {
           command: () => {
             this.saveItems();
           }
-        },
-        {
-          label: 'Go Back',
-          icon: 'fa fa-step-backward',
-          command: () => {
-            this._router.navigateByUrl('npos');
-          }
         }
+        // ,
+        // {
+        //   label: 'Go Back',
+        //   icon: 'fa fa-step-backward',
+        //   command: () => {
+        //     this._router.navigateByUrl('npos');
+        //   }
+        // }
       ];
     }
   }
@@ -300,7 +301,6 @@ export class CreateQuickCaptureComponent implements OnInit {
   }
 
   private saveItems() {
-    debugger;
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npo;
@@ -313,9 +313,9 @@ export class CreateQuickCaptureComponent implements OnInit {
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
         item.positionId = item.position.id;
-        item.genderId =item.gender.id;
+        item.genderId = item.gender.id;
         item.raceId = item.race.id;
-        item.languageId =item.language.id;
+        item.languageId = item.language.id;
       });
 
       this._npoRepo.createNpo(data).subscribe(
@@ -323,10 +323,9 @@ export class CreateQuickCaptureComponent implements OnInit {
           this._npoProfileRepo.getNpoProfileByNpoId(Number(resp.id)).subscribe(
             (results) => {
               this._spinner.hide();
-             if(results != null) this.newlySavedNpoId = results.id;
-              console.log('this.newlySavedNpoId',this.newlySavedNpoId);
+              if (results != null) this.newlySavedNpoId = results.id;
               //this._router.navigateByUrl('applicationDetails/' + results.id);
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+              this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
 
             },
             (err) => {
@@ -346,7 +345,7 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   nextPage() {
     this.activeStep = this.activeStep + 1;
-    this.activeStepChange.emit(this.activeStep);  
+    this.activeStepChange.emit(this.activeStep);
     this.newlySavedNpoIdChange.emit(this.newlySavedNpoId);
   }
 
@@ -389,7 +388,6 @@ export class CreateQuickCaptureComponent implements OnInit {
   }
 
   saveContactInformation() {
-    debugger;
     this.contactInformation.title = this.selectedTitle;
     this.contactInformation.position = this.selectedPosition;
     this.contactInformation.race = this.selectedRace;
@@ -422,7 +420,6 @@ export class CreateQuickCaptureComponent implements OnInit {
   }
 
   private cloneContactInformation(data: IContactInformation): IContactInformation {
-    debugger;
     let contactInfo = {} as IContactInformation;
 
     for (let prop in data)
@@ -431,10 +428,10 @@ export class CreateQuickCaptureComponent implements OnInit {
     this.selectedTitle = data.title;
     this.selectedPosition = data.position;
 
-    this.selectedRace = data.race;   
+    this.selectedRace = data.race;
 
     this.selectedGender = data.gender;
-    
+
     this.selectedLanguage = data.language;
 
     return contactInfo;

@@ -335,7 +335,9 @@ export enum PermissionsEnum {
     ApproveOption = "WFA.Approve",
 
     /* Quick Capture*/
-    ViewQC = "QC.View"
+    ViewQC = "QC.View",
+    EditQC = "QC.Edit",
+    DownloadQC = "QC.Download"
 }
 
 export enum ReportTypeEnum {

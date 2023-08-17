@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230815091752_Edit-QC-Configuration")]
+    partial class EditQCConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -14156,10 +14158,10 @@ namespace NPOMS.Repository.Migrations
                     b.Property<decimal>("AmountTwoE")
                         .HasColumnType("numeric(18,6)");
 
-                    b.Property<DateTime>("CreatedDateTime")
+                    b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedUserId")
+                    b.Property<int?>("CreatedUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("ExpenditureDescription")
@@ -14168,7 +14170,7 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int?>("FundingApplicationDetailId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<int>("TotalFundingAmountE")
@@ -14183,7 +14185,7 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int?>("UpdatedUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("npoProfileId")
+                    b.Property<int?>("npoProfileId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -14210,10 +14212,10 @@ namespace NPOMS.Repository.Migrations
                     b.Property<decimal>("AmountTwoI")
                         .HasColumnType("numeric(18,6)");
 
-                    b.Property<DateTime>("CreatedDateTime")
+                    b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedUserId")
+                    b.Property<int?>("CreatedUserId")
                         .HasColumnType("int");
 
                     b.Property<int?>("FundingApplicationDetailId")
@@ -14222,7 +14224,7 @@ namespace NPOMS.Repository.Migrations
                     b.Property<string>("IncomeDescription")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<int>("TotalFundingAmountI")
@@ -14237,7 +14239,7 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int?>("UpdatedUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("npoProfileId")
+                    b.Property<int?>("npoProfileId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -14264,16 +14266,16 @@ namespace NPOMS.Repository.Migrations
                     b.Property<decimal>("AmountTwoO")
                         .HasColumnType("numeric(18,6)");
 
-                    b.Property<DateTime>("CreatedDateTime")
+                    b.Property<DateTime?>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedUserId")
+                    b.Property<int?>("CreatedUserId")
                         .HasColumnType("int");
 
                     b.Property<int?>("FundingApplicationDetailId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("OtherDescription")
@@ -14291,7 +14293,7 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int?>("UpdatedUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("npoProfileId")
+                    b.Property<int?>("npoProfileId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -14714,16 +14716,13 @@ namespace NPOMS.Repository.Migrations
                     b.Property<string>("IncomeDescription")
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("UpdatedDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("UpdatedUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("npoProfileId")
+                    b.Property<int?>("npoProfileId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

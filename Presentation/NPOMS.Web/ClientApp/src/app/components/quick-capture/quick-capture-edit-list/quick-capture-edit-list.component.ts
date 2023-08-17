@@ -28,8 +28,8 @@ export class QuickCaptureEditListComponent implements OnInit {
 
   placesAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
-  
-  dropdownTouched: boolean = false;  
+
+  dropdownTouched: boolean = false;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -70,7 +70,6 @@ export class QuickCaptureEditListComponent implements OnInit {
   placeAll: IPlace[] = [];
 
   // funding dropdowns
-  // funding dropdowns
   districtCouncils: IDistrictCouncil[] = [];
   localMunicipalitiesAll: ILocalMunicipality[] = [];
   localMunicipalities: ILocalMunicipality[] = [];
@@ -86,7 +85,7 @@ export class QuickCaptureEditListComponent implements OnInit {
 
   activeStep: number = 0;
   application: IApplication;
- 
+
   selectedOption: boolean;
 
   financialYears: IFinancialYear[];
@@ -105,31 +104,14 @@ export class QuickCaptureEditListComponent implements OnInit {
         regions: [],
         serviceDeliveryAreas: [],
       } as IFundAppSDADetail,
-    } as IApplicationDetails,   
+    } as IApplicationDetails,
 
     financialMatters: [],
     implementations: [],
 
   } as IFundingApplicationDetails;
 
-  quickCaptureDetails: IQuickCaptureDetails = {
-    fundingApplicationDetails: {
-      applicationDetails: {
-        fundAppSDADetail: {
-          districtCouncil: {} as IDistrictCouncil,
-          localMunicipality: {} as ILocalMunicipality,
-          regions: [],
-          serviceDeliveryAreas: [],
-        } as IFundAppSDADetail,
-      } as IApplicationDetails,   
-  
-      financialMatters: [],
-      implementations: [],
-  
-    } as IFundingApplicationDetails,
-    npo:{}  as INpo,
 
-  } as IQuickCaptureDetails;  
 
   constructor(
     private _router: Router,
@@ -182,14 +164,14 @@ export class QuickCaptureEditListComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-              this.bidForm(StatusEnum.Saved);
+            this.bidForm(StatusEnum.Saved);
           }
         },
         {
           label: 'Submit',
           icon: 'fa fa-thumbs-o-up',
-          command: () => {          
-             // this.bidForm(StatusEnum.PendingReview);           
+          command: () => {
+            // this.bidForm(StatusEnum.PendingReview);           
           },
           disabled: true
         },
@@ -206,7 +188,6 @@ export class QuickCaptureEditListComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
-    debugger;
     this.application.status = null;
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
@@ -219,8 +200,8 @@ export class QuickCaptureEditListComponent implements OnInit {
       if (this.validationErrors.length == 0) {
         this._applicationRepo.updateApplication(this.application).subscribe();
       }
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
 
       if (status == StatusEnum.PendingReview) {
         this.application.status.name = "PendingReview";
@@ -245,7 +226,8 @@ export class QuickCaptureEditListComponent implements OnInit {
 
 
   private formValidate() {
-    this.validationErrors = [];  }
+    this.validationErrors = [];
+  }
 
   private clearMessages() {
     this.validationErrors = [];
@@ -302,12 +284,11 @@ export class QuickCaptureEditListComponent implements OnInit {
   }
 
   private qCSteps() {
-    debugger;
-        this.qcItems = [
-          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
-          { label: 'Applications', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Application Details', command: (event: any) => { this.activeStep = 2; } },
-          { label: 'Application Document', command: (event: any) => { this.activeStep = 3; } }
-        ];
-      }  
+    this.qcItems = [
+      { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
+      { label: 'Applications', command: (event: any) => { this.activeStep = 1; } },
+      { label: 'Application Details', command: (event: any) => { this.activeStep = 2; } },
+      { label: 'Application Document', command: (event: any) => { this.activeStep = 3; } }
+    ];
+  }
 }
