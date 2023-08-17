@@ -246,16 +246,18 @@ export class ApplicationDetailsComponent implements OnInit {
 
     if (applicationIdOnBid.id == null) {
       this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-        this.menuActions[1].visible = false;
+        this.menuActions[1].visible = false;       
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
         resp;
+
+        this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
       });
     }
 
     else {
       this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
         if (resp) {
-          this._router.navigateByUrl(`application/edit/${this.application.id}`);
+          this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
         }
       });
