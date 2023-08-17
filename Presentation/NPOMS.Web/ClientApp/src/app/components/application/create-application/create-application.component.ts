@@ -173,11 +173,11 @@ export class CreateApplicationComponent implements OnInit {
         this.faItems = [
           { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
           { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Financial Matters', command: (event: any) => { this.activeStep = 2; } },
-          { label: 'Project Information', command: (event: any) => { this.activeStep = 3; } },
-          { label: 'Monitoring and Evaluation', command: (event: any) => { this.activeStep = 4; } },
-          { label: 'Project Implementation Plan', command: (event: any) => { this.activeStep = 5; } },
-          { label: 'Application Document', command: (event: any) => { this.activeStep = 6; } }
+          { label: 'Financial Matters' },
+          { label: 'Project Information' },
+          { label: 'Monitoring and Evaluation'},
+          { label: 'Project Implementation Plan'},
+          { label: 'Application Document'}
         ];
       }
     }
