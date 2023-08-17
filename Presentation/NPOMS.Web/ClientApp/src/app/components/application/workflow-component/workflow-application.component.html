@@ -3,7 +3,7 @@
 
 
 <div>
-    <p-panel header="Pre-evaluate Funding Application" [style]="{'font-size':'12px'}">
+    <p-panel header="Pre-evaluate Funding Application" [style]="{'font-size':'12px'}" *ngIf="displayPreEvaluate()">
         <div class="p-grid">
             <div class="p-col-3 form-label">
                 <div class="box">
@@ -15,28 +15,16 @@
             </div>
         </div>
         <div style="height: 10px;"></div>
-        <!-- <div class="p-grid">
+       <div class="p-grid">
             <div class="p-col-3 form-label">
                 <div class="box">
-                    <span class="non-mandatory-content">Funding required from DEDAT (R)</span>
+                    <span class="non-mandatory-content">“Are you happy to confirm that this Application is complete?” </span>
                 </div>
             </div>
             <div class="p-col-9">
-                <span class="form-text">{{fundingApplication.applicationInformation.fundingRequiredFromDEDAT | number: '1.0':'en-US'}}</span>
+                <!-- <span class="form-text">{{fundingApplication.applicationInformation.fundingRequiredFromDEDAT | number: '1.0':'en-US'}}</span> -->
             </div>
         </div>
-        <div style="height: 10px;"></div>
-        <div class="p-grid">
-            <div class="p-col-3 form-label">
-                <div class="box">
-                    <span class="non-mandatory-content">Value of own contribution (R)</span>
-                </div>
-            </div>
-            <div class="p-col-9">
-                <span class="form-text">{{fundingApplication.applicationInformation.valueOfOwnContribution | number: '1.0':'en-US'}}</span>
-            </div>
-        </div>
-        <div style="height: 10px;"></div> -->
         <!-- <div style="font-size: 14px;">
             An application must be pre-evaluated prior to recommendation to substantiate the recommendation outcome.
         </div>
@@ -157,3 +145,4 @@
             </div>
         </div> -->
     </p-panel>
+</div>

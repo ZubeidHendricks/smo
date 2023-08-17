@@ -159,6 +159,17 @@ export enum StatusEnum {
     Evaluated = 22,
     EvaluationApproved = 23,
     Submitted = 24,
+    Pending = 23,
+    Verified = 24,
+    PreEvaluationInProgress = 25,
+    PreEvaluated = 26,
+    EvaluationInProgress = 27,
+    EvaluationRecommended = 28,
+    EvaluationNotRecommended = 29,
+    AdjudicationInProgress = 30,
+    AdjudicationApproved = 31,
+    AdjudicationNotApproved = 32,
+    Adjudicated = 33,
     GetName
 }
 
