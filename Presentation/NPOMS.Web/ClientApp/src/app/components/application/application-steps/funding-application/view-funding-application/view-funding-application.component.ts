@@ -300,7 +300,7 @@ export class ViewFundingApplicationComponent implements OnInit {
       else {
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
           if (resp) {
-            this._router.navigateByUrl(`application/edit/${this.application.id}`);
+            this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
             //this.getBidFullObject(resp);
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           }
