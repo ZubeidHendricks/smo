@@ -96,11 +96,6 @@ export class NpoProfileService {
     return this._http.delete<IProjectImplementation[]>(url, httpOptions);
   }
 
-  public UpdatePreviousYearData(previousYearData: any[], npoProfileId: string) {
-    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updatePreviousYearFinance/npoProfileId/${npoProfileId}`;
-    return this._http.put<IPreviousFinancialYear[]>(url, previousYearData, httpOptions);
-  }
-
   public updateProjImpl(updateProjImpl: IProjectImplementation) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/UpdateProjImpl`;
     return this._http.put<IProjectImplementation[]>(url, updateProjImpl, httpOptions);
