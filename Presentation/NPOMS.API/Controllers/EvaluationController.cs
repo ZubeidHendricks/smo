@@ -20,7 +20,8 @@ namespace NPOMS.API.Controllers
 
 		private ILogger<EvaluationController> _logger;
 		private IEvaluationService _evaluationService;
-		private IFundingApplicationService _fundingApplicationService;
+	//	private IFundingApplicationService _fundingApplicationService;
+		private IApplicationService _applicationService;
 		private IEmailService _emailService;
 
 		#endregion
@@ -30,20 +31,23 @@ namespace NPOMS.API.Controllers
 		public EvaluationController(
 			ILogger<EvaluationController> logger,
 			IEvaluationService evaluationService,
-			IFundingApplicationService fundingApplicationService,
+			//IFundingApplicationService fundingApplicationService,
+			IApplicationService applicationService,
 			IEmailService emailService)
 		{
 			_logger = logger;
 			_evaluationService = evaluationService;
-			_fundingApplicationService = fundingApplicationService;
+			//_fundingApplicationService = fundingApplicationService;
+			_applicationService = applicationService;
 			_emailService = emailService;
-		}
+
+        }
 
 		#endregion
 
 		#region Methods
 
-		[HttpGet("fundingApplicationId/{fundingApplicationId}", Name = "GetQuestionnaire")]
+		[HttpGet("fundingApplicationId/{fundingApplicationId}")]
 		public async Task<IActionResult> GetQuestionnaire(int fundingApplicationId)
 		{
 			try
@@ -187,12 +191,12 @@ namespace NPOMS.API.Controllers
 					}
 			}
 
-			await _fundingApplicationService.UpdateFundingApplicationStatus(base.GetUserIdentifier(), model.FundingApplicationId, statusId);
-			var fundingApplication = await _fundingApplicationService.GetFundingApplicationById(model.FundingApplicationId, false);
+			await _applicationService.UpdateFundingApplicationStatus(base.GetUserIdentifier(), model.FundingApplicationId, statusId);
+			var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
 			await ConfigureEmail(fundingApplication);
 		}
 
-		private async Task ConfigureEmail(FundingApplication fundingApplication)
+		private async Task ConfigureEmail(Application fundingApplication)
 		{
 			try
 			{
@@ -204,14 +208,14 @@ namespace NPOMS.API.Controllers
 						// Send email to Capturer
 						var applicationPreEvaluated = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChanged)
-									.Get<StatusChangedEmailTemplate>()
-									.Init(fundingApplication);
+									.Get<StatusChangedEmailTemplate>();
+						//.Init(fundingApplication);
 
 						// Send email to Evaluators
 						var applicationPendingEvaluation = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChangedPending)
-									.Get<StatusChangedPendingEmailTemplate>()
-									.Init(fundingApplication);
+									.Get<StatusChangedPendingEmailTemplate>();
+									//.Init(fundingApplication);
 
 						await applicationPreEvaluated.SubmitToQueue();
 						await applicationPendingEvaluation.SubmitToQueue();
@@ -220,14 +224,14 @@ namespace NPOMS.API.Controllers
 						// Send email to Capturer
 						var applicationEvaluated = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChanged)
-									.Get<StatusChangedEmailTemplate>()
-									.Init(fundingApplication);
+									.Get<StatusChangedEmailTemplate>();
+						//.Init(fundingApplication);
 
 						// Send email to Adjudicators
 						var applicationPendingAdjudication = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChangedPending)
-									.Get<StatusChangedPendingEmailTemplate>()
-									.Init(fundingApplication);
+									.Get<StatusChangedPendingEmailTemplate>();
+									//.Init(fundingApplication);
 
 						await applicationEvaluated.SubmitToQueue();
 						await applicationPendingAdjudication.SubmitToQueue();
@@ -236,8 +240,8 @@ namespace NPOMS.API.Controllers
 						// Send email to Capturer
 						var applicationAdjudicated = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChanged)
-									.Get<StatusChangedEmailTemplate>()
-									.Init(fundingApplication);
+									.Get<StatusChangedEmailTemplate>();
+									//.Init(fundingApplication);
 
 						await applicationAdjudicated.SubmitToQueue();
 						break;

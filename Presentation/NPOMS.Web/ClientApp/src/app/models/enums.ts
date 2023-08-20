@@ -7,11 +7,6 @@ export enum AccessStatusEnum {
     New = 4
 }
 
-export enum ResponseTypeEnum {
-    CloseEnded = 1,
-    Score = 2
-}
-
 export enum QuestionCategoryEnum {
     PreAdjudication,
     Adjudication,
@@ -102,7 +97,10 @@ export enum EntityEnum {
     FundingApplicationDetails = 'FundingApplicationDetails'
 }
 
-
+export enum ResponseTypeEnum {
+    CloseEnded = 1,
+    Score = 2
+}
 
 export enum DeclarationTypeEnum {
     Bidders1 = "Bidders 1",

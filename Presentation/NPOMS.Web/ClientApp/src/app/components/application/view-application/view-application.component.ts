@@ -589,7 +589,9 @@ export class ViewApplicationComponent implements OnInit {
     return resource;
   }
 
-  private updateRowGroupMetaData(serviceProvisionStepId: ServiceProvisionStepsEnum) {
+  private 
+  
+  updateRowGroupMetaData(serviceProvisionStepId: ServiceProvisionStepsEnum) {
 
     switch (serviceProvisionStepId) {
       case ServiceProvisionStepsEnum.Activities:

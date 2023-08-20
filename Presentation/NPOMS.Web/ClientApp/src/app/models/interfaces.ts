@@ -1233,6 +1233,69 @@ export interface IWorkflowAssessment {
     questionCategory: IQuestionCategory;
 }
 
+export interface ICapturedResponse {
+    id: number;
+    fundingApplicationId: number;
+    questionCategoryId: number;
+    statusId: number;
+    comments: string;
+    isActive: boolean;
+    createdDateTime: Date;
+
+    createdUser: IUser;
+    questionnaires: IQuestionResponseViewModel[];
+}
+
+export interface IResponse {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+}
+
+export interface IQuestionResponseViewModel {
+    questionCategoryId: number;
+    questionCategoryName: string;
+    questionSectionId: number;
+    questionSectionName: string;
+    responseTypeId: number;
+    questionId: number;
+    questionName: string;
+    questionSortOrder: number;
+
+    hasComment: boolean;
+    commentRequired: boolean;
+    hasDocument: boolean;
+    documentRequired: boolean;
+    weighting: number;
+    averageScore: number;
+
+    responseId: number;
+    fundingApplicationId: number;
+    responseOptionId: number;
+    comment: string;
+    isSaved: boolean;
+    createdUserId: number;
+    responseOption: IResponseOption;
+}
+
+export interface IResponse {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+}
+
+export interface IResponseHistory {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+}
+
 //export interface IBudget {
 //    id: number;
 //    fundingApplicationId: number;

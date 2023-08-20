@@ -1,4 +1,5 @@
 using AutoMapper;
+using NPOMS.Services.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,6 @@ using NPOMS.Repository.Interfaces.Lookup;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Services.DenodoAPI.Implementation;
 using NPOMS.Services.DenodoAPI.Interfaces;
-using NPOMS.Services.Implementation;
 using NPOMS.Services.Infrastructure.Implementation;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Mappings;
@@ -152,7 +152,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IFinancialMattersIncomeRepository, FinancialMattersIncomeRepository>();
             services.AddScoped<IFinancialMattersExpenditureRepository, FinancialMattersExpenditureRepository>();
             services.AddScoped<IFinancialMattersOthersRepository, FinancialMattersOthersRepository>();
-
+           // services.AddScoped<IFundingApplicationRepository, FundingApplicationRepository>();
 
 
 
@@ -235,6 +235,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IBudgetService, BudgetService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBidService, BidService>();
+            services.AddScoped<IEvaluationService, EvaluationService>();
 
             services.AddConfiguration<dtoBlobConfig>(builder.Configuration, "BlobStorageSettings");
 

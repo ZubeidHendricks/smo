@@ -17,9 +17,16 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId);
 
-		Task<Application> GetByIds(int npoId, int financialYearId, int applicationTypeId);
+        Task<Application> GetById(int ApplicationId);
 
-		Task CloneWorkplan(Application model, int financialYearId, string userIdentifier);
+
+        Task<Application> GetByIds(int npoId, int financialYearId, int applicationTypeId);
+
+        Task UpdateFundingApplicationStatus(string userIdentifier, int fundingApplicationId, int statusId);
+
+        //Task<FundingApplication> GetFundingApplicationById(int id, bool returnAllDetails);
+
+        Task CloneWorkplan(Application model, int financialYearId, string userIdentifier);
 
 		Task CreateApplication(Application model, string userIdentifier);
 
@@ -101,11 +108,12 @@ namespace NPOMS.Services.Interfaces
 		Task<IEnumerable<ApplicationReviewerSatisfaction>> GetApplicationReviewerSatisfactions(int applicationId, int serviceProvisionStepId, int entityId);
 
 		Task CreateApplicationReviewerSatisfaction(ApplicationReviewerSatisfaction model, string userIdentifier);
+		Task GetByIds(int fundingApplicationId, bool v);
 
-        //Task<IEnumerable<Place>> GetPlaces(List<int> sdaIds);
+		//Task<IEnumerable<Place>> GetPlaces(List<int> sdaIds);
 
-        //Task<IEnumerable<SubPlace>> GetSubplaces(List<int> placeIds);
+		//Task<IEnumerable<SubPlace>> GetSubplaces(List<int> placeIds);
 
-        //Task<FundAppDetailViewModel> GetApplicationIDAsync(int bidId);
-    }
+		//Task<FundAppDetailViewModel> GetApplicationIDAsync(int bidId);
+	}
 }
