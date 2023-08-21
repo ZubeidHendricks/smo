@@ -21,6 +21,7 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./workflow-application.component.css']
 })
 export class WorkflowApplicationComponent implements OnInit {
+  
 
    /* Permission logic */
    public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -45,6 +46,8 @@ export class WorkflowApplicationComponent implements OnInit {
     return FacilityTypeEnum;
   }
 
+  _recommendation: boolean = false;
+  isChecked: boolean = false;
   paramSubcriptions: Subscription;
   id: string;
   selectedApplication: IApplication;
@@ -152,6 +155,7 @@ export class WorkflowApplicationComponent implements OnInit {
   preEvaluationQuestionnaire: IQuestionResponseViewModel[];
   evaluationQuestionnaire: IQuestionResponseViewModel[];
   adjudicationQuestionnaire: IQuestionResponseViewModel[];
+  approveQuestionnaire: IQuestionResponseViewModel[];
 
   allCompletedQuestionnaires: IQuestionResponseViewModel[];
   completedPreEvaluationQuestionnaires: IQuestionResponseViewModel[];
@@ -204,7 +208,7 @@ export class WorkflowApplicationComponent implements OnInit {
 
     this.loadApplication();
     
-
+    
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -322,6 +326,16 @@ export class WorkflowApplicationComponent implements OnInit {
 
       },
     );
+  }
+
+  
+  onCheckboxChange(event: any) {
+    this.isChecked = event.target.checked;
+    if (this.isChecked) {
+      this._recommendation = true;
+    } else {
+      this._recommendation = false;
+    }
   }
 
   private loadApplicationApprovals() {
@@ -581,6 +595,25 @@ export class WorkflowApplicationComponent implements OnInit {
     return colspan;
   }
 
+  public displayEvaluate() {
+    switch (this.application.statusId) {
+      case StatusEnum.Submitted:
+      case StatusEnum.PendingApproval:
+      case StatusEnum.EvaluationInProgress:
+      case StatusEnum.EvaluationNotRecommended:
+      case StatusEnum.EvaluationRecommended:
+      case StatusEnum.Evaluated:
+      case StatusEnum.AdjudicationInProgress:
+      case StatusEnum.AdjudicationApproved:
+      case StatusEnum.AdjudicationNotApproved:
+      case StatusEnum.Adjudicated: {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   public submit(questionnaire: IQuestionResponseViewModel[], questionCategory: QuestionCategoryEnum) {
      alert(questionCategory);
     // if (this.canContinue(questionnaire)) {
@@ -643,10 +676,13 @@ export class WorkflowApplicationComponent implements OnInit {
         this.allQuestionnaires = results;
         
         this.preEvaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "PreAdjudication");
-        this.evaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryId === QuestionCategoryEnum.Evaluation);
-        this.adjudicationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryId === QuestionCategoryEnum.Adjudication);
-
+        this.evaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Evaluation");
+        this.adjudicationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication");
+        this.approveQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Approval");
+        
         this.loadResponseOptions();
+
+        console.log('evaluation',  this.evaluationQuestionnaire);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -690,7 +726,9 @@ export class WorkflowApplicationComponent implements OnInit {
 
   public captureEvaluation() {
     switch (this.application.statusId) {
-      case StatusEnum.PreEvaluated:
+      case StatusEnum.Submitted:
+      case StatusEnum.PendingApproval:
+     // case StatusEnum.PreEvaluated:
       case StatusEnum.EvaluationInProgress: {
         return true;
       }
