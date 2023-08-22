@@ -169,17 +169,17 @@ namespace NPOMS.API.Controllers
 			var cn = categories.Where(x => x.Id == Convert.ToInt32(questionCategoryId)).Select(x => x.Name).ToList(); // (x.   Distinct();
             var statusId = 0;
 
-			switch (questionCategoryId)
+			switch (cn[0])
 			{
-				case QuestionCategoryEnum.PreEvaluation:
+				case "PreAdjudication":
 					{
 						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
-							statusId = (int)StatusEnum.PreEvaluated;
+							statusId = (int)StatusEnum.PreAdjudicated;
 						else
-							statusId = (int)StatusEnum.PreEvaluationInProgress;
+							statusId = (int)StatusEnum.PendingReview;
 						break;
 					}
-				case QuestionCategoryEnum.Evaluation:
+				case "Evaluation":
 					{
 						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Evaluated;
@@ -187,7 +187,7 @@ namespace NPOMS.API.Controllers
 							statusId = (int)StatusEnum.EvaluationInProgress;
 						break;
 					}
-				case QuestionCategoryEnum.Adjudication:
+				case "Adjudication":
 					{
 						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Adjudicated;
@@ -210,7 +210,7 @@ namespace NPOMS.API.Controllers
 
 				switch (status)
 				{
-					case StatusEnum.PreEvaluated:
+					case StatusEnum.PreAdjudicated:
 						// Send email to Capturer
 						var applicationPreEvaluated = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChanged)

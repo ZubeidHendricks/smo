@@ -260,7 +260,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/adjudicate/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
           }
         });
       }
