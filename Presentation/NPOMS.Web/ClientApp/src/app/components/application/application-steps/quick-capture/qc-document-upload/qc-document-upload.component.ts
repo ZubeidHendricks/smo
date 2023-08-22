@@ -108,7 +108,6 @@ export class QcDocumentUploadComponent implements OnInit {
     this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
     });
-    console.log('this.selectedApplicationId ',this.selectedApplicationId );
     this._authService.profile$.subscribe(x => {
 
       if (x) {
@@ -151,7 +150,6 @@ export class QcDocumentUploadComponent implements OnInit {
     this.loadApplication();
   }
   private loadApplication() {
-    debugger;
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
@@ -334,7 +332,6 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   public uploadDocument(doc: any) {
-    debugger;
     this.selectedDocTypeId = doc.id;
     this.element.nativeElement.click();
   }
@@ -346,7 +343,6 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   public onUploadChange = (files) => {
-    debugger;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.selectedApplicationId),
       EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
@@ -421,7 +417,8 @@ export class QcDocumentUploadComponent implements OnInit {
       },
 
         (error) => {
-          console.log(error.error)
+          this._loggerService.logException(error);
+          this._loggerService.logException(error.error);
           this._spinner.hide();
         });
   }

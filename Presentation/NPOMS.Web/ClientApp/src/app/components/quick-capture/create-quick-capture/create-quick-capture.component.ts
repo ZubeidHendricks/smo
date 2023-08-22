@@ -1,15 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, IRegistrationStatus, ITitle, IUser } from 'src/app/models/interfaces';
-import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
-import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
-import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 
 @Component({
   selector: 'app-create-quick-capture',
@@ -20,9 +18,8 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
-
-  @Input() newlySavedNpoId: number;
-  @Output() newlySavedNpoIdChange: EventEmitter<number> = new EventEmitter<number>();
+  @Input() npo: INpo;
+  @Output() npoChange: EventEmitter<INpo> = new EventEmitter<INpo>();
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -35,15 +32,7 @@ export class CreateQuickCaptureComponent implements OnInit {
     return PermissionsEnum;
   }
 
-  npo: INpo = {
-    section18Receipts: false,
-    isQuickCapture: true,
-    contactInformation: [] as IContactInformation[]
-  } as INpo;
-
-  menuActions: MenuItem[];
   profile: IUser;
-  validationErrors: Message[];
   stateOptions: any[];
 
   organisationTypes: IOrganisationType[];
@@ -54,6 +43,7 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   titles: ITitle[];
   selectedTitle: ITitle;
+
   positions: IPosition[];
   selectedPosition: IPosition;
 
@@ -66,22 +56,15 @@ export class CreateQuickCaptureComponent implements OnInit {
   languages: ILanguage[];
   selectedLanguage: ILanguage;
 
-  isBoardMember: boolean;
-  isSignatory: boolean;
-  isWrittenAgreementSignatory: boolean;
-  isDisabled: boolean;
   minDate: Date;
   maxDate: Date;
+
   contactCols: any[];
   isContactInformationEdit: boolean;
   newContactInformation: boolean;
   contactInformation: IContactInformation = {} as IContactInformation;
   selectedContactInformation: IContactInformation;
-  primaryContactInformation: IContactInformation;
   displayContactDialog: boolean;
-
-  selectedNPO: INpo;
-  NPOs: INpo[];
 
   // Highlight required fields on validate click
   validated: boolean = false;
@@ -93,10 +76,10 @@ export class CreateQuickCaptureComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _confirmationService: ConfirmationService,
     private _npoRepo: NpoService,
-    private _npoProfileRepo: NpoProfileService,
+    // private _npoProfileRepo: NpoProfileService,
     private _loggerService: LoggerService,
-    private _messageService: MessageService,
-    private _addressLookupService: AddressLookupService
+    private _messageService: MessageService
+    // private _addressLookupService: AddressLookupService
   ) { }
 
   ngOnInit(): void {
@@ -114,19 +97,13 @@ export class CreateQuickCaptureComponent implements OnInit {
         this.loadGender();
         this.loadRaces();
         this.loadLanguages();
-        this.buildMenu();
+        //     this.buildMenu();
       }
     });
 
     this.stateOptions = [
-      {
-        label: 'Yes',
-        value: true
-      },
-      {
-        label: 'No',
-        value: false
-      }
+      { label: 'Yes', value: true },
+      { label: 'No', value: false }
     ];
 
     this.contactCols = [
@@ -137,49 +114,41 @@ export class CreateQuickCaptureComponent implements OnInit {
     ];
   }
 
-  private buildMenu() {
-    if (this.profile) {
-      this.menuActions = [
-        {
-          label: 'Validate',
-          icon: 'fa fa-check',
-          command: () => {
-            this.formValidate();
-          },
-          visible: false
-        },
-        {
-          label: 'Clear Messages',
-          icon: 'fa fa-undo',
-          command: () => {
-            this.clearMessages();
-          },
-          visible: false
-        },
-        {
-          label: 'Save',
-          icon: 'fa fa-floppy-o',
-          command: () => {
-            this.saveItems();
-          }
-        }
-        // ,
-        // {
-        //   label: 'Go Back',
-        //   icon: 'fa fa-step-backward',
-        //   command: () => {
-        //     this._router.navigateByUrl('npos');
-        //   }
-        // }
-      ];
-    }
-  }
+  // private buildMenu() {
+  //   if (this.profile) {
+  //     this.menuActions = [
+  //       {
+  //         label: 'Validate',
+  //         icon: 'fa fa-check',
+  //         command: () => {
+  //           this.formValidate();
+  //         },
+  //         visible: false
+  //       },
+  //       {
+  //         label: 'Clear Messages',
+  //         icon: 'fa fa-undo',
+  //         command: () => {
+  //           this.clearMessages();
+  //         },
+  //         visible: false
+  //       },
+  //       {
+  //         label: 'Save',
+  //         icon: 'fa fa-floppy-o',
+  //         command: () => {
+  //           this.saveItems();
+  //         }
+  //       }
+  //     ];
+  //   }
+  // }
 
   private loadOrganisationTypes() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.OrganisationTypes, false).subscribe(
       (results) => {
         this.organisationTypes = results;
+        this.selectedOrganisationType = this.npo.organisationTypeId ? this.organisationTypes.find(x => x.id === this.npo.organisationTypeId) : null;
         this._spinner.hide();
       },
       (err) => {
@@ -190,10 +159,10 @@ export class CreateQuickCaptureComponent implements OnInit {
   }
 
   private loadRegistrationStatuses() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.RegistrationStatus, false).subscribe(
       (results) => {
         this.registrationStatuses = results;
+        this.selectedRegistrationStatus = this.npo.registrationStatusId ? this.registrationStatuses.find(x => x.id === this.npo.registrationStatusId) : null;
         this._spinner.hide();
       },
       (err) => {
@@ -273,91 +242,139 @@ export class CreateQuickCaptureComponent implements OnInit {
     );
   }
 
-  private formValidate() {
-    this.validated = true;
-    this.validationErrors = [];
 
-    let data = this.npo;
 
-    if (!data.name || !this.selectedOrganisationType || !this.selectedRegistrationStatus)
-      this.validationErrors.push({ severity: 'error', summary: "General Information:", detail: "Missing detail required." });
+  // private clearMessages() {
+  //   this.validated = false;
+  //   this.validationErrors = [];
+  //   this.menuActions[1].visible = false;
+  // }
 
-    if (data.contactInformation.length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "The Organisation Contact List cannot be empty." });
+  // private saveItems() {
+  //   if (this.canContinue()) {
+  //     this._spinner.show();
+  //     let data = this.npo;
 
-    if (data.contactInformation.length > 0 && data.contactInformation.filter(x => x.isPrimaryContact === true).length === 0)
-      this.validationErrors.push({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "Please specify the primary contact." });
+  //     // TK: Set default approval status to Approved after chat with RG on 2023-06-19
+  //     data.approvalStatusId = AccessStatusEnum.Approved; //AccessStatusEnum.New;
+  //     data.organisationTypeId = this.selectedOrganisationType.id;
+  //     data.registrationStatusId = this.selectedRegistrationStatus.id;
 
-    if (this.validationErrors.length == 0)
-      this.menuActions[1].visible = false;
-    else
-      this.menuActions[1].visible = true;
-  }
+  //     data.contactInformation.forEach(item => {
+  //       item.titleId = item.title.id;
+  //       item.positionId = item.position.id;
+  //       item.genderId = item.gender.id;
+  //       item.raceId = item.race.id;
+  //       item.languageId = item.language.id;
+  //     });
 
-  private clearMessages() {
-    this.validated = false;
-    this.validationErrors = [];
-    this.menuActions[1].visible = false;
-  }
+  //     this._npoRepo.createNpo(data).subscribe(
+  //       (resp) => {
+  //         this._npoProfileRepo.getNpoProfileByNpoId(Number(resp.id)).subscribe(
+  //           (results) => {
+  //             this._spinner.hide();
+  //             if (results != null) this.newlySavedNpoId = results.id;
+  //             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+  //           },
+  //           (err) => {
+  //             this._loggerService.logException(err);
+  //             this._spinner.hide();
+  //           }
+  //         );
+  //       },
+  //       (err) => {
+  //         this._loggerService.logException(err);
+  //         this._spinner.hide();
+  //       }
+  //     );
+  //   }
+  // }
 
-  private saveItems() {
+  nextPage() {
     if (this.canContinue()) {
+      // save npo
       this._spinner.show();
       let data = this.npo;
 
       // TK: Set default approval status to Approved after chat with RG on 2023-06-19
       data.approvalStatusId = AccessStatusEnum.Approved; //AccessStatusEnum.New;
-      data.organisationTypeId = this.selectedOrganisationType.id;
-      data.registrationStatusId = this.selectedRegistrationStatus.id;
 
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
         item.positionId = item.position.id;
-        item.genderId = item.gender.id;
-        item.raceId = item.race.id;
-        item.languageId = item.language.id;
+        item.genderId = item.gender ? item.gender.id : null;
+        item.raceId = item.race ? item.race.id : null;
+        item.languageId = item.language ? item.language.id : null;
       });
 
-      this._npoRepo.createNpo(data).subscribe(
-        (resp) => {
-          this._npoProfileRepo.getNpoProfileByNpoId(Number(resp.id)).subscribe(
-            (results) => {
-              this._spinner.hide();
-              if (results != null) this.newlySavedNpoId = results.id;
-              //this._router.navigateByUrl('applicationDetails/' + results.id);
-              this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+      console.log('npo', data);
 
-            },
-            (err) => {
-              this._loggerService.logException(err);
-              this._spinner.hide();
-            }
-          );
-        },
-        (err) => {
-          this._loggerService.logException(err);
+      // this._npoRepo.createNpo(data).subscribe(
+      //   (resp) => {
           this._spinner.hide();
-        }
-      );
+      //     this.npo.id = data.id;
+      //     this.updateNpo();
+
+      //     this.activeStep = this.activeStep + 1;
+      //     this.activeStepChange.emit(this.activeStep);
+      //   },
+      //   (err) => {
+      //     this._loggerService.logException(err);
+      //     this._spinner.hide();
+      //   }
+      // );
     }
   }
 
-
-  nextPage() {
-    this.activeStep = this.activeStep + 1;
-    this.activeStepChange.emit(this.activeStep);
-    this.newlySavedNpoIdChange.emit(this.newlySavedNpoId);
+  public setValidated(value: boolean) {
+    this.validated = value;
   }
-
 
   private canContinue() {
-    this.formValidate();
+    this.validated = true;
+    let data = this.npo;
+    let orgDetailsError: string[] = [];
 
-    if (this.validationErrors.length == 0)
-      return true;
+    if (!data.name || !this.selectedOrganisationType || !this.selectedRegistrationStatus)
+      orgDetailsError.push("Missing detail required under General Information");
 
-    return false;
+    if (data.contactInformation.length === 0)
+      orgDetailsError.push("The Organisation Contact List cannot be empty under Contact / Stakeholder Details");
+
+    if (data.contactInformation.length > 0 && data.contactInformation.filter(x => x.isPrimaryContact === true).length === 0)
+      orgDetailsError.push("Please specify the primary contact under Contact / Stakeholder Details");
+
+    if (orgDetailsError.length > 0)
+      this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+
+    return orgDetailsError.length > 0 ? false : true;
+
+    // if (!data.name || !this.selectedOrganisationType || !this.selectedRegistrationStatus) {
+    //   this._messageService.add({ severity: 'error', summary: "General Information:", detail: "Missing detail required." });
+    //   hasErrors.push(true);
+    // }
+
+    // if (data.contactInformation.length === 0) {
+    //   this._messageService.add({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "The Organisation Contact List cannot be empty." });
+    //   hasErrors.push(true);
+    // }
+
+    // if (data.contactInformation.length > 0 && data.contactInformation.filter(x => x.isPrimaryContact === true).length === 0) {
+    //   this._messageService.add({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "Please specify the primary contact." });
+    //   hasErrors.push(true);
+    // }
+
+    // return hasErrors.includes(true) ? false : true;
   }
+
+  // private canContinue() {
+  //   this.formValidate();
+
+  //   if (this.validationErrors.length == 0)
+  //     return true;
+
+  //   return false;
+  // }
 
   clearIdPassportNumber(event) {
     if (event.value === true)
@@ -399,6 +416,7 @@ export class CreateQuickCaptureComponent implements OnInit {
     else
       this.npo.contactInformation[this.npo.contactInformation.indexOf(this.selectedContactInformation)] = this.contactInformation;
 
+    this.updateNpo();
     this.displayContactDialog = false;
   }
 
@@ -427,11 +445,8 @@ export class CreateQuickCaptureComponent implements OnInit {
 
     this.selectedTitle = data.title;
     this.selectedPosition = data.position;
-
     this.selectedRace = data.race;
-
     this.selectedGender = data.gender;
-
     this.selectedLanguage = data.language;
 
     return contactInfo;
@@ -461,7 +476,17 @@ export class CreateQuickCaptureComponent implements OnInit {
     return true;
   }
 
-  updateNpoName() {
-    this.npo.name = this.selectedNPO.name;
+  public updateNpo() {
+    this.npoChange.emit(this.npo);
+  }
+
+  public updateOrgType(orgType: IOrganisationType) {
+    this.npo.organisationTypeId = orgType.id;
+    this.updateNpo();
+  }
+
+  public updateRegistrationStatus(registrationStatus: IRegistrationStatus) {
+    this.npo.registrationStatusId = registrationStatus.id;
+    this.updateNpo();
   }
 }

@@ -102,10 +102,6 @@ export class QcDocumentUploadEditComponent implements OnInit {
       this.selectedApplicationId = params.get('id');
     });
 
-    console.log('Selected Application Id from document page',this.selectedApplicationId );
-    console.log('Selected fundingApplicationDetails id  from document page',this.fundingApplicationDetails.id );
-
-    
     this._authService.profile$.subscribe(x => {
 
       if (x) {
@@ -149,15 +145,14 @@ export class QcDocumentUploadEditComponent implements OnInit {
   }
 
   private loadApplication() {
-    debugger;
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
           this.application = results;
-                 this._bidService.getApplicationBiId(results.id).subscribe(response => {          
-              this.getFundingApplicationDetails(response); 
-           
+          this._bidService.getApplicationBiId(results.id).subscribe(response => {
+            this.getFundingApplicationDetails(response);
+
           });
         }
         this._spinner.hide();
@@ -165,16 +160,16 @@ export class QcDocumentUploadEditComponent implements OnInit {
       (err) => this._spinner.hide()
     );
   }
-  
-  
+
+
   private getFundingApplicationDetails(data) {
-    if(data != null){
+    if (data != null) {
 
-    this._bidService.getBid(data.id).subscribe(response => {
+      this._bidService.getBid(data.id).subscribe(response => {
 
-      this.getBidFullObject(response)
-    });
-  }
+        this.getBidFullObject(response)
+      });
+    }
 
   }
 
@@ -183,7 +178,7 @@ export class QcDocumentUploadEditComponent implements OnInit {
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
-  }  
+  }
   onFilesUpload(event) {
 
     // Iterate over selected files
@@ -273,7 +268,6 @@ export class QcDocumentUploadEditComponent implements OnInit {
   }
 
   public onUploadChange = (files) => {
-    debugger;
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
     this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.selectedApplicationId),
       EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
@@ -348,10 +342,9 @@ export class QcDocumentUploadEditComponent implements OnInit {
       },
 
         (error) => {
-          console.log(error.error)
-          // this.errMessage= error.error;
+          this._loggerService.logException(error);
+          this._loggerService.logException(error.error);
           this._spinner.hide();
-          // this.display1 = true;     
         });
   }
 

@@ -128,6 +128,13 @@ namespace NPOMS.Services.Implementation
 			var applications = await _applicationRepository.GetEntities();
 			var results = applications.Where(x => !x.StatusId.Equals((int)StatusEnum.New));
 
+			// Filter applications by department.
+			//not supporting multiple departments
+			if (!loggedInUser.Departments[0].DepartmentId.Equals((int)DepartmentEnum.ALL))
+			{
+				results = results.Where(x => x.ApplicationPeriod.DepartmentId.Equals(loggedInUser.Departments[0].Id));
+			}
+
 			if (loggedInUser.Roles.Any(x => !x.RoleId.Equals((int)RoleEnum.Applicant)))
 			{
 				return results;
@@ -319,6 +326,19 @@ namespace NPOMS.Services.Implementation
 
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
+
+			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
+		}
+
+		public async Task DeleteApplicationById(int id, string userIdentifier)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			var model = await _applicationRepository.GetById(id);
+			model.IsActive = false;
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+			model.ApplicationPeriod = null;
 
 			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
 		}

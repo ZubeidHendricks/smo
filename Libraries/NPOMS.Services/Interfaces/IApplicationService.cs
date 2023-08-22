@@ -27,6 +27,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task UpdateApplication(Application model, string userIdentifier);
 
+		Task DeleteApplicationById(int id, string userIdentifier);
+
 		Task<IEnumerable<Objective>> GetAllObjectivesAsync(int NpoId, int applicationPeriodId);
 
 		Task CreateObjective(Objective model, string userIdentifier);

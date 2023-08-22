@@ -147,6 +147,21 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+		[HttpPut("applicationId/{applicationId}", Name = "DeleteApplicationById")]
+		public async Task<IActionResult> DeleteApplicationById(int applicationId)
+		{
+			try
+			{
+				await _applicationService.DeleteApplicationById(applicationId, base.GetUserIdentifier());
+				return Ok();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside DeleteApplicationById action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
 		private async Task CreateApplicationAudit(Application model)
 		{
 			try

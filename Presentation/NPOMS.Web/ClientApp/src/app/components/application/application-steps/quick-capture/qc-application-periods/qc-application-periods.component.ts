@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { Subscription } from 'rxjs';
 import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
@@ -11,6 +12,7 @@ import { ApplicationService } from 'src/app/services/api-services/application/ap
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+
 @Component({
   selector: 'app-qc-application-periods',
   templateUrl: './qc-application-periods.component.html',
@@ -20,15 +22,18 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
+  @Input() npo: INpo;
+  @Input() applicationPeriod: IApplicationPeriod;
+  @Output() applicationPeriodChange: EventEmitter<IApplicationPeriod> = new EventEmitter<IApplicationPeriod>();
 
-  @Input() newlySavedNpoId: number;
-  @Output() newlySavedNpoIdChange: EventEmitter<number> = new EventEmitter<number>();
+  // @Input() newlySavedNpoId: number;
+  // @Output() newlySavedNpoIdChange: EventEmitter<number> = new EventEmitter<number>();
 
-  @Input() newlySavedApplicationId: number;
-  @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
+  // @Input() newlySavedApplicationId: number;
+  // @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
 
-  @Input() applnPeriodId: number;
-  @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
+  // @Input() applnPeriodId: number;
+  // @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
 
 
   /* Permission logic */
@@ -42,34 +47,36 @@ export class QcApplicationPeriodsComponent implements OnInit {
     return PermissionsEnum;
   }
 
-  public get ApplicationTypeEnum(): typeof ApplicationTypeEnum {
-    return ApplicationTypeEnum;
-  }
+  // public get ApplicationTypeEnum(): typeof ApplicationTypeEnum {
+  //   return ApplicationTypeEnum;
+  // }
 
   profile: IUser;
 
   cols: any[];
   allApplicationPeriods: IApplicationPeriod[];
-  applicationPeriodId: number;
-  displayDialog: boolean;
 
-  isSystemAdmin: boolean = true;
-  isAdmin: boolean = false;
-  hasAdminRole: boolean = false;
+  // applicationPeriodId: number;
+  // displayDialog: boolean;
 
-  allNpos: INpo[];
-  selectedNPO: INpo;
+  // isSystemAdmin: boolean = true;
+  // isAdmin: boolean = false;
+  // hasAdminRole: boolean = false;
 
-  application: IApplication = {} as IApplication;
+  // allNpos: INpo[];
+  // selectedNPO: INpo;
 
-  selectedApplicationPeriod: IApplicationPeriod;
-  stateOptions: any[];
-  selectedOption: boolean;
+  // application: IApplication = {} as IApplication;
 
-  financialYears: IFinancialYear[];
-  selectedFinancialYear: IFinancialYear;
-  paramSubcriptions: Subscription;
-  id: string;
+  // selectedApplicationPeriod: IApplicationPeriod;
+  // stateOptions: any[];
+  // selectedOption: boolean;
+
+  // financialYears: IFinancialYear[];
+  // selectedFinancialYear: IFinancialYear;
+  // paramSubcriptions: Subscription;
+  // id: string;
+
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -78,16 +85,15 @@ export class QcApplicationPeriodsComponent implements OnInit {
     private _authService: AuthService,
     private _spinner: NgxSpinnerService,
     private _applicationPeriodRepo: ApplicationPeriodService,
-    private _npoRepo: NpoService,
+    // private _npoRepo: NpoService,
     private _datepipe: DatePipe,
-    private _applicationRepo: ApplicationService,
-    private _activeRouter: ActivatedRoute,
-    private _loggerService: LoggerService
+    // private _applicationRepo: ApplicationService,
+    // private _activeRouter: ActivatedRoute,
+    private _loggerService: LoggerService,
+    private _messageService: MessageService
   ) { }
 
   ngOnInit(): void {
-
-
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -95,21 +101,15 @@ export class QcApplicationPeriodsComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.ViewApplicationPeriods))
           this._router.navigate(['401']);
 
-        this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
-        this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+        //     this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        //     this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
 
-        if (this.isSystemAdmin || this.isAdmin)
-          this.hasAdminRole = true;
+        //     if (this.isSystemAdmin || this.isAdmin)
+        //       this.hasAdminRole = true;
 
-        this.loadNpos();
+        //     this.loadNpos();
         this.loadApplicationPeriods();
-        //this.autoCreateApplication();
       }
-      console.log('Ng- onInit- application Period screeen', this.newlySavedApplicationId);
-      console.log('Ng- onInit- application Period screeen', this.newlySavedNpoId);
-      console.log(' Ng- onInit- application Period screeen', this.applnPeriodId);
-
-
     });
 
     this.cols = [
@@ -123,81 +123,89 @@ export class QcApplicationPeriodsComponent implements OnInit {
       { field: 'status', header: 'Status', width: '5%' }
     ];
 
-    this.stateOptions = [
-      { label: 'Create New Workplan', value: true },
-      { label: 'Use Existing Workplan', value: false }
-    ];
+    // this.stateOptions = [
+    //   { label: 'Create New Workplan', value: true },
+    //   { label: 'Use Existing Workplan', value: false }
+    // ];
   }
 
-  private loadNpos() {
-    this._spinner.show();
-    this._npoRepo.getAllNpos(AccessStatusEnum.Approved).subscribe(
-      (results) => {
-        this.allNpos = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+  // private loadNpos() {
+  //   this._spinner.show();
+  //   this._npoRepo.getAllNpos(AccessStatusEnum.Approved).subscribe(
+  //     (results) => {
+  //       this.allNpos = results;
+  //       this._spinner.hide();
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
+
+  // private autoCreateApplication() {
+
+  //   this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
+  //     (applnnPeriod) => {
+  //       applnnPeriod.applicationTypeId = 3;
+  //       this._applicationPeriodRepo.updateApplicationPeriod(applnnPeriod).subscribe();
+  //     });
+
+  //   this.application.npoId = this.newlySavedNpoId;
+  //   this.application.applicationPeriodId = this.applicationPeriodId;
+
+  //   this.application.statusId = StatusEnum.New;
+
+  //   this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
+  //     (resp) => {
+  //       //this._router.navigateByUrl('application/create/' + resp.id);
+  //       if (resp.id != null) {
+  //         this.newlySavedApplicationId = resp.id;
+  //         this.newlySavedApplicationIdChange.emit(this.newlySavedApplicationId);
+  //         this.applicationPeriodId = resp.applicationPeriodId;
+  //         //this._router.navigateByUrl('quick-captures/' + this.newlySavedApplicationId);
+  //         // this._router.navigateByUrl('Application Period Id passing from Applications Screen to Application Details/' + this.applicationPeriodId);
+
+  //       }
+  //       this.newlySavedNpoIdChange.emit(this.newlySavedNpoId);
+  //       this.applnPeriodIdChange.emit(this.applicationPeriodId);
+  //       this.activeStep = this.activeStep + 1;
+  //       this.activeStepChange.emit(this.activeStep);
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
 
   nextPage() {
-
-    //this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
-    this.activeStep = this.activeStep + 1;
-    this.activeStepChange.emit(this.activeStep);
-    this.newlySavedNpoIdChange.emit(this.activeStep);
-
-    console.log(' From next Page click', this.applicationPeriodId);
-    this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);
-
-  }
-
-  private autoCreateApplication() {
-
-    this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
-      (applnnPeriod) => {
-          applnnPeriod.applicationTypeId = 3;
-          this._applicationPeriodRepo.updateApplicationPeriod(applnnPeriod).subscribe();
-      });
-
-    this.application.npoId = this.newlySavedNpoId;
-    this.application.applicationPeriodId = this.applicationPeriodId;
-    console.log(' autoCreateApplication', this.application.applicationPeriodId);
-
-    this.application.statusId = StatusEnum.New;
-
-    this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
-      (resp) => {
-        //this._router.navigateByUrl('application/create/' + resp.id);
-        if (resp.id != null) {
-          this.newlySavedApplicationId = resp.id;
-          this.newlySavedApplicationIdChange.emit(this.newlySavedApplicationId);
-          console.log('Newly Saved Application After Click Select', this.newlySavedApplicationId);
-          this.applicationPeriodId = resp.applicationPeriodId;
-          //this._router.navigateByUrl('quick-captures/' + this.newlySavedApplicationId);
-          // this._router.navigateByUrl('Application Period Id passing from Applications Screen to Application Details/' + this.applicationPeriodId);
-
-        }
-        this.newlySavedNpoIdChange.emit(this.newlySavedNpoId);
-        this.applnPeriodIdChange.emit(this.applicationPeriodId);
-        this.activeStep = this.activeStep + 1;
-        this.activeStepChange.emit(this.activeStep);
-
-        console.log('applnPeriodIdChange-From Application Period', this.applicationPeriodId);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+    if (this.canContinue()) {
+      this.activeStep = this.activeStep + 1;
+      this.activeStepChange.emit(this.activeStep);
+    }
+    //   this.activeStep = this.activeStep + 1;
+    //   this.activeStepChange.emit(this.activeStep);
+    //   this.newlySavedNpoIdChange.emit(this.activeStep);  
+    //   this._router.navigateByUrl('quick-captures/' + this.applicationPeriodId);  
   }
 
   prevPage() {
     this.activeStep = this.activeStep - 1;
     this.activeStepChange.emit(this.activeStep);
+  }
+
+  private canContinue() {
+    let data = this.applicationPeriod;
+    let applicationError: string[] = [];
+
+    if (!data)
+      applicationError.push("Please select a programme from the list provided");
+
+    if (applicationError.length > 0)
+      this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+
+    return applicationError.length > 0 ? false : true;
   }
 
   private loadApplicationPeriods() {
@@ -209,9 +217,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
           this.setStatus(period);
         });
 
-        //this.allApplicationPeriods = results;
-        this.allApplicationPeriods = results.filter(X => X.status === "Open")
-
+        this.allApplicationPeriods = results.filter(X => X.status === "Open");
         this._spinner.hide();
       },
       (err) => {
@@ -246,81 +252,93 @@ export class QcApplicationPeriodsComponent implements OnInit {
     return value;
   }
 
-  add() {
-    this._router.navigateByUrl('application-period/create');
-  }
+  // add() {
+  //   this._router.navigateByUrl('application-period/create');
+  // }
 
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
-  edit(applicationPeriod: IApplicationPeriod) {
-    //this._router.navigateByUrl('applicationDetails/' + applicationPeriod.id);
-  }
+  // edit(applicationPeriod: IApplicationPeriod) {
+  //   //this._router.navigateByUrl('applicationDetails/' + applicationPeriod.id);
+  // }
 
   onRowSelect(applicationPeriod: IApplicationPeriod) {
-    this.selectedApplicationPeriod = applicationPeriod;
-    this.applicationPeriodId = applicationPeriod.id;
-    this.selectedOption = true;
-    this.selectedFinancialYear = null;
-    this.selectedNPO = null;
-    this.displayDialog = true;
+    this.applicationPeriod = applicationPeriod;
+    this.applicationPeriodChange.emit(this.applicationPeriod);
+
+    //create application
+
+    //   this.selectedApplicationPeriod = applicationPeriod;
+    //   this.applicationPeriodId = applicationPeriod.id;
+    //   this.selectedOption = true;
+    //   this.selectedFinancialYear = null;
+    //   this.selectedNPO = null;
+    //   this.displayDialog = true;
   }
 
-  disableSelect() {
-    if (!this.selectedNPO)
-      return true;
+  public getSelectedApplicationPeriod(rowData: IApplicationPeriod) {
+    if (this.applicationPeriod && rowData.id === this.applicationPeriod.id)
+      return 'green';
 
-    if (this.selectedApplicationPeriod.applicationType.id === ApplicationTypeEnum.SP && !this.selectedOption) {
-      if (!this.selectedFinancialYear)
-        return true
-    }
-    return false;
+    return 'default';
   }
 
-  selectNPO() {
-    this.displayDialog = false;
-    this._spinner.show();
-    this.autoCreateApplication();
-  }
+  // disableSelect() {
+  //   if (!this.selectedNPO)
+  //     return true;
 
-  search(event) {
-    let query = event.query;
-    this._npoRepo.getNpoByName(query).subscribe((results) => {
-      this.allNpos = results;
-    });
-  }
+  //   if (this.selectedApplicationPeriod.applicationType.id === ApplicationTypeEnum.SP && !this.selectedOption) {
+  //     if (!this.selectedFinancialYear)
+  //       return true
+  //   }
+  //   return false;
+  // }
 
-  selectedOptionChange() {
-    this.financialYears = [];
-    this.selectedFinancialYear = null;
-    this.getExistingWorkplanFinancialYear();
-  }
+  // selectNPO() {
+  //   this.displayDialog = false;
+  //   this._spinner.show();
+  //   this.autoCreateApplication();
+  // }
 
-  selectedNPOChange() {
-    this.getExistingWorkplanFinancialYear();
-  }
+  // search(event) {
+  //   let query = event.query;
+  //   this._npoRepo.getNpoByName(query).subscribe((results) => {
+  //     this.allNpos = results;
+  //   });
+  // }
 
-  private getExistingWorkplanFinancialYear() {
-    if (!this.selectedOption && this.selectedNPO) {
-      this._spinner.show();
-      this._applicationRepo.getApplicationsByNpoId(this.selectedNPO.id).subscribe(
-        (results) => {
-          let filteredApplications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP);
+  // selectedOptionChange() {
+  //   this.financialYears = [];
+  //   this.selectedFinancialYear = null;
+  //   this.getExistingWorkplanFinancialYear();
+  // }
 
-          filteredApplications.forEach(item => {
-            var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
-            if (!isPresent)
-              this.financialYears.push(item.applicationPeriod.financialYear);
-          });
+  // selectedNPOChange() {
+  //   this.getExistingWorkplanFinancialYear();
+  // }
 
-          this._spinner.hide();
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
-        }
-      );
-    }
-  }
+  // private getExistingWorkplanFinancialYear() {
+  //   if (!this.selectedOption && this.selectedNPO) {
+  //     this._spinner.show();
+  //     this._applicationRepo.getApplicationsByNpoId(this.selectedNPO.id).subscribe(
+  //       (results) => {
+  //         let filteredApplications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP);
+
+  //         filteredApplications.forEach(item => {
+  //           var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
+  //           if (!isPresent)
+  //             this.financialYears.push(item.applicationPeriod.financialYear);
+  //         });
+
+  //         this._spinner.hide();
+  //       },
+  //       (err) => {
+  //         this._loggerService.logException(err);
+  //         this._spinner.hide();
+  //       }
+  //     );
+  //   }
+  // }
 }
