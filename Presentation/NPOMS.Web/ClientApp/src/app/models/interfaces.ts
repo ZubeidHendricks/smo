@@ -1240,6 +1240,7 @@ export interface ICapturedResponse {
     statusId: number;
     comments: string;
     isActive: boolean;
+    isSignedOff: boolean;
     createdDateTime: Date;
 
     createdUser: IUser;

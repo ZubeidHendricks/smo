@@ -5,7 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory, IResponseOption, PermissionsEnum, QuestionCategoryEnum, ServiceProvisionStepsEnum, StatusEnum, ResponseTypeEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationDetails, ICapturedResponse, IDepartment, IDocumentStore, IFacilityList, IMonitoringAndEvaluation, INpo, INpoProfile, IObjective, IProgramme, IProjectImplementation, IProjectInformation, IResource, IStatus, ISubProgramme, ISustainabilityPlan, IUser, IResponse } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationDetails, ICapturedResponse, IDepartment, IDocumentStore, IFacilityList, IMonitoringAndEvaluation, INpo, INpoProfile, IObjective, IProgramme, IProjectImplementation, IProjectInformation, IResource, IStatus, ISubProgramme, ISustainabilityPlan, IUser, IResponse, IQuestionCategory } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -129,7 +129,7 @@ export class WorkflowApplicationComponent implements OnInit {
   selectedSubProgrammesText: string;
 
   selectedFacilities: IFacilityList[];
-
+  QuestionCategoryentities: IQuestionCategory[];
   allApplicationComments: IApplicationComment[] = [];
   filteredApplicationComments: IApplicationComment[] = [];
 
@@ -207,7 +207,7 @@ export class WorkflowApplicationComponent implements OnInit {
     });
 
     this.loadApplication();
-    
+    this.getQuestionCategory();
     
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -595,6 +595,16 @@ export class WorkflowApplicationComponent implements OnInit {
     return colspan;
   }
 
+  public getQuestionCategory()
+  {
+    
+    this._dropdownService.getEntities(DropdownTypeEnum.QuestionCategory, true).subscribe(
+      (results) => {
+        this.QuestionCategoryentities  = results;       
+      },
+    );
+  }
+
   public displayEvaluate() {
     switch (this.application.statusId) {
       case StatusEnum.Submitted:
@@ -625,14 +635,18 @@ export class WorkflowApplicationComponent implements OnInit {
   }
 
   private createCapturedResponse(questionCategoryId: QuestionCategoryEnum) {
-    alert(questionCategoryId);
+
+    let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategoryId.toString());
+    alert(id[0].id);
     let capturedResponse = {
       fundingApplicationId: this.application.id,
-      questionCategoryId: 1, //questionCategoryId,
-      statusId: questionCategoryId == QuestionCategoryEnum.PreAdjudication ? StatusEnum.PreEvaluated : this.selectedStatus.id,
-      comments: "", //questionCategoryId == QuestionCategoryEnum.PreAdjudication ? "" : this.capturedResponse.comments,
-      isActive: true
+      questionCategoryId: id[0].id, //questionCategoryId,
+      statusId: 26, // questionCategoryId == QuestionCategoryEnum.PreAdjudication ? StatusEnum.PreEvaluated : this.selectedStatus.id,
+      comments: questionCategoryId == QuestionCategoryEnum.PreAdjudication ? "" : this.capturedResponse.comments,
+      isActive: true,
+      isSignedOff: this.isChecked ? true : false
     } as ICapturedResponse;
+    alert(capturedResponse.questionCategoryId);
     console.log('capturedResponse', capturedResponse);
     this._evaluationService.createCapturedResponse(capturedResponse).subscribe(
       (results) => {
@@ -778,6 +792,9 @@ export class WorkflowApplicationComponent implements OnInit {
         this.hasCapturedEvaluation = this.getCapturedResponse(QuestionCategoryEnum.Evaluation) ? true : false;
         this.hasCapturedApproval = this.getCapturedResponse(QuestionCategoryEnum.Approval) ? true : false;
 
+        if(this.hasCapturedPreEvaluation)
+          this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.PreAdjudication);
+
         if (this.captureEvaluation() && this.hasCapturedEvaluation)
           this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.Evaluation);
 
@@ -881,7 +898,18 @@ export class WorkflowApplicationComponent implements OnInit {
   public capturePreEvaluation() {
     switch (this.application.statusId) {
       case StatusEnum.Submitted:
-      case StatusEnum.PendingReview: {
+        case StatusEnum.PendingReview:
+        case StatusEnum.PreEvaluationInProgress:
+        case StatusEnum.PreEvaluated:
+        case StatusEnum.EvaluationInProgress:
+        case StatusEnum.EvaluationNotRecommended:
+        case StatusEnum.EvaluationRecommended:
+        case StatusEnum.Evaluated:
+        case StatusEnum.AdjudicationInProgress:
+        case StatusEnum.AdjudicationApproved:
+        case StatusEnum.AdjudicationNotApproved:
+        case StatusEnum.Adjudicated: 
+     {
         return true;
       }
     }
@@ -892,16 +920,16 @@ export class WorkflowApplicationComponent implements OnInit {
     switch (this.application.statusId) {
       case StatusEnum.Submitted:
       case StatusEnum.PendingReview:
-      // case StatusEnum.PreEvaluationInProgress:
-      // case StatusEnum.PreEvaluated:
-      // case StatusEnum.EvaluationInProgress:
-      // case StatusEnum.EvaluationNotRecommended:
-      // case StatusEnum.EvaluationRecommended:
-      // case StatusEnum.Evaluated:
-      // case StatusEnum.AdjudicationInProgress:
-      // case StatusEnum.AdjudicationApproved:
-      // case StatusEnum.AdjudicationNotApproved:
-      // case StatusEnum.Adjudicated: 
+      case StatusEnum.PreEvaluationInProgress:
+      case StatusEnum.PreEvaluated:
+      case StatusEnum.EvaluationInProgress:
+      case StatusEnum.EvaluationNotRecommended:
+      case StatusEnum.EvaluationRecommended:
+      case StatusEnum.Evaluated:
+      case StatusEnum.AdjudicationInProgress:
+      case StatusEnum.AdjudicationApproved:
+      case StatusEnum.AdjudicationNotApproved:
+      case StatusEnum.Adjudicated: 
       {
         return true;
       }

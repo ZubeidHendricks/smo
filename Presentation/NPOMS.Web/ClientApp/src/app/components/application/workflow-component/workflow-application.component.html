@@ -808,6 +808,69 @@
                     </ng-template>
                     <ng-template pTemplate="footer">
                         <tr>
+                            <td colspan="5">
+                                <p-panel header="Programme Official Declaration" [style]="{'font-size':'12px'}" *ngIf="displayPreEvaluate()">
+                                    <p><span style="color: rgb(51, 51, 51);">I, the undersigned Programme Official, certify that: </span></p><ul><li>I have received the above Funding Application for verification.</li><li><span style="color: rgb(51, 51, 51);">I confirm that I have verified that this application is </span>complete.</li></ul>
+                                    <div class="p-grid">
+                                        <div class="p-col-3 form-label">
+                                            <div class="box">
+                                                <span class="non-mandatory-content">Additional Comments</span>                        
+                                            </div>                    
+                                        </div>
+                                        <div class="p-col-9">
+                                            <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                                        </div>
+                                    </div>
+                                    <div style="height: 10px;"></div>
+                                    <div class="p-grid">
+                                        <div class="p-col-3 form-label">
+                                            <div class="box">
+                                                <span><b>Tick if happy to sign off</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-9">
+                                            <span>
+                                                <input type="checkbox" id="chkRecommendation"  [(ngModel)]="isChecked" (change)="onCheckboxChange($event)">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div style="height: 10px;"></div>
+                                    <div class="p-grid">
+                                        <div class="p-col-3 form-label">
+                                            <div class="box">
+                                                <span class="non-mandatory-content"><b>Signed By:</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-9">
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                    <div style="height: 10px;"></div>
+                                    <div class="p-grid">
+                                        <div class="p-col-3 form-label">
+                                            <div class="box">
+                                                <span class="non-mandatory-content"><b>Date Application Received:</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-9">
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                    <div style="height: 10px;"></div>
+                                    <div class="p-grid">
+                                        <div class="p-col-3 form-label">
+                                            <div class="box">
+                                                <span class="non-mandatory-content"><b>Verification Date:</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-9">
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </p-panel>
+                            </td>
+                        </tr>
+                        <tr>
                             <td colspan="5" style="text-align: right;">
                                 <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
                                 [disabled]="disableElement(preEvaluationQuestionnaire, 'PreAdjudication')" (click)="submit(preEvaluationQuestionnaire, 'PreAdjudication')"></button>
@@ -890,55 +953,7 @@
             </div>
         </div>
         <br>
-        <p-panel header="Programme Official Declaration" [style]="{'font-size':'12px'}" *ngIf="displayPreEvaluate()">
-            <p><span style="color: rgb(51, 51, 51);">I, the undersigned Programme Official, certify that: </span></p><ul><li>I have received the above Funding Application for verification.</li><li><span style="color: rgb(51, 51, 51);">I confirm that I have verified that this application is </span>complete.</li></ul>
-            <div class="p-grid">
-                <div class="p-col-3 form-label">
-                    <div class="box">
-                        <span class="non-mandatory-content">Additional Comments</span>
-                        <br>
-                        <input type="checkbox" id="chkRecommendation"  [(ngModel)]="isChecked" (change)="onCheckboxChange($event)">
-                        <br><b>Tick if happy to sign off</b> 
-                    </div>                    
-                </div>
-                <div class="p-col-9">
-                    <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
-                </div>
-            </div>
-            <div style="height: 10px;"></div>
-            <div class="p-grid">
-                <div class="p-col-3 form-label">
-                    <div class="box">
-                        <span class="non-mandatory-content"><b>Signed By:</b></span>
-                    </div>
-                </div>
-                <div class="p-col-9">
-                    <span></span>
-                </div>
-            </div>
-            <div style="height: 10px;"></div>
-            <div class="p-grid">
-                <div class="p-col-3 form-label">
-                    <div class="box">
-                        <span class="non-mandatory-content"><b>Date Application Received:</b></span>
-                    </div>
-                </div>
-                <div class="p-col-9">
-                    <span></span>
-                </div>
-            </div>
-            <div style="height: 10px;"></div>
-            <div class="p-grid">
-                <div class="p-col-3 form-label">
-                    <div class="box">
-                        <span class="non-mandatory-content"><b>Verification Date:</b></span>
-                    </div>
-                </div>
-                <div class="p-col-9">
-                    <span></span>
-                </div>
-            </div>
-        </p-panel>
+        
     </p-panel>
    
 </div>

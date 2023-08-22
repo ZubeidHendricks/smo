@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using NPOMS.Services.Implementation;
 
 namespace NPOMS.API.Controllers
 {
@@ -23,6 +24,7 @@ namespace NPOMS.API.Controllers
 	//	private IFundingApplicationService _fundingApplicationService;
 		private IApplicationService _applicationService;
 		private IEmailService _emailService;
+		private IDropdownService _dropdownService;
 
 		#endregion
 
@@ -33,13 +35,15 @@ namespace NPOMS.API.Controllers
 			IEvaluationService evaluationService,
 			//IFundingApplicationService fundingApplicationService,
 			IApplicationService applicationService,
-			IEmailService emailService)
+			IEmailService emailService,
+			IDropdownService dropdownService)
 		{
 			_logger = logger;
 			_evaluationService = evaluationService;
 			//_fundingApplicationService = fundingApplicationService;
 			_applicationService = applicationService;
 			_emailService = emailService;
+			_dropdownService = dropdownService;
 
         }
 
@@ -161,7 +165,9 @@ namespace NPOMS.API.Controllers
 			var numberOfCapturedResponses = capturedResponses.Select(x => x.CreatedUserId).Distinct();
 
 			QuestionCategoryEnum questionCategoryId = (QuestionCategoryEnum)model.QuestionCategoryId;
-			var statusId = 0;
+            var categories = await _dropdownService.GetQuestionCategories(false);
+			var cn = categories.Where(x => x.Id == Convert.ToInt32(questionCategoryId)).Select(x => x.Name).ToList(); // (x.   Distinct();
+            var statusId = 0;
 
 			switch (questionCategoryId)
 			{
