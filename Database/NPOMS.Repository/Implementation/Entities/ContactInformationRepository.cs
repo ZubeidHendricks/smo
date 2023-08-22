@@ -44,6 +44,11 @@ namespace NPOMS.Repository.Implementation.Entities
 			await UpdateAsync(oldEntity, existingEntity, true, currentUserId);
 		}
 
+		public Task<ContactInformation> GetByFundingApplicationIdAsync(int fundingApplicationId)
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 	}
 }

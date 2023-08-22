@@ -1,81 +1,805 @@
-<p>workflow-component works!</p>
+    <div *ngIf="isApplicationAvailable">        
+            <div>      
+                <p-panel [style]="{'font-size':'12px'}" header="Organisation Details" [toggleable]= "true">
+                    <app-view-npo [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)">
+                    </app-view-npo>
+                    <div style="height: 10px;"></div>
+                    <app-view-profile [npoId]="application.npoId" (retrievedNpoProfile)="updateNpoProfile($event)">
+                    </app-view-profile>
+                </p-panel>
+            </div>
+        <br>
+            <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
+                <!-- <p-panel [style]="{'font-size':'12px'}" header="Funding Application Details"> -->
+                
+                    <app-view-funding-application [npoId]="application.npoId"  (retrievedNpo)="updateNpo($event)">
+                    </app-view-funding-application>
+                    <div style="height: 10px;"></div>
+                <!-- </p-panel> -->
+            </div>
+            <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
+                <p-panel [style]="{'font-size':'12px'}" header="Workplan Information">
+                    <p-panel [style]="{'font-size':'12px'}" header="Objectives" *ngIf="isObjectivesAvailable">
+                        <p-table [rowHover]="true" [columns]="objectiveCols" [value]="objectives" styleClass="p-datatable-sm">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                        {{col.header}}
+                                    </th>
+                                    <th style="width: 7%;">Actions</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                <tr class="default-font">
+                                    <td>{{rowData.name}}</td>
+                                    <td>{{rowData.fundingSource}}</td>
+                                    <td>{{rowData.fundingPeriodStartDate}} to {{rowData.fundingPeriodEndDate}}</td>
+                                    <td>{{rowData.recipientType.name}}</td>
+                                    <td>{{rowData.budget}}</td>
+                                    <td style="text-align: center;">
+                                        <button pButton pRipple type="button" class="p-button-text action-button"
+                                            icon="fa fa-info-circle" (click)="editObjective(rowData)" pTooltip="View"
+                                            tooltipPosition="top"></button>
+                                        <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
+                                            class="p-button-text action-button" icon="fa fa-comments-o"
+                                            (click)="viewComments(rowData, ServiceProvisionStepsEnum.Objectives)"
+                                            pTooltip="Comments" tooltipPosition="top"></button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-panel>
+                    <div style="height: 10px;"></div>
+                    <p-panel [style]="{'font-size':'12px'}" header="Activities" *ngIf="isActivitiesAvailable">
+                        <p-table [rowHover]="true" [columns]="activityCols" [value]="activities" styleClass="p-datatable-sm">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                        {{col.header}}
+                                    </th>
+                                    <th style="width: 7%;">Actions</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                                <tr class="heading">
+                                    <td *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false" [attr.colspan]="7">
+                                        <span class="p-text-bold">Objective: {{rowData.objective.name}}</span>
+                                    </td>
+                                </tr>
+                                <tr class="default-font">
+                                    <td>{{rowData.activityList.name}}</td>
+                                    <td>{{rowData.activityType.name}}</td>
+                                    <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date:
+                                        'yyyy-MM-dd'}}</td>
+                                    <td>{{rowData.target}}</td>
+                                    <td>{{rowData.facilityListText}}</td>
+                                    <td style="text-align: center;">
+                                        <button pButton pRipple type="button" class="p-button-text action-button"
+                                            icon="fa fa-info-circle" (click)="editActivity(rowData)" pTooltip="View"
+                                            tooltipPosition="top"></button>
+                                        <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
+                                            class="p-button-text action-button" icon="fa fa-comments-o"
+                                            (click)="viewComments(rowData, ServiceProvisionStepsEnum.Activities)"
+                                            pTooltip="Comments" tooltipPosition="top"></button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-panel>
+                    <div style="height: 10px;"></div>
+                    <p-panel [style]="{'font-size':'12px'}" header="Sustainability Plans" *ngIf="isSustainabilityAvailable">
+                        <p-table [rowHover]="true" [columns]="sustainabilityPlanCols" [value]="sustainabilityPlans"
+                            styleClass="p-datatable-sm">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                        {{col.header}}
+                                    </th>
+                                    <th style="width: 7%;">Actions</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                                <tr class="heading">
+                                    <td *ngIf="rowGroupMetadataSustainability[rowIndex].itemExists === false"
+                                        [attr.colspan]="3">
+                                        <span class="p-text-bold">Activity: {{rowData.activity.activityList.name}}</span>
+                                    </td>
+                                </tr>
+                                <tr class="default-font">
+                                    <td>{{rowData.risk}}</td>
+                                    <td>{{rowData.mitigation}}</td>
+                                    <td style="text-align: center;">
+                                        <button pButton pRipple type="button" class="p-button-text action-button"
+                                            icon="fa fa-info-circle" (click)="editSustainabilityPlan(rowData)" pTooltip="View"
+                                            tooltipPosition="top"></button>
+                                        <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
+                                            class="p-button-text action-button" icon="fa fa-comments-o"
+                                            (click)="viewComments(rowData, ServiceProvisionStepsEnum.Sustainability)"
+                                            pTooltip="Comments" tooltipPosition="top"></button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-panel>
+                    <div style="height: 10px;"></div>
+                    <p-panel [style]="{'font-size':'12px'}" header="Resourcing" *ngIf="isResourcesAvailable">
+                        <p-table [rowHover]="true" [columns]="resourceCols" [value]="resources" styleClass="p-datatable-sm">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                        {{col.header}}
+                                    </th>
+                                    <th style="width: 7%;">Actions</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                                <tr class="heading">
+                                    <td *ngIf="rowGroupMetadataResources[rowIndex].itemExists === false" [attr.colspan]="7">
+                                        <span class="p-text-bold">Activity: {{rowData.activity.activityList.name}}</span>
+                                    </td>
+                                </tr>
+                                <tr class="default-font">
+                                    <td *ngFor="let col of columns">
+                                        <span>{{getCellData(rowData, col)}}</span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button pButton pRipple type="button" class="p-button-text action-button"
+                                            icon="fa fa-info-circle" (click)="editResource(rowData)" pTooltip="View"
+                                            tooltipPosition="top"></button>
+                                        <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
+                                            class="p-button-text action-button" icon="fa fa-comments-o"
+                                            (click)="viewComments(rowData, ServiceProvisionStepsEnum.Resourcing)"
+                                            pTooltip="Comments" tooltipPosition="top"></button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-panel>
+                    <div style="height: 10px;"></div>
+                    <p-panel [style]="{'font-size':'12px'}" header="Approvals">
+                        <div *ngIf="mainReview">
+                            <p>As the <span class="approval-details">Main Reviewer</span>, I hereby confirm that the information
+                                captured on the application has been reviewed and accepted as accurate.</p>
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Full Name</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <span class="form-text approval-details">{{mainReview.createdUser.fullName}}</span>
+                                </div>
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Email Address</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <span class="form-text approval-details">{{mainReview.createdUser.email}}</span>
+                                </div>
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Reviewed Date</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <span class="form-text approval-details">{{mainReview.createdDateTime | date:
+                                        'yyyy-MM-dd'}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div *ngIf="approveFromCoCT">
+                            <p>On behalf of the <span class="approval-details">City of Cape Town</span>, I hereby confirm that
+                                the information captured on the application has been reviewed and approved as accurate.</p>
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Full Name</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <span class="form-text approval-details">{{approveFromCoCT.createdUser.fullName}}</span>
+                                </div>
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Email Address</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <span class="form-text approval-details">{{approveFromCoCT.createdUser.email}}</span>
+                                </div>
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Approved Date</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <span class="form-text approval-details">{{approveFromCoCT.createdDateTime | date:
+                                        'yyyy-MM-dd'}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div *ngIf="approveFromDoH">
+                            <p>On behalf of the <span class="approval-details">Department of Health</span>, I hereby confirm
+                                that the information captured on the application has been reviewed and approved as accurate.</p>
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Full Name</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <span class="form-text approval-details">{{approveFromDoH.createdUser.fullName}}</span>
+                                </div>
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Email Address</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <span class="form-text approval-details">{{approveFromDoH.createdUser.email}}</span>
+                                </div>
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Approved Date</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <span class="form-text approval-details">{{approveFromDoH.createdDateTime | date:
+                                        'yyyy-MM-dd'}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-grid p-nogutter p-justify-end">
+                            <p-button label="View History" (onClick)="viewAuditHistory()" icon="fa fa-history"></p-button>
+                        </div>
+                    </p-panel>
+                    <div style="height: 10px;"></div>
+                    <p-panel [style]="{'font-size':'12px'}" header="SLA Documents">
+                        <p-table [rowHover]="true" [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                        {{col.header}}
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
+                                <tr class="default-font">
+                                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                                    <td>{{document.name}}</td>
+                                    <td>{{document.documentType.name}}</td>
+                                    <td>{{document.fileSize}}</td>
+                                    <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                                    <td style="text-align: center;">
+                                        <button pButton pRipple type="button"
+                                            class="p-button-text p-button-success action-button" icon="fa fa-cloud-download"
+                                            (click)="onDownloadDocument(document)" pTooltip="Download"
+                                            tooltipPosition="top"></button>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </p-panel>
+                </p-panel>
+            </div>
+    </div>
 
+    <p-dialog header="Objective" [(visible)]="displayObjectiveDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+        showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Objective Name</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="objective.name"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Objective Description</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="objective.description"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Funding Source</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="objective.fundingSource"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Programme</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedProgrammesText"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub-Programme</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Recipient Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText *ngIf="objective.recipientType"
+                    [(ngModel)]="objective.recipientType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Funding Period</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-calendar [(ngModel)]="objective.fundingPeriodStartDate" placeholder="Select a Start Date" inputId="time"
+                    [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}"
+                    [disabled]="true"></p-calendar>
+                &nbsp; to &nbsp;
+                <p-calendar [(ngModel)]="objective.fundingPeriodEndDate" placeholder="Select a End Date" inputId="time"
+                    [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}"
+                    [disabled]="true"></p-calendar>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Budget</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-inputNumber [(ngModel)]="objective.budget" inputId="minmaxfraction" mode="decimal"
+                    [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}"
+                    [disabled]="true"></p-inputNumber>
+            </div>
+        </div>
+    </p-dialog>
 
+    <p-dialog header="Activity" [(visible)]="displayActivityDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+        showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+        <div class="p-grid" *ngIf="selectedObjective">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Objective</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="selectedObjective.name"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid" *ngIf="selectedObjective">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Objective Description</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
+                    [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}"
+                    [disabled]="true"></textarea>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub-Programme</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Activity Name</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="activity.name"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Activity Description</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="activity.description"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Activity Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText *ngIf="activity.activityType"
+                    [(ngModel)]="activity.activityType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Timeline</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-calendar [(ngModel)]="activity.timelineStartDate" placeholder="Select a Start Date" inputId="time"
+                    [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}"
+                    [disabled]="true"></p-calendar>
+                &nbsp; to &nbsp;
+                <p-calendar [(ngModel)]="activity.timelineEndDate" placeholder="Select a End Date" inputId="time"
+                    [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}"
+                    [disabled]="true"></p-calendar>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Target</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-inputNumber [(ngModel)]="activity.target" inputId="integeronly" [style]="{'width':'100%'}"
+                    [disabled]="true"></p-inputNumber>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Indicators of Success</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Facility and Community Place</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+            </div>
+        </div>
+    </p-dialog>
+
+    <p-dialog header="Sustainability Plan" [(visible)]="displaySustainabilityPlanDialog" [style]="{width: '50vw'}"
+        [focusOnShow]="false" showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+        <div class="p-grid" *ngIf="selectedActivity">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Activity Name</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText *ngIf="selectedActivity.activityList"
+                    [(ngModel)]="selectedActivity.activityList.name" [ngModelOptions]="{standalone: true}"
+                    [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid" *ngIf="selectedActivity">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Activity Description</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
+                    [(ngModel)]="selectedActivity.activityList.description" [ngModelOptions]="{standalone: true}"
+                    [disabled]="true"></textarea>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Sustainability Description</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
+                    [(ngModel)]="sustainabilityPlan.description" [ngModelOptions]="{standalone: true}"
+                    [disabled]="true"></textarea>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Risk</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="sustainabilityPlan.risk"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Mitigation</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="sustainabilityPlan.mitigation"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+    </p-dialog>
+
+    <p-dialog header="Resource" [(visible)]="displayResourceDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+        showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+        <div class="p-grid" *ngIf="selectedActivity">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Activity Name</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText *ngIf="selectedActivity.activityList"
+                    [(ngModel)]="selectedActivity.activityList.name" [ngModelOptions]="{standalone: true}"
+                    [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid" *ngIf="selectedActivity">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Activity Description</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
+                    [(ngModel)]="selectedActivity.activityList.description" [ngModelOptions]="{standalone: true}"
+                    [disabled]="true"></textarea>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Resource Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText *ngIf="resource.resourceType"
+                    [(ngModel)]="resource.resourceType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Service Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText *ngIf="resource.serviceType"
+                    [(ngModel)]="resource.serviceType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Allocation Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText *ngIf="resource.allocationType"
+                    [(ngModel)]="resource.allocationType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Provided vs Required</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText *ngIf="resource.provisionType"
+                    [(ngModel)]="resource.provisionType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Resource Name</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="resource.name"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Resource Description</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="resource.description"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Number of Resources</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="resource.numberOfResources"
+                    [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+    </p-dialog>
+
+    <p-dialog header="View Comments" [(visible)]="displayAllCommentDialog" [style]="{width: '70vw'}" [focusOnShow]="false"
+        showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+        <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10"
+            [value]="filteredApplicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="default-font">
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td>{{rowData.comment}}</td>
+                    <td>{{rowData.createdUser.fullName}}</td>
+                    <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-dialog>
+
+    <p-dialog header="Audit History" [(visible)]="displayHistory" [style]="{width: '50vw'}" [focusOnShow]="false"
+        showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+        <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10"
+            [value]="applicationAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="default-font">
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td>{{rowData.status.name}}</td>
+                    <td>{{rowData.createdUser.fullName}}</td>
+                    <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-dialog>
+
+    <div class="content-section implementation">
+        <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+            <p-footer>
+                <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes"
+                    (click)="cd.accept()"></button>
+                <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No"
+                    (click)="cd.reject()"></button>
+            </p-footer>
+        </p-confirmDialog>
+    </div>
 
 <div>
-    <p-panel header="Pre-evaluate Funding Application" [style]="{'font-size':'12px'}">
-        <div class="p-grid">
-            <div class="p-col-3 form-label">
-                <div class="box">
-                    <span class="non-mandatory-content"></span>
-                </div>
-            </div>
-            <div class="p-col-9">
-                <span class="form-text"></span>
-            </div>
-        </div>
+    <p-panel header="Pre-evaluate Funding Application" [style]="{'font-size':'12px'}" *ngIf="displayPreEvaluate()">
+       
         <div style="height: 10px;"></div>
-        <!-- <div class="p-grid">
-            <div class="p-col-3 form-label">
+       <div class="p-grid">
+            <!-- <div class="p-col-3 form-label">
                 <div class="box">
-                    <span class="non-mandatory-content">Funding required from DEDAT (R)</span>
+                    <span class="non-mandatory-content">“Are you happy to confirm that this Application is complete?” </span>
                 </div>
-            </div>
+            </div> -->
             <div class="p-col-9">
-                <span class="form-text">{{fundingApplication.applicationInformation.fundingRequiredFromDEDAT | number: '1.0':'en-US'}}</span>
+                <!-- <span class="form-text">{{fundingApplication.applicationInformation.fundingRequiredFromDEDAT | number: '1.0':'en-US'}}</span> -->
             </div>
         </div>
-        <div style="height: 10px;"></div>
-        <div class="p-grid">
-            <div class="p-col-3 form-label">
-                <div class="box">
-                    <span class="non-mandatory-content">Value of own contribution (R)</span>
-                </div>
-            </div>
-            <div class="p-col-9">
-                <span class="form-text">{{fundingApplication.applicationInformation.valueOfOwnContribution | number: '1.0':'en-US'}}</span>
-            </div>
-        </div>
-        <div style="height: 10px;"></div> -->
-        <!-- <div style="font-size: 14px;">
+        <div style="font-size: 14px;">
             An application must be pre-evaluated prior to recommendation to substantiate the recommendation outcome.
         </div>
         <div style="height: 10px;"></div>
+        
         <div *ngIf="capturePreEvaluation()">
-            <div *ngIf="this.IsAuthorized(PermissionsEnum.PreEvaluateFundingApplication)">
-                <p-table [value]="preEvaluationQuestionnaire" *ngIf="preEvaluationQuestionnaire" [rowHover]="true" styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
+           <div *ngIf="this.IsAuthorized(PermissionsEnum.PreAdjudicateOption)">
+                 <p-table [value]="preEvaluationQuestionnaire" *ngIf="preEvaluationQuestionnaire" 
+                 [rowHover]="true" styleClass="p-datatable-striped" sortMode="single"  [disabled]="setDisable"
+                  dataKey="questionSectionName">
                     <ng-template pTemplate="header">
                         <tr>
                             <th style="width: 5%; text-align: center;">#</th>
-                            <th>Criteria</th>
-                            <th style="width: 13%;">Compliance</th>
-                            <th style="width: 25%;" *ngIf="hasComment(preEvaluationQuestionnaire)">Comment</th>
-                            <th style="width: 7%;" *ngIf="hasDocument(preEvaluationQuestionnaire)">Evidence</th>
-                            <th style="width: 3%;"></th>
-                            <th style="width: 5%;"></th>
+                            <th style="width: 40%;">Criteria</th>
+                            <th>Compliance</th>
+                            <!-- <th style="width: 25%;" *ngIf="hasComment(preEvaluationQuestionnaire)">Comment</th>
+                            <th style="width: 7%;" *ngIf="hasDocument(preEvaluationQuestionnaire)">Evidence</th> -->
+                            <th></th>
+                            <th></th>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
+                   <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
                         <tr *ngIf="updateRowGroupMetaData(preEvaluationQuestionnaire)[question.questionSectionName].index === rowIndex">
                             <td [attr.colspan]="getColspan(preEvaluationQuestionnaire, 5)">
                                 <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                                <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
+                                <span class="p-text-bold p-ml-2"><b>Pre Adjudication</b></span>
                                 <div class="pull-right"><span class="{{'product-badge status-' + getStatus(preEvaluationQuestionnaire, question)}}">{{getStatusText(preEvaluationQuestionnaire, question)}}</span></div>
                             </td>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex">
+                     <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex">
                         <tr class="default-font">
                             <td style="text-align: center;">{{rowIndex + 1}}</td>
                             <td>{{question.questionName}}</td>
-                            <td [pEditableColumn]="question" pEditableColumn>
-                                <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)" optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}" placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" (onChange)="onSaveResponse($event, question)" [disabled]="hasCapturedPreEvaluation"></p-dropdown>
+                           <td [pEditableColumn]="question" pEditableColumn>
+                                <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)" 
+                                optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}" 
+                                placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
+                                (onChange)="onSaveResponse($event, question)" [disabled]="setDisable"></p-dropdown>
                             </td>
-                            <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(preEvaluationQuestionnaire)">
+                           <!-- <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(preEvaluationQuestionnaire)">
                                 <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" [autoResize]="true" [disabled]="hasCapturedPreEvaluation"></textarea>
                             </td>
                             <td style="text-align: center;" *ngIf="hasDocument(preEvaluationQuestionnaire)">
-                            </td>
+                            </td> -->
                             <td style="text-align: center;">
                                 <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                             </td>
@@ -83,29 +807,104 @@
                                 <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
                             </td>
                         </tr>
+                     
                     </ng-template>
-                    <ng-template pTemplate="emptymessage">
+                    <ng-template pTemplate="footer">
+                        <tr>
+                            <td colspan="5">
+                                <p-panel header="Programme Official Declaration" [style]="{'font-size':'12px'}" *ngIf="displayPreEvaluate()">
+                                    <p><span style="color: rgb(51, 51, 51);">I, the undersigned Programme Official, certify that: </span></p><ul><li>I have received the above Funding Application for verification.</li><li><span style="color: rgb(51, 51, 51);">I confirm that I have verified that this application is </span>complete.</li></ul>
+                                    <div class="p-grid">
+                                        <div class="p-col-3 form-label">
+                                            <div class="box">
+                                                <span class="non-mandatory-content">Additional Comments</span>                        
+                                            </div>                    
+                                        </div>
+                                        <div class="p-col-9">
+                                            <textarea class="form-text" [disabled]="setDisable" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                                        </div>
+                                    </div>
+                                    <div style="height: 10px;"></div>
+                                    <div class="p-grid">
+                                        <div class="p-col-3 form-label">
+                                            <div class="box">
+                                                <span><b>Tick if happy to sign off</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-9">
+                                            <span>
+                                                <input type="checkbox" id="chkRecommendation" [disabled]="setDisable" [(ngModel)]="isChecked" (change)="onCheckboxChange($event)">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div style="height: 10px;"></div>
+                                    <div class="p-grid">
+                                        <div class="p-col-3 form-label">
+                                            <div class="box">
+                                                <span class="non-mandatory-content"><b>Signed By:</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-9">
+                                            <span>{{signedByUser}}</span>
+                                        </div>
+                                    </div>
+                                    <div style="height: 10px;"></div>
+                                    <div class="p-grid">
+                                        <div class="p-col-3 form-label">
+                                            <div class="box">
+                                                <span class="non-mandatory-content"><b>Date Application Received:</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-9">
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                    <div style="height: 10px;"></div>
+                                    <div class="p-grid">
+                                        <div class="p-col-3 form-label">
+                                            <div class="box">
+                                                <span class="non-mandatory-content"><b>Verification Date:</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="p-col-9">
+                                            <span>{{verificationDate | date: 'yyyy-MM-dd'}}</span>
+                                        </div>
+                                    </div>
+                                </p-panel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="text-align: right;">
+                                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
+                                [disabled]="disableElement(preEvaluationQuestionnaire, 'PreAdjudication')" (click)="submit(preEvaluationQuestionnaire, 'PreAdjudication')"></button>
+                            </td>
+                        </tr>
+                        
+                    </ng-template>
+                   <ng-template pTemplate="emptymessage">
                         <tr class="default-font">
                             <td [attr.colspan]="getColspan(preEvaluationQuestionnaire, 5)" style="text-align: center;">No results found</td>
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="footer" *ngIf="hasWeighting(preEvaluationQuestionnaire)">
+                    <!-- <ng-template pTemplate="footer" *ngIf="hasWeighting(preEvaluationQuestionnaire)">
                         <tr>
                             <td colspan="2"><span style="font-weight: bold;">Total</span></td>
                             <td colspan="2"><span style="font-weight: bold;">{{getWeightingTotal(preEvaluationQuestionnaire)}}</span></td>
                             <td [attr.colspan]="getColspan(preEvaluationQuestionnaire, 5) - 4"><span style="font-weight: bold;">{{getAverageScoreTotal(preEvaluationQuestionnaire)}}</span></td>
                         </tr>
-                    </ng-template>
+                    </ng-template> -->
+
+                   
                 </p-table>
-                <div *ngIf="!hasCapturedPreEvaluation">
+                <!-- <div>
                     <div style="height: 10px;"></div>
                     <div class="p-grid p-nogutter p-justify-end">
-                        <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled]="disableElement(preEvaluationQuestionnaire, QuestionCategoryEnum.PreEvaluation)" (click)="submit(preEvaluationQuestionnaire, QuestionCategoryEnum.PreEvaluation)"></button>
+                        <button pButton type="button" label="Submit" icon="fa fa-floppy-o" (click)="submit(preEvaluationQuestionnaire, QuestionCategoryEnum.PreAdjudication)"></button>
                     </div>
-                </div>
+                </div> -->
             </div>
-        </div> -->
-        <!-- <div *ngIf="!capturePreEvaluation() && capturedResponses">
+        </div> 
+        <div *ngIf="!capturePreEvaluation() && capturedResponses">
             <div *ngFor="let capturedResponse of getCapturedResponses(QuestionCategoryEnum.PreEvaluation); let i = index; let isLast = last;">
                 <div *ngIf="capturedResponse.questionnaires">
                     <div class="heading">
@@ -155,5 +954,253 @@
                     <hr *ngIf="!isLast">
                 </div>
             </div>
-        </div> -->
+        </div>
+        <br>
+        
     </p-panel>
+   
+</div>
+<br>
+<p-panel header="Evaluate Funding Application" [style]="{'font-size':'12px'}">
+    <div>
+        <div>
+            <p-table [value]="evaluationQuestionnaire" *ngIf="evaluationQuestionnaire" [rowHover]="true" styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 5%; text-align: center;">#</th>
+                        <th>Element / Question</th>
+                        <th style="width: 10%;">Weight</th>
+                        <th style="width: 10%;">Value</th>
+                        <th style="width: 10%;">Average Score</th>
+                        <th style="width: 25%;" *ngIf="hasComment(evaluationQuestionnaire)">Comment</th>
+                        <th style="width: 7%;" *ngIf="hasDocument(evaluationQuestionnaire)">Evidence</th>
+                        <th style="width: 3%;"></th>
+                        <th style="width: 5%;"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
+                    <tr *ngIf="updateRowGroupMetaData(evaluationQuestionnaire)[question.questionSectionName].index === rowIndex">
+                        <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7)">
+                            <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                            <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
+                            <div class="pull-right"><span class="{{'product-badge status-' + getStatus(evaluationQuestionnaire, question)}}">{{getStatusText(evaluationQuestionnaire, question)}}</span></div>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex">
+                    <tr class="default-font">
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td>{{question.questionName}}</td>
+                        <td>{{question.weighting}}</td>
+                        <td [pEditableColumn]="question" pEditableColumn>
+                            <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)" optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}" placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" (onChange)="onSaveResponse($event, question)" [disabled]="hasCapturedEvaluation"></p-dropdown>
+                        </td>
+                        <td>{{question.averageScore}}</td>
+                        <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(evaluationQuestionnaire)">
+                            <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                        </td>
+                        <td style="text-align: center;" *ngIf="hasDocument(evaluationQuestionnaire)">
+                            <!-- <button *ngIf="question.hasDocument" pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(question)" [disabled]="question.disableDocumentUpload"></button>
+                            <button *ngIf="question.hasDocument" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" (click)="uploadDocument(question)" [disabled]="question.disableDocumentUpload"></button>
+            
+                            <input *ngIf="question.hasDocument" type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;"> -->
+                        </td>
+                        <td style="text-align: center;">
+                            <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
+                        </td>
+                        <td style="text-align: center;">
+                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7)" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer" *ngIf="hasWeighting(evaluationQuestionnaire)">
+                    <tr>
+                        <td colspan="2"><span style="font-weight: bold;">Total</span></td>
+                        <td colspan="2"><span style="font-weight: bold;">{{getWeightingTotal(evaluationQuestionnaire)}}</span></td>
+                        <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7) - 4"><span style="font-weight: bold;">{{getAverageScoreTotal(evaluationQuestionnaire)}}</span></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <div style="height: 10px;"></div>
+            <!-- <p-panel header="Recommend Funding Application">
+                <p>I, the undersigned, hereby declare that my actions pertaining to the consideration of funding for proposals are always of a neutral nature and that I will recuse myself from the committee sitting should an application within my personal interest be discussed, i.e. (immediate family, friends and social contacts).</p>
+                <div class="p-grid">
+                    <div class="p-col-3 form-label">
+                        <div class="box">
+                            <span class="non-mandatory-content">Additional Comments</span>
+                        </div>
+                    </div>
+                    <div class="p-col-9">
+                        <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                    </div>
+                </div>
+                <div style="height: 10px;"></div>
+                <div class="p-grid">
+                    <div class="p-col-3 form-label">
+                        <div class="box">
+                            <span class="mandatory-content">Recommend Application</span>
+                        </div>
+                    </div>
+                    <div class="p-col-9">
+                        <p-dropdown class="form-text" [options]="evaluationStatuses" placeholder="Select a Status" optionLabel="name" [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedEvaluation">
+                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled]="disableElement(evaluationQuestionnaire, QuestionCategoryEnum.Evaluation)" (click)="submit(evaluationQuestionnaire, QuestionCategoryEnum.Evaluation)"></button>
+                </div>
+            </p-panel> -->
+        </div>
+    </div>
+    <div *ngIf="!captureEvaluation() && capturedResponses">
+        <div *ngFor="let capturedResponse of getCapturedResponses(QuestionCategoryEnum.Evaluation); let i = index; let isLast = last;">
+            <div *ngIf="capturedResponse.questionnaires">
+                <div class="heading">
+                    <span>Completed by: <b>{{capturedResponse.createdUser.fullName}}</b></span>
+                </div>
+
+                <p-table [value]="getCompletedQuestionnaire(capturedResponse)" styleClass="p-datatable-striped" [rowHover]="true">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 5%; text-align: center;">#</th>
+                            <th>Element / Question</th>
+                            <th style="width: 10%;">Weight</th>
+                            <th style="width: 10%;">Value</th>
+                            <th style="width: 10%;">Average Score</th>
+                            <th style="width: 25%;" *ngIf="hasComment(capturedResponse.questionnaires)">Comment</th>
+                            <th style="width: 7%;" *ngIf="hasDocument(capturedResponse.questionnaires)">Evidence</th>
+                            <th style="width: 3%;"></th>
+                            <th style="width: 5%;"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
+                        <tr *ngIf="updateRowGroupMetaData(capturedResponse.questionnaires)[question.questionSectionName].index === rowIndex">
+                            <td [attr.colspan]="getColspan(capturedResponse.questionnaires, 7)">
+                                <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
+                                <div class="pull-right"><span class="{{'product-badge status-' + getStatus(getCompletedQuestionnaire(capturedResponse), question)}}">{{getStatusText(getCompletedQuestionnaire(capturedResponse), question)}}</span></div>
+                            </td>
+                        </tr>
+                        <tr class="default-font">
+                            <td style="text-align: center;">{{rowIndex + 1}}</td>
+                            <td>{{question.questionName}}</td>
+                            <td>{{question.weighting}}</td>
+                            <td>{{question.responseOption.name}}</td>
+                            <td>{{question.averageScore}}</td>
+                            <td *ngIf="hasComment(capturedResponse.questionnaires)">{{question.comment}}</td>
+                            <td style="text-align: center;" *ngIf="hasDocument(capturedResponse.questionnaires)">
+                                <!-- <button *ngIf="question.hasComment" pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(question)" [disabled]="question.disableDocumentUpload"></button>
+                                <button *ngIf="question.hasComment" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" (click)="uploadDocument(question)" [disabled]="question.disableDocumentUpload"></button>
+                
+                                <input *ngIf="question.hasComment" type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;"> -->
+                            </td>
+                            <td style="text-align: center;">
+                                <i class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
+                            </td>
+                            <td style="text-align: center;">
+                                <p-button tooltipPosition="left" pTooltip="View History" (onClick)="onCapturedResponseViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr class="default-font">
+                            <td [attr.colspan]="getColspan(capturedResponse.questionnaires, 7)" style="text-align: center;">No results found</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="footer" *ngIf="hasWeighting(capturedResponse.questionnaires)">
+                        <tr>
+                            <td colspan="2"><span style="font-weight: bold;">Total</span></td>
+                            <td colspan="2"><span style="font-weight: bold;">{{getWeightingTotal(capturedResponse.questionnaires)}}</span></td>
+                            <td [attr.colspan]="getColspan(capturedResponse.questionnaires, 7) - 4"><span style="font-weight: bold;">{{getAverageScoreTotal(capturedResponse.questionnaires)}}</span></td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <div style="height: 10px;"></div>
+                <p-panel header="Recommend Funding Application">
+                    <p>I, the undersigned, hereby declare that my actions pertaining to the consideration of funding for proposals are always of a neutral nature and that I will recuse myself from the committee sitting should an application within my personal interest be discussed, i.e. (immediate family, friends and social contacts).</p>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Additional Comments</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <span class="form-text">{{capturedResponse.comments}}</span>
+                        </div>
+                    </div>
+                    <div style="height: 10px;"></div>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Recommend Application</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <span class="form-text">{{getCapturedResponseStatus(capturedResponse)}}</span>
+                        </div>
+                    </div>
+                    <div style="height: 10px;"></div>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Recommended By</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <span class="form-text">{{capturedResponse.createdUser.fullName}}</span>
+                        </div>
+                    </div>
+                    <div style="height: 10px;"></div>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Recommended Date</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <span class="form-text">{{capturedResponse.createdDateTime | date: 'yyyy-MM-dd'}}</span>
+                        </div>
+                    </div>
+                    <div style="height: 10px;"></div>
+                </p-panel>
+                <hr *ngIf="!isLast">
+            </div>
+        </div>
+    </div>
+</p-panel>
+
+<p-dialog header="History" 
+          [(visible)]="displayHistoryDialog" 
+          [style]="{width: '70vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true"
+          [maximizable]="false"
+          [draggable]="false"
+          [resizable]="false">
+    <p-table [value]="responseHistory" styleClass="p-datatable-sm" [columns]="historyCols" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" paginatorDropdownAppendTo="body">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr class="default-font">
+                <td *ngFor="let col of columns">
+                    <span>{{getCellData(rowData, col)}}</span>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>

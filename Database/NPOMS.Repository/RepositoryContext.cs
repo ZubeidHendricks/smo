@@ -294,6 +294,7 @@ namespace NPOMS.Repository
             modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
             modelBuilder.ApplyConfiguration(new UserDepartmentConfiguration());
             modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+
         }
 
         /// <summary>

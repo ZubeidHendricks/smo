@@ -162,7 +162,12 @@ namespace NPOMS.Services.Implementation
 			return await _applicationRepository.GetByIds(npoId, financialYearId, applicationTypeId);
 		}
 
-		public async Task CloneWorkplan(Application model, int financialYearId, string userIdentifier)
+        public async Task<Application> GetById(int applicationId)
+        {
+            return await _applicationRepository.GetById(applicationId);
+        }
+
+        public async Task CloneWorkplan(Application model, int financialYearId, string userIdentifier)
 		{
 			var existingApplication = await GetByIds(model.NpoId, financialYearId, (int)ApplicationTypeEnum.ServiceProvision);
 
@@ -306,7 +311,18 @@ namespace NPOMS.Services.Implementation
 			await _applicationRepository.CreateEntity(model);
 		}
 
-        
+        public async Task UpdateFundingApplicationStatus(string userIdentifier, int fundingApplicationId, int statusId)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            var fundingApplication = await _applicationRepository.GetById(fundingApplicationId);
+            fundingApplication.StatusId = statusId;
+            fundingApplication.UpdatedUserId = currentUser.Id;
+            fundingApplication.UpdatedDateTime = DateTime.Now;
+
+            await _applicationRepository.UpdateAsync(fundingApplication);
+
+        }
+
         public async Task UpdateApplicationStatus(Application model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
@@ -876,6 +892,11 @@ namespace NPOMS.Services.Implementation
             return filteredPlace;
         }
 
-        #endregion
-    }
+		public Task GetByIds(int fundingApplicationId, bool v)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
+	}
 }

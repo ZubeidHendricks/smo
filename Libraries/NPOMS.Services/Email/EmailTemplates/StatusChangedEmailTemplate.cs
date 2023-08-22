@@ -44,7 +44,7 @@ namespace NPOMS.Services.Email.EmailTemplates
 
 				switch (applicationStatus)
 				{
-					case StatusEnum.PreEvaluated:
+					case StatusEnum.PreAdjudicated:
 						action = "has been sent to be evaluated";
 						break;
 					case StatusEnum.Evaluated:

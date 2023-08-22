@@ -17,6 +17,7 @@ namespace NPOMS.Domain.Evaluation
 		public string Comments { get; set; }
 
 		public bool IsActive { get; set; }
+		public bool IsSignedOff { get; set; }
 
 		public int CreatedUserId { get; set; }
 

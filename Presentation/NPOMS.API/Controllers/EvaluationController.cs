@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using NPOMS.Services.Implementation;
 
 namespace NPOMS.API.Controllers
 {
@@ -20,8 +21,10 @@ namespace NPOMS.API.Controllers
 
 		private ILogger<EvaluationController> _logger;
 		private IEvaluationService _evaluationService;
-		private IFundingApplicationService _fundingApplicationService;
+	//	private IFundingApplicationService _fundingApplicationService;
+		private IApplicationService _applicationService;
 		private IEmailService _emailService;
+		private IDropdownService _dropdownService;
 
 		#endregion
 
@@ -30,20 +33,25 @@ namespace NPOMS.API.Controllers
 		public EvaluationController(
 			ILogger<EvaluationController> logger,
 			IEvaluationService evaluationService,
-			IFundingApplicationService fundingApplicationService,
-			IEmailService emailService)
+			//IFundingApplicationService fundingApplicationService,
+			IApplicationService applicationService,
+			IEmailService emailService,
+			IDropdownService dropdownService)
 		{
 			_logger = logger;
 			_evaluationService = evaluationService;
-			_fundingApplicationService = fundingApplicationService;
+			//_fundingApplicationService = fundingApplicationService;
+			_applicationService = applicationService;
 			_emailService = emailService;
-		}
+			_dropdownService = dropdownService;
+
+        }
 
 		#endregion
 
 		#region Methods
 
-		[HttpGet("fundingApplicationId/{fundingApplicationId}", Name = "GetQuestionnaire")]
+		[HttpGet("fundingApplicationId/{fundingApplicationId}")]
 		public async Task<IActionResult> GetQuestionnaire(int fundingApplicationId)
 		{
 			try
@@ -157,19 +165,21 @@ namespace NPOMS.API.Controllers
 			var numberOfCapturedResponses = capturedResponses.Select(x => x.CreatedUserId).Distinct();
 
 			QuestionCategoryEnum questionCategoryId = (QuestionCategoryEnum)model.QuestionCategoryId;
-			var statusId = 0;
+            var categories = await _dropdownService.GetQuestionCategories(false);
+			var cn = categories.Where(x => x.Id == Convert.ToInt32(questionCategoryId)).Select(x => x.Name).ToList(); // (x.   Distinct();
+            var statusId = 0;
 
-			switch (questionCategoryId)
+			switch (cn[0])
 			{
-				case QuestionCategoryEnum.PreEvaluation:
+				case "PreAdjudication":
 					{
 						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
-							statusId = (int)StatusEnum.PreEvaluated;
+							statusId = (int)StatusEnum.PreAdjudicated;
 						else
-							statusId = (int)StatusEnum.PreEvaluationInProgress;
+							statusId = (int)StatusEnum.PendingReview;
 						break;
 					}
-				case QuestionCategoryEnum.Evaluation:
+				case "Evaluation":
 					{
 						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Evaluated;
@@ -177,7 +187,7 @@ namespace NPOMS.API.Controllers
 							statusId = (int)StatusEnum.EvaluationInProgress;
 						break;
 					}
-				case QuestionCategoryEnum.Adjudication:
+				case "Adjudication":
 					{
 						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Adjudicated;
@@ -187,12 +197,12 @@ namespace NPOMS.API.Controllers
 					}
 			}
 
-			await _fundingApplicationService.UpdateFundingApplicationStatus(base.GetUserIdentifier(), model.FundingApplicationId, statusId);
-			var fundingApplication = await _fundingApplicationService.GetFundingApplicationById(model.FundingApplicationId, false);
+			await _applicationService.UpdateFundingApplicationStatus(base.GetUserIdentifier(), model.FundingApplicationId, statusId);
+			var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
 			await ConfigureEmail(fundingApplication);
 		}
 
-		private async Task ConfigureEmail(FundingApplication fundingApplication)
+		private async Task ConfigureEmail(Application fundingApplication)
 		{
 			try
 			{
@@ -200,18 +210,18 @@ namespace NPOMS.API.Controllers
 
 				switch (status)
 				{
-					case StatusEnum.PreEvaluated:
+					case StatusEnum.PreAdjudicated:
 						// Send email to Capturer
 						var applicationPreEvaluated = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChanged)
-									.Get<StatusChangedEmailTemplate>()
-									.Init(fundingApplication);
+									.Get<StatusChangedEmailTemplate>();
+						//.Init(fundingApplication);
 
 						// Send email to Evaluators
 						var applicationPendingEvaluation = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChangedPending)
-									.Get<StatusChangedPendingEmailTemplate>()
-									.Init(fundingApplication);
+									.Get<StatusChangedPendingEmailTemplate>();
+									//.Init(fundingApplication);
 
 						await applicationPreEvaluated.SubmitToQueue();
 						await applicationPendingEvaluation.SubmitToQueue();
@@ -220,14 +230,14 @@ namespace NPOMS.API.Controllers
 						// Send email to Capturer
 						var applicationEvaluated = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChanged)
-									.Get<StatusChangedEmailTemplate>()
-									.Init(fundingApplication);
+									.Get<StatusChangedEmailTemplate>();
+						//.Init(fundingApplication);
 
 						// Send email to Adjudicators
 						var applicationPendingAdjudication = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChangedPending)
-									.Get<StatusChangedPendingEmailTemplate>()
-									.Init(fundingApplication);
+									.Get<StatusChangedPendingEmailTemplate>();
+									//.Init(fundingApplication);
 
 						await applicationEvaluated.SubmitToQueue();
 						await applicationPendingAdjudication.SubmitToQueue();
@@ -236,8 +246,8 @@ namespace NPOMS.API.Controllers
 						// Send email to Capturer
 						var applicationAdjudicated = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChanged)
-									.Get<StatusChangedEmailTemplate>()
-									.Init(fundingApplication);
+									.Get<StatusChangedEmailTemplate>();
+									//.Init(fundingApplication);
 
 						await applicationAdjudicated.SubmitToQueue();
 						break;

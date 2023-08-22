@@ -1,7 +1,8 @@
 ﻿using NPOMS.Domain.Entities;
-using NPOMS.Domain.Enumerations;
-using NPOMS.Domain.Mapping;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace NPOMS.Services.Interfaces
@@ -50,11 +51,11 @@ namespace NPOMS.Services.Interfaces
 
 		Task UpdateApplicationInformation(ApplicationInformation model);
 
-		Task<IEnumerable<ApplicationInformationCommunicationType>> GetCommunicationTypeMapping(int applicationInformationId);
+		//Task<IEnumerable<ApplicationInformationCommunicationType>> GetCommunicationTypeMapping(int applicationInformationId);
 
-		Task CreateCommunicationTypeMapping(ApplicationInformationCommunicationType model);
+		//Task CreateCommunicationTypeMapping(ApplicationInformationCommunicationType model);
 
-		Task DeleteMapping(int id, FundingApplicationSectionEnum fundingApplicationSection);
+		//Task DeleteMapping(int id, FundingApplicationSectionEnum fundingApplicationSection);
 
 		Task<OrganisationalProfile> GetOrganisationalProfile(int fundingApplicationId);
 
@@ -80,9 +81,9 @@ namespace NPOMS.Services.Interfaces
 
 		Task UpdateBusinessSupported(BusinessesSupportedList model);
 
-		Task<IEnumerable<ProjectDescriptionSectorGrouping>> GetSectorGroupingMapping(int projectDescriptionId);
+		//Task<IEnumerable<ProjectDescriptionSectorGrouping>> GetSectorGroupingMapping(int projectDescriptionId);
 
-		Task CreateSectorGroupingMapping(ProjectDescriptionSectorGrouping model);
+		//Task CreateSectorGroupingMapping(ProjectDescriptionSectorGrouping model);
 
 		Task<ProjectImpact> GetProjectImpact(int fundingApplicationId);
 
