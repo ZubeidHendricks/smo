@@ -388,6 +388,7 @@ export class CreateApplicationComponent implements OnInit {
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           // this._router.navigateByUrl('applications');
           this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           resp;
         });
       }

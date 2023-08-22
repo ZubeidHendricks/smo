@@ -722,7 +722,64 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "Delete Application",
                     SystemName = "WFA.Delete",
                     CategoryName = "Delete Application"
+                },
+                new Permission
+                {
+                    Id = 102,
+                    Name = "Pre Adjudicate",
+                    SystemName = "WFA.PreAdjudicate",
+                    CategoryName = "Pre Adjudicate"
+                },
+                new Permission
+                {
+                    Id = 104,
+                    Name = "Pending PreAdjudication",
+                    SystemName = "WFA.PendingPreAdjudication",
+                    CategoryName = "Pending PreAdjudication"
+                },
+                new Permission
+                {
+                    Id = 105,
+                    Name = "Pending Adjudication",
+                    SystemName = "WFA.PendingAdjudication",
+                    CategoryName = "Pending Adjudication"
+                },
+                new Permission
+                {
+                    Id = 106,
+                    Name = "Adjudicate",
+                    SystemName = "WFA.Adjudicate",
+                    CategoryName = "Adjudicate"
+                },
+                new Permission
+                {
+                    Id = 107,
+                    Name = "Pending Evaluation",
+                    SystemName = "WFA.PendingEvaluation",
+                    CategoryName = "Pending Evaluation"
+                },
+                new Permission
+                {
+                    Id = 108,
+                    Name = "Evaluate",
+                    SystemName = "WFA.Evaluate",
+                    CategoryName = "Evaluate"
+                },
+                new Permission
+                {
+                    Id = 109,
+                    Name = "Pending Approval",
+                    SystemName = "WFA.PendingApproval",
+                    CategoryName = "Pending Approval"
+                },
+                new Permission
+                {
+                    Id = 110,
+                    Name = "Approve",
+                    SystemName = "WFA.Approve",
+                    CategoryName = "Approve"
                 }
+
             );
 		}
 	}
