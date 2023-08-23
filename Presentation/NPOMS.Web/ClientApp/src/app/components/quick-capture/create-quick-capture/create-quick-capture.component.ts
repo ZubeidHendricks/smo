@@ -307,22 +307,20 @@ export class CreateQuickCaptureComponent implements OnInit {
         item.languageId = item.language ? item.language.id : null;
       });
 
-      console.log('npo', data);
-
-      // this._npoRepo.createNpo(data).subscribe(
-      //   (resp) => {
+      this._npoRepo.createNpo(data).subscribe(
+        (resp) => {
           this._spinner.hide();
-      //     this.npo.id = data.id;
-      //     this.updateNpo();
+          this.npo.id = data.id;
+          this.updateNpo();
 
-      //     this.activeStep = this.activeStep + 1;
-      //     this.activeStepChange.emit(this.activeStep);
-      //   },
-      //   (err) => {
-      //     this._loggerService.logException(err);
-      //     this._spinner.hide();
-      //   }
-      // );
+          this.activeStep = this.activeStep + 1;
+          this.activeStepChange.emit(this.activeStep);
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
     }
   }
 

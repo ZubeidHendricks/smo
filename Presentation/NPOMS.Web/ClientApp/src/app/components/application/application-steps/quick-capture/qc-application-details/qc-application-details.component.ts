@@ -621,6 +621,8 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   nextPage() {
+    this.activeStep = this.activeStep + 1;
+    this.activeStepChange.emit(this.activeStep);
 
     //   // if (this.Amount > 0 && this.fundingApplicationDetails?.id != undefined) {
 

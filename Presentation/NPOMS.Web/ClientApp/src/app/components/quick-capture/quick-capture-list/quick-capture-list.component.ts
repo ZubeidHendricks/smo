@@ -281,37 +281,42 @@ export class QuickCaptureListComponent implements OnInit {
   }
 
   public validateStep(goToStep: number, currentStep: number) {
-    switch (currentStep) {
-      case QCStepsEnum.NpoCreate: {
-        var orgDetailsError = this.validateOrganisationDetails();
+    if (goToStep > currentStep) {
+      switch (currentStep) {
+        case QCStepsEnum.NpoCreate: {
+          var orgDetailsError = this.validateOrganisationDetails();
 
-        if (orgDetailsError.length > 0) {
-          this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-          this.organisationDetails.setValidated(true);
+          if (orgDetailsError.length > 0) {
+            this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+            this.organisationDetails.setValidated(true);
+            break;
+          }
+
+          this.activeStep = goToStep;
+          break;
         }
-        else
+        case QCStepsEnum.Applications: {
+          var applicationError = this.validateApplications();
+
+          if (applicationError.length > 0) {
+            this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+            break;
+          }
+
           this.activeStep = goToStep;
-
-        break;
-      }
-      case QCStepsEnum.Applications: {
-        var applicationError = this.validateApplications();
-
-        if (applicationError.length > 0)
-          this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
-        else
+          break;
+        }
+        case QCStepsEnum.AmountYouApplyingFor: {
           this.activeStep = goToStep;
-
-        break;
-      }
-      case QCStepsEnum.AmountYouApplyingFor: {
-        this.activeStep = goToStep;
-        break;
-      }
-      case QCStepsEnum.ApplicationDocument: {
-        this.activeStep = goToStep;
-        break;
+          break;
+        }
+        case QCStepsEnum.ApplicationDocument: {
+          this.activeStep = goToStep;
+          break;
+        }
       }
     }
+    else
+      this.activeStep = goToStep;
   }
 }
