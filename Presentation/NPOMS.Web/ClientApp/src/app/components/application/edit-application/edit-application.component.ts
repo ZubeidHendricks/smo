@@ -49,7 +49,7 @@ export class EditApplicationComponent implements OnInit {
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
-  
+
   bidId: number;
   placeAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
@@ -106,8 +106,7 @@ export class EditApplicationComponent implements OnInit {
       this.id = params.get('id');
       this.loadApplication();
       this.loadDocumentTypes();
-      if(Number(params.get('activeStep')) === 2)
-      {
+      if (Number(params.get('activeStep')) === 2) {
         this.activeStep = Number(params.get('activeStep'));
       }
     });
@@ -307,7 +306,6 @@ export class EditApplicationComponent implements OnInit {
 
   private bidForm(status: StatusEnum) {
     this.application.status = null;
-    console.log('fundingApplicationDetails', this.fundingApplicationDetails);
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;

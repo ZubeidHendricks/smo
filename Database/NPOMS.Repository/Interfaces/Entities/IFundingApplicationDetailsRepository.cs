@@ -13,5 +13,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 		Task UpdateEntity(FundingApplicationDetail model, int currentUserId);
 
 		Task<FundingApplicationDetail> GetById(int id);
+
+		Task<FundingApplicationDetail> GetByApplicationId(int applicationId);
 	}
 }

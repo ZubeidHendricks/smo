@@ -182,7 +182,7 @@
                         <ng-template pTemplate="input">
                             <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText
                                 [(ngModel)]="rowData.nameOfOrganisation" [ngModelOptions]="{standalone: true}"
-                                (change)="updateDetail()">
+                                (change)="updateDetail(rowData)">
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{rowData.nameOfOrganisation}}
@@ -194,7 +194,7 @@
                         <ng-template pTemplate="input">
                             <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText
                                 [(ngModel)]="rowData.contactPerson" [ngModelOptions]="{standalone: true}"
-                                (change)="updateDetail()">
+                                (change)="updateDetail(rowData)">
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{rowData.contactPerson}}
@@ -206,7 +206,7 @@
                         <ng-template pTemplate="input">
                             <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText
                                 [(ngModel)]="rowData.emailAddress" [ngModelOptions]="{standalone: true}"
-                                (change)="updateDetail()">
+                                (change)="updateDetail(rowData)">
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{rowData.emailAddress}}
@@ -218,7 +218,7 @@
                         <ng-template pTemplate="input">
                             <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText
                                 [(ngModel)]="rowData.telephoneNumber" [ngModelOptions]="{standalone: true}"
-                                (change)="updateDetail()">
+                                (change)="updateDetail(rowData)">
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{rowData.telephoneNumber}}
@@ -230,7 +230,7 @@
                         <ng-template pTemplate="input">
                             <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText
                                 [(ngModel)]="rowData.website" [ngModelOptions]="{standalone: true}"
-                                (change)="updateDetail()">
+                                (change)="updateDetail(rowData)">
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{rowData.website}}

@@ -2,6 +2,48 @@
     <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
 <p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Quick Capture">
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"></p-menubar>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+    <p-steps [model]="qcItems" [readonly]="false" [activeIndex]="activeStep" (activeIndexChange)="validateStep($event, activeStep)"></p-steps>
+
+    <div style="height: 10px;"></div>
+    <div *ngIf="isDataAvailable">
+        <app-create-quick-capture *ngIf="activeStep == QCStepsEnum.NpoCreate"
+            [(activeStep)]="activeStep"
+            [(npo)]="npo">
+        </app-create-quick-capture>
+        <app-qc-application-periods *ngIf="activeStep == QCStepsEnum.Applications"
+            [(activeStep)]="activeStep"
+            [npo]="npo"
+            [(applicationPeriod)]="applicationPeriod"
+            [(application)]="application">
+        </app-qc-application-periods>
+        <app-qc-application-details *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor"
+            [(activeStep)]="activeStep"
+            [applicationPeriod]="applicationPeriod"
+            [application]="application"
+            [(districtCouncil)]="districtCouncil"
+            [(localMunicipality)]="localMunicipality"
+            [(regions)]="regions"
+            [(sdas)]="sdas"
+            [(amount)]="amount"
+            [(sourceOfInformation)]="sourceOfInformation"
+            [(affliatedOrganisationInfo)]="affliatedOrganisationInfo"
+            [(fundingApplicationDetails)]="fundingApplicationDetails">
+        </app-qc-application-details>
+        <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
+            [(activeStep)]="activeStep"
+            [application]="application">
+        </app-qc-document-upload>
+    </div>
+</p-panel>
+
+<!-- <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-toast></p-toast>
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Quick Captures">
     <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>
@@ -26,4 +68,4 @@
     </app-qc-document-upload-edit>
 
     </div>
-</p-panel>
+</p-panel> -->

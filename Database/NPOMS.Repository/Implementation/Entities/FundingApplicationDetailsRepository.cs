@@ -43,7 +43,19 @@ namespace NPOMS.Repository.Implementation.Entities
                 .AsNoTracking().FirstOrDefaultAsync();
         }
 
+		public async Task<FundingApplicationDetail> GetByApplicationId(int applicationId)
+		{
+			return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
+							.Include(x => x.ApplicationDetails)
+								.ThenInclude(x => x.FundAppSDADetail)
+									.ThenInclude(x => x.DistrictCouncil)
+							.Include(x => x.ApplicationDetails)
+								.ThenInclude(x => x.FundAppSDADetail)
+									.ThenInclude(x => x.LocalMunicipality)
+							.AsNoTracking().FirstOrDefaultAsync();
+		}
 
-        #endregion
-    }
+
+		#endregion
+	}
 }

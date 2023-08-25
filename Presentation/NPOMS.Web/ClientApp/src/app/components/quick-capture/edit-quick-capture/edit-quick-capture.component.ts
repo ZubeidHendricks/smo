@@ -20,8 +20,8 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class EditQuickCaptureComponent implements OnInit {
 
- 
- 
+
+
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -73,7 +73,7 @@ export class EditQuickCaptureComponent implements OnInit {
   NPOs: INpo[];
 
   npoId: string;
-  applicationId :string;
+  applicationId: string;
   paramSubcriptions: Subscription;
   isDataAvailable: boolean = false;
 
@@ -107,7 +107,6 @@ export class EditQuickCaptureComponent implements OnInit {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       //this.npoId = params.get('id');
       this.applicationId = params.get('id');
-      console.log('ApplicationId From Edit -Org',this.applicationId);
     });
 
     this._authService.profile$.subscribe(profile => {
@@ -279,21 +278,20 @@ export class EditQuickCaptureComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.applicationId)).subscribe(
       (results) => {
         if (results != null) {
-         this.npoId = results.npoId.toString();
-         console.log('this.npoId From Edit Org',this.npoId);
-         this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
-          (resultsNpo) => {
-            this.selectedOrganisationType = resultsNpo.organisationType;
-            this.selectedRegistrationStatus = resultsNpo.registrationStatus;
-            this.npo = resultsNpo;
-            this.isDataAvailable = true;
-            this._spinner.hide();
-          },
-          (err) => {
-            this._loggerService.logException(err);
-            this._spinner.hide();
-          }
-        ); 
+          this.npoId = results.npoId.toString();
+          this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
+            (resultsNpo) => {
+              this.selectedOrganisationType = resultsNpo.organisationType;
+              this.selectedRegistrationStatus = resultsNpo.registrationStatus;
+              this.npo = resultsNpo;
+              this.isDataAvailable = true;
+              this._spinner.hide();
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
         }
         this._spinner.hide();
       },
@@ -301,7 +299,7 @@ export class EditQuickCaptureComponent implements OnInit {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
-    );    
+    );
 
     // this._npoRepo.getNpoById(Number(this.npoId)).subscribe(
     //   (resultsNpo) => {
