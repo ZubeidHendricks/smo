@@ -29,26 +29,26 @@
 
         <div class="p-field p-col-12 p-md-3">
             <label class="mandatory-content">District Council</label>
-            <p-dropdown [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name" [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="districtCouncilChange($event.value)" [disabled]="readonly()"></p-dropdown>
+            <p-dropdown [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name" [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="districtCouncilDropdownChange($event.value)" [disabled]="readonly()"></p-dropdown>
         </div>
         <div class="p-field p-col-12 p-md-3">
             <label class="mandatory-content">Local Municipalities</label>
-            <p-dropdown [options]="filteredLocalMunicipalities" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" placeholder="Select Local Municipalities" [style]="{'width':'100%'}" appendTo="body" (onChange)="localMunicipalityChange($event.value)" selectedItemsLabel="{0} items selected" [disabled]="readonly()"></p-dropdown>
+            <p-dropdown [options]="filteredLocalMunicipalities" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" placeholder="Select Local Municipalities" [style]="{'width':'100%'}" appendTo="body" (onChange)="localMunicipalityDropdownChange($event.value)" selectedItemsLabel="{0} items selected" [disabled]="readonly()"></p-dropdown>
         </div>
         <div class="p-field p-col-12 p-md-3">
             <label class="mandatory-content">Region</label>
-            <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredRegions" [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="regionChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()"></p-multiSelect>
+            <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredRegions" [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="regionDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
         </div>
         <div class="p-field p-col-12 p-md-3">
             <label class="mandatory-content">Service Delivery Area</label>
-            <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredServiceDeliveryAreas" [ngModelOptions]="{standalone: true}" appendTo="body" [(ngModel)]="selectedSDAs" [style]="{'width':'100%'}"  [disabled]="readonly()"></p-multiSelect>
+            <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredServiceDeliveryAreas" [ngModelOptions]="{standalone: true}" appendTo="body" [(ngModel)]="selectedSDAs" (onChange)="sdaDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
         </div>
     </div>
 
     <div class="p-field p-col-12 p-md-6">
         <label class="mandatory-content">Rand amount you applying for</label>
-        <input type="text" class="form-text" pKeyFilter="int" pInputText name="amountApplyingFor" id="amountApplyingFor" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [ngModelOptions]="{standalone: true}" autofocus autocomplete="off" [disabled]="readonly()"/>
-        <!-- <input type="text" class="form-text" pKeyFilter="int" pInputText name="amountApplyingFor" id="amountApplyingFor" (ngModelChange)="onAmountChange($event)" [(ngModel)]="Amount" [ngModelOptions]="{standalone: true}" [ngModelOptions]="{standalone: true}" autofocus autocomplete="off" [disabled]="readonly()"/> -->
+        <!-- <input type="text" class="form-text" pKeyFilter="int" pInputText name="amountApplyingFor" id="amountApplyingFor" (ngModelChange)="onAmountChange($event)" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" autofocus autocomplete="off" [disabled]="readonly()"/> -->
+        <p-inputNumber inputId="integeronly" [(ngModel)]="amount" class="form-text" [disabled]="readonly()" (onInput)="onAmountChange($event.value)"></p-inputNumber>
     </div>
 
     <p-table [value]="sourceOfInformation">
@@ -77,7 +77,7 @@
             <tr>
                 <th class="p-text-center"> <input [ngStyle]="{'width': 100 + '%'}" type="text" pInputText [ngModelOptions]="{standalone: true}" [disabled]="true"></th>
                 <th class="p-text-center">
-                    <input [ngStyle]="{'width': 100 + '%'}" type="text" pInputText [(ngModel)]="sourceOfInformationText" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                    <input [ngStyle]="{'width': 100 + '%'}" type="text" pInputText [(ngModel)]="rowData.sourceOfInformationText" [ngModelOptions]="{standalone: true}" [disabled]="true">
                 </th>
                 <th class="p-text-center">
                     <input [ngStyle]="{'width': 100 + '%'}" type="text" class="form-text" pInputText [(ngModel)]="rowData.additionalSourceInformation" [ngModelOptions]="{standalone: true}" [disabled]="true">
@@ -116,7 +116,7 @@
                 <td pEditableColumn class="p-text-center">
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.nameOfOrganisation" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">                                   
+                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.nameOfOrganisation" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">                                   
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{rowData.nameOfOrganisation}}
@@ -126,7 +126,7 @@
                 <td pEditableColumn class="p-text-center">
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.contactPerson" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">
+                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.contactPerson" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{rowData.contactPerson}}
@@ -136,7 +136,7 @@
                 <td pEditableColumn class="p-text-center">
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.emailAddress" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">                                   
+                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.emailAddress" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">                                   
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{rowData.emailAddress}}
@@ -146,7 +146,7 @@
                 <td pEditableColumn class="p-text-center">
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.telephoneNumber" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">
+                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.telephoneNumber" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{rowData.telephoneNumber}}
@@ -156,7 +156,7 @@
                 <td pEditableColumn class="p-text-center">
                     <p-cellEditor>
                         <ng-template pTemplate="input">
-                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.website" [ngModelOptions]="{standalone: true}" (change)="updateDetail()">
+                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.website" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{rowData.website}}

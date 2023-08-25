@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IObjective, IPlace, IResource, ISDA, ISubPlace, ISustainabilityPlan } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IResource, ISDA, ISubPlace, ISustainabilityPlan } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -198,5 +198,20 @@ export class ApplicationService {
   getSubPlaces(places: IPlace[]): Observable<ISubPlace[]> {
     const url = `${this._envUrl.urlAddress}/api/applications/subplaces`;
     return this._http.post<ISubPlace[]>(url, JSON.stringify(places), httpOptions);
+  }
+
+  public getMyContentLinks(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/my-content-link/applicationId/${applicationId}`;
+    return this._http.get<IMyContentLink[]>(url, httpOptions);
+  }
+
+  public createMyContentLink(model: IMyContentLink) {
+    const url = `${this._envUrl.urlAddress}/api/applications/my-content-link`;
+    return this._http.post<IMyContentLink>(url, model, httpOptions);
+  }
+
+  public updateMyContentLink(model: IMyContentLink) {
+    const url = `${this._envUrl.urlAddress}/api/applications/my-content-link`;
+    return this._http.put<IMyContentLink>(url, model, httpOptions);
   }
 }

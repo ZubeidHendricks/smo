@@ -227,18 +227,10 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/edit/' + this.selectedApplication.id + '/0');
-          }
-        });
-      }
-
-      if (this.IsAuthorized(PermissionsEnum.EditQC)) {
-        this.buttonItems[0].items.push({
-          label: 'Edit QC',
-          target: 'Quick Capture',
-          icon: 'fa fa-pencil-square-o',
-          command: () => {
-            this._router.navigateByUrl('quick-captures-editList/edit/' + this.selectedApplication.id);
+            if (!this.selectedApplication.isQuickCapture)
+              this._router.navigateByUrl('application/edit/' + this.selectedApplication.id + '/0');
+            else
+              this._router.navigateByUrl('quick-captures-editList/edit/' + this.selectedApplication.id);
           }
         });
       }
@@ -367,7 +359,6 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Funding Application');
       this.buttonItemExists('Download Application', 'Funding Application');
       this.buttonItemExists('View Application', 'Funding Application');
-      this.buttonItemExists('Edit QC', 'Quick Capture');
       this.buttonItemExists('Delete Application', 'Funding Application');
 
       switch (this.selectedApplication.statusId) {
@@ -425,8 +416,10 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Service Provision');
       this.buttonItemExists('Upload SLA', 'Service Provision');
       this.buttonItemExists('View Application', 'Service Provision');
-      this.buttonItemExists('Edit QC', 'Quick Capture');
       this.buttonItemExists('Delete Application', 'Service Provision');
+
+      if (this.selectedApplication.isQuickCapture)
+        this.buttonItemExists('Download Application', 'Funding Application');
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved: {
@@ -448,7 +441,7 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
+    /*if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
 
       // Hide Service Provision actions
       this.buttonItemExists('Edit Application', 'Service Provision');
@@ -477,7 +470,7 @@ export class ApplicationListComponent implements OnInit {
           break;
         }
       }
-    }
+    }*/
   }
 
   private buttonItemExists(label: string, target: string) {

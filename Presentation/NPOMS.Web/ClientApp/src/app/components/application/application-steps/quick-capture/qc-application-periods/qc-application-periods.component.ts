@@ -25,6 +25,8 @@ export class QcApplicationPeriodsComponent implements OnInit {
   @Input() npo: INpo;
   @Input() applicationPeriod: IApplicationPeriod;
   @Output() applicationPeriodChange: EventEmitter<IApplicationPeriod> = new EventEmitter<IApplicationPeriod>();
+  @Input() application: IApplication;
+  @Output() applicationChange: EventEmitter<IApplication> = new EventEmitter<IApplication>();
 
   // @Input() newlySavedNpoId: number;
   // @Output() newlySavedNpoIdChange: EventEmitter<number> = new EventEmitter<number>();
@@ -55,6 +57,8 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
   cols: any[];
   allApplicationPeriods: IApplicationPeriod[];
+
+  disableSelectApplication: boolean = false;
 
   // applicationPeriodId: number;
   // displayDialog: boolean;
@@ -87,7 +91,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
     private _applicationPeriodRepo: ApplicationPeriodService,
     // private _npoRepo: NpoService,
     private _datepipe: DatePipe,
-    // private _applicationRepo: ApplicationService,
+    private _applicationRepo: ApplicationService,
     // private _activeRouter: ActivatedRoute,
     private _loggerService: LoggerService,
     private _messageService: MessageService
@@ -111,6 +115,9 @@ export class QcApplicationPeriodsComponent implements OnInit {
         this.loadApplicationPeriods();
       }
     });
+
+    if (this.application)
+      this.disableSelectApplication = true;
 
     this.cols = [
       { field: 'refNo', header: 'Ref. No.', width: '10%' },
@@ -181,8 +188,25 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
   nextPage() {
     if (this.canContinue()) {
-      this.activeStep = this.activeStep + 1;
-      this.activeStepChange.emit(this.activeStep);
+      let application = {
+        npoId: this.npo.id,
+        applicationPeriodId: this.applicationPeriod.id,
+        isQuickCapture: true,
+        statusId: StatusEnum.Saved
+      } as IApplication;
+
+      this._applicationRepo.createApplication(application, true, null).subscribe(
+        (resp) => {
+          this.applicationChange.emit(resp);
+          this.activeStep = this.activeStep + 1;
+          this.activeStepChange.emit(this.activeStep);
+          this.disableSelectApplication = true;
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
     }
     //   this.activeStep = this.activeStep + 1;
     //   this.activeStepChange.emit(this.activeStep);

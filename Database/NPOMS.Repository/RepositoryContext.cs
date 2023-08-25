@@ -159,6 +159,7 @@ namespace NPOMS.Repository
         public DbSet<StaffMemberProfile> StaffMemberProfiles { get; set; }
         public DbSet<SourceOfInformation> SourceOfInformation { get; set; }
         public DbSet<AffiliatedOrganisationInformation> AffiliatedOrganisationInformation { get; set; }
+        public DbSet<MyContentLink> MyContentLinks { get; set; }
 
         /* Lookup */
         public DbSet<FacilityList> ActivityList { get; set; }

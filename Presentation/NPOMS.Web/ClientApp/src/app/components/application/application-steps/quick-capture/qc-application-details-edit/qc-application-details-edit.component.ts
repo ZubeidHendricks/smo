@@ -740,7 +740,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
   }
 
   private GetSourceOfInformation() {
-    this._npoProfile.getSourceOfInformationById(this.selectedApplicationId).subscribe(
+    this._npoProfile.getSourceOfInformationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         this.sourceOfInformation = results;
         this.sourceOfInformationText = "Printed newspaper";
@@ -764,7 +764,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
   }
 
   private GetAffiliatedOrganisation() {
-    this._npoProfile.getAffiliatedOrganisationById(this.selectedApplicationId).subscribe(
+    this._npoProfile.getAffiliatedOrganisationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         this.affliatedOrganisationInfo = results;
         if (results.length > 0) {
@@ -779,7 +779,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
 
   updateDetail(rowData: IAffiliatedOrganisation) {
 
-    this._npoProfile.updateAffiliatedOrganisationData(this.affliatedOrganisationInfo, this.selectedApplicationId).subscribe(
+    this._npoProfile.updateAffiliatedOrganisationData(rowData, this.selectedApplicationId).subscribe(
       (resp) => {
         this.GetAffiliatedOrganisation();
       },

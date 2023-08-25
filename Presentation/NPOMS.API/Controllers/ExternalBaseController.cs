@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NPOMS.API.Controllers
 {
-	//[Authorize]
+	[Authorize]
 	public class ExternalBaseController : ControllerBase
 	{
 		protected string GetUserIdentifier(string userIdentifier = null)

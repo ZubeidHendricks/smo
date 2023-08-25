@@ -171,6 +171,8 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IFinancialMattersExpenditureRepository, FinancialMattersExpenditureRepository>();
             services.AddScoped<IFinancialMattersOthersRepository, FinancialMattersOthersRepository>();
 
+            services.AddScoped<IMyContentLinkRepository, MyContentLinkRepository>();
+
 
             /* Lookup */
             services.AddScoped<IActivityListRepository, ActivityListRepository>();

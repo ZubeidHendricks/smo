@@ -310,7 +310,7 @@ export class CreateQuickCaptureComponent implements OnInit {
       this._npoRepo.createNpo(data).subscribe(
         (resp) => {
           this._spinner.hide();
-          this.npo.id = data.id;
+          this.npo.id = resp.id;
           this.updateNpo();
 
           this.activeStep = this.activeStep + 1;

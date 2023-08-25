@@ -45,18 +45,23 @@ namespace NPOMS.Services.Interfaces
 
 		//Task UpdateProjectImplementation(ProjectImplementation model, string userIdentifier);
 
+		Task<FundingApplicationDetail> GetFundingApplicationDetailsByApplicationId(int applicationId);
 
 		Task CreateFundingApplicationDetails(FundingApplicationDetail model, string userIdentifier);
 
-        //Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
+		Task UpdateFundingApplicationDetails(FundingApplicationDetail model, string userIdentifier);
 
-        //Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId);
+		Task<IEnumerable<Region>> GetRegions(int fundAppSDADetailId);
 
-        //      Task CreateFinancialDetail(FinancialDetail model, string userIdentifier);
+		Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(int fundAppSDADetailId);
 
-        //      Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier);
+		//Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId);
 
-        Task CreateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier);
+		//      Task CreateFinancialDetail(FinancialDetail model, string userIdentifier);
+
+		//      Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier);
+
+		Task CreateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier);
 
         Task UpdateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier);
 
@@ -104,10 +109,16 @@ namespace NPOMS.Services.Interfaces
 
 		Task CreateApplicationReviewerSatisfaction(ApplicationReviewerSatisfaction model, string userIdentifier);
 
-        //Task<IEnumerable<Place>> GetPlaces(List<int> sdaIds);
+		//Task<IEnumerable<Place>> GetPlaces(List<int> sdaIds);
 
-        //Task<IEnumerable<SubPlace>> GetSubplaces(List<int> placeIds);
+		//Task<IEnumerable<SubPlace>> GetSubplaces(List<int> placeIds);
 
-        //Task<FundAppDetailViewModel> GetApplicationIDAsync(int bidId);
-    }
+		//Task<FundAppDetailViewModel> GetApplicationIDAsync(int bidId);
+
+		Task<IEnumerable<MyContentLink>> GetMyContentLinks(int applicationId);
+
+		Task CreateMyContentLink(MyContentLink model, string userIdentifier);
+
+		Task UpdateMyContentLink(MyContentLink model, string userIdentifier);
+	}
 }
