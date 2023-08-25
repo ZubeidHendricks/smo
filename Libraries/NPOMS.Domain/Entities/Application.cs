@@ -27,6 +27,8 @@ namespace NPOMS.Domain.Entities
 
 		public bool IsCloned { get; set; }
 
+		public bool IsQuickCapture { get; set; }
+
 		public Npo Npo { get; set; }
 
 		public ApplicationPeriod ApplicationPeriod { get; set; }

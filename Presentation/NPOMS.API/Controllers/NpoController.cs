@@ -140,6 +140,15 @@ namespace NPOMS.API.Controllers
 				}
 				else
 				{
+					npo.Name = model.Name;
+					npo.OrganisationTypeId = model.OrganisationTypeId;
+					npo.CCode = model.CCode;
+					npo.RegistrationStatusId = model.RegistrationStatusId;
+					npo.RegistrationNumber = model.RegistrationNumber;
+					npo.YearRegistered = model.YearRegistered;
+					npo.PBONumber = model.PBONumber;
+					npo.Section18Receipts = model.Section18Receipts;
+					npo.Website = model.Website;
 					npo.ContactInformation = model.ContactInformation;
 					await _npoService.Update(npo, base.GetUserIdentifier());
 				}

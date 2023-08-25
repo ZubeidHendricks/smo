@@ -1,9 +1,11 @@
 ﻿using NPOMS.Domain.Entities;
+using NPOMS.Domain.Enumerations;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NPOMS.Services.Implementation
@@ -32,9 +34,18 @@ namespace NPOMS.Services.Implementation
 
 		#region Methods
 
-		public async Task<IEnumerable<ApplicationPeriod>> Get()
+		public async Task<IEnumerable<ApplicationPeriod>> Get(string userIdentifier)
 		{
-			return await _applicationPeriodRepository.GetEntities();
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+			var results = await _applicationPeriodRepository.GetEntities();
+
+			//not supporting multiple departments
+			if (!loggedInUser.Departments[0].DepartmentId.Equals((int)DepartmentEnum.ALL))
+			{
+				results = results.Where(x => x.DepartmentId.Equals(loggedInUser.Departments[0].Id));
+			}
+
+			return results;
 		}
 
 		public async Task<ApplicationPeriod> GetById(int id)

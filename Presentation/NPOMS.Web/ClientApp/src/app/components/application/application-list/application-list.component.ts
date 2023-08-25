@@ -209,6 +209,17 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.DeleteApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Delete Application',
+          target: 'Service Provision',
+          icon: 'fa fa-trash',
+          command: () => {
+            this.deleteApplication();
+          }
+        });
+      }
+
       /* Funding Application Actions */
       if (this.IsAuthorized(PermissionsEnum.EditOption)) {
         this.buttonItems[0].items.push({
@@ -216,18 +227,10 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/edit/' + this.selectedApplication.id + '/0');
-          }
-        });
-      }
-
-      if (this.IsAuthorized(PermissionsEnum.EditQC)) {
-        this.buttonItems[0].items.push({
-          label: 'Edit QC',
-          target: 'Quick Capture',
-          icon: 'fa fa-pencil-square-o',
-          command: () => {
-           this._router.navigateByUrl('quick-captures-editList/edit/' + this.selectedApplication.id + '/0');
+            if (!this.selectedApplication.isQuickCapture)
+              this._router.navigateByUrl('application/edit/' + this.selectedApplication.id + '/0');
+            else
+              this._router.navigateByUrl('quick-captures-editList/edit/' + this.selectedApplication.id);
           }
         });
       }
@@ -298,37 +301,41 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      // window.print();
-      // if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
-      //   this.buttonItems[0].items.push({
-      //     label: 'Delete Application',
-      //     icon: 'fa fa-trash',
-      //     command: () => {
-      //       this._confirmationService.confirm({
-      //         message: 'Are you sure that you want to delete this item?',
-      //         header: 'Confirmation',
-      //         icon: 'pi pi-info-circle',
-      //         accept: () => {
-      //           this._spinner.show();
-      //           this._applicationRepo.deleteFundingApplication(this.selectedApplication.id).subscribe(
-      //             (resp) => {
-      //               this.loadApplications();
-      //               this._messageService.add({ severity: 'info', detail: 'Record ' + this.selectedApplication.refNo + ' deleted.' });
-      //               this._spinner.hide();
-      //             },
-      //             (err) => {
-      //               this._loggerService.logException(err);
-      //               this._spinner.hide();
-      //             }
-      //           );
-      //         },
-      //         reject: () => {
-      //         }
-      //       });
-      //     }
-      //   });
-      // }
+      if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Delete Application',
+          target: 'Funding Application',
+          icon: 'fa fa-trash',
+          command: () => {
+            this.deleteApplication();
+          }
+        });
+      }
     }
+  }
+
+  private deleteApplication() {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this._spinner.show();
+        this._applicationRepo.deleteApplicationById(this.selectedApplication.id).subscribe(
+          (resp) => {
+            this.loadApplications();
+            this._messageService.add({ severity: 'success', detail: 'Record ' + this.selectedApplication.refNo + ' deleted.' });
+            this._spinner.hide();
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      },
+      reject: () => {
+      }
+    });
   }
 
   // get canShowOptions() {
@@ -352,8 +359,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Funding Application');
       this.buttonItemExists('Download Application', 'Funding Application');
       this.buttonItemExists('View Application', 'Funding Application');
-      this.buttonItemExists('Edit QC', 'Quick Capture');
-
+      this.buttonItemExists('Delete Application', 'Funding Application');
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
@@ -410,8 +416,10 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Service Provision');
       this.buttonItemExists('Upload SLA', 'Service Provision');
       this.buttonItemExists('View Application', 'Service Provision');
-      this.buttonItemExists('Edit QC', 'Quick Capture');
+      this.buttonItemExists('Delete Application', 'Service Provision');
 
+      if (this.selectedApplication.isQuickCapture)
+        this.buttonItemExists('Download Application', 'Funding Application');
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved: {
@@ -419,6 +427,7 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
+          this.buttonItemExists('View Application', 'Funding Application');
           break;
         }
         case StatusEnum.Submitted: {
@@ -432,7 +441,7 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
+    /*if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
 
       // Hide Service Provision actions
       this.buttonItemExists('Edit Application', 'Service Provision');
@@ -461,7 +470,7 @@ export class ApplicationListComponent implements OnInit {
           break;
         }
       }
-    }    
+    }*/
   }
 
   private buttonItemExists(label: string, target: string) {

@@ -348,6 +348,7 @@ export interface IApplication {
     statusId: number;
     isActive: boolean;
     isCloned: boolean;
+    isQuickCapture: boolean;
 
     applicationPeriod: IApplicationPeriod;
     status: IStatus;
@@ -512,8 +513,7 @@ export interface INpo {
 
     registrationStatusId: number;
     pboNumber: string;
-    section18Receipts: boolean;
-    isQuickCapture: boolean;
+    section18Receipts: boolean;    
     cCode: string;
 
     organisationType: IOrganisationType;
@@ -1323,3 +1323,15 @@ export interface IResponseHistory {
 //    optionDisabled: boolean;
 //}
 
+export interface IMyContentLink {
+    id: number;
+    applicationId: number;
+    documentTypeId: number;
+    url: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+
+    documentType: IDocumentType;
+    createdUser: IUser;
+}

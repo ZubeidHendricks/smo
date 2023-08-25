@@ -13,3 +13,11 @@
     text-align: right;
     align-self: center;
 }
+
+.default {
+    background-color: none!important;
+}
+
+.green {
+    background-color: rgb(144, 238, 144)!important;
+}

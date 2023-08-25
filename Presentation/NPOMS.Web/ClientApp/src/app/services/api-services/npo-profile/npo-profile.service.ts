@@ -190,17 +190,17 @@ export class NpoProfileService {
     return this._http.post<ISourceOfInformation>(url, sourceOfInformation, httpOptions);
   }
 
-  public getSourceOfInformationById(npoProfileId: string) {
+  public getSourceOfInformationById(npoProfileId: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/getSourceOfInformationById/npoProfileId/${npoProfileId}`;
     return this._http.get<ISourceOfInformation[]>(url, httpOptions);
   }
 
-  public getAffiliatedOrganisationById(npoProfileId: string) {
+  public getAffiliatedOrganisationById(npoProfileId: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/getAffiliatedOrganisationById/npoProfileId/${npoProfileId}`;
     return this._http.get<IAffiliatedOrganisation[]>(url, httpOptions);
   }
 
-  public updateAffiliatedOrganisationData(affiliatedOrganisationData: any[], npoProfileId: string) {
+  public updateAffiliatedOrganisationData(affiliatedOrganisationData: IAffiliatedOrganisation, npoProfileId: string) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateAffiliatedOrganisationData/npoProfileId/${npoProfileId}`;
     return this._http.put<IAffiliatedOrganisation[]>(url, affiliatedOrganisationData, httpOptions);
   }

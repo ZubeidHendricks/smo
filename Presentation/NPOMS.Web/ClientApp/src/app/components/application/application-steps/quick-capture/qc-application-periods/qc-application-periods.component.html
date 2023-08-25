@@ -1,8 +1,5 @@
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Quick Captures">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Programmes">
     <div class="p-grid">
-        <!-- <div class="p-col-fixed">
-            <button pButton pRipple type="button" label="Add Programme" class="p-button-text" icon="fa fa-plus" (click)="add()" *ngIf="IsAuthorized(PermissionsEnum.AddApplicationPeriod)"></button>
-        </div> -->
         <div class="p-col">
           <div class="p-d-flex">
             <span class="p-input-icon-left p-ml-auto">
@@ -12,7 +9,7 @@
           </div>
         </div>
     </div>
-    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" sortMode="multiple" [columns]="cols" [paginator]="true" [rows]="10" [value]="allApplicationPeriods" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['refNo','department.name','name','applicationType.name','financialYear.name', 'openingDate', 'closingDate','status']">
+    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" sortMode="multiple" [columns]="cols" [value]="allApplicationPeriods" [globalFilterFields]="['refNo','department.name','name','applicationType.name','financialYear.name', 'openingDate', 'closingDate','status']">
         <ng-template pTemplate="header" let-columns>
             <tr>
               <th style="width: 5%;"></th>
@@ -36,14 +33,14 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-            <tr class="default-font">
+            <tr class="default-font" [ngClass]="getSelectedApplicationPeriod(rowData)">
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
                 <td *ngFor="let col of columns">
                     <span>{{getCellData(rowData, col)}}</span>
                 </td>
                 <td style="text-align: center;">
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-hand-o-up" (click)="onRowSelect(rowData)"  (click)="autoCreateApplication()" pTooltip="Select Application" tooltipPosition="top" *ngIf="IsAuthorized(PermissionsEnum.EditApplicationPeriod)"></button>
-                    <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-plus" (click)="onRowSelect(rowData)" *ngIf="IsAuthorized(PermissionsEnum.AddApplication) && rowData.status == 'Open'" pTooltip="Create Application" tooltipPosition="left"></button> -->
+                    <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-hand-o-up" (click)="onRowSelect(rowData)"  (click)="autoCreateApplication()" pTooltip="Select Application" tooltipPosition="top" *ngIf="IsAuthorized(PermissionsEnum.EditApplicationPeriod)"></button> -->
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-hand-o-up" (click)="onRowSelect(rowData)" pTooltip="Select Application" tooltipPosition="top" *ngIf="IsAuthorized(PermissionsEnum.AddApplication)" [disabled]="disableSelectApplication"></button>
                 </td>
             </tr>
         </ng-template>
@@ -53,7 +50,7 @@
             </tr>
         </ng-template>
     </p-table>
-    <br>
+    <!-- <br> -->
     <div style="height: 10px;"></div>
     <div class="p-grid p-nogutter p-justify-between">
       <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
@@ -61,7 +58,7 @@
     </div>    
 </p-panel>
 
-<p-dialog header="Create application for:" 
+<!-- <p-dialog header="Create application for:" 
           [(visible)]="displayDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
@@ -124,4 +121,4 @@
     <ng-template pTemplate="footer">
         <button pButton pRipple type="button" label="Select" class="p-button-text" icon="fa fa-hand-o-up" [disabled]=disableSelect() (click)="selectNPO()"></button>
     </ng-template>
-</p-dialog> 
+</p-dialog>  -->

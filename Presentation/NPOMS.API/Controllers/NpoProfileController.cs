@@ -549,7 +549,7 @@ namespace NPOMS.API.Controllers
 		}
 
         [HttpPut("updateAffiliatedOrganisationData/npoProfileId/{npoProfileId}", Name = "UpdateAffiliatedOrganisationData")]
-        public async Task<IActionResult> UpdateAffiliatedOrganisationData([FromBody] List<AffiliatedOrganisationInformation> model, string npoProfileId)
+        public async Task<IActionResult> UpdateAffiliatedOrganisationData([FromBody] AffiliatedOrganisationInformation model, string npoProfileId)
         {
             await _npoProfileService.Update(model, base.GetUserIdentifier(), npoProfileId);
             return Ok(model);
