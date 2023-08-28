@@ -143,8 +143,17 @@ namespace NPOMS.Repository.Configurations.Core
                     Location = "FundApp",
                     IsActive = true,
                     IsCompulsory = false
-                }
-            );
+                },
+				new DocumentType
+				{
+					Id = 21,
+					Name = "NPO Supporting Documents",
+					Description = "NPO Supporting Documents",
+					Location = "QuickCapture",
+					IsActive = true,
+					IsCompulsory = false
+				}
+			);
 		}
 	}
 }
