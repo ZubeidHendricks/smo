@@ -9,7 +9,7 @@
 		MainReviewer = 5,
 		Approver = 6,
         DEDATRep = 7,
-        PreAdjudicator = 8,
+        PreEvaluator = 8,
 		Evaluator = 9,
 		Adjudicator = 10,
 		Verifier = 11

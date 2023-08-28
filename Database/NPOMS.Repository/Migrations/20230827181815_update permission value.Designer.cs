@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230827181815_update permission value")]
+    partial class updatepermissionvalue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -599,17 +601,6 @@ namespace NPOMS.Repository.Migrations
                             IsCompulsory = false,
                             Location = "FundApp",
                             Name = "Enrolment Form"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            Description = "NPO Supporting Documents",
-                            IsActive = true,
-                            IsCompulsory = false,
-                            Location = "QuickCapture",
-                            Name = "NPO Supporting Documents"
                         });
                 });
 
@@ -13588,9 +13579,6 @@ namespace NPOMS.Repository.Migrations
                     b.Property<bool>("IsCloned")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsQuickCapture")
-                        .HasColumnType("bit");
-
                     b.Property<int>("NpoId")
                         .HasColumnType("int");
 
@@ -14588,46 +14576,6 @@ namespace NPOMS.Repository.Migrations
                     b.ToTable("MonitoringEvaluation", "fa");
                 });
 
-            modelBuilder.Entity("NPOMS.Domain.Entities.MyContentLink", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DocumentTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(MAX)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedUserId");
-
-                    b.ToTable("MyContentLinks", "fa");
-                });
-
             modelBuilder.Entity("NPOMS.Domain.Entities.Npo", b =>
                 {
                     b.Property<int>("Id")
@@ -14658,6 +14606,9 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsNew")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsQuickCapture")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -19920,17 +19871,6 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("MonitoringEvaluation");
 
                     b.Navigation("ProjectInformation");
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Entities.MyContentLink", b =>
-                {
-                    b.HasOne("NPOMS.Domain.Core.User", "CreatedUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedUser");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.Npo", b =>

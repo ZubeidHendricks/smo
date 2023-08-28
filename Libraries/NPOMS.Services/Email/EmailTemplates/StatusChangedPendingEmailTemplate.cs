@@ -47,9 +47,9 @@ namespace NPOMS.Services.Email.EmailTemplates
 
 				switch (applicationStatus)
 				{
-					case StatusEnum.PreAdjudicated:
+					case StatusEnum.Reviewed:
 						action = "pre-evaluate";
-						users = await userRepository.GetUsersByRoleId((int)RoleEnum.PreAdjudicator);
+						users = await userRepository.GetUsersByRoleId((int)RoleEnum.PreEvaluator);
 						break;
 					case StatusEnum.Evaluated:
 						action = "evaluate";

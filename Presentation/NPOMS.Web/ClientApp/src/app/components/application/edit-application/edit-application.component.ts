@@ -8,7 +8,10 @@ import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/
 import { Subscription } from 'rxjs';
 import { FinancialMatters } from 'src/app/models/FinancialMatters';
 import { ApplicationTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, 
+  IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, 
+  IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser,
+  IDistrictCouncil,ILocalMunicipality,IRegion, IFundAppSDADetail } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -80,6 +83,25 @@ export class EditApplicationComponent implements OnInit {
     monitoringEvaluation: {} as IMonitoringAndEvaluation,
     applicationDetails: {} as IApplicationDetails
   } as IFundingApplicationDetails;
+
+  // fundingApplicationDetails: IFundingApplicationDetails = {
+  //   financialMatters: [],
+  //   implementations: [],
+  //   projectInformation: {} as IProjectInformation,
+  //   monitoringEvaluation: {} as IMonitoringAndEvaluation,
+  //   applicationDetails: {
+  //     fundAppSDADetail: {
+  //       districtCouncil: {} as IDistrictCouncil,
+  //       localMunicipality: {} as ILocalMunicipality,
+  //       regions: [],
+  //       serviceDeliveryAreas: [],
+  //     } as IFundAppSDADetail,
+  //   } as IApplicationDetails,
+
+  // //  financialMatters: [],
+  // //  implementations: [],
+
+  // } as IFundingApplicationDetails;
 
   constructor(
     private _router: Router,
