@@ -94,8 +94,8 @@ namespace NPOMS.Repository.Configurations.Entities
                 new Status
                 {
                     Id = 14,
-                    Name = "PreAdjudicated",
-                    SystemName = "PreAdjudicated"
+                    Name = "Reviewed",
+                    SystemName = "Reviewed"
                 },
                  new Status
                  {

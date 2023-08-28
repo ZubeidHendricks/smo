@@ -232,9 +232,9 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.PreAdjudicateOption)) {
+      if (this.IsAuthorized(PermissionsEnum.PreEvaluateOption)) {
         this.buttonItems[0].items.push({
-          label: 'Pre-adjudicate Application',
+          label: 'Pre-Evaluate Application',
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
@@ -346,7 +346,7 @@ export class ApplicationListComponent implements OnInit {
 
       // Hide Funding Application actions
       this.buttonItemExists('Edit Application', 'Funding Application');
-      this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+      this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
       this.buttonItemExists('Adjudicate Application', 'Funding Application');
       this.buttonItemExists('Evaluate Application', 'Funding Application');
       this.buttonItemExists('Approve Application', 'Funding Application');
@@ -415,15 +415,23 @@ export class ApplicationListComponent implements OnInit {
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved: {
-          this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
           break;
         }
-        case StatusEnum.Submitted: {
+        case StatusEnum.PendingReview: {
           this.buttonItemExists('Edit Application', 'Funding Application');
-          this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+         // this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          break;
+        }
+        case StatusEnum.Reviewed: {
+          this.buttonItemExists('Edit Application', 'Funding Application');
+          //this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
@@ -446,7 +454,7 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Edit Application', 'Funding Application');
           this.buttonItemExists('Download Application', 'Funding Application');
           this.buttonItemExists('View Application', 'Funding Application');
-          this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
@@ -454,7 +462,7 @@ export class ApplicationListComponent implements OnInit {
         }
         case StatusEnum.Submitted: {
           this.buttonItemExists('Edit Application', 'Funding Application');
-          this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
