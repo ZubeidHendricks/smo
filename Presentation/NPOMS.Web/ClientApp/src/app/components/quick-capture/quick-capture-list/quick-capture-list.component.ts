@@ -68,7 +68,7 @@ export class QuickCaptureListComponent implements OnInit {
     } as IApplicationDetails
   } as IFundingApplicationDetails;
 
-  activeStep: number = 1;
+  activeStep: number = 0;
 
   @ViewChild(CreateQuickCaptureComponent) organisationDetails: CreateQuickCaptureComponent;
 
