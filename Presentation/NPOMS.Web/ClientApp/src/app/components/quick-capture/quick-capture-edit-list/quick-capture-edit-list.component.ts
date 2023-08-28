@@ -349,6 +349,11 @@ export class QuickCaptureEditListComponent implements OnInit {
           this._applicationRepo.createApplication(this.application, true, null).subscribe(
             (resp) => {
 
+              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.districtCouncil;
+              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.localMunicipality;
+              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.regions;
+              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.sdas;
+
               if (!this.fundingApplicationDetails.id) {
                 this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
                   (resp) => {
@@ -596,10 +601,17 @@ export class QuickCaptureEditListComponent implements OnInit {
           break;
         }
         case QCStepsEnum.Applications: {
+          var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();
 
-          if (applicationError.length > 0) {
-            this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+          if (orgDetailsError.length > 0 || applicationError.length > 0) {
+
+            if (orgDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+
+            if (applicationError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+
             break;
           }
 
@@ -607,10 +619,21 @@ export class QuickCaptureEditListComponent implements OnInit {
           break;
         }
         case QCStepsEnum.AmountYouApplyingFor: {
+          var orgDetailsError = this.validateOrganisationDetails();
+          var applicationError = this.validateApplications();
           var applicationDetailsError = this.validateApplicationDetails();
 
-          if (applicationDetailsError.length > 0) {
-            this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+
+            if (orgDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+
+            if (applicationError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+
+            if (applicationDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+
             break;
           }
 

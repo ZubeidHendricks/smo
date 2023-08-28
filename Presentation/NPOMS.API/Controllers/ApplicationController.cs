@@ -119,6 +119,8 @@ namespace NPOMS.API.Controllers
 					if (!createNew)
 						await _applicationService.CloneWorkplan(model, financialYearId, base.GetUserIdentifier());
 				}
+				else
+					await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
 
 				var modelToReturn = application == null ? model : application;
 				return Ok(modelToReturn);

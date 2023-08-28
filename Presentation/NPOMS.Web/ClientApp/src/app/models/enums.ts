@@ -417,7 +417,8 @@ export enum DocumentUploadLocationsEnum {
     NpoProfile = 'NpoProfile',
     Workplan = 'Workplan',
     WorkplanActuals = 'WorkplanActuals',
-    FundApp = "FundApp"
+    FundApp = "FundApp",
+    QuickCapture = "QuickCapture"
 }
 
 //export enum FundingTemplateTypeEnum {

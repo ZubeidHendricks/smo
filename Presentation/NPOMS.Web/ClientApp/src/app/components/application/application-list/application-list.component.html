@@ -32,7 +32,7 @@
               <th style="width: 5%;">Actions</th>
             </tr>
             <tr>
-                <th></th>
+                <th *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions"></th>
                 <th></th>
                 <th><p-columnFilter type="text" field="refNo"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="npo.name"></p-columnFilter></th>
