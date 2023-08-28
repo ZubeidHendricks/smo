@@ -26,6 +26,7 @@ export class QcDocumentUploadComponent implements OnInit {
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() application: IApplication;
+  @Input() isView: boolean;
 
   // @Input() newlySavedApplicationId: number;
   // @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
@@ -180,7 +181,7 @@ export class QcDocumentUploadComponent implements OnInit {
     // );
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
-        this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
+        this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.QuickCapture);
         this.getMyContentLinks();
       },
       (err) => {
@@ -594,10 +595,10 @@ export class QcDocumentUploadComponent implements OnInit {
   //   });
   // }
 
-  // prevPage() {
-  //   this.activeStep = this.activeStep - 1;
-  //   this.activeStepChange.emit(this.activeStep);
-  // }
+  prevPage() {
+    this.activeStep = this.activeStep - 1;
+    this.activeStepChange.emit(this.activeStep);
+  }
   // nextPage() {
   //   this.bidForm(StatusEnum.Saved);
   //   this._messageService.add({ severity: 'success', summary: 'Success', detail: 'File(s) Saved Successfully' });
