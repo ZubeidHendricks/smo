@@ -9,5 +9,6 @@ namespace NPOMS.Repository.Interfaces.Entities
 		Task<IEnumerable<ContactInformation>> GetByNpoId(int NpoId);
 
 		Task DeleteEntity(int id, Npo model, int currentUserId);
-	}
+        Task<ContactInformation> GetByFundingApplicationIdAsync(int fundingApplicationId);
+    }
 }

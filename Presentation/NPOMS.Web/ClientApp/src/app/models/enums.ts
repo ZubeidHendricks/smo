@@ -7,13 +7,8 @@ export enum AccessStatusEnum {
     New = 4
 }
 
-export enum ResponseTypeEnum {
-    CloseEnded = 1,
-    Score = 2
-}
-
 export enum QuestionCategoryEnum {
-    PreAdjudication,
+    PreEvaluation,
     Adjudication,
     Evaluation,
     Approval
@@ -102,7 +97,11 @@ export enum EntityEnum {
     FundingApplicationDetails = 'FundingApplicationDetails'
 }
 
-
+export enum ResponseTypeEnum {
+    CloseEnded = 1,
+    Score = 2,
+    CloseEnded2 = 3
+}
 
 export enum DeclarationTypeEnum {
     Bidders1 = "Bidders 1",
@@ -135,6 +134,41 @@ export enum ServiceProvisionStepsEnum {
 }
 
 export enum StatusEnum {
+    // New = 1,
+    // Saved = 2,
+    // PendingReview = 3,
+    // AmendmentsRequired = 4,
+    // PendingApproval = 5,
+    // Rejected = 6,
+    // PendingSLA = 7,
+    // PendingSignedSLA = 8,
+    // AcceptedSLA = 9,
+    // ApprovalInProgress = 10,
+    // DeptComments = 11,
+    // OrgComments = 12,
+    // InProgress = 13,
+    // Approved = 14,
+    // Reviewed = 15,
+    // Cancelled = 16,
+    // OnHold = 17,
+    // Declined = 18,
+    // ConditionalAccepted = 19,
+    // StronglyRecommended = 20,
+    // EvaluationDecline = 21,
+    // Evaluated = 22,
+    // EvaluationApproved = 23,
+    // Submitted = 24,
+    // Pending = 23,
+    // Verified = 24,
+    // PreEvaluationInProgress = 25,
+    // PreEvaluated = 26,
+    // EvaluationInProgress = 27,
+    // EvaluationRecommended = 28,
+    // EvaluationNotRecommended = 29,
+    // AdjudicationInProgress = 30,
+    // AdjudicationApproved = 31,
+    // AdjudicationNotApproved = 32,
+    // Adjudicated = 33,
     New = 1,
     Saved = 2,
     PendingReview = 3,
@@ -147,18 +181,15 @@ export enum StatusEnum {
     ApprovalInProgress = 10,
     DeptComments = 11,
     OrgComments = 12,
-    InProgress = 13,
-    Approved = 14,
-    Reviewed = 15,
-    Cancelled = 16,
-    OnHold = 17,
-    Declined = 18,
-    ConditionalAccepted = 19,
-    StronglyRecommended = 20,
-    EvaluationDecline = 21,
-    Evaluated = 22,
-    EvaluationApproved = 23,
-    Submitted = 24,
+    Approved = 13,
+    Reviewed = 14,
+    Evaluated = 15,
+    EvaluationInProgress = 16,
+    AdjudicationInProgress = 17,
+    Adjudicated = 18,
+    Submitted = 19,
+    EvaluationRecommended = 20,
+    EvaluationNotRecommended = 21,
     GetName
 }
 
@@ -236,6 +267,7 @@ export enum PermissionsEnum {
     ApproveApplication = "App.Approve",
     UploadSLA = "App.Upload",
     ViewAcceptedApplication = "App.VAA",
+    DeleteApplication = "App.Delete",
 
     /* NPO APPROVAL MANAGEMENT */
     EditNpoRequests = "NAM.ENR",
@@ -314,8 +346,8 @@ export enum PermissionsEnum {
     DownloadOption = "WFA.Download",
     DeleteOption = "WFA.Delete",
 
-    PendingPreAdjudicateOption = "WFA.PendingPreAdjudication",
-    PreAdjudicateOption = "WFA.PreAdjudicate",
+    PendingPreEvaluateOption = "WFA.PendingPreEvaluation",
+    PreEvaluateOption = "WFA.PreEvaluate",
     PendingAdjudicateOption = "WFA.PendingAdjudication",
     AdjudicateOption = "WFA.Adjudicate",
     PendingEvaluationOption = "WFA.PendingEvaluation",
@@ -416,7 +448,8 @@ export enum DocumentUploadLocationsEnum {
     NpoProfile = 'NpoProfile',
     Workplan = 'Workplan',
     WorkplanActuals = 'WorkplanActuals',
-    FundApp = "FundApp"
+    FundApp = "FundApp",
+    QuickCapture = "QuickCapture"
 }
 
 //export enum FundingTemplateTypeEnum {

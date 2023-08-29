@@ -17,15 +17,24 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId);
 
-		Task<Application> GetByIds(int npoId, int financialYearId, int applicationTypeId);
+        Task<Application> GetById(int ApplicationId);
 
-		Task CloneWorkplan(Application model, int financialYearId, string userIdentifier);
+
+        Task<Application> GetByIds(int npoId, int financialYearId, int applicationTypeId);
+
+        Task UpdateFundingApplicationStatus(string userIdentifier, int fundingApplicationId, int statusId);
+
+        //Task<FundingApplication> GetFundingApplicationById(int id, bool returnAllDetails);
+
+        Task CloneWorkplan(Application model, int financialYearId, string userIdentifier);
 
 		Task CreateApplication(Application model, string userIdentifier);
 
 		Task UpdateApplicationStatus(Application model, string userIdentifier);
 
 		Task UpdateApplication(Application model, string userIdentifier);
+
+		Task DeleteApplicationById(int id, string userIdentifier);
 
 		Task<IEnumerable<Objective>> GetAllObjectivesAsync(int NpoId, int applicationPeriodId);
 
@@ -43,18 +52,23 @@ namespace NPOMS.Services.Interfaces
 
 		//Task UpdateProjectImplementation(ProjectImplementation model, string userIdentifier);
 
+		Task<FundingApplicationDetail> GetFundingApplicationDetailsByApplicationId(int applicationId);
 
 		Task CreateFundingApplicationDetails(FundingApplicationDetail model, string userIdentifier);
 
-        //Task UpdateFundingApplicationDetails(FundingApplicationDetails model, string userIdentifier);
+		Task UpdateFundingApplicationDetails(FundingApplicationDetail model, string userIdentifier);
 
-        //Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId);
+		Task<IEnumerable<Region>> GetRegions(int fundAppSDADetailId);
 
-        //      Task CreateFinancialDetail(FinancialDetail model, string userIdentifier);
+		Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(int fundAppSDADetailId);
 
-        //      Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier);
+		//Task<IEnumerable<FinancialDetail>> GetAllFinancialDetailsAsync(int NpoId, int applicationPeriodId);
 
-        Task CreateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier);
+		//      Task CreateFinancialDetail(FinancialDetail model, string userIdentifier);
+
+		//      Task UpdateFinancialDetail(FinancialDetail model, string userIdentifier);
+
+		Task CreateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier);
 
         Task UpdateMonitoringEvaluation(MonitoringEvaluation model, string userIdentifier);
 
@@ -101,11 +115,18 @@ namespace NPOMS.Services.Interfaces
 		Task<IEnumerable<ApplicationReviewerSatisfaction>> GetApplicationReviewerSatisfactions(int applicationId, int serviceProvisionStepId, int entityId);
 
 		Task CreateApplicationReviewerSatisfaction(ApplicationReviewerSatisfaction model, string userIdentifier);
+		Task GetByIds(int fundingApplicationId, bool v);
 
-        //Task<IEnumerable<Place>> GetPlaces(List<int> sdaIds);
+		//Task<IEnumerable<Place>> GetPlaces(List<int> sdaIds);
 
-        //Task<IEnumerable<SubPlace>> GetSubplaces(List<int> placeIds);
+		//Task<IEnumerable<SubPlace>> GetSubplaces(List<int> placeIds);
 
-        //Task<FundAppDetailViewModel> GetApplicationIDAsync(int bidId);
-    }
+		//Task<FundAppDetailViewModel> GetApplicationIDAsync(int bidId);
+
+		Task<IEnumerable<MyContentLink>> GetMyContentLinks(int applicationId);
+
+		Task CreateMyContentLink(MyContentLink model, string userIdentifier);
+
+		Task UpdateMyContentLink(MyContentLink model, string userIdentifier);
+	}
 }

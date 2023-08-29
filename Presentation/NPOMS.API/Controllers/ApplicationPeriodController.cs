@@ -38,7 +38,7 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
-				var results = await _applicationPeriodService.Get();
+				var results = await _applicationPeriodService.Get(base.GetUserIdentifier());
 				return Ok(results);
 			}
 			catch (Exception ex)

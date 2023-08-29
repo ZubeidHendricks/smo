@@ -455,25 +455,22 @@ namespace NPOMS.Services.Implementation
 			await _auditorOrAffiliationRepository.CreateAsync(model);
 		}
 
-		public async Task Update(List<AffiliatedOrganisationInformation> model, string userIdentifier, string id)
+		public async Task Update(AffiliatedOrganisationInformation model, string userIdentifier, string id)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			foreach (var m in model)
+			if (model.Id == 0)
 			{
-				if (m.Id == 0)
-				{
-					m.CreatedUserId = loggedInUser.Id;
-					m.CreatedDateTime = DateTime.Now;
-					m.npoProfileId = Convert.ToInt32(id);
-					await _affiliatedOrganisationInformationRepository.CreateAsync(m);
-				}
-				else
-				{
-					m.UpdatedUserId = loggedInUser.Id;
-					m.UpdatedDateTime = DateTime.Now;
-					await _affiliatedOrganisationInformationRepository.UpdateAsync(m);
-				}
+				model.CreatedUserId = loggedInUser.Id;
+				model.CreatedDateTime = DateTime.Now;
+				model.npoProfileId = Convert.ToInt32(id);
+				await _affiliatedOrganisationInformationRepository.CreateAsync(model);
+			}
+			else
+			{
+				model.UpdatedUserId = loggedInUser.Id;
+				model.UpdatedDateTime = DateTime.Now;
+				await _affiliatedOrganisationInformationRepository.UpdateAsync(model);
 			}
 		}
 

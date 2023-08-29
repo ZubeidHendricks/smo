@@ -15340,6 +15340,9 @@ namespace NPOMS.Repository.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsSignedOff")
+                       .HasColumnType("bit");
+
                     b.Property<int>("QuestionCategoryId")
                         .HasColumnType("int");
 

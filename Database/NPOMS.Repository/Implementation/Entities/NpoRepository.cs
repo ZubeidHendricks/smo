@@ -40,7 +40,7 @@ namespace NPOMS.Repository.Implementation.Entities
                                   .Include(x => x.CreatedUser)
                                   .Include(x => x.ApprovalUser)
                                   .Include(x => x.RegistrationStatus)
-                            .Where(x => x.IsQuickCapture).OrderBy(x => x.Name).AsNoTracking().ToListAsync();
+                            .OrderBy(x => x.Name).AsNoTracking().ToListAsync();
         }
 
         public async Task<Npo> GetById(int id)

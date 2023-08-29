@@ -1,21 +1,16 @@
-<div *ngIf="isApplicationAvailable">
+<div *ngIf="isApplicationAvailable && application">
     <div>
-    <p-panel [style]="{'font-size':'12px'}" header="Organisation Details">
-        <app-view-npo [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)">
-        </app-view-npo>
-        <div style="height: 10px;"></div>
-        <app-view-profile [npoId]="application.npoId" (retrievedNpoProfile)="updateNpoProfile($event)">
-        </app-view-profile>
-    </p-panel>
+        <p-panel [style]="{'font-size':'12px'}" header="Organisation Details">
+            <app-view-npo [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)"></app-view-npo>
+            <div style="height: 10px;"></div>
+            <app-view-profile [npoId]="application.npoId" (retrievedNpoProfile)="updateNpoProfile($event)" *ngIf="!application.isQuickCapture"></app-view-profile>
+        </p-panel>
     </div>
     <br>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
-        <!-- <p-panel [style]="{'font-size':'12px'}" header="Funding Application Details"> -->
-        
-            <app-view-funding-application [npoId]="application.npoId"  (retrievedNpo)="updateNpo($event)">
-            </app-view-funding-application>
-            <div style="height: 10px;"></div>
-        <!-- </p-panel> -->
+        <p-panel [style]="{'font-size':'12px'}" header="Funding Application Information">        
+            <app-view-funding-application [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)"></app-view-funding-application>
+        </p-panel>
     </div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
         <p-panel [style]="{'font-size':'12px'}" header="Workplan Information">

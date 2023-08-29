@@ -1,52 +1,46 @@
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="New Organisation" *ngIf="profile">
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowNpoActions)"></p-menubar>
-    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="General Information" *ngIf="npo">
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Organisation Name</label>
-                <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" required>
+                <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" required (change)="updateNpo()">
                 <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Year Registered</label>
-                <input type="text" name="yearRegistered" class="form-text" pInputText [(ngModel)]="npo.yearRegistered" [ngModelOptions]="{standalone: true}" minlength="4" maxlength="4" (keypress)="numberOnly($event)"> 
+                <input type="text" name="yearRegistered" class="form-text" pInputText [(ngModel)]="npo.yearRegistered" [ngModelOptions]="{standalone: true}" minlength="4" maxlength="4" (keypress)="numberOnly($event)" (change)="updateNpo()"> 
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Organisation Type</label>
-                <p-dropdown [options]="organisationTypes" placeholder="Select an Organisation Type" optionLabel="name" [(ngModel)]="selectedOrganisationType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body" #organisationType="ngModel" [ngClass]="{'ng-dirty': (organisationType.invalid && validated) || (organisationType.dirty && organisationType.invalid)}" required></p-dropdown>
+                <p-dropdown [options]="organisationTypes" placeholder="Select an Organisation Type" optionLabel="name" [(ngModel)]="selectedOrganisationType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body" #organisationType="ngModel" [ngClass]="{'ng-dirty': (organisationType.invalid && validated) || (organisationType.dirty && organisationType.invalid)}" required (onChange)="updateOrgType($event.value)"></p-dropdown>
                 <small *ngIf="(organisationType.invalid && validated) || (organisationType.dirty && organisationType.invalid)" class="p-error">Organisation Type is required.</small>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">If the organisation is registered as a Public Benefit Organisation, please provide the PBO Number</label>
-                <input type="text" name="pboNumber" class="form-text" pInputText [(ngModel)]="npo.pboNumber" [ngModelOptions]="{standalone: true}">
+                <input type="text" name="pboNumber" class="form-text" pInputText [(ngModel)]="npo.pboNumber" [ngModelOptions]="{standalone: true}" (change)="updateNpo()">
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">C-Code</label>
-                <input type="text" name="cCode" class="form-text" pInputText [(ngModel)]="npo.cCode" [ngModelOptions]="{standalone: true}">
+                <input type="text" name="cCode" class="form-text" pInputText [(ngModel)]="npo.cCode" [ngModelOptions]="{standalone: true}" (change)="updateNpo()">
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Is the organisation also registered to provide Section 18 receipts?</label>
-                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="npo.section18Receipts" [ngModelOptions]="{standalone: true}"></p-selectButton>
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="npo.section18Receipts" [ngModelOptions]="{standalone: true}" (onChange)="updateNpo()"></p-selectButton>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Registration Status</label>
-                <p-dropdown [options]="registrationStatuses" placeholder="Select a Registration Status" optionLabel="name" [(ngModel)]="selectedRegistrationStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body" #registrationStatus="ngModel" [ngClass]="{'ng-dirty': (registrationStatus.invalid && validated) || (registrationStatus.dirty && registrationStatus.invalid)}" required></p-dropdown>
+                <p-dropdown [options]="registrationStatuses" placeholder="Select a Registration Status" optionLabel="name" [(ngModel)]="selectedRegistrationStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body" #registrationStatus="ngModel" [ngClass]="{'ng-dirty': (registrationStatus.invalid && validated) || (registrationStatus.dirty && registrationStatus.invalid)}" required (onChange)="updateRegistrationStatus($event.value)"></p-dropdown>
                 <small *ngIf="(registrationStatus.invalid && validated) || (registrationStatus.dirty && registrationStatus.invalid)" class="p-error">Registration Status is required.</small>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Website</label>
-                <input type="text" name="website" class="form-text" pInputText [(ngModel)]="npo.website" [ngModelOptions]="{standalone: true}">
+                <input type="text" name="website" class="form-text" pInputText [(ngModel)]="npo.website" [ngModelOptions]="{standalone: true}" (change)="updateNpo()">
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Registration Number - Please provide your NPO's registration number. If the organisation's NPO application is in progress, please provide the NDSD Application number (APP number)</label>
-                <input type="text" name="registrationNumber" class="form-text" pInputText [(ngModel)]="npo.registrationNumber" [ngModelOptions]="{standalone: true}">
+                <input type="text" name="registrationNumber" class="form-text" pInputText [(ngModel)]="npo.registrationNumber" [ngModelOptions]="{standalone: true}" (change)="updateNpo()">
             </div>
-            <!-- <div class="p-field p-col-12 p-md-6">
-                <label class="non-mandatory-content">Is Quick Capture?</label>
-                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="npo.isQuickCapture" [ngModelOptions]="{standalone: true}"></p-selectButton>
-            </div> -->
         </div>
     </p-panel>
     <div style="height: 10px;"></div>
@@ -85,7 +79,12 @@
             </ng-template>
         </p-table>
     </p-panel>
-  
+    
+    <div style="height: 10px;"></div>
+    <div class="p-grid p-nogutter p-justify-end">
+        <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
+    </div>
+</p-panel>
 
 <p-dialog header="Contact / Stakeholder Details" 
           [(visible)]="displayContactDialog" 
@@ -328,15 +327,6 @@
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveContactInfo() (click)="saveContactInformation()"></button>
     </ng-template>
 </p-dialog>
-
-<div style="height: 10px;"></div>
-<p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowNpoActions)"></p-menubar>
-
-<div style="height: 10px;"></div>
-<div class="p-grid p-nogutter p-justify-end">
-    <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
-</div>
-</p-panel>
 
 <div class="content-section implementation">
     <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">

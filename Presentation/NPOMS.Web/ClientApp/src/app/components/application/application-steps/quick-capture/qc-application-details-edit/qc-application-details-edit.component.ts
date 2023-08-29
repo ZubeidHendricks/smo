@@ -183,11 +183,10 @@ export class QcApplicationDetailsEditComponent implements OnInit {
       (results) => {
         if (results != null) {
           this.application = results;
-          this._bidService.getApplicationBiId(results.id).subscribe(response => { 
+          this._bidService.getApplicationBiId(results.id).subscribe(response => {
             if (response.id != null) {
               this.getFundingApplicationDetails(response);
-              console.log('data.result', response);
-           }
+            }
           });
         }
         this._spinner.hide();
@@ -197,17 +196,17 @@ export class QcApplicationDetailsEditComponent implements OnInit {
   }
 
   private getFundingApplicationDetails(data) {
-    if(data != null){
-    this._bidService.getBid(data.id).subscribe(response => {
+    if (data != null) {
+      this._bidService.getBid(data.id).subscribe(response => {
 
-      this.getBidFullObject(response)
-    });
-  }
+        this.getBidFullObject(response)
+      });
+    }
 
   }
 
   private getBidFullObject(data) {
-      this.fundingApplicationDetails = data;
+    this.fundingApplicationDetails = data;
     this.fundingApplicationDetails.id = data.id;
     this.fundingApplicationDetails.applicationDetails.amountApplyingFor = data.applicationDetails.amountApplyingFor;
     this.fundingApplicationDetails.implementations = data.implementations;
@@ -239,39 +238,38 @@ export class QcApplicationDetailsEditComponent implements OnInit {
 
 
   private bidForm(status: StatusEnum) {
-    debugger;
     this.application.status = null;
-      this.application.statusId = status;
-      const applicationIdOnBid = this.fundingApplicationDetails;
+    this.application.statusId = status;
+    const applicationIdOnBid = this.fundingApplicationDetails;
 
-      if (this.application.id == null) {
-        this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-          this.menuActions[1].visible = false;
+    if (this.application.id == null) {
+      this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+        this.menuActions[1].visible = false;
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+        resp;
+      });
+    }
+
+    else {
+      this._bidService.editBid(this.application.id, this.fundingApplicationDetails).subscribe(resp => {
+        if (resp) {
+
+          this._router.navigateByUrl(`quick-captures-editList/edit/${this.application.id}`);
+
+          //this._router.navigateByUrl(`application/edit/${this.application.id}`);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          resp;
-        });
-      }
+        }
+      });
+    }
 
-     else {
-        this._bidService.editBid(this.application.id, this.fundingApplicationDetails).subscribe(resp => {
-          if (resp) {
-        
-            this._router.navigateByUrl(`quick-captures-editList/edit/${this.application.id}`);
+    if (status == StatusEnum.PendingReview) {
 
-            //this._router.navigateByUrl(`application/edit/${this.application.id}`);
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          }
-        });
-     }
-
-      if (status == StatusEnum.PendingReview) {
-
-        this.application.statusId = status;
-        this._applicationRepo.updateApplication(this.application).subscribe();
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._router.navigateByUrl('applications');
-      };
-   // }
+      this.application.statusId = status;
+      this._applicationRepo.updateApplication(this.application).subscribe();
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+      this._router.navigateByUrl('applications');
+    };
+    // }
   }
 
 
@@ -354,11 +352,11 @@ export class QcApplicationDetailsEditComponent implements OnInit {
 
       this._applicationRepo.updateApplication(this.application).subscribe(
         (resp) => {
-        //  if (resp.statusId === StatusEnum.Saved) {
-            this._spinner.hide();
-            this.menuActions[1].visible = false;
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-       //   }
+          //  if (resp.statusId === StatusEnum.Saved) {
+          this._spinner.hide();
+          this.menuActions[1].visible = false;
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+          //   }
 
           if (resp.statusId === StatusEnum.PendingReview) {
             this._spinner.hide();
@@ -370,7 +368,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
           this._spinner.hide();
         }
       );
-   
+
     }
   }
 
@@ -454,9 +452,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          console.log('results', results);
           this.applicationPeriodId = results.applicationPeriodId;
-          console.log('this.applicationPeriodId', this.applicationPeriodId);
           this.loadApplicationPeriodById(this.applicationPeriodId);
         } this._spinner.hide();
       },
@@ -468,8 +464,6 @@ export class QcApplicationDetailsEditComponent implements OnInit {
     if (this.applicationPeriodId != null) {
       this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
         (results) => {
-          console.log(results);
-          console.log(results.financialYear);
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
@@ -586,13 +580,12 @@ export class QcApplicationDetailsEditComponent implements OnInit {
     return false;
   }
 
-  
+
 
   nextPage() {
-    debugger;
-      this.activeStep = this.activeStep + 1;
-      this.bidForm(StatusEnum.Saved);
-      this.activeStepChange.emit(this.activeStep);
+    this.activeStep = this.activeStep + 1;
+    this.bidForm(StatusEnum.Saved);
+    this.activeStepChange.emit(this.activeStep);
   }
 
   prevPage() {
@@ -625,8 +618,8 @@ export class QcApplicationDetailsEditComponent implements OnInit {
       this.regions = null;
       this.sdas = null;
     }
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
+    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = localMunicipality;
 
     if (localMunicipality.id != undefined) {
 
@@ -644,9 +637,9 @@ export class QcApplicationDetailsEditComponent implements OnInit {
     this.selected = null;
     this.regions = null;
     this.sdas = null;
-    
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
+
+    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = districtCouncil;
 
     if (districtCouncil.id != undefined) {
 
@@ -666,8 +659,8 @@ export class QcApplicationDetailsEditComponent implements OnInit {
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
-    if(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
+    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail != null)
+      this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
 
     // filter items matching the selected regions
     if (regions != null && regions.length != 0) {
@@ -692,7 +685,6 @@ export class QcApplicationDetailsEditComponent implements OnInit {
     // end  make sure the selected is not redundant!!
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
     this.selectedSdas = filtered;
-    console.log('onRegionChange Selected SDA', this.selectedSdas);
   }
 
 
@@ -707,7 +699,6 @@ export class QcApplicationDetailsEditComponent implements OnInit {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-    console.log('onSdaChange', this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
 
     let count = 0;
     if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 
@@ -749,7 +740,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
   }
 
   private GetSourceOfInformation() {
-    this._npoProfile.getSourceOfInformationById(this.selectedApplicationId).subscribe(
+    this._npoProfile.getSourceOfInformationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         this.sourceOfInformation = results;
         this.sourceOfInformationText = "Printed newspaper";
@@ -773,7 +764,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
   }
 
   private GetAffiliatedOrganisation() {
-    this._npoProfile.getAffiliatedOrganisationById(this.selectedApplicationId).subscribe(
+    this._npoProfile.getAffiliatedOrganisationById(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         this.affliatedOrganisationInfo = results;
         if (results.length > 0) {
@@ -788,7 +779,7 @@ export class QcApplicationDetailsEditComponent implements OnInit {
 
   updateDetail(rowData: IAffiliatedOrganisation) {
 
-    this._npoProfile.updateAffiliatedOrganisationData(this.affliatedOrganisationInfo, this.selectedApplicationId).subscribe(
+    this._npoProfile.updateAffiliatedOrganisationData(rowData, this.selectedApplicationId).subscribe(
       (resp) => {
         this.GetAffiliatedOrganisation();
       },

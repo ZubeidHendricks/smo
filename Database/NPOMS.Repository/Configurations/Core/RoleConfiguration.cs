@@ -48,8 +48,26 @@ namespace NPOMS.Repository.Configurations.Core
 					Id = 6,
 					Name = "Approver",
 					SystemName = "Approver"
-				}
-			);
+				},
+                new Role
+                {
+                    Id = 7,
+                    Name = "Evaluator",
+                    SystemName = "Evaluator"
+                },
+                new Role
+                {
+                    Id = 8,
+                    Name = "Adjudicator",
+                    SystemName = "Adjudicator"
+                },
+                new Role
+                {
+                    Id = 9,
+                    Name = "Approver",
+                    SystemName = "Approver"
+                }
+            );
 		}
 	}
 }

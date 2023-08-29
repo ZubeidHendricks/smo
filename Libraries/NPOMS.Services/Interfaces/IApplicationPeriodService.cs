@@ -6,7 +6,7 @@ namespace NPOMS.Services.Interfaces
 {
 	public interface IApplicationPeriodService
 	{
-		Task<IEnumerable<ApplicationPeriod>> Get();
+		Task<IEnumerable<ApplicationPeriod>> Get(string userIdentifier);
 
 		Task<ApplicationPeriod> GetById(int id);
 

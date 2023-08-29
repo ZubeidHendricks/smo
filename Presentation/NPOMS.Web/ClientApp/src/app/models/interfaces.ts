@@ -348,6 +348,7 @@ export interface IApplication {
     statusId: number;
     isActive: boolean;
     isCloned: boolean;
+    isQuickCapture: boolean;
 
     applicationPeriod: IApplicationPeriod;
     status: IStatus;
@@ -512,8 +513,7 @@ export interface INpo {
 
     registrationStatusId: number;
     pboNumber: string;
-    section18Receipts: boolean;
-    isQuickCapture: boolean;
+    section18Receipts: boolean;    
     cCode: string;
 
     organisationType: IOrganisationType;
@@ -1233,6 +1233,70 @@ export interface IWorkflowAssessment {
     questionCategory: IQuestionCategory;
 }
 
+export interface ICapturedResponse {
+    id: number;
+    fundingApplicationId: number;
+    questionCategoryId: number;
+    statusId: number;
+    comments: string;
+    isActive: boolean;
+    isSignedOff: boolean;
+    createdDateTime: Date;
+
+    createdUser: IUser;
+    questionnaires: IQuestionResponseViewModel[];
+}
+
+export interface IResponse {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+}
+
+export interface IQuestionResponseViewModel {
+    questionCategoryId: number;
+    questionCategoryName: string;
+    questionSectionId: number;
+    questionSectionName: string;
+    responseTypeId: number;
+    questionId: number;
+    questionName: string;
+    questionSortOrder: number;
+
+    hasComment: boolean;
+    commentRequired: boolean;
+    hasDocument: boolean;
+    documentRequired: boolean;
+    weighting: number;
+    averageScore: number;
+
+    responseId: number;
+    fundingApplicationId: number;
+    responseOptionId: number;
+    comment: string;
+    isSaved: boolean;
+    createdUserId: number;
+    responseOption: IResponseOption;
+}
+
+export interface IResponse {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+}
+
+export interface IResponseHistory {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+}
+
 //export interface IBudget {
 //    id: number;
 //    fundingApplicationId: number;
@@ -1259,3 +1323,15 @@ export interface IWorkflowAssessment {
 //    optionDisabled: boolean;
 //}
 
+export interface IMyContentLink {
+    id: number;
+    applicationId: number;
+    documentTypeId: number;
+    url: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+
+    documentType: IDocumentType;
+    createdUser: IUser;
+}
