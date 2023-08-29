@@ -23,7 +23,7 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task<IEnumerable<ContactInformation>> GetByNpoId(int NpoId)
 		{
-			return await FindByCondition(x => x.NpoId.Equals(NpoId))
+			return await FindByCondition(x => x.NpoId.Equals(NpoId) && x.IsActive)
 							.Include(x => x.Title)
 							.Include(x => x.Position)
 							.Include(x => x.Gender)
@@ -42,6 +42,11 @@ namespace NPOMS.Repository.Implementation.Entities
 
 			var oldEntity = await this.RepositoryContext.ContactInformation.FindAsync(id);
 			await UpdateAsync(oldEntity, existingEntity, true, currentUserId);
+		}
+
+		public Task<ContactInformation> GetByFundingApplicationIdAsync(int fundingApplicationId)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

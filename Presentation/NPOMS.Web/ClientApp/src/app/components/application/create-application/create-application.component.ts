@@ -1,6 +1,6 @@
 import { IApplicationDetails, IDistrictCouncil, IFundAppSDADetail, ILocalMunicipality, IPlace, IProjectInformation, IQuickCaptureDetails, IRegion, ISDA, ISubPlace } from './../../../models/interfaces';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router'; 
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -386,14 +386,13 @@ export class CreateApplicationComponent implements OnInit {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
           this.menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          // this._router.navigateByUrl('applications');
-          this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
+         // //this._router.navigateByUrl('applications');
+         this._router.navigateByUrl(`application/create/${this.application.id}`);
+       //   this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           resp;
         });
       }
-
       else {
-
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
 

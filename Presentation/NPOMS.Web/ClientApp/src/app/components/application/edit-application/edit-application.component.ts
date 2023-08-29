@@ -8,7 +8,10 @@ import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/
 import { Subscription } from 'rxjs';
 import { FinancialMatters } from 'src/app/models/FinancialMatters';
 import { ApplicationTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, 
+  IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, 
+  IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser,
+  IDistrictCouncil,ILocalMunicipality,IRegion, IFundAppSDADetail } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -49,7 +52,7 @@ export class EditApplicationComponent implements OnInit {
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
-  
+
   bidId: number;
   placeAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
@@ -81,6 +84,25 @@ export class EditApplicationComponent implements OnInit {
     applicationDetails: {} as IApplicationDetails
   } as IFundingApplicationDetails;
 
+  // fundingApplicationDetails: IFundingApplicationDetails = {
+  //   financialMatters: [],
+  //   implementations: [],
+  //   projectInformation: {} as IProjectInformation,
+  //   monitoringEvaluation: {} as IMonitoringAndEvaluation,
+  //   applicationDetails: {
+  //     fundAppSDADetail: {
+  //       districtCouncil: {} as IDistrictCouncil,
+  //       localMunicipality: {} as ILocalMunicipality,
+  //       regions: [],
+  //       serviceDeliveryAreas: [],
+  //     } as IFundAppSDADetail,
+  //   } as IApplicationDetails,
+
+  // //  financialMatters: [],
+  // //  implementations: [],
+
+  // } as IFundingApplicationDetails;
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -106,8 +128,7 @@ export class EditApplicationComponent implements OnInit {
       this.id = params.get('id');
       this.loadApplication();
       this.loadDocumentTypes();
-      if(Number(params.get('activeStep')) === 2)
-      {
+      if (Number(params.get('activeStep')) === 2) {
         this.activeStep = Number(params.get('activeStep'));
       }
     });
@@ -307,7 +328,6 @@ export class EditApplicationComponent implements OnInit {
 
   private bidForm(status: StatusEnum) {
     this.application.status = null;
-    console.log('fundingApplicationDetails', this.fundingApplicationDetails);
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;

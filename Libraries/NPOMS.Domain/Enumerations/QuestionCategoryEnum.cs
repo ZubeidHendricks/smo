@@ -2,8 +2,9 @@
 {
 	public enum QuestionCategoryEnum
 	{
-		PreEvaluation = 1,
+        PreAdjudication = 1,
 		Evaluation = 2,
-		Adjudication = 3
+		Adjudication = 3,
+		Approval
 	}
 }

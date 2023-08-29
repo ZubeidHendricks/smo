@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IObjective, IPlace, IResource, ISDA,  ISubPlace, ISustainabilityPlan } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IResource, ISDA, ISubPlace, ISustainabilityPlan } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -43,7 +43,7 @@ export class ApplicationService {
   public createApplication(application: IApplication, createNew: boolean, financialYear: IFinancialYear) {
     // Set default value for financial year id as it would be null when createNew is true
     let financialYearId = financialYear != null ? financialYear.id : 0;
-    
+
     const url = `${this._envUrl.urlAddress}/api/applications/createNew/${createNew}/financialYearId/${financialYearId}`;
     return this._http.post<IApplication>(url, application, httpOptions);
   }
@@ -51,6 +51,11 @@ export class ApplicationService {
   public updateApplication(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications`;
     return this._http.put<IApplication>(url, application, httpOptions);
+  }
+
+  public deleteApplicationById(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/applicationId/${applicationId}`;
+    return this._http.put<IApplication>(url, httpOptions);
   }
 
   public getAllObjectives(application: IApplication) {
@@ -77,12 +82,12 @@ export class ApplicationService {
   public updateFundingApplicationDetails(fundingApplicationDetails: IFundingApplicationDetails) {
     const url = `${this._envUrl.urlAddress}/api/applications/fundingApplicationDetails`;
     return this._http.put<IFundingApplicationDetails>(url, fundingApplicationDetails, httpOptions);
-  } 
-  
+  }
+
   public createBankDetail(bankDetail: IBankDetail) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/bank-detail`;
     return this._http.post<IBankDetail>(url, bankDetail, httpOptions);
-  }  
+  }
 
 
   public getAllActivities(application: IApplication) {
@@ -195,8 +200,18 @@ export class ApplicationService {
     return this._http.post<ISubPlace[]>(url, JSON.stringify(places), httpOptions);
   }
 
-  public deleteFundingApplication(fundingApplicationId: number) {
-    const url = `${this._envUrl.urlAddress}/api/fundingapplication/fundingApplicationId/${fundingApplicationId}`;
-    return this._http.delete<IApplication>(url, httpOptions);
+  public getMyContentLinks(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/my-content-link/applicationId/${applicationId}`;
+    return this._http.get<IMyContentLink[]>(url, httpOptions);
+  }
+
+  public createMyContentLink(model: IMyContentLink) {
+    const url = `${this._envUrl.urlAddress}/api/applications/my-content-link`;
+    return this._http.post<IMyContentLink>(url, model, httpOptions);
+  }
+
+  public updateMyContentLink(model: IMyContentLink) {
+    const url = `${this._envUrl.urlAddress}/api/applications/my-content-link`;
+    return this._http.put<IMyContentLink>(url, model, httpOptions);
   }
 }

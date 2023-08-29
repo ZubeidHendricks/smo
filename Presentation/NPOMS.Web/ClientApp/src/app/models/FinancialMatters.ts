@@ -84,6 +84,8 @@ export interface ISourceOfInformation {
   createdDateTime: Date;
   updatedUserId: number;
   updatedDateTime: Date;
+
+  sourceOfInformationText: string;
 }
 
 export interface IAffiliatedOrganisation {

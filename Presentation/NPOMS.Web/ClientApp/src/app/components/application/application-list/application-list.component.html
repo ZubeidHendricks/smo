@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Submissions">
     <div class="p-grid">
         <div class="p-col-fixed">
@@ -31,7 +32,7 @@
               <th style="width: 5%;">Actions</th>
             </tr>
             <tr>
-                <th></th>
+                <th *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions"></th>
                 <th></th>
                 <th><p-columnFilter type="text" field="refNo"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="npo.name"></p-columnFilter></th>
@@ -68,3 +69,12 @@
         </ng-template>
     </p-table>
 </p-panel>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="pi pi-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="pi pi-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

@@ -70,7 +70,7 @@ namespace NPOMS.Services.Interfaces
 
 		Task CreateFinancialMattersOther(int fundingApplicationId, string userIdentifier);
 
-		Task Update(List<AffiliatedOrganisationInformation> model, string userIdentifier, string npoProfileId);
+		Task Update(AffiliatedOrganisationInformation model, string userIdentifier, string npoProfileId);
         Task Update(SourceOfInformation model, string userIdentifier, string npoProfileId);
         Task<IEnumerable<AffiliatedOrganisationInformation>> GetAffiliatedOrganisationById(int npoProfileId);
         Task<IEnumerable<SourceOfInformation>> GetSourceOfInformationById(int npoProfileId);

@@ -90,8 +90,56 @@ namespace NPOMS.Repository.Configurations.Entities
 					Id = 13,
 					Name = "Approved",
 					SystemName = "Approved"
-				}
-			);
+				},
+                new Status
+                {
+                    Id = 14,
+                    Name = "Reviewed",
+                    SystemName = "Reviewed"
+                },
+                 new Status
+                 {
+                     Id = 15,
+                     Name = "Evaluated",
+                     SystemName = "Evaluated"
+                 },
+                new Status
+                {
+                    Id = 16,
+                    Name = "EvaluationInProgress",
+                    SystemName = "EvaluationInProgress"
+                },
+                new Status
+                {
+                    Id = 17,
+                    Name = "AdjudicationInProgress",
+                    SystemName = "AdjudicationInProgress"
+                },
+                new Status
+                {
+                    Id = 18,
+                    Name = "Adjudicated",
+                    SystemName = "Adjudicated"
+                },
+                new Status
+                {
+                    Id = 19,
+                    Name = "Submitted",
+                    SystemName = "Submitted"
+                },
+                new Status
+                {
+                    Id = 20,
+                    Name = "Evaluation Recommended",
+                    SystemName = "EvaluationRecommended"
+                },
+                new Status
+                {
+                    Id = 21,
+                    Name = "Evaluation Not Recommended",
+                    SystemName = "EvaluationNotRecommended"
+                }
+            );
 		}
 	}
 }
