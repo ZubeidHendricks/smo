@@ -134,16 +134,14 @@ namespace NPOMS.Services.Implementation
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var applications = await _applicationRepository.GetEntities();
 			var results = applications.Where(x => !x.StatusId.Equals((int)StatusEnum.New));
-
-			// Filter applications by department.
-			//not supporting multiple departments
-			if (!loggedInUser.Departments[0].DepartmentId.Equals((int)DepartmentEnum.ALL))
-			{
-				results = results.Where(x => x.ApplicationPeriod.DepartmentId.Equals(loggedInUser.Departments[0].DepartmentId));
-			}
-
+			
 			if (loggedInUser.Roles.Any(x => !x.RoleId.Equals((int)RoleEnum.Applicant)))
 			{
+				// Filter applications by department.
+				//not supporting multiple departments
+				if (!loggedInUser.Departments[0].DepartmentId.Equals((int)DepartmentEnum.ALL))
+					results = results.Where(x => x.ApplicationPeriod.DepartmentId.Equals(loggedInUser.Departments[0].DepartmentId));
+
 				return results;
 			}
 			else
