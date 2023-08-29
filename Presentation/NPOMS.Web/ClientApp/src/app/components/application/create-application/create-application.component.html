@@ -53,7 +53,7 @@
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
-        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)">
+        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)" [isEdit]="false">
         </app-application-details>
 
         <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"  

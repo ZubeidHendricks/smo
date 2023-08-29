@@ -42,7 +42,8 @@ namespace NPOMS.Services.Implementation
 			//not supporting multiple departments
 			if (!loggedInUser.Departments[0].DepartmentId.Equals((int)DepartmentEnum.ALL))
 			{
-				results = results.Where(x => x.DepartmentId.Equals(loggedInUser.Departments[0].DepartmentId));
+				if (loggedInUser.Roles.Any(x => !x.RoleId.Equals((int)RoleEnum.Applicant)))
+					results = results.Where(x => x.DepartmentId.Equals(loggedInUser.Departments[0].DepartmentId));
 			}
 
 			return results;
