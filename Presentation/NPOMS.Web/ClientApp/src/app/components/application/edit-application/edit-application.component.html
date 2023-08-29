@@ -16,7 +16,8 @@
             [(fundingApplicationDetails)]="fundingApplicationDetails"
             [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
             (getPlace)="places($event)"
-            (getSubPlace)=" subPlaces($event)">
+            (getSubPlace)=" subPlaces($event)"
+            [isEdit]="true">
         </app-application-details>
         <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
             [(activeStep)]="activeStep" [application]="application" [isAdmin]=false

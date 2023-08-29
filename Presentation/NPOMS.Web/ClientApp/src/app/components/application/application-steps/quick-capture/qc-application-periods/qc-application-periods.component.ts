@@ -121,8 +121,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
 
     this.cols = [
       { field: 'refNo', header: 'Ref. No.', width: '10%' },
-      { field: 'department.name', header: 'Department', width: '10%' },
-      { field: 'name', header: 'Name', width: '20%' },
+      { field: 'name', header: 'Name', width: '30%' },
       { field: 'applicationType.name', header: 'Type', width: '15%' },
       { field: 'financialYear.name', header: 'Financial Year', width: '8%' },
       { field: 'openingDate', header: 'Opening Date', width: '10%' },

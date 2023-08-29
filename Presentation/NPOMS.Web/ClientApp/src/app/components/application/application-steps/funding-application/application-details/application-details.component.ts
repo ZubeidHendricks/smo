@@ -8,7 +8,7 @@ import {
   IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod,
   IMonitoringAndEvaluation, IProjectInformation, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion
 } from 'src/app/models/interfaces';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem, Message, MessageService } from 'primeng/api';
@@ -18,6 +18,8 @@ import { FundingApplicationService } from 'src/app/services/api-services/funding
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { FinancialMatters, IPreviousFinancialYear, ISourceOfInformation, IAffiliatedOrganisation } from 'src/app/models/FinancialMatters';
+import { Table } from 'primeng/table';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-application-details',
@@ -39,6 +41,8 @@ export class ApplicationDetailsComponent implements OnInit {
 
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
   @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
+
+  @Input() isEdit: boolean;
 
   dropdownTouched: boolean = false;
   /* Permission logic */
@@ -120,6 +124,12 @@ export class ApplicationDetailsComponent implements OnInit {
   @Output() applicationDetailsChange: EventEmitter<IFundingApplicationDetails> = new EventEmitter<IFundingApplicationDetails>();
   selectedOption: string = '';
 
+  allApplicationPeriods: IApplicationPeriod[];
+  cols: any[];
+
+  // Used for table filtering
+  @ViewChild('dt') dt: Table | undefined;
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -133,6 +143,7 @@ export class ApplicationDetailsComponent implements OnInit {
     private _messageService: MessageService,
     private _loggerService: LoggerService,
     private _npoProfile: NpoProfileService,
+    private _datepipe: DatePipe
   ) { }
 
   getSelectedValue(value: string) {
@@ -149,6 +160,7 @@ export class ApplicationDetailsComponent implements OnInit {
         this.loadDepartments();
         this.loadApplicationTypes();
         this.loadApplicationPeriod();
+        this.loadApplicationPeriods();
         this.buildMenu();
         let amountStringId = (<HTMLInputElement>document.getElementById("amountApplyingFor"));
         amountStringId.focus();
@@ -175,6 +187,16 @@ export class ApplicationDetailsComponent implements OnInit {
         label: 'No',
         value: 'No'
       }
+    ];
+
+    this.cols = [
+      { field: 'refNo', header: 'Ref. No.', width: '10%' },
+      { field: 'name', header: 'Name', width: '30%' },
+      { field: 'applicationType.name', header: 'Type', width: '15%' },
+      { field: 'financialYear.name', header: 'Financial Year', width: '8%' },
+      { field: 'openingDate', header: 'Opening Date', width: '10%' },
+      { field: 'closingDate', header: 'Closing Date', width: '10%' },
+      { field: 'status', header: 'Status', width: '5%' }
     ];
   }
 
@@ -246,7 +268,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
     if (applicationIdOnBid.id == null) {
       this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-        this.menuActions[1].visible = false;       
+        this.menuActions[1].visible = false;
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
         resp;
 
@@ -461,9 +483,10 @@ export class ApplicationDetailsComponent implements OnInit {
         this._loggerService.logException(err);
       });
   }
+
   private loadApplicationPeriodById(applnPeriodId: number) {
-    if (this.applicationPeriodId != null) {
-      this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
+    if (applnPeriodId != null) {
+      this._applicationPeriodRepo.getApplicationPeriodById(applnPeriodId).subscribe(
         (results) => {
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
@@ -819,5 +842,96 @@ export class ApplicationDetailsComponent implements OnInit {
     let nextTwoHours = today.getHours() + 2;
     today.setHours(nextTwoHours);
     return today;
+  }
+
+  private loadApplicationPeriods() {
+    this._spinner.show();
+    this._applicationPeriodRepo.getAllApplicationPeriods().subscribe(
+      (results) => {
+
+        results.forEach(period => {
+          this.setStatus(period);
+        });
+
+        this.allApplicationPeriods = results.filter(X => X.status === "Open");
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private setStatus(applicationPeriod: IApplicationPeriod) {
+    let openingDate = new Date(applicationPeriod.openingDate);
+    let closingDate = new Date(applicationPeriod.closingDate);
+    let today = new Date();
+
+    if (today >= openingDate && today <= closingDate)
+      applicationPeriod.status = 'Open';
+    else
+      applicationPeriod.status = 'Closed';
+  }
+
+  onRowSelect(applicationPeriod: IApplicationPeriod) {
+    if (applicationPeriod.id != this.applicationPeriod.id) {
+      this._spinner.show();
+      // this.loadApplicationPeriodById(applicationPeriod.id);
+
+      let application = {
+        applicationPeriodId: applicationPeriod.id,
+        npoId: this.application.npoId
+      } as IApplication;
+
+      this.applicationExists(application);
+    }
+  }
+
+  private applicationExists(application: IApplication) {
+    this._spinner.show();
+    this._applicationRepo.getApplicationByNpoIdAndPeriodId(application).subscribe(
+      (results) => {
+        if (results == null) {
+          //update application period
+          console.log('update application period');
+        }
+        else {
+          //display error
+          console.log('display error');
+        }
+
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  } 
+
+  public getSelectedApplicationPeriod(rowData: IApplicationPeriod) {
+    if (this.applicationPeriod && rowData.id === this.applicationPeriod.id)
+      return 'green';
+
+    return 'default';
+  }
+
+  getCellData(row: any, col: any): any {
+    const nestedProperties: string[] = col.field.split('.');
+    let value: any = row;
+
+    for (const prop of nestedProperties) {
+      value = value[prop];
+
+      if (col.field == 'openingDate' || col.field == 'closingDate')
+        value = this._datepipe.transform(value, 'yyyy-MM-dd HH:mm:ss');
+    }
+
+    return value;
+  }
+
+  applyFilterGlobal($event: any, stringVal: any) {
+    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 }
