@@ -261,6 +261,21 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("projImpl/appDetailId/{appDetailId}", Name = "GetProjImplByAppDetailId")]
+        public async Task<IActionResult> GetProjImplByAppDetailId(int appDetailId)
+        {
+            try
+            {
+                var results = await _npoProfileService.GetProjImplByAppDetailId(appDetailId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetBankDetailsByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("bank-detail/npoProfileId/{npoProfileId}", Name = "GetBankDetailsByNpoProfileId")]
 		public async Task<IActionResult> GetBankDetailsByNpoProfileId(int npoProfileId)
 		{

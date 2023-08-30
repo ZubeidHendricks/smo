@@ -33,6 +33,7 @@ namespace NPOMS.Services.Interfaces
 
         Task<IEnumerable<ProjectImplementation>> GetProjImplByNpoProfileId(int npoProfileId);
 
+        Task<IEnumerable<ProjectImplementation>> GetProjImplByAppDetailId(int appDetailId);
 
         Task Create(BankDetail model, string userIdentifier);
 
