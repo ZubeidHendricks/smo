@@ -71,7 +71,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-   // console.log('fundingApplicationDetails',this.fundingApplicationDetails);
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
@@ -107,7 +106,22 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     else return false;
   }
 
+  
+
+  onRowSelect(event) {
+    this.selectedPlaces = [];
+    this.selectedSubPlaces = [];
+    this.newImplementation = false;
+    this.implementation = this.cloneImplementation(event.data);
+    this.implementation.places = this.implementation.places;
+    this.implementation.subPlaces = this.implementation.subPlaces;
+    this.placesChange(this.implementation.places);
+    this.subPlacesChange(this.implementation.subPlaces);
+    this.displayDialogImpl = true;
+  }
+
   editProjImpl(data: IProjectImplementation) {
+    this.selectedImplementation = data;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
     this.newImplementation = false;
@@ -139,6 +153,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   private GetProjImpl() {
+    alert('hi');
     this.projectImplementations = null;
     this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
       (results) => {
@@ -159,13 +174,15 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       accept: () => {
         this._npoProfile.deleteProjImpl(projImpl).subscribe(
           (resp) => {
-            this.filterClubDevelopmentIntakes();
+           // this.filterClubDevelopmentIntakes();
+          // this.fundingApplicationDetails.implementations;
+           this.GetProjImpl();
           },
           (err) => {
             //
           }
         );
-
+       
       },
       reject: () => {
         //
@@ -229,18 +246,21 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
     let implementation = [...this.implementations];
     if (this.newImplementation) {
-
       implementation.push(this.implementation);
-
     }
     else {
-      implementation[this.implementations.indexOf(this.selectedImplementation)] = this.implementation;
+       implementation[this.implementations.indexOf(this.selectedImplementation)] = this.implementation;
     }
 
     this.implementations = implementation;
     this.fundingApplicationDetails.implementations.length = 0;
     this.fundingApplicationDetails.implementations = this.implementations;
     this.implementationsChange.emit(this.implementations);
+
+    this.activeStep = this.activeStep + 1;
+    this.bidForm(StatusEnum.Saved);
+   // this.activeStepChange.emit(this.activeStep);
+
     // this.implementation = null;
     // this.implementations = null;
     // this.projectImplementations = null;
@@ -251,18 +271,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     //   });
   }
 
-
-  onRowSelect(event) {
-    this.selectedPlaces = [];
-    this.selectedSubPlaces = [];
-    this.newImplementation = false;
-    this.implementation = this.cloneImplementation(event.data);
-    this.implementation.places = this.implementation.places;
-    this.implementation.subPlaces = this.implementation.subPlaces;
-    this.placesChange(this.implementation.places);
-    this.subPlacesChange(this.implementation.subPlaces);
-    this.displayDialogImpl = true;
-  }
 
   cloneImplementation(c: IProjectImplementation): IProjectImplementation {
     let addFun = {} as IProjectImplementation;
@@ -284,10 +292,13 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     this.implementation.places = this.selectedPlaces;
     this.subPlaces = [];
 
+    console.log('places', this.places);
+    console.log('subPlacesAll', this.subPlacesAll);
+
     if (p != null && p.length != 0) {
-      for (var i = 0; i < this.allsubPlaces.length; i++) {
-        if (this.selectedPlaces.filter(r => r.id === this.allsubPlaces[i].placeId).length != 0) {
-          this.subPlaces.push(this.allsubPlaces[i]);
+      for (var i = 0; i < this.subPlacesAll.length; i++) {
+        if (this.selectedPlaces.filter(r => r.id === this.subPlacesAll[i].placeId).length != 0) {
+          this.subPlaces.push(this.subPlacesAll[i]);
 
         }
       }
@@ -298,7 +309,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     // create dropdown with data for subPlaces
     this.selectedSubPlaces = [];
     sub.forEach(item => {
-      this.selectedSubPlaces = this.selectedSubPlaces.concat(this.allsubPlaces.find(x => x.id == item.id))
+      this.selectedSubPlaces = this.selectedSubPlaces.concat(this.subPlacesAll.find(x => x.id == item.id))
     });
     this.implementation.subPlaces = this.selectedSubPlaces;
   }
@@ -366,7 +377,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
      }
 
     if (this.places?.length > 0 && this.subPlacesAll?.length > 0) {
-     
       let plc: IPlace[];
       let subplc: ISubPlace[];
       this.fundingApplicationDetails.implementations.map(c => { plc = c.places });
