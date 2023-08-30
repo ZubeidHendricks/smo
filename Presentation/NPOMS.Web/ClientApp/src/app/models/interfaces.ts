@@ -1140,6 +1140,7 @@ export interface IProjectImplementation {
     results: string;
     resources: string;
     budget: number;
+    fundingApplicationDetailId;
     npoProfileId: number;
 }
 

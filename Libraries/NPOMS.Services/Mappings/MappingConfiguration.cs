@@ -337,12 +337,14 @@ namespace NPOMS.Services.Mappings
            .ForMember(model => model.Resources, op => op.MapFrom(c => c.Resources))
             .ForMember(model => model.Places, op => op.MapFrom(c => c.ImplementationPlaces))
            .ForMember(model => model.SubPlaces, op => op.MapFrom(c => c.ImplementationSubPlaces))
-           .ForMember(model => model.Budget, op => op.MapFrom(c => c.BudgetAmount));
+           .ForMember(model => model.Budget, op => op.MapFrom(c => c.BudgetAmount))
+           .ForMember(model => model.FundingApplicationDetailId, op => op.MapFrom(c => c.FundingApplicationDetailId));
 
 
             CreateMap<ProjectImplementationViewModel, ProjectImplementation>()
                .ForMember(model => model.Id, op => op.MapFrom(c => c.ID))
                .ForMember(model => model.BudgetAmount, op => op.MapFrom(c => c.Budget))
+               .ForMember(model => model.FundingApplicationDetailId, op => op.MapFrom(c => c.FundingApplicationDetailId))
                .ForMember(model => model.TimeframeFrom, op => op.MapFrom(c => c.TimeframeFrom))
                .ForMember(model => model.TimeframeTo, op => op.MapFrom(c => c.TimeframeTo))
                .ForMember(model => model.Results, op => op.MapFrom(c => c.Results))
