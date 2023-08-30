@@ -31,6 +31,14 @@ namespace NPOMS.Repository.Implementation.Entities
                             .AsNoTracking().ToListAsync();
         }
 
+        public async Task<IEnumerable<ProjectImplementation>> GetAllByAppDetailId(int appDetailId)
+        {
+            //throw new NotImplementedException();
+
+            return await FindByCondition(x => x.FundingApplicationDetailId.Equals(appDetailId))
+                            .AsNoTracking().ToListAsync();
+        }
+
 
 
         public async Task<ProjectImplementation> GetById(int id)

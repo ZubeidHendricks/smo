@@ -19,6 +19,7 @@ namespace NPOMS.Services.Models
         public string Results { get; set; }
         public string Resources { get; set; }
         public int Budget { get; set; }
+        public int FundingApplicationDetailId { get; set; }
         public IEnumerable<ImplementationPlaceViewModel> Places { get; set; }
         public IEnumerable<ImplemetationSubPlaceViewModel> SubPlaces { get; set; }
 
