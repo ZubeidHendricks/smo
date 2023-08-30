@@ -18,7 +18,8 @@
             [(activeStep)]="activeStep"
             [npo]="npo"
             [(applicationPeriod)]="applicationPeriod"
-            [(application)]="application">
+            [(application)]="application"
+            [isEdit]="true">
         </app-qc-application-periods>
         <app-qc-application-details *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor"
             [(activeStep)]="activeStep"

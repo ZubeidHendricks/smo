@@ -877,7 +877,6 @@ export class ApplicationDetailsComponent implements OnInit {
   onRowSelect(applicationPeriod: IApplicationPeriod) {
     if (applicationPeriod.id != this.applicationPeriod.id) {
       this._spinner.show();
-      // this.loadApplicationPeriodById(applicationPeriod.id);
 
       let application = {
         applicationPeriodId: applicationPeriod.id,
@@ -893,22 +892,30 @@ export class ApplicationDetailsComponent implements OnInit {
     this._applicationRepo.getApplicationByNpoIdAndPeriodId(application).subscribe(
       (results) => {
         if (results == null) {
-          //update application period
-          console.log('update application period');
+          this.application.applicationPeriodId = application.applicationPeriodId;
+          this.application.applicationPeriod = null;
+
+          this._applicationRepo.updateApplication(this.application).subscribe(
+            (resp) => {
+              this.loadApplicationPeriodById(this.application.applicationPeriodId);
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
         }
         else {
-          //display error
-          console.log('display error');
+          this._messageService.add({ severity: 'warn', summary: "Warning:", detail: "Application already captured for the selected programme. Please go to 'Submissions' to access this application." });
+          this._spinner.hide();
         }
-
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
     );
-  } 
+  }
 
   public getSelectedApplicationPeriod(rowData: IApplicationPeriod) {
     if (this.applicationPeriod && rowData.id === this.applicationPeriod.id)

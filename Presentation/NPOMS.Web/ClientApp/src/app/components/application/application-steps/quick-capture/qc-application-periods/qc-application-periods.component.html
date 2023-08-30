@@ -38,8 +38,8 @@
                     <span>{{getCellData(rowData, col)}}</span>
                 </td>
                 <td style="text-align: center;">
-                    <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-hand-o-up" (click)="onRowSelect(rowData)"  (click)="autoCreateApplication()" pTooltip="Select Application" tooltipPosition="top" *ngIf="IsAuthorized(PermissionsEnum.EditApplicationPeriod)"></button> -->
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-hand-o-up" (click)="onRowSelect(rowData)" pTooltip="Select Application" tooltipPosition="top" *ngIf="IsAuthorized(PermissionsEnum.AddApplication)" [disabled]="disableSelectApplication"></button>
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-hand-o-up" (click)="onRowSelect(rowData)" pTooltip="Select Application" tooltipPosition="top" *ngIf="displayNewSelectionButton()" [disabled]="disableSelectApplication"></button>
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-hand-o-up" (click)="updateSelectedPeriod(rowData)" pTooltip="Select Application" tooltipPosition="top" *ngIf="displayUpdateSelectionButton()"></button>
                 </td>
             </tr>
         </ng-template>

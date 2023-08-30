@@ -1,7 +1,7 @@
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Application Details">
     <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>
-    <!-- <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Update Programme Selection" [collapsed]="true" *ngIf="isEdit">
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Update Programme Selection" [collapsed]="true" *ngIf="isEdit && IsAuthorized(PermissionsEnum.UpdateApplicationProgramme)">
         <div class="p-grid">
             <div class="p-col">
               <div class="p-d-flex">
@@ -52,7 +52,7 @@
             </ng-template>
         </p-table>
     </p-panel>
-    <div style="height: 10px;" *ngIf="isEdit"></div> -->
+    <div style="height: 10px;" *ngIf="isEdit && IsAuthorized(PermissionsEnum.UpdateApplicationProgramme)"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Funding Application Information">
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-12 p-md-6">

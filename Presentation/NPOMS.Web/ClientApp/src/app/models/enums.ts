@@ -267,6 +267,7 @@ export enum PermissionsEnum {
     UploadSLA = "App.Upload",
     ViewAcceptedApplication = "App.VAA",
     DeleteApplication = "App.Delete",
+    UpdateApplicationProgramme = "App.UAP",
 
     /* NPO APPROVAL MANAGEMENT */
     EditNpoRequests = "NAM.ENR",
