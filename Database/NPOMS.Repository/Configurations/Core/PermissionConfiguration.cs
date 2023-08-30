@@ -778,9 +778,15 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "Approve",
                     SystemName = "WFA.Approve",
                     CategoryName = "Approve"
-                }
-
-            );
+                },
+				new Permission
+				{
+					Id = 111,
+					Name = "Update Programme Selection on Funding Applications",
+					SystemName = "App.UAP",
+					CategoryName = "Application"
+				}
+			);
 		}
 	}
 }
