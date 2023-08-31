@@ -182,89 +182,94 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
-				StatusEnum status = (StatusEnum)model.StatusId;
+				var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
 
-				switch (status)
+				if (applicationPeriod.ApplicationType.Id == (int)ApplicationTypeEnum.ServiceProvision)
 				{
-					case StatusEnum.PendingReview:
-						var newApplication = EmailTemplateFactory
-								.Create(EmailTemplateTypeEnum.NewApplication)
-								.Get<NewApplicationEmailTemplate>()
-								.Init(model);
+					StatusEnum status = (StatusEnum)model.StatusId;
 
-						var statusChangedPendingReview = EmailTemplateFactory
-								.Create(EmailTemplateTypeEnum.StatusChangedPendingReview)
-								.Get<StatusChangedPendingReviewEmailTemplate>()
-								.Init(model);
+					switch (status)
+					{
+						case StatusEnum.PendingReview:
+							var newApplication = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.NewApplication)
+									.Get<NewApplicationEmailTemplate>()
+									.Init(model);
 
-						await newApplication.SubmitToQueue();
-						await statusChangedPendingReview.SubmitToQueue();
-						break;
-					case StatusEnum.AmendmentsRequired:
-						var statusChangedAmendmentsRequired = EmailTemplateFactory
-								.Create(EmailTemplateTypeEnum.StatusChangedAmendmentsRequired)
-								.Get<StatusChangedAmendmentsRequiredEmailTemplate>()
-								.Init(model);
+							var statusChangedPendingReview = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.StatusChangedPendingReview)
+									.Get<StatusChangedPendingReviewEmailTemplate>()
+									.Init(model);
 
-						await statusChangedAmendmentsRequired.SubmitToQueue();
-						break;
-					case StatusEnum.PendingApproval:
-						var statusChangedApproved = EmailTemplateFactory
-								.Create(EmailTemplateTypeEnum.StatusChangedPendingApproval)
-								.Get<StatusChangedPendingApprovalEmailTemplate>()
-								.Init(model);
+							await newApplication.SubmitToQueue();
+							await statusChangedPendingReview.SubmitToQueue();
+							break;
+						case StatusEnum.AmendmentsRequired:
+							var statusChangedAmendmentsRequired = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.StatusChangedAmendmentsRequired)
+									.Get<StatusChangedAmendmentsRequiredEmailTemplate>()
+									.Init(model);
 
-						await statusChangedApproved.SubmitToQueue();
-						break;
-					case StatusEnum.Rejected:
-						var statusChangedRejected = EmailTemplateFactory
-								.Create(EmailTemplateTypeEnum.StatusChangedRejected)
-								.Get<StatusChangedRejectedEmailTemplate>()
-								.Init(model);
+							await statusChangedAmendmentsRequired.SubmitToQueue();
+							break;
+						case StatusEnum.PendingApproval:
+							var statusChangedApproved = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.StatusChangedPendingApproval)
+									.Get<StatusChangedPendingApprovalEmailTemplate>()
+									.Init(model);
 
-						await statusChangedRejected.SubmitToQueue();
-						break;
-					case StatusEnum.PendingSLA:
-						var statusChangesPendingSLA = EmailTemplateFactory
-								.Create(EmailTemplateTypeEnum.StatusChangedPendingSLA)
-								.Get<StatusChangedPendingSLAEmailTemplate>()
-								.Init(model);
+							await statusChangedApproved.SubmitToQueue();
+							break;
+						case StatusEnum.Rejected:
+							var statusChangedRejected = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.StatusChangedRejected)
+									.Get<StatusChangedRejectedEmailTemplate>()
+									.Init(model);
 
-						await statusChangesPendingSLA.SubmitToQueue();
-						break;
-					case StatusEnum.PendingSignedSLA:
-						var statusChangesPendingSignedSLA = EmailTemplateFactory
-								.Create(EmailTemplateTypeEnum.StatusChangedPendingSignedSLA)
-								.Get<StatusChangedPendingSignedSLAEmailTemplate>()
-								.Init(model);
+							await statusChangedRejected.SubmitToQueue();
+							break;
+						case StatusEnum.PendingSLA:
+							var statusChangesPendingSLA = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.StatusChangedPendingSLA)
+									.Get<StatusChangedPendingSLAEmailTemplate>()
+									.Init(model);
 
-						await statusChangesPendingSignedSLA.SubmitToQueue();
-						break;
-					case StatusEnum.AcceptedSLA:
-						var statusChangesAcceptedSLA = EmailTemplateFactory
-								.Create(EmailTemplateTypeEnum.StatusChangedAcceptedSLA)
-								.Get<StatusChangedAcceptedSLAEmailTemplate>()
-								.Init(model);
+							await statusChangesPendingSLA.SubmitToQueue();
+							break;
+						case StatusEnum.PendingSignedSLA:
+							var statusChangesPendingSignedSLA = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.StatusChangedPendingSignedSLA)
+									.Get<StatusChangedPendingSignedSLAEmailTemplate>()
+									.Init(model);
 
-						await statusChangesAcceptedSLA.SubmitToQueue();
-						break;
-					case StatusEnum.DeptComments:
-						var statusChangedDeptReviewComments = EmailTemplateFactory
-								.Create(EmailTemplateTypeEnum.StatusChangedDeptComments)
-								.Get<StatusChangedDeptCommentsEmailTemplate>()
-								.Init(model);
+							await statusChangesPendingSignedSLA.SubmitToQueue();
+							break;
+						case StatusEnum.AcceptedSLA:
+							var statusChangesAcceptedSLA = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.StatusChangedAcceptedSLA)
+									.Get<StatusChangedAcceptedSLAEmailTemplate>()
+									.Init(model);
 
-						await statusChangedDeptReviewComments.SubmitToQueue();
-						break;
-					case StatusEnum.OrgComments:
-						var statusChangedOrgReviewComments = EmailTemplateFactory
-								.Create(EmailTemplateTypeEnum.StatusChangedOrgComments)
-								.Get<StatusChangedOrgCommentsEmailTemplate>()
-								.Init(model);
+							await statusChangesAcceptedSLA.SubmitToQueue();
+							break;
+						case StatusEnum.DeptComments:
+							var statusChangedDeptReviewComments = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.StatusChangedDeptComments)
+									.Get<StatusChangedDeptCommentsEmailTemplate>()
+									.Init(model);
 
-						await statusChangedOrgReviewComments.SubmitToQueue();
-						break;
-				}
+							await statusChangedDeptReviewComments.SubmitToQueue();
+							break;
+						case StatusEnum.OrgComments:
+							var statusChangedOrgReviewComments = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.StatusChangedOrgComments)
+									.Get<StatusChangedOrgCommentsEmailTemplate>()
+									.Init(model);
+
+							await statusChangedOrgReviewComments.SubmitToQueue();
+							break;
+					}
+				}				
 
 				await _emailService.SendEmailFromQueue();
 			}

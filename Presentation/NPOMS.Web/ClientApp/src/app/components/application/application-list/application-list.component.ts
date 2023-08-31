@@ -438,11 +438,11 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Approve Application', 'Funding Application');
           break;
         }
-        case StatusEnum.Reviewed: {
+        case StatusEnum.Verified: {
           this.buttonItemExists('Edit Application', 'Funding Application');
-          //this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
-          this.buttonItemExists('Evaluate Application', 'Funding Application');
+         // this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
           break;
         }

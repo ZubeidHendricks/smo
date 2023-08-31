@@ -11,6 +11,7 @@ namespace NPOMS.Repository.Interfaces.Entities
     {
 
         Task<IEnumerable<ProjectImplementation>> GetAllByNpoProfileId(int id);
+        Task<IEnumerable<ProjectImplementation>> GetAllByAppDetailId(int id);
         Task<ProjectImplementation> GetById(int id);
 
         Task<ProjectImplementation> DeleteById(int id);

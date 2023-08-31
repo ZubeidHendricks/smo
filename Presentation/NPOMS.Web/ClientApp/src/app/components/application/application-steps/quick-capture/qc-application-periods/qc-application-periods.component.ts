@@ -27,6 +27,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
   @Output() applicationPeriodChange: EventEmitter<IApplicationPeriod> = new EventEmitter<IApplicationPeriod>();
   @Input() application: IApplication;
   @Output() applicationChange: EventEmitter<IApplication> = new EventEmitter<IApplication>();
+  @Input() isEdit: boolean;
 
   // @Input() newlySavedNpoId: number;
   // @Output() newlySavedNpoIdChange: EventEmitter<number> = new EventEmitter<number>();
@@ -364,4 +365,69 @@ export class QcApplicationPeriodsComponent implements OnInit {
   //     );
   //   }
   // }
+
+  public displayNewSelectionButton() {
+    if (!this.isEdit && this.IsAuthorized(PermissionsEnum.AddApplication)) {
+      return true;
+    }
+
+    if (this.isEdit && this.IsAuthorized(PermissionsEnum.AddApplication) && !this.IsAuthorized(PermissionsEnum.UpdateApplicationProgramme)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public displayUpdateSelectionButton() {
+    if (this.isEdit && this.IsAuthorized(PermissionsEnum.UpdateApplicationProgramme)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public updateSelectedPeriod(applicationPeriod: IApplicationPeriod) {
+    if (applicationPeriod.id != this.applicationPeriod.id) {
+      this._spinner.show();
+
+      let application = {
+        applicationPeriodId: applicationPeriod.id,
+        npoId: this.application.npoId
+      } as IApplication;
+
+      this.applicationExists(application);
+    }
+  }
+
+  private applicationExists(application: IApplication) {
+    this._spinner.show();
+    this._applicationRepo.getApplicationByNpoIdAndPeriodId(application).subscribe(
+      (results) => {
+        if (results == null) {
+          this.application.applicationPeriodId = application.applicationPeriodId;
+          this.application.applicationPeriod = null;
+
+          this._applicationRepo.updateApplication(this.application).subscribe(
+            (resp) => {
+              let selectedApplicationPeriod = this.allApplicationPeriods.find(x => x.id === resp.applicationPeriodId);
+              this.onRowSelect(selectedApplicationPeriod);
+              this._spinner.hide();
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        }
+        else {
+          this._messageService.add({ severity: 'warn', summary: "Warning:", detail: "Application already captured for the selected programme. Please go to 'Submissions' to access this application." });
+          this._spinner.hide();
+        }
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 }

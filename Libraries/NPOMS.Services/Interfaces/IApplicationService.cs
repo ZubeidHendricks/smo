@@ -128,5 +128,7 @@ namespace NPOMS.Services.Interfaces
 		Task CreateMyContentLink(MyContentLink model, string userIdentifier);
 
 		Task UpdateMyContentLink(MyContentLink model, string userIdentifier);
+
+		Task<ApplicationPeriod> GetApplicationPeriodById(int id);
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Azure;
+﻿using AutoMapper;
+using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
@@ -40,12 +41,13 @@ namespace NPOMS.Services.Implementation
 		private IAuditorOrAffiliationRepository _auditorOrAffiliationRepository;
 		private IStaffMemberProfileRepository _staffMemberProfileRepository;
 		private IProjectImplementationRepository _projectImplementationRepository;
+        private readonly IMapper _mapper;
 
-		#endregion
+        #endregion
 
-		#region Constructorrs
+        #region Constructorrs
 
-		public NpoProfileService(
+        public NpoProfileService(
 			INpoProfileRepository npoProfileRepository,
 			IUserRepository userRepository,
 			INpoRepository npoRepository,
@@ -62,7 +64,8 @@ namespace NPOMS.Services.Implementation
 			IStaffMemberProfileRepository staffMemberProfileRepository,
 			IAffiliatedOrganisationInformationRepository affiliatedOrganisationInformationRepository,
 			ISourceOfInformationRepository sourceOfInformationRepository,
-			IProjectImplementationRepository projectImplementationRepository)
+			IProjectImplementationRepository projectImplementationRepository,
+            IMapper mapper)
 		{
 			_npoProfileRepository = npoProfileRepository;
 			_userRepository = userRepository;
@@ -81,7 +84,8 @@ namespace NPOMS.Services.Implementation
 			_affiliatedOrganisationInformationRepository = affiliatedOrganisationInformationRepository;
 			_sourceOfInformationRepository = sourceOfInformationRepository;
 			_projectImplementationRepository = projectImplementationRepository;
-		}
+            this._mapper = mapper;
+        }
 
 		#endregion
 
@@ -201,8 +205,14 @@ namespace NPOMS.Services.Implementation
 			return await _projectImplementationRepository.GetAllByNpoProfileId(npoProfileId);
 		}
 
+        public async Task<IEnumerable<ProjectImplementation>> GetProjImplByAppDetailId(int appDetailId)
+        {
+            var imple = await _projectImplementationRepository.GetAllByAppDetailId(appDetailId);
+            return (IEnumerable<ProjectImplementation>)_mapper.Map<ProjectImplementation>(imple);
+        }
+        
 
-		public async Task Create(BankDetail model, string userIdentifier)
+        public async Task Create(BankDetail model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 

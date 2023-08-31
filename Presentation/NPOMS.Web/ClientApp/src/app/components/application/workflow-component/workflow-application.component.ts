@@ -633,7 +633,7 @@ export class WorkflowApplicationComponent implements OnInit {
   public displayEvaluate() {
     switch (this.application.statusId) {
       case StatusEnum.PendingReview:
-      case StatusEnum.Reviewed:
+      case StatusEnum.Verified:
       case StatusEnum.PendingApproval:
       case StatusEnum.EvaluationInProgress:
       case StatusEnum.AdjudicationInProgress:
@@ -760,7 +760,7 @@ export class WorkflowApplicationComponent implements OnInit {
     switch (this.application.statusId) {
       case StatusEnum.PendingReview:
       case StatusEnum.PendingApproval:
-      case StatusEnum.Reviewed:
+      case StatusEnum.Verified:
       case StatusEnum.EvaluationInProgress: 
       case StatusEnum.Approved:
       {
@@ -774,7 +774,7 @@ export class WorkflowApplicationComponent implements OnInit {
   public displayAdjudicate() {
     switch (this.application.statusId) {
       case StatusEnum.PendingReview:
-      case StatusEnum.Reviewed:
+      case StatusEnum.Verified:
       case StatusEnum.Adjudicated:
       case StatusEnum.AdjudicationInProgress:
       case StatusEnum.Approved:
@@ -932,7 +932,7 @@ export class WorkflowApplicationComponent implements OnInit {
   public capturePreEvaluation() {
     switch (this.application.statusId) {
         case StatusEnum.PendingReview:
-        case StatusEnum.Reviewed:
+        case StatusEnum.Verified:
         case StatusEnum.EvaluationInProgress:
         case StatusEnum.Evaluated:
         case StatusEnum.AdjudicationInProgress:
@@ -948,7 +948,7 @@ export class WorkflowApplicationComponent implements OnInit {
   public displayPreEvaluate() {
     switch (this.application.statusId) {
       case StatusEnum.PendingReview:
-      case StatusEnum.Reviewed:
+      case StatusEnum.Verified:
       case StatusEnum.EvaluationInProgress:
       case StatusEnum.Evaluated:
       case StatusEnum.AdjudicationInProgress:

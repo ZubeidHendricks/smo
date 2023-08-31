@@ -9,15 +9,15 @@ namespace NPOMS.Repository.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_WorkplanActualAudits_Statuses_StatusId",
-                schema: "indicator",
-                table: "WorkplanActualAudits");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_WorkplanActualAudits_Statuses_StatusId",
+            //    schema: "indicator",
+            //    table: "WorkplanActualAudits");
 
-            migrationBuilder.DropIndex(
-                name: "IX_WorkplanActualAudits_StatusId",
-                schema: "indicator",
-                table: "WorkplanActualAudits");
+            //migrationBuilder.DropIndex(
+            //    name: "IX_WorkplanActualAudits_StatusId",
+            //    schema: "indicator",
+            //    table: "WorkplanActualAudits");
 
             migrationBuilder.EnsureSchema(
                 name: "eval");
