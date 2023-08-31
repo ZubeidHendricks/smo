@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, PermissionsEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationApproval, IApplicationPeriod, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
+import { UserService } from 'src/app/services/api-services/user/user.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
@@ -68,7 +69,8 @@ export class ApproveApplicationComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _userRepo: UserService
   ) { }
 
   ngOnInit(): void {
@@ -101,6 +103,7 @@ export class ApproveApplicationComponent implements OnInit {
           this.loadActivities();
           this.loadSustainabilityPlans();
           this.loadResources();
+          this.loadCreatedUser();
           this.isApplicationAvailable = true;
         }
 
@@ -111,6 +114,38 @@ export class ApproveApplicationComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  private loadCreatedUser() {
+    this._userRepo.getUserById(this.application.createdUserId).subscribe(
+      (results) => {
+        this.application.createdUser = results;
+        this.loadUpdatedUser();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadUpdatedUser() {
+    if (this.application.updatedUserId) {
+      this._userRepo.getUserById(this.application.updatedUserId).subscribe(
+        (results) => {
+          this.application.updatedUser = results;
+          this._spinner.hide();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+    else {
+      this.application.updatedUser = {} as IUser;
+      this._spinner.hide();
+    }
   }
 
   private buildSteps(applicationPeriod: IApplicationPeriod) {

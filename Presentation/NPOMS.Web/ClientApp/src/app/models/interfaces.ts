@@ -349,9 +349,13 @@ export interface IApplication {
     isActive: boolean;
     isCloned: boolean;
     isQuickCapture: boolean;
+    createdUserId: number;
+    updatedUserId: number;
 
     applicationPeriod: IApplicationPeriod;
     status: IStatus;
+    createdUser: IUser;
+    updatedUser: IUser;
 }
 
 export interface FinYear {
@@ -439,12 +443,16 @@ export interface IApplicationPeriod {
     openingDate: Date;
     closingDate: Date;
     status: string;
+    createdUserId: number;
+    updatedUserId: number;
 
     department: IDepartment;
     programme: IProgramme;
     subProgramme: ISubProgramme;
     financialYear: IFinancialYear;
     applicationType: IApplicationType;
+    createdUser: IUser;
+    updatedUser: IUser;
 }
 
 export interface IApplicationReviewerSatisfaction {
@@ -510,6 +518,8 @@ export interface INpo {
     approvalStatusId: number;
     approvalUserId: number;
     approvalDateTime: Date;
+    createdUserId: number;
+    updatedUserId: number;
 
     registrationStatusId: number;
     pboNumber: string;
@@ -522,6 +532,7 @@ export interface INpo {
     createdUser: IUser;
     approvalUser: IUser;
     registrationStatus: IRegistrationStatus;
+    updatedUser: IUser;
 }
 
 export interface INpoProfile {
@@ -529,11 +540,15 @@ export interface INpoProfile {
     npoId: number;
     npoName: string;
     refNo: string;
+    createdUserId: number;
+    updatedUserId: number;
 
     addressInformation: IAddressInformation;
     /*npoProfileFacilityLists: INpoProfileFacilityList[];
     servicesRendered: IServicesRendered[];
     bankDetails: IBankDetail[];*/
+    createdUser: IUser;
+    updatedUser: IUser;
 }
 
 export interface IObjective {
