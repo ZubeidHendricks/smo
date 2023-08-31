@@ -16,6 +16,7 @@ import { IAffiliatedOrganisation, ISourceOfInformation } from 'src/app/models/Fi
 import { CreateQuickCaptureComponent } from '../create-quick-capture/create-quick-capture.component';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
+import { UserService } from 'src/app/services/api-services/user/user.service';
 
 
 @Component({
@@ -156,7 +157,8 @@ export class QuickCaptureEditListComponent implements OnInit {
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
     private _fundAppService: FundingApplicationService,
-    private _npoProfile: NpoProfileService
+    private _npoProfile: NpoProfileService,
+    private _userRepo: UserService
     // private _bidService: BidService
   ) { }
 
@@ -187,12 +189,43 @@ export class QuickCaptureEditListComponent implements OnInit {
           this.application = results;
           this.applicationPeriod = this.application.applicationPeriod;
           this.loadNpo();
+          this.loadCreatedUser();
         },
         (err) => {
           this._loggerService.logException(err);
           this._spinner.hide();
         }
       );
+    }
+  }
+
+  private loadCreatedUser() {
+    this._userRepo.getUserById(this.application.createdUserId).subscribe(
+      (results) => {
+        this.application.createdUser = results;
+        this.loadUpdatedUser();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadUpdatedUser() {
+    if (this.application.updatedUserId) {
+      this._userRepo.getUserById(this.application.updatedUserId).subscribe(
+        (results) => {
+          this.application.updatedUser = results;
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+    else {
+      this.application.updatedUser = {} as IUser;
     }
   }
 

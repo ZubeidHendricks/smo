@@ -12,6 +12,7 @@ import { DocumentStoreService } from 'src/app/services/api-services/document-sto
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { UserService } from 'src/app/services/api-services/user/user.service';
 
 @Component({
   selector: 'app-view-application',
@@ -55,8 +56,8 @@ export class ViewApplicationComponent implements OnInit {
   npoProfile: INpoProfile;
 
   applicationDetailView: IApplicationDetails;
-  projInfoView:IProjectInformation;
-  projImplView:IProjectImplementation;
+  projInfoView: IProjectInformation;
+  projImplView: IProjectImplementation;
 
   isObjectivesAvailable: boolean;
   isActivitiesAvailable: boolean;
@@ -75,8 +76,8 @@ export class ViewApplicationComponent implements OnInit {
 
   applicationDetails: IApplicationDetails[] = [];
   projectInformations: IProjectInformation[] = [];
-  projectImplementations: IProjectImplementation[] =[];
-  monitoringAndEvaluations: IMonitoringAndEvaluation[] =[];
+  projectImplementations: IProjectImplementation[] = [];
+  monitoringAndEvaluations: IMonitoringAndEvaluation[] = [];
 
   applicationDetailsCols: any[];
   projectInformationCols: any[];
@@ -157,7 +158,8 @@ export class ViewApplicationComponent implements OnInit {
     private _applicationPeriodRepo: ApplicationPeriodService,
     private _confirmationService: ConfirmationService,
     private _documentStore: DocumentStoreService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _userRepo: UserService
   ) { }
 
   ngOnInit(): void {
@@ -236,7 +238,7 @@ export class ViewApplicationComponent implements OnInit {
     ];
     this.documentCols1 = [
       { header: 'Id', width: '5%' },
-      {  field: 'name', header: 'Document Type', width: '35%' },
+      { field: 'name', header: 'Document Type', width: '35%' },
       { header: 'Document Name', width: '45%' },
       // { header: 'Size', width: '10%' },
       // { header: 'Uploaded Date', width: '10%' },
@@ -270,12 +272,45 @@ export class ViewApplicationComponent implements OnInit {
         this.getDocuments();
         this.getAuditHistory();
         this.loadApplicationApprovals();
+        this.loadCreatedUser();
       },
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
     );
+  }
+
+  private loadCreatedUser() {
+    this._userRepo.getUserById(this.application.createdUserId).subscribe(
+      (results) => {
+        this.application.createdUser = results;
+        this.loadUpdatedUser();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadUpdatedUser() {
+    if (this.application.updatedUserId) {
+      this._userRepo.getUserById(this.application.updatedUserId).subscribe(
+        (results) => {
+          this.application.updatedUser = results;
+          this._spinner.hide();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+    else {
+      this.application.updatedUser = {} as IUser;
+      this._spinner.hide();
+    }
   }
 
   private allDataLoaded() {
@@ -589,8 +624,8 @@ export class ViewApplicationComponent implements OnInit {
     return resource;
   }
 
-  private 
-  
+  private
+
   updateRowGroupMetaData(serviceProvisionStepId: ServiceProvisionStepsEnum) {
 
     switch (serviceProvisionStepId) {

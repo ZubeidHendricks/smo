@@ -9,6 +9,7 @@ import { ApplicationPeriodService } from 'src/app/services/api-services/applicat
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { UserService } from 'src/app/services/api-services/user/user.service';
 
 @Component({
   selector: 'app-edit-application-period',
@@ -68,7 +69,8 @@ export class EditApplicationPeriodComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _applicationPeriodRepo: ApplicationPeriodService,
     private _activeRouter: ActivatedRoute,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _userRepo: UserService
   ) { }
 
   ngOnInit(): void {
@@ -286,6 +288,34 @@ export class EditApplicationPeriodComponent implements OnInit {
 
           this.applicationPeriod = results;
           this.isDataAvailable = true;
+          this.loadCreatedUser();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+  }
+
+  private loadCreatedUser() {
+    this._userRepo.getUserById(this.applicationPeriod.createdUserId).subscribe(
+      (results) => {
+        this.applicationPeriod.createdUser = results;
+        this.loadUpdatedUser();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadUpdatedUser() {
+    if (this.applicationPeriod.updatedUserId) {
+      this._userRepo.getUserById(this.applicationPeriod.updatedUserId).subscribe(
+        (results) => {
+          this.applicationPeriod.updatedUser = results;
           this._spinner.hide();
         },
         (err) => {
@@ -293,6 +323,10 @@ export class EditApplicationPeriodComponent implements OnInit {
           this._spinner.hide();
         }
       );
+    }
+    else {
+      this.applicationPeriod.updatedUser = {} as IUser;
+      this._spinner.hide();
     }
   }
 

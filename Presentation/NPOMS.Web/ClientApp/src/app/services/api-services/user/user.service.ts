@@ -39,4 +39,9 @@ export class UserService {
     const url = `${this._envUrl.urlAddress}/api/users/global?searchTerm=${searchTerm}`;
     return this._http.get<any[]>(url, httpOptions);
   }
+
+  public getUserById(id: number) {
+    const url = `${this._envUrl.urlAddress}/api/users/id/${id}`;
+    return this._http.get<IUser>(url, httpOptions);
+  }
 }

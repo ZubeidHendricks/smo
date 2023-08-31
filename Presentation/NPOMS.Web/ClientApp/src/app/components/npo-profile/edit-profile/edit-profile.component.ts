@@ -14,6 +14,7 @@ import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { UserService } from 'src/app/services/api-services/user/user.service';
 
 @Component({
   selector: 'app-edit-profile',
@@ -158,7 +159,8 @@ export class EditProfileComponent implements OnInit {
     private _documentStore: DocumentStoreService,
     private _npoRepo: NpoService,
     private _messageService: MessageService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _userRepo: UserService
   ) { }
 
   ngOnInit(): void {
@@ -426,12 +428,45 @@ export class EditProfileComponent implements OnInit {
           this.loadStaffMemberProfiles();
 
           this.loadAuditorOrAffiliations();
+          this.loadCreatedUser();
         },
         (err) => {
           this._loggerService.logException(err);
           this._spinner.hide();
         }
       );
+    }
+  }
+
+  private loadCreatedUser() {
+    this._userRepo.getUserById(this.npoProfile.createdUserId).subscribe(
+      (results) => {
+        this.npoProfile.createdUser = results;
+        this.loadUpdatedUser();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadUpdatedUser() {
+    if (this.npoProfile.updatedUserId) {
+      this._userRepo.getUserById(this.npoProfile.updatedUserId).subscribe(
+        (results) => {
+          this.npoProfile.updatedUser = results;
+          this._spinner.hide();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+    else {
+      this.npoProfile.updatedUser = {} as IUser;
+      this._spinner.hide();
     }
   }
 

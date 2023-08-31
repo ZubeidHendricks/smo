@@ -16,6 +16,7 @@ using NPOMS.Domain.Core;
 using NPOMS.Domain.Mapping;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Repository;
+using Azure.Storage.Blobs.Models;
 
 namespace NPOMS.Services.Implementation
 {
@@ -275,6 +276,12 @@ namespace NPOMS.Services.Implementation
 		public async Task Delete(UserViewModel user, string userIdentifier)
 		{
 			throw new NotImplementedException();
+		}
+
+		public async Task<UserViewModel> GetById(int id)
+		{
+			var user = await _userRepository.GetById(id);
+			return _mapper.Map<UserViewModel>(user);
 		}
 
 		public async Task<User> CreateB2CUser(string userName, string firstName, string lastName)

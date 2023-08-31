@@ -17,6 +17,7 @@ import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
+import { UserService } from 'src/app/services/api-services/user/user.service';
 
 @Component({
   selector: 'app-edit-application',
@@ -96,7 +97,8 @@ export class EditApplicationComponent implements OnInit {
     private _bidService: BidService,
     private _npoProfileServie: NpoProfileService,
     private _dropdownRepo: DropdownService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _userRepo: UserService
   ) { }
   places(place: IPlace[]) {
     this.placeAll = place;
@@ -149,6 +151,7 @@ export class EditApplicationComponent implements OnInit {
           this.loadActivities();
           this.loadSustainabilityPlans();
           this.loadResources();
+          this.loadCreatedUser();
           this.isApplicationAvailable = true;
         }
 
@@ -159,6 +162,38 @@ export class EditApplicationComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  private loadCreatedUser() {
+    this._userRepo.getUserById(this.application.createdUserId).subscribe(
+      (results) => {
+        this.application.createdUser = results;
+        this.loadUpdatedUser();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadUpdatedUser() {
+    if (this.application.updatedUserId) {
+      this._userRepo.getUserById(this.application.updatedUserId).subscribe(
+        (results) => {
+          this.application.updatedUser = results;
+          this._spinner.hide();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+    else {
+      this.application.updatedUser = {} as IUser;
+      this._spinner.hide();
+    }
   }
 
   private buildSteps(applicationPeriod: IApplicationPeriod) {
@@ -376,7 +411,7 @@ export class EditApplicationComponent implements OnInit {
             }
           });
           this.fASteps(results.applicationPeriod);
-          this.isApplicationAvailable = true;
+          this.loadCreatedUser();
         }
         this._spinner.hide();
       },
