@@ -15,7 +15,7 @@
 		DeptComments = 11,
 		OrgComments = 12,
 		Approved = 13,
-        PreAdjudicated = 14,
+        Reviewed = 14,
         Evaluated = 15,
         EvaluationInProgress = 16,       
         AdjudicationInProgress = 17,

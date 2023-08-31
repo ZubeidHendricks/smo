@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { StatusEnum } from 'src/app/models/enums';
-import { IApplication, IFundingApplicationDetails, IPlace, IProjectImplementation, ISubPlace, } from 'src/app/models/interfaces';
+import { IApplication, IFundingApplicationDetails, IPlace, IProjectImplementation, ISubPlace, ISDA} from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
@@ -15,6 +15,7 @@ import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo
   styleUrls: ['./project-implementation.component.css']
 })
 export class ProjectImplementationComponent implements OnInit, OnDestroy {
+  [x: string]: any;
 
   canEdit: boolean;
   @Input() activeStep: number;
@@ -24,7 +25,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   @Input() implementations: IProjectImplementation[];
   @Output() implementationsChange = new EventEmitter();
   _menuActions: MenuItem[];
-
+  
   projImpls: IProjectImplementation[] = [];
   filteredProjImpls: IProjectImplementation[] = [];
 
@@ -43,10 +44,14 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   @Input() places: IPlace[];
   @Input() allsubPlaces: ISubPlace[];
   subPlaces: ISubPlace[];
+  subPlacesAll: ISubPlace[];
   selectedSubPlaces: ISubPlace[];
   selectedPlaces: IPlace[];
+  selectedSdas: ISDA[];
+  sdasAll: ISDA[];
   private subscriptions: Subscription[] = [];
-
+  @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
+  @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
   projectImplementations: IProjectImplementation[];
   constructor(
     private _confirmationService: ConfirmationService,
@@ -80,11 +85,13 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     ];
     this.setYearRange();
     this.allDropdownsLoaded();
+    
+   
   }
 
   private filterClubDevelopmentIntakes() {
     this.filteredProjImpls = this.projImpls;
-  }
+   }
 
   disableSubPlacesOrPlace(): boolean {
 
@@ -102,7 +109,22 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     else return false;
   }
 
+  
+
+  onRowSelect(event) {
+    this.selectedPlaces = [];
+    this.selectedSubPlaces = [];
+    this.newImplementation = false;
+    this.implementation = this.cloneImplementation(event.data);
+    this.implementation.places = this.implementation.places;
+    this.implementation.subPlaces = this.implementation.subPlaces;
+    this.placesChange(this.implementation.places);
+    this.subPlacesChange(this.implementation.subPlaces);
+    this.displayDialogImpl = true;
+  }
+
   editProjImpl(data: IProjectImplementation) {
+    this.selectedImplementation = data;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
     this.newImplementation = false;
@@ -133,12 +155,11 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     }
   }
 
-  private GetProjImpl() {
+  private GetProjImpl(projImpl: number) {
     this.projectImplementations = null;
-    this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
+    this._npoProfile.getProjImplByfundingApplicationDetailId(Number(this.fundingApplicationDetails.id)).subscribe(
       (results) => {
-        this.projectImplementations = results;
-        this.updateProjImplementations();
+       this.implementations = results;
       },
       (err) => {
         //
@@ -146,21 +167,27 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     );
   }
 
-  deleteProjImpl(projImpl) {
+  deleteProjImpl(data: IProjectImplementation) {
+
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        this._npoProfile.deleteProjImpl(projImpl).subscribe(
+        this._npoProfile.deleteProjImpl(data.id).subscribe(
           (resp) => {
-            this.filterClubDevelopmentIntakes();
-          },
+            this._bidService.getBid(data.fundingApplicationDetailId).subscribe(response => {
+
+              this.fundingApplicationDetails.implementations = response.implementations;
+            });
+       // this.activeStepChange.emit(this.activeStep);
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Data deleted successfully.' });
+      },
           (err) => {
             //
           }
         );
-
+       
       },
       reject: () => {
         //
@@ -170,10 +197,8 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
 
   nextPage() {
-
-    this.activeStep = this.activeStep + 1;
-    this.bidForm(StatusEnum.Saved);
-    this.activeStepChange.emit(this.activeStep);
+   // this.activeStep = 7;
+    this.activeStepChange.emit(6);
   }
   private setYearRange() {
 
@@ -224,39 +249,19 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
     let implementation = [...this.implementations];
     if (this.newImplementation) {
-
       implementation.push(this.implementation);
-
     }
     else {
-      implementation[this.implementations.indexOf(this.selectedImplementation)] = this.implementation;
+       implementation[this.implementations.indexOf(this.selectedImplementation)] = this.implementation;
     }
 
     this.implementations = implementation;
     this.fundingApplicationDetails.implementations.length = 0;
     this.fundingApplicationDetails.implementations = this.implementations;
     this.implementationsChange.emit(this.implementations);
-    // this.implementation = null;
-    // this.implementations = null;
-    // this.projectImplementations = null;
-    // this.fundingApplicationDetails.implementations  = null;
-    // this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
-    //   (results) => {
-    //     this.fundingApplicationDetails.implementations = results;
-    //   });
-  }
 
-
-  onRowSelect(event) {
-    this.selectedPlaces = [];
-    this.selectedSubPlaces = [];
-    this.newImplementation = false;
-    this.implementation = this.cloneImplementation(event.data);
-    this.implementation.places = this.implementation.places;
-    this.implementation.subPlaces = this.implementation.subPlaces;
-    this.placesChange(this.implementation.places);
-    this.subPlacesChange(this.implementation.subPlaces);
-    this.displayDialogImpl = true;
+    this.activeStep = this.activeStep + 1;
+    this.bidForm(StatusEnum.Saved);
   }
 
   cloneImplementation(c: IProjectImplementation): IProjectImplementation {
@@ -273,7 +278,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   placesChange(p: IPlace[]) {
     this.selectedPlaces = [];
-
     p.forEach(item => {
       this.selectedPlaces = this.selectedPlaces.concat(this.places.find(x => x.id === item.id));
     });
@@ -281,26 +285,87 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     this.subPlaces = [];
 
     if (p != null && p.length != 0) {
-      for (var i = 0; i < this.allsubPlaces.length; i++) {
-        if (this.selectedPlaces.filter(r => r.id === this.allsubPlaces[i].placeId).length != 0) {
-          this.subPlaces.push(this.allsubPlaces[i]);
+      for (var i = 0; i < this.subPlacesAll.length; i++) {
+        if (this.selectedPlaces.filter(r => r.id === this.subPlacesAll[i].placeId).length != 0) {
+          this.subPlaces.push(this.subPlacesAll[i]);
 
         }
       }
     }
   }
 
-  subPlacesChange(sub: ISubPlace[]) {     // create dropdown with data for subPlaces
+  subPlacesChange(sub: ISubPlace[]) { 
+    // create dropdown with data for subPlaces
     this.selectedSubPlaces = [];
     sub.forEach(item => {
-      this.selectedSubPlaces = this.selectedSubPlaces.concat(this.allsubPlaces.find(x => x.id == item.id))
+      this.selectedSubPlaces = this.selectedSubPlaces.concat(this.subPlacesAll.find(x => x.id == item.id))
     });
     this.implementation.subPlaces = this.selectedSubPlaces;
   }
 
+  onSdaChange(sdas: ISDA[]) {
+    this.places = [];
+    this.subPlacesAll = [];
+    this.selectedSdas = [];
+    // this.sdas =[];
+
+    this.setPlaces(sdas); // populate specific locations where the service will be delivered to
+    sdas.forEach(item => {
+      this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
+    });
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
+    let count = 0;
+    if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 
+      let isPlace = [];
+      this.fundingApplicationDetails.implementations.find(x => {
+        x.places;
+        isPlace = x.places
+      });
+
+      if (isPlace != null) {
+        this.fundingApplicationDetails.implementations.forEach(x => {
+          sdas.forEach(i => {
+            // place already pushed to fundingApplicationDetails must be cleared out  if sda is no longer selected
+            x.places.forEach(o => {
+              if (o.serviceDeliveryAreaId == i.id) {
+                count++;
+              }
+            })
+          })
+        })
+      }
+
+      if (this.implementation.places?.length > 0) {
+        this.placesChange(this.implementation.places);
+      }
+
+    }
+
+    if (count == 0)
+      this.fundingApplicationDetails.implementations.filter(x => { x.places = []; x.subPlaces = []; });
+  }
+
+  private setPlaces(sdas: ISDA[]): void {
+    if (sdas && sdas.length != 0) {     
+      this._bidService.getPlaces(sdas).subscribe(res => {
+        this.places = res;
+        this.getPlace.emit(this.places)
+        this._bidService.getSubPlaces(this.places).subscribe(res => {        
+          this.subPlacesAll = res;         
+          this.getSubPlace.emit(this.subPlacesAll)
+        });
+      });
+    }
+  }
+
   private allDropdownsLoaded() {  // use for edit purposes if implementation has places and sub places or not
 
-    if (this.places?.length > 0 && this.allsubPlaces?.length > 0) {
+    if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas?.length > 0)
+     {
+      this.onSdaChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
+     }
+
+    if (this.places?.length > 0 && this.subPlacesAll?.length > 0) {
       let plc: IPlace[];
       let subplc: ISubPlace[];
       this.fundingApplicationDetails.implementations.map(c => { plc = c.places });
@@ -312,10 +377,12 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       this.fundingApplicationDetails.implementations.forEach(c => { subplc = c.subPlaces; this.implementation.subPlaces = subplc; });
 
       if (this.implementation.subPlaces !== undefined) {
+       
         this.subPlacesChange(this.implementation.subPlaces);
       }
     }
   }
+
 
   private bidForm(status: StatusEnum) {
     this.application.status = null;
@@ -324,12 +391,12 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
     if (applicationIdOnBid.id == null) {
       this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-        this._menuActions[1].visible = false;
+        //this._menuActions[1].visible = false;
+        this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
         resp;
       });
     }
-
     else {
       this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
         if (resp) {
@@ -337,8 +404,8 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
         }
       });
+      
     }
-
     if (status == StatusEnum.PendingReview) {
 
       this.application.statusId = status;
@@ -347,6 +414,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       this._router.navigateByUrl('applications');
     };
   }
+  
 
 }
 

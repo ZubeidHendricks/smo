@@ -35,7 +35,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
   @Output() AmountChange = new EventEmitter();
   @Input() fundingApplicationDetails: IFundingApplicationDetails;
-
+  @Output() fundingApplicationDetailsChange: EventEmitter<IFundingApplicationDetails> = new EventEmitter<IFundingApplicationDetails>();
   application: IApplication;
   canEdit: boolean = false;
 
@@ -260,7 +260,6 @@ export class ApplicationDetailsComponent implements OnInit {
 
   }
 
-
   private bidForm(status: StatusEnum) {
     this.application.status = null;
     this.application.statusId = status;
@@ -268,14 +267,12 @@ export class ApplicationDetailsComponent implements OnInit {
 
     if (applicationIdOnBid.id == null) {
       this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-        this.menuActions[1].visible = false;
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+      //  this._menuActions[1].visible = false;
+      this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`); 
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
         resp;
-
-        this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
       });
     }
-
     else {
       this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
         if (resp) {
@@ -284,7 +281,6 @@ export class ApplicationDetailsComponent implements OnInit {
         }
       });
     }
-
     if (status == StatusEnum.PendingReview) {
 
       this.application.statusId = status;
@@ -292,10 +288,7 @@ export class ApplicationDetailsComponent implements OnInit {
       this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
       this._router.navigateByUrl('applications');
     };
-    // }
   }
-
-
 
   onAmountChange(event) {
     let amount = Number(event).valueOf();
@@ -722,8 +715,10 @@ export class ApplicationDetailsComponent implements OnInit {
     sdas.forEach(item => {
       this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
     });
+        
     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-
+    
+    this.fundingApplicationDetailsChange.emit(this.fundingApplicationDetails);
     let count = 0;
     if (this.fundingApplicationDetails.implementations) { // when sds change make sure that fundingApplicationDetails contains correct places 
       let isPlace = [];
@@ -734,7 +729,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
       if (isPlace != null) {
         this.fundingApplicationDetails.implementations.forEach(x => {
-          sdas.forEach(i => {
+          sdas.forEach(i => { 
             // place already pushed to fundingApplicationDetails must be cleared out  if sda is no longer selected
             x.places.forEach(o => {
               if (o.serviceDeliveryAreaId == i.id) {

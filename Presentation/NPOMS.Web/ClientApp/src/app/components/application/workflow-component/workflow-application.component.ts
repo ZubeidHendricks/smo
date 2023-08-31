@@ -50,7 +50,7 @@ export class WorkflowApplicationComponent implements OnInit {
   isChecked: boolean = false;
   paramSubcriptions: Subscription;
   id: string;
-  preAdjudicatedComment: string;
+  preEvaluatedComment: string;
   signedByUser: string;
   verificationDate: Date;
   selectedApplication: IApplication;
@@ -173,7 +173,7 @@ export class WorkflowApplicationComponent implements OnInit {
   allCapturedResponses: ICapturedResponse[];
   capturedResponses: ICapturedResponse[];
   capturedResponse = {} as ICapturedResponse;
-  PreAdjudicatedcapturedResponses: ICapturedResponse[];
+  PreEvaluatedCapturedResponses: ICapturedResponse[];
 
   weightExceedingMessage: Message[] = [];
   zeroWeightingMessage: Message[] = [];
@@ -633,7 +633,7 @@ export class WorkflowApplicationComponent implements OnInit {
   public displayEvaluate() {
     switch (this.application.statusId) {
       case StatusEnum.PendingReview:
-      case StatusEnum.PreAdjudicated:
+      case StatusEnum.Verified:
       case StatusEnum.PendingApproval:
       case StatusEnum.EvaluationInProgress:
       case StatusEnum.AdjudicationInProgress:
@@ -660,9 +660,9 @@ export class WorkflowApplicationComponent implements OnInit {
     let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategoryId.toString());
     let capturedResponse = {
       fundingApplicationId: this.application.id,     
-      statusId: 26, // questionCategoryId == QuestionCategoryEnum.PreAdjudication ? StatusEnum.PreAdjudicated : this.selectedStatus.id,
+      statusId: 26, // questionCategoryId == QuestionCategoryEnum.PreAdjudication ? StatusEnum.PreEvaluated : this.selectedStatus.id,
       questionCategoryId: id[0].id, //questionCategoryId,
-      comments: questionCategoryId == QuestionCategoryEnum.PreAdjudication ? "" : this.capturedResponse.comments,
+      comments: questionCategoryId == QuestionCategoryEnum.PreEvaluation ? "" : this.capturedResponse.comments,
       isActive: true,
       isSignedOff: this.isChecked ? true : false
     } as ICapturedResponse;
@@ -691,7 +691,7 @@ export class WorkflowApplicationComponent implements OnInit {
       });
     }
 
-    if (questionnaire[0].questionCategoryId !== QuestionCategoryEnum.PreAdjudication) {
+    if (questionnaire[0].questionCategoryId !== QuestionCategoryEnum.PreEvaluation) {
       if (!this.selectedStatus)
         canUpdateStatus.push(false);
     }
@@ -707,7 +707,7 @@ export class WorkflowApplicationComponent implements OnInit {
       (results) => {
         this.allQuestionnaires = results;
         
-        this.preEvaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "PreAdjudication");
+        this.preEvaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "PreEvaluation");
         this.evaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Evaluation");
         this.adjudicationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication");
         this.approveQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Approval");
@@ -760,7 +760,7 @@ export class WorkflowApplicationComponent implements OnInit {
     switch (this.application.statusId) {
       case StatusEnum.PendingReview:
       case StatusEnum.PendingApproval:
-      case StatusEnum.PreAdjudicated:
+      case StatusEnum.Verified:
       case StatusEnum.EvaluationInProgress: 
       case StatusEnum.Approved:
       {
@@ -774,7 +774,7 @@ export class WorkflowApplicationComponent implements OnInit {
   public displayAdjudicate() {
     switch (this.application.statusId) {
       case StatusEnum.PendingReview:
-      case StatusEnum.PreAdjudicated:
+      case StatusEnum.Verified:
       case StatusEnum.Adjudicated:
       case StatusEnum.AdjudicationInProgress:
       case StatusEnum.Approved:
@@ -808,19 +808,19 @@ export class WorkflowApplicationComponent implements OnInit {
       (results) => {
         this.capturedResponses = results;
 
-        let preAdId = this.QuestionCategoryentities.filter(x=> x.name === "PreAdjudication");
+        let preAdId = this.QuestionCategoryentities.filter(x=> x.name === "PreEvaluation");
 
-        this.PreAdjudicatedcapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === preAdId[0].id);
+        this.PreEvaluatedCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === preAdId[0].id);
        
-        if(this.PreAdjudicatedcapturedResponses.length > 0)
+        if(this.PreEvaluatedCapturedResponses.length > 0)
         {
-          this.capturedResponse.comments = this.PreAdjudicatedcapturedResponses[0].comments;
-          this.isChecked = this.PreAdjudicatedcapturedResponses[0].isSignedOff;
-          this.signedByUser = this.PreAdjudicatedcapturedResponses[0].createdUser.fullName;
-          this.verificationDate = this.PreAdjudicatedcapturedResponses[0].createdDateTime;
+          this.capturedResponse.comments = this.PreEvaluatedCapturedResponses[0].comments;
+          this.isChecked = this.PreEvaluatedCapturedResponses[0].isSignedOff;
+          this.signedByUser = this.PreEvaluatedCapturedResponses[0].createdUser.fullName;
+          this.verificationDate = this.PreEvaluatedCapturedResponses[0].createdDateTime;
         }
 
-        this.hasCapturedPreEvaluation = this.getCapturedResponse(QuestionCategoryEnum.PreAdjudication) ? true : false;
+        this.hasCapturedPreEvaluation = this.getCapturedResponse(QuestionCategoryEnum.PreEvaluation) ? true : false;
         this.hasCapturedAdjudication = this.getCapturedResponse(QuestionCategoryEnum.Adjudication) ? true : false;
         this.hasCapturedEvaluation = this.getCapturedResponse(QuestionCategoryEnum.Evaluation) ? true : false;
         this.hasCapturedApproval = this.getCapturedResponse(QuestionCategoryEnum.Approval) ? true : false;
@@ -932,7 +932,7 @@ export class WorkflowApplicationComponent implements OnInit {
   public capturePreEvaluation() {
     switch (this.application.statusId) {
         case StatusEnum.PendingReview:
-        case StatusEnum.PreAdjudicated:
+        case StatusEnum.Verified:
         case StatusEnum.EvaluationInProgress:
         case StatusEnum.Evaluated:
         case StatusEnum.AdjudicationInProgress:
@@ -948,7 +948,7 @@ export class WorkflowApplicationComponent implements OnInit {
   public displayPreEvaluate() {
     switch (this.application.statusId) {
       case StatusEnum.PendingReview:
-      case StatusEnum.PreAdjudicated:
+      case StatusEnum.Verified:
       case StatusEnum.EvaluationInProgress:
       case StatusEnum.Evaluated:
       case StatusEnum.AdjudicationInProgress:
@@ -965,15 +965,15 @@ export class WorkflowApplicationComponent implements OnInit {
   public disableElement(questionnaire: IQuestionResponseViewModel[], questionCategory: QuestionCategoryEnum) {
     let canCaptureQuestionnaire = false;
     switch (questionCategory) {
-      case QuestionCategoryEnum.PreAdjudication:
+      case QuestionCategoryEnum.PreEvaluation:
         canCaptureQuestionnaire = this.capturePreEvaluation();
-        break;
-      case QuestionCategoryEnum.Adjudication:
-        canCaptureQuestionnaire = this.captureAdjudication();
         break;
       case QuestionCategoryEnum.Evaluation:
         canCaptureQuestionnaire = this.captureEvaluation();
         break;
+      case QuestionCategoryEnum.Adjudication:
+        canCaptureQuestionnaire = this.captureAdjudication();
+        break;    
     }
 
     if (questionnaire) {

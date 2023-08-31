@@ -8,7 +8,7 @@ export enum AccessStatusEnum {
 }
 
 export enum QuestionCategoryEnum {
-    PreAdjudication,
+    PreEvaluation,
     Adjudication,
     Evaluation,
     Approval
@@ -98,8 +98,9 @@ export enum EntityEnum {
 }
 
 export enum ResponseTypeEnum {
+    CloseEnded = 1,
     Score = 2,
-    CloseEnded = 3
+    CloseEnded2 = 3
 }
 
 export enum DeclarationTypeEnum {
@@ -181,7 +182,7 @@ export enum StatusEnum {
     DeptComments = 11,
     OrgComments = 12,
     Approved = 13,
-    PreAdjudicated = 14,
+    Verified = 14,
     Evaluated = 15,
     EvaluationInProgress = 16,
     AdjudicationInProgress = 17,
@@ -346,8 +347,8 @@ export enum PermissionsEnum {
     DownloadOption = "WFA.Download",
     DeleteOption = "WFA.Delete",
 
-    PendingPreAdjudicateOption = "WFA.PendingPreAdjudication",
-    PreAdjudicateOption = "WFA.PreAdjudicate",
+    PendingPreEvaluateOption = "WFA.PendingPreEvaluation",
+    PreEvaluateOption = "WFA.PreEvaluate",
     PendingAdjudicateOption = "WFA.PendingAdjudication",
     AdjudicateOption = "WFA.Adjudicate",
     PendingEvaluationOption = "WFA.PendingEvaluation",

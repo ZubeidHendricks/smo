@@ -91,6 +91,11 @@ export class NpoProfileService {
     return this._http.get<IProjectImplementation[]>(url, httpOptions);
   }
 
+  public getProjImplByfundingApplicationDetailId(appDetailId: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/projImpl/appDetailId/${appDetailId}`;
+    return this._http.get<IProjectImplementation[]>(url, httpOptions);
+  }
+
   public deleteProjImpl(id: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/deleteProjImplById/id/${id}`;
     return this._http.delete<IProjectImplementation[]>(url, httpOptions);

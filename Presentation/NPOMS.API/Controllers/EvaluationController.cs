@@ -171,10 +171,10 @@ namespace NPOMS.API.Controllers
 
 			switch (cn[0])
 			{
-				case "PreAdjudication":
+				case "PreEvaluation":
 					{
 						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
-							statusId = (int)StatusEnum.PreAdjudicated;
+							statusId = (int)StatusEnum.Reviewed;
 						else
 							statusId = (int)StatusEnum.PendingReview;
 						break;
@@ -210,7 +210,7 @@ namespace NPOMS.API.Controllers
 
 				switch (status)
 				{
-					case StatusEnum.PreAdjudicated:
+					case StatusEnum.Reviewed:
 						// Send email to Capturer
 						var applicationPreEvaluated = EmailTemplateFactory
 									.Create(EmailTemplateTypeEnum.StatusChanged)

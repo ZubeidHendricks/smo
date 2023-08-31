@@ -726,16 +726,16 @@ namespace NPOMS.Repository.Configurations.Core
                 new Permission
                 {
                     Id = 102,
-                    Name = "Pre Adjudicate",
-                    SystemName = "WFA.PreAdjudicate",
-                    CategoryName = "Pre Adjudicate"
+                    Name = "Pre Evaluate",
+                    SystemName = "WFA.PreEvaluate",
+                    CategoryName = "Pre Evaluate"
                 },
                 new Permission
                 {
                     Id = 104,
-                    Name = "Pending PreAdjudication",
-                    SystemName = "WFA.PendingPreAdjudication",
-                    CategoryName = "Pending PreAdjudication"
+                    Name = "Pending PreEvaluation",
+                    SystemName = "WFA.PendingPreEvaluation",
+                    CategoryName = "Pending PreEvaluation"
                 },
                 new Permission
                 {
