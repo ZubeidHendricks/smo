@@ -182,7 +182,7 @@ export enum StatusEnum {
     DeptComments = 11,
     OrgComments = 12,
     Approved = 13,
-    Reviewed = 14,
+    Verified = 14,
     Evaluated = 15,
     EvaluationInProgress = 16,
     AdjudicationInProgress = 17,
@@ -268,6 +268,7 @@ export enum PermissionsEnum {
     UploadSLA = "App.Upload",
     ViewAcceptedApplication = "App.VAA",
     DeleteApplication = "App.Delete",
+    UpdateApplicationProgramme = "App.UAP",
 
     /* NPO APPROVAL MANAGEMENT */
     EditNpoRequests = "NAM.ENR",

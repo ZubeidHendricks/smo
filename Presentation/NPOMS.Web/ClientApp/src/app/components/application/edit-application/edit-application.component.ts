@@ -84,24 +84,6 @@ export class EditApplicationComponent implements OnInit {
     applicationDetails: {} as IApplicationDetails
   } as IFundingApplicationDetails;
 
-  // fundingApplicationDetails: IFundingApplicationDetails = {
-  //   financialMatters: [],
-  //   implementations: [],
-  //   projectInformation: {} as IProjectInformation,
-  //   monitoringEvaluation: {} as IMonitoringAndEvaluation,
-  //   applicationDetails: {
-  //     fundAppSDADetail: {
-  //       districtCouncil: {} as IDistrictCouncil,
-  //       localMunicipality: {} as ILocalMunicipality,
-  //       regions: [],
-  //       serviceDeliveryAreas: [],
-  //     } as IFundAppSDADetail,
-  //   } as IApplicationDetails,
-
-  // //  financialMatters: [],
-  // //  implementations: [],
-
-  // } as IFundingApplicationDetails;
 
   constructor(
     private _router: Router,
@@ -130,6 +112,9 @@ export class EditApplicationComponent implements OnInit {
       this.loadDocumentTypes();
       if (Number(params.get('activeStep')) === 2) {
         this.activeStep = Number(params.get('activeStep'));
+      }
+      if (Number(params.get('activeStep')) === 9) {
+        this._router.navigateByUrl(`application/edit/${this.application.id}/6`);
       }
     });
 
@@ -297,6 +282,7 @@ export class EditApplicationComponent implements OnInit {
             }
 
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+              if(this.activeStep !== 5)
               this.bidForm(StatusEnum.Saved);
             }
           }

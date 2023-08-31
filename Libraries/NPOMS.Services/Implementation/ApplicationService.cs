@@ -54,6 +54,7 @@ namespace NPOMS.Services.Implementation
 		private IMyContentLinkRepository _myContentLinkRepository;
 		private readonly IFundAppRegionRepository _bidRegionRepository;
 		private readonly IFundAppServiceDeliveryAreaRepository _BidServiceDeliveryAreaRepository;
+		private IApplicationPeriodRepository _applicationPeriodRepository;
 
 		private RepositoryContext _repositoryContext;
 
@@ -91,7 +92,8 @@ namespace NPOMS.Services.Implementation
 			RepositoryContext repositoryContext,
 			IMyContentLinkRepository myContentLinkRepository,
 			IFundAppRegionRepository bidRegionRepository,
-			IFundAppServiceDeliveryAreaRepository bidServiceDeliveryAreaRepository)
+			IFundAppServiceDeliveryAreaRepository bidServiceDeliveryAreaRepository,
+			IApplicationPeriodRepository applicationPeriodRepository)
 		{
 			_applicationRepository = applicationRepository;
 			_userRepository = userRepository;
@@ -123,6 +125,7 @@ namespace NPOMS.Services.Implementation
 			_myContentLinkRepository = myContentLinkRepository;
 			_bidRegionRepository = bidRegionRepository;
 			_BidServiceDeliveryAreaRepository = bidServiceDeliveryAreaRepository;
+			_applicationPeriodRepository = applicationPeriodRepository;
 		}
 
 		#endregion
@@ -1045,6 +1048,11 @@ namespace NPOMS.Services.Implementation
 		public Task GetByIds(int fundingApplicationId, bool v)
 		{
 			throw new NotImplementedException();
+		}
+
+		public async Task<ApplicationPeriod> GetApplicationPeriodById(int id)
+		{
+			return await _applicationPeriodRepository.GetById(id);
 		}
 
 		#endregion

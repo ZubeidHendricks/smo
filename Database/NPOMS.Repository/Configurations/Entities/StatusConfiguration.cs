@@ -94,8 +94,8 @@ namespace NPOMS.Repository.Configurations.Entities
                 new Status
                 {
                     Id = 14,
-                    Name = "Reviewed",
-                    SystemName = "Reviewed"
+                    Name = "Verified",
+                    SystemName = "Verified"
                 },
                  new Status
                  {
