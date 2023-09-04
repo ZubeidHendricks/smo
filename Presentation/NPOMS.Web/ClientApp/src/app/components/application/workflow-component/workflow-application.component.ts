@@ -718,13 +718,40 @@ onAprCheckboxChange(event: any) {
   private createCapturedResponse(questionCategoryId: QuestionCategoryEnum) {
 
     let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategoryId.toString());
+    let status: number;
+    let declaration: boolean;
+//14,15,18,13
+    switch (questionCategoryId) {
+      case QuestionCategoryEnum.PreEvaluation: {
+        status = 14;
+        break;
+      }
+      case QuestionCategoryEnum.Evaluation: {
+        status = 15;
+        declaration = true;
+        break;
+      }
+      case QuestionCategoryEnum.Adjudication: {
+        status = 18;
+        declaration = true;
+        break;
+      }
+      case QuestionCategoryEnum.Approval: {
+        status = 13;
+        declaration = true;
+        break;
+      }
+    }
+    
     let capturedResponse = {
       fundingApplicationId: this.application.id,     
-      statusId: 26, // questionCategoryId == QuestionCategoryEnum.PreAdjudication ? StatusEnum.PreEvaluated : this.selectedStatus.id,
-      questionCategoryId: id[0].id, //questionCategoryId,
-      comments: questionCategoryId == QuestionCategoryEnum.PreEvaluation ? "" : this.capturedResponse.comments,
+      statusId: status, // questionCategoryId == QuestionCategoryEnum.PreAdjudication ? StatusEnum.PreEvaluated : this.selectedStatus.id,
+      questionCategoryId: id[0].id, //questionCategoryId,  
+      //comments: questionCategoryId == QuestionCategoryEnum.PreEvaluation ? "" : this.capturedResponse.comments,
+      comments: this.capturedResponse.comments,
       isActive: true,
-      isSignedOff: this.isChecked ? true : false
+      isSignedOff: this.isChecked ? true : false,
+      isDeclarationAccepted: declaration
     } as ICapturedResponse;
     this._evaluationService.createCapturedResponse(capturedResponse).subscribe(
       (results) => {
@@ -889,7 +916,8 @@ onAprCheckboxChange(event: any) {
         if(this.EvaluatedCapturedResponses.length > 0)
         {
           this.capturedResponse.comments = this.EvaluatedCapturedResponses[0].comments;
-          this.isChecked = this.EvaluatedCapturedResponses[0].isSignedOff;
+          this.isEvalDeclarationChecked = this.EvaluatedCapturedResponses[0].isDeclarationAccepted;
+          //this.selectedStatus = this.EvaluatedCapturedResponses[0].selectedStatus;
           this.signedByUser = this.EvaluatedCapturedResponses[0].createdUser.fullName;
           this.verificationDate = this.EvaluatedCapturedResponses[0].createdDateTime;
         }

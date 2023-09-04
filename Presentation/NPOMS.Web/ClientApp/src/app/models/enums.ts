@@ -192,7 +192,7 @@ export enum StatusEnum {
     Submitted = 19,
     Recommended = 20,
     StronglyRecommended = 21,
-    GetName
+    GetName 
 }
 
 export enum AuditorOrAffiliationEntityTypeEnum {
