@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230904074515_update status name")]
+    partial class updatestatusname
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2361,16 +2363,6 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "Approve",
                             SystemName = "WFA.Approve"
-                        },
-                        new
-                        {
-                            Id = 111,
-                            CategoryName = "Application",
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Update Programme Selection on Funding Applications",
-                            SystemName = "App.UAP"
                         });
                 });
 
@@ -19392,11 +19384,6 @@ namespace NPOMS.Repository.Migrations
                         {
                             RoleId = 1,
                             PermissionId = 92
-                        },
-                        new
-                        {
-                            RoleId = 1,
-                            PermissionId = 111
                         });
                 });
 

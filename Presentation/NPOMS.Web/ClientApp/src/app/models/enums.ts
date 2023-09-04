@@ -100,7 +100,9 @@ export enum EntityEnum {
 export enum ResponseTypeEnum {
     CloseEnded = 1,
     Score = 2,
-    CloseEnded2 = 3
+    CloseEnded2 = 3,
+    CloseEnded3 = 4,
+    CloseEnded4 = 5,
 }
 
 export enum DeclarationTypeEnum {
@@ -174,7 +176,7 @@ export enum StatusEnum {
     PendingReview = 3,
     AmendmentsRequired = 4,
     PendingApproval = 5,
-    Rejected = 6,
+    Declined = 6,
     PendingSLA = 7,
     PendingSignedSLA = 8,
     AcceptedSLA = 9,
@@ -188,8 +190,8 @@ export enum StatusEnum {
     AdjudicationInProgress = 17,
     Adjudicated = 18,
     Submitted = 19,
-    EvaluationRecommended = 20,
-    EvaluationNotRecommended = 21,
+    Recommended = 20,
+    StronglyRecommended = 21,
     GetName
 }
 
