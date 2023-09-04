@@ -216,7 +216,7 @@ namespace NPOMS.API.Controllers
 
 						await statusChangedApproved.SubmitToQueue();
 						break;
-					case StatusEnum.Rejected:
+					case StatusEnum.Declined:
 						var statusChangedRejected = EmailTemplateFactory
 								.Create(EmailTemplateTypeEnum.StatusChangedRejected)
 								.Get<StatusChangedRejectedEmailTemplate>()
