@@ -195,7 +195,15 @@ namespace NPOMS.API.Controllers
 							statusId = (int)StatusEnum.AdjudicationInProgress;
 						break;
 					}
-			}
+                case "Approval":
+                    {
+                        if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
+                            statusId = (int)StatusEnum.Approved;
+                        else
+                            statusId = (int)StatusEnum.ApprovalInProgress;
+                        break;
+                    }
+            }
 
 			await _applicationService.UpdateFundingApplicationStatus(base.GetUserIdentifier(), model.FundingApplicationId, statusId);
 			var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
@@ -251,7 +259,17 @@ namespace NPOMS.API.Controllers
 
 						await applicationAdjudicated.SubmitToQueue();
 						break;
-				}
+                    case StatusEnum.Approved:
+                        // Send email to Capturer
+                        var applicationApproved = EmailTemplateFactory
+                                    .Create(EmailTemplateTypeEnum.StatusChanged)
+                                    .Get<StatusChangedEmailTemplate>();
+						//.Init(fundingApplication);
+						break;
+
+                        await applicationAdjudicated.SubmitToQueue();
+                        break;
+                }
 
 				await _emailService.SendEmailFromQueue();
 			}

@@ -1257,8 +1257,9 @@ export interface ICapturedResponse {
     comments: string;
     isActive: boolean;
     isSignedOff: boolean;
+    isDeclarationAccepted: boolean;
     createdDateTime: Date;
-
+    selectedStatus: string;
     createdUser: IUser;
     questionnaires: IQuestionResponseViewModel[];
 }

@@ -7,7 +7,7 @@
 		PendingReview = 3,
 		AmendmentsRequired = 4,
 		PendingApproval = 5,
-		Rejected = 6,
+        Declined = 6,
 		PendingSLA = 7,
 		PendingSignedSLA = 8,
 		AcceptedSLA = 9,
@@ -19,7 +19,10 @@
         Evaluated = 15,
         EvaluationInProgress = 16,       
         AdjudicationInProgress = 17,
-        Adjudicated = 18
-        
+        Adjudicated = 18,
+        Submitted = 19,
+        Recommended = 20,
+        StronglyRecommended = 21
+
     }
 }

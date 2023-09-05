@@ -252,7 +252,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/evaluate/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
           }
         });
       }
@@ -274,7 +274,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
           }
         });
       }
@@ -398,7 +398,7 @@ export class ApplicationListComponent implements OnInit {
           break;
         }
         case StatusEnum.AcceptedSLA:
-        case StatusEnum.Rejected: {
+        case StatusEnum.Declined: {
           this.buttonItemExists('Edit Application', 'Service Provision');
           this.buttonItemExists('Review Application', 'Service Provision');
           this.buttonItemExists('Approve Application', 'Service Provision');
@@ -427,12 +427,11 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
-          this.buttonItemExists('View Application', 'Funding Application');
+        //  this.buttonItemExists('View Application', 'Funding Application');
           break;
         }
         case StatusEnum.PendingReview: {
           this.buttonItemExists('Edit Application', 'Funding Application');
-         // this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
@@ -442,13 +441,26 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Edit Application', 'Funding Application');
           this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
-         // this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
           break;
         }
-        case StatusEnum.PendingReview: {
+        case StatusEnum.Evaluated: {
           this.buttonItemExists('Edit Application', 'Funding Application');
-          // this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          break;
+        }
+        case StatusEnum.Adjudicated: {
+          this.buttonItemExists('Edit Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          break;
+        }
+        case StatusEnum.Approved: {
+          this.buttonItemExists('Edit Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');

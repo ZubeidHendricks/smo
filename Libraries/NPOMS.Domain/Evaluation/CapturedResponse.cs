@@ -18,8 +18,11 @@ namespace NPOMS.Domain.Evaluation
 
 		public bool IsActive { get; set; }
 		public bool IsSignedOff { get; set; }
+		public bool isDeclarationAccepted { get; set; }
 
-		public int CreatedUserId { get; set; }
+        public string selectedStatus { get; set; }
+
+        public int CreatedUserId { get; set; }
 
 		public DateTime CreatedDateTime { get; set; }
 
