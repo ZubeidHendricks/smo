@@ -808,7 +808,7 @@
                                             </div>                    
                                         </div>
                                         <div class="p-col-9">
-                                            <textarea class="form-text" [disabled]="setDisable" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                                            <textarea class="form-text" [disabled]="setDisable" [rows]="3" pInputTextarea [(ngModel)]="capturedPreEvaluationComment" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
                                         </div>
                                     </div>
                                     <div style="height: 10px;"></div>
@@ -860,7 +860,7 @@
                                 </p-panel>
                             </td>
                         </tr>
-                        <tr>
+                        <tr *ngIf="!hasCapturedPreEvaluation">
                             <td colspan="6" style="text-align: right;">
                                 <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
                                 [disabled]="disableElement(preEvaluationQuestionnaire, 'PreEvaluation')" (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"></button>
@@ -984,7 +984,7 @@
                 </div>
                 <div class="p-col-9">
                     <textarea class="form-text" [rows]="3" pInputTextarea 
-                    [(ngModel)]="capturedResponse.comments" [ngModelOptions]="{standalone: true}" 
+                    [(ngModel)]="capturedEvaluationComment" [ngModelOptions]="{standalone: true}" 
                     [autoResize]="true"></textarea>
 
                     <!-- <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" 
@@ -1066,7 +1066,7 @@
                     </div>
                 </div>
                 <div class="p-col-9">
-                    <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                    <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedAdjudicationComment" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
                 </div>
             </div>
             <div style="height: 10px;"></div>
@@ -1104,8 +1104,9 @@
                     <span>{{verificationDate | date: 'yyyy-MM-dd'}}</span>
                 </div>
             </div>
-            <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedEvaluation">
-                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"></button>
+            <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedAdjudication">
+                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
+                 [disabled]="disableElement(evaluationQuestionnaire, 'Adjudication')" (click)="submit(evaluationQuestionnaire,  'Adjudication')"></button>
             </div>
         </p-panel>
     </p-panel>
@@ -1142,7 +1143,7 @@
                     </div>
                 </div>
                 <div class="p-col-9">
-                    <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                    <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedApprovalComment" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
                 </div>
             </div>
             <div style="height: 10px;"></div>
@@ -1179,7 +1180,7 @@
                     <span>{{verificationDate | date: 'yyyy-MM-dd'}}</span>
                 </div>
             </div>
-            <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedEvaluation">
+            <div class="p-grid p-nogutter p-justify-end">
                 <button pButton type="button" label="Submit" icon="fa fa-floppy-o"></button>
             </div>
         </p-panel>

@@ -52,6 +52,16 @@ export class WorkflowApplicationComponent implements OnInit {
   isEvalDeclarationChecked: boolean = false;
   isAdjDeclarationChecked: boolean = false;
   isAprDeclarationChecked: boolean = false;
+
+  capturedPreEvaluationComment: string;
+  capturedEvaluationComment: string;
+  capturedAdjudicationComment: string;
+  capturedApprovalComment: string;
+  preEvalSignedByUser: string;
+  evalSignedByUser: string;
+  adjSignedByUser: string;
+  aprSignedByUser: string;
+
   paramSubcriptions: Subscription;
   id: string;
   preEvaluatedComment: string;
@@ -227,8 +237,12 @@ export class WorkflowApplicationComponent implements OnInit {
 
     var pnlAdjudication = document.getElementById("pnlEvaluation");
     var pnlAdjudication1 = document.getElementById("pnlEvaluation1");
+
     pnlAdjudication.style.display = "none";
     pnlAdjudication1.style.display = "none";
+    
+    
+    
 
     this.loadApplication();
     this.getQuestionCategory();
@@ -720,25 +734,29 @@ onAprCheckboxChange(event: any) {
     let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategoryId.toString());
     let status: number;
     let declaration: boolean;
-//14,15,18,13
-    switch (questionCategoryId) {
-      case QuestionCategoryEnum.PreEvaluation: {
+    let comment: string;
+    switch (questionCategoryId.toString()) {
+      case "PreEvaluation": {
         status = 14;
+        comment = this.capturedPreEvaluationComment
         break;
       }
-      case QuestionCategoryEnum.Evaluation: {
+      case "Evaluation": {
         status = 15;
         declaration = true;
+        comment = this.capturedEvaluationComment
         break;
       }
-      case QuestionCategoryEnum.Adjudication: {
+      case "Adjudication": {
         status = 18;
         declaration = true;
+        comment = this.capturedAdjudicationComment
         break;
       }
-      case QuestionCategoryEnum.Approval: {
+      case "Approval": {
         status = 13;
         declaration = true;
+        comment = this.capturedApprovalComment
         break;
       }
     }
@@ -748,10 +766,10 @@ onAprCheckboxChange(event: any) {
       statusId: status, // questionCategoryId == QuestionCategoryEnum.PreAdjudication ? StatusEnum.PreEvaluated : this.selectedStatus.id,
       questionCategoryId: id[0].id, //questionCategoryId,  
       //comments: questionCategoryId == QuestionCategoryEnum.PreEvaluation ? "" : this.capturedResponse.comments,
-      comments: this.capturedResponse.comments,
+      comments: comment,
       isActive: true,
       isSignedOff: this.isChecked ? true : false,
-      isDeclarationAccepted: declaration
+      isDeclarationAccepted: true
     } as ICapturedResponse;
     this._evaluationService.createCapturedResponse(capturedResponse).subscribe(
       (results) => {
@@ -845,11 +863,21 @@ onAprCheckboxChange(event: any) {
 
   public captureEvaluation() {
     switch (this.application.statusId) {
-      case StatusEnum.PendingReview:
-      case StatusEnum.PendingApproval:
       case StatusEnum.Verified:
-      case StatusEnum.EvaluationInProgress: 
-      case StatusEnum.Approved:
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public displayEvaluation() {
+    switch (this.application.statusId) {
+      case StatusEnum.Verified:
+        case StatusEnum.Evaluated:
+        case StatusEnum.Adjudicated:
+        case StatusEnum.Approved:
       {
         return true;
       }
@@ -890,6 +918,16 @@ onAprCheckboxChange(event: any) {
     return false;
   }
 
+  public captureApproval() {
+    switch (this.application.statusId) {
+      case StatusEnum.Adjudicated:{
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   private loadCapturedResponses() {
     this._evaluationService.getCapturedResponses(this.application.id).subscribe(
       (results) => {
@@ -907,7 +945,7 @@ onAprCheckboxChange(event: any) {
        
         if(this.PreEvaluatedCapturedResponses.length > 0)
         {
-          this.capturedResponse.comments = this.PreEvaluatedCapturedResponses[0].comments;
+          this.capturedPreEvaluationComment = this.PreEvaluatedCapturedResponses[0].comments;
           this.isChecked = this.PreEvaluatedCapturedResponses[0].isSignedOff;
           this.signedByUser = this.PreEvaluatedCapturedResponses[0].createdUser.fullName;
           this.verificationDate = this.PreEvaluatedCapturedResponses[0].createdDateTime;
@@ -915,32 +953,59 @@ onAprCheckboxChange(event: any) {
 
         if(this.EvaluatedCapturedResponses.length > 0)
         {
-          this.capturedResponse.comments = this.EvaluatedCapturedResponses[0].comments;
+          this.capturedEvaluationComment = this.EvaluatedCapturedResponses[0].comments;
           this.isEvalDeclarationChecked = this.EvaluatedCapturedResponses[0].isDeclarationAccepted;
           //this.selectedStatus = this.EvaluatedCapturedResponses[0].selectedStatus;
           this.signedByUser = this.EvaluatedCapturedResponses[0].createdUser.fullName;
           this.verificationDate = this.EvaluatedCapturedResponses[0].createdDateTime;
+
+          if (this.isEvalDeclarationChecked) {
+            var pnlEvaluation = document.getElementById("pnlEvaluation");
+            var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
+            pnlEvaluation.style.display = "block";
+            pnlEvaluation1.style.display = "block";
+          }
+          else{
+            pnlEvaluation.style.display = "none";
+            pnlEvaluation1.style.display = "none";
+          }
+
         }
 
         if(this.AdjudicationCapturedResponses.length > 0)
         {
-          this.capturedResponse.comments = this.AdjudicationCapturedResponses[0].comments;
-          this.isChecked = this.AdjudicationCapturedResponses[0].isSignedOff;
+          this.capturedAdjudicationComment = this.AdjudicationCapturedResponses[0].comments;
+          this.isAdjDeclarationChecked = this.AdjudicationCapturedResponses[0].isDeclarationAccepted;
           this.signedByUser = this.AdjudicationCapturedResponses[0].createdUser.fullName;
           this.verificationDate = this.AdjudicationCapturedResponses[0].createdDateTime;
+          if (this.isAdjDeclarationChecked) {
+            var pnlAdjudication = document.getElementById("pnlAdjudication");
+            pnlAdjudication.style.display = "block";
+          }
+          else{
+            pnlAdjudication.style.display = "none";
+          }
         }
 
         if(this.ApprovalCapturedResponses.length > 0)
         {
-          this.capturedResponse.comments = this.ApprovalCapturedResponses[0].comments;
-          this.isChecked = this.ApprovalCapturedResponses[0].isSignedOff;
+          this.capturedApprovalComment = this.ApprovalCapturedResponses[0].comments;
+          this.isAprDeclarationChecked = this.ApprovalCapturedResponses[0].isDeclarationAccepted;
           this.signedByUser = this.ApprovalCapturedResponses[0].createdUser.fullName;
           this.verificationDate = this.ApprovalCapturedResponses[0].createdDateTime;
+
+          if (this.isAprDeclarationChecked) {
+            var pnlApproval = document.getElementById("pnlApproval");
+            pnlApproval.style.display = "block";
+          }
+          else{
+            pnlApproval.style.display = "none";
+          }
         }
 
         this.hasCapturedPreEvaluation = this.getCapturedResponse(QuestionCategoryEnum.PreEvaluation) ? true : false;
-        this.hasCapturedAdjudication = this.getCapturedResponse(QuestionCategoryEnum.Adjudication) ? true : false;
         this.hasCapturedEvaluation = this.getCapturedResponse(QuestionCategoryEnum.Evaluation) ? true : false;
+        this.hasCapturedAdjudication = this.getCapturedResponse(QuestionCategoryEnum.Adjudication) ? true : false;
         this.hasCapturedApproval = this.getCapturedResponse(QuestionCategoryEnum.Approval) ? true : false;
 
         if(this.hasCapturedPreEvaluation)
@@ -951,6 +1016,9 @@ onAprCheckboxChange(event: any) {
 
         if (this.captureAdjudication() && this.hasCapturedAdjudication)
           this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.Adjudication);
+
+        if (this.captureApproval() && this.hasCapturedApproval)
+        this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.Adjudication);
 
         if (this.capturedResponse && this.capturedResponse.statusId)
           this.selectedStatus = this.statuses.find(x => x.id === this.capturedResponse.statusId);
@@ -1061,9 +1129,7 @@ onAprCheckboxChange(event: any) {
     switch (this.application.statusId) {
         case StatusEnum.PendingReview:
         case StatusEnum.Verified:
-        case StatusEnum.EvaluationInProgress:
         case StatusEnum.Evaluated:
-        case StatusEnum.AdjudicationInProgress:
         case StatusEnum.Adjudicated: 
         case StatusEnum.Approved:
      {
@@ -1102,6 +1168,9 @@ onAprCheckboxChange(event: any) {
         break;
       case 'Adjudication':
         canCaptureQuestionnaire = this.captureAdjudication();
+        break; 
+      case 'Approval':
+        canCaptureQuestionnaire = this.captureApproval();
         break;    
     }
 
@@ -1113,8 +1182,8 @@ onAprCheckboxChange(event: any) {
       let questions = questionnaire;
       let countReviewed = questions.filter(x => x.isSaved === true).length;
      
-     // return questions.length === countReviewed && canCaptureQuestionnaire ? false : true;
-     return questions.length === countReviewed ? false : true;
+      return questions.length === countReviewed && canCaptureQuestionnaire ? false : true;
+    // return questions.length === countReviewed ? false : true;
     }
     else
       return true;
@@ -1196,6 +1265,10 @@ onAprCheckboxChange(event: any) {
     return totalAverageScore;
   }
 
+  private showStatus()
+  {
+    this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended || x.id === StatusEnum.Recommended || x.id === StatusEnum.StronglyRecommended);
+  }
   
   private updateEvaluationStatus(totalAverageScore: number) {
     if(totalAverageScore >= 40)
@@ -1207,7 +1280,7 @@ onAprCheckboxChange(event: any) {
       this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended);
     }
     else{
-      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined || x.id === StatusEnum.Recommended);
+      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
     }
    
    // this.selectedStatus = totalAverageScore >= 70 ? this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended) : this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
@@ -1255,7 +1328,9 @@ onAprCheckboxChange(event: any) {
           this._loggerService.logException(err);
           this._spinner.hide();
         }
+       
       );
+      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended);
     }
   }
 
