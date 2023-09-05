@@ -862,8 +862,11 @@
                         </tr>
                         <tr *ngIf="!hasCapturedPreEvaluation">
                             <td colspan="6" style="text-align: right;">
-                                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
-                                [disabled]="disableElement(preEvaluationQuestionnaire, 'PreEvaluation')" (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"></button>
+                                <div *ngIf="!hasCapturedPreEvaluation">
+                                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
+                                    [disabled]="disableElement(preEvaluationQuestionnaire, 'PreEvaluation')" 
+                                    (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"></button>                                
+                                </div>
                             </td>
                         </tr>
                     </ng-template>
@@ -1046,7 +1049,7 @@
         <div class="p-grid">
             <div class="p-col-3 form-label">
                 <div class="box">
-                    <span class="non-mandatory-content">Accept</span>
+                    <span class="mandatory-content">Accept</span>
                 </div>
             </div>
             <div class="p-col-9">
@@ -1124,7 +1127,7 @@
                 <div class="p-grid">
                 <div class="p-col-3 form-label">
                     <div class="box">
-                        <span class="non-mandatory-content">Accept</span>
+                        <span class="mandatory-content">Accept</span>
                     </div>
                 </div>
                 <div class="p-col-9">
