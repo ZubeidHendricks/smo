@@ -62,6 +62,10 @@ export class WorkflowApplicationComponent implements OnInit {
   adjSignedByUser: string;
   aprSignedByUser: string;
 
+  evalVerificationDate: Date;
+  adjVerificationDate: Date;
+  aprVerificationDate: Date;
+
   paramSubcriptions: Subscription;
   id: string;
   preEvaluatedComment: string;
@@ -199,6 +203,9 @@ export class WorkflowApplicationComponent implements OnInit {
   evaluationStatuses: IStatus[];
   adjudicationStatuses: IStatus[];
   selectedStatus: IStatus;
+  adjSelectedStatus: IStatus;
+  aprSelectedStatus: IStatus;
+  
 
   hasCapturedPreEvaluation: boolean;  
   hasCapturedAdjudication: boolean;
@@ -796,8 +803,18 @@ onAprCheckboxChange(event: any) {
       });
     }
 
-    if (questionnaire[0].questionCategoryId !== QuestionCategoryEnum.PreEvaluation) {
+    if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Evaluation) {
       if (!this.selectedStatus)
+        canUpdateStatus.push(false);
+    }
+
+    if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Adjudication) {
+      if (!this.adjSelectedStatus)
+        canUpdateStatus.push(false);
+    }
+
+    if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Approval) {
+      if (!this.aprSelectedStatus)
         canUpdateStatus.push(false);
     }
 
@@ -942,7 +959,6 @@ onAprCheckboxChange(event: any) {
         this.EvaluatedCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === evalId[0].id);
         this.AdjudicationCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === adjId[0].id);
         this.ApprovalCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === appId[0].id);
-       
         if(this.PreEvaluatedCapturedResponses.length > 0)
         {
           this.capturedPreEvaluationComment = this.PreEvaluatedCapturedResponses[0].comments;
@@ -955,9 +971,9 @@ onAprCheckboxChange(event: any) {
         {
           this.capturedEvaluationComment = this.EvaluatedCapturedResponses[0].comments;
           this.isEvalDeclarationChecked = this.EvaluatedCapturedResponses[0].isDeclarationAccepted;
-          //this.selectedStatus = this.EvaluatedCapturedResponses[0].selectedStatus;
-          this.signedByUser = this.EvaluatedCapturedResponses[0].createdUser.fullName;
-          this.verificationDate = this.EvaluatedCapturedResponses[0].createdDateTime;
+         // this.selectedStatus.name = this.EvaluatedCapturedResponses[0].selectedStatus;
+          this.evalSignedByUser = this.EvaluatedCapturedResponses[0].createdUser.fullName;
+          this.evalVerificationDate = this.EvaluatedCapturedResponses[0].createdDateTime;
 
           if (this.isEvalDeclarationChecked) {
             var pnlEvaluation = document.getElementById("pnlEvaluation");
@@ -976,8 +992,10 @@ onAprCheckboxChange(event: any) {
         {
           this.capturedAdjudicationComment = this.AdjudicationCapturedResponses[0].comments;
           this.isAdjDeclarationChecked = this.AdjudicationCapturedResponses[0].isDeclarationAccepted;
-          this.signedByUser = this.AdjudicationCapturedResponses[0].createdUser.fullName;
-          this.verificationDate = this.AdjudicationCapturedResponses[0].createdDateTime;
+        //  this.adjSelectedStatus.name = this.EvaluatedCapturedResponses[0].selectedStatus;
+          this.adjSignedByUser = this.AdjudicationCapturedResponses[0].createdUser.fullName;
+          this.adjVerificationDate = this.AdjudicationCapturedResponses[0].createdDateTime;
+          
           if (this.isAdjDeclarationChecked) {
             var pnlAdjudication = document.getElementById("pnlAdjudication");
             pnlAdjudication.style.display = "block";
@@ -991,8 +1009,9 @@ onAprCheckboxChange(event: any) {
         {
           this.capturedApprovalComment = this.ApprovalCapturedResponses[0].comments;
           this.isAprDeclarationChecked = this.ApprovalCapturedResponses[0].isDeclarationAccepted;
-          this.signedByUser = this.ApprovalCapturedResponses[0].createdUser.fullName;
-          this.verificationDate = this.ApprovalCapturedResponses[0].createdDateTime;
+         // this.aprSelectedStatus.name = this.EvaluatedCapturedResponses[0].selectedStatus;
+          this.aprSignedByUser = this.ApprovalCapturedResponses[0].createdUser.fullName;
+          this.aprVerificationDate = this.ApprovalCapturedResponses[0].createdDateTime;
 
           if (this.isAprDeclarationChecked) {
             var pnlApproval = document.getElementById("pnlApproval");
@@ -1182,8 +1201,8 @@ onAprCheckboxChange(event: any) {
       let questions = questionnaire;
       let countReviewed = questions.filter(x => x.isSaved === true).length;
      
-      return questions.length === countReviewed && canCaptureQuestionnaire ? false : true;
-    // return questions.length === countReviewed ? false : true;
+      //return questions.length === countReviewed && canCaptureQuestionnaire ? false : true;
+      return questions.length === countReviewed ? false : true;
     }
     else
       return true;
@@ -1249,12 +1268,12 @@ onAprCheckboxChange(event: any) {
     let totalAverageScore = 0;
 
     questionnaire.forEach(item => {
-      if(item.weighting !== 0)
-      {
-    //  item.averageScore = item.responseOptionId ?  (Number(item.responseOption.name) / 5) * item.weighting : 0;
-      totalAverageScore += Number(item.responseOption.name); //item.weighting;
-      }
-      else{
+       if(Number(item.responseOption.name) >= 0)
+       {
+    // //  item.averageScore = item.responseOptionId ?  (Number(item.responseOption.name) / 5) * item.weighting : 0;
+        totalAverageScore += Number(item.responseOption.name); //item.weighting;
+       }
+       else{
         totalAverageScore = 0;
       }
     });
@@ -1309,7 +1328,11 @@ onAprCheckboxChange(event: any) {
 
   public onSave(question: IQuestionResponseViewModel) {
     if (question.responseOptionId != 0) {
-
+      if(question.questionCategoryName === 'Evaluation' && question.responseOption.name === 'No')
+      {
+        //this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
+        this.updateEvaluationStatus(0);
+      }
       let response = {} as IResponse;
       response.fundingApplicationId = this.application.id;
       response.questionId = question.questionId;
@@ -1328,9 +1351,10 @@ onAprCheckboxChange(event: any) {
           this._loggerService.logException(err);
           this._spinner.hide();
         }
+
        
       );
-      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended);
+      
     }
   }
 
