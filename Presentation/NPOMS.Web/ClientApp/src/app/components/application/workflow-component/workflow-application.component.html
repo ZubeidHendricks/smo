@@ -1186,8 +1186,9 @@
                     <span>{{aprVerificationDate | date: 'yyyy-MM-dd'}}</span>
                 </div>
             </div>
-            <div class="p-grid p-nogutter p-justify-end">
-                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"></button>
+            <div class="p-grid p-nogutter p-justify-end" *ngIf="isAprDeclarationChecked">
+                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
+                (click)="submit(evaluationQuestionnaire,  'Approval')"></button>
             </div>
         </p-panel>
     </p-panel>
