@@ -959,7 +959,6 @@ onAprCheckboxChange(event: any) {
         this.EvaluatedCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === evalId[0].id);
         this.AdjudicationCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === adjId[0].id);
         this.ApprovalCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === appId[0].id);
-       
         if(this.PreEvaluatedCapturedResponses.length > 0)
         {
           this.capturedPreEvaluationComment = this.PreEvaluatedCapturedResponses[0].comments;
@@ -993,7 +992,7 @@ onAprCheckboxChange(event: any) {
         {
           this.capturedAdjudicationComment = this.AdjudicationCapturedResponses[0].comments;
           this.isAdjDeclarationChecked = this.AdjudicationCapturedResponses[0].isDeclarationAccepted;
-       //   this.adjSelectedStatus.name = this.EvaluatedCapturedResponses[0].selectedStatus;
+        //  this.adjSelectedStatus.name = this.EvaluatedCapturedResponses[0].selectedStatus;
           this.adjSignedByUser = this.AdjudicationCapturedResponses[0].createdUser.fullName;
           this.adjVerificationDate = this.AdjudicationCapturedResponses[0].createdDateTime;
           
@@ -1010,7 +1009,7 @@ onAprCheckboxChange(event: any) {
         {
           this.capturedApprovalComment = this.ApprovalCapturedResponses[0].comments;
           this.isAprDeclarationChecked = this.ApprovalCapturedResponses[0].isDeclarationAccepted;
-       //   this.aprSelectedStatus.name = this.EvaluatedCapturedResponses[0].selectedStatus;
+         // this.aprSelectedStatus.name = this.EvaluatedCapturedResponses[0].selectedStatus;
           this.aprSignedByUser = this.ApprovalCapturedResponses[0].createdUser.fullName;
           this.aprVerificationDate = this.ApprovalCapturedResponses[0].createdDateTime;
 
