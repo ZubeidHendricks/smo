@@ -1109,7 +1109,7 @@
                     <span>{{adjVerificationDate | date: 'yyyy-MM-dd'}}</span>
                 </div>
             </div>
-            <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedAdjudication">
+            <div class="p-grid p-nogutter p-justify-end">
                 <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
                 (click)="submit(evaluationQuestionnaire,  'Adjudication')"></button>
             </div>
@@ -1149,7 +1149,7 @@
                 </div>
                 <div class="p-col-9">
                     <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedApprovalComment"
-                     [ngModelOptions]="{standalone: true}" [autoResize]="true" ></textarea>
+                     [ngModelOptions]="{standalone: true}" [autoResize]="true"></textarea>
                 </div>
             </div>
             <div style="height: 10px;"></div>
@@ -1187,7 +1187,8 @@
                 </div>
             </div>
             <div class="p-grid p-nogutter p-justify-end">
-                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"></button>
+                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
+                (click)="submit(evaluationQuestionnaire,  'Approval')"></button>
             </div>
         </p-panel>
     </p-panel>
