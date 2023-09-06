@@ -1110,7 +1110,7 @@
                 </div>
             </div>
             <div class="p-grid p-nogutter p-justify-end">
-                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
+                <button pButton type="button" label="Submit" icon="fa fa-floppy-o" *ngIf="hasCapturedAdjudication"
                 (click)="submit(evaluationQuestionnaire,  'Adjudication')"></button>
             </div>
         </p-panel>
