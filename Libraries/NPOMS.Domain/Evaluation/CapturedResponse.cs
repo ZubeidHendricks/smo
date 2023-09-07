@@ -20,7 +20,7 @@ namespace NPOMS.Domain.Evaluation
 		public bool IsSignedOff { get; set; }
 		public bool isDeclarationAccepted { get; set; }
 
-        public string selectedStatus { get; set; }
+        public int? selectedStatus { get; set; } = 0;
 
         public int CreatedUserId { get; set; }
 

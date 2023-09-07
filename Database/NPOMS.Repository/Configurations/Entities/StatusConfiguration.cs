@@ -138,6 +138,12 @@ namespace NPOMS.Repository.Configurations.Entities
                     Id = 21,
                     Name = "StronglyRecommended",
                     SystemName = "Strongly Recommended"
+                },
+                new Status
+                {
+                    Id = 22,
+                    Name = "NonCompliance",
+                    SystemName = "Non Compliance"
                 }
             );
 		}

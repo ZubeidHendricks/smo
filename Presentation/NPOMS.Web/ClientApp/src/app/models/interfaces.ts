@@ -1259,7 +1259,7 @@ export interface ICapturedResponse {
     isSignedOff: boolean;
     isDeclarationAccepted: boolean;
     createdDateTime: Date;
-    selectedStatus: string;
+    selectedStatus: number;
     createdUser: IUser;
     questionnaires: IQuestionResponseViewModel[];
 }

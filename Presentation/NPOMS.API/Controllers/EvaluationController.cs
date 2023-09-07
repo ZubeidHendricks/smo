@@ -181,6 +181,11 @@ namespace NPOMS.API.Controllers
 					}
 				case "Evaluation":
 					{
+						if(model.selectedStatus == 22)
+						{
+                            statusId = (int)StatusEnum.NonCompliance;
+                            break;
+                        }
 						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Evaluated;
 						else
@@ -189,14 +194,25 @@ namespace NPOMS.API.Controllers
 					}
 				case "Adjudication":
 					{
-						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
+                        if (model.selectedStatus == (int)StatusEnum.NonCompliance)
+                        {
+                            statusId = (int)StatusEnum.NonCompliance;
+                            break;
+                        }
+                        if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Adjudicated;
 						else
 							statusId = (int)StatusEnum.AdjudicationInProgress;
+						
 						break;
 					}
                 case "Approval":
                     {
+						if (model.selectedStatus == (int)StatusEnum.Declined)
+                        {
+                            statusId = (int)StatusEnum.Declined;
+							break;
+                        }
                         if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
                             statusId = (int)StatusEnum.Approved;
                         else
