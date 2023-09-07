@@ -52,6 +52,7 @@ export class WorkflowApplicationComponent implements OnInit {
   isEvalDeclarationChecked: boolean = false;
   isAdjDeclarationChecked: boolean = false;
   isAprDeclarationChecked: boolean = false;
+ 
 
   capturedPreEvaluationComment: string;
   capturedEvaluationComment: string;
@@ -213,6 +214,9 @@ export class WorkflowApplicationComponent implements OnInit {
   hasCapturedEvaluation: boolean;
   hasCapturedApproval: boolean;
   setDisable: boolean = true;
+  isApprovalDisable: boolean = false;
+  isAdjudicationDisable: boolean = false;
+  isEvaluationDisable: boolean = false;
   setVisible: boolean = false;
 
   constructor(
@@ -892,9 +896,9 @@ onAprCheckboxChange(event: any) {
     this._dropdownService.getEntities(DropdownTypeEnum.Statuses, true).subscribe(
       (results) => {
         this.statuses = results;
-        this.evaluationStatuses = this.statuses.filter(x => x.name.includes('Recommended') || x.name.includes('NonCompliance') || x.name.includes('StronglyRecommended') || x.name.includes('Declined'));
-        this.adjudicationStatuses = this.statuses.filter(x => x.name.includes('Declined') || x.name.includes('NonCompliance') || x.systemName.includes('Recommended') || x.systemName.includes('StronglyRecommended'));
-        this.approvalStatuses = this.statuses.filter(x => x.name.includes('Declined') || x.systemName.includes('Recommended') || x.systemName.includes('StronglyRecommended'));
+        this.evaluationStatuses = results.filter(x => x.name.includes('Recommended') || x.name.includes('NonCompliance') || x.name.includes('StronglyRecommended') || x.name.includes('Declined'));
+        this.adjudicationStatuses = results.filter(x => x.name.includes('Declined') || x.name.includes('NonCompliance') || x.name.includes('Recommended') || x.name.includes('StronglyRecommended'));
+        this.approvalStatuses = results.filter(x => x.name.includes('Declined') || x.name.includes('Recommended') || x.name.includes('StronglyRecommended'));
         this.loadCapturedResponses();
         this.isDataAvailable = true;
         this._spinner.hide();
@@ -1002,10 +1006,25 @@ onAprCheckboxChange(event: any) {
 
         if(this.EvaluatedCapturedResponses.length > 0)
         {
-         // alert( this.EvaluatedCapturedResponses[0].selectedStatus);
+          this.isEvaluationDisable = true;
           this.capturedEvaluationComment = this.EvaluatedCapturedResponses[0].comments;
           this.isEvalDeclarationChecked = this.EvaluatedCapturedResponses[0].isDeclarationAccepted;
-          //this.selectedStatus = this.EvaluatedCapturedResponses[0].selectedStatus;
+
+          let num  = this.EvaluatedCapturedResponses[0].selectedStatus;
+          switch (num) {
+            case Number(StatusEnum.NonCompliance):
+              this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.NonCompliance); 
+              break;
+            case Number(StatusEnum.Declined):
+              this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
+              break;
+            case Number(StatusEnum.Recommended):
+              this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended);
+              break;
+            case Number(StatusEnum.StronglyRecommended):
+              this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
+              break;
+          }
           this.evalSignedByUser = this.EvaluatedCapturedResponses[0].createdUser.fullName;
           this.evalVerificationDate = this.EvaluatedCapturedResponses[0].createdDateTime;
 
@@ -1024,16 +1043,25 @@ onAprCheckboxChange(event: any) {
 
         if(this.AdjudicationCapturedResponses.length > 0)
         {
+          this.isAdjudicationDisable = true;
           this.capturedAdjudicationComment = this.AdjudicationCapturedResponses[0].comments;
-          this.isAdjDeclarationChecked = this.AdjudicationCapturedResponses[0].isDeclarationAccepted;
-
-          
-         // this.adjSelectedStatus
+          this.isAdjDeclarationChecked = this.AdjudicationCapturedResponses[0].isDeclarationAccepted;          
           let num  = this.AdjudicationCapturedResponses[0].selectedStatus;
-          if( num === StatusEnum.NonCompliance)
-          {
-            this.adjSelectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
+          switch (num) {
+            case Number(StatusEnum.NonCompliance):
+              this.adjSelectedStatus = this.adjudicationStatuses.find(x => x.id === StatusEnum.NonCompliance); 
+              break;
+            case Number(StatusEnum.Declined):
+              this.adjSelectedStatus = this.adjudicationStatuses.find(x => x.id === StatusEnum.Declined);
+              break;
+            case Number(StatusEnum.Recommended):
+              this.adjSelectedStatus = this.adjudicationStatuses.find(x => x.id === StatusEnum.Recommended);
+              break;
+            case Number(StatusEnum.StronglyRecommended):
+              this.adjSelectedStatus = this.adjudicationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
+              break;
           }
+         
           this.adjSignedByUser = this.AdjudicationCapturedResponses[0].createdUser.fullName;
           this.adjVerificationDate = this.AdjudicationCapturedResponses[0].createdDateTime;
           
@@ -1048,9 +1076,21 @@ onAprCheckboxChange(event: any) {
 
         if(this.ApprovalCapturedResponses.length > 0)
         {
+          this.isApprovalDisable = true;
           this.capturedApprovalComment = this.ApprovalCapturedResponses[0].comments;
           this.isAprDeclarationChecked = this.ApprovalCapturedResponses[0].isDeclarationAccepted;
-        //  this.aprSelectedStatus = this.ApprovalCapturedResponses[0].selectedStatus[0];
+          let num  = this.ApprovalCapturedResponses[0].selectedStatus;
+          switch (num) {
+            case Number(StatusEnum.Declined):
+              this.aprSelectedStatus = this.approvalStatuses.find(x => x.id === StatusEnum.Declined);
+              break;
+            case Number(StatusEnum.Recommended):
+              this.aprSelectedStatus = this.approvalStatuses.find(x => x.id === StatusEnum.Recommended);
+              break;
+            case Number(StatusEnum.StronglyRecommended):
+              this.aprSelectedStatus = this.approvalStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
+              break;
+          }
           this.aprSignedByUser = this.ApprovalCapturedResponses[0].createdUser.fullName;
           this.aprVerificationDate = this.ApprovalCapturedResponses[0].createdDateTime;
 
@@ -1324,11 +1364,6 @@ onAprCheckboxChange(event: any) {
     return totalAverageScore;
   }
 
-  private showStatus()
-  {
-    this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended || x.id === StatusEnum.Recommended || x.id === StatusEnum.StronglyRecommended);
-  }
-
   private hideShowPanel()
   {
     
@@ -1391,12 +1426,7 @@ onAprCheckboxChange(event: any) {
   }
   
   private updateEvaluationStatus(totalAverageScore: number) {
-    // if(this.EvaluatedCapturedResponses[0].selectedStatus === 22)
-    // {
-    //   this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.NonCompliance);
-    //   return;
-    // }
-
+    
     if(totalAverageScore >= 40)
     {
       this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
