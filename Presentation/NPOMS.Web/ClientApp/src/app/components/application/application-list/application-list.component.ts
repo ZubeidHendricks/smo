@@ -5,7 +5,7 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ActionSequence } from 'protractor';
 import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationPeriod, INpo, IUser } from 'src/app/models/interfaces';
+import { IApplication, IApplicationPeriod, ICapturedResponse, INpo, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -40,7 +40,7 @@ export class ApplicationListComponent implements OnInit {
 
   // This is the selected application when clicking on option buttons...
   selectedApplication: IApplication;
-
+  capturedResponses: ICapturedResponse[];
   isSystemAdmin: boolean = true;
   isAdmin: boolean = false;
   hasAdminRole: boolean = false;
