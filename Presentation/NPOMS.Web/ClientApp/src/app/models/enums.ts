@@ -192,6 +192,7 @@ export enum StatusEnum {
     Submitted = 19,
     Recommended = 20,
     StronglyRecommended = 21,
+    NonCompliance = 22,
     GetName 
 }
 

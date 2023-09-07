@@ -202,6 +202,7 @@ export class WorkflowApplicationComponent implements OnInit {
   statuses: IStatus[];
   evaluationStatuses: IStatus[];
   adjudicationStatuses: IStatus[];
+  approvalStatuses: IStatus[];
   selectedStatus: IStatus;
   adjSelectedStatus: IStatus;
   aprSelectedStatus: IStatus;
@@ -248,9 +249,9 @@ export class WorkflowApplicationComponent implements OnInit {
     pnlAdjudication.style.display = "none";
     pnlAdjudication1.style.display = "none";
     
+   // 
     
-    
-
+    //this.setAdjudicationStatus();
     this.loadApplication();
     this.getQuestionCategory();
     this.getResponseType();
@@ -354,11 +355,12 @@ export class WorkflowApplicationComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         this.application = results;
+        console.log('results', this.application);
         if(this.application.statusId <= 3)
         {
           this.setDisable = false;
         }
-
+       // this.hideShowPanel();
         this.loadQuestionnaire();
        
         this.loadAllProgrammes();
@@ -737,11 +739,11 @@ onAprCheckboxChange(event: any) {
   }
 
   private createCapturedResponse(questionCategoryId: QuestionCategoryEnum) {
-
     let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategoryId.toString());
     let status: number;
     let declaration: boolean;
     let comment: string;
+    let selectedStatus: number
     switch (questionCategoryId.toString()) {
       case "PreEvaluation": {
         status = 14;
@@ -752,18 +754,21 @@ onAprCheckboxChange(event: any) {
         status = 15;
         declaration = true;
         comment = this.capturedEvaluationComment
+        selectedStatus = this.selectedStatus.id
         break;
       }
       case "Adjudication": {
         status = 18;
         declaration = true;
         comment = this.capturedAdjudicationComment
+        selectedStatus = this.adjSelectedStatus.id
         break;
       }
       case "Approval": {
         status = 13;
         declaration = true;
         comment = this.capturedApprovalComment
+        selectedStatus = this.aprSelectedStatus.id
         break;
       }
     }
@@ -776,8 +781,10 @@ onAprCheckboxChange(event: any) {
       comments: comment,
       isActive: true,
       isSignedOff: this.isChecked ? true : false,
-      isDeclarationAccepted: true
+      isDeclarationAccepted: true,
+      selectedStatus: selectedStatus
     } as ICapturedResponse;
+   
     this._evaluationService.createCapturedResponse(capturedResponse).subscribe(
       (results) => {
         this._spinner.hide();
@@ -789,6 +796,31 @@ onAprCheckboxChange(event: any) {
       }
     );
   }
+
+  private createCapturedResponseNonCompliance() {
+        let id = this.QuestionCategoryentities.filter(x=> x.name === 'Evaluation');
+        let capturedResponse = {
+          fundingApplicationId: this.application.id,     
+          statusId: 22,
+          questionCategoryId: id[0].id,  
+          comments: 'Non Compliance',
+          isActive: true,
+          isSignedOff: this.isChecked ? true : false,
+          isDeclarationAccepted: true,
+          selectedStatus: 22 // No Compliance
+        } as ICapturedResponse;
+       
+        this._evaluationService.createCapturedResponse(capturedResponse).subscribe(
+          (results) => {
+            this._spinner.hide();
+            this._router.navigateByUrl('applications');
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      }
 
   private canContinue(questionnaire: IQuestionResponseViewModel[]) {
     let canUpdateStatus = [];
@@ -860,8 +892,9 @@ onAprCheckboxChange(event: any) {
     this._dropdownService.getEntities(DropdownTypeEnum.Statuses, true).subscribe(
       (results) => {
         this.statuses = results;
-        this.evaluationStatuses = this.statuses.filter(x => x.systemName.includes('Recommended') || x.systemName.includes('Declined'));
-        this.adjudicationStatuses = this.statuses.filter(x => x.systemName.includes('Adjudication') && x.systemName.includes('Approved'));
+        this.evaluationStatuses = this.statuses.filter(x => x.name.includes('Recommended') || x.name.includes('NonCompliance') || x.name.includes('StronglyRecommended') || x.name.includes('Declined'));
+        this.adjudicationStatuses = this.statuses.filter(x => x.name.includes('Declined') || x.name.includes('NonCompliance') || x.systemName.includes('Recommended') || x.systemName.includes('StronglyRecommended'));
+        this.approvalStatuses = this.statuses.filter(x => x.name.includes('Declined') || x.systemName.includes('Recommended') || x.systemName.includes('StronglyRecommended'));
         this.loadCapturedResponses();
         this.isDataAvailable = true;
         this._spinner.hide();
@@ -969,9 +1002,10 @@ onAprCheckboxChange(event: any) {
 
         if(this.EvaluatedCapturedResponses.length > 0)
         {
+         // alert( this.EvaluatedCapturedResponses[0].selectedStatus);
           this.capturedEvaluationComment = this.EvaluatedCapturedResponses[0].comments;
           this.isEvalDeclarationChecked = this.EvaluatedCapturedResponses[0].isDeclarationAccepted;
-         // this.selectedStatus.name = this.EvaluatedCapturedResponses[0].selectedStatus;
+          //this.selectedStatus = this.EvaluatedCapturedResponses[0].selectedStatus;
           this.evalSignedByUser = this.EvaluatedCapturedResponses[0].createdUser.fullName;
           this.evalVerificationDate = this.EvaluatedCapturedResponses[0].createdDateTime;
 
@@ -992,7 +1026,14 @@ onAprCheckboxChange(event: any) {
         {
           this.capturedAdjudicationComment = this.AdjudicationCapturedResponses[0].comments;
           this.isAdjDeclarationChecked = this.AdjudicationCapturedResponses[0].isDeclarationAccepted;
-        //  this.adjSelectedStatus.name = this.EvaluatedCapturedResponses[0].selectedStatus;
+
+          
+         // this.adjSelectedStatus
+          let num  = this.AdjudicationCapturedResponses[0].selectedStatus;
+          if( num === StatusEnum.NonCompliance)
+          {
+            this.adjSelectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
+          }
           this.adjSignedByUser = this.AdjudicationCapturedResponses[0].createdUser.fullName;
           this.adjVerificationDate = this.AdjudicationCapturedResponses[0].createdDateTime;
           
@@ -1009,7 +1050,7 @@ onAprCheckboxChange(event: any) {
         {
           this.capturedApprovalComment = this.ApprovalCapturedResponses[0].comments;
           this.isAprDeclarationChecked = this.ApprovalCapturedResponses[0].isDeclarationAccepted;
-         // this.aprSelectedStatus.name = this.EvaluatedCapturedResponses[0].selectedStatus;
+        //  this.aprSelectedStatus = this.ApprovalCapturedResponses[0].selectedStatus[0];
           this.aprSignedByUser = this.ApprovalCapturedResponses[0].createdUser.fullName;
           this.aprVerificationDate = this.ApprovalCapturedResponses[0].createdDateTime;
 
@@ -1026,7 +1067,6 @@ onAprCheckboxChange(event: any) {
         this.hasCapturedEvaluation = this.getCapturedResponse(QuestionCategoryEnum.Evaluation) ? true : false;
         this.hasCapturedAdjudication = this.getCapturedResponse(QuestionCategoryEnum.Adjudication) ? true : false;
         this.hasCapturedApproval = this.getCapturedResponse(QuestionCategoryEnum.Approval) ? true : false;
-
         if(this.hasCapturedPreEvaluation)
        //   this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.PreAdjudication);
 
@@ -1077,21 +1117,22 @@ onAprCheckboxChange(event: any) {
   }
 
   public getRagColour(question: IQuestionResponseViewModel) {
-    let ragColour = '';
+    let ragColour = 'rag-not-saved';
 
-    if (question.isSaved && question.documentRequired === false)
+    if (question.isSaved && question.commentRequired === false)
       ragColour = 'rag-saved';
-    // else if (question.isSaved && question.documentRequired === true) {
-    //   if (question.documentCount === 0)
-    //     ragColour = 'rag-partial';
-    //   else
-    //     ragColour = 'rag-saved';
-    // }
-    else if (!question.isSaved)
-      ragColour = 'rag-not-saved';
+    else if (question.isSaved && question.commentRequired === true) {
+      if (question.comment === '')
+        ragColour = 'rag-partial';
+      else
+        ragColour = 'rag-saved';
+    }
+    // else if (!question.isSaved)
+    //   ragColour = 'rag-not-saved';
 
     return ragColour;
   }
+
 
   public displayField(question: IQuestionResponseViewModel) {
     let canDisplayField: boolean;
@@ -1117,7 +1158,6 @@ onAprCheckboxChange(event: any) {
   }
 
   public getResponseOptions(responseTypeId: number) {
-    //alert(responseTypeId);
     return this.responseOptions.filter(x => x.responseTypeId === responseTypeId && x.isActive);
   }
 
@@ -1288,8 +1328,75 @@ onAprCheckboxChange(event: any) {
   {
     this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended || x.id === StatusEnum.Recommended || x.id === StatusEnum.StronglyRecommended);
   }
+
+  private hideShowPanel()
+  {
+    
+    var preEvaluatePanel = document.getElementById("preEvaluatePanel");
+    var evaluatePanel = document.getElementById("evaluatePanel");
+    var adjudicatePanel = document.getElementById("adjudicatePanel");
+    var approvePanel = document.getElementById("approvePanel");
+
+    switch (this.application.statusId) {
+      case StatusEnum.Saved: {
+        preEvaluatePanel.style.display = "none";
+        evaluatePanel.style.display = "none";
+        adjudicatePanel.style.display = "none";
+        approvePanel.style.display = "none";
+        break;
+      }
+      case StatusEnum.PendingReview: {
+        preEvaluatePanel.style.display = "block";
+        evaluatePanel.style.display = "none";
+        adjudicatePanel.style.display = "none";
+        approvePanel.style.display = "none";
+        break;
+      }
+      case StatusEnum.Verified: {
+        preEvaluatePanel.style.display = "block";
+        evaluatePanel.style.display = "block";
+        adjudicatePanel.style.display = "none";
+        approvePanel.style.display = "none";
+        break;
+      }
+      case StatusEnum.Evaluated: {
+        preEvaluatePanel.style.display = "block";
+        evaluatePanel.style.display = "block";
+        adjudicatePanel.style.display = "block";
+        approvePanel.style.display = "none";
+        break;
+      }
+      case StatusEnum.Adjudicated: {
+        preEvaluatePanel.style.display = "block";
+        evaluatePanel.style.display = "block";
+        adjudicatePanel.style.display = "block";
+        approvePanel.style.display = "block";
+        break;
+      }
+      case StatusEnum.Approved: {
+        preEvaluatePanel.style.display = "block";
+        evaluatePanel.style.display = "block";
+        adjudicatePanel.style.display = "block";
+        approvePanel.style.display = "block";
+        break;
+      }
+      case StatusEnum.NonCompliance: {
+        preEvaluatePanel.style.display = "block";
+        evaluatePanel.style.display = "block";
+        adjudicatePanel.style.display = "block";
+        approvePanel.style.display = "none";
+        break;
+      }
+    }
+  }
   
   private updateEvaluationStatus(totalAverageScore: number) {
+    // if(this.EvaluatedCapturedResponses[0].selectedStatus === 22)
+    // {
+    //   this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.NonCompliance);
+    //   return;
+    // }
+
     if(totalAverageScore >= 40)
     {
       this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
@@ -1298,41 +1405,24 @@ onAprCheckboxChange(event: any) {
     {
       this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended);
     }
-    else{
+    else if(totalAverageScore >= 0 && totalAverageScore <= 29)
+    {
       this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
     }
+    else{
+      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.NonCompliance);
+    }
    
-   // this.selectedStatus = totalAverageScore >= 70 ? this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended) : this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
   }
 
-  // private updateEvaluationStatus(totalAverageScore: number) {
-  //   if(totalAverageScore >= 40)
-  //   {
-  //     this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
-  //   }
-  //   else if(totalAverageScore >= 30 && totalAverageScore <= 39)
-  //   {
-  //     this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended);
-  //   }
-  //   else{
-  //     this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
-  //   }
-   
-  //  // this.selectedStatus = totalAverageScore >= 70 ? this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended) : this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
-  // }
-
-
+  
   public onInputCommentChange(question: IQuestionResponseViewModel) {
     question.isSaved = false;
   }
 
   public onSave(question: IQuestionResponseViewModel) {
     if (question.responseOptionId != 0) {
-      if(question.questionCategoryName === 'Evaluation' && question.responseOption.name === 'No')
-      {
-        //this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
-        this.updateEvaluationStatus(0);
-      }
+    
       let response = {} as IResponse;
       response.fundingApplicationId = this.application.id;
       response.questionId = question.questionId;
@@ -1352,9 +1442,13 @@ onAprCheckboxChange(event: any) {
           this._spinner.hide();
         }
 
-       
       );
-      
+      if(question.questionCategoryName === 'Evaluation' && question.responseOption.name === 'No')
+      {
+        this.updateEvaluationStatus(-1);
+        this.createCapturedResponseNonCompliance();
+      }
+     
     }
   }
 

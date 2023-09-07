@@ -739,7 +739,7 @@
     </div>
 
 <div>
-    <p-panel header="Pre-evaluate Funding Application" [style]="{'font-size':'12px'}" *ngIf="displayPreEvaluate()">
+    <p-panel header="Pre-evaluate Funding Application" [style]="{'font-size':'12px'}" *ngIf="displayPreEvaluate()" id = "preEvaluatePanel">
         <div style="height: 10px;"></div>
         <div style="font-size: 14px;">
             An application must be pre-evaluated prior to recommendation to substantiate the recommendation outcome.
@@ -882,7 +882,7 @@
     <br>
 </div>
 <div>
-    <p-panel header="Evaluate Funding Application" [style]="{'font-size':'12px'}">
+    <p-panel header="Evaluate Funding Application" [style]="{'font-size':'12px'}" id = "evaluatePanel">
         <p-panel>
             <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
                 <p><span style="color: rgb(51, 51, 51);">
@@ -933,20 +933,20 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="hasCapturedEvaluation"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)"></p-dropdown>
                         </td>
                         <!-- <td>{{question.averageScore}}</td> -->
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(evaluationQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                            [autoResize]="true"></textarea>
                         </td>
-                        <td style="text-align: center;" *ngIf="hasDocument(evaluationQuestionnaire)">
+                         <!--<td style="text-align: center;" *ngIf="hasDocument(evaluationQuestionnaire)">
                             <button *ngIf="question.hasDocument" pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(question)" [disabled]="question.disableDocumentUpload"></button>
                             <button *ngIf="question.hasDocument" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" (click)="uploadDocument(question)" [disabled]="question.disableDocumentUpload"></button>
             
-                            <input *ngIf="question.hasDocument" type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;"> -->
-                        </td>
+                           <input *ngIf="question.hasDocument" type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;"> 
+                        </td>-->
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
@@ -988,7 +988,7 @@
                 <div class="p-col-9">
                     <textarea class="form-text" [rows]="3" pInputTextarea 
                     [(ngModel)]="capturedEvaluationComment" [ngModelOptions]="{standalone: true}" 
-                    [autoResize]="true"></textarea>
+                    [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
 
                     <!-- <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" 
                     [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea> -->
@@ -1005,7 +1005,7 @@
                     <p-dropdown class="form-text"  defaultLabel="Choose the option" [options]="evaluationStatuses" 
                     placeholder="Select a Status" optionLabel="name" 
                     [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
-                    [disabled]="disableElement(evaluationQuestionnaire,  'Evaluation')"></p-dropdown>
+                    [disabled]="hasCapturedEvaluation"></p-dropdown>
                 </div>
             </div>
             <div style="height: 10px;"></div>
@@ -1032,14 +1032,14 @@
             </div>
             <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedEvaluation">
                 <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
-                 (click)="submit(evaluationQuestionnaire,  'Evaluation')"></button>
+                 (click)="submit(evaluationQuestionnaire,  'Evaluation')" [disabled]="hasCapturedEvaluation"></button>
             </div>
         </p-panel>
     </p-panel>  
 
-
-
-<p-panel header="Adjudicate Funding Application" [style]="{'font-size':'12px'}">
+</div>
+<div>
+<p-panel header="Adjudicate Funding Application" [style]="{'font-size':'12px'}" id = "adjudicatePanel">
     <p-panel>
         <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
             <p><span style="color: rgb(51, 51, 51);">
@@ -1082,7 +1082,7 @@
                     </div>
                 </div>
                 <div class="p-col-9">
-                    <p-dropdown class="form-text" [options]="evaluationStatuses" placeholder="Select a Status" optionLabel="name" 
+                    <p-dropdown class="form-text" [options]="adjudicationStatuses" placeholder="Select a Status" optionLabel="name" 
                     [(ngModel)]="adjSelectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
                     ></p-dropdown>
                 </div>
@@ -1109,8 +1109,8 @@
                     <span>{{adjVerificationDate | date: 'yyyy-MM-dd'}}</span>
                 </div>
             </div>
-            <div class="p-grid p-nogutter p-justify-end">
-                <button pButton type="button" label="Submit" icon="fa fa-floppy-o" *ngIf="hasCapturedAdjudication"
+            <div class="p-grid p-nogutter p-justify-end" *ngIf="isAdjDeclarationChecked">
+                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
                 (click)="submit(evaluationQuestionnaire,  'Adjudication')"></button>
             </div>
         </p-panel>
@@ -1118,7 +1118,7 @@
 </div>
 <br>
 <div>
-    <p-panel [style]="{'font-size':'12px'}" header="Approve Funding Application">
+    <p-panel [style]="{'font-size':'12px'}" header="Approve Funding Application" id = "approvePanel">
         <p-panel>
             <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
                 <p><span style="color: rgb(51, 51, 51);">
@@ -1160,7 +1160,7 @@
                     </div>
                 </div>
                 <div class="p-col-9">
-                    <p-dropdown class="form-text" defaultLabel="Choose the option" [options]="evaluationStatuses" placeholder="Select a Status" optionLabel="name" 
+                    <p-dropdown class="form-text" defaultLabel="Choose the option" [options]="approvalStatuses" placeholder="Select a Status" optionLabel="name" 
                     [(ngModel)]="aprSelectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
                 </div>
             </div>
@@ -1186,7 +1186,7 @@
                     <span>{{aprVerificationDate | date: 'yyyy-MM-dd'}}</span>
                 </div>
             </div>
-            <div class="p-grid p-nogutter p-justify-end" *ngIf="isAprDeclarationChecked">
+            <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedApproval">
                 <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
                 (click)="submit(evaluationQuestionnaire,  'Approval')"></button>
             </div>
