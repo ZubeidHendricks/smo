@@ -865,7 +865,7 @@
                                 <div *ngIf="!hasCapturedPreEvaluation">
                                     <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
                                     [disabled]="disableElement(preEvaluationQuestionnaire, 'PreEvaluation')" 
-                                    (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"></button>                                
+                                    [disabled]="isPreEvaluationDisable" (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"></button>                                
                                 </div>
                             </td>
                         </tr>

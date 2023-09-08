@@ -209,14 +209,15 @@ export class WorkflowApplicationComponent implements OnInit {
   aprSelectedStatus: IStatus;
   
 
-  hasCapturedPreEvaluation: boolean;  
-  hasCapturedAdjudication: boolean;
-  hasCapturedEvaluation: boolean;
-  hasCapturedApproval: boolean;
+  hasCapturedPreEvaluation: boolean = false;  
+  hasCapturedAdjudication: boolean = false;
+  hasCapturedEvaluation: boolean = false;
+  hasCapturedApproval: boolean = false;
   setDisable: boolean = true;
   isApprovalDisable: boolean = false;
   isAdjudicationDisable: boolean = false;
   isEvaluationDisable: boolean = false;
+  isPreEvaluationDisable: boolean = false;
   setVisible: boolean = false;
 
   constructor(
@@ -911,7 +912,7 @@ onAprCheckboxChange(event: any) {
     );
   }
   private getCapturedResponse(questionCategoryId: QuestionCategoryEnum) {
-    return this.capturedResponses.find(x => x.fundingApplicationId === this.application.id && x.questionCategoryId === questionCategoryId && x.createdUser.id === this.profile.id);
+    return this.capturedResponses.find(x => x.fundingApplicationId === this.application.id && x.questionCategoryId === questionCategoryId);
   }
 
 
@@ -998,6 +999,7 @@ onAprCheckboxChange(event: any) {
         this.ApprovalCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === appId[0].id);
         if(this.PreEvaluatedCapturedResponses.length > 0)
         {
+          this.isPreEvaluationDisable = true
           this.capturedPreEvaluationComment = this.PreEvaluatedCapturedResponses[0].comments;
           this.isChecked = this.PreEvaluatedCapturedResponses[0].isSignedOff;
           this.signedByUser = this.PreEvaluatedCapturedResponses[0].createdUser.fullName;
@@ -1102,13 +1104,14 @@ onAprCheckboxChange(event: any) {
             pnlApproval.style.display = "none";
           }
         }
+        
 
-        this.hasCapturedPreEvaluation = this.getCapturedResponse(QuestionCategoryEnum.PreEvaluation) ? true : false;
-        this.hasCapturedEvaluation = this.getCapturedResponse(QuestionCategoryEnum.Evaluation) ? true : false;
-        this.hasCapturedAdjudication = this.getCapturedResponse(QuestionCategoryEnum.Adjudication) ? true : false;
-        this.hasCapturedApproval = this.getCapturedResponse(QuestionCategoryEnum.Approval) ? true : false;
-        if(this.hasCapturedPreEvaluation)
-       //   this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.PreAdjudication);
+        this.hasCapturedPreEvaluation = this.getCapturedResponse(preAdId[0].id) ? true : false;
+        this.hasCapturedEvaluation = this.getCapturedResponse(evalId[0].id) ? true : false;
+        this.hasCapturedAdjudication = this.getCapturedResponse(adjId[0].id) ? true : false;
+        this.hasCapturedApproval = this.getCapturedResponse(appId[0].id) ? true : false;
+        // if(this.hasCapturedPreEvaluation)
+        //   this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.PreEvaluation);
 
         if (this.captureEvaluation() && this.hasCapturedEvaluation)
           this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.Evaluation);
@@ -1231,6 +1234,8 @@ onAprCheckboxChange(event: any) {
         case StatusEnum.Evaluated:
         case StatusEnum.Adjudicated: 
         case StatusEnum.Approved:
+        case StatusEnum.Declined: 
+        case StatusEnum.NonCompliance: 
      {
         return true;
       }
@@ -1247,6 +1252,8 @@ onAprCheckboxChange(event: any) {
       case StatusEnum.AdjudicationInProgress:
       case StatusEnum.Adjudicated:
       case StatusEnum.Approved: 
+      case StatusEnum.Declined: 
+      case StatusEnum.NonCompliance: 
       {
         return true;
       }
