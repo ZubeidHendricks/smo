@@ -352,7 +352,12 @@ export class WorkflowApplicationComponent implements OnInit {
       { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
-    
+    this.showHidePanel();
+
+  }
+
+  private showHidePanel()
+  {    
     var pnlEvaluation = document.getElementById("pnlEvaluation");
     var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
 
@@ -364,7 +369,6 @@ export class WorkflowApplicationComponent implements OnInit {
 
     var pnlApproval = document.getElementById("pnlApproval");
     pnlApproval.style.display = "none";
-
   }
 
   private loadApplication() {
