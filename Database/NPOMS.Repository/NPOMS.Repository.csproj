@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <Compile Remove="Implementation\Entities\FinancialDetailRepository.cs" />
@@ -24,7 +24,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <UserSecretsId>vy08Q~ROOcTGUxz1b1dMi5VJL5m5Cozb7ttmPc5E</UserSecretsId>
   </PropertyGroup>
 
 </Project>
