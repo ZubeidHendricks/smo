@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { ApplicationTypeEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory, IResponseOption, PermissionsEnum, QuestionCategoryEnum, ServiceProvisionStepsEnum, StatusEnum, ResponseTypeEnum, IResponseType } from 'src/app/models/enums';
+import { ApplicationTypeEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory, IResponseOption, PermissionsEnum, QuestionCategoryEnum, ServiceProvisionStepsEnum, StatusEnum, ResponseTypeEnum, IResponseType, RoleEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationDetails, ICapturedResponse, IDepartment, IDocumentStore, IFacilityList, IMonitoringAndEvaluation, INpo, INpoProfile, IObjective, IProgramme, IProjectImplementation, IProjectInformation, IResource, IStatus, ISubProgramme, ISustainabilityPlan, IUser, IResponse, IQuestionCategory } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
@@ -22,6 +22,9 @@ import { style } from '@angular/animations';
   styleUrls: ['./workflow-application.component.css']
 })
 export class WorkflowApplicationComponent implements OnInit {
+  isSystemAdmin: boolean;
+  isAdmin: boolean;
+  hasAdminRole: boolean;
   
 
    /* Permission logic */
@@ -242,33 +245,29 @@ export class WorkflowApplicationComponent implements OnInit {
       this.id = params.get('id');      
     });
 
-    var pnlAdjudication = document.getElementById("pnlAdjudication");
-    pnlAdjudication.style.display = "none";
 
-    var pnlApproval = document.getElementById("pnlApproval");
-    pnlApproval.style.display = "none";
-
-    var pnlAdjudication = document.getElementById("pnlEvaluation");
-    var pnlAdjudication1 = document.getElementById("pnlEvaluation1");
-
-    pnlAdjudication.style.display = "none";
-    pnlAdjudication1.style.display = "none";
-    
-   // 
-    
-    //this.setAdjudicationStatus();
     this.loadApplication();
-    this.getQuestionCategory();
-    this.getResponseType();
+  
     
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication))
-          this._router.navigate(['401']);
+        if (!this.IsAuthorized(PermissionsEnum.ViewApplications))
+        this._router.navigate(['401']);
+
+        this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+
+        if (this.isSystemAdmin || this.isAdmin)
+          this.hasAdminRole = true;
       }
     });
+
+    
+
+    this.getQuestionCategory();
+    this.getResponseType();
 
     this.objectiveCols = [
       { header: 'Objective Name', width: '20%' },
@@ -353,6 +352,19 @@ export class WorkflowApplicationComponent implements OnInit {
       { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
+    
+    var pnlEvaluation = document.getElementById("pnlEvaluation");
+    var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
+
+    pnlEvaluation.style.display = "none";
+    pnlEvaluation1.style.display = "none";
+
+    var pnlAdjudication = document.getElementById("pnlAdjudication");
+    pnlAdjudication.style.display = "none";
+
+    var pnlApproval = document.getElementById("pnlApproval");
+    pnlApproval.style.display = "none";
+
   }
 
   private loadApplication() {
@@ -360,7 +372,7 @@ export class WorkflowApplicationComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         this.application = results;
-        console.log('results', this.application);
+       
         if(this.application.statusId <= 3)
         {
           this.setDisable = false;
@@ -721,18 +733,7 @@ onAprCheckboxChange(event: any) {
     );
   }
 
-
-  public displayEvaluate() {
-    switch (this.application.statusId) { 
-      case StatusEnum.PendingReview:
-      case StatusEnum.Verified:
-         {
-        return true;
-      }
-    }
-
-    return false;
-  }
+ 
 
   public submit(questionnaire: IQuestionResponseViewModel[], questionCategory: QuestionCategoryEnum) {
     // if (this.canContinue(questionnaire)) {
@@ -915,10 +916,44 @@ onAprCheckboxChange(event: any) {
     return this.capturedResponses.find(x => x.fundingApplicationId === this.application.id && x.questionCategoryId === questionCategoryId);
   }
 
+  public capturePreEvaluation() {
+    switch (this.application.statusId) {
+        case StatusEnum.PendingReview:
+        case StatusEnum.Verified:
+        case StatusEnum.Evaluated:
+        case StatusEnum.Adjudicated: 
+        // case StatusEnum.Approved:
+        // case StatusEnum.Declined: 
+        // case StatusEnum.NonCompliance: 
+     {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
 
   public captureEvaluation() {
     switch (this.application.statusId) {
       case StatusEnum.Verified:
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public displayPreEvaluate() {
+    switch (this.application.statusId) {
+      case StatusEnum.PendingReview:
+      case StatusEnum.Verified:
+      case StatusEnum.Evaluated:
+      case StatusEnum.Adjudicated:
+      case StatusEnum.Approved: 
+      case StatusEnum.Declined: 
+      case StatusEnum.NonCompliance: 
       {
         return true;
       }
@@ -933,6 +968,8 @@ onAprCheckboxChange(event: any) {
         case StatusEnum.Evaluated:
         case StatusEnum.Adjudicated:
         case StatusEnum.Approved:
+        case StatusEnum.Declined:
+        case StatusEnum.NonCompliance:
       {
         return true;
       }
@@ -943,11 +980,11 @@ onAprCheckboxChange(event: any) {
 
   public displayAdjudicate() {
     switch (this.application.statusId) {
-      case StatusEnum.PendingReview:
-      case StatusEnum.Verified:
+      case StatusEnum.Evaluated:
       case StatusEnum.Adjudicated:
-      case StatusEnum.AdjudicationInProgress:
       case StatusEnum.Approved:
+      case StatusEnum.Declined:
+      case StatusEnum.NonCompliance:
       {
         return true;
       }
@@ -955,6 +992,20 @@ onAprCheckboxChange(event: any) {
 
     return false;
   }
+
+  public displayApprove() {
+    switch (this.application.statusId) {
+      case StatusEnum.Adjudicated:
+      case StatusEnum.Approved:
+      case StatusEnum.Declined:
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+  
 
   public getCompletedQuestionnaire(capturedResponse: ICapturedResponse) {
     var questionnaires = this.capturedResponses.find(x => x.id === capturedResponse.id).questionnaires;
@@ -1227,40 +1278,8 @@ onAprCheckboxChange(event: any) {
     return rowGroupMetadata;
   }
 
-  public capturePreEvaluation() {
-    switch (this.application.statusId) {
-        case StatusEnum.PendingReview:
-        case StatusEnum.Verified:
-        case StatusEnum.Evaluated:
-        case StatusEnum.Adjudicated: 
-        case StatusEnum.Approved:
-        case StatusEnum.Declined: 
-        case StatusEnum.NonCompliance: 
-     {
-        return true;
-      }
-    }
-
-    return false;
-  }
-  public displayPreEvaluate() {
-    switch (this.application.statusId) {
-      case StatusEnum.PendingReview:
-      case StatusEnum.Verified:
-      case StatusEnum.EvaluationInProgress:
-      case StatusEnum.Evaluated:
-      case StatusEnum.AdjudicationInProgress:
-      case StatusEnum.Adjudicated:
-      case StatusEnum.Approved: 
-      case StatusEnum.Declined: 
-      case StatusEnum.NonCompliance: 
-      {
-        return true;
-      }
-    }
-
-    return false;
-  }
+ 
+ 
   
 
   public disableElement(questionnaire: IQuestionResponseViewModel[], questionCategory: string) {
@@ -1371,67 +1390,6 @@ onAprCheckboxChange(event: any) {
     return totalAverageScore;
   }
 
-  private hideShowPanel()
-  {
-    
-    var preEvaluatePanel = document.getElementById("preEvaluatePanel");
-    var evaluatePanel = document.getElementById("evaluatePanel");
-    var adjudicatePanel = document.getElementById("adjudicatePanel");
-    var approvePanel = document.getElementById("approvePanel");
-
-    switch (this.application.statusId) {
-      case StatusEnum.Saved: {
-        preEvaluatePanel.style.display = "none";
-        evaluatePanel.style.display = "none";
-        adjudicatePanel.style.display = "none";
-        approvePanel.style.display = "none";
-        break;
-      }
-      case StatusEnum.PendingReview: {
-        preEvaluatePanel.style.display = "block";
-        evaluatePanel.style.display = "none";
-        adjudicatePanel.style.display = "none";
-        approvePanel.style.display = "none";
-        break;
-      }
-      case StatusEnum.Verified: {
-        preEvaluatePanel.style.display = "block";
-        evaluatePanel.style.display = "block";
-        adjudicatePanel.style.display = "none";
-        approvePanel.style.display = "none";
-        break;
-      }
-      case StatusEnum.Evaluated: {
-        preEvaluatePanel.style.display = "block";
-        evaluatePanel.style.display = "block";
-        adjudicatePanel.style.display = "block";
-        approvePanel.style.display = "none";
-        break;
-      }
-      case StatusEnum.Adjudicated: {
-        preEvaluatePanel.style.display = "block";
-        evaluatePanel.style.display = "block";
-        adjudicatePanel.style.display = "block";
-        approvePanel.style.display = "block";
-        break;
-      }
-      case StatusEnum.Approved: {
-        preEvaluatePanel.style.display = "block";
-        evaluatePanel.style.display = "block";
-        adjudicatePanel.style.display = "block";
-        approvePanel.style.display = "block";
-        break;
-      }
-      case StatusEnum.NonCompliance: {
-        preEvaluatePanel.style.display = "block";
-        evaluatePanel.style.display = "block";
-        adjudicatePanel.style.display = "block";
-        approvePanel.style.display = "none";
-        break;
-      }
-    }
-  }
-  
   private updateEvaluationStatus(totalAverageScore: number) {
     
     if(totalAverageScore >= 40)
