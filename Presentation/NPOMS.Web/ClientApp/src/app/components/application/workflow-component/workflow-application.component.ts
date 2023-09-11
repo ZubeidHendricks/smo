@@ -352,7 +352,7 @@ export class WorkflowApplicationComponent implements OnInit {
       { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
-    this.showHidePanel();
+    //this.showHidePanel();
 
   }
 
