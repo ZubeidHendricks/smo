@@ -10,6 +10,7 @@ import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { UserService } from 'src/app/services/api-services/user/user.service';
 
 @Component({
   selector: 'app-edit-npo',
@@ -94,7 +95,8 @@ export class EditNpoComponent implements OnInit {
     private _npoRepo: NpoService,
     private _activeRouter: ActivatedRoute,
     private _loggerService: LoggerService,
-    private _addressLookupService: AddressLookupService
+    private _addressLookupService: AddressLookupService,
+    private _userRepo: UserService
   ) { }
 
   ngOnInit(): void {
@@ -276,6 +278,34 @@ export class EditNpoComponent implements OnInit {
           this.selectedRegistrationStatus = results.registrationStatus;
           this.npo = results;
           this.isDataAvailable = true;
+          this.loadCreatedUser();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+  }
+
+  private loadCreatedUser() {
+    this._userRepo.getUserById(this.npo.createdUserId).subscribe(
+      (results) => {
+        this.npo.createdUser = results;
+        this.loadUpdatedUser();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadUpdatedUser() {
+    if (this.npo.updatedUserId) {
+      this._userRepo.getUserById(this.npo.updatedUserId).subscribe(
+        (results) => {
+          this.npo.updatedUser = results;
           this._spinner.hide();
         },
         (err) => {
@@ -283,6 +313,10 @@ export class EditNpoComponent implements OnInit {
           this._spinner.hide();
         }
       );
+    }
+    else {
+      this.npo.updatedUser = {} as IUser;
+      this._spinner.hide();
     }
   }
 

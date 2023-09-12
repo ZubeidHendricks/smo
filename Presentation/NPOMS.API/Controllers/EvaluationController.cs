@@ -181,6 +181,11 @@ namespace NPOMS.API.Controllers
 					}
 				case "Evaluation":
 					{
+						if(model.selectedStatus == 22)
+						{
+                            statusId = (int)StatusEnum.NonCompliance;
+                            break;
+                        }
 						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Evaluated;
 						else
@@ -189,13 +194,32 @@ namespace NPOMS.API.Controllers
 					}
 				case "Adjudication":
 					{
-						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
+                        if (model.selectedStatus == (int)StatusEnum.NonCompliance)
+                        {
+                            statusId = (int)StatusEnum.NonCompliance;
+                            break;
+                        }
+                        if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Adjudicated;
 						else
 							statusId = (int)StatusEnum.AdjudicationInProgress;
+						
 						break;
 					}
-			}
+                case "Approval":
+                    {
+						if (model.selectedStatus == (int)StatusEnum.Declined)
+                        {
+                            statusId = (int)StatusEnum.Declined;
+							break;
+                        }
+                        if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
+                            statusId = (int)StatusEnum.Approved;
+                        else
+                            statusId = (int)StatusEnum.ApprovalInProgress;
+                        break;
+                    }
+            }
 
 			await _applicationService.UpdateFundingApplicationStatus(base.GetUserIdentifier(), model.FundingApplicationId, statusId);
 			var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
@@ -251,7 +275,17 @@ namespace NPOMS.API.Controllers
 
 						await applicationAdjudicated.SubmitToQueue();
 						break;
-				}
+                    case StatusEnum.Approved:
+                        // Send email to Capturer
+                        var applicationApproved = EmailTemplateFactory
+                                    .Create(EmailTemplateTypeEnum.StatusChanged)
+                                    .Get<StatusChangedEmailTemplate>();
+						//.Init(fundingApplication);
+						break;
+
+                        await applicationAdjudicated.SubmitToQueue();
+                        break;
+                }
 
 				await _emailService.SendEmailFromQueue();
 			}

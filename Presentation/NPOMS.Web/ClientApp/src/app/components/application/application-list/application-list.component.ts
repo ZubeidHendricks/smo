@@ -5,7 +5,7 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ActionSequence } from 'protractor';
 import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationPeriod, INpo, IUser } from 'src/app/models/interfaces';
+import { IApplication, IApplicationPeriod, ICapturedResponse, INpo, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -40,7 +40,7 @@ export class ApplicationListComponent implements OnInit {
 
   // This is the selected application when clicking on option buttons...
   selectedApplication: IApplication;
-
+  capturedResponses: ICapturedResponse[];
   isSystemAdmin: boolean = true;
   isAdmin: boolean = false;
   hasAdminRole: boolean = false;
@@ -252,7 +252,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/evaluate/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
           }
         });
       }
@@ -274,7 +274,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
           }
         });
       }
@@ -285,7 +285,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
           }
         });
       }
@@ -398,7 +398,7 @@ export class ApplicationListComponent implements OnInit {
           break;
         }
         case StatusEnum.AcceptedSLA:
-        case StatusEnum.Rejected: {
+        case StatusEnum.Declined: {
           this.buttonItemExists('Edit Application', 'Service Provision');
           this.buttonItemExists('Review Application', 'Service Provision');
           this.buttonItemExists('Approve Application', 'Service Provision');
@@ -427,12 +427,11 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
-          this.buttonItemExists('View Application', 'Funding Application');
+        //  this.buttonItemExists('View Application', 'Funding Application');
           break;
         }
         case StatusEnum.PendingReview: {
           this.buttonItemExists('Edit Application', 'Funding Application');
-         // this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
@@ -442,16 +441,46 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Edit Application', 'Funding Application');
           this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
-         // this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
           break;
         }
-        case StatusEnum.PendingReview: {
+        case StatusEnum.Evaluated: {
           this.buttonItemExists('Edit Application', 'Funding Application');
-          // this.buttonItemExists('Pre-adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          break;
+        }
+        case StatusEnum.Adjudicated: {
+          this.buttonItemExists('Edit Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          break;
+        }
+        case StatusEnum.Approved: {
+          this.buttonItemExists('Edit Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
+          break;
+        }
+        case StatusEnum.NonCompliance: {
+          this.buttonItemExists('Edit Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+         // this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          break;
+        }
+
+        case StatusEnum.Declined: {
+          this.buttonItemExists('Edit Application', 'Funding Application');
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+         // this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+         // this.buttonItemExists('Approve Application', 'Funding Application');
           break;
         }
       }

@@ -78,7 +78,7 @@ export class ConfirmationComponent implements OnInit {
     if (this.application.statusId === StatusEnum.PendingApproval || this.application.statusId === StatusEnum.ApprovalInProgress)
       this.statuses.push({ name: 'Approve Application', value: StatusEnum.PendingSLA });
 
-    this.statuses.push({ name: 'Reject Application', value: StatusEnum.Rejected });
+    this.statuses.push({ name: 'Declined Application', value: StatusEnum.Declined });
   }
 
   prevPage() {

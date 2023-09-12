@@ -352,7 +352,7 @@ export class QcDocumentUploadEditComponent implements OnInit {
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.get(Number(this.fundingApplicationDetails?.id), EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
-          this.documents = res;
+          this.documents = res.filter(x => x.entity === EntityEnum.FundingApplicationDetails);
           this._spinner.hide();
         },
         () => this._spinner.hide()

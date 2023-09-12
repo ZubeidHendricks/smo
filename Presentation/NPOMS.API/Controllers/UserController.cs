@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NPOMS.Services.Implementation;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Models;
 using System;
@@ -114,6 +115,21 @@ namespace NPOMS.API.Controllers
 			catch (Exception ex)
 			{
 				_logger.LogError($"Something went wrong inside OrganizationalSearch action: {ex.Message} Inner Exception: { ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("id/{id}", Name = "GetUserById")]
+		public async Task<IActionResult> GetUserById(int id)
+		{
+			try
+			{
+				var results = await this._userService.GetById(id);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetUserById action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}

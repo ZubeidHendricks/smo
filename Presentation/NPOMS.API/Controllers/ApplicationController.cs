@@ -218,13 +218,13 @@ namespace NPOMS.API.Controllers
 									.Get<StatusChangedPendingApprovalEmailTemplate>()
 									.Init(model);
 
-							await statusChangedApproved.SubmitToQueue();
-							break;
-						case StatusEnum.Rejected:
-							var statusChangedRejected = EmailTemplateFactory
-									.Create(EmailTemplateTypeEnum.StatusChangedRejected)
-									.Get<StatusChangedRejectedEmailTemplate>()
-									.Init(model);
+						await statusChangedApproved.SubmitToQueue();
+						break;
+					case StatusEnum.Declined:
+						var statusChangedRejected = EmailTemplateFactory
+								.Create(EmailTemplateTypeEnum.StatusChangedRejected)
+								.Get<StatusChangedRejectedEmailTemplate>()
+								.Init(model);
 
 							await statusChangedRejected.SubmitToQueue();
 							break;

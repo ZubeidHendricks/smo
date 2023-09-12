@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { ApplicationTypeEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory, IResponseOption, PermissionsEnum, QuestionCategoryEnum, ServiceProvisionStepsEnum, StatusEnum, ResponseTypeEnum, IResponseType } from 'src/app/models/enums';
+import { ApplicationTypeEnum, DropdownTypeEnum, EntityTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory, IResponseOption, PermissionsEnum, QuestionCategoryEnum, ServiceProvisionStepsEnum, StatusEnum, ResponseTypeEnum, IResponseType, RoleEnum, EntityEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationDetails, ICapturedResponse, IDepartment, IDocumentStore, IFacilityList, IMonitoringAndEvaluation, INpo, INpoProfile, IObjective, IProgramme, IProjectImplementation, IProjectInformation, IResource, IStatus, ISubProgramme, ISustainabilityPlan, IUser, IResponse, IQuestionCategory } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
@@ -14,6 +14,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { DatePipe } from '@angular/common';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-workflow-application',
@@ -21,6 +22,9 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./workflow-application.component.css']
 })
 export class WorkflowApplicationComponent implements OnInit {
+  isSystemAdmin: boolean;
+  isAdmin: boolean;
+  hasAdminRole: boolean;
   
 
    /* Permission logic */
@@ -48,6 +52,24 @@ export class WorkflowApplicationComponent implements OnInit {
 
   _recommendation: boolean = false;
   isChecked: boolean = false;
+  isEvalDeclarationChecked: boolean = false;
+  isAdjDeclarationChecked: boolean = false;
+  isAprDeclarationChecked: boolean = false;
+ 
+
+  capturedPreEvaluationComment: string;
+  capturedEvaluationComment: string;
+  capturedAdjudicationComment: string;
+  capturedApprovalComment: string;
+  preEvalSignedByUser: string;
+  evalSignedByUser: string;
+  adjSignedByUser: string;
+  aprSignedByUser: string;
+
+  evalVerificationDate: Date;
+  adjVerificationDate: Date;
+  aprVerificationDate: Date;
+
   paramSubcriptions: Subscription;
   id: string;
   preEvaluatedComment: string;
@@ -174,6 +196,9 @@ export class WorkflowApplicationComponent implements OnInit {
   capturedResponses: ICapturedResponse[];
   capturedResponse = {} as ICapturedResponse;
   PreEvaluatedCapturedResponses: ICapturedResponse[];
+  EvaluatedCapturedResponses: ICapturedResponse[];
+  AdjudicationCapturedResponses: ICapturedResponse[];
+  ApprovalCapturedResponses: ICapturedResponse[];
 
   weightExceedingMessage: Message[] = [];
   zeroWeightingMessage: Message[] = [];
@@ -181,13 +206,22 @@ export class WorkflowApplicationComponent implements OnInit {
   statuses: IStatus[];
   evaluationStatuses: IStatus[];
   adjudicationStatuses: IStatus[];
+  approvalStatuses: IStatus[];
   selectedStatus: IStatus;
+  adjSelectedStatus: IStatus;
+  aprSelectedStatus: IStatus;
+  
 
-  hasCapturedPreEvaluation: boolean;  
-  hasCapturedAdjudication: boolean;
-  hasCapturedEvaluation: boolean;
-  hasCapturedApproval: boolean;
+  hasCapturedPreEvaluation: boolean = false;  
+  hasCapturedAdjudication: boolean = false;
+  hasCapturedEvaluation: boolean = false;
+  hasCapturedApproval: boolean = false;
   setDisable: boolean = true;
+  isApprovalDisable: boolean = false;
+  isAdjudicationDisable: boolean = false;
+  isEvaluationDisable: boolean = false;
+  isPreEvaluationDisable: boolean = false;
+  setVisible: boolean = false;
 
   constructor(
     private _router: Router,
@@ -211,18 +245,29 @@ export class WorkflowApplicationComponent implements OnInit {
       this.id = params.get('id');      
     });
 
+
     this.loadApplication();
-    this.getQuestionCategory();
-    this.getResponseType();
+  
     
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewAcceptedApplication))
-          this._router.navigate(['401']);
+        if (!this.IsAuthorized(PermissionsEnum.ViewApplications))
+        this._router.navigate(['401']);
+
+        this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+
+        if (this.isSystemAdmin || this.isAdmin)
+          this.hasAdminRole = true;
       }
     });
+
+    
+
+    this.getQuestionCategory();
+    this.getResponseType();
 
     this.objectiveCols = [
       { header: 'Objective Name', width: '20%' },
@@ -307,6 +352,23 @@ export class WorkflowApplicationComponent implements OnInit {
       { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
+    this.showHidePanel();
+
+  }
+
+  private showHidePanel()
+  {    
+    var pnlEvaluation = document.getElementById("pnlEvaluation");
+    var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
+
+    pnlEvaluation.style.display = "none";
+    pnlEvaluation1.style.display = "none";
+
+    var pnlAdjudication = document.getElementById("pnlAdjudication");
+    pnlAdjudication.style.display = "none";
+
+    var pnlApproval = document.getElementById("pnlApproval");
+    pnlApproval.style.display = "none";
   }
 
   private loadApplication() {
@@ -314,11 +376,12 @@ export class WorkflowApplicationComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         this.application = results;
+       
         if(this.application.statusId <= 3)
         {
           this.setDisable = false;
         }
-
+       // this.hideShowPanel();
         this.loadQuestionnaire();
        
         this.loadAllProgrammes();
@@ -349,6 +412,51 @@ export class WorkflowApplicationComponent implements OnInit {
     }
   }
 
+  onDeclarationCheckboxChange(event: any) {
+    this.isEvalDeclarationChecked = event.target.checked;
+    if (this.isEvalDeclarationChecked) {
+      this._recommendation = true;
+      this.setVisible = true;
+    } else {
+      this._recommendation = false;
+      this.setVisible = false;
+    }
+  }
+
+  onEvlCheckboxChange(event: any) {
+    var pnlEvaluation = document.getElementById("pnlEvaluation");
+    var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
+    this.isEvalDeclarationChecked = event.target.checked;
+    if (this.isEvalDeclarationChecked) {
+      pnlEvaluation.style.display = "block";
+      pnlEvaluation1.style.display = "block";
+    } else {
+      pnlEvaluation.style.display = "none";
+      pnlEvaluation1.style.display = "none";
+  }
+}
+
+
+onAdjCheckboxChange(event: any) {
+  var pnlAdjudication = document.getElementById("pnlAdjudication");
+  this.isAdjDeclarationChecked = event.target.checked;
+  if (this.isAdjDeclarationChecked) {
+    pnlAdjudication.style.display = "block";
+  } else {
+    pnlAdjudication.style.display = "none";
+}
+}
+
+onAprCheckboxChange(event: any) { 
+
+  var pnlApproval = document.getElementById("pnlApproval");
+  this.isAprDeclarationChecked = event.target.checked;
+  if (this.isAprDeclarationChecked) {
+    pnlApproval.style.display = "block";
+  } else {
+    pnlApproval.style.display = "none";
+}
+}
   private loadApplicationApprovals() {
     this._applicationRepo.getApplicationApprovals(this.application.id).subscribe(
       (results) => {
@@ -377,7 +485,7 @@ export class WorkflowApplicationComponent implements OnInit {
   private getDocuments() {
     this._documentStore.get(Number(this.application.id), EntityTypeEnum.SLA).subscribe(
       (res) => {
-        this.documents = res;
+        this.documents = res.filter(x => x.entity === EntityEnum.Application);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -629,22 +737,7 @@ export class WorkflowApplicationComponent implements OnInit {
     );
   }
 
-
-  public displayEvaluate() {
-    switch (this.application.statusId) {
-      case StatusEnum.PendingReview:
-      case StatusEnum.Verified:
-      case StatusEnum.PendingApproval:
-      case StatusEnum.EvaluationInProgress:
-      case StatusEnum.AdjudicationInProgress:
-     
-      case StatusEnum.Adjudicated: {
-        return true;
-      }
-    }
-
-    return false;
-  }
+ 
 
   public submit(questionnaire: IQuestionResponseViewModel[], questionCategory: QuestionCategoryEnum) {
     // if (this.canContinue(questionnaire)) {
@@ -656,16 +749,52 @@ export class WorkflowApplicationComponent implements OnInit {
   }
 
   private createCapturedResponse(questionCategoryId: QuestionCategoryEnum) {
-
     let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategoryId.toString());
+    let status: number;
+    let declaration: boolean;
+    let comment: string;
+    let selectedStatus: number
+    switch (questionCategoryId.toString()) {
+      case "PreEvaluation": {
+        status = 14;
+        comment = this.capturedPreEvaluationComment
+        break;
+      }
+      case "Evaluation": {
+        status = 15;
+        declaration = true;
+        comment = this.capturedEvaluationComment
+        selectedStatus = this.selectedStatus.id
+        break;
+      }
+      case "Adjudication": {
+        status = 18;
+        declaration = true;
+        comment = this.capturedAdjudicationComment
+        selectedStatus = this.adjSelectedStatus.id
+        break;
+      }
+      case "Approval": {
+        status = 13;
+        declaration = true;
+        comment = this.capturedApprovalComment
+        selectedStatus = this.aprSelectedStatus.id
+        break;
+      }
+    }
+    
     let capturedResponse = {
       fundingApplicationId: this.application.id,     
-      statusId: 26, // questionCategoryId == QuestionCategoryEnum.PreAdjudication ? StatusEnum.PreEvaluated : this.selectedStatus.id,
-      questionCategoryId: id[0].id, //questionCategoryId,
-      comments: questionCategoryId == QuestionCategoryEnum.PreEvaluation ? "" : this.capturedResponse.comments,
+      statusId: status, // questionCategoryId == QuestionCategoryEnum.PreAdjudication ? StatusEnum.PreEvaluated : this.selectedStatus.id,
+      questionCategoryId: id[0].id, //questionCategoryId,  
+      //comments: questionCategoryId == QuestionCategoryEnum.PreEvaluation ? "" : this.capturedResponse.comments,
+      comments: comment,
       isActive: true,
-      isSignedOff: this.isChecked ? true : false
+      isSignedOff: this.isChecked ? true : false,
+      isDeclarationAccepted: true,
+      selectedStatus: selectedStatus
     } as ICapturedResponse;
+   
     this._evaluationService.createCapturedResponse(capturedResponse).subscribe(
       (results) => {
         this._spinner.hide();
@@ -677,6 +806,31 @@ export class WorkflowApplicationComponent implements OnInit {
       }
     );
   }
+
+  private createCapturedResponseNonCompliance() {
+        let id = this.QuestionCategoryentities.filter(x=> x.name === 'Evaluation');
+        let capturedResponse = {
+          fundingApplicationId: this.application.id,     
+          statusId: 22,
+          questionCategoryId: id[0].id,  
+          comments: 'Non Compliance',
+          isActive: true,
+          isSignedOff: this.isChecked ? true : false,
+          isDeclarationAccepted: true,
+          selectedStatus: 22 // No Compliance
+        } as ICapturedResponse;
+       
+        this._evaluationService.createCapturedResponse(capturedResponse).subscribe(
+          (results) => {
+            this._spinner.hide();
+            this._router.navigateByUrl('applications');
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      }
 
   private canContinue(questionnaire: IQuestionResponseViewModel[]) {
     let canUpdateStatus = [];
@@ -691,8 +845,18 @@ export class WorkflowApplicationComponent implements OnInit {
       });
     }
 
-    if (questionnaire[0].questionCategoryId !== QuestionCategoryEnum.PreEvaluation) {
+    if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Evaluation) {
       if (!this.selectedStatus)
+        canUpdateStatus.push(false);
+    }
+
+    if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Adjudication) {
+      if (!this.adjSelectedStatus)
+        canUpdateStatus.push(false);
+    }
+
+    if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Approval) {
+      if (!this.aprSelectedStatus)
         canUpdateStatus.push(false);
     }
 
@@ -738,8 +902,9 @@ export class WorkflowApplicationComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.Statuses, true).subscribe(
       (results) => {
         this.statuses = results;
-        this.evaluationStatuses = this.statuses.filter(x => x.systemName.includes('Recommended'));
-        this.adjudicationStatuses = this.statuses.filter(x => x.systemName.includes('Adjudication') && x.systemName.includes('Approved'));
+        this.evaluationStatuses = results.filter(x => x.name.includes('Recommended') || x.name.includes('NonCompliance') || x.name.includes('StronglyRecommended') || x.name.includes('Declined'));
+        this.adjudicationStatuses = results.filter(x => x.name.includes('Declined') || x.name.includes('NonCompliance') || x.name.includes('Recommended') || x.name.includes('StronglyRecommended'));
+        this.approvalStatuses = results.filter(x => x.name.includes('Declined') || x.name.includes('Recommended') || x.name.includes('StronglyRecommended'));
         this.loadCapturedResponses();
         this.isDataAvailable = true;
         this._spinner.hide();
@@ -752,17 +917,63 @@ export class WorkflowApplicationComponent implements OnInit {
     );
   }
   private getCapturedResponse(questionCategoryId: QuestionCategoryEnum) {
-    return this.capturedResponses.find(x => x.fundingApplicationId === this.application.id && x.questionCategoryId === questionCategoryId && x.createdUser.id === this.profile.id);
+    return this.capturedResponses.find(x => x.fundingApplicationId === this.application.id && x.questionCategoryId === questionCategoryId);
+  }
+
+  public capturePreEvaluation() {
+    switch (this.application.statusId) {
+        case StatusEnum.PendingReview:
+        case StatusEnum.Verified:
+        case StatusEnum.Evaluated:
+        case StatusEnum.Adjudicated: 
+        // case StatusEnum.Approved:
+        // case StatusEnum.Declined: 
+        // case StatusEnum.NonCompliance: 
+     {
+        return true;
+      }
+    }
+
+    return false;
   }
 
 
   public captureEvaluation() {
     switch (this.application.statusId) {
-      case StatusEnum.PendingReview:
-      case StatusEnum.PendingApproval:
       case StatusEnum.Verified:
-      case StatusEnum.EvaluationInProgress: 
-      case StatusEnum.Approved:
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public displayPreEvaluate() {
+    switch (this.application.statusId) {
+      case StatusEnum.PendingReview:
+      case StatusEnum.Verified:
+      case StatusEnum.Evaluated:
+      case StatusEnum.Adjudicated:
+      case StatusEnum.Approved: 
+      case StatusEnum.Declined: 
+      case StatusEnum.NonCompliance: 
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public displayEvaluation() {
+    switch (this.application.statusId) {
+      case StatusEnum.Verified:
+        case StatusEnum.Evaluated:
+        case StatusEnum.Adjudicated:
+        case StatusEnum.Approved:
+        case StatusEnum.Declined:
+        case StatusEnum.NonCompliance:
       {
         return true;
       }
@@ -773,11 +984,11 @@ export class WorkflowApplicationComponent implements OnInit {
 
   public displayAdjudicate() {
     switch (this.application.statusId) {
-      case StatusEnum.PendingReview:
-      case StatusEnum.Verified:
+      case StatusEnum.Evaluated:
       case StatusEnum.Adjudicated:
-      case StatusEnum.AdjudicationInProgress:
       case StatusEnum.Approved:
+      case StatusEnum.Declined:
+      case StatusEnum.NonCompliance:
       {
         return true;
       }
@@ -785,6 +996,20 @@ export class WorkflowApplicationComponent implements OnInit {
 
     return false;
   }
+
+  public displayApprove() {
+    switch (this.application.statusId) {
+      case StatusEnum.Adjudicated:
+      case StatusEnum.Approved:
+      case StatusEnum.Declined:
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+  
 
   public getCompletedQuestionnaire(capturedResponse: ICapturedResponse) {
     var questionnaires = this.capturedResponses.find(x => x.id === capturedResponse.id).questionnaires;
@@ -803,36 +1028,154 @@ export class WorkflowApplicationComponent implements OnInit {
     return false;
   }
 
+  public captureApproval() {
+    switch (this.application.statusId) {
+      case StatusEnum.Adjudicated:{
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   private loadCapturedResponses() {
     this._evaluationService.getCapturedResponses(this.application.id).subscribe(
       (results) => {
         this.capturedResponses = results;
 
         let preAdId = this.QuestionCategoryentities.filter(x=> x.name === "PreEvaluation");
+        let evalId = this.QuestionCategoryentities.filter(x=> x.name === "Evaluation");
+        let adjId = this.QuestionCategoryentities.filter(x=> x.name === "Adjudication");
+        let appId = this.QuestionCategoryentities.filter(x=> x.name === "Approval");
 
         this.PreEvaluatedCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === preAdId[0].id);
-       
+        this.EvaluatedCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === evalId[0].id);
+        this.AdjudicationCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === adjId[0].id);
+        this.ApprovalCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === appId[0].id);
         if(this.PreEvaluatedCapturedResponses.length > 0)
         {
-          this.capturedResponse.comments = this.PreEvaluatedCapturedResponses[0].comments;
+          this.isPreEvaluationDisable = true
+          this.capturedPreEvaluationComment = this.PreEvaluatedCapturedResponses[0].comments;
           this.isChecked = this.PreEvaluatedCapturedResponses[0].isSignedOff;
           this.signedByUser = this.PreEvaluatedCapturedResponses[0].createdUser.fullName;
           this.verificationDate = this.PreEvaluatedCapturedResponses[0].createdDateTime;
         }
 
-        this.hasCapturedPreEvaluation = this.getCapturedResponse(QuestionCategoryEnum.PreEvaluation) ? true : false;
-        this.hasCapturedAdjudication = this.getCapturedResponse(QuestionCategoryEnum.Adjudication) ? true : false;
-        this.hasCapturedEvaluation = this.getCapturedResponse(QuestionCategoryEnum.Evaluation) ? true : false;
-        this.hasCapturedApproval = this.getCapturedResponse(QuestionCategoryEnum.Approval) ? true : false;
+        if(this.EvaluatedCapturedResponses.length > 0)
+        {
+          this.isEvaluationDisable = true;
+          this.capturedEvaluationComment = this.EvaluatedCapturedResponses[0].comments;
+          this.isEvalDeclarationChecked = this.EvaluatedCapturedResponses[0].isDeclarationAccepted;
 
-        if(this.hasCapturedPreEvaluation)
-       //   this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.PreAdjudication);
+          let num  = this.EvaluatedCapturedResponses[0].selectedStatus;
+          switch (num) {
+            case Number(StatusEnum.NonCompliance):
+              this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.NonCompliance); 
+              break;
+            case Number(StatusEnum.Declined):
+              this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
+              break;
+            case Number(StatusEnum.Recommended):
+              this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended);
+              break;
+            case Number(StatusEnum.StronglyRecommended):
+              this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
+              break;
+          }
+          this.evalSignedByUser = this.EvaluatedCapturedResponses[0].createdUser.fullName;
+          this.evalVerificationDate = this.EvaluatedCapturedResponses[0].createdDateTime;
+
+          if (this.isEvalDeclarationChecked) {
+            var pnlEvaluation = document.getElementById("pnlEvaluation");
+            var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
+            pnlEvaluation.style.display = "block";
+            pnlEvaluation1.style.display = "block";
+          }
+          else{
+            pnlEvaluation.style.display = "none";
+            pnlEvaluation1.style.display = "none";
+          }
+
+        }
+
+        if(this.AdjudicationCapturedResponses.length > 0)
+        {
+          this.isAdjudicationDisable = true;
+          this.capturedAdjudicationComment = this.AdjudicationCapturedResponses[0].comments;
+          this.isAdjDeclarationChecked = this.AdjudicationCapturedResponses[0].isDeclarationAccepted;          
+          let num  = this.AdjudicationCapturedResponses[0].selectedStatus;
+          switch (num) {
+            case Number(StatusEnum.NonCompliance):
+              this.adjSelectedStatus = this.adjudicationStatuses.find(x => x.id === StatusEnum.NonCompliance); 
+              break;
+            case Number(StatusEnum.Declined):
+              this.adjSelectedStatus = this.adjudicationStatuses.find(x => x.id === StatusEnum.Declined);
+              break;
+            case Number(StatusEnum.Recommended):
+              this.adjSelectedStatus = this.adjudicationStatuses.find(x => x.id === StatusEnum.Recommended);
+              break;
+            case Number(StatusEnum.StronglyRecommended):
+              this.adjSelectedStatus = this.adjudicationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
+              break;
+          }
+         
+          this.adjSignedByUser = this.AdjudicationCapturedResponses[0].createdUser.fullName;
+          this.adjVerificationDate = this.AdjudicationCapturedResponses[0].createdDateTime;
+          
+          if (this.isAdjDeclarationChecked) {
+            var pnlAdjudication = document.getElementById("pnlAdjudication");
+            pnlAdjudication.style.display = "block";
+          }
+          else{
+            pnlAdjudication.style.display = "none";
+          }
+        }
+
+        if(this.ApprovalCapturedResponses.length > 0)
+        {
+          this.isApprovalDisable = true;
+          this.capturedApprovalComment = this.ApprovalCapturedResponses[0].comments;
+          this.isAprDeclarationChecked = this.ApprovalCapturedResponses[0].isDeclarationAccepted;
+          let num  = this.ApprovalCapturedResponses[0].selectedStatus;
+          switch (num) {
+            case Number(StatusEnum.Declined):
+              this.aprSelectedStatus = this.approvalStatuses.find(x => x.id === StatusEnum.Declined);
+              break;
+            case Number(StatusEnum.Recommended):
+              this.aprSelectedStatus = this.approvalStatuses.find(x => x.id === StatusEnum.Recommended);
+              break;
+            case Number(StatusEnum.StronglyRecommended):
+              this.aprSelectedStatus = this.approvalStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
+              break;
+          }
+          this.aprSignedByUser = this.ApprovalCapturedResponses[0].createdUser.fullName;
+          this.aprVerificationDate = this.ApprovalCapturedResponses[0].createdDateTime;
+
+          if (this.isAprDeclarationChecked) {
+            var pnlApproval = document.getElementById("pnlApproval");
+            pnlApproval.style.display = "block";
+          }
+          else{
+            pnlApproval.style.display = "none";
+          }
+        }
+        
+
+        this.hasCapturedPreEvaluation = this.getCapturedResponse(preAdId[0].id) ? true : false;
+        this.hasCapturedEvaluation = this.getCapturedResponse(evalId[0].id) ? true : false;
+        this.hasCapturedAdjudication = this.getCapturedResponse(adjId[0].id) ? true : false;
+        this.hasCapturedApproval = this.getCapturedResponse(appId[0].id) ? true : false;
+        // if(this.hasCapturedPreEvaluation)
+        //   this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.PreEvaluation);
 
         if (this.captureEvaluation() && this.hasCapturedEvaluation)
           this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.Evaluation);
 
         if (this.captureAdjudication() && this.hasCapturedAdjudication)
           this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.Adjudication);
+
+        if (this.captureApproval() && this.hasCapturedApproval)
+        this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.Adjudication);
 
         if (this.capturedResponse && this.capturedResponse.statusId)
           this.selectedStatus = this.statuses.find(x => x.id === this.capturedResponse.statusId);
@@ -872,21 +1215,22 @@ export class WorkflowApplicationComponent implements OnInit {
   }
 
   public getRagColour(question: IQuestionResponseViewModel) {
-    let ragColour = '';
+    let ragColour = 'rag-not-saved';
 
-    if (question.isSaved && question.documentRequired === false)
+    if (question.isSaved && question.commentRequired === false)
       ragColour = 'rag-saved';
-    // else if (question.isSaved && question.documentRequired === true) {
-    //   if (question.documentCount === 0)
-    //     ragColour = 'rag-partial';
-    //   else
-    //     ragColour = 'rag-saved';
-    // }
-    else if (!question.isSaved)
-      ragColour = 'rag-not-saved';
+    else if (question.isSaved && question.commentRequired === true) {
+      if (question.comment === '')
+        ragColour = 'rag-partial';
+      else
+        ragColour = 'rag-saved';
+    }
+    // else if (!question.isSaved)
+    //   ragColour = 'rag-not-saved';
 
     return ragColour;
   }
+
 
   public displayField(question: IQuestionResponseViewModel) {
     let canDisplayField: boolean;
@@ -895,7 +1239,16 @@ export class WorkflowApplicationComponent implements OnInit {
         canDisplayField = true;
         break;
       case ResponseTypeEnum.Score:
-        canDisplayField = question.weighting !== 0 ? true : false;
+        canDisplayField = true; //question.weighting !== 0 ? true : false;
+        break;
+      case ResponseTypeEnum.CloseEnded2:
+        canDisplayField = true;
+        break;
+      case ResponseTypeEnum.CloseEnded3:
+        canDisplayField = true;
+        break;
+      case ResponseTypeEnum.CloseEnded4:
+        canDisplayField = true;
         break;
     }
 
@@ -929,50 +1282,24 @@ export class WorkflowApplicationComponent implements OnInit {
     return rowGroupMetadata;
   }
 
-  public capturePreEvaluation() {
-    switch (this.application.statusId) {
-        case StatusEnum.PendingReview:
-        case StatusEnum.Verified:
-        case StatusEnum.EvaluationInProgress:
-        case StatusEnum.Evaluated:
-        case StatusEnum.AdjudicationInProgress:
-        case StatusEnum.Adjudicated: 
-        case StatusEnum.Approved:
-     {
-        return true;
-      }
-    }
+ 
+ 
+  
 
-    return false;
-  }
-  public displayPreEvaluate() {
-    switch (this.application.statusId) {
-      case StatusEnum.PendingReview:
-      case StatusEnum.Verified:
-      case StatusEnum.EvaluationInProgress:
-      case StatusEnum.Evaluated:
-      case StatusEnum.AdjudicationInProgress:
-      case StatusEnum.Adjudicated:
-      case StatusEnum.Approved: 
-      {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  public disableElement(questionnaire: IQuestionResponseViewModel[], questionCategory: QuestionCategoryEnum) {
+  public disableElement(questionnaire: IQuestionResponseViewModel[], questionCategory: string) {
     let canCaptureQuestionnaire = false;
     switch (questionCategory) {
-      case QuestionCategoryEnum.PreEvaluation:
+      case 'PreEvaluation':
         canCaptureQuestionnaire = this.capturePreEvaluation();
         break;
-      case QuestionCategoryEnum.Evaluation:
+      case 'Evaluation':
         canCaptureQuestionnaire = this.captureEvaluation();
         break;
-      case QuestionCategoryEnum.Adjudication:
+      case 'Adjudication':
         canCaptureQuestionnaire = this.captureAdjudication();
+        break; 
+      case 'Approval':
+        canCaptureQuestionnaire = this.captureApproval();
         break;    
     }
 
@@ -984,8 +1311,8 @@ export class WorkflowApplicationComponent implements OnInit {
       let questions = questionnaire;
       let countReviewed = questions.filter(x => x.isSaved === true).length;
      
-     // return questions.length === countReviewed && canCaptureQuestionnaire ? false : true;
-     return questions.length === countReviewed ? false : true;
+      //return questions.length === countReviewed && canCaptureQuestionnaire ? false : true;
+      return questions.length === countReviewed ? false : true;
     }
     else
       return true;
@@ -1028,7 +1355,7 @@ export class WorkflowApplicationComponent implements OnInit {
     });
 
     if (zeroWeightingQuestions.includes(true))
-      this.zeroWeightingMessage.push({ severity: 'warn', summary: "Warning:", detail: "Weight cannot be 0. Please contact DEDAT administrator team to rectify the weightings." });
+      this.zeroWeightingMessage.push({ severity: 'warn', summary: "Warning:", detail: "Weight cannot be 0. Please contact administrator team to rectify the weightings." });
 
     return zeroWeightingQuestions.includes(true) ? true : false;
   }
@@ -1051,8 +1378,14 @@ export class WorkflowApplicationComponent implements OnInit {
     let totalAverageScore = 0;
 
     questionnaire.forEach(item => {
-      item.averageScore = item.responseOptionId ? (Number(item.responseOption.name) / 5) * item.weighting : 0;
-      totalAverageScore += item.averageScore;
+       if(Number(item.responseOption.name) >= 0)
+       {
+    // //  item.averageScore = item.responseOptionId ?  (Number(item.responseOption.name) / 5) * item.weighting : 0;
+        totalAverageScore += Number(item.responseOption.name); //item.weighting;
+       }
+       else{
+        totalAverageScore = 0;
+      }
     });
 
     if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Evaluation)
@@ -1062,17 +1395,33 @@ export class WorkflowApplicationComponent implements OnInit {
   }
 
   private updateEvaluationStatus(totalAverageScore: number) {
-    this.selectedStatus = totalAverageScore >= 70 ? this.evaluationStatuses.find(x => x.id === StatusEnum.EvaluationRecommended) : this.evaluationStatuses.find(x => x.id === StatusEnum.EvaluationNotRecommended);
+    
+    if(totalAverageScore >= 40)
+    {
+      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
+    }
+    else if(totalAverageScore >= 30 && totalAverageScore <= 39)
+    {
+      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended);
+    }
+    else if(totalAverageScore >= 0 && totalAverageScore <= 29)
+    {
+      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
+    }
+    else{
+      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.NonCompliance);
+    }
+   
   }
 
-
+  
   public onInputCommentChange(question: IQuestionResponseViewModel) {
     question.isSaved = false;
   }
 
   public onSave(question: IQuestionResponseViewModel) {
     if (question.responseOptionId != 0) {
-
+    
       let response = {} as IResponse;
       response.fundingApplicationId = this.application.id;
       response.questionId = question.questionId;
@@ -1091,7 +1440,14 @@ export class WorkflowApplicationComponent implements OnInit {
           this._loggerService.logException(err);
           this._spinner.hide();
         }
+
       );
+      if(question.questionCategoryName === 'Evaluation' && question.responseOption.name === 'No')
+      {
+        this.updateEvaluationStatus(-1);
+        this.createCapturedResponseNonCompliance();
+      }
+     
     }
   }
 
