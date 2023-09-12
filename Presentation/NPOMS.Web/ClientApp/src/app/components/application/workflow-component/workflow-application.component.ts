@@ -65,6 +65,7 @@ export class WorkflowApplicationComponent implements OnInit {
   evalSignedByUser: string;
   adjSignedByUser: string;
   aprSignedByUser: string;
+  headerTitle: string;
 
   evalVerificationDate: Date;
   adjVerificationDate: Date;
@@ -138,7 +139,7 @@ export class WorkflowApplicationComponent implements OnInit {
   displayResourceDialog: boolean;
   displayAllCommentDialog: boolean;
   displayHistory: boolean;
-
+  totalAverageScore: number;
   displayApplicationDetaileDialog: boolean;
   displayProjectInformationDialog: boolean;
   displayProjectImplementationDialog: boolean;
@@ -245,9 +246,10 @@ export class WorkflowApplicationComponent implements OnInit {
       this.id = params.get('id');      
     });
 
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
 
     this.loadApplication();
-  
     
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
@@ -1071,6 +1073,8 @@ onAprCheckboxChange(event: any) {
           switch (num) {
             case Number(StatusEnum.NonCompliance):
               this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.NonCompliance); 
+              this.totalAverageScore = -1;
+              this.updateEvaluationStatus(this.totalAverageScore);
               break;
             case Number(StatusEnum.Declined):
               this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
@@ -1375,42 +1379,41 @@ onAprCheckboxChange(event: any) {
   }
 
   public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) {
-    let totalAverageScore = 0;
+   
 
     questionnaire.forEach(item => {
        if(Number(item.responseOption.name) >= 0)
        {
     // //  item.averageScore = item.responseOptionId ?  (Number(item.responseOption.name) / 5) * item.weighting : 0;
-        totalAverageScore += Number(item.responseOption.name); //item.weighting;
+        this.totalAverageScore += Number(item.responseOption.name); //item.weighting;
        }
        else{
-        totalAverageScore = 0;
+        this.totalAverageScore = 0;
       }
     });
 
     if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Evaluation)
-      this.updateEvaluationStatus(totalAverageScore);
+    this.updateEvaluationStatus(this.totalAverageScore);
 
-    return totalAverageScore;
+    return this.totalAverageScore;
   }
 
   private updateEvaluationStatus(totalAverageScore: number) {
-    
-    if(totalAverageScore >= 40)
-    {
-      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
-    }
-    else if(totalAverageScore >= 30 && totalAverageScore <= 39)
-    {
-      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended);
-    }
-    else if(totalAverageScore >= 0 && totalAverageScore <= 29)
-    {
-      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
-    }
-    else{
-      this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.NonCompliance);
-    }
+      if(totalAverageScore >= 40)
+      {
+        this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
+      }
+      else if(totalAverageScore >= 30 && totalAverageScore <= 39)
+      {
+        this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Recommended);
+      }
+      else if(totalAverageScore >= 1 && totalAverageScore <= 29)
+      {
+        this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.Declined);
+      }
+      else{
+        this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.NonCompliance);
+      }
    
   }
 
@@ -1444,7 +1447,9 @@ onAprCheckboxChange(event: any) {
       );
       if(question.questionCategoryName === 'Evaluation' && question.responseOption.name === 'No')
       {
-        this.updateEvaluationStatus(-1);
+        this.totalAverageScore = -1;
+        this.updateEvaluationStatus(this.totalAverageScore);
+        alert('Application noncompliant');
         this.createCapturedResponseNonCompliance();
       }
      
