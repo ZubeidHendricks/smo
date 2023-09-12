@@ -1,4 +1,19 @@
-<div *ngIf="isApplicationAvailable && application">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="View Application" *ngIf="isApplicationAvailable && application">
+
+    <div class="p-grid p-nogutter p-justify-between" *ngIf="application.createdUser && application.updatedUser">
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created By: {{application.createdUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created Date: {{application.createdDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated By: {{application.updatedUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated Date: {{application.updatedDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    
     <div>
         <p-panel [style]="{'font-size':'12px'}" header="Organisation Details">
             <app-view-npo [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)"></app-view-npo>
@@ -292,7 +307,7 @@
             </p-panel>
         </p-panel>
     </div>
-</div>
+</p-panel>
 
 <p-dialog header="Objective" [(visible)]="displayObjectiveDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
     showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">

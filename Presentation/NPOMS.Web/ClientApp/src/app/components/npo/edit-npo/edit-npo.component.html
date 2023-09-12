@@ -1,4 +1,19 @@
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Edit Organisation" *ngIf="isDataAvailable">
+
+    <div class="p-grid p-nogutter p-justify-between" *ngIf="npo.createdUser && npo.updatedUser">
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created By: {{npo.createdUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created Date: {{npo.createdDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated By: {{npo.updatedUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated Date: {{npo.updatedDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+
     <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowNpoActions)"></p-menubar>
     <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>

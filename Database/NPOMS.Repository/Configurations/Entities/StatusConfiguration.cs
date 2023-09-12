@@ -46,8 +46,8 @@ namespace NPOMS.Repository.Configurations.Entities
 				new Status
 				{
 					Id = 6,
-					Name = "Rejected",
-					SystemName = "Rejected"
+					Name = "Declined",
+					SystemName = "Declined"
 				},
 				new Status
 				{
@@ -130,14 +130,20 @@ namespace NPOMS.Repository.Configurations.Entities
                 new Status
                 {
                     Id = 20,
-                    Name = "Evaluation Recommended",
-                    SystemName = "EvaluationRecommended"
+                    Name = "Recommended",
+                    SystemName = "Recommended"
                 },
                 new Status
                 {
                     Id = 21,
-                    Name = "Evaluation Not Recommended",
-                    SystemName = "EvaluationNotRecommended"
+                    Name = "StronglyRecommended",
+                    SystemName = "Strongly Recommended"
+                },
+                new Status
+                {
+                    Id = 22,
+                    Name = "NonCompliance",
+                    SystemName = "Non Compliance"
                 }
             );
 		}
