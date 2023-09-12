@@ -421,7 +421,7 @@ export class ActualsComponent implements OnInit {
   private getDocuments(workplanActual: IWorkplanActual) {
     this._documentStore.get(Number(workplanActual.id), EntityTypeEnum.WorkplanActuals).subscribe(
       (resp) => {
-        workplanActual.documents = resp;
+        workplanActual.documents = resp.filter(x => x.entity === EntityEnum.WorkplanIndicators);
         this._spinner.hide();
       },
       (err) => {

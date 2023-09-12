@@ -372,7 +372,7 @@ export class UploadSLAComponent implements OnInit {
   private getDocuments() {
     this._documentStore.get(Number(this.application.id), EntityTypeEnum.SLA).subscribe(
       res => {
-        this.documents = res;
+        this.documents = res.filter(x => x.entity === EntityEnum.Application);
       },
       (err) => {
         this._loggerService.logException(err);
