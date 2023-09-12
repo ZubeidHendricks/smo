@@ -24,6 +24,7 @@ export interface IDocumentStore {
     createdDateTime: Date,
     isActive: boolean,
     typeOfEvent: string;
+    entity: string;
 
     documentType: IDocumentType,
 }

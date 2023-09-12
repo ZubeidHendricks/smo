@@ -721,7 +721,7 @@ export class EditProfileComponent implements OnInit {
   private getDocuments() {
     this._documentStore.get(Number(this.npoProfileId), EntityTypeEnum.SupportingDocuments).subscribe(
       res => {
-        this.documents = res;
+        this.documents = res.filter(x => x.entity === EntityEnum.NpoProfile);
       },
       (err) => {
         this._loggerService.logException(err);
