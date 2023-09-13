@@ -943,6 +943,9 @@ onAprCheckboxChange(event: any) {
   public captureEvaluation() {
     switch (this.application.statusId) {
       case StatusEnum.Verified:
+      case StatusEnum.Evaluated:
+      case StatusEnum.Declined:
+      case StatusEnum.NonCompliance:
       {
         return true;
       }
@@ -950,6 +953,35 @@ onAprCheckboxChange(event: any) {
 
     return false;
   }
+
+  public captureAdjudicate() {
+    switch (this.application.statusId) {
+      case StatusEnum.Verified:
+      case StatusEnum.Evaluated:
+      case StatusEnum.Declined:
+      case StatusEnum.NonCompliance:
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public captureApprove() {
+    switch (this.application.statusId) {
+      case StatusEnum.Verified:
+      case StatusEnum.Evaluated:
+      case StatusEnum.Adjudicated:
+      case StatusEnum.Declined:
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
 
   public displayPreEvaluate() {
     switch (this.application.statusId) {
