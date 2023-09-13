@@ -739,7 +739,7 @@
     </div>
 
 <div *ngIf="headerTitle != 'view'">
-    <div  *ngIf="this.IsAuthorized(PermissionsEnum.PreEvaluateOption)">
+    <div  *ngIf="this.IsAuthorized(PermissionsEnum.PreEvaluateOption) || this.IsAuthorized(PermissionsEnum.EvaluateOption) || this.IsAuthorized(PermissionsEnum.AdjudicateOption) || this.IsAuthorized(PermissionsEnum.ApproveOption)">
         <p-panel header="Pre-evaluate Funding Application" [style]="{'font-size':'12px'}" *ngIf="displayPreEvaluate()" id = "preEvaluatePanel">
             <div style="height: 10px;"></div>
             <div style="font-size: 14px;">
@@ -879,7 +879,7 @@
         </p-panel> 
         <br>
     </div>
-    <div *ngIf="this.IsAuthorized(PermissionsEnum.EvaluateOption)">
+    <div *ngIf="this.IsAuthorized(PermissionsEnum.EvaluateOption) || this.IsAuthorized(PermissionsEnum.AdjudicateOption) || this.IsAuthorized(PermissionsEnum.ApproveOption)">
         <p-panel header="Evaluate Funding Application" *ngIf="displayEvaluation()" [style]="{'font-size':'12px'}" id = "evaluatePanel">
             <p-panel>
                 <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
@@ -1038,7 +1038,7 @@
         </p-panel>  
 
     </div>
-    <div *ngIf="this.IsAuthorized(PermissionsEnum.AdjudicateOption)">
+    <div *ngIf="this.IsAuthorized(PermissionsEnum.AdjudicateOption) || this.IsAuthorized(PermissionsEnum.ApproveOption)">
     <p-panel header="Adjudicate Funding Application" *ngIf="displayAdjudicate()"  [style]="{'font-size':'12px'}" id = "adjudicatePanel">
         <p-panel>
             <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
