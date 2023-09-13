@@ -897,7 +897,8 @@
                         </div>
                         <div class="p-col-9">
                             <span>
-                                <input type="checkbox" id="chkEvalDeclaration" [(ngModel)]="isEvalDeclarationChecked" (change)="onEvlCheckboxChange($event)">
+                                <input type="checkbox" id="chkEvalDeclaration" [(ngModel)]="isEvalDeclarationChecked" 
+                                [disabled]="isEvaluationDisable" (change)="onEvlCheckboxChange($event)">
                             </span>
                         </div>
                     </div>
@@ -1243,10 +1244,10 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)" 
                             optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}" 
                             placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                            (onChange)="onSaveResponse($event, question)" [disabled]="setDisable"></p-dropdown>
+                            (onChange)="onSaveResponse($event, question)" [disabled]="true"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(preEvaluationQuestionnaire)">
-                            <textarea class="form-text" [disabled]="setDisable" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" [autoResize]="true" [disabled]="hasCapturedPreEvaluation"></textarea>
+                            <textarea class="form-text" [disabled]="true" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" [autoResize]="true" [disabled]="hasCapturedPreEvaluation"></textarea>
                         </td>
                         <td style="text-align: center;" *ngIf="hasDocument(preEvaluationQuestionnaire)">
                         </td>
@@ -1272,7 +1273,7 @@
                                         </div>                    
                                     </div>
                                     <div class="p-col-9">
-                                        <textarea class="form-text" [disabled]="setDisable" [rows]="3" pInputTextarea [(ngModel)]="capturedPreEvaluationComment" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                                        <textarea class="form-text" [disabled]="true" [rows]="3" pInputTextarea [(ngModel)]="capturedPreEvaluationComment" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
                                     </div>
                                 </div>
                                 <div style="height: 10px;"></div>
@@ -1284,7 +1285,7 @@
                                     </div>
                                     <div class="p-col-9">
                                         <span>
-                                            <input type="checkbox" id="chkRecommendation" [disabled]="setDisable" [(ngModel)]="isChecked" (change)="onCheckboxChange($event)">
+                                            <input type="checkbox" id="chkRecommendation" [disabled]="true" [(ngModel)]="isChecked" (change)="onCheckboxChange($event)">
                                         </span>
                                     </div>
                                 </div>
@@ -1361,7 +1362,7 @@
                     </div>
                     <div class="p-col-9">
                         <span>
-                            <input type="checkbox" id="chkEvalDeclaration" [(ngModel)]="isEvalDeclarationChecked" (change)="onEvlCheckboxChange($event)">
+                            <input [disabled]="true" type="checkbox" id="chkEvalDeclaration" [(ngModel)]="isEvalDeclarationChecked" (change)="onEvlCheckboxChange($event)">
                         </span>
                     </div>
                 </div>
@@ -1397,13 +1398,13 @@
                                 <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                     optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                     placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                    (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
+                                    (onChange)="onSaveResponse($event, question)" [disabled]="true"></p-dropdown>
                             </td>
                             <!-- <td>{{question.averageScore}}</td> -->
                             <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(evaluationQuestionnaire)">
                                 <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                                 [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                                [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
+                                [autoResize]="true" [disabled]="true"></textarea>
                             </td>
                             <!--<td style="text-align: center;" *ngIf="hasDocument(evaluationQuestionnaire)">
                                 <button *ngIf="question.hasDocument" pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(question)" [disabled]="question.disableDocumentUpload"></button>
@@ -1452,7 +1453,7 @@
                     <div class="p-col-9">
                         <textarea class="form-text" [rows]="3" pInputTextarea 
                         [(ngModel)]="capturedEvaluationComment" [ngModelOptions]="{standalone: true}" 
-                        [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                        [autoResize]="true" [disabled]="true"></textarea>
 
                         <!-- <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" 
                         [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea> -->
@@ -1469,7 +1470,7 @@
                         <p-dropdown class="form-text"  defaultLabel="Choose the option" [options]="evaluationStatuses" 
                         placeholder="Select a Status" optionLabel="name" 
                         [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
-                        [disabled]="hasCapturedEvaluation"></p-dropdown>
+                        [disabled]="true"></p-dropdown>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
@@ -1500,11 +1501,10 @@
                     (click)="submit(evaluationQuestionnaire,  'Evaluation')" [disabled]="true"></button>
                 </div>
             </p-panel>
-        </p-panel>  
-
+        </p-panel> 
     </div>
     <div *ngIf="this.IsAuthorized(PermissionsEnum.AdjudicateOption)">
-    <p-panel header="Adjudicate Funding Application" *ngIf="displayAdjudicate() && capturedResponses"  [style]="{'font-size':'12px'}" id = "adjudicatePanel">
+    <p-panel header="Adjudicate Funding Application" [style]="{'font-size':'12px'}" id = "adjudicatePanel">
         <p-panel>
             <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
                 <p><span style="color: rgb(51, 51, 51);">
@@ -1521,7 +1521,7 @@
                 <div class="p-col-9">
                     <span>
                         <input type="checkbox" id="chkAdjDeclaration" [(ngModel)]="isAdjDeclarationChecked" 
-                        [disabled]="isAdjudicationDisable" (change)="onAdjCheckboxChange($event)">
+                        [disabled]="true" (change)="onAdjCheckboxChange($event)">
                     </span>
                 </div>
             </div>
@@ -1537,7 +1537,7 @@
                     </div>
                     <div class="p-col-9">
                         <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedAdjudicationComment" 
-                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="isAdjudicationDisable"></textarea>
+                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="true"></textarea>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
@@ -1550,7 +1550,7 @@
                     <div class="p-col-9">
                         <p-dropdown class="form-text" [options]="adjudicationStatuses" placeholder="Select a Status" optionLabel="name" 
                         [(ngModel)]="adjSelectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
-                        [disabled]="isAdjudicationDisable" appendTo="body"></p-dropdown>
+                        [disabled]="true" appendTo="body"></p-dropdown>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
@@ -1601,7 +1601,7 @@
                     <div class="p-col-9"> 
                         <span>
                             <input type="checkbox" id="chkAprDeclaration" [(ngModel)]="isAprDeclarationChecked"
-                            [disabled]="isApprovalDisable" (change)="onAprCheckboxChange($event)">
+                            [disabled]="true" (change)="onAprCheckboxChange($event)">
                         </span>
                     </div>
                 </div>
@@ -1616,7 +1616,7 @@
                     </div>
                     <div class="p-col-9">
                         <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedApprovalComment"
-                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="isApprovalDisable"></textarea>
+                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="true"></textarea>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
@@ -1628,7 +1628,7 @@
                     </div>
                     <div class="p-col-9">
                         <p-dropdown class="form-text" defaultLabel="Choose the option" [options]="approvalStatuses" 
-                        placeholder="Select a Status" optionLabel="name" [disabled]="isApprovalDisable"
+                        placeholder="Select a Status" optionLabel="name" [disabled]="true"
                         [(ngModel)]="aprSelectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
                     </div>
                 </div>

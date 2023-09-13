@@ -124,7 +124,7 @@ const routes: Routes = [
   { path: 'application/pre-evaluate/:id', component: WorkflowApplicationComponent },
   { path: 'application/evaluate/:id', component: WorkflowApplicationComponent },
   { path: 'application/adjudicate/:id', component: WorkflowApplicationComponent },
-  { path: 'application/approve/:id', component: WorkflowApplicationComponent },
+  { path: 'application/approval/:id', component: WorkflowApplicationComponent },
 
   { path: 'npo-approval', component: NpoApprovalComponent },
   { path: 'pbi-dashboard', component: PowerbiDashboardComponent },

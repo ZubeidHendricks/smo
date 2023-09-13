@@ -236,6 +236,7 @@ export class WorkflowApplicationComponent implements OnInit {
     private _documentStore: DocumentStoreService,
     private _loggerService: LoggerService,
     private _dropdownService: DropdownService,
+    private confirmationService: ConfirmationService,
     private _messageService: MessageService,
     private _datepipe: DatePipe
   ) { }
@@ -928,9 +929,9 @@ onAprCheckboxChange(event: any) {
         case StatusEnum.Verified:
         case StatusEnum.Evaluated:
         case StatusEnum.Adjudicated: 
-        // case StatusEnum.Approved:
-        // case StatusEnum.Declined: 
-        // case StatusEnum.NonCompliance: 
+        case StatusEnum.Approved:
+        case StatusEnum.Declined: 
+        case StatusEnum.NonCompliance: 
      {
         return true;
       }
@@ -942,10 +943,12 @@ onAprCheckboxChange(event: any) {
 
   public captureEvaluation() {
     switch (this.application.statusId) {
-      case StatusEnum.Verified:
-      case StatusEnum.Evaluated:
-      case StatusEnum.Declined:
-      case StatusEnum.NonCompliance:
+        case StatusEnum.Verified:
+        case StatusEnum.Evaluated:
+        case StatusEnum.Adjudicated: 
+        case StatusEnum.Approved:
+        case StatusEnum.Declined: 
+        case StatusEnum.NonCompliance: 
       {
         return true;
       }
@@ -956,10 +959,11 @@ onAprCheckboxChange(event: any) {
 
   public captureAdjudicate() {
     switch (this.application.statusId) {
-      case StatusEnum.Verified:
-      case StatusEnum.Evaluated:
-      case StatusEnum.Declined:
-      case StatusEnum.NonCompliance:
+        case StatusEnum.Evaluated:
+        case StatusEnum.Adjudicated: 
+        case StatusEnum.Approved:
+        case StatusEnum.Declined: 
+        case StatusEnum.NonCompliance: 
       {
         return true;
       }
@@ -970,8 +974,6 @@ onAprCheckboxChange(event: any) {
 
   public captureApprove() {
     switch (this.application.statusId) {
-      case StatusEnum.Verified:
-      case StatusEnum.Evaluated:
       case StatusEnum.Adjudicated:
       case StatusEnum.Declined:
       {
@@ -1086,6 +1088,7 @@ onAprCheckboxChange(event: any) {
         this.EvaluatedCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === evalId[0].id);
         this.AdjudicationCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === adjId[0].id);
         this.ApprovalCapturedResponses = this.capturedResponses.filter(x => x.questionCategoryId === appId[0].id);
+       
         if(this.PreEvaluatedCapturedResponses.length > 0)
         {
           this.isPreEvaluationDisable = true
@@ -1118,24 +1121,25 @@ onAprCheckboxChange(event: any) {
               this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
               break;
           }
+
           this.evalSignedByUser = this.EvaluatedCapturedResponses[0].createdUser.fullName;
           this.evalVerificationDate = this.EvaluatedCapturedResponses[0].createdDateTime;
 
-          if (this.isEvalDeclarationChecked) {
-            var pnlEvaluation = document.getElementById("pnlEvaluation");
-            var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
-            pnlEvaluation.style.display = "block";
-            pnlEvaluation1.style.display = "block";
-          }
-          else{
-            pnlEvaluation.style.display = "none";
-            pnlEvaluation1.style.display = "none";
-          }
-
+          // if (this.isEvalDeclarationChecked) {
+          //   var pnlEvaluation = document.getElementById("pnlEvaluation");
+          //   var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
+          //   pnlEvaluation.style.display = "block";
+          //   pnlEvaluation1.style.display = "block";
+          // }
+          // else{
+          //   pnlEvaluation.style.display = "none";
+          //   pnlEvaluation1.style.display = "none";
+          // }
         }
 
         if(this.AdjudicationCapturedResponses.length > 0)
         {
+         
           this.isAdjudicationDisable = true;
           this.capturedAdjudicationComment = this.AdjudicationCapturedResponses[0].comments;
           this.isAdjDeclarationChecked = this.AdjudicationCapturedResponses[0].isDeclarationAccepted;          
@@ -1477,12 +1481,20 @@ onAprCheckboxChange(event: any) {
         }
 
       );
+
       if(question.questionCategoryName === 'Evaluation' && question.responseOption.name === 'No')
       {
-        this.totalAverageScore = -1;
-        this.updateEvaluationStatus(this.totalAverageScore);
-        alert('Application noncompliant');
-        this.createCapturedResponseNonCompliance();
+        let text = "Application noncompliant?";
+        if (confirm(text) == true)
+        {
+          this.totalAverageScore = -1;
+          this.updateEvaluationStatus(this.totalAverageScore);
+          this.createCapturedResponseNonCompliance();
+        } 
+        else
+        {
+          return false;
+        }         
       }
      
     }
