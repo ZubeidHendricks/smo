@@ -44,6 +44,7 @@ export class ApplicationListComponent implements OnInit {
   isSystemAdmin: boolean = true;
   isAdmin: boolean = false;
   hasAdminRole: boolean = false;
+  headerTitle: string;
 
   allNpos: INpo[];
 
@@ -82,6 +83,10 @@ export class ApplicationListComponent implements OnInit {
           this.hasAdminRole = true;
 
         this.loadNpos();
+
+        var splitUrl = window.location.href.split('/');
+        this.headerTitle = splitUrl[5];
+
       }
     });
 
@@ -241,7 +246,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/pre-evaluate/' + this.selectedApplication.id);
           }
         });
       }
@@ -252,7 +257,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/adjudicate/' + this.selectedApplication.id);
           }
         });
       }
@@ -263,7 +268,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/evaluate/' + this.selectedApplication.id);
           }
         });
       }
@@ -274,7 +279,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/approve/' + this.selectedApplication.id);
           }
         });
       }
@@ -285,7 +290,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('application/workflow/' + this.selectedApplication.id);
+            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
           }
         });
       }
