@@ -1031,7 +1031,7 @@
                             <span>{{evalVerificationDate | date: 'yyyy-MM-dd'}}</span>
                         </div>
                     </div>
-                    <div class="p-grid p-nogutter p-justify-end">
+                    <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedEvaluation">
                         <button pButton type="button" label="Submit" icon="fa fa-floppy-o" 
                         [disabled]="disableEvaluateElement(evaluationQuestionnaire)"
                         (click)="submit(evaluationQuestionnaire,  'Evaluation')"></button>
