@@ -878,7 +878,6 @@ onAprCheckboxChange(event: any) {
         this.evaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Evaluation");
         this.adjudicationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication");
         this.approveQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Approval");
-        
         this.loadResponseOptions();
       },
       (err) => {
@@ -1322,10 +1321,6 @@ onAprCheckboxChange(event: any) {
     return rowGroupMetadata;
   }
 
- 
- 
-  
-
   public disableElement(questionnaire: IQuestionResponseViewModel[], questionCategory: string) {
     let canCaptureQuestionnaire = false;
     switch (questionCategory) {
@@ -1342,7 +1337,6 @@ onAprCheckboxChange(event: any) {
         canCaptureQuestionnaire = this.captureApproval();
         break;    
     }
-
     if (questionnaire) {
 
       if (this.displayErrorMessages(questionnaire))
@@ -1350,13 +1344,38 @@ onAprCheckboxChange(event: any) {
 
       let questions = questionnaire;
       let countReviewed = questions.filter(x => x.isSaved === true).length;
+      let commentRequired = questions.filter(x => x.commentRequired === true).length;
+      let commentProvided = questions.filter(x => x.comment !== '').length;
      
-      //return questions.length === countReviewed && canCaptureQuestionnaire ? false : true;
-      return questions.length === countReviewed ? false : true;
+      return ((questions.length === countReviewed) && (commentRequired === commentProvided)) ? false : true;      
     }
     else
       return true;
   }
+
+  public disableEvaluateElement(questionnaire: IQuestionResponseViewModel[]) {
+    let canCaptureQuestionnaire = false;
+   // alert('countReviewed');
+    canCaptureQuestionnaire = this.captureEvaluation();
+    let questions = questionnaire;
+    let countReviewed = questions.filter(x => x.isSaved === true).length;
+    let commentRequired = questions.filter(x => x.commentRequired === true).length;
+    let commentProvided = questions.filter(x => x.comment !== '').length;
+    // alert(questions.length);
+    // alert(countReviewed);
+    // alert(commentRequired);
+    // alert(commentProvided);
+    return ((questions.length === countReviewed) && (commentRequired === commentProvided)) ? false : true;  
+    // if (questionnaire) {
+
+    //   if (this.displayErrorMessages(questionnaire))
+    //     return true;
+
+    // }
+    // else
+    //   return true;
+  }
+
 
   public displayErrorMessages(questionnaire: IQuestionResponseViewModel[]) {
     let hasErrors: boolean[] = [];
@@ -1407,6 +1426,13 @@ onAprCheckboxChange(event: any) {
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
     this.onSave(question);
+    if(question.questionCategoryName === 'Evaluation' && question.responseOption.name === 'Yes')
+    {
+
+    }
+    //if question is yes
+    //find question to update in list of questions
+    //update the response for found question
   }
 
   public onSaveComment(event, question: IQuestionResponseViewModel) {
