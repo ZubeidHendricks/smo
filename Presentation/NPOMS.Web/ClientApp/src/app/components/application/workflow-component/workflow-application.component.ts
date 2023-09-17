@@ -764,21 +764,39 @@ onAprCheckboxChange(event: any) {
         break;
       }
       case "Evaluation": {
-        status = 15;
+        if( this.selectedStatus.id === 6)
+        {
+          status = 6;
+        }
+        else{
+          status = 15;
+        }       
         declaration = true;
         comment = this.capturedEvaluationComment
         selectedStatus = this.selectedStatus.id
-        break;
+         break;
       }
       case "Adjudication": {
-        status = 18;
+        if( this.adjSelectedStatus.id === 6)
+        {
+          status = 6;
+        }
+        else{
+          status = 18;
+        }  
         declaration = true;
         comment = this.capturedAdjudicationComment
         selectedStatus = this.adjSelectedStatus.id
         break;
       }
       case "Approval": {
-        status = 13;
+        if( this.selectedStatus.id === 6)
+        {
+          status = 6;
+        }
+        else{
+          status = 13;
+        }  
         declaration = true;
         comment = this.capturedApprovalComment
         selectedStatus = this.aprSelectedStatus.id
@@ -788,9 +806,8 @@ onAprCheckboxChange(event: any) {
     
     let capturedResponse = {
       fundingApplicationId: this.application.id,     
-      statusId: status, // questionCategoryId == QuestionCategoryEnum.PreAdjudication ? StatusEnum.PreEvaluated : this.selectedStatus.id,
-      questionCategoryId: id[0].id, //questionCategoryId,  
-      //comments: questionCategoryId == QuestionCategoryEnum.PreEvaluation ? "" : this.capturedResponse.comments,
+      statusId: status,
+      questionCategoryId: id[0].id,
       comments: comment,
       isActive: true,
       isSignedOff: this.isChecked ? true : false,
@@ -1033,16 +1050,19 @@ onAprCheckboxChange(event: any) {
   }
 
   public displayApprove() {
-    switch (this.application.statusId) {
-      case StatusEnum.Adjudicated:
-      case StatusEnum.Approved:
-      case StatusEnum.Declined:
-      {
-        return true;
+    if(this.application.step === 2)
+    {
+      switch (this.application.statusId) {
+        case StatusEnum.Adjudicated:
+        case StatusEnum.Approved:
+        case StatusEnum.Declined:
+        {
+          return true;
+        }
       }
+      return false;
     }
-
-    return false;
+   
   }
   
 
@@ -1414,16 +1434,14 @@ onAprCheckboxChange(event: any) {
     this.onSave(question);
   }
 
-  public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) {
-   
-
+  public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
+  {
     questionnaire.forEach(item => {
-       if(Number(item.responseOption.name) >= 0)
-       {
-    // //  item.averageScore = item.responseOptionId ?  (Number(item.responseOption.name) / 5) * item.weighting : 0;
-        this.totalAverageScore += Number(item.responseOption.name); //item.weighting;
-       }
-       else{
+      if(Number(item.responseOption.name) >= 0)
+      {
+        this.totalAverageScore += Number(item.responseOption.name);
+      }
+      else{
         this.totalAverageScore = 0;
       }
     });
@@ -1435,6 +1453,7 @@ onAprCheckboxChange(event: any) {
   }
 
   private updateEvaluationStatus(totalAverageScore: number) {
+
       if(totalAverageScore >= 40)
       {
         this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.StronglyRecommended);
@@ -1449,10 +1468,8 @@ onAprCheckboxChange(event: any) {
       }
       else{
         this.selectedStatus = this.evaluationStatuses.find(x => x.id === StatusEnum.NonCompliance);
-      }
-   
+      }   
   }
-
   
   public onInputCommentChange(question: IQuestionResponseViewModel) {
     question.isSaved = false;
@@ -1472,8 +1489,6 @@ onAprCheckboxChange(event: any) {
           let returnValue = results as IQuestionResponseViewModel;
           question.responseId = returnValue.responseId;
           question.isSaved = returnValue.isSaved;
-          // question.disableDocumentUpload = returnValue.disableDocumentUpload;
-          // question.documentCount = returnValue.documentCount;
         },
         (err) => {
           this._loggerService.logException(err);

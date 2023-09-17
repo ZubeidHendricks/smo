@@ -1205,7 +1205,7 @@
 </div>
 
 <div *ngIf="headerTitle == 'view'">
-    <div  *ngIf="this.IsAuthorized(PermissionsEnum.PreEvaluateOption)">
+    <div *ngIf="displayPreEvaluate()">
         <p-panel header="Pre-evaluate Funding Application" [style]="{'font-size':'12px'}" *ngIf="displayPreEvaluate() && capturedResponses" id = "preEvaluatePanel">
             <div style="height: 10px;"></div>
             <div style="font-size: 14px;">
@@ -1325,15 +1325,6 @@
                             </p-panel>
                         </td>
                     </tr>
-                    <tr *ngIf="!hasCapturedPreEvaluation">
-                        <td colspan="6" style="text-align: right;">
-                            <div *ngIf="!hasCapturedPreEvaluation">
-                                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
-                                [disabled]="true" 
-                                [disabled]="isPreEvaluationDisable" (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"></button>                                
-                            </div>
-                        </td>
-                    </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr class="default-font">
@@ -1345,7 +1336,7 @@
         </p-panel> 
         <br>
     </div>
-    <div *ngIf="this.IsAuthorized(PermissionsEnum.EvaluateOption)">
+    <div *ngIf="captureEvaluation()">
         <p-panel header="Evaluate Funding Application" *ngIf="displayEvaluation() && capturedResponses"  [style]="{'font-size':'12px'}" id = "evaluatePanel">
             <p-panel>
                 <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
@@ -1495,15 +1486,10 @@
                         <span>{{evalVerificationDate | date: 'yyyy-MM-dd'}}</span>
                     </div>
                 </div>
-                <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedEvaluation">
-                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o" 
-                    [disabled]="disableElement(evaluationQuestionnaire, 'Evaluation')"
-                    (click)="submit(evaluationQuestionnaire,  'Evaluation')" [disabled]="true"></button>
-                </div>
             </p-panel>
         </p-panel> 
     </div>
-    <div *ngIf="this.IsAuthorized(PermissionsEnum.AdjudicateOption)">
+    <div *ngIf="captureAdjudicate()">
     <p-panel header="Adjudicate Funding Application" [style]="{'font-size':'12px'}" id = "adjudicatePanel">
         <p-panel>
             <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
@@ -1575,16 +1561,12 @@
                         <span>{{adjVerificationDate | date: 'yyyy-MM-dd'}}</span>
                     </div>
                 </div>
-                <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedAdjudication">
-                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
-                    (click)="submit(evaluationQuestionnaire,  'Adjudication')" [disabled]="true"></button>
-                </div>
             </p-panel>
         </p-panel>
     </div>
     <br>
-    <div *ngIf="this.IsAuthorized(PermissionsEnum.ApproveOption)">
-        <p-panel *ngIf = "displayApprove() && capturedResponses" [style]="{'font-size':'12px'}" header="Approve Funding Application" id = "approvePanel">
+    <div *ngIf="captureApprove()">
+        <p-panel [style]="{'font-size':'12px'}" header="Approve Funding Application" id = "approvePanel">
             <p-panel>
                 <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
                     <p><span style="color: rgb(51, 51, 51);">
@@ -1653,10 +1635,6 @@
                     <div class="p-col-9">
                         <span>{{aprVerificationDate | date: 'yyyy-MM-dd'}}</span>
                     </div>
-                </div>
-                <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedApproval">
-                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled]="true"
-                    (click)="submit(evaluationQuestionnaire,  'Approval')"></button>
                 </div>
             </p-panel>
         </p-panel>

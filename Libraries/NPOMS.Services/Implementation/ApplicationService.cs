@@ -326,11 +326,12 @@ namespace NPOMS.Services.Implementation
 			await _applicationRepository.CreateEntity(model);
 		}
 
-        public async Task UpdateFundingApplicationStatus(string userIdentifier, int fundingApplicationId, int statusId)
+        public async Task UpdateFundingApplicationStatus(string userIdentifier, int fundingApplicationId, int statusId, int step)
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             var fundingApplication = await _applicationRepository.GetById(fundingApplicationId);
             fundingApplication.StatusId = statusId;
+			fundingApplication.Step = step;
             fundingApplication.UpdatedUserId = currentUser.Id;
             fundingApplication.UpdatedDateTime = DateTime.Now;
 
