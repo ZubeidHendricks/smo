@@ -100,9 +100,9 @@ namespace NPOMS.Repository.Implementation.Core
 
         public async Task<User> GetByUserName(string userName)
         {
-            //try
-            //{
-            return await FindByCondition(sp => sp.UserName.Equals(userName))
+            try
+            {
+                return await FindByCondition(sp => sp.UserName.Equals(userName))
                         .Include(x => x.Roles.Where(y => y.IsActive))
                             .ThenInclude(x => x.Role)
                                 .ThenInclude(x => x.Permissions)
@@ -110,12 +110,12 @@ namespace NPOMS.Repository.Implementation.Core
                         .Include(x => x.Departments)
                             .ThenInclude(x => x.Department)
                         .FirstOrDefaultAsync();
-            //         }
-            //catch(Exception ex)
-            //{
+            }
+            catch(Exception ex)
+            {
 
-            //}
-            //return null;
+            }
+            return null;
         }
 
         public async Task<IEnumerable<User>> GetByIds(int roleId, int departmentId)

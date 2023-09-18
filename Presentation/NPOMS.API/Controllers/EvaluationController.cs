@@ -168,11 +168,13 @@ namespace NPOMS.API.Controllers
             var categories = await _dropdownService.GetQuestionCategories(false);
 			var cn = categories.Where(x => x.Id == Convert.ToInt32(questionCategoryId)).Select(x => x.Name).ToList(); // (x.   Distinct();
             var statusId = 0;
+			var step = 0;
 
 			switch (cn[0])
 			{
 				case "PreEvaluation":
 					{
+						step = 0;
 						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Reviewed;
 						else
@@ -181,12 +183,20 @@ namespace NPOMS.API.Controllers
 					}
 				case "Evaluation":
 					{
-						if(model.selectedStatus == 22)
+						step = 1;
+						if(model.selectedStatus == (int)StatusEnum.NonCompliance)
 						{
                             statusId = (int)StatusEnum.NonCompliance;
                             break;
                         }
-						if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
+
+                        if (model.selectedStatus == (int)StatusEnum.Declined)
+                        {
+                            statusId = (int)StatusEnum.Declined;
+                            break;
+                        }
+
+                        if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Evaluated;
 						else
 							statusId = (int)StatusEnum.EvaluationInProgress;
@@ -194,11 +204,20 @@ namespace NPOMS.API.Controllers
 					}
 				case "Adjudication":
 					{
+						step = 2;
+
                         if (model.selectedStatus == (int)StatusEnum.NonCompliance)
                         {
                             statusId = (int)StatusEnum.NonCompliance;
                             break;
                         }
+
+                        if (model.selectedStatus == (int)StatusEnum.Declined)
+                        {
+                            statusId = (int)StatusEnum.Declined;
+                            break;
+                        }
+
                         if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Adjudicated;
 						else
@@ -208,6 +227,7 @@ namespace NPOMS.API.Controllers
 					}
                 case "Approval":
                     {
+						step = 3;
 						if (model.selectedStatus == (int)StatusEnum.Declined)
                         {
                             statusId = (int)StatusEnum.Declined;
@@ -221,7 +241,7 @@ namespace NPOMS.API.Controllers
                     }
             }
 
-			await _applicationService.UpdateFundingApplicationStatus(base.GetUserIdentifier(), model.FundingApplicationId, statusId);
+			await _applicationService.UpdateFundingApplicationStatus(base.GetUserIdentifier(), model.FundingApplicationId, statusId, step);
 			var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
 			await ConfigureEmail(fundingApplication);
 		}

@@ -347,6 +347,7 @@ export interface IApplication {
     npoId: number;
     applicationPeriodId: number;
     statusId: number;
+    step: number;
     isActive: boolean;
     isCloned: boolean;
     isQuickCapture: boolean;

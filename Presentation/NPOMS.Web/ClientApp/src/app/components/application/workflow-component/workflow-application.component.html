@@ -864,7 +864,7 @@
                             <div *ngIf="!hasCapturedPreEvaluation">
                                 <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
                                 [disabled]="disableElement(preEvaluationQuestionnaire, 'PreEvaluation')" 
-                                [disabled]="isPreEvaluationDisable" (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"></button>                                
+                                (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"></button>                                
                             </div>
                         </td>
                     </tr>
@@ -880,326 +880,332 @@
         <br>
     </div>
     <div *ngIf="this.IsAuthorized(PermissionsEnum.EvaluateOption) || this.IsAuthorized(PermissionsEnum.AdjudicateOption) || this.IsAuthorized(PermissionsEnum.ApproveOption)">
-        <p-panel header="Evaluate Funding Application" *ngIf="displayEvaluation()" [style]="{'font-size':'12px'}" id = "evaluatePanel">
-            <p-panel>
-                <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
-                    <p><span style="color: rgb(51, 51, 51);">
-                        <p> I, the undersigned, accept that the assessments, recommendation and, discussions in regard to the&nbsp;assessment and/or adjudication and/or allocation with respect to applications by NPOs for transfer funding are confidential and I, undertake hereby not to disclose anything to this effect.</p>
-                        <p> I declare that:</p>
-                        <p> “I will not deliberately favour or prejudice anybody in the decision-making process of and, the actual assessment and/or adjudication of NPO applications for transfer funding nor any allocations with respect to such funding; and “During the consideration, acceptance or allocation of transfer funding,&nbsp;no person employed by the Provincial Government or any person who acts on behalf of the Provincial Government may exercise or use his discretion, official powers or position in such a manner as to obtain for himself/herself or for any other person or legal person an unlawful or unauthorized advantage or an advantage that serves to unlawfully prejudice the interests of the Provincial Government or any other person or legal person”.</p>	
-                    </span></p>
+        <div *ngIf="captureEvaluation()">
+            <p-panel header="Evaluate Funding Application" *ngIf="displayEvaluation()" [style]="{'font-size':'12px'}" id = "evaluatePanel">
+                <p-panel>
+                    <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
+                        <p><span style="color: rgb(51, 51, 51);">
+                            <p> I, the undersigned, accept that the assessments, recommendation and, discussions in regard to the&nbsp;assessment and/or adjudication and/or allocation with respect to applications by NPOs for transfer funding are confidential and I, undertake hereby not to disclose anything to this effect.</p>
+                            <p> I declare that:</p>
+                            <p> “I will not deliberately favour or prejudice anybody in the decision-making process of and, the actual assessment and/or adjudication of NPO applications for transfer funding nor any allocations with respect to such funding; and “During the consideration, acceptance or allocation of transfer funding,&nbsp;no person employed by the Provincial Government or any person who acts on behalf of the Provincial Government may exercise or use his discretion, official powers or position in such a manner as to obtain for himself/herself or for any other person or legal person an unlawful or unauthorized advantage or an advantage that serves to unlawfully prejudice the interests of the Provincial Government or any other person or legal person”.</p>	
+                        </span></p>
+                        <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Accept</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <span>
+                                <input type="checkbox" id="chkEvalDeclaration" [(ngModel)]="isEvalDeclarationChecked" 
+                                [disabled]="isEvaluationDisable" (change)="onEvlCheckboxChange($event)">
+                            </span>
+                        </div>
+                    </div>
+                </p-panel>
+                <p-panel id = "pnlEvaluation">
+                    <p-table [value]="evaluationQuestionnaire" *ngIf="evaluationQuestionnaire" [rowHover]="true" 
+                    styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="width: 5%; text-align: center;">#</th>
+                                <th style="width: 45%;">Element / Question</th>
+                                <th style="width: 10%;">Value</th>
+                                <!-- <th style="width: 10%;">Score</th> -->
+                                <th style="width: 25%;" *ngIf="hasComment(evaluationQuestionnaire)">Comment</th>
+                                <th style="width: 7%;" *ngIf="hasDocument(evaluationQuestionnaire)">Evidence</th>
+                                <th style="width: 8%;" colspan="2"></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
+                            <tr *ngIf="updateRowGroupMetaData(evaluationQuestionnaire)[question.questionSectionName].index === rowIndex">
+                                <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7)">
+                                    <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                                    <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
+                                    <div class="pull-right"><span class="{{'product-badge status-' + getStatus(evaluationQuestionnaire, question)}}">{{getStatusText(evaluationQuestionnaire, question)}}</span></div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex" >
+                            <tr class="default-font">
+                                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                                <td>{{question.questionName}}</td>
+                                <td [pEditableColumn]="question" pEditableColumn>
+                                    <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
+                                        optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
+                                        placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
+                                        (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
+                                </td>
+                                <!-- <td>{{question.averageScore}}</td> -->
+                                <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(evaluationQuestionnaire)">
+                                    <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
+                                    [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
+                                    [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
+                                </td>
+                                <!--<td style="text-align: center;" *ngIf="hasDocument(evaluationQuestionnaire)">
+                                    <button *ngIf="question.hasDocument" pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(question)" [disabled]="question.disableDocumentUpload"></button>
+                                    <button *ngIf="question.hasDocument" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" (click)="uploadDocument(question)" [disabled]="question.disableDocumentUpload"></button>
+                    
+                                <input *ngIf="question.hasDocument" type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;"> 
+                                </td>-->
+                                <td style="text-align: center;">
+                                    <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
+                                </td>
+                                <td style="text-align: center;">
+                                    <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                                    (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr class="default-font">
+                                <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7)" style="text-align: center;">No results found</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="footer" *ngIf="hasWeighting(evaluationQuestionnaire)">
+                            <tr>
+                                <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
+                                <!-- <td colspan="2"><span style="font-weight: bold;">{{getWeightingTotal(evaluationQuestionnaire)}}</span></td> -->
+                                <td [attr.colspan]="getColspan(evaluationQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(evaluationQuestionnaire)}}</span></td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr class="default-font">
+                                <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7)" style="text-align: center;">No results found</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-panel>
+                <div style="height: 10px;"></div>
+                <p-panel id = "pnlEvaluation1" [disabled]="isEvaluationDisable">
+                    <p>I, the undersigned, hereby declare that my actions pertaining to the consideration of funding for proposals are always of a neutral nature and that I will recuse myself from the committee sitting should an application within my personal interest be discussed, i.e. (immediate family, friends and social contacts).</p>
                     <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="mandatory-content">Accept</span>
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Comments</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="p-col-9">
-                        <span>
-                            <input type="checkbox" id="chkEvalDeclaration" [(ngModel)]="isEvalDeclarationChecked" (change)="onEvlCheckboxChange($event)">
-                        </span>
-                    </div>
-                </div>
-            </p-panel>
-            <p-panel id = "pnlEvaluation">
-                <p-table [value]="evaluationQuestionnaire" *ngIf="evaluationQuestionnaire" [rowHover]="true" 
-                styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th style="width: 5%; text-align: center;">#</th>
-                            <th style="width: 45%;">Element / Question</th>
-                            <th style="width: 10%;">Value</th>
-                            <!-- <th style="width: 10%;">Score</th> -->
-                            <th style="width: 25%;" *ngIf="hasComment(evaluationQuestionnaire)">Comment</th>
-                            <th style="width: 7%;" *ngIf="hasDocument(evaluationQuestionnaire)">Evidence</th>
-                            <th style="width: 8%;" colspan="2"></th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
-                        <tr *ngIf="updateRowGroupMetaData(evaluationQuestionnaire)[question.questionSectionName].index === rowIndex">
-                            <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7)">
-                                <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                                <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
-                                <div class="pull-right"><span class="{{'product-badge status-' + getStatus(evaluationQuestionnaire, question)}}">{{getStatusText(evaluationQuestionnaire, question)}}</span></div>
-                            </td>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex" >
-                        <tr class="default-font">
-                            <td style="text-align: center;">{{rowIndex + 1}}</td>
-                            <td>{{question.questionName}}</td>
-                            <td [pEditableColumn]="question" pEditableColumn>
-                                <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
-                                    optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
-                                    placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                    (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
-                            </td>
-                            <!-- <td>{{question.averageScore}}</td> -->
-                            <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(evaluationQuestionnaire)">
-                                <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
-                                [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                                [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
-                            </td>
-                            <!--<td style="text-align: center;" *ngIf="hasDocument(evaluationQuestionnaire)">
-                                <button *ngIf="question.hasDocument" pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(question)" [disabled]="question.disableDocumentUpload"></button>
-                                <button *ngIf="question.hasDocument" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" (click)="uploadDocument(question)" [disabled]="question.disableDocumentUpload"></button>
-                
-                            <input *ngIf="question.hasDocument" type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;"> 
-                            </td>-->
-                            <td style="text-align: center;">
-                                <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
-                            </td>
-                            <td style="text-align: center;">
-                                <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                                (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
-                            </td>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="emptymessage">
-                        <tr class="default-font">
-                            <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7)" style="text-align: center;">No results found</td>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="footer" *ngIf="hasWeighting(evaluationQuestionnaire)">
-                        <tr>
-                            <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
-                            <!-- <td colspan="2"><span style="font-weight: bold;">{{getWeightingTotal(evaluationQuestionnaire)}}</span></td> -->
-                            <td [attr.colspan]="getColspan(evaluationQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(evaluationQuestionnaire)}}</span></td>
-                            <td colspan="2"></td>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="emptymessage">
-                        <tr class="default-font">
-                            <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7)" style="text-align: center;">No results found</td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-            </p-panel>
-            <div style="height: 10px;"></div>
-            <p-panel id = "pnlEvaluation1" [disabled]="isEvaluationDisable">
-                <p>I, the undersigned, hereby declare that my actions pertaining to the consideration of funding for proposals are always of a neutral nature and that I will recuse myself from the committee sitting should an application within my personal interest be discussed, i.e. (immediate family, friends and social contacts).</p>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="non-mandatory-content">Comments</span>
-                        </div>
-                    </div>
-                    <div class="p-col-9">
-                        <textarea class="form-text" [rows]="3" pInputTextarea 
-                        [(ngModel)]="capturedEvaluationComment" [ngModelOptions]="{standalone: true}" 
-                        [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                        <div class="p-col-9">
+                            <textarea class="form-text" [rows]="3" pInputTextarea 
+                            [(ngModel)]="capturedEvaluationComment" [ngModelOptions]="{standalone: true}" 
+                            [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
 
-                        <!-- <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" 
-                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea> -->
-                    </div>
-                </div>
-                <div style="height: 10px;"></div>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="mandatory-content">Recommend Application</span>
+                            <!-- <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" 
+                            [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea> -->
                         </div>
                     </div>
-                    <div class="p-col-9">
-                        <p-dropdown class="form-text"  defaultLabel="Choose the option" [options]="evaluationStatuses" 
-                        placeholder="Select a Status" optionLabel="name" 
-                        [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
-                        [disabled]="hasCapturedEvaluation"></p-dropdown>
-                    </div>
-                </div>
-                <div style="height: 10px;"></div>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="non-mandatory-content">Evaluated By</span>
+                    <div style="height: 10px;"></div>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Recommend Application</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <p-dropdown class="form-text"  defaultLabel="Choose the option" [options]="evaluationStatuses" 
+                            placeholder="Select a Status" optionLabel="name" 
+                            [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
+                            [disabled]="hasCapturedEvaluation"></p-dropdown>
                         </div>
                     </div>
-                    <div class="p-col-9">
-                        <span>{{evalSignedByUser}}</span>
-                    </div>
-                </div>
-                <div style="height: 10px;"></div>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="non-mandatory-content">Evaluated Date</span>
+                    <div style="height: 10px;"></div>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Evaluated By</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <span>{{evalSignedByUser}}</span>
                         </div>
                     </div>
-                    <div class="p-col-9">
-                        <span>{{evalVerificationDate | date: 'yyyy-MM-dd'}}</span>
+                    <div style="height: 10px;"></div>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Evaluated Date</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <span>{{evalVerificationDate | date: 'yyyy-MM-dd'}}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedEvaluation">
-                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o" 
-                    [disabled]="disableElement(evaluationQuestionnaire, 'Evaluation')"
-                    (click)="submit(evaluationQuestionnaire,  'Evaluation')" [disabled]="hasCapturedEvaluation"></button>
-                </div>
-            </p-panel>
-        </p-panel>  
-
+                    <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedEvaluation">
+                        <button pButton type="button" label="Submit" icon="fa fa-floppy-o" 
+                        [disabled]="disableEvaluateElement(evaluationQuestionnaire)"
+                        (click)="submit(evaluationQuestionnaire,  'Evaluation')"></button>
+                    </div>
+                </p-panel>
+            </p-panel> 
+        </div>
     </div>
     <div *ngIf="this.IsAuthorized(PermissionsEnum.AdjudicateOption) || this.IsAuthorized(PermissionsEnum.ApproveOption)">
-    <p-panel header="Adjudicate Funding Application" *ngIf="displayAdjudicate()"  [style]="{'font-size':'12px'}" id = "adjudicatePanel">
-        <p-panel>
-            <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
-                <p><span style="color: rgb(51, 51, 51);">
-                    <p> I, the undersigned, accept that the assessments, recommendation and, discussions in regard to the&nbsp;assessment and/or adjudication and/or allocation with respect to applications by NPOs for transfer funding are confidential and I, undertake hereby not to disclose anything to this effect.</p>
-                    <p> I declare that:</p>
-                    <p> “I will not deliberately favour or prejudice anybody in the decision-making process of and, the actual assessment and/or adjudication of NPO applications for transfer funding nor any allocations with respect to such funding; and “During the consideration, acceptance or allocation of transfer funding,&nbsp;no person employed by the Provincial Government or any person who acts on behalf of the Provincial Government may exercise or use his discretion, official powers or position in such a manner as to obtain for himself/herself or for any other person or legal person an unlawful or unauthorized advantage or an advantage that serves to unlawfully prejudice the interests of the Provincial Government or any other person or legal person”.</p>	
-                </span></p>
-            <div class="p-grid">
-                <div class="p-col-3 form-label">
-                    <div class="box">
-                        <span class="mandatory-content">Accept</span>
-                    </div>
-                </div>
-                <div class="p-col-9">
-                    <span>
-                        <input type="checkbox" id="chkAdjDeclaration" [(ngModel)]="isAdjDeclarationChecked" 
-                        [disabled]="isAdjudicationDisable" (change)="onAdjCheckboxChange($event)">
-                    </span>
-                </div>
-            </div>
-        </p-panel>
-        <div style="height: 10px;"></div>
-            <p-panel id="pnlAdjudication" *ngIf = "displayAdjudicate()">
-                <p>I, the undersigned, hereby declare that my actions pertaining to the consideration of funding for proposals are always of a neutral nature and that I will recuse myself from the committee sitting should an application within my personal interest be discussed, i.e. (immediate family, friends and social contacts).</p>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="non-mandatory-content">Comments</span>
+        <div *ngIf="captureAdjudicate()">
+            <p-panel header="Adjudicate Funding Application" *ngIf="displayAdjudicate()"  [style]="{'font-size':'12px'}" id = "adjudicatePanel">
+                <p-panel>
+                    <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
+                        <p><span style="color: rgb(51, 51, 51);">
+                            <p> I, the undersigned, accept that the assessments, recommendation and, discussions in regard to the&nbsp;assessment and/or adjudication and/or allocation with respect to applications by NPOs for transfer funding are confidential and I, undertake hereby not to disclose anything to this effect.</p>
+                            <p> I declare that:</p>
+                            <p> “I will not deliberately favour or prejudice anybody in the decision-making process of and, the actual assessment and/or adjudication of NPO applications for transfer funding nor any allocations with respect to such funding; and “During the consideration, acceptance or allocation of transfer funding,&nbsp;no person employed by the Provincial Government or any person who acts on behalf of the Provincial Government may exercise or use his discretion, official powers or position in such a manner as to obtain for himself/herself or for any other person or legal person an unlawful or unauthorized advantage or an advantage that serves to unlawfully prejudice the interests of the Provincial Government or any other person or legal person”.</p>	
+                        </span></p>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Accept</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <span>
+                                <input type="checkbox" id="chkAdjDeclaration" [(ngModel)]="isAdjDeclarationChecked" 
+                                [disabled]="isAdjudicationDisable" (change)="onAdjCheckboxChange($event)">
+                            </span>
                         </div>
                     </div>
-                    <div class="p-col-9">
-                        <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedAdjudicationComment" 
-                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="isAdjudicationDisable"></textarea>
-                    </div>
-                </div>
+                </p-panel>
                 <div style="height: 10px;"></div>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="mandatory-content">Recommend Application</span>
+                    <p-panel id="pnlAdjudication" *ngIf = "displayAdjudicate()">
+                        <p>I, the undersigned, hereby declare that my actions pertaining to the consideration of funding for proposals are always of a neutral nature and that I will recuse myself from the committee sitting should an application within my personal interest be discussed, i.e. (immediate family, friends and social contacts).</p>
+                        <div class="p-grid">
+                            <div class="p-col-3 form-label">
+                                <div class="box">
+                                    <span class="non-mandatory-content">Comments</span>
+                                </div>
+                            </div>
+                            <div class="p-col-9">
+                                <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedAdjudicationComment" 
+                                [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="isAdjudicationDisable"></textarea>
+                            </div>
                         </div>
-                    </div>
-                    <div class="p-col-9">
-                        <p-dropdown class="form-text" [options]="adjudicationStatuses" placeholder="Select a Status" optionLabel="name" 
-                        [(ngModel)]="adjSelectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
-                        [disabled]="isAdjudicationDisable" appendTo="body"></p-dropdown>
-                    </div>
-                </div>
-                <div style="height: 10px;"></div>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="non-mandatory-content">Adjudicated By</span>
+                        <div style="height: 10px;"></div>
+                        <div class="p-grid">
+                            <div class="p-col-3 form-label">
+                                <div class="box">
+                                    <span class="mandatory-content">Recommend Application</span>
+                                </div>
+                            </div>
+                            <div class="p-col-9">
+                                <p-dropdown class="form-text" [options]="adjudicationStatuses" placeholder="Select a Status" optionLabel="name" 
+                                [(ngModel)]="adjSelectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
+                                [disabled]="isAdjudicationDisable" appendTo="body"></p-dropdown>
+                            </div>
                         </div>
-                    </div>
-                    <div class="p-col-9">
-                        <span>{{adjSignedByUser}}</span>
-                    </div>
-                </div>
-                <div style="height: 10px;"></div>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="non-mandatory-content">Adjudicated Date</span>
+                        <div style="height: 10px;"></div>
+                        <div class="p-grid">
+                            <div class="p-col-3 form-label">
+                                <div class="box">
+                                    <span class="non-mandatory-content">Adjudicated By</span>
+                                </div>
+                            </div>
+                            <div class="p-col-9">
+                                <span>{{adjSignedByUser}}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="p-col-9">
-                        <span>{{adjVerificationDate | date: 'yyyy-MM-dd'}}</span>
-                    </div>
-                </div>
-                <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedAdjudication">
-                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
-                    (click)="submit(evaluationQuestionnaire,  'Adjudication')" [disabled]="isAdjudicationDisable"></button>
-                </div>
+                        <div style="height: 10px;"></div>
+                        <div class="p-grid">
+                            <div class="p-col-3 form-label">
+                                <div class="box">
+                                    <span class="non-mandatory-content">Adjudicated Date</span>
+                                </div>
+                            </div>
+                            <div class="p-col-9">
+                                <span>{{adjVerificationDate | date: 'yyyy-MM-dd'}}</span>
+                            </div>
+                        </div>
+                        <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedAdjudication">
+                            <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
+                            (click)="submit(evaluationQuestionnaire,  'Adjudication')" [disabled]="isAdjudicationDisable"></button>
+                        </div>
+                    </p-panel>
             </p-panel>
-        </p-panel>
+        </div>
     </div>
     <br>
     <div *ngIf="this.IsAuthorized(PermissionsEnum.ApproveOption)">
-        <p-panel *ngIf = "displayApprove()" [style]="{'font-size':'12px'}" header="Approve Funding Application" id = "approvePanel">
-            <p-panel>
-                <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
-                    <p><span style="color: rgb(51, 51, 51);">
-                        <p> I, the undersigned, accept that the assessments, recommendation and, discussions in regard to the&nbsp;assessment and/or adjudication and/or allocation with respect to applications by NPOs for transfer funding are confidential and I, undertake hereby not to disclose anything to this effect.</p>
-                        <p> I declare that:</p>
-                        <p> “I will not deliberately favour or prejudice anybody in the decision-making process of and, the actual assessment and/or adjudication of NPO applications for transfer funding nor any allocations with respect to such funding; and “During the consideration, acceptance or allocation of transfer funding,&nbsp;no person employed by the Provincial Government or any person who acts on behalf of the Provincial Government may exercise or use his discretion, official powers or position in such a manner as to obtain for himself/herself or for any other person or legal person an unlawful or unauthorized advantage or an advantage that serves to unlawfully prejudice the interests of the Provincial Government or any other person or legal person”.</p>	
-                    </span></p>
+        <div *ngIf="captureApprove()">
+            <p-panel *ngIf = "displayApprove()" [style]="{'font-size':'12px'}" header="Approve Funding Application" id = "approvePanel">
+                <p-panel>
+                    <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
+                        <p><span style="color: rgb(51, 51, 51);">
+                            <p> I, the undersigned, accept that the assessments, recommendation and, discussions in regard to the&nbsp;assessment and/or adjudication and/or allocation with respect to applications by NPOs for transfer funding are confidential and I, undertake hereby not to disclose anything to this effect.</p>
+                            <p> I declare that:</p>
+                            <p> “I will not deliberately favour or prejudice anybody in the decision-making process of and, the actual assessment and/or adjudication of NPO applications for transfer funding nor any allocations with respect to such funding; and “During the consideration, acceptance or allocation of transfer funding,&nbsp;no person employed by the Provincial Government or any person who acts on behalf of the Provincial Government may exercise or use his discretion, official powers or position in such a manner as to obtain for himself/herself or for any other person or legal person an unlawful or unauthorized advantage or an advantage that serves to unlawfully prejudice the interests of the Provincial Government or any other person or legal person”.</p>	
+                        </span></p>
+                        <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Accept</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9"> 
+                            <span>
+                                <input type="checkbox" id="chkAprDeclaration" [(ngModel)]="isAprDeclarationChecked"
+                                [disabled]="isApprovalDisable" (change)="onAprCheckboxChange($event)">
+                            </span>
+                        </div>
+                    </div>
+                </p-panel>
+                <p-panel id ="pnlApproval">
+                    <p>I, the undersigned, hereby declare that my actions pertaining to the consideration of funding for proposals are always of a neutral nature and that I will recuse myself from the committee sitting should an application within my personal interest be discussed, i.e. (immediate family, friends and social contacts).</p>
                     <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="mandatory-content">Accept</span>
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Comments</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedApprovalComment"
+                            [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="isApprovalDisable"></textarea>
                         </div>
                     </div>
-                    <div class="p-col-9"> 
-                        <span>
-                            <input type="checkbox" id="chkAprDeclaration" [(ngModel)]="isAprDeclarationChecked"
-                            [disabled]="isApprovalDisable" (change)="onAprCheckboxChange($event)">
-                        </span>
+                    <div style="height: 10px;"></div>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Recommend Application</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <p-dropdown class="form-text" defaultLabel="Choose the option" [options]="approvalStatuses" 
+                            placeholder="Select a Status" optionLabel="name" [disabled]="isApprovalDisable"
+                            [(ngModel)]="aprSelectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+                        </div>
                     </div>
-                </div>
+                    <div style="height: 10px;"></div>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Approved By</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <span>{{aprSignedByUser}}</span>
+                        </div>
+                    </div>
+                    <div style="height: 10px;"></div>
+                    <div class="p-grid">
+                        <div class="p-col-3 form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Approved Date</span>
+                            </div>
+                        </div>
+                        <div class="p-col-9">
+                            <span>{{aprVerificationDate | date: 'yyyy-MM-dd'}}</span>
+                        </div>
+                    </div>
+                    <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedApproval">
+                        <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled]="isApprovalDisable"
+                        (click)="submit(evaluationQuestionnaire,  'Approval')"></button>
+                    </div>
+                </p-panel>
             </p-panel>
-            <p-panel id ="pnlApproval">
-                <p>I, the undersigned, hereby declare that my actions pertaining to the consideration of funding for proposals are always of a neutral nature and that I will recuse myself from the committee sitting should an application within my personal interest be discussed, i.e. (immediate family, friends and social contacts).</p>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="non-mandatory-content">Comments</span>
-                        </div>
-                    </div>
-                    <div class="p-col-9">
-                        <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedApprovalComment"
-                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="isApprovalDisable"></textarea>
-                    </div>
-                </div>
-                <div style="height: 10px;"></div>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="mandatory-content">Recommend Application</span>
-                        </div>
-                    </div>
-                    <div class="p-col-9">
-                        <p-dropdown class="form-text" defaultLabel="Choose the option" [options]="approvalStatuses" 
-                        placeholder="Select a Status" optionLabel="name" [disabled]="isApprovalDisable"
-                        [(ngModel)]="aprSelectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
-                    </div>
-                </div>
-                <div style="height: 10px;"></div>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="non-mandatory-content">Approved By</span>
-                        </div>
-                    </div>
-                    <div class="p-col-9">
-                        <span>{{aprSignedByUser}}</span>
-                    </div>
-                </div>
-                <div style="height: 10px;"></div>
-                <div class="p-grid">
-                    <div class="p-col-3 form-label">
-                        <div class="box">
-                            <span class="non-mandatory-content">Approved Date</span>
-                        </div>
-                    </div>
-                    <div class="p-col-9">
-                        <span>{{aprVerificationDate | date: 'yyyy-MM-dd'}}</span>
-                    </div>
-                </div>
-                <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedApproval">
-                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled]="isApprovalDisable"
-                    (click)="submit(evaluationQuestionnaire,  'Approval')"></button>
-                </div>
-            </p-panel>
-        </p-panel>
+        </div>
     </div>
 </div>
 
 <div *ngIf="headerTitle == 'view'">
-    <div  *ngIf="this.IsAuthorized(PermissionsEnum.PreEvaluateOption)">
+    <div *ngIf="displayPreEvaluate()">
         <p-panel header="Pre-evaluate Funding Application" [style]="{'font-size':'12px'}" *ngIf="displayPreEvaluate() && capturedResponses" id = "preEvaluatePanel">
             <div style="height: 10px;"></div>
             <div style="font-size: 14px;">
@@ -1238,10 +1244,10 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)" 
                             optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}" 
                             placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                            (onChange)="onSaveResponse($event, question)" [disabled]="setDisable"></p-dropdown>
+                            (onChange)="onSaveResponse($event, question)" [disabled]="true"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(preEvaluationQuestionnaire)">
-                            <textarea class="form-text" [disabled]="setDisable" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" [autoResize]="true" [disabled]="hasCapturedPreEvaluation"></textarea>
+                            <textarea class="form-text" [disabled]="true" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" [autoResize]="true" [disabled]="hasCapturedPreEvaluation"></textarea>
                         </td>
                         <td style="text-align: center;" *ngIf="hasDocument(preEvaluationQuestionnaire)">
                         </td>
@@ -1267,7 +1273,7 @@
                                         </div>                    
                                     </div>
                                     <div class="p-col-9">
-                                        <textarea class="form-text" [disabled]="setDisable" [rows]="3" pInputTextarea [(ngModel)]="capturedPreEvaluationComment" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                                        <textarea class="form-text" [disabled]="true" [rows]="3" pInputTextarea [(ngModel)]="capturedPreEvaluationComment" [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
                                     </div>
                                 </div>
                                 <div style="height: 10px;"></div>
@@ -1279,7 +1285,7 @@
                                     </div>
                                     <div class="p-col-9">
                                         <span>
-                                            <input type="checkbox" id="chkRecommendation" [disabled]="setDisable" [(ngModel)]="isChecked" (change)="onCheckboxChange($event)">
+                                            <input type="checkbox" id="chkRecommendation" [disabled]="true" [(ngModel)]="isChecked" (change)="onCheckboxChange($event)">
                                         </span>
                                     </div>
                                 </div>
@@ -1319,15 +1325,6 @@
                             </p-panel>
                         </td>
                     </tr>
-                    <tr *ngIf="!hasCapturedPreEvaluation">
-                        <td colspan="6" style="text-align: right;">
-                            <div *ngIf="!hasCapturedPreEvaluation">
-                                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
-                                [disabled]="true" 
-                                [disabled]="isPreEvaluationDisable" (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"></button>                                
-                            </div>
-                        </td>
-                    </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr class="default-font">
@@ -1339,7 +1336,7 @@
         </p-panel> 
         <br>
     </div>
-    <div *ngIf="this.IsAuthorized(PermissionsEnum.EvaluateOption)">
+    <div *ngIf="captureEvaluation()">
         <p-panel header="Evaluate Funding Application" *ngIf="displayEvaluation() && capturedResponses"  [style]="{'font-size':'12px'}" id = "evaluatePanel">
             <p-panel>
                 <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
@@ -1356,7 +1353,7 @@
                     </div>
                     <div class="p-col-9">
                         <span>
-                            <input type="checkbox" id="chkEvalDeclaration" [(ngModel)]="isEvalDeclarationChecked" (change)="onEvlCheckboxChange($event)">
+                            <input [disabled]="true" type="checkbox" id="chkEvalDeclaration" [(ngModel)]="isEvalDeclarationChecked" (change)="onEvlCheckboxChange($event)">
                         </span>
                     </div>
                 </div>
@@ -1392,13 +1389,13 @@
                                 <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                     optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                     placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                    (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
+                                    (onChange)="onSaveResponse($event, question)" [disabled]="true"></p-dropdown>
                             </td>
                             <!-- <td>{{question.averageScore}}</td> -->
                             <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(evaluationQuestionnaire)">
                                 <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                                 [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                                [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
+                                [autoResize]="true" [disabled]="true"></textarea>
                             </td>
                             <!--<td style="text-align: center;" *ngIf="hasDocument(evaluationQuestionnaire)">
                                 <button *ngIf="question.hasDocument" pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(question)" [disabled]="question.disableDocumentUpload"></button>
@@ -1447,7 +1444,7 @@
                     <div class="p-col-9">
                         <textarea class="form-text" [rows]="3" pInputTextarea 
                         [(ngModel)]="capturedEvaluationComment" [ngModelOptions]="{standalone: true}" 
-                        [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea>
+                        [autoResize]="true" [disabled]="true"></textarea>
 
                         <!-- <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedResponse.comments" 
                         [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="hasCapturedEvaluation"></textarea> -->
@@ -1464,7 +1461,7 @@
                         <p-dropdown class="form-text"  defaultLabel="Choose the option" [options]="evaluationStatuses" 
                         placeholder="Select a Status" optionLabel="name" 
                         [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
-                        [disabled]="hasCapturedEvaluation"></p-dropdown>
+                        [disabled]="true"></p-dropdown>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
@@ -1489,17 +1486,11 @@
                         <span>{{evalVerificationDate | date: 'yyyy-MM-dd'}}</span>
                     </div>
                 </div>
-                <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedEvaluation">
-                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o" 
-                    [disabled]="disableElement(evaluationQuestionnaire, 'Evaluation')"
-                    (click)="submit(evaluationQuestionnaire,  'Evaluation')" [disabled]="true"></button>
-                </div>
             </p-panel>
-        </p-panel>  
-
+        </p-panel> 
     </div>
-    <div *ngIf="this.IsAuthorized(PermissionsEnum.AdjudicateOption)">
-    <p-panel header="Adjudicate Funding Application" *ngIf="displayAdjudicate() && capturedResponses"  [style]="{'font-size':'12px'}" id = "adjudicatePanel">
+    <div *ngIf="captureAdjudicate()">
+    <p-panel header="Adjudicate Funding Application" [style]="{'font-size':'12px'}" id = "adjudicatePanel">
         <p-panel>
             <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
                 <p><span style="color: rgb(51, 51, 51);">
@@ -1516,7 +1507,7 @@
                 <div class="p-col-9">
                     <span>
                         <input type="checkbox" id="chkAdjDeclaration" [(ngModel)]="isAdjDeclarationChecked" 
-                        [disabled]="isAdjudicationDisable" (change)="onAdjCheckboxChange($event)">
+                        [disabled]="true" (change)="onAdjCheckboxChange($event)">
                     </span>
                 </div>
             </div>
@@ -1532,7 +1523,7 @@
                     </div>
                     <div class="p-col-9">
                         <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedAdjudicationComment" 
-                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="isAdjudicationDisable"></textarea>
+                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="true"></textarea>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
@@ -1545,7 +1536,7 @@
                     <div class="p-col-9">
                         <p-dropdown class="form-text" [options]="adjudicationStatuses" placeholder="Select a Status" optionLabel="name" 
                         [(ngModel)]="adjSelectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
-                        [disabled]="isAdjudicationDisable" appendTo="body"></p-dropdown>
+                        [disabled]="true" appendTo="body"></p-dropdown>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
@@ -1570,16 +1561,12 @@
                         <span>{{adjVerificationDate | date: 'yyyy-MM-dd'}}</span>
                     </div>
                 </div>
-                <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedAdjudication">
-                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
-                    (click)="submit(evaluationQuestionnaire,  'Adjudication')" [disabled]="true"></button>
-                </div>
             </p-panel>
         </p-panel>
     </div>
     <br>
-    <div *ngIf="this.IsAuthorized(PermissionsEnum.ApproveOption)">
-        <p-panel *ngIf = "displayApprove() && capturedResponses" [style]="{'font-size':'12px'}" header="Approve Funding Application" id = "approvePanel">
+    <div *ngIf="captureApprove()">
+        <p-panel [style]="{'font-size':'12px'}" header="Approve Funding Application" id = "approvePanel">
             <p-panel>
                 <p><span style="color: rgb(51, 51, 51);"><b>Declaration</b></span></p>
                     <p><span style="color: rgb(51, 51, 51);">
@@ -1596,7 +1583,7 @@
                     <div class="p-col-9"> 
                         <span>
                             <input type="checkbox" id="chkAprDeclaration" [(ngModel)]="isAprDeclarationChecked"
-                            [disabled]="isApprovalDisable" (change)="onAprCheckboxChange($event)">
+                            [disabled]="true" (change)="onAprCheckboxChange($event)">
                         </span>
                     </div>
                 </div>
@@ -1611,7 +1598,7 @@
                     </div>
                     <div class="p-col-9">
                         <textarea class="form-text" [rows]="3" pInputTextarea [(ngModel)]="capturedApprovalComment"
-                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="isApprovalDisable"></textarea>
+                        [ngModelOptions]="{standalone: true}" [autoResize]="true" [disabled]="true"></textarea>
                     </div>
                 </div>
                 <div style="height: 10px;"></div>
@@ -1623,7 +1610,7 @@
                     </div>
                     <div class="p-col-9">
                         <p-dropdown class="form-text" defaultLabel="Choose the option" [options]="approvalStatuses" 
-                        placeholder="Select a Status" optionLabel="name" [disabled]="isApprovalDisable"
+                        placeholder="Select a Status" optionLabel="name" [disabled]="true"
                         [(ngModel)]="aprSelectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
                     </div>
                 </div>
@@ -1648,10 +1635,6 @@
                     <div class="p-col-9">
                         <span>{{aprVerificationDate | date: 'yyyy-MM-dd'}}</span>
                     </div>
-                </div>
-                <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedApproval">
-                    <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled]="true"
-                    (click)="submit(evaluationQuestionnaire,  'Approval')"></button>
                 </div>
             </p-panel>
         </p-panel>
