@@ -61,6 +61,7 @@ export class ViewDocumentUploadComponent implements OnInit {
   nonCompulsoryDocuments: IDocumentType[] = [];
   docTypeNames: any[];
   documentTypeName: string;
+  headerTitle: string;
 
   validationErrors: Message[];
   menuActions: MenuItem[];
@@ -74,6 +75,7 @@ export class ViewDocumentUploadComponent implements OnInit {
   list: any[];
   selectedFile: any;
   selectedFilename: string;
+  setDisabled: boolean = true;
 
   selectedApplicationId: string;
   constructor(
@@ -104,6 +106,14 @@ export class ViewDocumentUploadComponent implements OnInit {
         this.userId = x.id;
       }
     });
+
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
+
+    if(this.headerTitle != 'view')
+    {
+      this.setDisabled = false;
+    }
 
     this._spinner.hide();
     this.documentCols = [
