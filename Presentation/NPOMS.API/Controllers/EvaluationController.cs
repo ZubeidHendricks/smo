@@ -190,12 +190,6 @@ namespace NPOMS.API.Controllers
                             break;
                         }
 
-                        if (model.selectedStatus == (int)StatusEnum.Declined)
-                        {
-                            statusId = (int)StatusEnum.Declined;
-                            break;
-                        }
-
                         if (numberOfCapturedResponses.Count() >= workflowAssessment.NumberOfAssessments)
 							statusId = (int)StatusEnum.Evaluated;
 						else
@@ -209,12 +203,6 @@ namespace NPOMS.API.Controllers
                         if (model.selectedStatus == (int)StatusEnum.NonCompliance)
                         {
                             statusId = (int)StatusEnum.NonCompliance;
-                            break;
-                        }
-
-                        if (model.selectedStatus == (int)StatusEnum.Declined)
-                        {
-                            statusId = (int)StatusEnum.Declined;
                             break;
                         }
 
