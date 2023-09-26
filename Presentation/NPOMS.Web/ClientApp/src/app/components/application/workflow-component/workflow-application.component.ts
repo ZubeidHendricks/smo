@@ -1113,14 +1113,17 @@ onAprCheckboxChange(event: any) {
         this.hasCapturedAdjudication = this.getCapturedResponse(adjId[0].id) ? true : false;
         this.hasCapturedApproval = this.getCapturedResponse(appId[0].id) ? true : false;
 
+        if(this.capturePreEvaluation)
+          this.capturedResponse = this.getCapturedResponse(preAdId[0].id);
+
         if (this.captureEvaluation() && this.hasCapturedEvaluation)
-          this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.Evaluation);
+          this.capturedResponse = this.getCapturedResponse(evalId[0].id);
 
         if (this.captureAdjudication() && this.hasCapturedAdjudication)
-          this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.Adjudication);
+          this.capturedResponse = this.getCapturedResponse(adjId[0].id);
 
         if (this.captureApproval() && this.hasCapturedApproval)
-        this.capturedResponse = this.getCapturedResponse(QuestionCategoryEnum.Adjudication);
+        this.capturedResponse = this.getCapturedResponse(appId[0].id);
 
         if (this.capturedResponse && this.capturedResponse.statusId)
           this.selectedStatus = this.statuses.find(x => x.id === this.capturedResponse.statusId);
@@ -1354,7 +1357,7 @@ onAprCheckboxChange(event: any) {
       let commentRequired = questions.filter(x => x.commentRequired === true).length;
       let commentProvided = questions.filter(x => x.comment !== '').length;
      
-      return ((questions.length === countReviewed) && (commentRequired === commentProvided)) ? false : true;      
+      return ((questions.length === countReviewed) && (commentProvided >= commentRequired)) ? false : true;      
     }
     else
       return true;
