@@ -22,8 +22,9 @@ namespace NPOMS.Repository.Implementation.Evaluation
 
 		public async Task<IEnumerable<Response>> GetByIdsWithDetail(int fundingApplicationId, int currentUserId)
 		{
-			return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
-											  x.CreatedUserId.Equals(currentUserId))
+			return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId))
+											  //&&
+											  //x.CreatedUserId.Equals(currentUserId))
 							.Include(x => x.ResponseOption)
 							.AsNoTracking().ToListAsync();
 		}

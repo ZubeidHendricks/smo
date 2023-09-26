@@ -892,6 +892,7 @@ onAprCheckboxChange(event: any) {
         this.allQuestionnaires = results;
         
         this.preEvaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "PreEvaluation");
+        console.log('preEvaluationQuestionnaire', this.preEvaluationQuestionnaire);
         this.evaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Evaluation");
         this.adjudicationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication");
         this.approveQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Approval");
