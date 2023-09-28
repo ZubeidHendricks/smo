@@ -297,7 +297,7 @@ export class ApplicationListComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
         this.buttonItems[0].items.push({
-          label: 'Download Application',
+          label: 'Download Assessement',
           target: 'Funding Application',
           icon: 'fa fa-download',
           command: () => {
