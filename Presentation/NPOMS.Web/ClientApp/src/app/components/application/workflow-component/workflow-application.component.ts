@@ -990,6 +990,7 @@ onAprCheckboxChange(event: any) {
   public captureApprove() {
     switch (this.application.statusId) {
       case StatusEnum.Adjudicated:
+      case StatusEnum.Approved:
       case StatusEnum.Declined:
       {
         return true;
