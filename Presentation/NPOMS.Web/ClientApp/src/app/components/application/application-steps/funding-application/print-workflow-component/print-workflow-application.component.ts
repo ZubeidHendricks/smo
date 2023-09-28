@@ -1,4 +1,3 @@
-import { ProjectImplementationComponent } from './../application-steps/funding-application/project-implementation/project-implementation.component';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -14,14 +13,13 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { DatePipe } from '@angular/common';
-import { style } from '@angular/animations';
 
 @Component({
-  selector: 'app-workflow-application',
-  templateUrl: './workflow-application.component.html',
-  styleUrls: ['./workflow-application.component.css']
+  selector: 'app-print-workflow-application',
+  templateUrl: './print-workflow-application.component.html',
+  styleUrls: ['./print-workflow-application.component.css']
 })
-export class WorkflowApplicationComponent implements OnInit {
+export class PrintWorkflowApplicationComponent implements OnInit {
   isSystemAdmin: boolean;
   isAdmin: boolean;
   hasAdminRole: boolean;
@@ -355,21 +353,8 @@ export class WorkflowApplicationComponent implements OnInit {
       { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
-    this.showHidePanel();
+    //this.showHidePanel();
 
-  }
-
-  private showHidePanel()
-  {    
-    var pnlEvaluation = document.getElementById("pnlEvaluation");
-    var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
-    var pnlAdjudication = document.getElementById("pnlAdjudication");
-    var pnlApproval = document.getElementById("pnlApproval");
-
-    pnlEvaluation.style.display = "none";
-    pnlEvaluation1.style.display = "none";   
-    pnlAdjudication.style.display = "none";    
-    pnlApproval.style.display = "none";
   }
 
   private loadApplication() {
@@ -401,6 +386,12 @@ export class WorkflowApplicationComponent implements OnInit {
 
       },
     );
+
+    setTimeout(() => {
+      document.title = "DSD - Online Funding Application - Assessement";
+      window.print();
+      this._router.navigate([{ outlets: { print: null } }]);
+    }, 2500);
   }
 
   
@@ -424,7 +415,7 @@ export class WorkflowApplicationComponent implements OnInit {
     }
   }
 
-  onEvlCheckboxChange(event: any) {    
+  onEvlCheckboxChange(event: any) {
     var pnlEvaluation = document.getElementById("pnlEvaluation");
     var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
     this.isEvalDeclarationChecked = event.target.checked;

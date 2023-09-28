@@ -297,11 +297,22 @@ export class ApplicationListComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
         this.buttonItems[0].items.push({
-          label: 'Download Assessement',
+          label: 'Download Application',
           target: 'Funding Application',
           icon: 'fa fa-download',
           command: () => {
-            this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id] } }]);
+            this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id,0] } }]);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Download Assessment',
+          target: 'Workflow Application',
+          icon: 'fa fa-download',
+          command: () => {
+            this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id,1] } }]);
           }
         });
       }
