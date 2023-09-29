@@ -1,4 +1,3 @@
-import { ProjectImplementationComponent } from './../application-steps/funding-application/project-implementation/project-implementation.component';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -14,14 +13,13 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { DatePipe } from '@angular/common';
-import { style } from '@angular/animations';
 
 @Component({
-  selector: 'app-workflow-application',
-  templateUrl: './workflow-application.component.html',
-  styleUrls: ['./workflow-application.component.css']
+  selector: 'app-print-workflow-application',
+  templateUrl: './print-workflow-application.component.html',
+  styleUrls: ['./print-workflow-application.component.css']
 })
-export class WorkflowApplicationComponent implements OnInit {
+export class PrintWorkflowApplicationComponent implements OnInit {
   isSystemAdmin: boolean;
   isAdmin: boolean;
   hasAdminRole: boolean;
@@ -355,21 +353,8 @@ export class WorkflowApplicationComponent implements OnInit {
       { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
-    this.showHidePanel();
+    //this.showHidePanel();
 
-  }
-
-  private showHidePanel()
-  {    
-    var pnlEvaluation = document.getElementById("pnlEvaluation");
-    var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
-    var pnlAdjudication = document.getElementById("pnlAdjudication");
-    var pnlApproval = document.getElementById("pnlApproval");
-
-    pnlEvaluation.style.display = "none";
-    pnlEvaluation1.style.display = "none";   
-    pnlAdjudication.style.display = "none";    
-    pnlApproval.style.display = "none";
   }
 
   private loadApplication() {
@@ -401,6 +386,12 @@ export class WorkflowApplicationComponent implements OnInit {
 
       },
     );
+
+    setTimeout(() => {
+      document.title = "DSD - Online Funding Application - Assessement";
+      window.print();
+      this._router.navigate([{ outlets: { print: null } }]);
+    }, 2500);
   }
 
   
@@ -424,7 +415,7 @@ export class WorkflowApplicationComponent implements OnInit {
     }
   }
 
-  onEvlCheckboxChange(event: any) {    
+  onEvlCheckboxChange(event: any) {
     var pnlEvaluation = document.getElementById("pnlEvaluation");
     var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
     this.isEvalDeclarationChecked = event.target.checked;
@@ -1420,22 +1411,10 @@ onAprCheckboxChange(event: any) {
     return questionnaire.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score });
   }
 
-  public onSaveResponse(event, question: IQuestionResponseViewModel) {
-    question.responseOptionId = event.value.id;
-    this.onSave(question);
-    if(question.questionCategoryName === 'Evaluation' && question.responseOption.name === 'Yes')
-    {
-
-    }
-    //if question is yes
-    //find question to update in list of questions
-    //update the response for found question
-  }
-
-  public onSaveComment(event, question: IQuestionResponseViewModel) {
-    question.isSaved = false;
-    this.onSave(question);
-  }
+  // public onSaveComment(event, question: IQuestionResponseViewModel) {
+  //   question.isSaved = false;
+  //   this.onSave(question);
+  // }
 
   public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
   {
@@ -1518,22 +1497,22 @@ onAprCheckboxChange(event: any) {
     }
   }
 
-  public onSelectViewHistory(question: IQuestionResponseViewModel) {
-    this._spinner.show();
-    this.responseHistory = [];
+  // public onSelectViewHistory(question: IQuestionResponseViewModel) {
+  //   this._spinner.show();
+  //   this.responseHistory = [];
 
-    this._evaluationService.getResponseHistory(this.application.id, question.questionId).subscribe(
-      (results) => {
-        this.responseHistory = results;
-        this.displayHistoryDialog = true;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+  //   this._evaluationService.getResponseHistory(this.application.id, question.questionId).subscribe(
+  //     (results) => {
+  //       this.responseHistory = results;
+  //       this.displayHistoryDialog = true;
+  //       this._spinner.hide();
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
 
   public onCapturedResponseViewHistory(question: IQuestionResponseViewModel) {
     this._spinner.show();
@@ -1569,9 +1548,6 @@ onAprCheckboxChange(event: any) {
     let status = '';
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
     let countReviewed = questions.filter(x => x.isSaved === true).length;
-
-    // If true, document is required but no documents were uploaded... 
-    // var documentRequired = questions.some(function (question) { return question.documentRequired === true && question.documentCount === 0 });
     var documentRequired = false;
 
     if (questions.length === countReviewed && !documentRequired)

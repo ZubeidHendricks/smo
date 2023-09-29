@@ -18,9 +18,9 @@
       <td>{{rowData.budget}}</td>
       <td style="text-align: center;">
         <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"
-          (click)="editProjImpl(rowData)" pTooltip="Edit" tooltipPosition="top" [disabled]="true"></button>
-        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash"
-          (click)="deleteProjImpl(rowData.id)" pTooltip="Delete" tooltipPosition="top" [disabled]="true"></button>
+          (click)="editProjImpl(rowData)" pTooltip="Edit" tooltipPosition="top" [disabled]="false"></button>
+        <!-- <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash"
+          (click)="deleteProjImpl(rowData.id)" pTooltip="Delete" tooltipPosition="top" [disabled]="true"></button> -->
       </td>
     </tr>
   </ng-template>
@@ -41,7 +41,7 @@
       </div>
     </div>
     <div class="p-col">
-      <input type="text" class="form-text" pInputText id="description" [disabled]="readonly()" autocomplete="off"
+      <input type="text" class="form-text" pInputText id="description" [disabled]="true" autocomplete="off"
         [(ngModel)]="implementation.description" [ngModelOptions]="{standalone: true}">
 
     </div>
@@ -53,7 +53,7 @@
       </div>
     </div>
     <div class="p-col">
-      <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="projectObjective" [disabled]="readonly()"
+      <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="projectObjective" [disabled]="true"
         [(ngModel)]="implementation.projectObjective" [ngModelOptions]="{standalone: true}"></textarea>
     </div>
   </div>
@@ -64,7 +64,7 @@
       </div>
     </div>
     <div class="p-col">
-      <input type="text" class="form-text" pInputText pKeyFilter="int" id="beneficiaries" [disabled]="readonly()"
+      <input type="text" class="form-text" pInputText pKeyFilter="int" id="beneficiaries" [disabled]="true"
         autocomplete="off" [(ngModel)]="implementation.beneficiaries" [ngModelOptions]="{standalone: true}">
     </div>
   </div>
@@ -76,7 +76,7 @@
       </div>
     </div>
     <div class="p-col">
-      <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="results" [disabled]="readonly()"
+      <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="results" [disabled]="true"
         [(ngModel)]="implementation.results" [ngModelOptions]="{standalone: true}"></textarea>
     </div>
   </div>
@@ -88,7 +88,7 @@
       </div>
     </div>
     <div class="p-col">
-      <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="resources" [disabled]="readonly()"
+      <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea id="resources" [disabled]="true"
         [(ngModel)]="implementation.resources" [ngModelOptions]="{standalone: true}"></textarea>
     </div>
   </div>
@@ -100,7 +100,7 @@
     </div>
     <div class="p-col">
       <p-inputNumber inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
-        [style]="{'width':'100%'}" [(ngModel)]="implementation.budget" [disabled]="readonly()"
+        [style]="{'width':'100%'}" [(ngModel)]="implementation.budget" [disabled]="true"
         (onselect)="verifyDialog($event)" autocomplete="off"></p-inputNumber>
     </div>
   </div>
@@ -115,7 +115,7 @@
     <div class="p-col">
       <p-multiSelect defaultLabel="Choose target area" [options]="places" optionLabel="name"
         [(ngModel)]="selectedPlaces" (onChange)="placesChange($event.value)" [style]="{'width':'100%'}"
-        [ngModelOptions]="{standalone: true}" appendTo="body" [disabled]="disableSubPlacesOrPlace()" [disabled]="true">
+        [ngModelOptions]="{standalone: true}" appendTo="body" [disabled]="true">
       </p-multiSelect>
     </div>
   </div>
@@ -129,23 +129,23 @@
     <div class="p-col">
       <p-multiSelect defaultLabel="Choose sub-places" [options]="subPlaces" optionLabel="name"
         [(ngModel)]="selectedSubPlaces" (onChange)="subPlacesChange($event.value)" [style]="{'width':'100%'}"
-        [ngModelOptions]="{standalone: true}" [disabled]="disableSubPlacesOrPlace()"  [disabled]="true" appendTo="body"></p-multiSelect>
+        [ngModelOptions]="{standalone: true}"  [disabled]="true" appendTo="body"></p-multiSelect>
     </div>
   </div>
 
   <ng-template pTemplate="footer">
 
-    <button pButton pRipple type="button" class="p-button-text" icon="pi pi-check" [disabled]="disableSave()"
-      (click)="save()" (click)="displayDialogImpl=false" label="Save"></button>
+    <!-- <button pButton pRipple type="button" class="p-button-text" icon="pi pi-check" [disabled]="disableSave()"
+      (click)="save()" (click)="displayDialogImpl=false" label="Save"></button> -->
   </ng-template>
 </p-dialog>
 <div style="height: 10px;"></div>
 <div class="content-section implementation">
   <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
     <p-footer>
-      <button type="button" pButton icon="pi pi-check" class="ui-button-info" label="Yes"
+      <!-- <button type="button" pButton icon="pi pi-check" class="ui-button-info" label="Yes"
         (click)="cd.accept()"></button>
-      <button type="button" pButton icon="pi pi-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+      <button type="button" pButton icon="pi pi-times" class="ui-button-info" label="No" (click)="cd.reject()"></button> -->
     </p-footer>
   </p-confirmDialog>
 </div>

@@ -149,6 +149,7 @@ import { ResponseOptionComponent } from './components/admin/utilities/response-o
 import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
 import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
 import { PrintFundingApplicatonComponent } from './components/application/application-steps/funding-application/print-funding-applicaton/print-funding-applicaton.component';
+import { PrintWorkflowApplicationComponent } from './components/application/application-steps/funding-application/print-workflow-component/print-workflow-application.component';
 import { ViewApplicationDetailsComponent } from './components/application/application-steps/funding-application/view-application-details/view-application-details.component';
 import { ViewProjectInformationComponent } from './components/application/application-steps/funding-application/view-project-information/view-project-information.component';
 import { ViewProjectImplementationComponent } from './components/application/application-steps/funding-application/view-project-implementation/view-project-implementation.component';
@@ -306,6 +307,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     QuestionSectionComponent,
     QuestionCategoryComponent,
     PrintFundingApplicatonComponent,
+    PrintWorkflowApplicationComponent,
     ViewApplicationDetailsComponent,
     ViewProjectInformationComponent,
     ViewProjectImplementationComponent,
