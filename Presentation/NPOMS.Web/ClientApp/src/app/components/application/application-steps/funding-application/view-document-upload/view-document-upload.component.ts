@@ -66,7 +66,6 @@ export class ViewDocumentUploadComponent implements OnInit {
   validationErrors: Message[];
   menuActions: MenuItem[];
   getFiles: any;
-  //uploadedFiles: boolean = false;
   indicatorDetailsId: number;
   selectedDocTypeId: number;
   selectedDocumentType: IDocumentType;
@@ -120,12 +119,9 @@ export class ViewDocumentUploadComponent implements OnInit {
       { header: 'Id', width: '5%' },
       { field: 'name', header: 'Document Type', width: '35%' },
       { header: 'Document Name', width: '45%' },
-      // { header: 'Size', width: '10%' },
-      // { header: 'Uploaded Date', width: '10%' },
       { header: 'Actions', width: '10%' }
     ];
     this.uploadedFileCols = [
-      // { header: '', width: '5%' },
       { header: 'Document Type', width: '25%' },
       { header: 'Document Name', width: '40%' },
       { header: 'Size', width: '10%' },
@@ -173,32 +169,8 @@ export class ViewDocumentUploadComponent implements OnInit {
 
       this.displayUploadedFilesDialog = false;
     }
-    
-    // this._confirmationService.confirm({
-    //   message: 'Are you sure that you want to download document?',
-    //   header: 'Confirmation',
-    //   icon: 'pi pi-info-circle',
-    //   accept: () => {
-    //     this._documentStore.download(doc).subscribe();
-    //     this.displayUploadedFilesDialog = false;
-    //   },
-    //   reject: () => {
-    //     this.displayUploadedFilesDialog = false;
-    //   }
-    // });
   }
  
-  // selectCarWithButton(plan: any) {
-  //   this.indicatorDetailsId = Number(this.fundingApplicationDetails.id);
-  //   this.el.nativeElement.click();
-
-  // }
-
-  // public uploadDocument(doc: any) {
-  //   this.selectedDocTypeId = doc.id;
-  //   this.element.nativeElement.click();
-  // }
-
   public uploadedFiles(doc: any) {
     this._spinner.show();
     this.selectedDocTypeId = doc.id;
@@ -210,39 +182,6 @@ export class ViewDocumentUploadComponent implements OnInit {
     this.selectedFile = <File>event.target.files[0];
     this.selectedFilename = this.selectedFile.name;
   }
-
-  // public uploadADDocument = (files) => {
-  //   if (files.length === 0) {
-  //     return;
-  //   }
-  //   this._spinner.show();
-  //   let filesToUpload: File[] = files;
-  //   const formData = new FormData();
-
-  //   Array.from(filesToUpload).map((fileAdDoc, index) => {
-  //     return formData.append('file' + index, fileAdDoc, fileAdDoc.name);
-  //   });
-
-  //   this.http.post(this.envUrl.urlAddress + `/api/documentstore/UploadDocuments?id=` + this.indicatorDetailsId + "&userId=" + this.userId, formData, { reportProgress: true, observe: 'events' })
-  //     .subscribe(event => {
-  //       if (event.type === HttpEventType.UploadProgress)
-  //         this._spinner.show();
-  //       else if (event.type === HttpEventType.Response) {
-  //         // this.message = 'Uploaded!';
-
-  //         this.downloadButtonColor = 'p-button-success';
-  //         this.downloadButtonColor = 'ui-button-info';
-  //         this._spinner.hide();
-  //         let filesToUpload: File[] = files;
-  //         this._messageService.add({ severity: 'success', summary: 'Success', detail: 'File Uploaded' });
-  //       }
-  //     },
-
-  //       (error) => {
-  //         this._loggerService.logException(error);
-  //         this._spinner.hide();
-  //       });
-  // }
 
   private getDocuments() {
     if (this.fundingApplicationDetails?.id != undefined) {

@@ -25,7 +25,7 @@ export class WorkflowApplicationComponent implements OnInit {
   isSystemAdmin: boolean;
   isAdmin: boolean;
   hasAdminRole: boolean;
-  
+ 
 
    /* Permission logic */
    public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -241,9 +241,12 @@ export class WorkflowApplicationComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private _messageService: MessageService,
     private _datepipe: DatePipe
-  ) { }
+  ) { 
+ 
+  }
 
   ngOnInit(): void {
+
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');      
@@ -268,8 +271,6 @@ export class WorkflowApplicationComponent implements OnInit {
           this.hasAdminRole = true;
       }
     });
-
-    
 
     this.getQuestionCategory();
     this.getResponseType();
@@ -357,9 +358,8 @@ export class WorkflowApplicationComponent implements OnInit {
       { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
-    this.onEvlCheckboxChange(this.isEvalDeclarationChecked)
-
   }
+
 
   private loadApplication() {
     //this._spinner.show();
@@ -386,6 +386,8 @@ export class WorkflowApplicationComponent implements OnInit {
     //    this.getDocuments();
         this.getAuditHistory();
         this.loadApplicationApprovals();
+
+      
 
       },
     );
@@ -1152,6 +1154,12 @@ onAprCheckboxChange(event: any) {
             this.evalSignedByUser = this.EvaluatedCapturedResponses[0].createdUser.fullName;
             this.evalVerificationDate = this.EvaluatedCapturedResponses[0].createdDateTime;
           }
+          else{
+            var pnlEvaluation = document.getElementById("pnlEvaluation");
+              var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
+                pnlEvaluation.style.display = "none";
+                pnlEvaluation1.style.display = "none";
+          }
   
           if(this.AdjudicationCapturedResponses.length > 0)
           {
@@ -1186,6 +1194,10 @@ onAprCheckboxChange(event: any) {
               pnlAdjudication.style.display = "none";
             }
           }
+          else{
+              var pnlAdjudication = document.getElementById("pnlAdjudication");
+              pnlAdjudication.style.display = "none";
+          }
   
           if(this.ApprovalCapturedResponses.length > 0)
           {
@@ -1215,6 +1227,10 @@ onAprCheckboxChange(event: any) {
               pnlApproval.style.display = "none";
             }
           }
+          else{
+            var pnlApproval = document.getElementById("pnlApproval");
+            pnlApproval.style.display = "none";
+        }
 
 
         this.capturedResponses.forEach(capturedResponse => {
