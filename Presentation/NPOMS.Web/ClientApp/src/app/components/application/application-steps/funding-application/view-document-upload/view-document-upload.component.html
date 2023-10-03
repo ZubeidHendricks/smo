@@ -4,9 +4,9 @@
 
 <p-toast></p-toast>
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Supporting Documents">
-    <!-- <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
         *ngIf="IsAuthorized(PermissionsEnum.ShowProfileActions)"></p-menubar>
-    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages> -->
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
 
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}">
@@ -38,6 +38,14 @@
                         <td>{{document.name}}</td>
                         <td>{{document.documentName}}</td>
                         <td class="ui-fluid" style="text-align: left;">
+                            <button pButton pRipple type="button" class="p-button-text p-button-success action-button"
+                                icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top"
+                                (click)="uploadedFiles(rowData)"></button>
+                            <button pButton pRipple type="button" class="p-button-text action-button"
+                                icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left"
+                                (click)="uploadDocument(rowData)" [disabled]="true" ></button>
+                            <input type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse"
+                                accept="*" style="display:none;" (change)="onFileSelected($event)">
                         </td>
                     </tr>
                 </ng-template>
