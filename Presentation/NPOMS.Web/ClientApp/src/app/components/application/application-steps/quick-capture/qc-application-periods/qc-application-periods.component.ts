@@ -241,7 +241,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
           this.setStatus(period);
         });
 
-        this.allApplicationPeriods = results.filter(X => X.status === "Open");
+        this.allApplicationPeriods = results;
         this._spinner.hide();
       },
       (err) => {
