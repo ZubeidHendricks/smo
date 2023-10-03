@@ -1156,9 +1156,9 @@ onAprCheckboxChange(event: any) {
           }
           else{
             var pnlEvaluation = document.getElementById("pnlEvaluation");
-              var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
-                pnlEvaluation.style.display = "none";
-                pnlEvaluation1.style.display = "none";
+            var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
+            pnlEvaluation.style.display = "none";
+            pnlEvaluation1.style.display = "none";
           }
   
           if(this.AdjudicationCapturedResponses.length > 0)
@@ -1198,7 +1198,7 @@ onAprCheckboxChange(event: any) {
               var pnlAdjudication = document.getElementById("pnlAdjudication");
               pnlAdjudication.style.display = "none";
           }
-  
+
           if(this.ApprovalCapturedResponses.length > 0)
           {
             this.isApprovalDisable = true;
@@ -1230,8 +1230,7 @@ onAprCheckboxChange(event: any) {
           else{
             var pnlApproval = document.getElementById("pnlApproval");
             pnlApproval.style.display = "none";
-        }
-
+          }
 
         this.capturedResponses.forEach(capturedResponse => {
           this._evaluationService.getCompletedQuestionnaires(capturedResponse.fundingApplicationId, capturedResponse.questionCategoryId, capturedResponse.createdUser.id).subscribe(
