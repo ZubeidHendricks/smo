@@ -225,6 +225,8 @@ export class WorkflowApplicationComponent implements OnInit {
   setVisible: boolean = false;
 
   constructor(
+
+   
     private _router: Router,
     private _authService: AuthService,
     private _spinner: NgxSpinnerService,
@@ -251,7 +253,7 @@ export class WorkflowApplicationComponent implements OnInit {
     this.headerTitle = splitUrl[5];
 
     this.loadApplication();
-    
+
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -355,21 +357,8 @@ export class WorkflowApplicationComponent implements OnInit {
       { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
-    this.showHidePanel();
+    this.onEvlCheckboxChange(this.isEvalDeclarationChecked)
 
-  }
-
-  private showHidePanel()
-  {    
-    var pnlEvaluation = document.getElementById("pnlEvaluation");
-    var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
-    var pnlAdjudication = document.getElementById("pnlAdjudication");
-    var pnlApproval = document.getElementById("pnlApproval");
-
-    pnlEvaluation.style.display = "none";
-    pnlEvaluation1.style.display = "none";   
-    pnlAdjudication.style.display = "none";    
-    pnlApproval.style.display = "none";
   }
 
   private loadApplication() {
@@ -382,7 +371,6 @@ export class WorkflowApplicationComponent implements OnInit {
         {
           this.setDisable = false;
         }
-       // this.hideShowPanel();
         this.loadQuestionnaire();
        
         this.loadAllProgrammes();
@@ -395,7 +383,7 @@ export class WorkflowApplicationComponent implements OnInit {
         this.loadResources();
 
         this.loadApplicationComments();
-        this.getDocuments();
+    //    this.getDocuments();
         this.getAuditHistory();
         this.loadApplicationApprovals();
 
@@ -423,12 +411,12 @@ export class WorkflowApplicationComponent implements OnInit {
       this.setVisible = false;
     }
   }
-
+ 
   onEvlCheckboxChange(event: any) {    
     var pnlEvaluation = document.getElementById("pnlEvaluation");
     var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
-    this.isEvalDeclarationChecked = event.target.checked;
-    if (this.isEvalDeclarationChecked) {
+    this.isEvalDeclarationChecked = event == false ? event : event.target.checked;
+    if (this.isEvalDeclarationChecked == true) {
       pnlEvaluation.style.display = "block";
       pnlEvaluation1.style.display = "block";
     } else {
@@ -1142,7 +1130,7 @@ onAprCheckboxChange(event: any) {
             this.isEvaluationDisable = true;
             this.capturedEvaluationComment = this.EvaluatedCapturedResponses[0].comments;
             this.isEvalDeclarationChecked = this.EvaluatedCapturedResponses[0].isDeclarationAccepted;
-  
+ 
             let num  = this.EvaluatedCapturedResponses[0].selectedStatus;
             switch (num) {
               case Number(StatusEnum.NonCompliance):
