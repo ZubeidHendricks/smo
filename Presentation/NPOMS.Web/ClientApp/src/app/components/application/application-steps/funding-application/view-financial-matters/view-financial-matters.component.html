@@ -82,9 +82,9 @@
               </p-cellEditor>
           </td>
           <td style="text-align: center;">
-            <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
+            <!-- <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
               class="p-button-text p-button-danger" icon="pi pi-trash" (click)="deletePreviousYearItem(rowData.id)"
-              pTooltip="Delete" tooltipPosition="top"></button>
+              pTooltip="Delete" [disabled]="true" tooltipPosition="top"></button> -->
           </td>
       </tr>
   </ng-template>
@@ -187,9 +187,9 @@
       </td>
       <td>R{{financialMattersIncome.totalFundingAmountI | number: '1.0':'en-US'}}</td>
       <td style="text-align: center;">
-        <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
+        <!-- <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
           class="p-button-text p-button-danger" icon="pi pi-trash" (click)="deleteBudgetItem(financialMattersIncome)"
-          pTooltip="Delete" tooltipPosition="top" [disabled]="true" ></button>
+          pTooltip="Delete" [disabled]="true" tooltipPosition="top" [disabled]="true" ></button> -->
       </td>
     </tr>
   </ng-template>
@@ -287,10 +287,10 @@
       </td>
       <td>R{{financialMattersExpenditure.totalFundingAmountE | number: '1.0':'en-US'}}</td>
       <td style="text-align: center;">
-        <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
+        <!-- <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
           class="p-button-text p-button-danger" icon="pi pi-trash"
-          (click)="deleteBudgetExpenditureItem(financialMattersExpenditure)" pTooltip="Delete"
-          tooltipPosition="top" [disabled]="true" ></button>
+          (click)="deleteBudgetExpenditureItem(financialMattersExpenditure)" pTooltip="Delete" [disabled]="true"
+          tooltipPosition="top" [disabled]="true" ></button> -->
       </td>
     </tr>
   </ng-template>
@@ -387,10 +387,10 @@
       </td>
       <td>R{{financialMattersOthers.totalFundingAmountO | number: '1.0':'en-US'}}</td>
       <td style="text-align: center;">
-        <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
+        <!-- <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
           class="p-button-text p-button-danger" icon="pi pi-trash"
-          (click)="deleteBudgetOthrSourceFunding(financialMattersOthers)" pTooltip="Delete"
-          tooltipPosition="top" [disabled]="true" ></button>
+          (click)="deleteBudgetOthrSourceFunding(financialMattersOthers)" pTooltip="Delete" [disabled]="true"
+          tooltipPosition="top" [disabled]="true" ></button> -->
       </td>
     </tr>
   </ng-template>
@@ -429,7 +429,7 @@
             <td>{{rowData.accountNumber}}</td>
             <td style="text-align: center;">
               <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editBankDetail(rowData)" pTooltip="Edit" tooltipPosition="top" [disabled]="true" ></button>
-              <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteBankDetail(rowData.id)" pTooltip="Delete" tooltipPosition="top" [disabled]="true" ></button>
+              <!-- <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteBankDetail(rowData.id)" pTooltip="Delete" [disabled]="true" tooltipPosition="top" [disabled]="true" ></button> -->
             </td>
           </tr>
         </ng-template>

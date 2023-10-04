@@ -6,30 +6,18 @@
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Supporting Documents">
     <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
         *ngIf="IsAuthorized(PermissionsEnum.ShowProfileActions)"></p-menubar>
-    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
-
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}">
         <ng-template pTemplate="content">
             <div style="height: 10px;"></div>
             <p-table [rowHover]="true" #dt [style]="{'border':'none'}" sortMode="multiple" [value]="documentTypes" 
             [showCurrentPageReport]="true" 
-            styleClass="p-datatable-sm" [columns]="documentCols" 
-            [globalFilterFields]="['name']">
+            styleClass="p-datatable-sm" [columns]="documentCols">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
                             {{col.header}}
-                            <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
-                            ariaLabelDesc="Activate to sort in descending order" 
-                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>                            
                         </th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th><p-columnFilter type="text" field="name"></p-columnFilter></th>
-                        <th></th>
-                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-file let-document let-rowData let-rowIndex="rowIndex">
@@ -37,15 +25,10 @@
                         <td style="text-align: left;">{{rowIndex + 1}}</td>
                         <td>{{document.name}}</td>
                         <td>{{document.documentName}}</td>
-                        <td class="ui-fluid" style="text-align: left;">
+                        <td class="ui-fluid" style="text-align: center;">
                             <button pButton pRipple type="button" class="p-button-text p-button-success action-button"
                                 icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top"
                                 (click)="uploadedFiles(rowData)"></button>
-                            <button pButton pRipple type="button" class="p-button-text action-button"
-                                icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left"
-                                (click)="uploadDocument(rowData)" [disabled]="true" ></button>
-                            <input type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse"
-                                accept="*" style="display:none;" (change)="onFileSelected($event)">
                         </td>
                     </tr>
                 </ng-template>
@@ -76,7 +59,6 @@ showEffect="fade"
         </ng-template>
         <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
             <tr>
-                <!-- <td style="text-align: center;">{{documentTypeName}}</td>     -->
                 <td >{{document?.documentType?.name}}</td>             
                 <td>{{document?.name}}</td>
                 <td>{{document?.fileSize}}</td>
@@ -84,10 +66,7 @@ showEffect="fade"
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text p-button-success action-button"
                         icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download"
-                        tooltipPosition="top" [disabled]=setDisabled></button>
-                    <button pButton pRipple type="button" class="p-button-text p-button-danger action-button"
-                        icon="fa fa-trash" (click)="onDeleteDocument(document)" pTooltip="Delete"
-                        tooltipPosition="top" [disabled]="true"></button>
+                        tooltipPosition="top"></button>
                 </td>
             </tr>
         </ng-template>
@@ -98,17 +77,3 @@ showEffect="fade"
         </ng-template>
     </p-table>
 </p-dialog>
-<div class="content-section implementation">
-    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
-        <p-footer>
-            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes"
-                (click)="cd.accept()"></button>
-            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No"
-                (click)="cd.reject()"></button>
-        </p-footer>
-    </p-confirmDialog>
-</div>
-<div style="height: 10px;"></div>
- <div class="p-grid p-nogutter p-justify-between">
-    <!--<p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>-->
-</div> 
