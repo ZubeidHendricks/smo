@@ -818,9 +818,9 @@
                                         </div>
                                     </div>
                                     <div class="p-col-9">
-                                        <span>
+                                        <div>
                                             <input type="checkbox" id="chkRecommendation" [disabled]="setDisable" [(ngModel)]="isChecked" (change)="onCheckboxChange($event)">
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div style="height: 10px;"></div>
@@ -834,17 +834,6 @@
                                         <span>{{signedByUser}}</span>
                                     </div>
                                 </div>
-                                <!-- <div style="height: 10px;"></div>
-                                <div class="p-grid">
-                                    <div class="p-col-3 form-label">
-                                        <div class="box">
-                                            <span class="non-mandatory-content"><b>Date Application Received:</b></span>
-                                        </div>
-                                    </div>
-                                    <div class="p-col-9">
-                                        <span></span>
-                                    </div>
-                                </div> -->
                                 <div style="height: 10px;"></div>
                                 <div class="p-grid">
                                     <div class="p-col-3 form-label">
@@ -864,7 +853,8 @@
                             <div *ngIf="!hasCapturedPreEvaluation">
                                 <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
                                 [disabled]="disableElement(preEvaluationQuestionnaire, 'PreEvaluation')" 
-                                (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"></button>                                
+                                (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"
+                               ></button>                                
                             </div>
                         </td>
                     </tr>

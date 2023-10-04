@@ -396,7 +396,7 @@ export class WorkflowApplicationComponent implements OnInit {
   
   onCheckboxChange(event: any) {
     this.isChecked = event.target.checked;
-    if (this.isChecked) {
+    if (this.isChecked == true) {
       this._recommendation = true;
     } else {
       this._recommendation = false;
@@ -1260,6 +1260,49 @@ onAprCheckboxChange(event: any) {
     );
   }
 
+  public disableElement(questionnaire: IQuestionResponseViewModel[], questionCategory: string) {
+    let canCaptureQuestionnaire = false;
+    switch (questionCategory) {
+      case 'PreEvaluation':
+        canCaptureQuestionnaire = this.capturePreEvaluation();
+        break;
+      case 'Evaluation':
+        canCaptureQuestionnaire = this.captureEvaluation();
+        break;
+      case 'Adjudication':
+        canCaptureQuestionnaire = this.captureAdjudication();
+        break; 
+      case 'Approval':
+        canCaptureQuestionnaire = this.captureApproval();
+        break;    
+    }
+    if (questionnaire) {
+
+      if (this.displayErrorMessages(questionnaire))
+        return true;
+
+      let questions = questionnaire;
+      let countReviewed = questions.filter(x => x.isSaved === true).length;
+      let commentRequired = questions.filter(x => x.commentRequired === true).length;
+      let commentProvided = questions.filter(x => x.comment !== '').length;
+     
+      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation == true)) ? false : true;      
+    }
+    else
+      return true;
+  }
+
+  public disableEvaluateElement(questionnaire: IQuestionResponseViewModel[]) {
+    let canCaptureQuestionnaire = false;
+    canCaptureQuestionnaire = this.captureEvaluation();
+    let questions = questionnaire;
+    let countReviewed = questions.filter(x => x.isSaved === true).length;
+    let commentRequired = questions.filter(x => x.commentRequired === true).length;
+    let commentProvided = questions.filter(x => x.comment !== '').length;
+    return ((questions.length === countReviewed) && (commentRequired === commentProvided)) ? false : true;  
+  }
+
+
   public getStatusText(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
     let countReviewed = questions.filter(x => x.isSaved === true).length;
@@ -1271,11 +1314,17 @@ onAprCheckboxChange(event: any) {
 
     if (question.isSaved && question.commentRequired === false)
       ragColour = 'rag-saved';
-    else if (question.isSaved && question.commentRequired === true) {
+
+    if (question.isSaved && question.commentRequired === true) {
       if (question.comment === '')
+      {
         ragColour = 'rag-partial';
+        this._recommendation = false;
+      }
       else
-        ragColour = 'rag-saved';
+      {
+        ragColour = 'rag-saved';       
+      }
     }
     // else if (!question.isSaved)
     //   ragColour = 'rag-not-saved';
@@ -1334,47 +1383,7 @@ onAprCheckboxChange(event: any) {
     return rowGroupMetadata;
   }
 
-  public disableElement(questionnaire: IQuestionResponseViewModel[], questionCategory: string) {
-    let canCaptureQuestionnaire = false;
-    switch (questionCategory) {
-      case 'PreEvaluation':
-        canCaptureQuestionnaire = this.capturePreEvaluation();
-        break;
-      case 'Evaluation':
-        canCaptureQuestionnaire = this.captureEvaluation();
-        break;
-      case 'Adjudication':
-        canCaptureQuestionnaire = this.captureAdjudication();
-        break; 
-      case 'Approval':
-        canCaptureQuestionnaire = this.captureApproval();
-        break;    
-    }
-    if (questionnaire) {
-
-      if (this.displayErrorMessages(questionnaire))
-        return true;
-
-      let questions = questionnaire;
-      let countReviewed = questions.filter(x => x.isSaved === true).length;
-      let commentRequired = questions.filter(x => x.commentRequired === true).length;
-      let commentProvided = questions.filter(x => x.comment !== '').length;
-     
-      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation == true)) ? false : true;      
-    }
-    else
-      return true;
-  }
-
-  public disableEvaluateElement(questionnaire: IQuestionResponseViewModel[]) {
-    let canCaptureQuestionnaire = false;
-    canCaptureQuestionnaire = this.captureEvaluation();
-    let questions = questionnaire;
-    let countReviewed = questions.filter(x => x.isSaved === true).length;
-    let commentRequired = questions.filter(x => x.commentRequired === true).length;
-    let commentProvided = questions.filter(x => x.comment !== '').length;
-    return ((questions.length === countReviewed) && (commentRequired === commentProvided)) ? false : true;  
-  }
+  
 
 
   public displayErrorMessages(questionnaire: IQuestionResponseViewModel[]) {
