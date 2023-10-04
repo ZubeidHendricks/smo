@@ -468,6 +468,7 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
+          this.buttonItemExists('Download Assessment', 'Funding Application');
           break;
         }
         case StatusEnum.PendingReview: {
@@ -475,6 +476,7 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
+          this.buttonItemExists('Download Assessment', 'workflow Application');
           break;
         }
         case StatusEnum.Verified: {
