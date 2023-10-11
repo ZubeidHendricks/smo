@@ -1,4 +1,5 @@
 import { PrintFundingApplicatonComponent } from './components/application/application-steps/funding-application/print-funding-applicaton/print-funding-applicaton.component';
+import { PrintWorkflowApplicationComponent } from './components/application/application-steps/funding-application/print-workflow-component/print-workflow-application.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PermissionsComponent } from './components/admin/permissions/permissions.component';
@@ -91,7 +92,8 @@ const routes: Routes = [
 
   { path: 'npo-profiles', component: ProfileListComponent },
   { path: 'npo-profile/edit/:id', component: EditProfileComponent },
-  { path: 'print/:id', outlet: 'print', component: PrintFundingApplicatonComponent },
+  { path: 'print/:id/0', outlet: 'print', component: PrintFundingApplicatonComponent },
+  { path: 'print/:id/1', outlet: 'print', component: PrintWorkflowApplicationComponent },
   { path: 'access-request', component: AccessRequestComponent },
   { path: 'access-review', component: AccessReviewComponent },
 
@@ -124,7 +126,7 @@ const routes: Routes = [
   { path: 'application/pre-evaluate/:id', component: WorkflowApplicationComponent },
   { path: 'application/evaluate/:id', component: WorkflowApplicationComponent },
   { path: 'application/adjudicate/:id', component: WorkflowApplicationComponent },
-  { path: 'application/approve/:id', component: WorkflowApplicationComponent },
+  { path: 'application/approval/:id', component: WorkflowApplicationComponent },
 
   { path: 'npo-approval', component: NpoApprovalComponent },
   { path: 'pbi-dashboard', component: PowerbiDashboardComponent },

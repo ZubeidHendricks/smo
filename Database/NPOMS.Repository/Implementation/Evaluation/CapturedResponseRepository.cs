@@ -32,8 +32,8 @@ namespace NPOMS.Repository.Implementation.Evaluation
 		public async Task<IEnumerable<CapturedResponse>> GetByFundingApplicationId(int fundingApplicationId)
 		{
 			return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) && x.IsActive)
-							.Include(x => x.CreatedUser).AsNoTracking().ToListAsync();
-		}
+                         .Include(x => x.CreatedUser).AsNoTracking().ToListAsync();
+        }
 
 		public async Task<IEnumerable<CapturedResponse>> GetByIds(int fundingApplicationId, int questionCategoryId)
 		{

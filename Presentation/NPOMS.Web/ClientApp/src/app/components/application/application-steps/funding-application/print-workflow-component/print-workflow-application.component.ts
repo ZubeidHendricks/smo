@@ -1,4 +1,3 @@
-import { ProjectImplementationComponent } from './../application-steps/funding-application/project-implementation/project-implementation.component';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -14,18 +13,17 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { DatePipe } from '@angular/common';
-import { style } from '@angular/animations';
 
 @Component({
-  selector: 'app-workflow-application',
-  templateUrl: './workflow-application.component.html',
-  styleUrls: ['./workflow-application.component.css']
+  selector: 'app-print-workflow-application',
+  templateUrl: './print-workflow-application.component.html',
+  styleUrls: ['./print-workflow-application.component.css']
 })
-export class WorkflowApplicationComponent implements OnInit {
+export class PrintWorkflowApplicationComponent implements OnInit {
   isSystemAdmin: boolean;
   isAdmin: boolean;
   hasAdminRole: boolean;
- 
+  
 
    /* Permission logic */
    public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -225,8 +223,6 @@ export class WorkflowApplicationComponent implements OnInit {
   setVisible: boolean = false;
 
   constructor(
-
-   
     private _router: Router,
     private _authService: AuthService,
     private _spinner: NgxSpinnerService,
@@ -241,12 +237,9 @@ export class WorkflowApplicationComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private _messageService: MessageService,
     private _datepipe: DatePipe
-  ) { 
- 
-  }
+  ) { }
 
   ngOnInit(): void {
-
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');      
@@ -256,7 +249,7 @@ export class WorkflowApplicationComponent implements OnInit {
     this.headerTitle = splitUrl[5];
 
     this.loadApplication();
-
+    
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -271,6 +264,8 @@ export class WorkflowApplicationComponent implements OnInit {
           this.hasAdminRole = true;
       }
     });
+
+    
 
     this.getQuestionCategory();
     this.getResponseType();
@@ -358,8 +353,9 @@ export class WorkflowApplicationComponent implements OnInit {
       { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
-  }
+    //this.showHidePanel();
 
+  }
 
   private loadApplication() {
     //this._spinner.show();
@@ -371,6 +367,7 @@ export class WorkflowApplicationComponent implements OnInit {
         {
           this.setDisable = false;
         }
+       // this.hideShowPanel();
         this.loadQuestionnaire();
        
         this.loadAllProgrammes();
@@ -383,20 +380,24 @@ export class WorkflowApplicationComponent implements OnInit {
         this.loadResources();
 
         this.loadApplicationComments();
-    //    this.getDocuments();
+        this.getDocuments();
         this.getAuditHistory();
         this.loadApplicationApprovals();
 
-      
-
       },
     );
+
+    setTimeout(() => {
+      document.title = "DSD - Online Funding Application - Assessement";
+      window.print();
+      this._router.navigate([{ outlets: { print: null } }]);
+    }, 2500);
   }
 
   
   onCheckboxChange(event: any) {
     this.isChecked = event.target.checked;
-    if (this.isChecked == true) {
+    if (this.isChecked) {
       this._recommendation = true;
     } else {
       this._recommendation = false;
@@ -413,12 +414,12 @@ export class WorkflowApplicationComponent implements OnInit {
       this.setVisible = false;
     }
   }
- 
-  onEvlCheckboxChange(event: any) {    
+
+  onEvlCheckboxChange(event: any) {
     var pnlEvaluation = document.getElementById("pnlEvaluation");
     var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
-    this.isEvalDeclarationChecked = event == false ? event : event.target.checked;
-    if (this.isEvalDeclarationChecked == true) {
+    this.isEvalDeclarationChecked = event.target.checked;
+    if (this.isEvalDeclarationChecked) {
       pnlEvaluation.style.display = "block";
       pnlEvaluation1.style.display = "block";
     } else {
@@ -1132,7 +1133,7 @@ onAprCheckboxChange(event: any) {
             this.isEvaluationDisable = true;
             this.capturedEvaluationComment = this.EvaluatedCapturedResponses[0].comments;
             this.isEvalDeclarationChecked = this.EvaluatedCapturedResponses[0].isDeclarationAccepted;
- 
+  
             let num  = this.EvaluatedCapturedResponses[0].selectedStatus;
             switch (num) {
               case Number(StatusEnum.NonCompliance):
@@ -1153,12 +1154,6 @@ onAprCheckboxChange(event: any) {
   
             this.evalSignedByUser = this.EvaluatedCapturedResponses[0].createdUser.fullName;
             this.evalVerificationDate = this.EvaluatedCapturedResponses[0].createdDateTime;
-          }
-          else{
-            var pnlEvaluation = document.getElementById("pnlEvaluation");
-            var pnlEvaluation1 = document.getElementById("pnlEvaluation1");
-            pnlEvaluation.style.display = "none";
-            pnlEvaluation1.style.display = "none";
           }
   
           if(this.AdjudicationCapturedResponses.length > 0)
@@ -1194,11 +1189,7 @@ onAprCheckboxChange(event: any) {
               pnlAdjudication.style.display = "none";
             }
           }
-          else{
-              var pnlAdjudication = document.getElementById("pnlAdjudication");
-              pnlAdjudication.style.display = "none";
-          }
-
+  
           if(this.ApprovalCapturedResponses.length > 0)
           {
             this.isApprovalDisable = true;
@@ -1227,10 +1218,7 @@ onAprCheckboxChange(event: any) {
               pnlApproval.style.display = "none";
             }
           }
-          else{
-            var pnlApproval = document.getElementById("pnlApproval");
-            pnlApproval.style.display = "none";
-          }
+
 
         this.capturedResponses.forEach(capturedResponse => {
           this._evaluationService.getCompletedQuestionnaires(capturedResponse.fundingApplicationId, capturedResponse.questionCategoryId, capturedResponse.createdUser.id).subscribe(
@@ -1260,49 +1248,6 @@ onAprCheckboxChange(event: any) {
     );
   }
 
-  public disableElement(questionnaire: IQuestionResponseViewModel[], questionCategory: string) {
-    let canCaptureQuestionnaire = false;
-    switch (questionCategory) {
-      case 'PreEvaluation':
-        canCaptureQuestionnaire = this.capturePreEvaluation();
-        break;
-      case 'Evaluation':
-        canCaptureQuestionnaire = this.captureEvaluation();
-        break;
-      case 'Adjudication':
-        canCaptureQuestionnaire = this.captureAdjudication();
-        break; 
-      case 'Approval':
-        canCaptureQuestionnaire = this.captureApproval();
-        break;    
-    }
-    if (questionnaire) {
-
-      if (this.displayErrorMessages(questionnaire))
-        return true;
-
-      let questions = questionnaire;
-      let countReviewed = questions.filter(x => x.isSaved === true).length;
-      let commentRequired = questions.filter(x => x.commentRequired === true).length;
-      let commentProvided = questions.filter(x => x.comment !== '').length;
-     
-      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation == true)) ? false : true;      
-    }
-    else
-      return true;
-  }
-
-  public disableEvaluateElement(questionnaire: IQuestionResponseViewModel[]) {
-    let canCaptureQuestionnaire = false;
-    canCaptureQuestionnaire = this.captureEvaluation();
-    let questions = questionnaire;
-    let countReviewed = questions.filter(x => x.isSaved === true).length;
-    let commentRequired = questions.filter(x => x.commentRequired === true).length;
-    let commentProvided = questions.filter(x => x.comment !== '').length;
-    return ((questions.length === countReviewed) && (commentRequired === commentProvided)) ? false : true;  
-  }
-
-
   public getStatusText(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
     let countReviewed = questions.filter(x => x.isSaved === true).length;
@@ -1314,17 +1259,11 @@ onAprCheckboxChange(event: any) {
 
     if (question.isSaved && question.commentRequired === false)
       ragColour = 'rag-saved';
-
-    if (question.isSaved && question.commentRequired === true) {
+    else if (question.isSaved && question.commentRequired === true) {
       if (question.comment === '')
-      {
         ragColour = 'rag-partial';
-        this._recommendation = false;
-      }
       else
-      {
-        ragColour = 'rag-saved';       
-      }
+        ragColour = 'rag-saved';
     }
     // else if (!question.isSaved)
     //   ragColour = 'rag-not-saved';
@@ -1383,7 +1322,47 @@ onAprCheckboxChange(event: any) {
     return rowGroupMetadata;
   }
 
-  
+  public disableElement(questionnaire: IQuestionResponseViewModel[], questionCategory: string) {
+    let canCaptureQuestionnaire = false;
+    switch (questionCategory) {
+      case 'PreEvaluation':
+        canCaptureQuestionnaire = this.capturePreEvaluation();
+        break;
+      case 'Evaluation':
+        canCaptureQuestionnaire = this.captureEvaluation();
+        break;
+      case 'Adjudication':
+        canCaptureQuestionnaire = this.captureAdjudication();
+        break; 
+      case 'Approval':
+        canCaptureQuestionnaire = this.captureApproval();
+        break;    
+    }
+    if (questionnaire) {
+
+      if (this.displayErrorMessages(questionnaire))
+        return true;
+
+      let questions = questionnaire;
+      let countReviewed = questions.filter(x => x.isSaved === true).length;
+      let commentRequired = questions.filter(x => x.commentRequired === true).length;
+      let commentProvided = questions.filter(x => x.comment !== '').length;
+     
+      return ((questions.length === countReviewed) && (commentProvided >= commentRequired)) ? false : true;      
+    }
+    else
+      return true;
+  }
+
+  public disableEvaluateElement(questionnaire: IQuestionResponseViewModel[]) {
+    let canCaptureQuestionnaire = false;
+    canCaptureQuestionnaire = this.captureEvaluation();
+    let questions = questionnaire;
+    let countReviewed = questions.filter(x => x.isSaved === true).length;
+    let commentRequired = questions.filter(x => x.commentRequired === true).length;
+    let commentProvided = questions.filter(x => x.comment !== '').length;
+    return ((questions.length === countReviewed) && (commentRequired === commentProvided)) ? false : true;  
+  }
 
 
   public displayErrorMessages(questionnaire: IQuestionResponseViewModel[]) {
@@ -1432,22 +1411,10 @@ onAprCheckboxChange(event: any) {
     return questionnaire.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score });
   }
 
-  public onSaveResponse(event, question: IQuestionResponseViewModel) {
-    question.responseOptionId = event.value.id;
-    this.onSave(question);
-    if(question.questionCategoryName === 'Evaluation' && question.responseOption.name === 'Yes')
-    {
-
-    }
-    //if question is yes
-    //find question to update in list of questions
-    //update the response for found question
-  }
-
-  public onSaveComment(event, question: IQuestionResponseViewModel) {
-    question.isSaved = false;
-    this.onSave(question);
-  }
+  // public onSaveComment(event, question: IQuestionResponseViewModel) {
+  //   question.isSaved = false;
+  //   this.onSave(question);
+  // }
 
   public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
   {
@@ -1530,22 +1497,22 @@ onAprCheckboxChange(event: any) {
     }
   }
 
-  public onSelectViewHistory(question: IQuestionResponseViewModel) {
-    this._spinner.show();
-    this.responseHistory = [];
+  // public onSelectViewHistory(question: IQuestionResponseViewModel) {
+  //   this._spinner.show();
+  //   this.responseHistory = [];
 
-    this._evaluationService.getResponseHistory(this.application.id, question.questionId).subscribe(
-      (results) => {
-        this.responseHistory = results;
-        this.displayHistoryDialog = true;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+  //   this._evaluationService.getResponseHistory(this.application.id, question.questionId).subscribe(
+  //     (results) => {
+  //       this.responseHistory = results;
+  //       this.displayHistoryDialog = true;
+  //       this._spinner.hide();
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
 
   public onCapturedResponseViewHistory(question: IQuestionResponseViewModel) {
     this._spinner.show();
@@ -1581,9 +1548,6 @@ onAprCheckboxChange(event: any) {
     let status = '';
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
     let countReviewed = questions.filter(x => x.isSaved === true).length;
-
-    // If true, document is required but no documents were uploaded... 
-    // var documentRequired = questions.some(function (question) { return question.documentRequired === true && question.documentCount === 0 });
     var documentRequired = false;
 
     if (questions.length === countReviewed && !documentRequired)

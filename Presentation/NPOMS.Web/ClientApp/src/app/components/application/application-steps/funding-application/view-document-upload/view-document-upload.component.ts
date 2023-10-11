@@ -61,11 +61,11 @@ export class ViewDocumentUploadComponent implements OnInit {
   nonCompulsoryDocuments: IDocumentType[] = [];
   docTypeNames: any[];
   documentTypeName: string;
+  headerTitle: string;
 
   validationErrors: Message[];
   menuActions: MenuItem[];
   getFiles: any;
-  //uploadedFiles: boolean = false;
   indicatorDetailsId: number;
   selectedDocTypeId: number;
   selectedDocumentType: IDocumentType;
@@ -74,6 +74,7 @@ export class ViewDocumentUploadComponent implements OnInit {
   list: any[];
   selectedFile: any;
   selectedFilename: string;
+  setDisabled: boolean = true;
 
   selectedApplicationId: string;
   constructor(
@@ -105,17 +106,22 @@ export class ViewDocumentUploadComponent implements OnInit {
       }
     });
 
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
+
+    if(this.headerTitle != 'view')
+    {
+      this.setDisabled = false;
+    }
+
     this._spinner.hide();
     this.documentCols = [
       { header: 'Id', width: '5%' },
       { field: 'name', header: 'Document Type', width: '35%' },
       { header: 'Document Name', width: '45%' },
-      // { header: 'Size', width: '10%' },
-      // { header: 'Uploaded Date', width: '10%' },
       { header: 'Actions', width: '10%' }
     ];
     this.uploadedFileCols = [
-      // { header: '', width: '5%' },
       { header: 'Document Type', width: '25%' },
       { header: 'Document Name', width: '40%' },
       { header: 'Size', width: '10%' },
@@ -137,41 +143,6 @@ export class ViewDocumentUploadComponent implements OnInit {
     ];
     this.loadDocumentTypes();
   }
-  onFilesUpload(event) {
-
-    // Iterate over selected files
-    for (let file of event.target.files) {
-
-      // Append to a list
-      this.list.push({
-        name: file.name,
-        type: file.type
-        // Other specs
-      });
-    }
-  }
-  readonly(): boolean {
-
-    if (this.application.statusId == StatusEnum.PendingReview ||
-      this.application.statusId == StatusEnum.Approved)
-      return true;
-    else return false;
-  }
-
-  remove(event, file: File, uploader: FileUpload) {
-    const index = uploader.files.indexOf(file);
-    uploader.remove(event, index);
-  }
-
-  onRowSelect(event) {
-    if (event.files[0]) {
-      this.selectedDocTypeId =
-        event.files[0].documentType.id;
-    }
-    else {
-      this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please specify the document type.' });
-    }
-  }
 
   private loadDocumentTypes() {
     this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.selectedApplicationId), false).subscribe(
@@ -187,27 +158,19 @@ export class ViewDocumentUploadComponent implements OnInit {
     );
   }
   onDownloadDocument(doc: any) {
-    this._confirmationService.confirm({
-      message: 'Are you sure that you want to download document?',
-      header: 'Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-        this._documentStore.download(doc).subscribe();
-      },
-      reject: () => {
-      }
-    });
-  }
-  selectCarWithButton(plan: any) {
-    this.indicatorDetailsId = Number(this.fundingApplicationDetails.id);
-    this.el.nativeElement.click();
 
-  }
+    let text = "Are you sure that you want to download document?";
+    if (confirm(text) == true)
+    {
+      this._documentStore.download(doc).subscribe();
+      this.displayUploadedFilesDialog = false;
+    }
+    else{
 
-  public uploadDocument(doc: any) {
-    this.selectedDocTypeId = doc.id;
-    this.element.nativeElement.click();
+      this.displayUploadedFilesDialog = false;
+    }
   }
+ 
   public uploadedFiles(doc: any) {
     this._spinner.show();
     this.selectedDocTypeId = doc.id;
@@ -215,84 +178,9 @@ export class ViewDocumentUploadComponent implements OnInit {
     this.displayUploadedFilesDialog = true;
   }
 
-  public onUploadChange = (files) => {
-    files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.FundApp);
-    this._documentStore.upload(files, EntityTypeEnum.SupportingDocuments, Number(this.fundingApplicationDetails.id),
-      EntityEnum.FundingApplicationDetails, this.application.refNo, this.selectedDocTypeId).subscribe(
-        event => {
-          if (event.type === HttpEventType.UploadProgress)
-            this._spinner.show();
-          else if (event.type === HttpEventType.Response) {
-            this._spinner.hide();
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
-            this.loadDocumentTypes();
-          }
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
-        }
-      );
-  }
-
   onFileSelected(event) {
     this.selectedFile = <File>event.target.files[0];
     this.selectedFilename = this.selectedFile.name;
-  }
-
-  public onUploadChange1 = (event, form) => {
-    if (event.files[0]) {
-      this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments,
-        Number(this.fundingApplicationDetails.id), EntityEnum.FundingApplicationDetails,
-        this.application.refNo, event.files[0].documentType.id).subscribe(
-          event => {
-            if (event.type === HttpEventType.UploadProgress)
-              this._spinner.show();
-            else if (event.type === HttpEventType.Response) {
-              this._spinner.hide();
-              this.getDocuments();
-            }
-          },
-          () => this._spinner.hide()
-        );
-      form.clear();
-    }
-    else {
-      this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please specify the document type.' });
-    }
-  }
-
-  public uploadADDocument = (files) => {
-    if (files.length === 0) {
-      return;
-    }
-    this._spinner.show();
-    let filesToUpload: File[] = files;
-    const formData = new FormData();
-
-    Array.from(filesToUpload).map((fileAdDoc, index) => {
-      return formData.append('file' + index, fileAdDoc, fileAdDoc.name);
-    });
-
-    this.http.post(this.envUrl.urlAddress + `/api/documentstore/UploadDocuments?id=` + this.indicatorDetailsId + "&userId=" + this.userId, formData, { reportProgress: true, observe: 'events' })
-      .subscribe(event => {
-        if (event.type === HttpEventType.UploadProgress)
-          this._spinner.show();
-        else if (event.type === HttpEventType.Response) {
-          // this.message = 'Uploaded!';
-
-          this.downloadButtonColor = 'p-button-success';
-          this.downloadButtonColor = 'ui-button-info';
-          this._spinner.hide();
-          let filesToUpload: File[] = files;
-          this._messageService.add({ severity: 'success', summary: 'Success', detail: 'File Uploaded' });
-        }
-      },
-
-        (error) => {
-          this._loggerService.logException(error);
-          this._spinner.hide();
-        });
   }
 
   private getDocuments() {
@@ -308,7 +196,6 @@ export class ViewDocumentUploadComponent implements OnInit {
   }
 
   private getFundAppDocuments(docTypeId: number) {
-    //this.fundAppdocuments =[];
     if (this.fundingApplicationDetails?.id != undefined) {
       this._documentStore.getFundApp(Number(this.fundingApplicationDetails?.id), docTypeId, EntityTypeEnum.SupportingDocuments).subscribe(
         res => {
@@ -318,33 +205,5 @@ export class ViewDocumentUploadComponent implements OnInit {
         () => this._spinner.hide()
       );
     }
-  }
-
-  onDeleteDocument(doc: any) {
-    this._confirmationService.confirm({
-      message: 'Are you sure that you want to delete this document?',
-      header: 'Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-        this._spinner.show();
-
-        this._documentStore.delete(doc.resourceId).subscribe(
-          event => {
-            //this.getDocuments();
-
-            this.getFundAppDocuments(this.selectedDocTypeId);
-            this._spinner.hide();
-          },
-          (error) => this._spinner.hide()
-        );
-      },
-      reject: () => {
-      }
-    });
-  }
-
-  prevPage() {
-    this.activeStep = this.activeStep - 1;
-    this.activeStepChange.emit(this.activeStep);
   }
 }

@@ -46,9 +46,9 @@ namespace NPOMS.Repository.Configurations.Core
 				new Role
 				{
 					Id = 6,
-					Name = "Approver",
-					SystemName = "Approver"
-				},
+					Name = "PreEvaluator",
+					SystemName = "PreEvaluator"
+                },
                 new Role
                 {
                     Id = 7,

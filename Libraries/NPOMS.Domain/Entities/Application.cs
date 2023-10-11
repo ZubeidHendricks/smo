@@ -28,6 +28,7 @@ namespace NPOMS.Domain.Entities
 		public bool IsCloned { get; set; }
 
 		public bool IsQuickCapture { get; set; }
+		public int Step { get; set; }
 
 		public Npo Npo { get; set; }
 

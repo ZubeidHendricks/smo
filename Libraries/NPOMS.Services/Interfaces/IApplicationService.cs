@@ -22,7 +22,7 @@ namespace NPOMS.Services.Interfaces
 
         Task<Application> GetByIds(int npoId, int financialYearId, int applicationTypeId);
 
-        Task UpdateFundingApplicationStatus(string userIdentifier, int fundingApplicationId, int statusId);
+        Task UpdateFundingApplicationStatus(string userIdentifier, int fundingApplicationId, int statusId, int step);
 
         //Task<FundingApplication> GetFundingApplicationById(int id, bool returnAllDetails);
 
