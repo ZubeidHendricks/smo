@@ -1,4 +1,4 @@
-import { ProjectImplementationComponent } from './../application-steps/funding-application/project-implementation/project-implementation.component';
+import { ProjectImplementationComponent } from '../application-steps/funding-application/project-implementation/project-implementation.component';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -17,11 +17,11 @@ import { DatePipe } from '@angular/common';
 import { style } from '@angular/animations';
 
 @Component({
-  selector: 'app-workflow-application',
-  templateUrl: './workflow-application.component.html',
-  styleUrls: ['./workflow-application.component.css']
+  selector: 'app-scorecard',
+  templateUrl: './scorecard.component.html',
+  styleUrls: ['./scorecard.component.css']
 })
-export class WorkflowApplicationComponent implements OnInit {
+export class ScorecardComponent implements OnInit {
   isSystemAdmin: boolean;
   isAdmin: boolean;
   hasAdminRole: boolean;
@@ -1332,9 +1332,6 @@ onAprCheckboxChange(event: any) {
     return ragColour;
   }
 
- 
-
-
 
   public displayField(question: IQuestionResponseViewModel) {
     let canDisplayField: boolean;
@@ -1597,153 +1594,6 @@ onAprCheckboxChange(event: any) {
       status = 'pending';
 
     return status;
-  }
-
-  editObjective(data: IObjective) {
-    this.objective = this.cloneObjective(data);
-    this.displayObjectiveDialog = true;
-  }
-
-  private cloneObjective(data: IObjective): IObjective {
-    let obj = {} as IObjective;
-
-    for (let prop in data)
-      obj[prop] = data[prop];
-
-    const programmeIds = data.objectiveProgrammes.map(({ programmeId }) => programmeId);
-    this.selectedProgrammes = this.programmes.filter(item => programmeIds.includes(item.id));
-    this.programmeChange(this.selectedProgrammes);
-
-    const subProgrammeIds = data.objectiveProgrammes.map(({ subProgrammeId }) => subProgrammeId);
-    this.selectedSubProgrammes = this.subProgrammes.filter(item => subProgrammeIds.includes(item.id));
-
-    this.getTextValues(ServiceProvisionStepsEnum.Objectives);
-
-    return obj;
-  }
-
-  private getTextValues(serviceProvisionStepId: ServiceProvisionStepsEnum) {
-    if (serviceProvisionStepId === ServiceProvisionStepsEnum.Objectives) {
-      let allProgrammes: string = "";
-
-      this.selectedProgrammes.forEach(item => {
-        allProgrammes += item.name + ";\n";
-      });
-
-      this.selectedProgrammesText = allProgrammes;
-    }
-
-    if (serviceProvisionStepId === ServiceProvisionStepsEnum.Activities) {
-      let allFacilities: string = "";
-
-      this.selectedFacilities.forEach(item => {
-        allFacilities += item.name + ";\n";
-      });
-
-      this.selectedFacilitiesText = allFacilities;
-    }
-
-    let allSubProgrammes: string = "";
-
-    this.selectedSubProgrammes.forEach(item => {
-      allSubProgrammes += item.name + ";\n";
-    });
-
-    this.selectedSubProgrammesText = allSubProgrammes;
-  }
-
-  programmeChange(programmes: IProgramme[]) {
-    this.subProgrammes = [];
-
-    programmes.forEach(item => {
-      if (item.id != null) {
-        for (var i = 0; i < this.allSubProgrammes.length; i++) {
-          if (this.allSubProgrammes[i].programmeId == item.id) {
-            this.subProgrammes.push(this.allSubProgrammes[i]);
-          }
-        }
-      }
-    });
-  }
-
-  viewComments(data: any, serviceProvisionStepId: ServiceProvisionStepsEnum) {
-    this.filteredApplicationComments = [];
-    this.filteredApplicationComments = this.allApplicationComments.filter(x => x.serviceProvisionStepId === serviceProvisionStepId && x.entityId === data.id);
-    this.displayAllCommentDialog = true;
-  }
-
-  editActivity(data: IActivity) {
-    this.activity = this.cloneActivity(data);
-    this.displayActivityDialog = true;
-  }
-
-  private cloneActivity(data: IActivity): IActivity {
-    data.name = data.activityList.name;
-    data.description = data.activityList.description;
-
-    let activity = {} as IActivity;
-
-    for (let prop in data)
-      activity[prop] = data[prop];
-
-    this.selectedObjective = this.objectives.find(x => x.id === data.objectiveId);
-    this.objectiveChange(this.selectedObjective);
-
-    const facilityListIds = data.activityFacilityLists.map(({ facilityListId }) => facilityListId);
-    this.selectedFacilities = this.allAssignedFacilities.filter(item => facilityListIds.includes(item.id));
-
-    const subProgrammeIds = data.activitySubProgrammes.map(({ subProgrammeId }) => subProgrammeId);
-    this.selectedSubProgrammes = this.subProgrammes.filter(item => subProgrammeIds.includes(item.id));
-
-    this.getTextValues(ServiceProvisionStepsEnum.Activities);
-
-    return activity;
-  }
-
-  objectiveChange(objective: IObjective) {
-    this.subProgrammes = [];
-
-    const subProgrammeIds = objective.objectiveProgrammes.map(({ subProgrammeId }) => subProgrammeId);
-    this.subProgrammes = this.allSubProgrammes.filter(item => subProgrammeIds.includes(item.id));
-  }
-
-  editSustainabilityPlan(data: ISustainabilityPlan) {
-    this.sustainabilityPlan = this.cloneSustainabilityPlan(data);
-    this.displaySustainabilityPlanDialog = true;
-  }
-
-  private cloneSustainabilityPlan(data: ISustainabilityPlan): ISustainabilityPlan {
-    let plan = {} as ISustainabilityPlan;
-
-    for (let prop in data)
-      plan[prop] = data[prop];
-
-    this.selectedActivity = this.activities.find(x => x.id === data.activityId);
-
-    return plan;
-  }
-
-  editResource(data: IResource) {
-    this.resource = this.cloneResource(data);
-    this.displayResourceDialog = true;
-  }
-
-  private cloneResource(data: IResource): IResource {
-    data.name = data.resourceList.name;
-    data.description = data.resourceList.description;
-
-    let resource = {} as IResource;
-
-    for (let prop in data)
-      resource[prop] = data[prop];
-
-    this.selectedActivity = this.activities.find(x => x.id === data.activityId);
-
-    return resource;
-  }
-
-  viewAuditHistory() {
-    this.displayHistory = true;
   }
 
 }
