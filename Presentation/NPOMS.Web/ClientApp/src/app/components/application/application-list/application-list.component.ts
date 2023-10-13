@@ -376,7 +376,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Download Application', 'Funding Application');
       this.buttonItemExists('View Application', 'Funding Application');
       this.buttonItemExists('Delete Application', 'Funding Application');
-      this.buttonItemExists('Download Assessment', 'workflow Application');
+      this.buttonItemExists('Download Assessment', 'Workflow Application');
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
@@ -469,7 +469,7 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
-          this.buttonItemExists('Download Assessment', 'workflow Application');
+          this.buttonItemExists('Download Assessment', 'Workflow Application');
           break;
         }
         case StatusEnum.PendingReview: {
@@ -477,7 +477,7 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
-          this.buttonItemExists('Download Assessment', 'workflow Application');
+          this.buttonItemExists('Download Assessment', 'Workflow Application');
           break;
         }
         case StatusEnum.Verified: {
