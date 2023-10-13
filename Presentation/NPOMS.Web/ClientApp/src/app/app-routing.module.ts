@@ -82,6 +82,7 @@ import { ResponseOptionComponent } from './components/admin/utilities/response-o
 import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
 import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
 import  {WorkflowApplicationComponent} from './components/application/workflow-component/workflow-application.component';
+//import  {ScorecardComponent} from './components/application/scorecard-component/scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -178,6 +179,7 @@ const routes: Routes = [
   { path: 'workplan-indicator/actuals/:id', component: ActualsComponent },
   { path: 'workplan-indicator/targets/:id/financial-year/:financialYearId', component: TargetsComponent },
   { path: 'workplan-indicator/summary/:npoId', component: SummaryComponent },
+ // { path: 'application/scorecard/:npoId', component: ScorecardComponent },
 
   // Budgets
   { path: 'admin/department-budget', component: DepartmentBudgetComponent },
