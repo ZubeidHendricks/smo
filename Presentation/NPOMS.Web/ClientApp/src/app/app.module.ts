@@ -163,6 +163,8 @@ import { WorkflowApplicationComponent } from './components/application/workflow-
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 import { QcApplicationDetailsEditComponent } from './components/application/application-steps/quick-capture/qc-application-details-edit/qc-application-details-edit.component';
 import { QcDocumentUploadEditComponent } from './components/application/application-steps/quick-capture/qc-document-upload-edit/qc-document-upload-edit.component';
+import { ScorecardComponent } from './components/application/scorecard/scorecard.component';
+import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -321,7 +323,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     QuickCaptureEditListComponent,
     QuickCaptureEditListComponent,
     QcApplicationDetailsEditComponent,
-    QcDocumentUploadEditComponent
+    QcDocumentUploadEditComponent,
+    ScorecardComponent,
+    ScorecardQuestionComponent
    // ScorecardComponent
   ],
   schemas: [

@@ -11,8 +11,12 @@ export enum QuestionCategoryEnum {
     PreEvaluation,
     Adjudication,
     Evaluation,
-    Approval
-
+    Approval,
+    Engagement,
+    TimelyWorkPlanSubmission,
+    Impact,
+    RiskMitigation,
+    AppropriationofResources
 }
 
 export enum ApplicationTypeEnum {

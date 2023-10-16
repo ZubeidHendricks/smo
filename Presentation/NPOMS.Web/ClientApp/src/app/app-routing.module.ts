@@ -84,6 +84,7 @@ import { QuestionCategoryComponent } from './components/admin/utilities/question
 import  {WorkflowApplicationComponent} from './components/application/workflow-component/workflow-application.component';
 //import  {ScorecardComponent} from './components/application/scorecard-component/scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
+import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
 
@@ -169,6 +170,7 @@ const routes: Routes = [
   { path: 'utilities/response-option', component: ResponseOptionComponent },
   { path: 'utilities/response-type', component: ResponseTypeComponent },
   { path: 'utilities/workflow-assessment', component: WorkflowAssessmentComponent },
+  { path: 'utilities/scorecard-question', component: ScorecardQuestionComponent },
 
   // Error Pages
   { path: '401', component: Page401Component },
