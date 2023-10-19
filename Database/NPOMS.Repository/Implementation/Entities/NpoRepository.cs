@@ -60,9 +60,9 @@ namespace NPOMS.Repository.Implementation.Entities
 			return await FindByCondition(x => x.Name.Contains(name) && x.IsActive && x.ApprovalStatusId.Equals((int)AccessStatusEnum.Approved)).AsNoTracking().ToListAsync();
 		}
 
-		public async Task<Npo> GetByNameAndOrgTypeId(string name, int organisationTypeId)
+		public async Task<Npo> GetByNameAndOrgTypeId(string name, int organisationTypeId, string CCode)
 		{
-			return await FindByCondition(x => x.Name.ToLower().Equals(name.ToLower()) && x.OrganisationTypeId.Equals(organisationTypeId))
+			return await FindByCondition(x => x.Name.ToLower().Equals(name.ToLower()) && x.OrganisationTypeId.Equals(organisationTypeId) && x.CCode.ToLower().Equals(CCode.ToLower()))
 							.Where(x => x.IsActive).AsNoTracking().FirstOrDefaultAsync();
 		}
 

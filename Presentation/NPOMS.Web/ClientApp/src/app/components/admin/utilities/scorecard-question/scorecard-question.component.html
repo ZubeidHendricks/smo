@@ -67,7 +67,7 @@
         <div class="heading">
             <span><b>Timely Work Plan Submission</b></span>
         </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('TimelyWorkPlanSubmission')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('Timely Work Plan Submission')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
@@ -108,10 +108,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer" *ngIf="hasWeighting('TimelyWorkPlanSubmission')">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('Timely Work Plan Submission')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('TimelyWorkPlanSubmission')}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('Timely Work Plan Submission')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>
@@ -171,7 +171,7 @@
         <div class="heading">
             <span><b>Scorecard	Risk Mitigation</b></span>
         </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('RiskMitigation')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('Risk Mitigation')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
@@ -212,10 +212,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer" *ngIf="hasWeighting('RiskMitigation')">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('Risk Mitigation')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('RiskMitigation')}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('Risk Mitigation')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>
@@ -223,7 +223,7 @@
         <div class="heading">
             <span><b>Appropriation of Resources</b></span>
         </div>
-        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('AppropriationofResources')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
+        <p-table styleClass="p-datatable-striped" [rowHover]="true" [value]="getQuestions('Appropriation of Resources')" sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,20,50]" [rows]="10" [columns]="cols">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width:5%;"></th>
@@ -264,10 +264,10 @@
                     <td colspan="5" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="footer" *ngIf="hasWeighting('AppropriationofResources')">
+            <ng-template pTemplate="footer" *ngIf="hasWeighting('Appropriation of Resources')">
                 <tr>
                     <td colspan="4"><span style="font-weight: bold;">Total</span></td>
-                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('AppropriationofResources')}}</span></td>
+                    <td colspan="4"><span style="font-weight: bold;">{{getWeightingTotal('Appropriation of Resources')}}</span></td>
                 </tr>
             </ng-template>
         </p-table>
