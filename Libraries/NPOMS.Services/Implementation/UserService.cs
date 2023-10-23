@@ -102,7 +102,8 @@ namespace NPOMS.Services.Implementation
 			// Get user with all updated details
 			user = await _userRepository.GetByUserName(userName);
 
-			await CreateNpoUserMappings(user);
+			if (user != null)
+				await CreateNpoUserMappings(user);
 
 			var viewModel = _mapper.Map<UserViewModel>(user);
 

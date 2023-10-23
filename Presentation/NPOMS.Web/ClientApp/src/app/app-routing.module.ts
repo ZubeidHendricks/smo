@@ -103,7 +103,7 @@ const routes: Routes = [
   { path: 'quick-captures-editList/edit/:id', component: QuickCaptureEditListComponent },
 
   { path: 'quick-capture/create', component: CreateQuickCaptureComponent },
-  { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },  
+  { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },
 
   { path: 'quick-captures/:id', component: QuickCaptureListComponent },
 
@@ -114,7 +114,7 @@ const routes: Routes = [
   { path: 'applications', component: ApplicationListComponent },
   { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },
   { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
-  
+
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },
@@ -124,7 +124,7 @@ const routes: Routes = [
   { path: 'application-periods', component: ApplicationPeriodListComponent },
   { path: 'application-period/create', component: CreateApplicationPeriodComponent },
   { path: 'application-period/edit/:id', component: EditApplicationPeriodComponent },
-  { path: 'application/view/:id', component: WorkflowApplicationComponent },
+  { path: 'fa-application/view/:id', component: WorkflowApplicationComponent },
   { path: 'application/pre-evaluate/:id', component: WorkflowApplicationComponent },
   { path: 'application/evaluate/:id', component: WorkflowApplicationComponent },
   { path: 'application/adjudicate/:id', component: WorkflowApplicationComponent },
@@ -181,7 +181,7 @@ const routes: Routes = [
   { path: 'workplan-indicator/actuals/:id', component: ActualsComponent },
   { path: 'workplan-indicator/targets/:id/financial-year/:financialYearId', component: TargetsComponent },
   { path: 'workplan-indicator/summary/:npoId', component: SummaryComponent },
- // { path: 'application/scorecard/:npoId', component: ScorecardComponent },
+  // { path: 'application/scorecard/:npoId', component: ScorecardComponent },
 
   // Budgets
   { path: 'admin/department-budget', component: DepartmentBudgetComponent },

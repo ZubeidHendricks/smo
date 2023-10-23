@@ -24,6 +24,12 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Id = 2,
 					Name = "Sub-Recipient",
 					SystemName = "SubRecipient"
+				},
+				new RecipientType
+				{
+					Id = 3,
+					Name = "Sub-SubRecipient",
+					SystemName = "SubSubRecipient"
 				}
 			);
 		}

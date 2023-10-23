@@ -2,6 +2,7 @@
 using NPOMS.Domain.Entities;
 using NPOMS.Repository.Interfaces.Entities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Implementation.Entities
@@ -23,7 +24,10 @@ namespace NPOMS.Repository.Implementation.Entities
 		public async Task<IEnumerable<Objective>> GetEntities(int applicationId)
 		{
 			return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
-				.Include(x => x.RecipientType).AsNoTracking().ToListAsync();
+							.Include(x => x.RecipientType)
+							.Include(x => x.SubRecipients.Where(y => y.IsActive))
+								.ThenInclude(x => x.SubSubRecipients.Where(y => y.IsActive))
+							.AsNoTracking().ToListAsync();
 		}
 
 		public async Task CreateEntity(Objective model)

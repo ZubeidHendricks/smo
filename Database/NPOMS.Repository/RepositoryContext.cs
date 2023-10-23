@@ -160,6 +160,8 @@ namespace NPOMS.Repository
         public DbSet<SourceOfInformation> SourceOfInformation { get; set; }
         public DbSet<AffiliatedOrganisationInformation> AffiliatedOrganisationInformation { get; set; }
         public DbSet<MyContentLink> MyContentLinks { get; set; }
+        public DbSet<SubRecipient> SubRecipients { get; set; }
+        public DbSet<SubSubRecipient> SubSubRecipients { get; set; }
 
         /* Lookup */
         public DbSet<FacilityList> ActivityList { get; set; }
