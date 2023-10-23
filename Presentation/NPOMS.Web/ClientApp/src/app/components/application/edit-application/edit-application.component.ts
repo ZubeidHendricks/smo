@@ -298,7 +298,8 @@ export class EditApplicationComponent implements OnInit {
           icon: 'fa fa-check',
           command: () => {
             this.formValidate();
-          }
+          },
+          visible: false
         },
         {
           label: 'Clear Messages',

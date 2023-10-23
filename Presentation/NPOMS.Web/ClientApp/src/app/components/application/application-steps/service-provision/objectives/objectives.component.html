@@ -53,7 +53,7 @@
 
 <p-dialog header="Objective" 
           [(visible)]="displayObjectiveDialog" 
-          [style]="{width: '50vw'}" 
+          [style]="{width: '75vw'}" 
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
@@ -122,7 +122,7 @@
             </div>
         </div>
         <div class="p-col">
-            <p-dropdown [options]="recipientTypes" placeholder="Select a Recipient Type" optionLabel="name" [(ngModel)]="selectedRecipientType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
+            <p-dropdown [options]="getFilteredRecipientTypes(RecipientTypeEnum.Primary)" placeholder="Select a Recipient Type" optionLabel="name" [(ngModel)]="selectedRecipientType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
         </div>
     </div>
     <div class="p-grid">
@@ -147,9 +147,156 @@
             <p-inputNumber [(ngModel)]="objective.budget" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}" [disabled]="!canEdit"></p-inputNumber>
         </div>
     </div>
+    <hr>
+    <p>Recipient Details</p>
+    <p-table [rowHover]="true" [value]="getActiveSRs()" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Organisation Name</th>
+                <th>Recipient Type</th>
+                <th>Funding Period</th>
+                <th>Budget</th>
+                <th style="width: 80px;">Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-recipient let-rowIndex="rowIndex">
+            <tr *ngIf="rowGroupMetadata && rowGroupMetadata[rowIndex].itemExists === false">
+                <td><span class="p-text-bold">{{recipient.organisationName}}</span></td>
+                <td><span class="p-text-bold" *ngIf="recipient.recipientType">{{recipient.recipientType.name}}</span></td>
+                <td><span class="p-text-bold">{{recipient.fundingPeriodStartDate}} to {{recipient.fundingPeriodEndDate}}</span></td>
+                <td><span class="p-text-bold">{{recipient.budget}}</span></td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editSR(recipient)" pTooltip="{{tooltip}} SR" tooltipPosition="top"></button>
+                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteSR(recipient)" pTooltip="Delete SR" tooltipPosition="top"></button>
+                </td>
+            </tr>
+            <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)" class="default-font">
+                <td style="text-align: right;">{{subSubRecipient.organisationName}}</td>
+                <td style="text-align: right;" *ngIf="subSubRecipient.recipientType">{{subSubRecipient.recipientType.name}}</td>
+                <td style="text-align: right;">{{subSubRecipient.fundingPeriodStartDate}} to {{subSubRecipient.fundingPeriodEndDate}}</td>
+                <td style="text-align: right;">{{subSubRecipient.budget}}</td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editSSR(subSubRecipient, recipient)" pTooltip="{{tooltip}} SSR" tooltipPosition="top"></button>
+                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteSSR(subSubRecipient)" pTooltip="Delete SSR" tooltipPosition="top"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="5" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" *ngIf="canEdit">
+            <div style="text-align:left">
+                <button pButton pRipple type="button" label="Add Recipient" class="p-button-text" icon="fa fa-plus" (click)="addRecipient()"></button>
+            </div>
+        </ng-template>
+    </p-table>
     <ng-template pTemplate="footer" *ngIf="canAddComments">
         <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveObjective() (click)="saveObjective()"></button>
         <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Recipient Detail" 
+          [(visible)]="displayRecipientDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Recipient Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="getFilteredRecipientTypes(RecipientTypeEnum.SubRecipient)" placeholder="Select a Recipient Type" optionLabel="name" [(ngModel)]="selectedSubRecipientType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit || !newRecipient" (onChange)="recipientTypeChange()"></p-dropdown>
+        </div>
+    </div>
+    <div *ngIf="selectedSubRecipientType">
+        <div *ngIf="selectedSubRecipientType.id === RecipientTypeEnum.SubRecipient">
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Organisation Name</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <input type="text" class="form-text" pInputText [(ngModel)]="subRecipient.organisationName" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit">
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Funding Period</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-calendar [(ngModel)]="subRecipient.fundingPeriodStartDate" placeholder="Select a Start Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
+                    &nbsp; to &nbsp;
+                    <p-calendar [(ngModel)]="subRecipient.fundingPeriodEndDate" placeholder="Select a End Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Budget</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-inputNumber [(ngModel)]="subRecipient.budget" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}" [disabled]="!canEdit"></p-inputNumber>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedSubRecipientType.id === RecipientTypeEnum.SubSubRecipient">
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Sub-Recipient</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-dropdown [options]="getActiveSRs()" placeholder="Select a Sub-Recipient" optionLabel="organisationName" [(ngModel)]="selectedSubRecipient" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit || !newRecipient" (onChange)="subRecipientChange($event.value)"></p-dropdown>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Organisation Name</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <input type="text" class="form-text" pInputText [(ngModel)]="subSubRecipient.organisationName" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit">
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Funding Period</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-calendar [(ngModel)]="subSubRecipient.fundingPeriodStartDate" placeholder="Select a Start Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
+                    &nbsp; to &nbsp;
+                    <p-calendar [(ngModel)]="subSubRecipient.fundingPeriodEndDate" placeholder="Select a End Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Budget</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-inputNumber [(ngModel)]="subSubRecipient.budget" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}" [disabled]="!canEdit"></p-inputNumber>
+                </div>
+            </div>
+        </div>        
+    </div>
+    <ng-template pTemplate="footer" *ngIf="canEdit">
+        <button *ngIf="selectedSubRecipientType" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveRecipient(selectedSubRecipientType) (click)="saveRecipient(selectedSubRecipientType)"></button>
     </ng-template>
 </p-dialog>
 

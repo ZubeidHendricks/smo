@@ -2,8 +2,8 @@ import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DropdownTypeEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IDepartment, IObjective, IObjectiveProgramme, IProgramme, IRecipientType, ISubProgramme } from 'src/app/models/interfaces';
+import { DropdownTypeEnum, RecipientTypeEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IDepartment, IObjective, IObjectiveProgramme, IProgramme, IRecipientType, ISubProgramme, ISubRecipient, ISubSubRecipient } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -21,12 +21,17 @@ export class ObjectivesComponent implements OnInit {
     return RoleEnum;
   }
 
+  public get RecipientTypeEnum(): typeof RecipientTypeEnum {
+    return RecipientTypeEnum;
+  }
+
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() application: IApplication;
   @Output() objectiveChange: EventEmitter<IObjective> = new EventEmitter<IObjective>();
   @Input() canAddComments: boolean;
   @Input() isReview: boolean;
+  @Input() currentUserId: number;
 
   allObjectives: IObjective[];
   activeObjectives: IObjective[];
@@ -68,6 +73,18 @@ export class ObjectivesComponent implements OnInit {
   reviewerSatisfactionCols: any;
 
   displayDeletedObjectiveDialog: boolean;
+
+  displayRecipientDialog: boolean;
+  newRecipient: boolean;
+  subRecipient: ISubRecipient = {} as ISubRecipient;
+  subSubRecipient: ISubSubRecipient = {} as ISubSubRecipient;
+  selectedSubRecipientType: IRecipientType;
+  selectedSubRecipient: ISubRecipient;
+
+  subRecipientToEdit: ISubRecipient;
+  subSubRecipientToEdit: ISubSubRecipient;
+
+  rowGroupMetadata: any[];
 
   constructor(
     private _dropdownRepo: DropdownService,
@@ -237,8 +254,12 @@ export class ObjectivesComponent implements OnInit {
   addObjective() {
     this.newObjective = true;
     this.objective = {
-      objectiveProgrammes: [] as IObjectiveProgramme[]
+      objectiveProgrammes: [] as IObjectiveProgramme[],
+      subRecipients: [] as ISubRecipient[]
     } as IObjective;
+
+    this.updateRowGroupMetaData(this.objective);
+
     this.selectedProgrammes = [];
     this.subProgrammes = [];
     this.selectedSubProgrammes = [];
@@ -253,10 +274,29 @@ export class ObjectivesComponent implements OnInit {
     this.newObjective = false;
     this.objective = this.cloneObjective(data);
 
+    this.updateRowGroupMetaData(this.objective);
+
     if (this.application.isCloned)
       this.objective.isNew = this.objective.isNew == undefined ? false : this.objective.isNew;
 
     this.displayObjectiveDialog = true;
+  }
+
+  private updateRowGroupMetaData(objective: IObjective) {
+    this.rowGroupMetadata = [];
+
+    if (objective.subRecipients) {
+
+      objective.subRecipients.forEach(element => {
+
+        var itemExists = this.rowGroupMetadata.some(function (data) { return data.itemName === element.organisationName });
+
+        this.rowGroupMetadata.push({
+          itemName: element.organisationName,
+          itemExists: itemExists
+        });
+      });
+    }
   }
 
   private cloneObjective(data: IObjective): IObjective {
@@ -275,6 +315,14 @@ export class ObjectivesComponent implements OnInit {
     this.selectedSubProgrammes = this.subProgrammes.filter(item => subProgrammeIds.includes(item.id));
 
     this.getTextValues();
+
+    data.subRecipients.forEach(sr => {
+      sr.recipientType = this.recipientTypes.find(x => x.id === sr.recipientTypeId);
+
+      sr.subSubRecipients.forEach(ssr => {
+        ssr.recipientType = this.recipientTypes.find(x => x.id === ssr.recipientTypeId);
+      });
+    });
 
     return obj;
   }
@@ -338,6 +386,13 @@ export class ObjectivesComponent implements OnInit {
       } as IObjectiveProgramme;
 
       this.objective.objectiveProgrammes.push(objectiveProgramme);
+    });
+
+    this.objective.subRecipients.forEach(sr => {
+      sr.recipientType = null;
+      sr.subSubRecipients.forEach(ssr => {
+        ssr.recipientType = null;
+      });
     });
 
     this.newObjective ? this.createObjective() : this.updateObjective();
@@ -514,5 +569,188 @@ export class ObjectivesComponent implements OnInit {
   public viewDeletedObjectives() {
     this.deletedObjectives = this.allObjectives.filter(x => x.isActive === false);
     this.displayDeletedObjectiveDialog = true;
+  }
+
+  public getFilteredRecipientTypes(recipientType: RecipientTypeEnum) {
+    if (this.recipientTypes)
+      return recipientType === RecipientTypeEnum.Primary ? this.recipientTypes.filter(x => x.id === recipientType) : this.recipientTypes.filter(x => x.id !== RecipientTypeEnum.Primary);
+  }
+
+  public addRecipient() {
+    this.newRecipient = true;
+    this.selectedSubRecipientType = null;
+    this.displayRecipientDialog = true;
+  }
+
+  public disableSaveRecipient(recipientType: IRecipientType) {
+    if (recipientType.id === RecipientTypeEnum.SubRecipient) {
+      let data = this.subRecipient;
+
+      if (!data.organisationName || !data.fundingPeriodStartDate || !data.fundingPeriodEndDate || !data.budget)
+        return true;
+    }
+
+    if (recipientType.id === RecipientTypeEnum.SubSubRecipient) {
+      let data = this.subSubRecipient;
+
+      if (!data.organisationName || !data.fundingPeriodStartDate || !data.fundingPeriodEndDate || !data.budget || !this.selectedSubRecipient)
+        return true;
+    }
+
+    return false;
+  }
+
+  public saveRecipient(recipientType: IRecipientType) {
+    if (recipientType.id === RecipientTypeEnum.SubRecipient) {
+      this.subRecipient.recipientType = this.selectedSubRecipientType;
+      this.subRecipient.recipientTypeId = this.selectedSubRecipientType.id;
+      this.subRecipient.isActive = true;
+
+      this.subRecipient.fundingPeriodStartDate = this._datepipe.transform(this.subRecipient.fundingPeriodStartDate, 'yyyy-MM-dd');
+      this.subRecipient.fundingPeriodEndDate = this._datepipe.transform(this.subRecipient.fundingPeriodEndDate, 'yyyy-MM-dd');
+
+      this.newRecipient ? this.createSR() : this.updateSR();
+      this.updateRowGroupMetaData(this.objective);
+    }
+
+    if (recipientType.id === RecipientTypeEnum.SubSubRecipient) {
+      this.subSubRecipient.recipientType = this.selectedSubRecipientType;
+      this.subSubRecipient.recipientTypeId = this.selectedSubRecipientType.id;
+      this.subSubRecipient.isActive = true;
+
+      this.subSubRecipient.fundingPeriodStartDate = this._datepipe.transform(this.subSubRecipient.fundingPeriodStartDate, 'yyyy-MM-dd');
+      this.subSubRecipient.fundingPeriodEndDate = this._datepipe.transform(this.subSubRecipient.fundingPeriodEndDate, 'yyyy-MM-dd');
+
+      this.newRecipient ? this.createSSR() : this.updateSSR();
+      this.updateRowGroupMetaData(this.objective);
+    }
+
+    this.displayRecipientDialog = false;
+  }
+
+  private createSR() {
+    this.subRecipient.subSubRecipients = [];
+    this.subRecipient.createdUserId = this.currentUserId;
+    this.subRecipient.createdDateTime = this.getCurrentDateTime();
+    this.objective.subRecipients.push(this.subRecipient);
+  }
+
+  private updateSR() {
+    this.subRecipient.updatedUserId = this.currentUserId;
+    this.subRecipient.updatedDateTime = this.getCurrentDateTime();
+    this.objective.subRecipients[this.objective.subRecipients.indexOf(this.subRecipientToEdit)] = this.subRecipient;
+  }
+
+  private createSSR() {
+    this.subSubRecipient.createdUserId = this.currentUserId;
+    this.subSubRecipient.createdDateTime = this.getCurrentDateTime();
+
+    let subRecipientDetail = this.objective.subRecipients.find(x => x.organisationName === this.selectedSubRecipient.organisationName);
+    subRecipientDetail.subSubRecipients.push(this.subSubRecipient);
+  }
+
+  private updateSSR() {
+    this.subSubRecipient.updatedUserId = this.currentUserId;
+    this.subSubRecipient.updatedDateTime = this.getCurrentDateTime();
+
+    let subRecipient = this.objective.subRecipients[this.objective.subRecipients.indexOf(this.subRecipientToEdit)];
+    subRecipient.subSubRecipients[subRecipient.subSubRecipients.indexOf(this.subSubRecipientToEdit)] = this.subSubRecipient;
+  }
+
+  public editSR(subRecipient: ISubRecipient) {
+    this.newRecipient = false;
+    this.subRecipientToEdit = subRecipient;
+    this.subRecipient = this.cloneSubRecipient(subRecipient);
+    this.displayRecipientDialog = true;
+  }
+
+  private cloneSubRecipient(data: ISubRecipient): ISubRecipient {
+    let obj = {} as ISubRecipient;
+
+    for (let prop in data)
+      obj[prop] = data[prop];
+
+    this.selectedSubRecipientType = this.recipientTypes.find(x => x.id === data.recipientTypeId);
+
+    return obj;
+  }
+
+  public deleteSR(subRecipient: ISubRecipient) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        subRecipient.isActive = false;
+        subRecipient.updatedUserId = this.currentUserId;
+        subRecipient.updatedDateTime = this.getCurrentDateTime();
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  public editSSR(ssr: ISubSubRecipient, subRecipient: ISubRecipient) {
+    this.newRecipient = false;
+    this.subRecipientToEdit = subRecipient;
+    this.subSubRecipientToEdit = ssr;
+    this.subSubRecipient = this.cloneSubSubRecipient(ssr, subRecipient);
+    this.displayRecipientDialog = true;
+  }
+
+  private cloneSubSubRecipient(data: ISubSubRecipient, subRecipient: ISubRecipient): ISubSubRecipient {
+    let obj = {} as ISubSubRecipient;
+
+    for (let prop in data)
+      obj[prop] = data[prop];
+
+    this.selectedSubRecipientType = this.recipientTypes.find(x => x.id === data.recipientTypeId);
+    this.selectedSubRecipient = this.objective.subRecipients.find(x => x.organisationName === subRecipient.organisationName);
+
+    return obj;
+  }
+
+  public deleteSSR(ssr: ISubSubRecipient) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        ssr.isActive = false;
+        ssr.updatedUserId = this.currentUserId;
+        ssr.updatedDateTime = this.getCurrentDateTime();
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  private getCurrentDateTime() {
+    let today = new Date();
+    let nextTwoHours = today.getHours() + 2;
+    today.setHours(nextTwoHours);
+    return today;
+  }
+
+  public recipientTypeChange() {
+    if (this.selectedSubRecipientType.id === RecipientTypeEnum.SubRecipient)
+      this.subRecipient = {} as ISubRecipient;
+
+    if (this.selectedSubRecipientType.id === RecipientTypeEnum.SubSubRecipient) {
+      this.subSubRecipient = {} as ISubSubRecipient;
+      this.selectedSubRecipient = null;
+    }
+  }
+
+  public getActiveSRs() {
+    return Object.values(this.objective).length === 0 ? [] : this.objective.subRecipients.filter(x => x.isActive);
+  }
+
+  public getActiveSSRs(subSubRecipients: ISubSubRecipient[]) {
+    return subSubRecipients.filter(x => x.isActive);
+  }
+
+  public subRecipientChange(subRecipient: ISubRecipient) {
+    this.subSubRecipient.subRecipientId = this.objective.subRecipients.find(x => x.organisationName === subRecipient.organisationName).id;
   }
 }
