@@ -66,7 +66,13 @@ namespace NPOMS.Repository.Configurations.Core
                     Id = 9,
                     Name = "Approver",
                     SystemName = "Approver"
-                }
+                },
+				new Role
+				{
+					Id = 10,
+					Name = "View Only",
+					SystemName = "ViewOnly"
+				}
             );
 		}
 	}

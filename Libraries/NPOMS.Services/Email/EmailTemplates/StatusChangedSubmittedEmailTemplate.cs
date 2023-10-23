@@ -38,7 +38,7 @@ namespace NPOMS.Services.Email.EmailTemplates
 
             try
             {
-                var allUsers = await userRepository.GetAllUsersAsync();
+                /*var allUsers = await userRepository.GetAllUsersAsync();
                 var verifiers = allUsers.Where(x => x.Roles.Any(y => y.RoleId == (int)RoleEnum.Verifier));
 
                 foreach (var verifier in verifiers)
@@ -56,7 +56,7 @@ namespace NPOMS.Services.Email.EmailTemplates
                     };
 
                     await emailQueueService.CreateEmailQueue(emailQueue);
-                }
+                }*/
             }
             catch (Exception ex)
             {
