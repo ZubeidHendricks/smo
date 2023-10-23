@@ -209,7 +209,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Service Provision',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
+            this._router.navigateByUrl('sp-application/view/' + this.selectedApplication.id);
           }
         });
       }
@@ -290,7 +290,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
+            this._router.navigateByUrl('fa-application/view/' + this.selectedApplication.id);
           }
         });
       }

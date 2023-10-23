@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
@@ -6,17 +7,14 @@ using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository;
-using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Services.Interfaces;
-using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace NPOMS.Services.Implementation
@@ -55,6 +53,8 @@ namespace NPOMS.Services.Implementation
 		private readonly IFundAppRegionRepository _bidRegionRepository;
 		private readonly IFundAppServiceDeliveryAreaRepository _BidServiceDeliveryAreaRepository;
 		private IApplicationPeriodRepository _applicationPeriodRepository;
+		private ISubRecipientRepository _subRecipientRepository;
+		private ISubSubRecipientRepository _subSubRecipientRepository;
 
 		private RepositoryContext _repositoryContext;
 
@@ -93,7 +93,9 @@ namespace NPOMS.Services.Implementation
 			IMyContentLinkRepository myContentLinkRepository,
 			IFundAppRegionRepository bidRegionRepository,
 			IFundAppServiceDeliveryAreaRepository bidServiceDeliveryAreaRepository,
-			IApplicationPeriodRepository applicationPeriodRepository)
+			IApplicationPeriodRepository applicationPeriodRepository,
+			ISubRecipientRepository subRecipientRepository,
+			ISubSubRecipientRepository subSubRecipientRepository)
 		{
 			_applicationRepository = applicationRepository;
 			_userRepository = userRepository;
@@ -126,6 +128,8 @@ namespace NPOMS.Services.Implementation
 			_bidRegionRepository = bidRegionRepository;
 			_BidServiceDeliveryAreaRepository = bidServiceDeliveryAreaRepository;
 			_applicationPeriodRepository = applicationPeriodRepository;
+			_subRecipientRepository = subRecipientRepository;
+			_subSubRecipientRepository = subSubRecipientRepository;
 		}
 
 		#endregion
@@ -137,7 +141,7 @@ namespace NPOMS.Services.Implementation
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var applications = await _applicationRepository.GetEntities();
 			var results = applications.Where(x => !x.StatusId.Equals((int)StatusEnum.New));
-			
+
 			if (loggedInUser.Roles.Any(x => !x.RoleId.Equals((int)RoleEnum.Applicant)))
 			{
 				// Filter applications by department.
@@ -177,12 +181,12 @@ namespace NPOMS.Services.Implementation
 			return await _applicationRepository.GetByIds(npoId, financialYearId, applicationTypeId);
 		}
 
-        public async Task<Application> GetById(int applicationId)
-        {
-            return await _applicationRepository.GetById(applicationId);
-        }
+		public async Task<Application> GetById(int applicationId)
+		{
+			return await _applicationRepository.GetById(applicationId);
+		}
 
-        public async Task CloneWorkplan(Application model, int financialYearId, string userIdentifier)
+		public async Task CloneWorkplan(Application model, int financialYearId, string userIdentifier)
 		{
 			var existingApplication = await GetByIds(model.NpoId, financialYearId, (int)ApplicationTypeEnum.ServiceProvision);
 
@@ -326,20 +330,20 @@ namespace NPOMS.Services.Implementation
 			await _applicationRepository.CreateEntity(model);
 		}
 
-        public async Task UpdateFundingApplicationStatus(string userIdentifier, int fundingApplicationId, int statusId, int step)
-        {
-            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
-            var fundingApplication = await _applicationRepository.GetById(fundingApplicationId);
-            fundingApplication.StatusId = statusId;
+		public async Task UpdateFundingApplicationStatus(string userIdentifier, int fundingApplicationId, int statusId, int step)
+		{
+			var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+			var fundingApplication = await _applicationRepository.GetById(fundingApplicationId);
+			fundingApplication.StatusId = statusId;
 			fundingApplication.Step = step;
-            fundingApplication.UpdatedUserId = currentUser.Id;
-            fundingApplication.UpdatedDateTime = DateTime.Now;
+			fundingApplication.UpdatedUserId = currentUser.Id;
+			fundingApplication.UpdatedDateTime = DateTime.Now;
 
-            await _applicationRepository.UpdateAsync(fundingApplication);
+			await _applicationRepository.UpdateAsync(fundingApplication);
 
-        }
+		}
 
-        public async Task UpdateApplicationStatus(Application model, string userIdentifier)
+		public async Task UpdateApplicationStatus(Application model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
@@ -591,12 +595,42 @@ namespace NPOMS.Services.Implementation
 			foreach (var mapping in model.ObjectiveProgrammes)
 				await _objectiveProgrammeRepository.CreateAsync(mapping);
 
-			var objective = _mapper.Map<Objective>(model);
-			objective.UpdatedUserId = loggedInUser.Id;
-			objective.UpdatedDateTime = DateTime.Now;
+			model.UpdatedUserId = loggedInUser.Id;
+			model.UpdatedDateTime = DateTime.Now;
+
+			await UpdateRecipientDetails(model, loggedInUser.Id);
 
 			var oldEntity = await this._repositoryContext.Objectives.FindAsync(model.Id);
 			await _objectiveRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+		}
+
+		private async Task UpdateRecipientDetails(Objective model, int currentUserId)
+		{
+			foreach (var subRecipient in model.SubRecipients)
+			{
+				var oldEntitySR = await this._repositoryContext.SubRecipients.FindAsync(subRecipient.Id);
+
+				if (oldEntitySR != null)
+					await _subRecipientRepository.UpdateAsync(oldEntitySR, subRecipient, true, currentUserId);
+				else
+				{
+					subRecipient.ObjectiveId = model.Id;
+					await _subRecipientRepository.CreateAsync(subRecipient);
+				}
+
+				foreach (var subSubRecipient in subRecipient.SubSubRecipients)
+				{
+					var oldEntitySSR = await this._repositoryContext.SubSubRecipients.FindAsync(subSubRecipient.Id);
+
+					if (oldEntitySSR != null)
+						await _subSubRecipientRepository.UpdateAsync(oldEntitySSR, subSubRecipient, true, currentUserId);
+					else
+					{
+						subSubRecipient.SubRecipientId = subRecipient.Id;
+						await _subSubRecipientRepository.CreateAsync(subSubRecipient);
+					}
+				}
+			}
 		}
 
 		//public async Task UpdateProjectImplementation(ProjectImplementation model, string userIdentifier)

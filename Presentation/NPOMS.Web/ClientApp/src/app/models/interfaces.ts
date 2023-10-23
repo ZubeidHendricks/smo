@@ -569,6 +569,7 @@ export interface IObjective {
 
     recipientType: IRecipientType;
     objectiveProgrammes: IObjectiveProgramme[];
+    subRecipients: ISubRecipient[];
 }
 
 
@@ -775,6 +776,41 @@ export interface IStaffMemberProfile {
     updatedDateTime: Date;
 
     staffCategory: IStaffCategory;
+}
+
+export interface ISubRecipient {
+    id: number;
+    objectiveId: number;
+    organisationName: string;
+    fundingPeriodStartDate: string;
+    fundingPeriodEndDate: string;
+    budget: number;
+    recipientTypeId: number;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
+
+    subSubRecipients: ISubSubRecipient[];
+    recipientType: IRecipientType;
+}
+
+export interface ISubSubRecipient {
+    id: number;
+    subRecipientId: number;
+    organisationName: string;
+    fundingPeriodStartDate: string;
+    fundingPeriodEndDate: string;
+    budget: number;
+    recipientTypeId: number;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
+
+    recipientType: IRecipientType;
 }
 
 /* Lookup */
