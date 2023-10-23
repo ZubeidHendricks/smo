@@ -1,0 +1,490 @@
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="View Organisation Profile" *ngIf="isDataAvailable">
+
+    <div class="p-grid p-nogutter p-justify-between" *ngIf="npoProfile.createdUser && npoProfile.updatedUser">
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created By: {{npoProfile.createdUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created Date: {{npoProfile.createdDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated By: {{npoProfile.updatedUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated Date: {{npoProfile.updatedDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>    
+
+    <div *ngIf="isDataAvailable">
+        <app-view-npo
+            [npoId]="npoProfile.npoId"
+            (retrievedNpo)="updateNpo($event)">
+        </app-view-npo>
+        <div style="height: 10px;"></div>
+
+        <p-panel [style]="{'font-size':'12px'}" header="Address Information" *ngIf="npoProfile">
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Physical Address</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <input type="text" class="form-text" pInputText [(ngModel)]="npoProfile.addressInformation.physicalAddress" [ngModelOptions]="{standalone: true}" #physicalAddress="ngModel" [ngClass]="{'ng-dirty': (physicalAddress.invalid && validated) || (physicalAddress.dirty && npoName.invalid)}" [disabled]="true">
+                    <small *ngIf="(physicalAddress.invalid && validated) || (physicalAddress.dirty && physicalAddress.invalid)" class="p-error">Physical Address is required.</small>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Is Postal Address same as Physical Address?</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="npoProfile.addressInformation.postalSameAsPhysical" [ngModelOptions]="{standalone: true}" (onChange)="updatePostalAddress($event)" #postalSameAsPhysical="ngModel" [ngClass]="{'ng-dirty': (postalSameAsPhysical.invalid && validated) || (postalSameAsPhysical.dirty && postalSameAsPhysical.invalid)}" [disabled]="true"></p-selectButton>
+                    <small *ngIf="(postalSameAsPhysical.invalid && validated) || (postalSameAsPhysical.dirty && postalSameAsPhysical.invalid)" class="p-error">Is Postal Address same as Physical Address is required.</small>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Postal Address</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <input type="text" class="form-text" pInputText [(ngModel)]="npoProfile.addressInformation.postalAddress" [ngModelOptions]="{standalone: true}" #postalAddress="ngModel" [ngClass]="{'ng-dirty': (postalAddress.invalid && validated) || (postalAddress.dirty && npoName.invalid)}" [disabled]="true">
+                    <small *ngIf="(postalAddress.invalid && validated) || (postalAddress.dirty && postalAddress.invalid)" class="p-error">Postal Address is required.</small>
+                </div>
+            </div>
+        </p-panel>
+        <div style="height: 10px;"></div>
+        <p-panel [style]="{'font-size':'12px'}" header="Auditor / Registered Accountant Information">
+            <p-table [rowHover]="true" [columns]="auditorCols" [value]="auditorOrAffiliations" *ngIf="auditorOrAffiliations" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr class="default-font">
+                        <td>{{rowData.organisationName}}</td>
+                        <td>{{rowData.registrationNumber}}</td>
+                        <td>{{rowData.address}}</td>
+                        <td>{{rowData.telephoneNumber}}</td>
+                        <td>{{rowData.emailAddress}}</td>
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-info-circle" (click)="viewAuditorInformation(rowData)" pTooltip="View" tooltipPosition="top"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="6" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+        <div style="height: 10px;"></div>
+        <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Profile of Staff Members" *ngIf="npoProfile">
+            <p-table [rowHover]="true" [value]="staffMemberProfiles" *ngIf="staffMemberProfiles" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th rowspan="3">Categories of staff members</th>
+                        <th rowspan="3">Number of Vacant Posts</th>
+                        <th rowspan="3">Number of Filled Posts</th>
+                        <th rowspan="3">Number of Consultants appointed</th>
+                        <th rowspan="3">Number of Staff with disabilities</th>
+                        <th colspan="8" style="text-align: center;">Representivity</th>
+                    </tr>
+                    <tr>
+                        <th colspan="2" style="text-align: center;">African</th>
+                        <th colspan="2" style="text-align: center;">Indian</th>
+                        <th colspan="2" style="text-align: center;">Coloured</th>
+                        <th colspan="2" style="text-align: center;">White</th>
+                    </tr>
+                    <tr>
+                        <th>No. of Male(s)</th>
+                        <th>No. of Female(s)</th>
+                        <th>No. of Male(s)</th>
+                        <th>No. of Female(s)</th>
+                        <th>No. of Male(s)</th>
+                        <th>No. of Female(s)</th>
+                        <th>No. of Male(s)</th>
+                        <th>No. of Female(s)</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData>
+                    <tr>
+                        <td *ngIf="rowData.staffCategory && rowData.staffCategory.id !== StaffCategoryEnum.Other">{{rowData.staffCategory.name}}</td>
+                        <td *ngIf="rowData.staffCategory && rowData.staffCategory.id === StaffCategoryEnum.Other">{{rowData.otherSpecify}}</td>
+                        <td style="text-align: center;">{{rowData.vacantPosts}}</td>
+                        <td style="text-align: center;">{{rowData.filledPosts}}</td>
+                        <td style="text-align: center;">{{rowData.consultantsAppointed}}</td>
+                        <td style="text-align: center;">{{rowData.staffWithDisabilities}}</td>
+                        <td style="text-align: center;">{{rowData.africanMale}}</td>
+                        <td style="text-align: center;">{{rowData.africanFemale}}</td>
+                        <td style="text-align: center;">{{rowData.indianMale}}</td>
+                        <td style="text-align: center;">{{rowData.indianFemale}}</td>
+                        <td style="text-align: center;">{{rowData.colouredMale}}</td>
+                        <td style="text-align: center;">{{rowData.colouredFemale}}</td>
+                        <td style="text-align: center;">{{rowData.whiteMale}}</td>
+                        <td style="text-align: center;">{{rowData.whiteFemale}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr>
+                        <td><span style="font-weight: bold;">Total</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.vacantPosts}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.filledPosts}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.consultantsAppointed}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.staffWithDisabilities}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.africanMale}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.africanFemale}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.indianMale}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.indianFemale}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.colouredMale}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.colouredFemale}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.whiteMale}}</span></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.whiteFemale}}</span></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+        <div style="height: 10px;"></div>
+        <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
+            <p-table [rowHover]="true" [columns]="serviceRenderedCols" [value]="servicesRendered" *ngIf="servicesRendered" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData>
+                    <tr class="default-font">
+                        <td *ngIf="rowData.programme">{{rowData.programme.name}}</td>
+                        <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</td>
+                        <td *ngIf="rowData.subProgrammeType">{{rowData.subProgrammeType.name}}</td>
+                    </tr>                
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="3" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+        <div style="height: 10px;"></div>
+        <p-panel [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
+            <p-table [rowHover]="true" [columns]="facilityInfoCols" [value]="npoProfileFacilityLists" *ngIf="npoProfileFacilityLists" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                    <tr class="heading">
+                        <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
+                            <span class="p-text-bold">{{rowData.facilityList.facilityType.name}}</span>
+                        </td>
+                    </tr>
+                    <tr class="default-font">
+                        <td>{{rowData.facilityList.facilitySubDistrict.name}}</td>
+                        <td>{{rowData.facilityList.name}}</td>
+                        <td>{{rowData.facilityList.facilityClass.name}}</td>
+                        <td>{{rowData.facilityList.address}}</td>
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-info-circle" (click)="viewFacilityInformation(rowData)" pTooltip="View" tooltipPosition="top"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="5" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+        <div style="height: 10px;"></div>
+        <!-- <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Bank Details">
+            <p-table [rowHover]="true" [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr class="default-font">
+                        <td *ngIf="rowData.bank">{{rowData.bank.name}}</td>
+                        <td *ngIf="rowData.branch">{{rowData.branch.name}}</td>
+                        <td>{{rowData.branchCode}}</td>
+                        <td *ngIf="rowData.accountType">{{rowData.accountType.name}}</td>
+                        <td>{{rowData.accountNumber}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="5" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>    
+        <div style="height: 10px;"></div> -->
+        <p-panel [style]="{'font-size':'12px'}" header="Supporting Documents">
+            <p-table [rowHover]="true" [value]="documents" *ngIf="documents" styleClass="p-datatable-sm" [columns]="documentCols">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
+                    <tr class="default-font"> 
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td>{{document.name}}</td>
+                        <td>{{document.documentType.name}}</td>
+                        <td>{{document.fileSize}}</td>
+                        <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="6" style="text-align: center;">There are no documents uploaded.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <div *ngIf="compulsoryDocuments.length > 0">
+                <div style="height: 20px;"></div>
+                <div class="heading">Compulsory Documents</div>
+                <p-table [rowHover]="true" [value]="compulsoryDocuments" *ngIf="compulsoryDocuments" styleClass="p-datatable-sm" [columns]="documentTypeCols">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                {{col.header}}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                        <tr class="default-font"> 
+                            <td style="text-align: center;">{{rowIndex + 1}}</td>
+                            <td>{{rowData.name}}</td>
+                            <td>{{rowData.description}}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr class="default-font">
+                            <td colspan="3" style="text-align: center;">No results found.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div *ngIf="nonCompulsoryDocuments.length > 0">
+                <div style="height: 20px;"></div>
+                <div class="heading">Non-Compulsory Documents</div>
+                <p-table [rowHover]="true" [value]="nonCompulsoryDocuments" *ngIf="nonCompulsoryDocuments" styleClass="p-datatable-sm" [columns]="documentTypeCols">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                {{col.header}}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                        <tr class="default-font"> 
+                            <td style="text-align: center;">{{rowIndex + 1}}</td>
+                            <td>{{rowData.name}}</td>
+                            <td>{{rowData.description}}</td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr class="default-font">
+                            <td colspan="3" style="text-align: center;">No results found.</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </p-panel>
+    </div>
+</p-panel>
+
+<p-dialog header="Facility or Community Place Information" 
+          [(visible)]="displayFacilityInformationDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true"
+          *ngIf="mapping.facilityList">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.facilityType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div *ngIf="mapping.facilityList.facilityType.id == FacilityTypeEnum.Facility">
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Facility found?</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="mapping.facilityList.facilityFound" [ngModelOptions]="{standalone: true}" (onChange)="facilityFoundChange($event.value)" [disabled]="true"></p-selectButton>
+            </div>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">District</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.facilitySubDistrict.facilityDistrict.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub-District</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.facilitySubDistrict.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Class</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.facilityClass.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Address</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="mapping.facilityList.address" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog header="Auditor / Registered Accountant Information" 
+          [(visible)]="displayAuditorDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Company</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.organisationName" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Registration Number</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.registrationNumber" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Address</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.address" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Contact Person</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.contactPerson" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Telephone</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.telephoneNumber" [ngModelOptions]="{standalone: true}" [minlength]="10" [maxlength]="10" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Email Address</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.emailAddress" [ngModelOptions]="{standalone: true}" #auditorEmailAddress="ngModel" [disabled]="true">
+            <div class="md-errors-spacer" [hidden]="auditorEmailAddress.valid || auditorEmailAddress.untouched">
+                <small class="text-danger" *ngIf="auditorEmailAddress.errors && auditorEmailAddress.errors.pattern">Please provide a valid email address</small>
+            </div>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Website</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="auditorOrAffiliation.website" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+</p-dialog>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

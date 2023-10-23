@@ -165,6 +165,9 @@ import { QcApplicationDetailsEditComponent } from './components/application/appl
 import { QcDocumentUploadEditComponent } from './components/application/application-steps/quick-capture/qc-document-upload-edit/qc-document-upload-edit.component';
 import { ScorecardComponent } from './components/application/scorecard/scorecard.component';
 import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
+import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
+import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
+
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -325,7 +328,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     QcApplicationDetailsEditComponent,
     QcDocumentUploadEditComponent,
     ScorecardComponent,
-    ScorecardQuestionComponent
+    ScorecardQuestionComponent,
+    ViewNpoDetailsComponent,
+    ViewProfileDetailsComponent
    // ScorecardComponent
   ],
   schemas: [
