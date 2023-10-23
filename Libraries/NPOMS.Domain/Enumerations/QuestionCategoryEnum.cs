@@ -5,6 +5,11 @@
         PreAdjudication = 1,
 		Evaluation = 2,
 		Adjudication = 3,
-		Approval
-	}
+		Approval,
+        Engagement,
+		TimelyWorkPlanSubmission,
+		Impact,
+		RiskMitigation,
+		AppropriationofResources
+    }
 }

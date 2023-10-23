@@ -25,7 +25,7 @@
     </div>
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
         <app-npo-details *ngIf="activeStep == ServiceProvisionStepsEnum.NpoConfirmation" [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details>
-        <app-objectives *ngIf="activeStep == ServiceProvisionStepsEnum.Objectives" [(activeStep)]="activeStep" [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true" [isReview]="true"></app-objectives>
+        <app-objectives *ngIf="activeStep == ServiceProvisionStepsEnum.Objectives" [(activeStep)]="activeStep" [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true" [isReview]="true" [currentUserId]="profile.id"></app-objectives>
         <app-activities *ngIf="activeStep == ServiceProvisionStepsEnum.Activities" [(activeStep)]="activeStep" [application]="application" (activityChange)="loadActivities()" [canAddComments]="true" [isReview]="true"></app-activities>
         <app-sustainability *ngIf="activeStep == ServiceProvisionStepsEnum.Sustainability" [(activeStep)]="activeStep" [application]="application" (sustainabilityPlanChange)="loadSustainabilityPlans()" [canAddComments]="true" [isReview]="true"></app-sustainability>
         <app-resourcing *ngIf="activeStep == ServiceProvisionStepsEnum.Resourcing" [(activeStep)]="activeStep" [application]="application" (resourceChange)="loadResources()" [reviewApplication]="true" [canReviewOrApprove]="canReviewOrApprove" [canAddComments]="true" [isReview]="true"></app-resourcing>

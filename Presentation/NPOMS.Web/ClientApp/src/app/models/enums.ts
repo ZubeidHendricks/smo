@@ -11,8 +11,12 @@ export enum QuestionCategoryEnum {
     PreEvaluation,
     Adjudication,
     Evaluation,
-    Approval
-
+    Approval,
+    Engagement,
+    TimelyWorkPlanSubmission,
+    Impact,
+    RiskMitigation,
+    AppropriationofResources
 }
 
 export enum ApplicationTypeEnum {
@@ -193,7 +197,7 @@ export enum StatusEnum {
     Recommended = 20,
     StronglyRecommended = 21,
     NonCompliance = 22,
-    GetName 
+    GetName
 }
 
 export enum AuditorOrAffiliationEntityTypeEnum {
@@ -534,4 +538,10 @@ export interface IResponseHistory {
     questionId: number;
     responseOptionId: number;
     comment: string;
+}
+
+export enum RecipientTypeEnum {
+    Primary = 1,
+    SubRecipient = 2,
+    SubSubRecipient = 3
 }
