@@ -97,4 +97,8 @@ export class NpoListComponent implements OnInit {
   edit(npo: INpo) {
     this._router.navigateByUrl('npo/edit/' + npo.id);
   }
+
+  view(npo: INpo) {
+    this._router.navigateByUrl('npo/view/' + npo.id);
+  }
 }
