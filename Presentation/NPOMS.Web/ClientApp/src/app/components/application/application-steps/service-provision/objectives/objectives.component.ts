@@ -753,4 +753,50 @@ export class ObjectivesComponent implements OnInit {
   public subRecipientChange(subRecipient: ISubRecipient) {
     this.subSubRecipient.subRecipientId = this.objective.subRecipients.find(x => x.organisationName === subRecipient.organisationName).id;
   }
+
+  /*public reviewAllItems() {
+
+    this._confirmationService.confirm({
+      message: 'Are you sure you are satisfied with the details contained in all the Objectives?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+
+        let objectives = this.activeObjectives;
+
+        this.activeObjectives.forEach(item => {
+          let model = {
+            applicationId: this.application.id,
+            serviceProvisionStepId: ServiceProvisionStepsEnum.Objectives,
+            entityId: item.id,
+            isSatisfied: true
+          } as IApplicationReviewerSatisfaction;
+
+          console.log('model', model);
+          let lastObjectInArray = objectives.pop();
+          console.log('lastObjectInArray', lastObjectInArray);
+
+          // this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+          //   (resp) => {
+          //     this.loadObjectives();
+
+          //     let entity = {
+          //       id: model.entityId
+          //     } as IObjective;
+          //     this.viewReviewerSatisfaction(entity);
+
+          //     this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Item successfully added.' });
+          //     this.displayReviewerSatisfactionDialog = false;
+          //   },
+          //   (err) => {
+          //     this._loggerService.logException(err);
+          //     this._spinner.hide();
+          //   }
+          // );
+        });
+      },
+      reject: () => {
+      }
+    });
+  }*/
 }
