@@ -4,10 +4,10 @@
       <p-table [value]="featurePermissionRoleMatrix.availableFeaturePermissions" [(selection)]="selectedPermissionRoles" styleClass="p-datatable-striped" [rowHover]="true">
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 5%;"></th>
+            <th style="width: 50px; text-align: center;">#</th>
             <th>Categories</th>
             <th>Activities</th>
-            <th style="width: 130px;" *ngFor="let role of featurePermissionRoleMatrix.availableRoles">
+            <th style="width: 105px; text-align: center;" *ngFor="let role of featurePermissionRoleMatrix.availableRoles">
               {{role.name}}
             </th>
           </tr>

@@ -18,7 +18,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 
 		Task<IEnumerable<Npo>> SearchApprovedNpoByName(string name);
 
-		Task<Npo> GetByNameAndOrgTypeId(string name, int organisationTypeId);
+		Task<Npo> GetByNameAndOrgTypeId(string name, int organisationTypeId, string CCode);
 
 		Task CreateEntity(Npo model);
 

@@ -1453,6 +1453,7 @@ onAprCheckboxChange(event: any) {
 
   public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
   {
+    console.log('questionnaire', questionnaire);
     questionnaire.forEach(item => {
       if(Number(item.responseOption.name) >= 0)
       {
