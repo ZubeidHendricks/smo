@@ -128,7 +128,6 @@ export class ScorecardComponent implements OnInit {
         this.allQuestionnaires = results;
         
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
-       console.log("this.engagementQuestionnaire" , this.engagementQuestionnaire);
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
@@ -290,8 +289,8 @@ export class ScorecardComponent implements OnInit {
       }
     });
 
-    // if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Evaluation)
-    // this.updateEvaluationStatus(this.totalAverageScore);
+    //if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Evaluation)
+    //this.updateEvaluationStatus(this.totalAverageScore);
 
     return this.totalAverageScore;
   }
