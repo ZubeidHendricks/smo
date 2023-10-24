@@ -125,9 +125,9 @@ namespace NPOMS.Services.Implementation
 			return await _npoRepository.SearchApprovedNpoByName(name);
 		}
 
-		public async Task<Npo> GetByNameAndOrgTypeId(string name, int organisationTypeId)
+		public async Task<Npo> GetByNameAndOrgTypeId(string name, int organisationTypeId, string CCode)
 		{
-			return await _npoRepository.GetByNameAndOrgTypeId(name, organisationTypeId);
+			return await _npoRepository.GetByNameAndOrgTypeId(name, organisationTypeId, CCode);
 		}
 
 		public async Task Create(Npo npo, string userIdentifier)

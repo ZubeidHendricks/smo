@@ -214,6 +214,7 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+
       if (this.IsAuthorized(PermissionsEnum.DeleteApplication)) {
         this.buttonItems[0].items.push({
           label: 'Delete Application',
@@ -377,6 +378,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('View Application', 'Funding Application');
       this.buttonItemExists('Delete Application', 'Funding Application');
       this.buttonItemExists('Download Assessment', 'Workflow Application');
+     // this.buttonItemExists('Score Card', 'Service Provision');
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
@@ -434,6 +436,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Upload SLA', 'Service Provision');
       this.buttonItemExists('View Application', 'Service Provision');
       this.buttonItemExists('Delete Application', 'Service Provision');
+      //this.buttonItemExists('Score Card', 'Service Provision');
 
       if (this.selectedApplication.isQuickCapture)
         this.buttonItemExists('Download Application', 'Funding Application');
@@ -581,6 +584,17 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-tags wcg-icon',
           command: () => {
             this._router.navigateByUrl('workplan-indicator/manage/' + this.selectedApplication.npoId);
+          }
+        });
+      }
+
+      
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
+        this.optionItems[0].items.push({
+          label: 'Score Card',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('scorecard/' + this.selectedApplication.id);
           }
         });
       }

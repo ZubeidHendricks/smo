@@ -127,7 +127,7 @@ namespace NPOMS.API.Controllers
 			try
 			{
 				ClearObjects(model);
-				var npo = await _npoService.GetByNameAndOrgTypeId(model.Name, model.OrganisationTypeId);
+				var npo = await _npoService.GetByNameAndOrgTypeId(model.Name, model.OrganisationTypeId, model.CCode);
 
 				if (npo == null)
 				{
@@ -135,7 +135,7 @@ namespace NPOMS.API.Controllers
 					model.IsActive = true;
 					await _npoService.Create(model, base.GetUserIdentifier());
 
-					npo = await _npoService.GetByNameAndOrgTypeId(model.Name, model.OrganisationTypeId);
+					npo = await _npoService.GetByNameAndOrgTypeId(model.Name, model.OrganisationTypeId, model.CCode);
 					await _npoProfileService.Create(new NpoProfile { NpoId = npo.Id, IsActive = true }, base.GetUserIdentifier());
 				}
 				else

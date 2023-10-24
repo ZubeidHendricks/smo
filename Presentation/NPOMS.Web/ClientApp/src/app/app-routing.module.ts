@@ -81,8 +81,8 @@ import { WorkflowAssessmentComponent } from './components/admin/utilities/workfl
 import { ResponseOptionComponent } from './components/admin/utilities/response-option/response-option.component';
 import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
 import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
-import { WorkflowApplicationComponent } from './components/application/workflow-component/workflow-application.component';
-//import  {ScorecardComponent} from './components/application/scorecard-component/scorecard.component';
+import  {WorkflowApplicationComponent} from './components/application/workflow-component/workflow-application.component';
+import  {ScorecardComponent} from './components/application/scorecard/scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
 import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
@@ -124,7 +124,7 @@ const routes: Routes = [
   { path: 'application/review/:id', component: ReviewApplicationComponent },
   { path: 'application/approve/:id', component: ApproveApplicationComponent },
   { path: 'application/upload-sla/:id', component: UploadSLAComponent },
-  { path: 'sp-application/view/:id', component: ViewApplicationComponent },
+  { path: 'scorecard/:id', component: ScorecardComponent },
   { path: 'application-periods', component: ApplicationPeriodListComponent },
   { path: 'application-period/create', component: CreateApplicationPeriodComponent },
   { path: 'application-period/edit/:id', component: EditApplicationPeriodComponent },
