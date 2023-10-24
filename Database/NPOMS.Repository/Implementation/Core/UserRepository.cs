@@ -89,7 +89,7 @@ namespace NPOMS.Repository.Implementation.Core
         public async Task<User> GetByUserNameWithDetails(string userName)
         {
             return await FindByCondition(sp => sp.UserName.Equals(userName))
-                            .Include(x => x.Roles.Where(y => y.IsActive))
+                            .Include(x => x.Roles)
                                 .ThenInclude(x => x.Role)
                                     .ThenInclude(x => x.Permissions)
                                         .ThenInclude(x => x.Permission)

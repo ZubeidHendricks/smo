@@ -142,7 +142,7 @@ namespace NPOMS.Services.Implementation
 			var applications = await _applicationRepository.GetEntities();
 			var results = applications.Where(x => !x.StatusId.Equals((int)StatusEnum.New));
 
-			if (loggedInUser.Roles.Any(x => !x.RoleId.Equals((int)RoleEnum.Applicant)))
+			if (loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))
 			{
 				// Filter applications by department.
 				//not supporting multiple departments

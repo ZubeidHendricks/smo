@@ -214,8 +214,7 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-
-      if (this.IsAuthorized(PermissionsEnum.DeleteApplication)) {
+      if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
         this.buttonItems[0].items.push({
           label: 'Delete Application',
           target: 'Service Provision',

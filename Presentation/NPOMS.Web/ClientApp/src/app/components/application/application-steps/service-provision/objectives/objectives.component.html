@@ -1,5 +1,10 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header="Objectives" *ngIf="activeObjectives">
+    <!-- <div class="p-grid p-nogutter p-justify-end">
+        <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Objectives" (click)="reviewAllItems()"></button>
+    </div>    
+    <div style="height: 10px;"></div> -->
+
     <p-table [rowHover]="true" [columns]="objectiveCols" [value]="activeObjectives" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
