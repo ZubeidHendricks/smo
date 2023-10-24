@@ -152,4 +152,8 @@ export class ProfileListComponent implements OnInit {
   edit(profile: INpoProfile) {
     this._router.navigateByUrl('npo-profile/edit/' + profile.id);
   }
+
+  view(profile: INpoProfile) {
+    this._router.navigateByUrl('npo-profile/view/' + profile.id);
+  }
 }

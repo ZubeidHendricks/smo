@@ -127,7 +127,11 @@ export enum RoleEnum {
     Applicant = 3,
     Reviewer = 4,
     MainReviewer = 5,
-    Approver = 6
+    PreEvaluator = 6,
+    Evaluator = 7,
+    Adjudicator = 8,
+    Approver = 9,
+    ViewOnly = 10
 }
 
 export enum ServiceProvisionStepsEnum {

@@ -85,6 +85,8 @@ import  {WorkflowApplicationComponent} from './components/application/workflow-c
 import  {ScorecardComponent} from './components/application/scorecard/scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
+import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
+import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
 
@@ -94,6 +96,7 @@ const routes: Routes = [
 
   { path: 'npo-profiles', component: ProfileListComponent },
   { path: 'npo-profile/edit/:id', component: EditProfileComponent },
+  { path: 'npo-profile/view/:id', component: ViewProfileDetailsComponent },
   { path: 'print/:id/0', outlet: 'print', component: PrintFundingApplicatonComponent },
   { path: 'print/:id/1', outlet: 'print', component: PrintWorkflowApplicationComponent },
   { path: 'access-request', component: AccessRequestComponent },
@@ -110,6 +113,7 @@ const routes: Routes = [
   { path: 'npos', component: NpoListComponent },
   { path: 'npo/create', component: CreateNpoComponent },
   { path: 'npo/edit/:id', component: EditNpoComponent },
+  { path: 'npo/view/:id', component: ViewNpoDetailsComponent },
 
   { path: 'applications', component: ApplicationListComponent },
   { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },

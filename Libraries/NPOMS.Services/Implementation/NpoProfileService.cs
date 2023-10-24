@@ -96,7 +96,7 @@ namespace NPOMS.Services.Implementation
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var npoProfiles = await _npoProfileRepository.GetEntities();
 
-			if (loggedInUser.Roles.Any(x => x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin)))
+			if (loggedInUser.Roles.Any(x => x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin) || x.RoleId.Equals((int)RoleEnum.ViewOnly)))
 			{
 				return npoProfiles;
 			}
