@@ -31,6 +31,6 @@ export class FooterComponent implements OnInit {
   }
 
   deploymentDate(): string {
-    return '24 October 2023';
+    return '25 October 2023';
   }
 }

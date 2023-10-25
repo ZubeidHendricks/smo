@@ -140,7 +140,8 @@ export enum ServiceProvisionStepsEnum {
     Activities = 2,
     Sustainability = 3,
     Resourcing = 4,
-    ApplicationConfirmation = 5
+    ApplicationConfirmation = 5,
+    OverallWorkplan = 6
 }
 
 export enum StatusEnum {
