@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, PermissionsEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationApproval, IApplicationPeriod, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationPeriod, IApplicationReviewerSatisfaction, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -62,6 +62,9 @@ export class ReviewApplicationComponent implements OnInit {
   isAdmin: boolean;
   canReviewOrApprove: boolean;
 
+  reviewerSatisfactionCols: any;
+  applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[];
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -70,7 +73,8 @@ export class ReviewApplicationComponent implements OnInit {
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
     private _loggerService: LoggerService,
-    private _userRepo: UserService
+    private _userRepo: UserService,
+    private _confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
@@ -87,9 +91,16 @@ export class ReviewApplicationComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.updateSteps();
-        this.buildMenu();
+        this.buildMenu();        
       }
     });
+
+    this.reviewerSatisfactionCols = [
+      { header: '', width: '5%' },
+      { header: 'Is Satisfied', width: '25%' },
+      { header: 'Created User', width: '35%' },
+      { header: 'Created Date', width: '35%' }
+    ];
   }
 
   private loadApplication() {
@@ -104,6 +115,7 @@ export class ReviewApplicationComponent implements OnInit {
           this.loadSustainabilityPlans();
           this.loadResources();
           this.loadCreatedUser();
+          this.loadReviewerSatisfaction();
           this.isApplicationAvailable = true;
         }
 
@@ -338,5 +350,53 @@ export class ReviewApplicationComponent implements OnInit {
       return true;
 
     return false;
+  }
+
+  private loadReviewerSatisfaction() {
+    let model = {
+      applicationId: this.application.id,
+      serviceProvisionStepId: ServiceProvisionStepsEnum.OverallWorkplan,
+      entityId: this.application.id
+    } as IApplicationReviewerSatisfaction;
+
+    this._applicationRepo.getApplicationReviewerSatisfactions(model).subscribe(
+      (results) => {
+        this.applicationReviewerSatisfaction = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public createReviewerSatisfaction(isSatisfied: boolean) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you selected the correct option?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+
+        let model = {
+          applicationId: this.application.id,
+          serviceProvisionStepId: ServiceProvisionStepsEnum.OverallWorkplan,
+          entityId: this.application.id,
+          isSatisfied: isSatisfied
+        } as IApplicationReviewerSatisfaction;
+
+        this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+          (resp) => {
+            this.loadReviewerSatisfaction();
+            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Item successfully added.' });
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      },
+      reject: () => {
+      }
+    });
   }
 }
