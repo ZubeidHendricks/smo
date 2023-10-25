@@ -844,6 +844,21 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+		[HttpGet("application-reviewer-satisfaction/applicationId/{applicationId}", Name = "GetReviewerSatisfactionByApplicationId")]
+		public async Task<IActionResult> GetReviewerSatisfactionByApplicationId(int applicationId)
+		{
+			try
+			{
+				var results = await _applicationService.GetReviewerSatisfactionByApplicationId(applicationId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetReviewerSatisfactionByApplicationId action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
 		[HttpPost("application-reviewer-satisfaction", Name = "CreateApplicationReviewerSatisfaction")]
 		public async Task<IActionResult> CreateApplicationReviewerSatisfaction([FromBody] ApplicationReviewerSatisfaction model)
 		{
