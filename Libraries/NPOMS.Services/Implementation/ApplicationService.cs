@@ -1003,6 +1003,11 @@ namespace NPOMS.Services.Implementation
 			return await _applicationReviewerSatisfactionRepository.GetByIds(applicationId, serviceProvisionStepId, entityId);
 		}
 
+		public async Task<IEnumerable<ApplicationReviewerSatisfaction>> GetReviewerSatisfactionByApplicationId(int applicationId)
+		{
+			return await _applicationReviewerSatisfactionRepository.GetByApplicationId(applicationId);
+		}
+
 		public async Task CreateApplicationReviewerSatisfaction(ApplicationReviewerSatisfaction model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);

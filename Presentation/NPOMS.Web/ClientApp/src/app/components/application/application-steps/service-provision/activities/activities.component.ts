@@ -595,4 +595,44 @@ export class ActivitiesComponent implements OnInit {
     this.deletedActivities = this.allActivities.filter(x => x.isActive === false);
     this.displayDeletedActivityDialog = true;
   }
+
+  public reviewAllItems() {
+
+    this._confirmationService.confirm({
+      message: 'Are you sure you are satisfied with the details contained in all the Activities?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+
+        let objectArray = this.activeActivities;
+
+        this.activeActivities.forEach(item => {
+          let model = {
+            applicationId: this.application.id,
+            serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
+            entityId: item.id,
+            isSatisfied: true
+          } as IApplicationReviewerSatisfaction;
+
+          let lastObjectInArray = objectArray.pop();
+
+          this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+            (resp) => {
+
+              if (item === lastObjectInArray) {
+                this.loadActivities();
+                this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Reviewer Satisfaction completed for all activities.' });
+              }
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        });
+      },
+      reject: () => {
+      }
+    });
+  }
 }
