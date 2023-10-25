@@ -403,4 +403,44 @@ export class SustainabilityComponent implements OnInit {
     this.deletedSustainabilityPlans = this.allSustainabilityPlans.filter(x => x.isActive === false);
     this.displayDeletedPlanDialog = true;
   }
+
+  public reviewAllItems() {
+
+    this._confirmationService.confirm({
+      message: 'Are you sure you are satisfied with the details contained in all the Sustainability Plans?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+
+        let objectArray = this.activeSustainabilityPlans;
+
+        this.activeSustainabilityPlans.forEach(item => {
+          let model = {
+            applicationId: this.application.id,
+            serviceProvisionStepId: ServiceProvisionStepsEnum.Sustainability,
+            entityId: item.id,
+            isSatisfied: true
+          } as IApplicationReviewerSatisfaction;
+
+          let lastObjectInArray = objectArray.pop();
+
+          this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+            (resp) => {
+
+              if (item === lastObjectInArray) {
+                this.loadSustainabilityPlans();
+                this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Reviewer Satisfaction completed for all sustainability plans.' });
+              }
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        });
+      },
+      reject: () => {
+      }
+    });
+  }
 }

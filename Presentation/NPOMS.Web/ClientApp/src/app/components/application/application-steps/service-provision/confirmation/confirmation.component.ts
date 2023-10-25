@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationAudit, IUser } from 'src/app/models/interfaces';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IApplicationAudit, IApplicationReviewerSatisfaction, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
@@ -29,9 +30,23 @@ export class ConfirmationComponent implements OnInit {
 
   approvalFromOptions: any[];
 
+  reviewerSatisfaction: IApplicationReviewerSatisfaction[];
+  reviewerSatisfactionObjective: IApplicationReviewerSatisfaction[];
+  reviewerSatisfactionActivity: IApplicationReviewerSatisfaction[];
+  reviewerSatisfactionSustainability: IApplicationReviewerSatisfaction[];
+  reviewerSatisfactionResourcing: IApplicationReviewerSatisfaction[];
+
+  objectives: IObjective[];
+  activities: IActivity[];
+  sustainabilityPlans: ISustainabilityPlan[];
+  resources: IResource[];
+  showReviewerSatisfaction: boolean;
+  reviewerSatisfactionCols: any;
+
   constructor(
     private _applicationRepo: ApplicationService,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -47,6 +62,13 @@ export class ConfirmationComponent implements OnInit {
     this.approvalFromOptions = [
       { name: 'City of Cape Town', value: 'CoCT' },
       { name: 'Department of Health', value: 'DoH' }
+    ];
+
+    this.reviewerSatisfactionCols = [
+      { header: '', width: '5%' },
+      { header: 'Is Satisfied', width: '25%' },
+      { header: 'Created User', width: '35%' },
+      { header: 'Created Date', width: '35%' }
     ];
 
     this.loadApplicationApprovals();
@@ -104,5 +126,104 @@ export class ConfirmationComponent implements OnInit {
         this._loggerService.logException(err);
       }
     );
+  }
+
+  public viewReviewerSatisfaction() {
+    this._spinner.show();
+    this._applicationRepo.getReviewerSatisfactionByApplicationId(this.application.id).subscribe(
+      (results) => {
+        this.reviewerSatisfaction = results;
+        this.loadObjectives();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadObjectives() {
+    this._applicationRepo.getAllObjectives(this.application).subscribe(
+      (results) => {
+        this.objectives = results.filter(x => x.isActive);
+        this.loadActivities();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadActivities() {
+    this._applicationRepo.getAllActivities(this.application).subscribe(
+      (results) => {
+        this.activities = results.filter(x => x.isActive === true);
+        this.loadSustainabilityPlans();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadSustainabilityPlans() {
+    this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
+      (results) => {
+        this.sustainabilityPlans = results.filter(x => x.isActive === true);
+        this.loadResources();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadResources() {
+    this._applicationRepo.getAllResources(this.application).subscribe(
+      (results) => {
+        this.resources = results.filter(x => x.isActive === true);
+        this.showReviewerSatisfaction = true;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public onOpenObjective(e) {
+    let index = e.index;
+    let object = this.objectives[index];
+
+    this.reviewerSatisfactionObjective = [];
+    this.reviewerSatisfactionObjective = this.reviewerSatisfaction.filter(x => x.entityId === object.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Objectives);
+  }
+
+  public onOpenActivity(e) {
+    let index = e.index;
+    let object = this.activities[index];
+
+    this.reviewerSatisfactionActivity = [];
+    this.reviewerSatisfactionActivity = this.reviewerSatisfaction.filter(x => x.entityId === object.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Activities);
+  }
+
+  public onOpenSustainability(e) {
+    let index = e.index;
+    let object = this.sustainabilityPlans[index];
+
+    this.reviewerSatisfactionSustainability = [];
+    this.reviewerSatisfactionSustainability = this.reviewerSatisfaction.filter(x => x.entityId === object.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Sustainability);
+  }
+
+  public onOpenResourcing(e) {
+    let index = e.index;
+    let object = this.resources[index];
+
+    this.reviewerSatisfactionResourcing = [];
+    this.reviewerSatisfactionResourcing = this.reviewerSatisfaction.filter(x => x.entityId === object.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Resourcing);
   }
 }
