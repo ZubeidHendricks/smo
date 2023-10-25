@@ -5,11 +5,12 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
-  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponse, IResponseType } from 'src/app/models/enums';
-import { IApplication, IApplicationAudit, IQuestionCategory, IResponseOption, IUser } from 'src/app/models/interfaces';
+  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponse, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IApplicationAudit, IFinancialYear, IQuestionCategory, IResponseOption, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
+import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
@@ -49,7 +50,13 @@ export class ScorecardComponent implements OnInit {
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
+  public get FrequencyEnum(): typeof FrequencyEnum {
+    return FrequencyEnum;
+  }
 
+  public get FrequencyPeriodEnum(): typeof FrequencyPeriodEnum {
+    return FrequencyPeriodEnum;
+  }
   
   applicationAudits: IApplicationAudit[];
   _recommendation: boolean = false;
@@ -71,7 +78,18 @@ export class ScorecardComponent implements OnInit {
   QuestionCategoryentities: IQuestionCategory[];
   ResponseTypeentities: IResponseType[];
   auditCols: any[];
-  
+  workplanIndicators: IWorkplanIndicator[];
+  filteredWorkplanIndicators: IWorkplanIndicator[];
+  lastWorkplanTarget: boolean;
+  lastWorkplanActual: boolean;
+  financialYears: IFinancialYear[];
+  selectedFinancialYear: IFinancialYear;
+  scrollableCols: any[];
+  frozenCols: any[];
+  activities: IActivity[];
+  applications: IApplication[];
+  //npoId: string;
+
   constructor(
 
     private _router: Router,
@@ -87,11 +105,16 @@ export class ScorecardComponent implements OnInit {
     private _dropdownService: DropdownService,
     private confirmationService: ConfirmationService,
     private _messageService: MessageService,
-    private _datepipe: DatePipe
+    private _datepipe: DatePipe,
+    private _indicatorRepo: IndicatorService
 
   ) { }
 
   ngOnInit(): void {
+
+    // this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+    //   this.npoId = params.get('npoId');
+    // });
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');      
@@ -101,6 +124,7 @@ export class ScorecardComponent implements OnInit {
     this.getResponseType();
 
     this.loadApplication();
+    this.loadActivities();
 
     this.auditCols = [
       { header: '', width: '5%' },
@@ -361,6 +385,159 @@ export class ScorecardComponent implements OnInit {
 
   viewAuditHistory() {
     this.displayHistory = true;
+  }
+
+  private loadApplications() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationsByNpoId(Number(this.id)).subscribe(
+      (results) => {
+        this.financialYears = [];
+        this.applications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP && x.statusId === StatusEnum.AcceptedSLA);
+
+        this.applications.forEach(item => {
+          var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
+          if (!isPresent)
+            this.financialYears.push(item.applicationPeriod.financialYear);
+        });
+
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadActivities() {
+    this._spinner.show();
+    this._applicationRepo.getAllActivities(this.application).subscribe(
+      (results) => {
+        this.activities = results.filter(x => x.isActive === true);
+        this.workplanIndicators = [];
+
+        this.activities.forEach(activity => {
+          this.workplanIndicators.push({
+            activity: activity,
+            workplanTargets: [],
+            workplanActuals: []
+          } as IWorkplanIndicator);
+
+          this.loadTargets(activity);
+          this.loadActuals(activity);
+        });
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadTargets(activity: IActivity) {
+    this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
+      (results) => {
+        // Add WorkplanTargets to WorkplanIndicators at index of activity
+        var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
+        this.workplanIndicators[index].workplanTargets = results;
+
+        if (this.activities[this.activities.length - 1] === activity) {
+          this.lastWorkplanTarget = true;
+          this.filterWorkplanIndicators();
+        }
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadActuals(activity: IActivity) {
+    this._indicatorRepo.getActualsByActivityId(activity.id).subscribe(
+      (results) => {
+        // Add WorkplanActuals to WorkplanIndicators at index of activity
+        var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
+        this.workplanIndicators[index].workplanActuals = results;
+
+        if (this.activities[this.activities.length - 1] === activity) {
+          this.lastWorkplanActual = true;
+          this.filterWorkplanIndicators();
+        }
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+  
+
+  private filterWorkplanIndicators() {
+    if (this.lastWorkplanTarget && this.lastWorkplanActual) {
+      this.filteredWorkplanIndicators = [];
+
+      this.workplanIndicators.forEach(indicator => {
+
+        // Filter WorkplanTargets on activity, financial year and monthly frequency
+        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyId == FrequencyEnum.Monthly);
+
+        // Calculate total targets
+        let targetTotal = workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
+
+        // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
+        // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
+        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id);
+        let filteredWorkplanActuals = workplanActuals.filter((el) => {
+          return workplanTargets.some((f) => {
+            return f.id === el.workplanTargetId;
+          });
+        });
+
+        // Calculate total actuals
+        let actualTotal = filteredWorkplanActuals.reduce((sum, object) => {
+          let actual = object.actual == null ? 0 : object.actual;
+          return sum + actual;
+        }, 0);
+
+        this.filteredWorkplanIndicators.push({
+          activity: indicator.activity,
+          workplanTargets: workplanTargets,
+          workplanActuals: filteredWorkplanActuals,
+          totalTargets: targetTotal,
+          totalActuals: actualTotal
+        } as IWorkplanIndicator);
+      });
+
+      this.makeRowsSameHeight();
+    }
+  }
+
+  private makeRowsSameHeight() {
+    setTimeout(() => {
+      if (document.getElementsByClassName('p-datatable-scrollable-wrapper').length) {
+        let wrapper = document.getElementsByClassName('p-datatable-scrollable-wrapper');
+
+        for (var i = 0; i < wrapper.length; i++) {
+
+          let w = wrapper.item(i) as HTMLElement;
+          let frozen_rows: any = w.querySelectorAll('.p-datatable-frozen-view tr');
+          let unfrozen_rows: any = w.querySelectorAll('.p-datatable-unfrozen-view tr');
+
+          for (let i = 0; i < frozen_rows.length; i++) {
+
+            if (frozen_rows[i].clientHeight > unfrozen_rows[i].clientHeight) {
+              unfrozen_rows[i].style.height = frozen_rows[i].clientHeight + "px";
+            }
+            else if (frozen_rows[i].clientHeight < unfrozen_rows[i].clientHeight) {
+              frozen_rows[i].style.height = unfrozen_rows[i].clientHeight + "px";
+            }
+          }
+        }
+
+        this._spinner.hide();
+      }
+    });
   }
 
 }
