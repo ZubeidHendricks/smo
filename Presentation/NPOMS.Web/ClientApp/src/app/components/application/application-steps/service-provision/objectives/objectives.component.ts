@@ -742,8 +742,8 @@ export class ObjectivesComponent implements OnInit {
     }
   }
 
-  public getActiveSRs() {
-    return Object.values(this.objective).length === 0 ? [] : this.objective.subRecipients.filter(x => x.isActive);
+  public getActiveSRs(objective: IObjective) {
+    return objective && objective.subRecipients && objective.subRecipients.length > 0 ? this.objective.subRecipients.filter(x => x.isActive) : [];
   }
 
   public getActiveSSRs(subSubRecipients: ISubSubRecipient[]) {
@@ -752,5 +752,45 @@ export class ObjectivesComponent implements OnInit {
 
   public subRecipientChange(subRecipient: ISubRecipient) {
     this.subSubRecipient.subRecipientId = this.objective.subRecipients.find(x => x.organisationName === subRecipient.organisationName).id;
+  }
+
+  public reviewAllItems() {
+
+    this._confirmationService.confirm({
+      message: 'Are you sure you are satisfied with the details contained in all the Objectives?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+
+        let objectArray = this.activeObjectives;
+
+        this.activeObjectives.forEach(item => {
+          let model = {
+            applicationId: this.application.id,
+            serviceProvisionStepId: ServiceProvisionStepsEnum.Objectives,
+            entityId: item.id,
+            isSatisfied: true
+          } as IApplicationReviewerSatisfaction;
+
+          let lastObjectInArray = objectArray.pop();
+
+          this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+            (resp) => {
+
+              if (item === lastObjectInArray) {
+                this.loadObjectives();
+                this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Reviewer Satisfaction completed for all objectives.' });
+              }
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        });
+      },
+      reject: () => {
+      }
+    });
   }
 }

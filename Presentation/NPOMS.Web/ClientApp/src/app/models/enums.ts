@@ -140,7 +140,8 @@ export enum ServiceProvisionStepsEnum {
     Activities = 2,
     Sustainability = 3,
     Resourcing = 4,
-    ApplicationConfirmation = 5
+    ApplicationConfirmation = 5,
+    OverallWorkplan = 6
 }
 
 export enum StatusEnum {
@@ -278,7 +279,6 @@ export enum PermissionsEnum {
     ApproveApplication = "App.Approve",
     UploadSLA = "App.Upload",
     ViewAcceptedApplication = "App.VAA",
-    DeleteApplication = "App.Delete",
     UpdateApplicationProgramme = "App.UAP",
 
     /* NPO APPROVAL MANAGEMENT */

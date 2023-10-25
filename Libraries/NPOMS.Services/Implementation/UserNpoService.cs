@@ -62,7 +62,7 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			if (loggedInUser.Roles.Any(x => x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin)))
+			if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin))))
 				return await _userNpoRepository.GetEntities();
 			else
 				return await _userNpoRepository.GetByCurrentUserId(loggedInUser.Id);

@@ -538,4 +538,44 @@ export class ResourcingComponent implements OnInit {
     this.deletedResources = this.allResources.filter(x => x.isActive === false);
     this.displayDeletedResourceDialog = true;
   }
+
+  public reviewAllItems() {
+
+    this._confirmationService.confirm({
+      message: 'Are you sure you are satisfied with the details contained in all the Resources?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+
+        let objectArray = this.activeResources;
+
+        this.activeResources.forEach(item => {
+          let model = {
+            applicationId: this.application.id,
+            serviceProvisionStepId: ServiceProvisionStepsEnum.Resourcing,
+            entityId: item.id,
+            isSatisfied: true
+          } as IApplicationReviewerSatisfaction;
+
+          let lastObjectInArray = objectArray.pop();
+
+          this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+            (resp) => {
+
+              if (item === lastObjectInArray) {
+                this.loadResources();
+                this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Reviewer Satisfaction completed for all resources.' });
+              }
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        });
+      },
+      reject: () => {
+      }
+    });
+  }
 }

@@ -114,6 +114,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<ApplicationReviewerSatisfaction>> GetApplicationReviewerSatisfactions(int applicationId, int serviceProvisionStepId, int entityId);
 
+		Task<IEnumerable<ApplicationReviewerSatisfaction>> GetReviewerSatisfactionByApplicationId(int applicationId);
+
 		Task CreateApplicationReviewerSatisfaction(ApplicationReviewerSatisfaction model, string userIdentifier);
 		Task GetByIds(int fundingApplicationId, bool v);
 

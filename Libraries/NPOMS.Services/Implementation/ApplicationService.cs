@@ -142,7 +142,7 @@ namespace NPOMS.Services.Implementation
 			var applications = await _applicationRepository.GetEntities();
 			var results = applications.Where(x => !x.StatusId.Equals((int)StatusEnum.New));
 
-			if (loggedInUser.Roles.Any(x => !x.RoleId.Equals((int)RoleEnum.Applicant)))
+			if (loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))
 			{
 				// Filter applications by department.
 				//not supporting multiple departments
@@ -1001,6 +1001,11 @@ namespace NPOMS.Services.Implementation
 		public async Task<IEnumerable<ApplicationReviewerSatisfaction>> GetApplicationReviewerSatisfactions(int applicationId, int serviceProvisionStepId, int entityId)
 		{
 			return await _applicationReviewerSatisfactionRepository.GetByIds(applicationId, serviceProvisionStepId, entityId);
+		}
+
+		public async Task<IEnumerable<ApplicationReviewerSatisfaction>> GetReviewerSatisfactionByApplicationId(int applicationId)
+		{
+			return await _applicationReviewerSatisfactionRepository.GetByApplicationId(applicationId);
 		}
 
 		public async Task CreateApplicationReviewerSatisfaction(ApplicationReviewerSatisfaction model, string userIdentifier)

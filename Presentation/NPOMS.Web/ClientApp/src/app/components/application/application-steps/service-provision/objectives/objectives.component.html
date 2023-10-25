@@ -1,5 +1,10 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header="Objectives" *ngIf="activeObjectives">
+    <div class="p-grid p-nogutter p-justify-end">
+        <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Objectives" (click)="reviewAllItems()"></button>
+    </div>    
+    <div style="height: 10px;"></div>
+
     <p-table [rowHover]="true" [columns]="objectiveCols" [value]="activeObjectives" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
@@ -149,7 +154,7 @@
     </div>
     <hr>
     <p>Recipient Details</p>
-    <p-table [rowHover]="true" [value]="getActiveSRs()" styleClass="p-datatable-sm">
+    <p-table [rowHover]="true" [value]="getActiveSRs(objective)" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
             <tr>
                 <th>Organisation Name</th>
@@ -258,7 +263,7 @@
                     </div>
                 </div>
                 <div class="p-col">
-                    <p-dropdown [options]="getActiveSRs()" placeholder="Select a Sub-Recipient" optionLabel="organisationName" [(ngModel)]="selectedSubRecipient" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit || !newRecipient" (onChange)="subRecipientChange($event.value)"></p-dropdown>
+                    <p-dropdown [options]="getActiveSRs(objective)" placeholder="Select a Sub-Recipient" optionLabel="organisationName" [(ngModel)]="selectedSubRecipient" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit || !newRecipient" (onChange)="subRecipientChange($event.value)"></p-dropdown>
                 </div>
             </div>
             <div class="p-grid">

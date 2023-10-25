@@ -1,4 +1,9 @@
 <p-panel [style]="{'font-size':'12px'}" header="Confirmation">
+    <div class="p-grid p-nogutter p-justify-end">
+        <button pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="View All Reviewer Satisfactions" (click)="viewReviewerSatisfaction()"></button>
+    </div>    
+    <div style="height: 10px;"></div>
+
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -51,3 +56,134 @@
         </ng-template>
     </p-table>
 </p-dialog>
+
+<p-sidebar [(visible)]="showReviewerSatisfaction" position="bottom" [style]="{height:'650px'}" [dismissible]="false" [closeOnEscape]="false">
+    <p-panel header="All Reviewer Satisfactions">
+        <p-panel header="Objectives">
+            <p-accordion (onOpen)="onOpenObjective($event)">
+                <p-accordionTab *ngFor="let objective of objectives" header="Objective Name: {{objective.name}}">
+                    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [value]="reviewerSatisfactionObjective" *ngIf="reviewerSatisfactionObjective" styleClass="p-datatable-sm">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                    {{col.header}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                            <tr class="default-font">
+                                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                                <td style="text-align: center;" [ngClass]="rowData.isSatisfied === true ? 'green' : 'default' && rowData.isSatisfied === false ? 'red' : 'default'">
+                                    <span>{{rowData.isSatisfied ? 'Yes' : 'No'}}</span>
+                                </td>
+                                <td>{{rowData.createdUser.fullName}}</td>
+                                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr class="default-font">
+                                <td colspan="4" style="text-align: center;">No results found</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-accordionTab>
+            </p-accordion>
+        </p-panel>
+        <div style="height: 10px;"></div>
+
+        <p-panel header="Activities">
+            <p-accordion (onOpen)="onOpenActivity($event)">
+                <p-accordionTab *ngFor="let activity of activities" header="Activity Name: {{activity.activityList.name}}">
+                    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [value]="reviewerSatisfactionActivity" *ngIf="reviewerSatisfactionActivity" styleClass="p-datatable-sm">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                    {{col.header}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                            <tr class="default-font">
+                                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                                <td style="text-align: center;" [ngClass]="rowData.isSatisfied === true ? 'green' : 'default' && rowData.isSatisfied === false ? 'red' : 'default'">
+                                    <span>{{rowData.isSatisfied ? 'Yes' : 'No'}}</span>
+                                </td>
+                                <td>{{rowData.createdUser.fullName}}</td>
+                                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr class="default-font">
+                                <td colspan="4" style="text-align: center;">No results found</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-accordionTab>
+            </p-accordion>
+        </p-panel>
+        <div style="height: 10px;"></div>
+
+        <p-panel header="Sustainability Plans">
+            <p-accordion (onOpen)="onOpenSustainability($event)">
+                <p-accordionTab *ngFor="let plan of sustainabilityPlans" header="Risk: {{plan.risk}}">
+                    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [value]="reviewerSatisfactionSustainability" *ngIf="reviewerSatisfactionSustainability" styleClass="p-datatable-sm">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                    {{col.header}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                            <tr class="default-font">
+                                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                                <td style="text-align: center;" [ngClass]="rowData.isSatisfied === true ? 'green' : 'default' && rowData.isSatisfied === false ? 'red' : 'default'">
+                                    <span>{{rowData.isSatisfied ? 'Yes' : 'No'}}</span>
+                                </td>
+                                <td>{{rowData.createdUser.fullName}}</td>
+                                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr class="default-font">
+                                <td colspan="4" style="text-align: center;">No results found</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-accordionTab>
+            </p-accordion>
+        </p-panel>
+        <div style="height: 10px;"></div>
+
+        <p-panel header="Resourcing">
+            <p-accordion (onOpen)="onOpenResourcing($event)">
+                <p-accordionTab *ngFor="let resource of resources" header="Resource: {{resource.resourceList.name}}">
+                    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [value]="reviewerSatisfactionResourcing" *ngIf="reviewerSatisfactionResourcing" styleClass="p-datatable-sm">
+                        <ng-template pTemplate="header" let-columns>
+                            <tr>
+                                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                    {{col.header}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                            <tr class="default-font">
+                                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                                <td style="text-align: center;" [ngClass]="rowData.isSatisfied === true ? 'green' : 'default' && rowData.isSatisfied === false ? 'red' : 'default'">
+                                    <span>{{rowData.isSatisfied ? 'Yes' : 'No'}}</span>
+                                </td>
+                                <td>{{rowData.createdUser.fullName}}</td>
+                                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr class="default-font">
+                                <td colspan="4" style="text-align: center;">No results found</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-accordionTab>
+            </p-accordion>
+        </p-panel>
+    </p-panel>    
+</p-sidebar>
