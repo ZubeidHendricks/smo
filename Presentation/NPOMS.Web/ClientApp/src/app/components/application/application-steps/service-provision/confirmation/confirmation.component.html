@@ -1,6 +1,6 @@
 <p-panel [style]="{'font-size':'12px'}" header="Confirmation">
     <div class="p-grid p-nogutter p-justify-end">
-        <button pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="View Workplan Reviewer Satisfaction" (click)="viewReviewerSatisfaction()"></button>
+        <button pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="View All Reviewer Satisfactions" (click)="viewReviewerSatisfaction()"></button>
     </div>    
     <div style="height: 10px;"></div>
 
@@ -58,7 +58,7 @@
 </p-dialog>
 
 <p-sidebar [(visible)]="showReviewerSatisfaction" position="bottom" [style]="{height:'650px'}" [dismissible]="false" [closeOnEscape]="false">
-    <p-panel header="Workplan Reviewer Satisfactions">
+    <p-panel header="All Reviewer Satisfactions">
         <p-panel header="Objectives">
             <p-accordion (onOpen)="onOpenObjective($event)">
                 <p-accordionTab *ngFor="let objective of objectives" header="Objective Name: {{objective.name}}">
