@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponse, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, IFinancialYear, IQuestionCategory, IResponseOption, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, IFinancialYear, IQuestionCategory, IResponseOption, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -89,7 +89,8 @@ export class ScorecardComponent implements OnInit {
   activities: IActivity[];
   applications: IApplication[];
   //npoId: string;
-
+  statuses: IStatus[];
+  
   constructor(
 
     private _router: Router,
@@ -141,6 +142,7 @@ export class ScorecardComponent implements OnInit {
         this.application = results;
        
         this.loadQuestionnaire();
+        this.getAuditHistory();
        
       },
     );
@@ -169,7 +171,26 @@ export class ScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
         this.responseOptions = results;
-      //  this.loadStatuses();
+        this.loadStatuses();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadStatuses() {
+    this._dropdownService.getEntities(DropdownTypeEnum.Statuses, true).subscribe(
+      (results) => {
+        this.statuses = results;
+      //  this.evaluationStatuses = results.filter(x => x.name.includes('Recommended') || x.name.includes('NonCompliance') || x.name.includes('StronglyRecommended') || x.name.includes('Declined'));
+       // this.adjudicationStatuses = results.filter(x => x.name.includes('Declined') || x.name.includes('NonCompliance') || x.name.includes('Recommended') || x.name.includes('StronglyRecommended'));
+      //  this.approvalStatuses = results.filter(x => x.name.includes('Declined') || x.name.includes('Recommended') || x.name.includes('StronglyRecommended'));
+    //    this.loadCapturedResponses();
+       // this.isDataAvailable = true;
+        this._spinner.hide();
+        
       },
       (err) => {
         this._loggerService.logException(err);
@@ -301,23 +322,80 @@ export class ScorecardComponent implements OnInit {
     this.onSave(question);
   }
 
+ 
   public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
   {
+   console.log('questionnaire',questionnaire);
     questionnaire.forEach(item => {
       if(Number(item.responseOption.name) >= 0)
       {
-        this.totalAverageScore += Number(item.responseOption.name);
+        this.totalAverageScore  += Number(item.responseOption.name);
       }
       else{
         this.totalAverageScore = 0;
       }
     });
 
-    //if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Evaluation)
-    //this.updateEvaluationStatus(this.totalAverageScore);
+    return this.totalAverageScore;
+  }
+
+  public getAverageScoreTotal1(questionnaire: IQuestionResponseViewModel[]) 
+  {
+    questionnaire.forEach(item => {
+      if(Number(item.responseOption.name) >= 0)
+      {
+        this.totalAverageScore  += Number(item.responseOption.name);
+      }
+      else{
+        this.totalAverageScore = 0;
+      }
+    });
 
     return this.totalAverageScore;
   }
+  public getAverageScoreTotal2(questionnaire: IQuestionResponseViewModel[]) 
+  {
+    questionnaire.forEach(item => {
+      if(Number(item.responseOption.name) >= 0)
+      {
+        this.totalAverageScore  += Number(item.responseOption.name);
+      }
+      else{
+        this.totalAverageScore = 0;
+      }
+    });
+
+    return this.totalAverageScore;
+  }
+  public getAverageScoreTotal3(questionnaire: IQuestionResponseViewModel[]) 
+  {
+    questionnaire.forEach(item => {
+      if(Number(item.responseOption.name) >= 0)
+      {
+        this.totalAverageScore  += Number(item.responseOption.name);
+      }
+      else{
+        this.totalAverageScore = 0;
+      }
+    });
+
+    return this.totalAverageScore;
+  }
+  public getAverageScoreTotal4(questionnaire: IQuestionResponseViewModel[]) 
+  {
+    questionnaire.forEach(item => {
+      if(Number(item.responseOption.name) >= 0)
+      {
+        this.totalAverageScore  += Number(item.responseOption.name);
+      }
+      else{
+        this.totalAverageScore = 0;
+      }
+    });
+
+    return this.totalAverageScore;
+  }
+  
  public onSave(question: IQuestionResponseViewModel) {
     if (question.responseOptionId != 0) {
     
@@ -413,7 +491,9 @@ export class ScorecardComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
+        alert('hi');
         this.activities = results.filter(x => x.isActive === true);
+        console.log('this.activities',this.activities);
         this.workplanIndicators = [];
 
         this.activities.forEach(activity => {
@@ -474,20 +554,20 @@ export class ScorecardComponent implements OnInit {
   
 
   private filterWorkplanIndicators() {
-    if (this.lastWorkplanTarget && this.lastWorkplanActual) {
+   // if (this.lastWorkplanTarget && this.lastWorkplanActual) {
       this.filteredWorkplanIndicators = [];
 
       this.workplanIndicators.forEach(indicator => {
 
         // Filter WorkplanTargets on activity, financial year and monthly frequency
-        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyId == FrequencyEnum.Monthly);
+        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2 && x.frequencyId == FrequencyEnum.Monthly);
 
         // Calculate total targets
         let targetTotal = workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
 
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
         // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
-        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id);
+        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2);
         let filteredWorkplanActuals = workplanActuals.filter((el) => {
           return workplanTargets.some((f) => {
             return f.id === el.workplanTargetId;
@@ -508,9 +588,9 @@ export class ScorecardComponent implements OnInit {
           totalActuals: actualTotal
         } as IWorkplanIndicator);
       });
-
+console.log('this.filteredWorkplanIndicators', this.filteredWorkplanIndicators);
       this.makeRowsSameHeight();
-    }
+   // }
   }
 
   private makeRowsSameHeight() {
@@ -538,6 +618,23 @@ export class ScorecardComponent implements OnInit {
         this._spinner.hide();
       }
     });
+  }
+
+  public onSelectViewHistory1(question: IQuestionResponseViewModel) {
+    this._spinner.show();
+    this.responseHistory = [];
+
+    this._evaluationService.getResponseHistory(this.application.id, question.questionId).subscribe(
+      (results) => {
+        this.responseHistory = results;
+        this.displayHistoryDialog = true;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
 }

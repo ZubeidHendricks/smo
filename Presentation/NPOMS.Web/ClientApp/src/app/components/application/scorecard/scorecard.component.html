@@ -1,6 +1,6 @@
 <p></p>
 <div>
-    <p-panel header="Engagement" [style]="{'font-size':'12px', 'width':'75%'}" >
+    <p-panel header="Engagement" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="engagementQuestionnaire" *ngIf="engagementQuestionnaire" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -35,15 +35,15 @@
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(engagementQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
+                            [autoResize]="true"></textarea>
                         </td>
                         
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
-                        <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        <td style="text-align: center;" colspan="3">
+                            <!-- <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -69,7 +69,7 @@
     <div style="height: 10px;"></div>
 </div>
 <div>
-    <p-panel header="Timely Work Plan Submission" [style]="{'font-size':'12px', 'width':'75%'}" >
+    <p-panel header="Timely Work Plan Submission" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="timeWorkPlanQuestionnaire" *ngIf="timeWorkPlanQuestionnaire" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -110,9 +110,9 @@
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
-                        <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        <td style="text-align: center;" colspan="3">
+                            <!-- <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -124,7 +124,7 @@
                 <ng-template pTemplate="footer" *ngIf="hasWeighting(timeWorkPlanQuestionnaire)">
                     <tr>
                         <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
-                        <td [attr.colspan]="getColspan(timeWorkPlanQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(timeWorkPlanQuestionnaire)}}</span></td>
+                        <td [attr.colspan]="getColspan(timeWorkPlanQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal1(timeWorkPlanQuestionnaire)}}</span></td>
                         <td colspan="2"></td>
                     </tr>
                 </ng-template>
@@ -138,7 +138,7 @@
     <div style="height: 10px;"></div>
 </div>
 <div>
-    <p-panel header="Impact" [style]="{'font-size':'12px', 'width':'75%'}" >
+    <p-panel header="Impact" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="impactQuestionnaire" *ngIf="impactQuestionnaire" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -179,9 +179,9 @@
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
-                        <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        <td style="text-align: center;" colspan="3">
+                            <!-- <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -193,7 +193,7 @@
                 <ng-template pTemplate="footer" *ngIf="hasWeighting(impactQuestionnaire)">
                     <tr>
                         <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
-                        <td [attr.colspan]="getColspan(impactQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(impactQuestionnaire)}}</span></td>
+                        <td [attr.colspan]="getColspan(impactQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal2(impactQuestionnaire)}}</span></td>
                         <td colspan="2"></td>
                     </tr>
                 </ng-template>
@@ -207,7 +207,7 @@
     <div style="height: 10px;"></div>
 </div>
 <div>
-    <p-panel header="Risk Mitigation" [style]="{'font-size':'12px', 'width':'75%'}" >
+    <p-panel header="Risk Mitigation" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="riskMitigationQuestionnaire" *ngIf="riskMitigationQuestionnaire" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -248,9 +248,9 @@
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
-                        <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        <td style="text-align: center;" colspan="3">
+                            <!-- <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -262,7 +262,7 @@
                 <ng-template pTemplate="footer" *ngIf="hasWeighting(riskMitigationQuestionnaire)">
                     <tr>
                         <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
-                        <td [attr.colspan]="getColspan(riskMitigationQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(riskMitigationQuestionnaire)}}</span></td>
+                        <td [attr.colspan]="getColspan(riskMitigationQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal3(riskMitigationQuestionnaire)}}</span></td>
                         <td colspan="2"></td>
                     </tr>
                 </ng-template>
@@ -276,7 +276,7 @@
     <div style="height: 10px;"></div>
 </div>
 <div>
-    <p-panel header="Appropriation of Resources" [style]="{'font-size':'12px', 'width':'75%'}" >
+    <p-panel header="Appropriation of Resources" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="appropriationOfResourcesQuestionnaire" *ngIf="appropriationOfResourcesQuestionnaire" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -317,9 +317,9 @@
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
-                        <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        <td style="text-align: center;" colspan="3">
+                            <!-- <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -331,7 +331,7 @@
                 <ng-template pTemplate="footer" *ngIf="hasWeighting(appropriationOfResourcesQuestionnaire)">
                     <tr>
                         <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
-                        <td [attr.colspan]="getColspan(appropriationOfResourcesQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(appropriationOfResourcesQuestionnaire)}}</span></td>
+                        <td [attr.colspan]="getColspan(appropriationOfResourcesQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal4(appropriationOfResourcesQuestionnaire)}}</span></td>
                         <td colspan="2"></td>
                     </tr>
                 </ng-template>
@@ -378,18 +378,20 @@
                     <col style="width: 100px;">
                     <col style="width: 100px;">
                     <col style="width: 100px;">
-                    <col style="width: 100px;">-->
+                    <col style="width: 100px;">
                     <col style="width: 100px;"> 
                     <col style="width: 100px;">
-                    <col style="width: 100px;">
+                    <col style="width: 100px;">-->
                 </colgroup>
             </ng-template>
             <ng-template pTemplate="frozenheader" let-columns>
                 <tr style="border-bottom: hidden;">
+                    <th style="text-align: center; width: 5%;">#</th>
                     <th style="text-align: center;">Activity</th>
                     <th style="text-align: center;">Indicator</th>
                 </tr>
                 <tr>
+                    <th style="text-align: center;">&nbsp;</th>
                     <th style="text-align: center;">&nbsp;</th>
                     <th style="text-align: center;">&nbsp;</th>
                 </tr>
@@ -406,9 +408,9 @@
                     <th colspan="2" style="text-align: center;">November</th>
                     <th colspan="2" style="text-align: center;">December</th>
                     <th colspan="2" style="text-align: center;">January</th>
-                    <th colspan="2" style="text-align: center;">February</th> -->
+                    <th colspan="2" style="text-align: center;">February</th> 
                     <th colspan="2" style="text-align: center;">March</th>
-                    <th colspan="2" style="text-align: center;">Total</th>
+                    <th colspan="2" style="text-align: center;">Total</th>-->
                 </tr>
                 <tr>
                     <!-- <th colspan="1" style="text-align: center;">Target</th>
@@ -433,10 +435,11 @@
                     <th colspan="1" style="text-align: center;">Actual</th>
                     <th colspan="1" style="text-align: center;">Target</th>
                     <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>-->
-                    <th colspan="1" style="text-align: center;">Actual</th> 
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th> -->
                     <th colspan="1" style="text-align: center;">Target</th>
                     <th colspan="1" style="text-align: center;">Actual YTD</th>
+                    <th colspan="1" style="text-align: center;">Avg %</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="frozenbody" let-rowData let-rowIndex="rowIndex">
@@ -448,186 +451,15 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr class="default-font">
-                    <!-- April targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].apr}}
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId === FrequencyPeriodEnum.Apr">
-                            {{rowData.workplanActuals[0].actual}}
-                        </span>
-                    </td>
 
-                    <!-- May targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].may}}
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[1] && rowData.workplanActuals[1].frequencyPeriodId === FrequencyPeriodEnum.May">
-                            {{rowData.workplanActuals[1].actual}}
-                        </span>
-                    </td>
-
-                    <!-- June and Quarter 1 targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].jun}}
-                        </span>
-                        <!-- <span *ngIf="rowData.workplanTarget.frequency.id === FrequencyEnum.Quarterly">
-                            {{rowData.workplanTarget.quarter1}}
-                        </span> -->
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[2] && rowData.workplanActuals[2].frequencyPeriodId === FrequencyPeriodEnum.Jun">
-                            {{rowData.workplanActuals[2].actual}}
-                        </span>
-                        <!-- <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriod.id === FrequencyPeriodEnum.Q1">
-                            {{rowData.workplanActuals[0].actual}}
-                        </span> -->
-                    </td>
-
-                    <!-- July targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].jul}}
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[3] && rowData.workplanActuals[3].frequencyPeriodId === FrequencyPeriodEnum.Jul">
-                            {{rowData.workplanActuals[3].actual}}
-                        </span>
-                    </td>
-
-                    <!-- August targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].aug}}
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[4] && rowData.workplanActuals[4].frequencyPeriodId === FrequencyPeriodEnum.Aug">
-                            {{rowData.workplanActuals[4].actual}}
-                        </span>
-                    </td>
-
-                    <!-- September and Quarter 2 targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].sep}}
-                        </span>
-                        <!-- <span *ngIf="rowData.workplanTarget.frequency.id === FrequencyEnum.Quarterly">
-                            {{rowData.workplanTarget.quarter2}}
-                        </span> -->
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[5] && rowData.workplanActuals[5].frequencyPeriodId === FrequencyPeriodEnum.Sep">
-                            {{rowData.workplanActuals[5].actual}}
-                        </span>
-                        <!-- <span *ngIf="rowData.workplanActuals[1] && rowData.workplanActuals[1].frequencyPeriod.id === FrequencyPeriodEnum.Q2">
-                            {{rowData.workplanActuals[1].actual}}
-                        </span> -->
-                    </td>
-
-                    <!-- October targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].oct}}
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[6] && rowData.workplanActuals[6].frequencyPeriodId === FrequencyPeriodEnum.Oct">
-                            {{rowData.workplanActuals[6].actual}}
-                        </span>
-                    </td>
-
-                    <!-- November targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].nov}}
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[7] && rowData.workplanActuals[7].frequencyPeriodId === FrequencyPeriodEnum.Nov">
-                            {{rowData.workplanActuals[7].actual}}
-                        </span>
-                    </td>
-
-                    <!-- December and Quarter 3 targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].dec}}
-                        </span>
-                        <!-- <span *ngIf="rowData.workplanTarget.frequency.id === FrequencyEnum.Quarterly">
-                            {{rowData.workplanTarget.quarter3}}
-                        </span> -->
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[8] && rowData.workplanActuals[8].frequencyPeriodId === FrequencyPeriodEnum.Dec">
-                            {{rowData.workplanActuals[8].actual}}
-                        </span>
-                        <!-- <span *ngIf="rowData.workplanActuals[2] && rowData.workplanActuals[2].frequencyPeriod.id === FrequencyPeriodEnum.Q3">
-                            {{rowData.workplanActuals[2].actual}}
-                        </span> -->
-                    </td>
-
-                    <!-- January targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].jan}}
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[9] && rowData.workplanActuals[9].frequencyPeriodId === FrequencyPeriodEnum.Jan">
-                            {{rowData.workplanActuals[9].actual}}
-                        </span>
-                    </td>
-
-                    <!-- February targets and actuals -->
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].feb}}
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[10] && rowData.workplanActuals[10].frequencyPeriodId === FrequencyPeriodEnum.Feb">
-                            {{rowData.workplanActuals[10].actual}}
-                        </span>
-                    </td>
-
-                    <!-- Annual, March and Quarter 4 targets and actuals -->
-                    <td style="text-align: center;">
-                        <!-- <span *ngIf="rowData.workplanTarget.frequency.id === FrequencyEnum.Annually">
-                            {{rowData.workplanTarget.annual}}
-                        </span> -->
-                        <span *ngIf="rowData.workplanTargets[0] && rowData.workplanTargets[0].frequencyId === FrequencyEnum.Monthly">
-                            {{rowData.workplanTargets[0].mar}}
-                        </span>
-                        <!-- <span *ngIf="rowData.workplanTarget.frequency.id === FrequencyEnum.Quarterly">
-                            {{rowData.workplanTarget.quarter4}}
-                        </span> -->
-                    </td>
-                    <td style="text-align: center;">
-                        <!-- <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriod.id === FrequencyPeriodEnum.Annual">
-                            {{rowData.workplanActuals[0].actual}}
-                        </span> -->
-                        <span *ngIf="rowData.workplanActuals[11] && rowData.workplanActuals[11].frequencyPeriodId === FrequencyPeriodEnum.Mar">
-                            {{rowData.workplanActuals[11].actual}}
-                        </span>
-                        <!-- <span *ngIf="rowData.workplanActuals[3] && rowData.workplanActuals[3].frequencyPeriod.id === FrequencyPeriodEnum.Q4">
-                            {{rowData.workplanActuals[3].actual}}
-                        </span> -->
-                    </td>
-                    <td>{{rowData.totalTargets}}</td>
+                 <td>{{rowData.totalTargets}}</td>
                     <td>{{rowData.totalActuals}}</td>
+                    <td></td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr class="default-font">
-                    <td colspan="28" style="text-align: center;">No results found</td>
+                    <td colspan="3" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
         </p-table>
