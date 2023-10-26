@@ -124,7 +124,7 @@
                 <ng-template pTemplate="footer" *ngIf="hasWeighting(timeWorkPlanQuestionnaire)">
                     <tr>
                         <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
-                        <td [attr.colspan]="getColspan(timeWorkPlanQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal1(timeWorkPlanQuestionnaire)}}</span></td>
+                        <td [attr.colspan]="getColspan(timeWorkPlanQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(timeWorkPlanQuestionnaire)}}</span></td>
                         <td colspan="2"></td>
                     </tr>
                 </ng-template>
@@ -193,7 +193,7 @@
                 <ng-template pTemplate="footer" *ngIf="hasWeighting(impactQuestionnaire)">
                     <tr>
                         <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
-                        <td [attr.colspan]="getColspan(impactQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal2(impactQuestionnaire)}}</span></td>
+                        <td [attr.colspan]="getColspan(impactQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(impactQuestionnaire)}}</span></td>
                         <td colspan="2"></td>
                     </tr>
                 </ng-template>
@@ -262,7 +262,7 @@
                 <ng-template pTemplate="footer" *ngIf="hasWeighting(riskMitigationQuestionnaire)">
                     <tr>
                         <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
-                        <td [attr.colspan]="getColspan(riskMitigationQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal3(riskMitigationQuestionnaire)}}</span></td>
+                        <td [attr.colspan]="getColspan(riskMitigationQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(riskMitigationQuestionnaire)}}</span></td>
                         <td colspan="2"></td>
                     </tr>
                 </ng-template>
@@ -331,7 +331,7 @@
                 <ng-template pTemplate="footer" *ngIf="hasWeighting(appropriationOfResourcesQuestionnaire)">
                     <tr>
                         <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
-                        <td [attr.colspan]="getColspan(appropriationOfResourcesQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal4(appropriationOfResourcesQuestionnaire)}}</span></td>
+                        <td [attr.colspan]="getColspan(appropriationOfResourcesQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(appropriationOfResourcesQuestionnaire)}}</span></td>
                         <td colspan="2"></td>
                     </tr>
                 </ng-template>
@@ -346,6 +346,22 @@
 </div>
 <div style="height: 10px;"></div>   
     <div>
+        <div class="p-col-fixed form-label">
+            <div class="box" style="text-align: left;">
+                <span class="non-mandatory-content"><b>Performance</b></span>
+            </div>
+        </div>
+        <div style="height: 10px;"></div>
+        <div class="p-grid" style="width: 25%;">
+            <div>
+                <div class="p-col">
+                    <span>&nbsp;&nbsp;<b>Financial Year</b></span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange()"></p-dropdown>
+            </div>
+        </div>
         <p-table [rowHover]="true" [value]="filteredWorkplanIndicators" styleClass="p-datatable-sm" [columns]="scrollableCols" [frozenColumns]="frozenCols" [scrollable]="true" frozenWidth="55%">
             <!-- <ng-template pTemplate="frozencolgroup" let-columns>
                 <colgroup>
@@ -444,7 +460,7 @@
             </ng-template>
             <ng-template pTemplate="frozenbody" let-rowData let-rowIndex="rowIndex">
                 <tr class="default-font">
-                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td style="text-align: center; width: 5%;">{{rowIndex + 1}}</td>
                     <td>{{rowData.activity.activityList.description}}</td>
                     <td>{{rowData.activity.successIndicator}}</td>
                 </tr>

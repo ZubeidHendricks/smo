@@ -74,7 +74,7 @@ export class ScorecardComponent implements OnInit {
   impactQuestionnaire: IQuestionResponseViewModel[];
   riskMitigationQuestionnaire: IQuestionResponseViewModel[];
   appropriationOfResourcesQuestionnaire: IQuestionResponseViewModel[];
-  totalAverageScore: number;
+  // totalAverageScore: number = 0;
   QuestionCategoryentities: IQuestionCategory[];
   ResponseTypeentities: IResponseType[];
   auditCols: any[];
@@ -125,7 +125,8 @@ export class ScorecardComponent implements OnInit {
     this.getResponseType();
 
     this.loadApplication();
-    this.loadActivities();
+    this.loadApplications();
+  //  this.loadActivities();
 
     this.auditCols = [
       { header: '', width: '5%' },
@@ -325,76 +326,21 @@ export class ScorecardComponent implements OnInit {
  
   public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
   {
-   console.log('questionnaire',questionnaire);
+    let totalAverageScore = 0;
+
     questionnaire.forEach(item => {
       if(Number(item.responseOption.name) >= 0)
       {
-        this.totalAverageScore  += Number(item.responseOption.name);
+        totalAverageScore  += Number(item.responseOption.name);
       }
       else{
-        this.totalAverageScore = 0;
+        totalAverageScore = 0;
       }
     });
 
-    return this.totalAverageScore;
+    return totalAverageScore;
   }
 
-  public getAverageScoreTotal1(questionnaire: IQuestionResponseViewModel[]) 
-  {
-    questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 0)
-      {
-        this.totalAverageScore  += Number(item.responseOption.name);
-      }
-      else{
-        this.totalAverageScore = 0;
-      }
-    });
-
-    return this.totalAverageScore;
-  }
-  public getAverageScoreTotal2(questionnaire: IQuestionResponseViewModel[]) 
-  {
-    questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 0)
-      {
-        this.totalAverageScore  += Number(item.responseOption.name);
-      }
-      else{
-        this.totalAverageScore = 0;
-      }
-    });
-
-    return this.totalAverageScore;
-  }
-  public getAverageScoreTotal3(questionnaire: IQuestionResponseViewModel[]) 
-  {
-    questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 0)
-      {
-        this.totalAverageScore  += Number(item.responseOption.name);
-      }
-      else{
-        this.totalAverageScore = 0;
-      }
-    });
-
-    return this.totalAverageScore;
-  }
-  public getAverageScoreTotal4(questionnaire: IQuestionResponseViewModel[]) 
-  {
-    questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 0)
-      {
-        this.totalAverageScore  += Number(item.responseOption.name);
-      }
-      else{
-        this.totalAverageScore = 0;
-      }
-    });
-
-    return this.totalAverageScore;
-  }
   
  public onSave(question: IQuestionResponseViewModel) {
     if (question.responseOptionId != 0) {
@@ -418,6 +364,14 @@ export class ScorecardComponent implements OnInit {
 
       );
 
+    }
+  }
+
+  financialYearChange() {
+    if (this.selectedFinancialYear) {
+      this.filteredWorkplanIndicators = [];
+      this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
+      this.loadActivities();
     }
   }
 
@@ -491,9 +445,7 @@ export class ScorecardComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        alert('hi');
         this.activities = results.filter(x => x.isActive === true);
-        console.log('this.activities',this.activities);
         this.workplanIndicators = [];
 
         this.activities.forEach(activity => {
@@ -588,7 +540,6 @@ export class ScorecardComponent implements OnInit {
           totalActuals: actualTotal
         } as IWorkplanIndicator);
       });
-console.log('this.filteredWorkplanIndicators', this.filteredWorkplanIndicators);
       this.makeRowsSameHeight();
    // }
   }
