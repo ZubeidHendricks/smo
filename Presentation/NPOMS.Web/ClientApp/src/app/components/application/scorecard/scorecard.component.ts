@@ -618,6 +618,15 @@ export class ScorecardComponent implements OnInit {
       this._spinner.hide();
     }
   }
+
+  public submit() {
+    // if (this.canContinue(questionnaire)) {
+    //   this._spinner.show();
+    //   this.createCapturedResponse(questionCategory);
+    // }
+
+  }
+
   public onSelectViewHistory1(question: IQuestionResponseViewModel) {
     this._spinner.show();
     this.responseHistory = [];
