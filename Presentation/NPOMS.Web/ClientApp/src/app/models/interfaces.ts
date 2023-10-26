@@ -331,6 +331,7 @@ export interface IActivity {
     activitySubProgrammes: IActivitySubProgramme[];
     activityList: IActivityList;
     activityFacilityLists: IActivityFacilityList[];
+    activityRecipients: IActivityRecipient[];
 }
 
 export interface IAddressInformation {
@@ -525,7 +526,7 @@ export interface INpo {
 
     registrationStatusId: number;
     pboNumber: string;
-    section18Receipts: boolean;    
+    section18Receipts: boolean;
     cCode: string;
 
     organisationType: IOrganisationType;
@@ -594,8 +595,8 @@ export interface IQuickCaptureDetails {
     applicationPeriodId: number;
     applicationPeriod: IApplicationPeriod;
     //applicationDetails: IApplicationDetails;  
-    fundingApplicationDetails :IFundingApplicationDetails;
-    npo:INpo;    
+    fundingApplicationDetails: IFundingApplicationDetails;
+    npo: INpo;
 }
 
 
@@ -918,6 +919,14 @@ export interface IActivityFacilityList {
 
     //activity: IActivity;
     facilityList: IFacilityList;
+}
+
+export interface IActivityRecipient {
+    activityId: number;
+    entity: string;
+    entityId: number;
+    recipientTypeId: number;
+    recipientName: string;
 }
 
 /* Other */

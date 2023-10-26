@@ -205,6 +205,19 @@
             <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" autoResize="autoResize"></textarea>
         </div>
     </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Recipient(s)</span>
+            </div>
+        </div>
+        <div class="p-col" *ngIf="canEdit">
+            <p-multiSelect [options]="recipients" defaultLabel="Select option(s)" optionLabel="recipientName" [(ngModel)]="selectedRecipients" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" [maxSelectedLabels]="2"></p-multiSelect>
+        </div>
+        <div class="p-col" *ngIf="!canEdit">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedRecipientsText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" autoResize="autoResize"></textarea>
+        </div>
+    </div>
     <ng-template pTemplate="footer" *ngIf="canAddComments">
         <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveActivity() (click)="saveActivity()"></button>
         <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>

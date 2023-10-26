@@ -49,6 +49,7 @@ namespace NPOMS.Repository.Implementation.Entities
 							.Include(x => x.ActivitySubProgrammes)
 							.Include(x => x.ActivityFacilityLists)
 							.Include(x => x.ActivityList)
+							.Include(x => x.ActivityRecipients)
 							.AsNoTracking().FirstOrDefaultAsync();
 		}
 

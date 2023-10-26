@@ -34,7 +34,7 @@
         <br>
         <p-accordion>
             <p-accordionTab header="Overall Workplan Satisfaction" *ngIf="activeStep !== ServiceProvisionStepsEnum.NpoConfirmation">
-                <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [value]="applicationReviewerSatisfaction" *ngIf="applicationReviewerSatisfaction" styleClass="p-datatable-sm">
+                <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [paginator]="true" [rows]="10" [value]="applicationReviewerSatisfaction" *ngIf="applicationReviewerSatisfaction" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
