@@ -55,6 +55,7 @@ namespace NPOMS.Services.Implementation
 		private IApplicationPeriodRepository _applicationPeriodRepository;
 		private ISubRecipientRepository _subRecipientRepository;
 		private ISubSubRecipientRepository _subSubRecipientRepository;
+		private IActivityRecipientRepository _activityRecipientRepository;
 
 		private RepositoryContext _repositoryContext;
 
@@ -95,7 +96,8 @@ namespace NPOMS.Services.Implementation
 			IFundAppServiceDeliveryAreaRepository bidServiceDeliveryAreaRepository,
 			IApplicationPeriodRepository applicationPeriodRepository,
 			ISubRecipientRepository subRecipientRepository,
-			ISubSubRecipientRepository subSubRecipientRepository)
+			ISubSubRecipientRepository subSubRecipientRepository,
+			IActivityRecipientRepository activityRecipientRepository)
 		{
 			_applicationRepository = applicationRepository;
 			_userRepository = userRepository;
@@ -130,6 +132,7 @@ namespace NPOMS.Services.Implementation
 			_applicationPeriodRepository = applicationPeriodRepository;
 			_subRecipientRepository = subRecipientRepository;
 			_subSubRecipientRepository = subSubRecipientRepository;
+			_activityRecipientRepository = activityRecipientRepository;
 		}
 
 		#endregion
@@ -735,6 +738,9 @@ namespace NPOMS.Services.Implementation
 
 				var facilityListMappings = await _activityFacilityListRepository.GetByActivityId(item.Id, true);
 				item.ActivityFacilityLists = facilityListMappings.ToList();
+
+				var recipients = await _activityRecipientRepository.GetByActivityId(item.Id);
+				item.ActivityRecipients = recipients.ToList();
 			}
 
 			return activities;
@@ -771,6 +777,11 @@ namespace NPOMS.Services.Implementation
 
 			await UpdateActivitySubProgrammeMappings(activity, loggedInUser.Id);
 			await UpdateActivityFacilityListMappings(activity, loggedInUser.Id);
+
+			await _activityRecipientRepository.DeleteEntity(model.Id);
+
+			foreach (var mapping in model.ActivityRecipients)
+				await _activityRecipientRepository.CreateAsync(mapping);
 
 			await _activityRepository.UpdateEntity(activity, loggedInUser.Id);
 		}

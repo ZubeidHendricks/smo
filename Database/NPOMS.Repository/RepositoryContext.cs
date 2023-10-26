@@ -17,6 +17,7 @@ using NPOMS.Repository.Configurations.Entities;
 using NPOMS.Repository.Configurations.Lookup;
 using NPOMS.Repository.Configurations.Mapping;
 using NPOMS.Repository.DTO;
+using NPOMS.Repository.Implementation.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -190,6 +191,7 @@ namespace NPOMS.Repository
         public DbSet<UserNpo> UserNpos { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<ActivityFacilityList> ActivityFacilityLists { get; set; }
+        public DbSet<ActivityRecipient> ActivityRecipients { get; set; }
 
         /* Indicator */
         public DbSet<WorkplanTarget> WorkplanTargets { get; set; }
@@ -208,6 +210,7 @@ namespace NPOMS.Repository
 
             modelBuilder.Entity<RolePermission>().HasKey(x => new { x.RoleId, x.PermissionId });
             modelBuilder.Entity<ObjectiveProgramme>().HasKey(x => new { x.ObjectiveId, x.ProgrammeId, x.SubProgrammeId });
+            modelBuilder.Entity<ActivityRecipient>().HasKey(x => new { x.ActivityId, x.EntityId, x.RecipientTypeId });
 
             modelBuilder.Entity<RolePermission>()
                 .HasOne(x => x.Role)
