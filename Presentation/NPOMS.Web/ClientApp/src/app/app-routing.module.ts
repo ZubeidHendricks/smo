@@ -128,12 +128,12 @@ const routes: Routes = [
   { path: 'application-periods', component: ApplicationPeriodListComponent },
   { path: 'application-period/create', component: CreateApplicationPeriodComponent },
   { path: 'application-period/edit/:id', component: EditApplicationPeriodComponent },
+  { path: 'sp-application/view/:id', component: ViewApplicationComponent },
   { path: 'fa-application/view/:id', component: WorkflowApplicationComponent },
   { path: 'application/pre-evaluate/:id', component: WorkflowApplicationComponent },
   { path: 'application/evaluate/:id', component: WorkflowApplicationComponent },
   { path: 'application/adjudicate/:id', component: WorkflowApplicationComponent },
   { path: 'application/approval/:id', component: WorkflowApplicationComponent },
-
   { path: 'npo-approval', component: NpoApprovalComponent },
   { path: 'pbi-dashboard', component: PowerbiDashboardComponent },
   { path: 'training-material', component: TrainingMaterialComponent },

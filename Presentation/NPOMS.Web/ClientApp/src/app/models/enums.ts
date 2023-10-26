@@ -107,6 +107,7 @@ export enum ResponseTypeEnum {
     CloseEnded2 = 3,
     CloseEnded3 = 4,
     CloseEnded4 = 5,
+    Score2 = 6
 }
 
 export enum DeclarationTypeEnum {
@@ -548,4 +549,10 @@ export enum RecipientTypeEnum {
     Primary = 1,
     SubRecipient = 2,
     SubSubRecipient = 3
+}
+
+export enum RecipientEntityEnum {
+    Objective = 'Objective',
+    SubRecipient = 'SubRecipient',
+    SubSubRecipient = 'SubSubRecipient'
 }

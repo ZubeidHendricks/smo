@@ -117,9 +117,9 @@ namespace NPOMS.Services.Implementation
 
 				var mappings = await _userNpoRepository.GetApprovedEntities(user.Id);
 				viewModel.UserNpos = _mapper.Map<List<UserNpoViewModel>>(mappings);
-			}
 
-			viewModel.Permissions = GetPermissions(user);
+				viewModel.Permissions = GetPermissions(user);
+			}
 
 			return viewModel;
 		}

@@ -1,6 +1,6 @@
 <p></p>
 <div>
-    <p-panel header="Engagement" [style]="{'font-size':'12px'}" >
+    <p-panel header="Engagement" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="engagementQuestionnaire" *ngIf="engagementQuestionnaire" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -35,15 +35,15 @@
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(engagementQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
+                            [autoResize]="true"></textarea>
                         </td>
                         
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
-                        <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        <td style="text-align: center;" colspan="3">
+                            <!-- <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -68,9 +68,8 @@
     </p-panel>
     <div style="height: 10px;"></div>
 </div>
-
 <div>
-    <p-panel header="Timely Work Plan Submission" [style]="{'font-size':'12px'}" >
+    <p-panel header="Timely Work Plan Submission" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="timeWorkPlanQuestionnaire" *ngIf="timeWorkPlanQuestionnaire" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -111,9 +110,9 @@
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
-                        <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        <td style="text-align: center;" colspan="3">
+                            <!-- <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -138,9 +137,8 @@
     </p-panel>
     <div style="height: 10px;"></div>
 </div>
-
 <div>
-    <p-panel header="Impact" [style]="{'font-size':'12px'}" >
+    <p-panel header="Impact" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="impactQuestionnaire" *ngIf="impactQuestionnaire" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -181,9 +179,9 @@
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
-                        <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        <td style="text-align: center;" colspan="3">
+                            <!-- <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -208,9 +206,8 @@
     </p-panel>
     <div style="height: 10px;"></div>
 </div>
-
 <div>
-    <p-panel header="Risk Mitigation" [style]="{'font-size':'12px'}" >
+    <p-panel header="Risk Mitigation" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="riskMitigationQuestionnaire" *ngIf="riskMitigationQuestionnaire" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -251,9 +248,9 @@
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
-                        <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        <td style="text-align: center;" colspan="3">
+                            <!-- <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -278,9 +275,8 @@
     </p-panel>
     <div style="height: 10px;"></div>
 </div>
-
 <div>
-    <p-panel header="Appropriation of Resources" [style]="{'font-size':'12px'}" >
+    <p-panel header="Appropriation of Resources" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="appropriationOfResourcesQuestionnaire" *ngIf="appropriationOfResourcesQuestionnaire" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -321,9 +317,9 @@
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
-                        <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
-                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                        <td style="text-align: center;" colspan="3">
+                            <!-- <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -348,6 +344,142 @@
     </p-panel>
     <div style="height: 10px;"></div>
 </div>
+<div style="height: 10px;"></div>   
+    <div>
+        <div class="p-col-fixed form-label">
+            <div class="box" style="text-align: left;">
+                <span class="non-mandatory-content"><b>Performance</b></span>
+            </div>
+        </div>
+        <div style="height: 10px;"></div>
+        <div class="p-grid" style="width: 25%;">
+            <div>
+                <div class="p-col">
+                    <span>&nbsp;&nbsp;<b>Financial Year</b></span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange()"></p-dropdown>
+            </div>
+        </div>
+        <p-table [rowHover]="true" [value]="filteredWorkplanIndicators" styleClass="p-datatable-sm" [columns]="scrollableCols" [frozenColumns]="frozenCols" [scrollable]="true" frozenWidth="55%">
+            <!-- <ng-template pTemplate="frozencolgroup" let-columns>
+                <colgroup>
+                    <col style="width: 5%;">
+                    <col style="width: 35%;">
+                    <col style="width: 15%;">
+                </colgroup>
+            </ng-template> -->
+            <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                    <!-- <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                    <col style="width: 100px;"> 
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">-->
+                </colgroup>
+            </ng-template>
+            <ng-template pTemplate="frozenheader" let-columns>
+                <tr style="border-bottom: hidden;">
+                    <th style="text-align: center; width: 5%;">#</th>
+                    <th style="text-align: center;">Activity</th>
+                    <th style="text-align: center;">Indicator</th>
+                </tr>
+                <tr>
+                    <th style="text-align: center;">&nbsp;</th>
+                    <th style="text-align: center;">&nbsp;</th>
+                    <th style="text-align: center;">&nbsp;</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <!-- <th colspan="2" style="text-align: center;">April</th>
+                    <th colspan="2" style="text-align: center;">May</th>
+                    <th colspan="2" style="text-align: center;">June</th>
+                    <th colspan="2" style="text-align: center;">July</th>
+                    <th colspan="2" style="text-align: center;">August</th>
+                    <th colspan="2" style="text-align: center;">September</th>
+                    <th colspan="2" style="text-align: center;">October</th>
+                    <th colspan="2" style="text-align: center;">November</th>
+                    <th colspan="2" style="text-align: center;">December</th>
+                    <th colspan="2" style="text-align: center;">January</th>
+                    <th colspan="2" style="text-align: center;">February</th> 
+                    <th colspan="2" style="text-align: center;">March</th>
+                    <th colspan="2" style="text-align: center;">Total</th>-->
+                </tr>
+                <tr>
+                    <!-- <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th>
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual</th> -->
+                    <th colspan="1" style="text-align: center;">Target</th>
+                    <th colspan="1" style="text-align: center;">Actual YTD</th>
+                    <th colspan="1" style="text-align: center;">Avg %</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="frozenbody" let-rowData let-rowIndex="rowIndex">
+                <tr class="default-font">
+                    <td style="text-align: center; width: 5%;">{{rowIndex + 1}}</td>
+                    <td>{{rowData.activity.activityList.description}}</td>
+                    <td>{{rowData.activity.successIndicator}}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr class="default-font">
+
+                 <td>{{rowData.totalTargets}}</td>
+                    <td>{{rowData.totalActuals}}</td>
+                    <td></td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="3" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>     
 
 <p-dialog header="Audit History" [(visible)]="displayHistory" [style]="{width: '50vw'}" [focusOnShow]="false"
     showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
