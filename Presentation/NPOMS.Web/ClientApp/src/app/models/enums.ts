@@ -107,6 +107,7 @@ export enum ResponseTypeEnum {
     CloseEnded2 = 3,
     CloseEnded3 = 4,
     CloseEnded4 = 5,
+    Score2 = 6
 }
 
 export enum DeclarationTypeEnum {

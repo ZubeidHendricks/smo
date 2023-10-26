@@ -150,7 +150,7 @@ export class ScorecardQuestionComponent implements OnInit {
       value = value[prop];
     }
 
-    if (row.responseTypeId !== ResponseTypeEnum.Score && col.field === "questionProperty.weighting") {
+    if (row.responseTypeId !== ResponseTypeEnum.Score2 && col.field === "questionProperty.weighting") {
       return null;
     }
 
@@ -242,7 +242,7 @@ export class ScorecardQuestionComponent implements OnInit {
   public hasWeighting(questionCategory: string) {
     let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategory);
     let questions = this.entities.filter(x => x.questionSection.questionCategoryId === id[0].id);
-    return questions.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score });
+    return questions.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score2 });
   }
 
   public loadQuestionCategory()
