@@ -414,51 +414,22 @@
             </ng-template>
             <ng-template pTemplate="header">
                 <tr>
-                    <!-- <th colspan="2" style="text-align: center;">April</th>
-                    <th colspan="2" style="text-align: center;">May</th>
-                    <th colspan="2" style="text-align: center;">June</th>
-                    <th colspan="2" style="text-align: center;">July</th>
-                    <th colspan="2" style="text-align: center;">August</th>
-                    <th colspan="2" style="text-align: center;">September</th>
-                    <th colspan="2" style="text-align: center;">October</th>
-                    <th colspan="2" style="text-align: center;">November</th>
-                    <th colspan="2" style="text-align: center;">December</th>
-                    <th colspan="2" style="text-align: center;">January</th>
-                    <th colspan="2" style="text-align: center;">February</th> 
-                    <th colspan="2" style="text-align: center;">March</th>
-                    <th colspan="2" style="text-align: center;">Total</th>-->
+                    <th colspan="1" style="text-align: center;"></th>
+                    <th colspan="1" style="text-align: center;"></th>
+                    <th colspan="1" style="text-align: center;"></th>
                 </tr>
                 <tr>
-                    <!-- <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th>
-                    <th colspan="1" style="text-align: center;">Target</th>
-                    <th colspan="1" style="text-align: center;">Actual</th> -->
                     <th colspan="1" style="text-align: center;">Target</th>
                     <th colspan="1" style="text-align: center;">Actual YTD</th>
                     <th colspan="1" style="text-align: center;">Avg %</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="frozenbody" let-rowData let-rowIndex="rowIndex">
+                <tr class="heading">
+                    <td *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false" [attr.colspan]="3">
+                        <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
+                    </td>
+                </tr>
                 <tr class="default-font">
                     <td style="text-align: center; width: 5%;">{{rowIndex + 1}}</td>
                     <td>{{rowData.activity.activityList.description}}</td>
@@ -466,8 +437,8 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr><td>&nbsp;</td></tr>
                 <tr class="default-font">
-
                  <td>{{rowData.totalTargets}}</td>
                     <td>{{rowData.totalActuals}}</td>
                     <td></td>

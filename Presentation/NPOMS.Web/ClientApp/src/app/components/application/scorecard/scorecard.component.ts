@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponse, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, IFinancialYear, IQuestionCategory, IResponseOption, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, IFinancialYear, IObjective, IQuestionCategory, IResponseOption, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -86,11 +86,15 @@ export class ScorecardComponent implements OnInit {
   selectedFinancialYear: IFinancialYear;
   scrollableCols: any[];
   frozenCols: any[];
+  objectives: IObjective[] = [];
   activities: IActivity[];
   applications: IApplication[];
   //npoId: string;
   statuses: IStatus[];
-  
+  rowGroupMetadataActivities: any[];
+  isApplicationAvailable: boolean;
+  isObjectivesAvailable: boolean;
+
   constructor(
 
     private _router: Router,
@@ -144,7 +148,7 @@ export class ScorecardComponent implements OnInit {
        
         this.loadQuestionnaire();
         this.getAuditHistory();
-       
+        this.loadObjectives();
       },
     );
   }
@@ -461,6 +465,21 @@ export class ScorecardComponent implements OnInit {
           this.loadTargets(activity);
           this.loadActuals(activity);
         });
+        this.updateRowGroupMetaDataAct();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadObjectives() {
+    this._applicationRepo.getAllObjectives(this.application).subscribe(
+      (results) => {
+        this.objectives = results.filter(x => x.isActive === true);
+        this.isObjectivesAvailable = true;
+        this.allDataLoaded();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -543,6 +562,7 @@ export class ScorecardComponent implements OnInit {
           totalActuals: actualTotal
         } as IWorkplanIndicator);
       });
+      this.updateRowGroupMetaDataAct();
       this.makeRowsSameHeight();
    // }
   }
@@ -574,6 +594,30 @@ export class ScorecardComponent implements OnInit {
     });
   }
 
+
+  updateRowGroupMetaDataAct() {     
+    this.rowGroupMetadataActivities = [];
+    this.activities = this.activities.sort((a, b) => a.objectiveId - b.objectiveId);
+
+    if (this.activities) {
+      this.activities.forEach(element => {
+        var itemExists = this.rowGroupMetadataActivities.some(function (data) { return data.itemName === element.objective.name });
+
+        this.rowGroupMetadataActivities.push({
+          itemName: element.objective.name,
+          itemExists: itemExists
+        });
+      });
+    }        
+    this.allDataLoaded();
+  }
+
+  private allDataLoaded() {
+    if (this.objectives && this.activities) {
+      this.isApplicationAvailable = true;
+      this._spinner.hide();
+    }
+  }
   public onSelectViewHistory1(question: IQuestionResponseViewModel) {
     this._spinner.show();
     this.responseHistory = [];
