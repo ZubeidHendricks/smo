@@ -412,8 +412,6 @@ export class SustainabilityComponent implements OnInit {
       icon: 'pi pi-info-circle',
       accept: () => {
 
-        let objectArray = this.activeSustainabilityPlans;
-
         this.activeSustainabilityPlans.forEach(item => {
           let model = {
             applicationId: this.application.id,
@@ -422,7 +420,7 @@ export class SustainabilityComponent implements OnInit {
             isSatisfied: true
           } as IApplicationReviewerSatisfaction;
 
-          let lastObjectInArray = objectArray.pop();
+          let lastObjectInArray = this.activeSustainabilityPlans[this.activeSustainabilityPlans.length - 1];
 
           this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
             (resp) => {

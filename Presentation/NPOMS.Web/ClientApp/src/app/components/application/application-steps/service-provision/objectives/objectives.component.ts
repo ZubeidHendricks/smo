@@ -762,8 +762,6 @@ export class ObjectivesComponent implements OnInit {
       icon: 'pi pi-info-circle',
       accept: () => {
 
-        let objectArray = this.activeObjectives;
-
         this.activeObjectives.forEach(item => {
           let model = {
             applicationId: this.application.id,
@@ -772,7 +770,7 @@ export class ObjectivesComponent implements OnInit {
             isSatisfied: true
           } as IApplicationReviewerSatisfaction;
 
-          let lastObjectInArray = objectArray.pop();
+          let lastObjectInArray = this.activeObjectives[this.activeObjectives.length - 1];
 
           this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
             (resp) => {

@@ -549,3 +549,9 @@ export enum RecipientTypeEnum {
     SubRecipient = 2,
     SubSubRecipient = 3
 }
+
+export enum RecipientEntityEnum {
+    Objective = 'Objective',
+    SubRecipient = 'SubRecipient',
+    SubSubRecipient = 'SubSubRecipient'
+}

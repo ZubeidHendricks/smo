@@ -547,8 +547,6 @@ export class ResourcingComponent implements OnInit {
       icon: 'pi pi-info-circle',
       accept: () => {
 
-        let objectArray = this.activeResources;
-
         this.activeResources.forEach(item => {
           let model = {
             applicationId: this.application.id,
@@ -557,7 +555,7 @@ export class ResourcingComponent implements OnInit {
             isSatisfied: true
           } as IApplicationReviewerSatisfaction;
 
-          let lastObjectInArray = objectArray.pop();
+          let lastObjectInArray = this.activeResources[this.activeResources.length - 1];
 
           this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
             (resp) => {
