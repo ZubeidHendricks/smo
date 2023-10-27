@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using NPOMS.Domain.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NPOMS.Domain.Mapping
 {
@@ -14,5 +15,7 @@ namespace NPOMS.Domain.Mapping
 		public string Entity { get; set; }
 
 		public string RecipientName { get; set; }
+
+		public Activity Activity { get; set; }
 	}
 }

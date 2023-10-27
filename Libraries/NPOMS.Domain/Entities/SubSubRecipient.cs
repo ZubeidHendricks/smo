@@ -31,5 +31,7 @@ namespace NPOMS.Domain.Entities
 		public int? UpdatedUserId { get; set; }
 
 		public DateTime? UpdatedDateTime { get; set; }
+
+		public SubRecipient SubRecipient { get; set; }
 	}
 }

@@ -28,6 +28,8 @@ namespace NPOMS.Services.Interfaces
 
         Task CloneWorkplan(Application model, int financialYearId, string userIdentifier);
 
+		Task CreateActivityRecipients(Application model, int financialYearId);
+
 		Task CreateApplication(Application model, string userIdentifier);
 
 		Task UpdateApplicationStatus(Application model, string userIdentifier);

@@ -117,7 +117,10 @@ namespace NPOMS.API.Controllers
 					await CreateApplicationAudit(model);
 
 					if (!createNew)
+					{
 						await _applicationService.CloneWorkplan(model, financialYearId, base.GetUserIdentifier());
+						await _applicationService.CreateActivityRecipients(model, financialYearId);
+					}
 				}
 				else
 					await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
