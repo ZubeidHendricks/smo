@@ -232,6 +232,40 @@ namespace NPOMS.Services.Implementation
 					_repositoryContext.ObjectiveProgrammes.Add(newObjectiveProgramme);
 				}
 
+				foreach (var subRecipient in objective.SubRecipients)
+				{
+					var newSubRecipient = new SubRecipient
+					{
+						Objective = newObjective,
+						OrganisationName = subRecipient.OrganisationName,
+						FundingPeriodStartDate = subRecipient.FundingPeriodStartDate,
+						FundingPeriodEndDate = subRecipient.FundingPeriodEndDate,
+						Budget = subRecipient.Budget,
+						RecipientTypeId = subRecipient.RecipientTypeId,
+						IsActive = subRecipient.IsActive,
+						CreatedUserId = loggedInUser.Id,
+						CreatedDateTime = DateTime.Now
+					};
+					_repositoryContext.SubRecipients.Add(newSubRecipient);
+
+					foreach (var subSubRecipient in subRecipient.SubSubRecipients)
+					{
+						var newSubSubRecipient = new SubSubRecipient
+						{
+							SubRecipient = newSubRecipient,
+							OrganisationName = subSubRecipient.OrganisationName,
+							FundingPeriodStartDate = subSubRecipient.FundingPeriodStartDate,
+							FundingPeriodEndDate = subSubRecipient.FundingPeriodEndDate,
+							Budget = subSubRecipient.Budget,
+							RecipientTypeId = subSubRecipient.RecipientTypeId,
+							IsActive = subSubRecipient.IsActive,
+							CreatedUserId = loggedInUser.Id,
+							CreatedDateTime = DateTime.Now
+						};
+						_repositoryContext.SubSubRecipients.Add(newSubSubRecipient);
+					}
+				}
+
 				// Create activity linked to objective...
 				foreach (var activity in activities.Where(x => x.ObjectiveId.Equals(objective.Id) && x.IsActive))
 				{
@@ -322,6 +356,64 @@ namespace NPOMS.Services.Implementation
 			await _repositoryContext.SaveChangesAsync();
 		}
 
+		public async Task CreateActivityRecipients(Application model, int financialYearId)
+		{
+			var existingApplication = await GetByIds(model.NpoId, financialYearId, (int)ApplicationTypeEnum.ServiceProvision);
+			var existingObjectives = await GetAllObjectivesAsync(existingApplication.NpoId, existingApplication.ApplicationPeriodId);
+			var existingActivities = await GetAllActivitiesAsync(existingApplication.NpoId, existingApplication.ApplicationPeriodId);
+
+			var objectives = await GetAllObjectivesAsync(model.NpoId, model.ApplicationPeriodId);
+			var activities = await GetAllActivitiesAsync(model.NpoId, model.ApplicationPeriodId);
+
+			foreach (var existingActivity in existingActivities)
+			{
+				foreach (var existingActivityRecipient in existingActivity.ActivityRecipients)
+				{
+					var activity = activities.Where(x => x.ActivityListId.Equals(existingActivity.ActivityListId) && x.ActivityTypeId.Equals(existingActivity.ActivityTypeId) && x.TimelineStartDate.Equals(existingActivity.TimelineStartDate) && x.TimelineEndDate.Equals(existingActivity.TimelineEndDate) && x.Target.Equals(existingActivity.Target) && x.SuccessIndicator.Equals(existingActivity.SuccessIndicator)).FirstOrDefault();
+					var objective = objectives.Where(x => x.Id.Equals(activity.ObjectiveId)).FirstOrDefault();
+
+					var existingSR = new SubRecipient();
+
+					var entityId = 0;
+					RecipientTypeEnum recipientType = (RecipientTypeEnum)existingActivityRecipient.RecipientTypeId;
+
+					switch (recipientType)
+					{
+						case RecipientTypeEnum.Primary:
+							entityId = activity.ObjectiveId;
+							break;
+						case RecipientTypeEnum.SubRecipient:
+							existingSR = await _subRecipientRepository.GetById(existingActivityRecipient.EntityId);
+							var sr = objective.SubRecipients.Where(x => x.OrganisationName.Equals(existingSR.OrganisationName) && x.FundingPeriodStartDate.Equals(existingSR.FundingPeriodStartDate) && x.FundingPeriodEndDate.Equals(existingSR.FundingPeriodEndDate) && x.Budget.Equals(existingSR.Budget) && x.RecipientTypeId.Equals(existingSR.RecipientTypeId)).FirstOrDefault();
+
+							entityId = sr.Id;
+							break;
+						case RecipientTypeEnum.SubSubRecipient:
+							var existingSSR = await _subSubRecipientRepository.GetById(existingActivityRecipient.EntityId);
+
+							existingSR = await _subRecipientRepository.GetById(existingSSR.SubRecipientId);
+							var subRecipient = objective.SubRecipients.Where(x => x.OrganisationName.Equals(existingSR.OrganisationName) && x.FundingPeriodStartDate.Equals(existingSR.FundingPeriodStartDate) && x.FundingPeriodEndDate.Equals(existingSR.FundingPeriodEndDate) && x.Budget.Equals(existingSR.Budget) && x.RecipientTypeId.Equals(existingSR.RecipientTypeId)).FirstOrDefault();
+
+							var ssr = subRecipient.SubSubRecipients.Where(x => x.OrganisationName.Equals(existingSSR.OrganisationName) && x.FundingPeriodStartDate.Equals(existingSSR.FundingPeriodStartDate) && x.FundingPeriodEndDate.Equals(existingSSR.FundingPeriodEndDate) && x.Budget.Equals(existingSSR.Budget) && x.RecipientTypeId.Equals(existingSSR.RecipientTypeId)).FirstOrDefault();
+							entityId = ssr.Id;
+							break;
+					}
+
+					var newActivityRecipient = new ActivityRecipient
+					{
+						ActivityId = activity.Id,
+						RecipientTypeId = existingActivityRecipient.RecipientTypeId,
+						EntityId = entityId,
+						Entity = existingActivityRecipient.Entity,
+						RecipientName = existingActivityRecipient.RecipientName
+					};
+					_repositoryContext.ActivityRecipients.Add(newActivityRecipient);
+				}
+			}
+
+			await _repositoryContext.SaveChangesAsync();
+		}
+
 		public async Task CreateApplication(Application model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
@@ -387,6 +479,16 @@ namespace NPOMS.Services.Implementation
 				{
 					var mappings = await _objectiveProgrammeRepository.GetByObjectiveId(item.Id);
 					item.ObjectiveProgrammes = mappings.ToList();
+
+					var subRecipients = await _subRecipientRepository.GetByObjectiveId(item.Id);
+
+					foreach (var subRecipient in subRecipients)
+					{
+						var subSubRecipients = await _subSubRecipientRepository.GetBySubRecipientId(subRecipient.Id);
+						subRecipient.SubSubRecipients = subSubRecipients.ToList();
+					}
+
+					item.SubRecipients = subRecipients.ToList();
 				}
 
 				return objectives;

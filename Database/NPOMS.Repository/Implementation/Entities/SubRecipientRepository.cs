@@ -1,5 +1,8 @@
-﻿using NPOMS.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NPOMS.Domain.Entities;
 using NPOMS.Repository.Interfaces.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Implementation.Entities
 {
@@ -16,6 +19,16 @@ namespace NPOMS.Repository.Implementation.Entities
 		#endregion
 
 		#region Methods
+
+		public async Task<SubRecipient> GetById(int id)
+		{
+			return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+		}
+
+		public async Task<IEnumerable<SubRecipient>> GetByObjectiveId(int objectiveId)
+		{
+			return await FindByCondition(x => x.ObjectiveId.Equals(objectiveId) && x.IsActive).AsNoTracking().ToListAsync();
+		}
 
 		#endregion
 	}
