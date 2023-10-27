@@ -33,6 +33,8 @@ namespace NPOMS.Domain.Entities
 
 		public DateTime? UpdatedDateTime { get; set; }
 
+		public Objective Objective { get; set; }
+
 		public List<SubSubRecipient> SubSubRecipients { get; set; } = new List<SubSubRecipient>();
 	}
 }
