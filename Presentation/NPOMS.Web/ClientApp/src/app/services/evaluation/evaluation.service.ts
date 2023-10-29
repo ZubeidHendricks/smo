@@ -59,4 +59,9 @@ export class EvaluationService {
     const url = `${this._envUrl.urlAddress}/api/evaluation/captured-response`;
     return this._http.post<ICapturedResponse>(url, caputerdResponse, httpOptions);
   }
+
+  public createScorecardResponse(caputerdResponse: ICapturedResponse) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/captured-scorecardResponse`;
+    return this._http.post<ICapturedResponse>(url, caputerdResponse, httpOptions);
+  }
 }
