@@ -97,6 +97,7 @@ export class ScorecardComponent implements OnInit {
   isObjectivesAvailable: boolean;
   overallTotalScore: number;
   overallAvgScore: number;
+  activityAvgScore: number;
 
   constructor(
 
@@ -162,7 +163,6 @@ this.loadQuestionnaire();
         this.allQuestionnaires = results;
 
         this.getOverallScoreTotal(this.allQuestionnaires);
-        console.log('this.allQuestionnaires', this.allQuestionnaires);
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
@@ -619,7 +619,7 @@ this.loadQuestionnaire();
         let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2 && x.frequencyId == FrequencyEnum.Monthly);
 
         // Calculate total targets
-        let targetTotal = 10; //workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
+        let targetTotal = workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
 
        
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
@@ -632,10 +632,10 @@ this.loadQuestionnaire();
         });
 
         // Calculate total actuals
-        let actualTotal = 6; // filteredWorkplanActuals.reduce((sum, object) => {
-        //   let actual = object.actual == null ? 0 : object.actual;
-        //   return sum + actual;
-        // }, 0);
+        let actualTotal = filteredWorkplanActuals.reduce((sum, object) => {
+           let actual = object.actual == null ? 0 : object.actual;
+           return sum + actual;
+        }, 0);
 
         let avg =((actualTotal/targetTotal)*100);
 
@@ -648,9 +648,17 @@ this.loadQuestionnaire();
           totalAvg: avg
         } as IWorkplanIndicator);
       });
+
+      let sumOfAvg = 0;
+
+      this.filteredWorkplanIndicators.forEach(item =>{
+        sumOfAvg += item.totalAvg;
+      })
+
+      this.activityAvgScore = sumOfAvg/this.filteredWorkplanIndicators.length;
+
       this.updateRowGroupMetaDataAct();
       this.makeRowsSameHeight();
-   // }
   }
 
   private makeRowsSameHeight() {
@@ -734,8 +742,6 @@ this.loadQuestionnaire();
 
         this.overallTotalScore = overallTotalScores;
         this.overallAvgScore = overallTotalScores/length;
-      // alert(overallTotalScore);
-       // console.log('this._responses', this._responses);
       },
       (err) => {
         this._loggerService.logException(err);

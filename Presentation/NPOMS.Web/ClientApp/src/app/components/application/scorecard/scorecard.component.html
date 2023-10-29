@@ -343,37 +343,20 @@
                 <span>&nbsp;&nbsp;<b></b></span>
             </div>
         </div>       -->
-        <div  class="p-grid" >
-            <div class="p-col">
-                <span>&nbsp;&nbsp;<b>Overall Total Score</b></span>
-            </div>
-            <div class="p-col">
-                &nbsp;
-            </div>
-            <div class="p-col">
-                <span>&nbsp;&nbsp;<b>{{overallTotalScore}}</b></span>
-            </div>
-            <!-- <div class="p-col">
-                <span class="{{getRagColour1(overallAverageScore)}}">&nbsp;&nbsp;<b>{{overallAverageScore}}</b></span>
-            </div> -->
-            <!-- <div class="p-col">
-                <span class="{{getRagColour1(overallAverageScore)}}">&nbsp;&nbsp;<b>{{getRagText1(overallAverageScore)}}</b></span>
-            </div> -->
-        </div>
-        <div  class="p-grid" >
-            <div class="p-col">
-                <span>&nbsp;&nbsp;<b>Overall Average Score</b></span>
-            </div>
-            <div class="p-col">
-                &nbsp;
-            </div>
-            <div class="p-col">
-                <span class="{{getRagColour1(overallAvgScore)}}">&nbsp;&nbsp;<b>{{overallAvgScore}}</b></span>
-            </div>
-            <div class="p-col">
-                <span class="{{getRagColour1(overallAvgScore)}}">&nbsp;&nbsp;<b>{{getRagText1(overallAvgScore)}}</b></span>
-            </div>
-        </div>
+        <table style="width: 80%; border-width: 1px;">
+            <tr>
+                <td style="width: 60%;"></td>
+                <td>  <span style="text-align: right;">&nbsp;&nbsp;<b>Overall Total Score</b></span></td>
+                <td><span>&nbsp;&nbsp;<b>{{overallTotalScore}}</b></span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="width: 60%;"></td>
+                <td class="{{getRagColour1(overallAvgScore)}}"><span style="text-align: right;">&nbsp;&nbsp;<b>Overall Average Score</b></span></td>
+                <td> <span class="{{getRagColour1(overallAvgScore)}}">&nbsp;&nbsp;<b>{{overallAvgScore}}</b></span></td>
+                <td><span style="text-align: center;" class="{{getRagColour1(overallAvgScore)}}">&nbsp;&nbsp;<b>{{getRagText1(overallAvgScore)}}</b></span></td>
+            </tr>
+        </table>
     <div style="height: 10px;"></div>
 </div>
 <div style="height: 10px;"></div>   
@@ -422,8 +405,8 @@
             </ng-template>
             <ng-template pTemplate="footer">
                 <tr class="default-font">
-                    <td style="text-align: left; width: 20%;" colspan="5"><b>Average Overall Score</b></td>
-                    <td style="text-align: center;"> %</td>
+                    <td style="text-align: left; width: 20%;" colspan="5"><b>Activity Average Score</b></td>
+                    <td style="text-align: center;">{{activityAvgScore}} %</td>
                 </tr>
                 <tr>
                     <td style="text-align: right;" colspan="6">
