@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, IFinancialYear, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -99,6 +99,18 @@ export class ScorecardComponent implements OnInit {
   overallAvgScore: number;
   activityAvgScore: number;
 
+  captureImprovementArea: string;
+  captureRequiredAction: string;
+
+  hascapturedImprovementArea: boolean = false;
+  hasCapturedRequiredAction: boolean = false;
+  hasScorecardSubmitted: boolean = false;
+
+  signedByUser: string;
+  submittedDate: Date;
+
+  capturedResponses: ICapturedResponse[];
+
   constructor(
 
     private _router: Router,
@@ -135,7 +147,8 @@ export class ScorecardComponent implements OnInit {
     this.loadApplication();
     this.loadApplications();
     this.selectedResponses();
-this.loadQuestionnaire();
+    this.loadQuestionnaire();
+    this.loadCapturedResponses();
     this.auditCols = [
       { header: '', width: '5%' },
       { header: 'Status', width: '55%' },
@@ -151,7 +164,6 @@ this.loadQuestionnaire();
         this.application = results;
        
         this.loadQuestionnaire();
-        this.getAuditHistory();
         this.loadObjectives();
       },
     );
@@ -290,49 +302,16 @@ this.loadQuestionnaire();
       else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
         ragColour = 'rag-partial';  
       }
-      else{
+      else if(Number(item.responseOption.name) > 5){
         ragColour = 'rag-saved';
+      }
+      else{
+        ragColour = '';
       }
     });
 
     return ragColour;
-  }
-
-  public getRagColour1(num: Number) {
-    
-    let ragColour = 'rag-not-saved';    
-   
-      if(Number(num) >= 1 && Number(num) <= 4)
-      {
-        ragColour = 'rag-not-saved';        
-      }
-      else if(Number(num) >= 5 && Number(num) <= 8){
-        ragColour = 'rag-partial';  
-      }
-      else{
-        ragColour = 'rag-saved';
-      }  
-
-    return ragColour;
-  }
-
-  public getRagText1(num: Number) {
-    
-    let ragText = '';
-
-    if(Number(num) >= 1 && Number(num) <= 4)
-    {
-      ragText = 'Below Expectations';       
-    }
-    else if(Number(num) >= 5 && Number(num) <= 8){
-      ragText = 'Meet Expectations';  
-    }
-    else{
-      ragText = 'Exceeds  Expectations';
-    }  
-        
-    return ragText;
-  }
+  } 
 
   public getRagText(questionnaire: IQuestionResponseViewModel[]) {
     
@@ -346,10 +325,57 @@ this.loadQuestionnaire();
       else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
         ragText = 'Meet Expectations'; 
       }
-      else{
+      else if(Number(item.responseOption.name) > 8){
         ragText = 'Exceeds  Expectations';
       }
     });
+
+    return ragText;
+  }
+
+  public getRagColour1(num: Number) {
+    
+    let ragColour = 'rag-not-saved';    
+    if(num !== undefined)
+    {
+      if(Number(num) >= 1 && Number(num) <= 4)
+      {
+        ragColour = 'rag-not-saved';        
+      }
+      else if(Number(num) >= 5 && Number(num) <= 8){
+        ragColour = 'rag-partial';  
+      }
+      else if(Number(num) > 8){
+        ragColour = 'rag-saved';
+      } 
+      else
+      {
+        ragColour = '';  
+      } 
+    }
+
+    return ragColour;
+  }
+
+  public getRagText1(num: Number) {
+   
+  let ragText = '';
+  if(num !== undefined)
+  {
+      if(Number(num) >= 1 && Number(num) <= 4)
+      {
+        ragText = 'Below Expectations';       
+      }
+      else if(Number(num) >= 5 && Number(num) <= 8){
+        ragText = 'Meet Expectations';  
+      }
+      else if(Number(num) > 8){
+        ragText = 'Exceeds  Expectations';
+      } 
+      else{
+        ragText = '';
+      } 
+    }  
 
     return ragText;
   }
@@ -491,23 +517,6 @@ this.loadQuestionnaire();
     this.selectedResponses();
   } 
 
-  private getAuditHistory() {
-    this._applicationRepo.getApplicationAudits(this.application.id).subscribe(
-      (results) => {
-        this.applicationAudits = results;
-     //   this.mainReview = results.filter(x => x.statusId === StatusEnum.PendingApproval)[0];
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  viewAuditHistory() {
-    this.displayHistory = true;
-  }
-
   private loadApplications() {
     this._spinner.show();
     this._applicationRepo.getApplicationsByNpoId(Number(this.id)).subscribe(
@@ -636,16 +645,16 @@ this.loadQuestionnaire();
            let actual = object.actual == null ? 0 : object.actual;
            return sum + actual;
         }, 0);
-
-        let avg =((actualTotal/targetTotal)*100);
-
+        
+        let avg =((actualTotal/targetTotal)*100).toFixed(2);
+        
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
           workplanTargets: workplanTargets,
           workplanActuals: filteredWorkplanActuals,
           totalTargets: targetTotal,
           totalActuals: actualTotal,
-          totalAvg: avg
+          totalAvg: Number(avg)
         } as IWorkplanIndicator);
       });
 
@@ -713,14 +722,6 @@ this.loadQuestionnaire();
     }
   }
 
-  public submit() {
-    // if (this.canContinue(questionnaire)) {
-    //   this._spinner.show();
-    //   this.createCapturedResponse(questionCategory);
-    // }
-
-  }
-
   public selectedResponses() {
 
     this._evaluationService.getResponse(Number(this.id)).subscribe(
@@ -749,21 +750,56 @@ this.loadQuestionnaire();
     );
   }
 
-  // public onSelectViewHistory1(question: IQuestionResponseViewModel) {
-  //   this._spinner.show();
-  //   this._responses = [];
+  public disableSubmit() {
+       return ((this._responses.length === 5)) ? false : true;  
+  }
 
-  //   this._evaluationService.getResponse(this.application.id).subscribe(
-  //     (results) => {
-  //       this.responseHistory = results;
-  //       this.displayHistoryDialog = true;
-  //       this._spinner.hide();
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  //}
+  public submit() {
 
+    this.createCapturedResponse();
+  }
+
+  private createCapturedResponse() {
+        
+    let capturedResponse = {
+      fundingApplicationId: this.application.id,     
+      statusId: 0,
+      questionCategoryId: 0,
+      comments: this.captureImprovementArea + '/' + this.captureRequiredAction,
+      isActive: true,
+      isSignedOff: true,
+      isDeclarationAccepted: true,
+      selectedStatus: 0
+    } as ICapturedResponse;
+   
+    this._evaluationService.createScorecardResponse(capturedResponse).subscribe(
+      (results) => {
+        this._spinner.hide();
+        this._router.navigateByUrl('applications');
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadCapturedResponses() {
+    this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
+      (results) => {
+        this.capturedResponses = results.filter(x => x.questionCategoryId ===0 );
+        if(this.capturedResponses.length > 0)
+        {
+            let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
+            let  improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
+            this.captureImprovementArea = improvementArea;
+            this.captureRequiredAction = requiredAction;
+            this.signedByUser = this.capturedResponses[0].createdUser.fullName;
+            this.submittedDate = this.capturedResponses[0].createdDateTime;  
+            this.hascapturedImprovementArea = true;
+            this.hasCapturedRequiredAction = true;   
+            this.hasScorecardSubmitted = true;      
+        }
+      })
+    }
 }

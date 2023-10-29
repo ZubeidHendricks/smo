@@ -593,7 +593,7 @@ export class ApplicationListComponent implements OnInit {
           label: 'Score Card',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('scorecard/' + this.selectedApplication.id);
+            this._router.navigateByUrl('scorecard/' + this.selectedApplication.npoId);
           }
         });
       }

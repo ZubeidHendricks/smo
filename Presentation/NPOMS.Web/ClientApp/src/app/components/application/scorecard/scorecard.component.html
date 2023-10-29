@@ -30,7 +30,7 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(engagementQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
@@ -98,7 +98,7 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(timeWorkPlanQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
@@ -166,7 +166,7 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(impactQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
@@ -233,7 +233,7 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(riskMitigationQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
@@ -305,7 +305,7 @@
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(appropriationOfResourcesQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
+                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
                         </td>
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(appropriationOfResourcesQuestionnaire)}}" style="font-size: 1rem"></i>
@@ -335,26 +335,18 @@
         </p-table>
     </p-panel>
     <div style="height: 10px;"></div>
-        <!-- <div  class="p-grid" >
-            <div class="p-col">
-                <span>&nbsp;&nbsp;<b>Overall Total Score</b></span>
-            </div>
-            <div class="p-col">
-                <span>&nbsp;&nbsp;<b></b></span>
-            </div>
-        </div>       -->
         <table style="width: 80%; border-width: 1px;">
             <tr>
                 <td style="width: 60%;"></td>
-                <td>  <span style="text-align: right;">&nbsp;&nbsp;<b>Overall Total Score</b></span></td>
-                <td><span>&nbsp;&nbsp;<b>{{overallTotalScore}}</b></span></td>
+                <td>  <span style="text-align: right;"><b>Overall Total Score</b></span></td>
+                <td><span style="text-align: left;"><b>{{overallTotalScore}}</b></span></td>
                 <td></td>
             </tr>
             <tr>
                 <td style="width: 60%;"></td>
-                <td class="{{getRagColour1(overallAvgScore)}}"><span style="text-align: right;">&nbsp;&nbsp;<b>Overall Average Score</b></span></td>
-                <td> <span class="{{getRagColour1(overallAvgScore)}}">&nbsp;&nbsp;<b>{{overallAvgScore}}</b></span></td>
-                <td><span style="text-align: center;" class="{{getRagColour1(overallAvgScore)}}">&nbsp;&nbsp;<b>{{getRagText1(overallAvgScore)}}</b></span></td>
+                <td class="{{getRagColour1(overallAvgScore)}}"><span style="text-align: right;"><b>Overall Average Score</b></span></td>
+                <td> <span style="text-align: left;" class="{{getRagColour1(overallAvgScore)}}"><b>{{overallAvgScore}}</b></span></td>
+                <td><span style="text-align: center;" class="{{getRagColour1(overallAvgScore)}}"><b>{{getRagText1(overallAvgScore)}}</b></span></td>
             </tr>
         </table>
     <div style="height: 10px;"></div>
@@ -408,12 +400,7 @@
                     <td style="text-align: left; width: 20%;" colspan="5"><b>Activity Average Score</b></td>
                     <td style="text-align: center;">{{activityAvgScore}} %</td>
                 </tr>
-                <tr>
-                    <td style="text-align: right;" colspan="6">
-                        <button pButton type="button" label="Submit" icon="fa fa-floppy-o" disabled = "true"
-                        (click)="submit"></button>
-                    </td>
-                </tr>
+              
             </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr class="default-font">
@@ -421,28 +408,61 @@
                 </tr>
             </ng-template>
         </p-table>
+        <div style="height: 10px;"></div>
+        <p-panel header="Supplier Evaluation Summary">
+            <div class="p-grid">
+                <div class="p-col-3 form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Improvement Areas
+                        </span>
+                    </div>
+                </div>
+                <div class="p-col-9">
+                    <textarea class="form-text" [rows]="3" pInputTextarea 
+                    [(ngModel)]="captureImprovementArea" [ngModelOptions]="{standalone: true}" 
+                    [autoResize]="true" [disabled]="hascapturedImprovementArea"></textarea>
+                </div>
+                <div class="p-col-3 form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Required Actions
+                        </span>
+                    </div>
+                </div>
+                <div class="p-col-9">
+                    <textarea class="form-text" [rows]="3" pInputTextarea 
+                    [(ngModel)]="captureRequiredAction" [ngModelOptions]="{standalone: true}" 
+                    [autoResize]="true" [disabled]="hasCapturedRequiredAction"></textarea>
+                </div>
+            </div>
+            <div style="height: 10px;"></div>
+            <div class="p-grid">
+                <div class="p-col-3 form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Submitted By</span>
+                    </div>
+                </div>
+                <div class="p-col-9">
+                    <span>{{signedByUser}}</span>
+                </div>
+            </div>
+            <div style="height: 10px;"></div>
+            <div class="p-grid">
+                <div class="p-col-3 form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Submitted Date</span>
+                    </div>
+                </div>
+                <div class="p-col-9">
+                    <span>{{submittedDate | date: 'yyyy-MM-dd'}}</span>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasScorecardSubmitted">
+               
+                <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled] = "disableSubmit()"
+                (click)="submit()"></button>
+                   
+            </div>
+        </p-panel>
     </div>     
-    <div style="height: 10px;"></div>
-<p-dialog header="Audit History" [(visible)]="displayHistory" [style]="{width: '50vw'}" [focusOnShow]="false"
-    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
-    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10"
-        [value]="applicationAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-        <ng-template pTemplate="header" let-columns>
-            <tr>
-                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                    {{col.header}}
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-            <tr class="default-font">
-                <td style="text-align: center;">{{rowIndex + 1}}</td>
-                <td>{{rowData.status.name}}</td>
-                <td>{{rowData.createdUser.fullName}}</td>
-                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
-            </tr>
-        </ng-template>
-    </p-table>
-</p-dialog>
+
 
