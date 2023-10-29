@@ -1039,6 +1039,7 @@ export interface IWorkplanIndicator {
     totalTargets: number;
     totalActuals: number;
     targetMet: boolean;
+    totalAvg: number;
     attentionRequired: boolean;
 }
 
@@ -1274,7 +1275,6 @@ export interface IResponseOption {
     name: string;
     systemName: string;
     isActive: boolean;
-
     responseType: IResponseType;
 }
 
@@ -1336,12 +1336,13 @@ export interface IQuestionResponseViewModel {
     responseOption: IResponseOption;
 }
 
-export interface IResponse {
+export interface IResponseOptions {
     id: number;
     fundingApplicationId: number;
     questionId: number;
     responseOptionId: number;
     comment: string;
+    responseOption: IResponseOption;
 }
 
 export interface IResponseHistory {

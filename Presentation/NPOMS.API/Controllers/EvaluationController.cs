@@ -96,7 +96,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("fundingApplicationId/{fundingApplicationId}/questionId/{questionId}/createdUserId/{createdUserId}", Name = "GetCapturedResponseHistory")]
+        [HttpGet("Id/{id}")]
+        public async Task<IActionResult> GetResponse(int id)
+        {
+            try
+            {
+                var results = await _evaluationService.GetResponse(id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("fundingApplicationId/{fundingApplicationId}/questionId/{questionId}/createdUserId/{createdUserId}", Name = "GetCapturedResponseHistory")]
 		public async Task<IActionResult> GetCapturedResponseHistory(int fundingApplicationId, int questionId, int createdUserId)
 		{
 			try

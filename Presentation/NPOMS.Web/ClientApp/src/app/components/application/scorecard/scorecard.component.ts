@@ -5,8 +5,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
-  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponse, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, IFinancialYear, IObjective, IQuestionCategory, IResponseOption, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IApplicationAudit, IFinancialYear, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -61,6 +61,7 @@ export class ScorecardComponent implements OnInit {
   applicationAudits: IApplicationAudit[];
   _recommendation: boolean = false;
   responseOptions: IResponseOption[];
+  _responses: IResponseOptions[];
   responseHistory: IResponseHistory[];
   displayHistoryDialog: boolean;
   historyCols: any[];
@@ -74,7 +75,7 @@ export class ScorecardComponent implements OnInit {
   impactQuestionnaire: IQuestionResponseViewModel[];
   riskMitigationQuestionnaire: IQuestionResponseViewModel[];
   appropriationOfResourcesQuestionnaire: IQuestionResponseViewModel[];
-  // totalAverageScore: number = 0;
+  overallAverageScore: number = 0;
   QuestionCategoryentities: IQuestionCategory[];
   ResponseTypeentities: IResponseType[];
   auditCols: any[];
@@ -94,6 +95,8 @@ export class ScorecardComponent implements OnInit {
   rowGroupMetadataActivities: any[];
   isApplicationAvailable: boolean;
   isObjectivesAvailable: boolean;
+  overallTotalScore: number;
+  overallAvgScore: number;
 
   constructor(
 
@@ -130,8 +133,8 @@ export class ScorecardComponent implements OnInit {
 
     this.loadApplication();
     this.loadApplications();
-  //  this.loadActivities();
-
+    this.selectedResponses();
+this.loadQuestionnaire();
     this.auditCols = [
       { header: '', width: '5%' },
       { header: 'Status', width: '55%' },
@@ -157,7 +160,9 @@ export class ScorecardComponent implements OnInit {
     this._evaluationService.getQuestionnaire(Number(this.id)).subscribe(
       (results) => {
         this.allQuestionnaires = results;
-        
+
+        this.getOverallScoreTotal(this.allQuestionnaires);
+        console.log('this.allQuestionnaires', this.allQuestionnaires);
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
@@ -175,7 +180,8 @@ export class ScorecardComponent implements OnInit {
   private loadResponseOptions() {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
-        this.responseOptions = results;
+        this.responseOptions = results;       
+        this.selectedResponses();
         this.loadStatuses();
       },
       (err) => {
@@ -272,27 +278,80 @@ export class ScorecardComponent implements OnInit {
     return status;
   }
 
-  public getRagColour(question: IQuestionResponseViewModel) {
+  public getRagColour(questionnaire: IQuestionResponseViewModel[]) {
+    
     let ragColour = 'rag-not-saved';
-
-    if (question.isSaved && question.commentRequired === false)
-      ragColour = 'rag-saved';
-
-    if (question.isSaved && question.commentRequired === true) {
-      if (question.comment === '')
+    
+    questionnaire.forEach(item => {
+      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4)
       {
-        ragColour = 'rag-partial';
-        this._recommendation = false;
+        ragColour = 'rag-not-saved';        
       }
-      else
-      {
-        ragColour = 'rag-saved';       
+      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
+        ragColour = 'rag-partial';  
       }
-    }
-    // else if (!question.isSaved)
-    //   ragColour = 'rag-not-saved';
+      else{
+        ragColour = 'rag-saved';
+      }
+    });
 
     return ragColour;
+  }
+
+  public getRagColour1(num: Number) {
+    
+    let ragColour = 'rag-not-saved';    
+   
+      if(Number(num) >= 1 && Number(num) <= 4)
+      {
+        ragColour = 'rag-not-saved';        
+      }
+      else if(Number(num) >= 5 && Number(num) <= 8){
+        ragColour = 'rag-partial';  
+      }
+      else{
+        ragColour = 'rag-saved';
+      }  
+
+    return ragColour;
+  }
+
+  public getRagText1(num: Number) {
+    
+    let ragText = '';
+
+    if(Number(num) >= 1 && Number(num) <= 4)
+    {
+      ragText = 'Below Expectations';       
+    }
+    else if(Number(num) >= 5 && Number(num) <= 8){
+      ragText = 'Meet Expectations';  
+    }
+    else{
+      ragText = 'Exceeds  Expectations';
+    }  
+        
+    return ragText;
+  }
+
+  public getRagText(questionnaire: IQuestionResponseViewModel[]) {
+    
+    let ragText = '';
+    
+    questionnaire.forEach(item => {
+      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4)
+      {
+        ragText = 'Below Expectations';       
+      }
+      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
+        ragText = 'Meet Expectations'; 
+      }
+      else{
+        ragText = 'Exceeds  Expectations';
+      }
+    });
+
+    return ragText;
   }
 
   public displayField(question: IQuestionResponseViewModel) {
@@ -338,14 +397,35 @@ export class ScorecardComponent implements OnInit {
     questionnaire.forEach(item => {
       if(Number(item.responseOption.name) >= 0)
       {
-        totalAverageScore  += Number(item.responseOption.name);
+        totalAverageScore  += Number(item.responseOption.name);       
       }
       else{
         totalAverageScore = 0;
       }
     });
 
+    this.overallAverageScore = totalAverageScore;
+
     return totalAverageScore;
+  }
+
+  public getOverallScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
+  {
+    let overAllScore = 0;
+
+    questionnaire.forEach(item => {
+      if(Number(item.responseOption.name) >= 0)
+      {
+        this.overallAverageScore  += Number(item.responseOption.name);       
+      }
+      else{
+        this.overallAverageScore = 0;
+      }
+    });
+
+   // this.overallAverageScore = totalAverageScore;
+    
+    return this.overallAverageScore;
   }
 
   
@@ -362,7 +442,8 @@ export class ScorecardComponent implements OnInit {
         (results) => {
           let returnValue = results as IQuestionResponseViewModel;
           question.responseId = returnValue.responseId;
-          question.isSaved = returnValue.isSaved;
+          question.isSaved = returnValue.isSaved; 
+          this.selectedResponses();
         },
         (err) => {
           this._loggerService.logException(err);
@@ -407,6 +488,7 @@ export class ScorecardComponent implements OnInit {
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
     this.onSave(question);
+    this.selectedResponses();
   } 
 
   private getAuditHistory() {
@@ -537,8 +619,9 @@ export class ScorecardComponent implements OnInit {
         let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2 && x.frequencyId == FrequencyEnum.Monthly);
 
         // Calculate total targets
-        let targetTotal = workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
+        let targetTotal = 10; //workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
 
+       
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
         // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
         let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2);
@@ -549,17 +632,20 @@ export class ScorecardComponent implements OnInit {
         });
 
         // Calculate total actuals
-        let actualTotal = filteredWorkplanActuals.reduce((sum, object) => {
-          let actual = object.actual == null ? 0 : object.actual;
-          return sum + actual;
-        }, 0);
+        let actualTotal = 6; // filteredWorkplanActuals.reduce((sum, object) => {
+        //   let actual = object.actual == null ? 0 : object.actual;
+        //   return sum + actual;
+        // }, 0);
+
+        let avg =((actualTotal/targetTotal)*100);
 
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
           workplanTargets: workplanTargets,
           workplanActuals: filteredWorkplanActuals,
           totalTargets: targetTotal,
-          totalActuals: actualTotal
+          totalActuals: actualTotal,
+          totalAvg: avg
         } as IWorkplanIndicator);
       });
       this.updateRowGroupMetaDataAct();
@@ -627,21 +713,51 @@ export class ScorecardComponent implements OnInit {
 
   }
 
-  public onSelectViewHistory1(question: IQuestionResponseViewModel) {
-    this._spinner.show();
-    this.responseHistory = [];
+  public selectedResponses() {
 
-    this._evaluationService.getResponseHistory(this.application.id, question.questionId).subscribe(
+    this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
-        this.responseHistory = results;
-        this.displayHistoryDialog = true;
-        this._spinner.hide();
+        this._responses = results;
+        
+        let overallTotalScores = 0;
+        let length = this._responses.length;
+        
+        this._responses.forEach(item => {
+          if(Number(item.responseOption.name) >= 0)
+          {
+            overallTotalScores  += Number(item.responseOption.name);       
+          }
+          else{
+            overallTotalScores = 0;
+          }
+        });
+
+        this.overallTotalScore = overallTotalScores;
+        this.overallAvgScore = overallTotalScores/length;
+      // alert(overallTotalScore);
+       // console.log('this._responses', this._responses);
       },
       (err) => {
         this._loggerService.logException(err);
-        this._spinner.hide();
       }
     );
   }
+
+  // public onSelectViewHistory1(question: IQuestionResponseViewModel) {
+  //   this._spinner.show();
+  //   this._responses = [];
+
+  //   this._evaluationService.getResponse(this.application.id).subscribe(
+  //     (results) => {
+  //       this.responseHistory = results;
+  //       this.displayHistoryDialog = true;
+  //       this._spinner.hide();
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  //}
 
 }
