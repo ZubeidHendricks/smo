@@ -529,12 +529,13 @@ export interface IResponseOption {
     responseType: IResponseType;
 }
 
-export interface IResponse {
+export interface IResponses {
     id: number;
     fundingApplicationId: number;
     questionId: number;
     responseOptionId: number;
     comment: string;
+    responseOption: IResponseOption;
 }
 
 export interface IResponseHistory {

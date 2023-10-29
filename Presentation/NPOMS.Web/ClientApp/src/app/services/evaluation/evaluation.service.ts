@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentUrlService } from '../environment-url/environment-url.service';
-import { ICapturedResponse, IQuestionResponseViewModel, IResponse, IResponseHistory } from 'src/app/models/interfaces';
+import { ICapturedResponse, IQuestionResponseViewModel, IResponse, IResponseHistory, IResponseOptions } from 'src/app/models/interfaces';
+import { IResponses } from 'src/app/models/enums';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -32,6 +33,11 @@ export class EvaluationService {
   public getResponseHistory(fundingApplicationId: number, questionId: number) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/fundingApplicationId/${fundingApplicationId}/questionId/${questionId}`;
     return this._http.get<IResponseHistory[]>(url, httpOptions);
+  }
+  
+  public getResponse(id: number) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/Id/${id}`;
+    return this._http.get<IResponseOptions[]>(url, httpOptions);
   }  
 
   public getCapturedResponseHistory(fundingApplicationId: number, questionId: number, createdUserId: number) {
