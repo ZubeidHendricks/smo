@@ -603,7 +603,7 @@ export class ApplicationListComponent implements OnInit {
           label: 'Review Score Card',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('scorecard/' + this.selectedApplication.npoId);
+            this._router.navigateByUrl('reviewScorecard/' + this.selectedApplication.npoId);
           }
         });
       }

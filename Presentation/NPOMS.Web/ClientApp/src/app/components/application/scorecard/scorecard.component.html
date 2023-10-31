@@ -1,4 +1,6 @@
 <p></p>
+<p><b>Application : - "{{application.refNo}}"</b></p>
+<p><b>Financial Year : ""</b></p>
 <div>
     <p-panel header="Engagement" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="engagementQuestionnaire" *ngIf="engagementQuestionnaire" [rowHover]="true" 
@@ -353,7 +355,7 @@
 </div>
 <div style="height: 10px;"></div>   
     <div style="width: 90%;">
-        <div class="p-grid" style="width: 25%;">
+        <!-- <div class="p-grid" style="width: 25%;">
             <div>
                 <div class="p-col">
                     <span>&nbsp;&nbsp;<b>Financial Year</b></span>
@@ -362,7 +364,7 @@
             <div class="p-col">
                 <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange()"></p-dropdown>
             </div>
-        </div>
+        </div> -->
         <div class="p-col-fixed form-label">
             <div class="box" style="text-align: left;">
                 <span class="non-mandatory-content"><b>Performance</b></span>
@@ -408,7 +410,7 @@
                 </tr>
             </ng-template>
         </p-table>
-        <div style="height: 10px;"></div>
+        <!-- <div style="height: 10px;"></div>
         <p-panel header="Supplier Evaluation Summary">
             <div class="p-grid">
                 <div class="p-col-3 form-label">
@@ -462,7 +464,7 @@
                 (click)="submit()"></button>
                    
             </div>
-        </p-panel>
+        </p-panel> -->
     </div>     
 
 

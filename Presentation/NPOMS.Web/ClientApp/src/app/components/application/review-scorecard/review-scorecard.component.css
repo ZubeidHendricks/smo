@@ -1,0 +1,108 @@
+.form-label {
+    text-align: right;
+    background-color: rgb(241, 241, 241);
+}
+
+.form-label-blank {
+    text-align: right;
+}
+
+.form-text {
+    width: 100%;
+    font-size: 13px;
+    color: #000!important;
+    margin: 0px;
+}
+
+.mandatory-content::after {
+    content: "*";
+    color: rgb(195, 17, 47);
+}
+
+.mandatory-content, .non-mandatory-content {
+    font-size: 12px;
+    color: #000!important;
+}
+
+ol.roman {
+    list-style-type: lower-roman;
+}
+
+.action-button {
+    height: 25px; 
+    width: 25px;
+}
+
+.normal-background {
+    background-color: #fff;
+}
+
+.yellow-background {
+    background-color: yellow;;
+}
+
+.heading {
+    background-color: rgb(0, 51, 153)!important;
+    color: rgb(255,255,255)!important;
+    padding: 1%;
+}
+
+#budgetTypes {
+    list-style-type: upper-alpha;
+}
+
+#budgetDescription, .timelineDescription {
+    border: 1px solid black;
+    padding: 2%;
+}
+
+.success-story {
+    background-color: rgb(180, 198, 231);
+    font-size: 16px;
+    text-align: center;
+}
+
+.upload-label {
+    width: 100%;
+    background-color: rgb(241, 241, 241);
+}
+
+::ng-deep .p-editor-toolbar.ql-toolbar.ql-snow {
+    display: none;
+}
+
+.product-badge {
+    border-radius: 2px;
+    padding: 0.25em 0.5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .3px;
+}
+
+.status-complete {
+    background: #C8E6C9;
+    color: #256029;
+}
+
+.status-pending {
+    background: #FFCDD2;
+    color: #c63737;
+}
+
+.status-partially-complete {
+    background: #FEEDAF;
+    color: #8a5340;
+}
+
+.rag-saved {
+    color: green;
+}
+
+.rag-not-saved {
+    color: red;
+}
+
+.rag-partial {
+    color: #bca312;
+}
