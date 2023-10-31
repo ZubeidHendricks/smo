@@ -85,6 +85,7 @@ export class ScorecardComponent implements OnInit {
   lastWorkplanActual: boolean;
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
+  //selectedFinancialYear: number;
   scrollableCols: any[];
   frozenCols: any[];
   objectives: IObjective[] = [];
@@ -133,11 +134,7 @@ export class ScorecardComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-    //   this.npoId = params.get('npoId');
-    // });
-
-    this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+   this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');      
     });
 
@@ -145,25 +142,27 @@ export class ScorecardComponent implements OnInit {
     this.getResponseType();
 
     this.loadApplication();
-    this.loadApplications();
+    //this.loadApplications();
     this.selectedResponses();
     this.loadQuestionnaire();
     this.loadCapturedResponses();
-    this.auditCols = [
-      { header: '', width: '5%' },
-      { header: 'Status', width: '55%' },
-      { header: 'Created User', width: '20%' },
-      { header: 'Created Date', width: '20%' }
-    ];
+    this.loadActivities();
   }
 
   private loadApplication() {
-    //this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
+        this.financialYears = [];
         this.application = results;
-       
-        this.loadQuestionnaire();
+       // this.financialYears.push(this.application.applicationPeriod.financialYear);
+        // this.applications.forEach(item => {
+        //   var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
+        //   if (!isPresent)
+        //     this.financialYears.push(item.applicationPeriod.financialYear);
+        // });
+//
+      //  this.selectedFinancialYear = this.financialYears[0];
+        this.loadActivities();
         this.loadObjectives();
       },
     );
@@ -193,8 +192,8 @@ export class ScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
         this.responseOptions = results;       
-        this.selectedResponses();
-        this.loadStatuses();
+       // this.selectedResponses();
+       // this.loadStatuses();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -481,13 +480,13 @@ export class ScorecardComponent implements OnInit {
     }
   }
 
-  financialYearChange() {
-    if (this.selectedFinancialYear) {
-      this.filteredWorkplanIndicators = [];
-      this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
-      this.loadActivities();
-    }
-  }
+  // financialYearChange() {
+  //   if (this.selectedFinancialYear) {
+  //     this.filteredWorkplanIndicators = [];
+  //     this.application = this.applications.find(x => x.applicationPeriod.financialYearId === 2);
+  //     this.loadActivities();
+  //   }
+  // }
 
   public getQuestionCategory()
   {    
@@ -529,7 +528,7 @@ export class ScorecardComponent implements OnInit {
           if (!isPresent)
             this.financialYears.push(item.applicationPeriod.financialYear);
         });
-
+        this.loadObjectives();
         this._spinner.hide();
       },
       (err) => {
@@ -541,12 +540,11 @@ export class ScorecardComponent implements OnInit {
 
   private loadActivities() {
 
-    alert('load activities');
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        alert('load activities2');
         this.activities = results.filter(x => x.isActive === true);
+        console.log('this.activities',  this.activities);
         this.workplanIndicators = [];
 
         this.activities.forEach(activity => {
@@ -628,7 +626,7 @@ export class ScorecardComponent implements OnInit {
       this.workplanIndicators.forEach(indicator => {
 
         // Filter WorkplanTargets on activity, financial year and monthly frequency
-        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2 && x.frequencyId == FrequencyEnum.Monthly);
+        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYearId && x.frequencyId == FrequencyEnum.Monthly);
 
         // Calculate total targets
         let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
@@ -636,7 +634,7 @@ export class ScorecardComponent implements OnInit {
        
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
         // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
-        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2);
+        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.applicationTypeId);
         let filteredWorkplanActuals = workplanActuals.filter((el) => {
           return workplanTargets.some((f) => {
             return f.id === el.workplanTargetId;
@@ -672,6 +670,7 @@ export class ScorecardComponent implements OnInit {
 
       this.updateRowGroupMetaDataAct();
       this.makeRowsSameHeight();
+      console.log('this.filteredWorkplanIndicators',this.filteredWorkplanIndicators);
   }
 
   private makeRowsSameHeight() {
