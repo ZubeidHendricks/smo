@@ -540,9 +540,12 @@ export class ScorecardComponent implements OnInit {
   }
 
   private loadActivities() {
+
+    alert('load activities');
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
+        alert('load activities2');
         this.activities = results.filter(x => x.isActive === true);
         this.workplanIndicators = [];
 
@@ -628,7 +631,7 @@ export class ScorecardComponent implements OnInit {
         let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2 && x.frequencyId == FrequencyEnum.Monthly);
 
         // Calculate total targets
-        let targetTotal = workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
+        let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
 
        
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
@@ -641,7 +644,8 @@ export class ScorecardComponent implements OnInit {
         });
 
         // Calculate total actuals
-        let actualTotal = filteredWorkplanActuals.reduce((sum, object) => {
+        let actualTotal =
+        filteredWorkplanActuals.reduce((sum, object) => {
            let actual = object.actual == null ? 0 : object.actual;
            return sum + actual;
         }, 0);

@@ -83,6 +83,7 @@ import { QuestionSectionComponent } from './components/admin/utilities/question-
 import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
 import  {WorkflowApplicationComponent} from './components/application/workflow-component/workflow-application.component';
 import  {ScorecardComponent} from './components/application/scorecard/scorecard.component';
+import  {ReviewScorecardComponent} from './components/application/review-scorecard/review-scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
 import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
@@ -125,6 +126,7 @@ const routes: Routes = [
   { path: 'application/approve/:id', component: ApproveApplicationComponent },
   { path: 'application/upload-sla/:id', component: UploadSLAComponent },
   { path: 'scorecard/:id', component: ScorecardComponent },
+  { path: 'reviewScorecard/:id', component: ReviewScorecardComponent },
   { path: 'application-periods', component: ApplicationPeriodListComponent },
   { path: 'application-period/create', component: CreateApplicationPeriodComponent },
   { path: 'application-period/edit/:id', component: EditApplicationPeriodComponent },

@@ -590,7 +590,17 @@ export class ApplicationListComponent implements OnInit {
       
       if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
         this.optionItems[0].items.push({
-          label: 'Score Card',
+          label: 'Add Score Card',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('scorecard/' + this.selectedApplication.npoId);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
+        this.optionItems[0].items.push({
+          label: 'Review Score Card',
           icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl('scorecard/' + this.selectedApplication.npoId);

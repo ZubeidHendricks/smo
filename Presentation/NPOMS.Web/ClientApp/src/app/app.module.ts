@@ -167,6 +167,7 @@ import { ScorecardComponent } from './components/application/scorecard/scorecard
 import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
 import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
 import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
+import { ReviewScorecardComponent } from './components/application/review-scorecard/review-scorecard.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -330,7 +331,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ScorecardComponent,
     ScorecardQuestionComponent,
     ViewNpoDetailsComponent,
-    ViewProfileDetailsComponent
+    ViewProfileDetailsComponent,
+    ReviewScorecardComponent
    // ScorecardComponent
   ],
   schemas: [
