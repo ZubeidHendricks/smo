@@ -60,7 +60,7 @@
                         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                             <tr class="heading">
                                 <td *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false" [attr.colspan]="7">
-                                    <span class="p-text-bold">Objective: {{rowData.objective.name}}</span>
+                                    <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
                                 </td>
                             </tr>
                             <tr class="default-font">
@@ -99,7 +99,7 @@
                             <tr class="heading">
                                 <td *ngIf="rowGroupMetadataSustainability[rowIndex].itemExists === false"
                                     [attr.colspan]="3">
-                                    <span class="p-text-bold">Activity: {{rowData.activity.activityList.name}}</span>
+                                    <span><span class="p-text-bold">Activity:</span> {{rowData.activity.activityList.name}}</span>
                                 </td>
                             </tr>
                             <tr class="default-font">
@@ -132,7 +132,7 @@
                         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                             <tr class="heading">
                                 <td *ngIf="rowGroupMetadataResources[rowIndex].itemExists === false" [attr.colspan]="7">
-                                    <span class="p-text-bold">Activity: {{rowData.activity.activityList.name}}</span>
+                                    <span><span class="p-text-bold">Activity:</span> {{rowData.activity.activityList.name}}</span>
                                 </td>
                             </tr>
                             <tr class="default-font">
