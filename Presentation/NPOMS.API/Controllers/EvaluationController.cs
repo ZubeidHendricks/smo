@@ -96,7 +96,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("fundingApplicationId/{fundingApplicationId}/questionId/{questionId}/createdUserId/{createdUserId}", Name = "GetCapturedResponseHistory")]
+        [HttpGet("Id/{id}")]
+        public async Task<IActionResult> GetResponse(int id)
+        {
+            try
+            {
+                var results = await _evaluationService.GetResponse(id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("fundingApplicationId/{fundingApplicationId}/questionId/{questionId}/createdUserId/{createdUserId}", Name = "GetCapturedResponseHistory")]
 		public async Task<IActionResult> GetCapturedResponseHistory(int fundingApplicationId, int questionId, int createdUserId)
 		{
 			try
@@ -141,7 +156,23 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpPost("captured-response", Name = "CreateCapturedResponse")]
+        [HttpPost("captured-scorecardResponse", Name = "CreateScorecardResponse")]
+        public async Task<IActionResult> CreateScorecardResponse([FromBody] CapturedResponse model)
+        {
+            try
+            {
+                await this._evaluationService.CreateCapturedResponse(model, base.GetUserIdentifier());
+               // await UpdateFundingApplicationStatus(model);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateCapturedResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("captured-response", Name = "CreateCapturedResponse")]
 		public async Task<IActionResult> CreateCapturedResponse([FromBody] CapturedResponse model)
 		{
 			try

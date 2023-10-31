@@ -18,7 +18,7 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="heading">
                 <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="getColspan()">
-                    <span class="p-text-bold">Objective: {{rowData.objective.name}}</span>
+                    <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
                 </td>
             </tr>
             <tr [ngClass]="rowData.changesRequired === true ? 'red' : 'default' && rowData.changesRequired === false ? 'green' : 'default'" class="default-font">
@@ -344,8 +344,8 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="heading">
-                <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
-                    <span class="p-text-bold">Objective: {{rowData.objective.name}}</span>
+                <td *ngIf="deletedRowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
+                    <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
                 </td>
             </tr>
             <tr class="default-font">

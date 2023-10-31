@@ -18,7 +18,9 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="heading">
                 <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="getColspan()">
-                    <span class="p-text-bold">Activity: {{rowData.activity.activityList.name}}</span>
+                    <span><span class="p-text-bold">Activity:</span> {{rowData.activity.activityList.name}}</span>
+                    <br>
+                    <span><span class="p-text-bold">Facilities and/or Community Places:</span> {{rowData.activity.facilityListText}}</span>
                 </td>
             </tr>
             <tr [ngClass]="rowData.changesRequired === true ? 'red' : 'default' && rowData.changesRequired === false ? 'green' : 'default'" class="default-font">                
@@ -241,8 +243,8 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="heading">
-                <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="2">
-                    <span class="p-text-bold">Activity: {{rowData.activity.activityList.name}}</span>
+                <td *ngIf="deletedRowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="2">
+                    <span><span class="p-text-bold">Activity:</span> {{rowData.activity.activityList.name}}</span>
                 </td>
             </tr>
             <tr class="default-font">                
