@@ -44,6 +44,7 @@ export class ActivitiesComponent implements OnInit {
 
   yearRange: string;
   rowGroupMetadata: any[];
+  deletedRowGroupMetadata: any[];
 
   facilities: IFacilityList[];
   selectedFacilities: IFacilityList[];
@@ -689,6 +690,23 @@ export class ActivitiesComponent implements OnInit {
 
   public viewDeletedActivities() {
     this.deletedActivities = this.allActivities.filter(x => x.isActive === false);
+    this.deletedRowGroupMetadata = [];
+
+    let activities = this.deletedActivities.sort((a, b) => a.objectiveId - b.objectiveId);
+
+    if (activities) {
+
+      activities.forEach(element => {
+
+        var itemExists = this.deletedRowGroupMetadata.some(function (data) { return data.itemName === element.objective.name });
+
+        this.deletedRowGroupMetadata.push({
+          itemName: element.objective.name,
+          itemExists: itemExists
+        });
+      });
+    }
+
     this.displayDeletedActivityDialog = true;
   }
 
