@@ -1,6 +1,22 @@
-<p></p>
-<p><b>Application : - "{{application.refNo}}"</b></p>
-<p><b>Financial Year : "{{this.financialYears[0].name}}"</b></p>
+<div style="width: 100%;">
+    <div style="font-size:20px;margin-top:2px;font-weight: bold;height: 26px; text-align: center;">
+        Score Card Summary
+    </div>
+</div>
+<div style="height: 10px;"></div>
+<div style="width: 100%;">
+    <div  style="text-align: center;">
+        <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application RefNo: "{{application.refNo}}"</span>
+            <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: "{{this.financialYears[0].name}}"</span>
+        <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Organisation: "{{organisation}}"</span>
+        <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application Name: "{{application.applicationPeriod.name}}"</span>
+    </div>  
+</div>
+<div style="height: 10px;"></div>
 <div>
     <p-panel [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="allQuestionnaires" *ngIf="allQuestionnaires" [rowHover]="true" 
@@ -28,9 +44,12 @@
                         <td>0
                         </td>
                         <td>
-                            <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
+                            <button *ngIf="question.hasComment" pButton pRipple type="button"
+                            class="p-button-text action-button" icon="fa fa-comments-o"
+                            pTooltip="Comments" tooltipPosition="top"></button>
+                            <!-- <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}"
-                            [autoResize]="true"></textarea>
+                            [autoResize]="true"></textarea> -->
                         </td>
                     </tr>
                 </ng-template>

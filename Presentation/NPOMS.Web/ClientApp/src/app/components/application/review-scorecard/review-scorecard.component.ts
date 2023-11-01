@@ -6,11 +6,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
+import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
@@ -98,6 +99,9 @@ export class ReviewScorecardComponent implements OnInit {
   overallTotalScore: number;
   overallAvgScore: number;
   activityAvgScore: number;
+  objectiveTarget: number;
+  objectiveActual: number;
+  objectiveAverage: number;
 
   captureImprovementArea: string;
   captureRequiredAction: string;
@@ -108,7 +112,8 @@ export class ReviewScorecardComponent implements OnInit {
 
   signedByUser: string;
   submittedDate: Date;
-
+  npo: INpo;
+  organisation: string;
   capturedResponses: ICapturedResponse[];
 
   constructor(
@@ -126,7 +131,8 @@ export class ReviewScorecardComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private _messageService: MessageService,
     private _datepipe: DatePipe,
-    private _indicatorRepo: IndicatorService
+    private _indicatorRepo: IndicatorService,
+    private _npoRepo: NpoService
 
   ) { }
 
@@ -143,7 +149,7 @@ export class ReviewScorecardComponent implements OnInit {
     this.getQuestionCategory();
     this.getResponseType();
 
-    this.loadApplication();
+    //this.loadApplication();
     this.loadApplications();
     this.selectedResponses();
     this.loadQuestionnaire();
@@ -558,6 +564,11 @@ export class ReviewScorecardComponent implements OnInit {
             this.financialYears.push(item.applicationPeriod.financialYear);
         });
 
+        
+        this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.financialYears[0].id);
+        this.loadActivities();
+        this.loadObjectives();
+        this.loadNpo();
         this._spinner.hide();
       },
       (err) => {
@@ -567,13 +578,26 @@ export class ReviewScorecardComponent implements OnInit {
     );
   }
 
+  private loadNpo() {
+    this._npoRepo.getNpoById(Number(this.application.npoId)).subscribe(
+      (results) => {
+        this.npo = results;
+
+        this.organisation = this.npo.name;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+}
+
   private loadActivities() {
 
-    alert('load activities');
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        alert('load activities2');
         this.activities = results.filter(x => x.isActive === true);
         this.workplanIndicators = [];
 

@@ -1,6 +1,22 @@
-<p></p>
-<p><b>Application : - "{{application.refNo}}"</b></p>
-<p><b>Financial Year : ""</b></p>
+<div style="width: 100%;">
+    <div style="font-size:20px;margin-top:2px;font-weight: bold;height: 26px; text-align: center;">
+        Score Card
+    </div>
+</div>
+<div style="height: 10px;"></div>
+<div style="width: 100%;">
+    <div  style="text-align: center;">
+        <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application RefNo: "{{application.refNo}}"</span>
+            <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: "{{this.financialYears[0].name}}"</span>
+        <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Organisation: "{{organisation}}"</span>
+        <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application Name: "{{application.applicationPeriod.name}}"</span>
+    </div>  
+</div>
+<div style="height: 10px;"></div>
 <div>
     <p-panel header="Engagement" [style]="{'font-size':'12px', 'width':'85%'}" >
         <p-table [value]="engagementQuestionnaire" *ngIf="engagementQuestionnaire" [rowHover]="true" 
@@ -302,7 +318,7 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(appropriationOfResourcesQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 

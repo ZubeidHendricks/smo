@@ -6,11 +6,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
+import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
@@ -109,7 +110,8 @@ export class ScorecardComponent implements OnInit {
 
   signedByUser: string;
   submittedDate: Date;
-
+  npo: INpo;
+  organisation: string;
   capturedResponses: ICapturedResponse[];
 
   constructor(
@@ -128,7 +130,8 @@ export class ScorecardComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private _messageService: MessageService,
     private _datepipe: DatePipe,
-    private _indicatorRepo: IndicatorService
+    private _indicatorRepo: IndicatorService,
+    private _npoRepo: NpoService,
 
   ) { }
 
@@ -141,9 +144,9 @@ export class ScorecardComponent implements OnInit {
     this.getQuestionCategory();
     this.getResponseType();
 
-    this.loadApplication();
-    //this.loadApplications();
-    this.selectedResponses();
+   // this.loadApplication();
+    this.loadApplications();
+    //this.selectedResponses();
     this.loadQuestionnaire();
     this.loadCapturedResponses();
     this.loadActivities();
@@ -152,17 +155,8 @@ export class ScorecardComponent implements OnInit {
   private loadApplication() {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-        this.financialYears = [];
         this.application = results;
-       // this.financialYears.push(this.application.applicationPeriod.financialYear);
-        // this.applications.forEach(item => {
-        //   var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
-        //   if (!isPresent)
-        //     this.financialYears.push(item.applicationPeriod.financialYear);
-        // });
-//
-      //  this.selectedFinancialYear = this.financialYears[0];
-        this.loadActivities();
+        
         this.loadObjectives();
       },
     );
@@ -406,7 +400,7 @@ export class ScorecardComponent implements OnInit {
   }
 
   public getResponseOptions(responseTypeId: number) {
-    return this.responseOptions.filter(x => x.responseTypeId === responseTypeId && x.isActive);
+    return this.responseOptions.filter(x => x.isActive === false);
   }
 
   public onSaveComment(event, question: IQuestionResponseViewModel) {
@@ -468,7 +462,7 @@ export class ScorecardComponent implements OnInit {
           let returnValue = results as IQuestionResponseViewModel;
           question.responseId = returnValue.responseId;
           question.isSaved = returnValue.isSaved; 
-          this.selectedResponses();
+         // this.selectedResponses();
         },
         (err) => {
           this._loggerService.logException(err);
@@ -513,7 +507,7 @@ export class ScorecardComponent implements OnInit {
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
     this.onSave(question);
-    this.selectedResponses();
+    //this.selectedResponses();
   } 
 
   private loadApplications() {
@@ -528,7 +522,11 @@ export class ScorecardComponent implements OnInit {
           if (!isPresent)
             this.financialYears.push(item.applicationPeriod.financialYear);
         });
+
+        this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.financialYears[0].id);
+        this.loadActivities();
         this.loadObjectives();
+        this.loadNpo();
         this._spinner.hide();
       },
       (err) => {
@@ -538,13 +536,27 @@ export class ScorecardComponent implements OnInit {
     );
   }
 
+  private loadNpo() {
+      this._npoRepo.getNpoById(Number(this.application.npoId)).subscribe(
+        (results) => {
+          this.npo = results;
+
+          this.organisation = this.npo.name;
+          this._spinner.hide();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+  }
+
   private loadActivities() {
 
     this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
-        console.log('this.activities',  this.activities);
         this.workplanIndicators = [];
 
         this.activities.forEach(activity => {
@@ -670,7 +682,6 @@ export class ScorecardComponent implements OnInit {
 
       this.updateRowGroupMetaDataAct();
       this.makeRowsSameHeight();
-      console.log('this.filteredWorkplanIndicators',this.filteredWorkplanIndicators);
   }
 
   private makeRowsSameHeight() {
