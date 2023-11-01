@@ -17,6 +17,11 @@ import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
+export interface IResp
+{
+  name: string
+}
+
 @Component({
   selector: 'app-review-scorecard',
   templateUrl: './review-scorecard.component.html',
@@ -115,6 +120,8 @@ export class ReviewScorecardComponent implements OnInit {
   npo: INpo;
   organisation: string;
   capturedResponses: ICapturedResponse[];
+  name: IResp[] = [];
+  _name: IResp[] =[];
 
   constructor(
     private _router: Router,
@@ -181,14 +188,14 @@ export class ReviewScorecardComponent implements OnInit {
         this.allQuestionnaires = results.filter(x => x.questionCategoryName === "Engagement" || x.questionCategoryName === "Timely Work Plan Submission"
         || x.questionCategoryName === "Impact" || x.questionCategoryName === "Risk Mitigation" || x.questionCategoryName === "Appropriation of Resources");
 
-
-        this.getOverallScoreTotal(this.allQuestionnaires);
+console.log('this.allQuestionnaires', this.allQuestionnaires );
+       // this.getOverallScoreTotal(this.allQuestionnaires);
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
-        this.loadResponseOptions();
+      //  this.loadResponseOptions();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -424,21 +431,22 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
  
-  public getAverageScoreTotal(questionnaire: number) 
+  public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
   {
     let totalAverageScore = 0;
-    totalAverageScore  += Number(questionnaire);   
-    // questionnaire.forEach(item => {
-    //   if(Number(item.responseOption.name) >= 0)
-    //   {
-    //     totalAverageScore  += Number(item.responseOption.name);       
-    //   }
-    //   else{
-    //     totalAverageScore = 0;
-    //   }
-    // });
+   // totalAverageScore  += Number(questionnaire);   
+    questionnaire.forEach(item => {
 
-    this.overallAverageScore = totalAverageScore;
+      if(Number(item.responseOption.name) >= 0 && item.questionCategoryId)
+      {
+        totalAverageScore  += Number(item.responseOption.name);       
+      }
+      else{
+        totalAverageScore = 0;
+      }
+    });
+
+    //this.overallAverageScore = totalAverageScore;
 
     return totalAverageScore;
   }
@@ -858,5 +866,11 @@ export class ReviewScorecardComponent implements OnInit {
         }
       })
     }
+
+
+    // this.year.forEach(item => {
+    //   this.years.push({year: item.toString()} as IYear);
+    //   this._iYear = this.years;
+    //  });
 
 }

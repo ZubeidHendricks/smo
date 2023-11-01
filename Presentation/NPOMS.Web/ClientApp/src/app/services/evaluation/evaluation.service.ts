@@ -50,6 +50,10 @@ export class EvaluationService {
     return this._http.put<IQuestionResponseViewModel>(url, response, httpOptions);
   }
 
+  public updateScorecardResponse(response: IResponse) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/scorecardResponse`;
+    return this._http.put<IQuestionResponseViewModel>(url, response, httpOptions);
+  }
   public getCapturedResponses(fundingApplicationId: number) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/captured-response/fundingApplicationId/${fundingApplicationId}`;
     return this._http.get<ICapturedResponse[]>(url, httpOptions);

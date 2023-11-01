@@ -141,7 +141,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("captured-response/fundingApplicationId/{fundingApplicationId}", Name = "GetCapturedResponses")]
+        [HttpPut("scorecardResponse", Name = "UpdateScorecardResponse")]
+        public async Task<IActionResult> UpdateScorecardResponse([FromBody] Response model)
+        {
+            try
+            {
+                var results = await this._evaluationService.UpdateScorecardResponse(model, base.GetUserIdentifier());
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("captured-response/fundingApplicationId/{fundingApplicationId}", Name = "GetCapturedResponses")]
 		public async Task<IActionResult> GetCapturedResponses(int fundingApplicationId)
 		{
 			try

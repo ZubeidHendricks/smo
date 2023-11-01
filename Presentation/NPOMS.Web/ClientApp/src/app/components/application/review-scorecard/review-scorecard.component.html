@@ -7,18 +7,18 @@
 <div style="width: 100%;">
     <div  style="text-align: center;">
         <i style="vertical-align: middle; padding: 10px;"></i>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application RefNo: "{{application.refNo}}"</span>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:15px;margin-top:2px;font-weight: bold;height: 26px; text-align: center; border: solid 1px black;">Application RefNo: "{{application.refNo}}"</span>
             <i style="vertical-align: middle; padding: 10px;"></i>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: "{{this.financialYears[0].name}}"</span>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:15px;margin-top:2px;font-weight: bold;height: 26px; text-align: center; border: solid 1px black;">Financial Year: "{{this.financialYears[0].name}}"</span>
         <i style="vertical-align: middle; padding: 10px;"></i>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Organisation: "{{organisation}}"</span>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:15px;margin-top:2px;font-weight: bold;height: 26px; text-align: center; border: solid 1px black;">Organisation: "{{organisation}}"</span>
         <i style="vertical-align: middle; padding: 10px;"></i>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application Name: "{{application.applicationPeriod.name}}"</span>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:15px;margin-top:2px;font-weight: bold;height: 26px; text-align: center; border: solid 1px black;">Application Name: "{{application.applicationPeriod.name}}"</span>
     </div>  
 </div>
 <div style="height: 10px;"></div>
 <div>
-    <p-panel [style]="{'font-size':'12px', 'width':'85%'}" >
+    <p-panel [style]="{'font-size':'12px', 'width':'100%'}" >
         <p-table [value]="allQuestionnaires" *ngIf="allQuestionnaires" [rowHover]="true" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
@@ -39,7 +39,7 @@
                         <td class="p-text-bold p-ml-2">{{question.questionName}}</td>
                         
                         <td>{{question.responseOption.name}}</td>
-                        <td><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{getAverageScoreTotal(question.responseOption.name)}}</span>
+                        <td><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{getAverageScoreTotal(allQuestionnaires)}}</span>
                         </td>
                         <td>0
                         </td>

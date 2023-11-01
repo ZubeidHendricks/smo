@@ -116,6 +116,38 @@ namespace NPOMS.Services.Implementation
             return new QuestionResponseViewModel(question, modelToReturn);
         }
 
+        public async Task<QuestionResponseViewModel> UpdateScorecardResponse(Response model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            var response = await _responseRepository.GetResponseByIds(model.FundingApplicationId, model.QuestionId, currentUser.Id);
+
+            if (response == null || (currentUser.CreatedUserId != response.CreatedUserId))
+            {
+                model.CreatedUserId = currentUser.Id;
+                model.CreatedDateTime = DateTime.Now;
+                await _responseRepository.CreateAsync(model);
+            }
+            else
+            {
+                response.ResponseOptionId = model.ResponseOptionId;
+                response.Comment = model.Comment;
+                response.UpdatedUserId = currentUser.Id;
+                response.UpdatedDateTime = DateTime.Now;
+                await _responseRepository.UpdateAsync(response);
+            }
+
+            var newResponse = response == null ? true : false;
+            var modelToReturn = response == null ? model : response;
+
+            await CreateResponseHistory(modelToReturn, newResponse);
+
+            var question = await _questionRepository.GetById(model.QuestionId);
+            //var documents = await _documentStoreRepository.GetByEntityTypeId((int)EntityTypeEnum.TPAEvidence);
+            //var paymentScheduleResponse = await _paymentScheduleResponseRepository.GetByIds(model.ApplicationId, model.QuestionId);
+
+            return new QuestionResponseViewModel(question, modelToReturn);
+        }
+
         private async Task CreateResponseHistory(Response model, bool newResponse)
         {
             await _responseHistoryRepository.CreateAsync(

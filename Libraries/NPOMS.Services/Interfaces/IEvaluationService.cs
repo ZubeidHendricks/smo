@@ -19,8 +19,9 @@ namespace NPOMS.Services.Interfaces
         Task<IEnumerable<ResponseHistory>> GetCapturedResponseHistory(int fundingApplicationId, int questionId, int createdUserId);
 
 		Task<QuestionResponseViewModel> UpdateResponse(Response model, string userIdentifier);
+        Task<QuestionResponseViewModel> UpdateScorecardResponse(Response model, string userIdentifier);
 
-		Task<IEnumerable<CapturedResponse>> GetCapturedResponsesByIds(int fundingApplicationId, int questionCategoryId);
+        Task<IEnumerable<CapturedResponse>> GetCapturedResponsesByIds(int fundingApplicationId, int questionCategoryId);
 
 		Task<IEnumerable<CapturedResponse>> GetCapturedResponses(int fundingApplicationId);
 

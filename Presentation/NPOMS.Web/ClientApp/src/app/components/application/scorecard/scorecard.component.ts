@@ -113,6 +113,7 @@ export class ScorecardComponent implements OnInit {
   npo: INpo;
   organisation: string;
   capturedResponses: ICapturedResponse[];
+  userId: number;
 
   constructor(
 
@@ -141,6 +142,16 @@ export class ScorecardComponent implements OnInit {
       this.id = params.get('id');      
     });
 
+    this._authService.profile$.subscribe(profile => {
+      if (profile != null && profile.isActive) {
+        this.profile = profile;
+      
+        this.userId = this.profile.id;
+        this.loadCapturedResponses();
+      }
+    });
+    
+
     this.getQuestionCategory();
     this.getResponseType();
 
@@ -148,7 +159,7 @@ export class ScorecardComponent implements OnInit {
     this.loadApplications();
     //this.selectedResponses();
     this.loadQuestionnaire();
-    this.loadCapturedResponses();
+    
     this.loadActivities();
   }
 
@@ -260,15 +271,14 @@ export class ScorecardComponent implements OnInit {
   }
   public getStatusText(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
-    let countReviewed = questions.filter(x => x.isSaved === true).length;
+    let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId == 0).length;
     return `${countReviewed} of ${questions.length} answered`;
   }
 
   public getStatus(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let status = '';
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
-    let countReviewed = questions.filter(x => x.isSaved === true).length;
-
+    let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId === 0).length;
     // If true, document is required but no documents were uploaded... 
     // var documentRequired = questions.some(function (question) { return question.documentRequired === true && question.documentCount === 0 });
     var documentRequired = false;
@@ -288,14 +298,14 @@ export class ScorecardComponent implements OnInit {
     let ragColour = 'rag-not-saved';
     
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4)
+      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4 && item.createdUserId == 0)
       {
         ragColour = 'rag-not-saved';        
       }
-      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
+      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8  && item.createdUserId == 0){
         ragColour = 'rag-partial';  
       }
-      else if(Number(item.responseOption.name) > 5){
+      else if(Number(item.responseOption.name) > 5 && item.createdUserId == 0){
         ragColour = 'rag-saved';
       }
       else{
@@ -311,14 +321,14 @@ export class ScorecardComponent implements OnInit {
     let ragText = '';
     
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4)
+      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4  && item.createdUserId == 0)
       {
         ragText = 'Below Expectations';       
       }
-      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
+      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8  && item.createdUserId == 0){
         ragText = 'Meet Expectations'; 
       }
-      else if(Number(item.responseOption.name) > 8){
+      else if(Number(item.responseOption.name) > 8  && item.createdUserId == 0){
         ragText = 'Exceeds  Expectations';
       }
     });
@@ -400,7 +410,8 @@ export class ScorecardComponent implements OnInit {
   }
 
   public getResponseOptions(responseTypeId: number) {
-    return this.responseOptions.filter(x => x.isActive === false);
+   // alert(responseTypeId);
+    return this.responseOptions.filter(x => x.responseTypeId === responseTypeId && x.isActive);
   }
 
   public onSaveComment(event, question: IQuestionResponseViewModel) {
@@ -414,7 +425,7 @@ export class ScorecardComponent implements OnInit {
     let totalAverageScore = 0;
 
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 0)
+      if(Number(item.responseOption.name) >= 0 && item.createdUserId == 0)
       {
         totalAverageScore  += Number(item.responseOption.name);       
       }
@@ -433,7 +444,7 @@ export class ScorecardComponent implements OnInit {
     let overAllScore = 0;
 
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 0)
+      if(Number(item.responseOption.name) >= 0 && item.createdUserId == 0)
       {
         this.overallAverageScore  += Number(item.responseOption.name);       
       }
@@ -457,7 +468,7 @@ export class ScorecardComponent implements OnInit {
       response.responseOptionId = question.responseOptionId;
       response.comment = question.comment == null ? "" : question.comment;
 
-      this._evaluationService.updateResponse(response).subscribe(
+      this._evaluationService.updateScorecardResponse(response).subscribe(
         (results) => {
           let returnValue = results as IQuestionResponseViewModel;
           question.responseId = returnValue.responseId;
@@ -799,11 +810,15 @@ export class ScorecardComponent implements OnInit {
   }
 
   private loadCapturedResponses() {
+  
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
+
       (results) => {
-        this.capturedResponses = results.filter(x => x.questionCategoryId ===0 );
+        this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === 0);
+        
         if(this.capturedResponses.length > 0)
         {
+          alert(this.capturedResponses.length);
             let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
             let  improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
             this.captureImprovementArea = improvementArea;
