@@ -1,4 +1,5 @@
-﻿using NPOMS.Domain.Evaluation;
+﻿using Microsoft.Graph;
+using NPOMS.Domain.Evaluation;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,10 +11,20 @@ namespace NPOMS.Services.Models
 
 		public List<QuestionResponseViewModel> QuestionResponses => _questionResponses;
 
-		private AllQuestionResponseViewModel()
+		public AllQuestionResponseViewModel(List<Question> questions, List<Response> responses, bool v)
 		{
-
-		}
+            var orderedQuestions = questions.OrderBy(x => x.QuestionSection.SortOrder).ThenBy(x => x.SortOrder).ToList();
+            orderedQuestions.ForEach(question => this._questionResponses
+                            .Add(
+                                    new QuestionResponseViewModel
+                                    (
+                                        question,
+                                        responses,
+										v
+                                    )
+                                )
+                            );
+        }
 
 		public AllQuestionResponseViewModel(List<Question> questions, List<Response> responses)
 		{

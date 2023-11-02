@@ -1343,6 +1343,8 @@ export interface IQuestionResponseViewModel {
     isSaved: boolean;
     createdUserId: number;
     responseOption: IResponseOption;
+    responsesO: number[];
+    sumOfResponse: number;
 }
 
 export interface IResponseOptions {
@@ -1351,6 +1353,7 @@ export interface IResponseOptions {
     questionId: number;
     responseOptionId: number;
     comment: string;
+    createdUserId: number;
     responseOption: IResponseOption;
 }
 

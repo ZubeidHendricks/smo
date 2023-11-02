@@ -66,7 +66,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("completed-questionnaires/fundingApplicationId/{fundingApplicationId}/questionCategoryId/{questionCategoryId}/createdUserId/{createdUserId}", Name = "GetCompletedQuestionnaires")]
+        [HttpGet("fId/{fId}")]
+        public async Task<IActionResult> GetScorecardQuestionnaire(int fId)
+        {
+            try
+            {
+                var results = await _evaluationService.GetScorecardQuestionnaire(fId, base.GetUserIdentifier());
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetQuestionnaire action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("completed-questionnaires/fundingApplicationId/{fundingApplicationId}/questionCategoryId/{questionCategoryId}/createdUserId/{createdUserId}", Name = "GetCompletedQuestionnaires")]
 		public async Task<IActionResult> GetCompletedQuestionnaires(int fundingApplicationId, int questionCategoryId, int createdUserId)
 		{
 			try
@@ -100,13 +115,28 @@ namespace NPOMS.API.Controllers
         public async Task<IActionResult> GetResponse(int id)
         {
             try
-            {
+            {  
                 var results = await _evaluationService.GetResponse(id);
                 return Ok(results);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside GetResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("QCId/{qcId}")]
+        public async Task<IActionResult> WorkflowAssessmentCount(int qcId)
+        {
+            try
+            {  
+				var workflowAssessment = await _evaluationService.GetWorkflowAssessmentByQuestionCategoryId(qcId);
+                return Ok(workflowAssessment.NumberOfAssessments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside WorkflowAssessmentCount action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

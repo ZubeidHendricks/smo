@@ -509,6 +509,8 @@ export interface IQuestionResponseViewModel {
     comment: string;
     isSaved: boolean;
     createdUserId: number;
+    responsesO: number[];
+    sumOfResponse: number;
     responseOption: IResponseOption;
 }
 

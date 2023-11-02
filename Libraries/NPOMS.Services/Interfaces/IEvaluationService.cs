@@ -7,9 +7,11 @@ namespace NPOMS.Services.Interfaces
 {
 	public interface IEvaluationService
 	{
-		Task<IEnumerable<QuestionResponseViewModel>> GetQuestionnaire(int fundingApplicationId, string userIdentifier);
+        
+        Task<IEnumerable<QuestionResponseViewModel>> GetQuestionnaire(int fundingApplicationId, string userIdentifier);
+        Task<IEnumerable<QuestionResponseViewModel>> GetScorecardQuestionnaire(int fundingApplicationId, string userIdentifier);
 
-		Task<IEnumerable<QuestionResponseViewModel>> GetCompletedQuestionnaires(int fundingApplicationId, int questionCategoryId, int createdUserId);
+        Task<IEnumerable<QuestionResponseViewModel>> GetCompletedQuestionnaires(int fundingApplicationId, int questionCategoryId, int createdUserId);
 
 		Task<IEnumerable<ResponseHistory>> GetResponseHistory(int fundingApplicationId, int questionId, string userIdentifier);
 

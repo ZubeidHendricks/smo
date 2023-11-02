@@ -122,7 +122,7 @@ export class ReviewScorecardComponent implements OnInit {
   capturedResponses: ICapturedResponse[];
   name: IResp[] = [];
   _name: IResp[] =[];
-
+  userId: number;
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -152,6 +152,15 @@ export class ReviewScorecardComponent implements OnInit {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');      
     });
+
+    this._authService.profile$.subscribe(profile => {
+      if (profile != null && profile.isActive) {
+        this.profile = profile;
+      
+        this.userId = this.profile.id;
+        this.loadCapturedResponses();
+      }
+    }); 
 
     this.getQuestionCategory();
     this.getResponseType();
@@ -183,19 +192,16 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   private loadQuestionnaire() {
-    this._evaluationService.getQuestionnaire(Number(this.id)).subscribe(
+    this._evaluationService.getScorecardQuestionnaire(Number(this.id)).subscribe(
       (results) => {
         this.allQuestionnaires = results.filter(x => x.questionCategoryName === "Engagement" || x.questionCategoryName === "Timely Work Plan Submission"
         || x.questionCategoryName === "Impact" || x.questionCategoryName === "Risk Mitigation" || x.questionCategoryName === "Appropriation of Resources");
-
-console.log('this.allQuestionnaires', this.allQuestionnaires );
-       // this.getOverallScoreTotal(this.allQuestionnaires);
+        console.log('this.allQuestionnaires',this.allQuestionnaires)
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
-      //  this.loadResponseOptions();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -451,31 +457,6 @@ console.log('this.allQuestionnaires', this.allQuestionnaires );
     return totalAverageScore;
   }
 
-  public getScore() 
-  {  
-    this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
-    this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
-    this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
-    this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
-    this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
-  
-    let getScore = 0;
-
-    this.allQuestionnaires.forEach(item => {
-      if(Number(item.responseOption.name) >= 0)
-      {
-        getScore  = Number(item.responseOption.name);       
-      }
-      else{
-        getScore = 0;
-      }
-    });
-
-   // this.overallAverageScore = totalAverageScore;
-    
-    return getScore;
-  }
-  
 
   public getOverallScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
   {
@@ -828,7 +809,7 @@ console.log('this.allQuestionnaires', this.allQuestionnaires );
     let capturedResponse = {
       fundingApplicationId: this.application.id,     
       statusId: 0,
-      questionCategoryId: 0,
+      questionCategoryId: 100,
       comments: this.captureImprovementArea + '/' + this.captureRequiredAction,
       isActive: true,
       isSignedOff: true,
@@ -851,7 +832,7 @@ console.log('this.allQuestionnaires', this.allQuestionnaires );
   private loadCapturedResponses() {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
       (results) => {
-        this.capturedResponses = results.filter(x => x.questionCategoryId ===0 );
+        this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.userId);
         if(this.capturedResponses.length > 0)
         {
             let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);

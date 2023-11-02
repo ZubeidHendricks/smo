@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkflowAssessment, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -86,13 +86,11 @@ export class ScorecardComponent implements OnInit {
   lastWorkplanActual: boolean;
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
-  //selectedFinancialYear: number;
   scrollableCols: any[];
   frozenCols: any[];
   objectives: IObjective[] = [];
   activities: IActivity[];
   applications: IApplication[];
-  //npoId: string;
   statuses: IStatus[];
   rowGroupMetadataActivities: any[];
   isApplicationAvailable: boolean;
@@ -113,7 +111,9 @@ export class ScorecardComponent implements OnInit {
   npo: INpo;
   organisation: string;
   capturedResponses: ICapturedResponse[];
+  capturedResponsesCount: ICapturedResponse[];
   userId: number;
+  workFlowCount: IWorkflowAssessment[];
 
   constructor(
 
@@ -122,15 +122,9 @@ export class ScorecardComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
-    private _dropdownRepo: DropdownService,
-    private _applicationPeriodRepo: ApplicationPeriodService,
     private _evaluationService: EvaluationService,
-    private _documentStore: DocumentStoreService,
     private _loggerService: LoggerService,
     private _dropdownService: DropdownService,
-    private confirmationService: ConfirmationService,
-    private _messageService: MessageService,
-    private _datepipe: DatePipe,
     private _indicatorRepo: IndicatorService,
     private _npoRepo: NpoService,
 
@@ -149,42 +143,27 @@ export class ScorecardComponent implements OnInit {
         this.userId = this.profile.id;
         this.loadCapturedResponses();
       }
-    });
-    
+    }); 
 
     this.getQuestionCategory();
     this.getResponseType();
-
-   // this.loadApplication();
     this.loadApplications();
-    //this.selectedResponses();
-    this.loadQuestionnaire();
-    
+    this.selectedResponses();
+    this.loadQuestionnaire();    
     this.loadActivities();
-  }
-
-  private loadApplication() {
-    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
-      (results) => {
-        this.application = results;
-        
-        this.loadObjectives();
-      },
-    );
   }
 
   private loadQuestionnaire() {
     this._evaluationService.getQuestionnaire(Number(this.id)).subscribe(
       (results) => {
         this.allQuestionnaires = results;
-
-        this.getOverallScoreTotal(this.allQuestionnaires);
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
+        this.getWorkflowCount();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -193,12 +172,30 @@ export class ScorecardComponent implements OnInit {
     );
   }
 
+  private getWorkflowCount()
+  {
+    this._evaluationService.workflowAssessmentCount(Number(this.engagementQuestionnaire[0].questionCategoryId)).subscribe(
+      (res) => {
+
+        if(this.capturedResponsesCount.length ===  res)
+        {
+          alert('Add new score card limit reached. Can not add new score card');
+          this._router.navigateByUrl('applications');
+        }
+      
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+    
+  }
+
   private loadResponseOptions() {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
         this.responseOptions = results;       
-       // this.selectedResponses();
-       // this.loadStatuses();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -211,11 +208,6 @@ export class ScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.Statuses, true).subscribe(
       (results) => {
         this.statuses = results;
-      //  this.evaluationStatuses = results.filter(x => x.name.includes('Recommended') || x.name.includes('NonCompliance') || x.name.includes('StronglyRecommended') || x.name.includes('Declined'));
-       // this.adjudicationStatuses = results.filter(x => x.name.includes('Declined') || x.name.includes('NonCompliance') || x.name.includes('Recommended') || x.name.includes('StronglyRecommended'));
-      //  this.approvalStatuses = results.filter(x => x.name.includes('Declined') || x.name.includes('Recommended') || x.name.includes('StronglyRecommended'));
-    //    this.loadCapturedResponses();
-       // this.isDataAvailable = true;
         this._spinner.hide();
         
       },
@@ -271,16 +263,15 @@ export class ScorecardComponent implements OnInit {
   }
   public getStatusText(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
-    let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId == 0).length;
+    let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId == this.userId).length;
     return `${countReviewed} of ${questions.length} answered`;
   }
 
   public getStatus(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let status = '';
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
-    let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId === 0).length;
+    let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId === this.userId).length;
     // If true, document is required but no documents were uploaded... 
-    // var documentRequired = questions.some(function (question) { return question.documentRequired === true && question.documentCount === 0 });
     var documentRequired = false;
 
     if (questions.length === countReviewed && !documentRequired)
@@ -298,14 +289,14 @@ export class ScorecardComponent implements OnInit {
     let ragColour = 'rag-not-saved';
     
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4 && item.createdUserId == 0)
+      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4 && item.createdUserId == this.userId)
       {
         ragColour = 'rag-not-saved';        
       }
-      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8  && item.createdUserId == 0){
+      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8  && item.createdUserId == this.userId){
         ragColour = 'rag-partial';  
       }
-      else if(Number(item.responseOption.name) > 5 && item.createdUserId == 0){
+      else if(Number(item.responseOption.name) > 5 && item.createdUserId == this.userId){
         ragColour = 'rag-saved';
       }
       else{
@@ -321,14 +312,14 @@ export class ScorecardComponent implements OnInit {
     let ragText = '';
     
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4  && item.createdUserId == 0)
+      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4  && item.createdUserId == this.userId)
       {
         ragText = 'Below Expectations';       
       }
-      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8  && item.createdUserId == 0){
+      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8  && item.createdUserId == this.userId){
         ragText = 'Meet Expectations'; 
       }
-      else if(Number(item.responseOption.name) > 8  && item.createdUserId == 0){
+      else if(Number(item.responseOption.name) > 8  && item.createdUserId == this.userId){
         ragText = 'Exceeds  Expectations';
       }
     });
@@ -390,7 +381,7 @@ export class ScorecardComponent implements OnInit {
         canDisplayField = true;
         break;
       case ResponseTypeEnum.Score:
-        canDisplayField = true; //question.weighting !== 0 ? true : false;
+        canDisplayField = true; 
         break;
       case ResponseTypeEnum.CloseEnded2:
         canDisplayField = true;
@@ -410,7 +401,6 @@ export class ScorecardComponent implements OnInit {
   }
 
   public getResponseOptions(responseTypeId: number) {
-   // alert(responseTypeId);
     return this.responseOptions.filter(x => x.responseTypeId === responseTypeId && x.isActive);
   }
 
@@ -425,7 +415,7 @@ export class ScorecardComponent implements OnInit {
     let totalAverageScore = 0;
 
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 0 && item.createdUserId == 0)
+      if(Number(item.responseOption.name) >= 0 && item.createdUserId == this.userId)
       {
         totalAverageScore  += Number(item.responseOption.name);       
       }
@@ -439,31 +429,12 @@ export class ScorecardComponent implements OnInit {
     return totalAverageScore;
   }
 
-  public getOverallScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
-  {
-    let overAllScore = 0;
-
-    questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 0 && item.createdUserId == 0)
-      {
-        this.overallAverageScore  += Number(item.responseOption.name);       
-      }
-      else{
-        this.overallAverageScore = 0;
-      }
-    });
-
-   // this.overallAverageScore = totalAverageScore;
-    
-    return this.overallAverageScore;
-  }
-
-  
+ 
  public onSave(question: IQuestionResponseViewModel) {
     if (question.responseOptionId != 0) {
     
       let response = {} as IResponse;
-      response.fundingApplicationId = this.application.id;
+      response.fundingApplicationId = Number(this.id);
       response.questionId = question.questionId;
       response.responseOptionId = question.responseOptionId;
       response.comment = question.comment == null ? "" : question.comment;
@@ -473,7 +444,7 @@ export class ScorecardComponent implements OnInit {
           let returnValue = results as IQuestionResponseViewModel;
           question.responseId = returnValue.responseId;
           question.isSaved = returnValue.isSaved; 
-         // this.selectedResponses();
+          this.selectedResponses();
         },
         (err) => {
           this._loggerService.logException(err);
@@ -484,14 +455,6 @@ export class ScorecardComponent implements OnInit {
 
     }
   }
-
-  // financialYearChange() {
-  //   if (this.selectedFinancialYear) {
-  //     this.filteredWorkplanIndicators = [];
-  //     this.application = this.applications.find(x => x.applicationPeriod.financialYearId === 2);
-  //     this.loadActivities();
-  //   }
-  // }
 
   public getQuestionCategory()
   {    
@@ -518,7 +481,6 @@ export class ScorecardComponent implements OnInit {
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
     this.onSave(question);
-    //this.selectedResponses();
   } 
 
   private loadApplications() {
@@ -751,11 +713,9 @@ export class ScorecardComponent implements OnInit {
 
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
-        this._responses = results;
-        
+        this._responses = results.filter(x=> x.createdUserId ===  176);
         let overallTotalScores = 0;
         let length = this._responses.length;
-        
         this._responses.forEach(item => {
           if(Number(item.responseOption.name) >= 0)
           {
@@ -787,7 +747,7 @@ export class ScorecardComponent implements OnInit {
   private createCapturedResponse() {
         
     let capturedResponse = {
-      fundingApplicationId: this.application.id,     
+      fundingApplicationId: Number(this.id),     
       statusId: 0,
       questionCategoryId: 0,
       comments: this.captureImprovementArea + '/' + this.captureRequiredAction,
@@ -814,11 +774,12 @@ export class ScorecardComponent implements OnInit {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
 
       (results) => {
-        this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === 0);
+        this.capturedResponsesCount =  results.filter(x => x.questionCategoryId === 0);
+
+        this.capturedResponses =  results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.userId);
         
         if(this.capturedResponses.length > 0)
         {
-          alert(this.capturedResponses.length);
             let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
             let  improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
             this.captureImprovementArea = improvementArea;
@@ -829,6 +790,7 @@ export class ScorecardComponent implements OnInit {
             this.hasCapturedRequiredAction = true;   
             this.hasScorecardSubmitted = true;      
         }
+        this.getWorkflowCount();
       })
     }
 }

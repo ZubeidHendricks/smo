@@ -59,6 +59,15 @@ namespace NPOMS.Services.Implementation
             return new AllQuestionResponseViewModel(questions.ToList(), responses.ToList()).QuestionResponses;
         }
 
+        public async Task<IEnumerable<QuestionResponseViewModel>> GetScorecardQuestionnaire(int fundingApplicationId, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            var questions = await _questionRepository.GetAllWithDetails();
+            var responses = await _responseRepository.GetByIdsWithDetail(fundingApplicationId, currentUser.Id);
+
+            return new AllQuestionResponseViewModel(questions.ToList(), responses.ToList(), true).QuestionResponses;
+        }
+
         public async Task<IEnumerable<QuestionResponseViewModel>> GetCompletedQuestionnaires(int fundingApplicationId, int questionCategoryId, int createdUserId)
         {
             var questionSections = await _questionSectionRepository.GetByQuestionCategoryId(questionCategoryId);
