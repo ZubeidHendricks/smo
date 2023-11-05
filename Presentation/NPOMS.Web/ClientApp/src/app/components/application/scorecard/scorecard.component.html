@@ -48,8 +48,9 @@
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(engagementQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
-                            [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
+                            [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)"
+                             (keydown)="onInputCommentChange(question)" [disabled]="hasScorecardSubmitted"
+                            [autoResize]="true"></textarea>
                         </td>
                         
                         <td style="text-align: center;">
@@ -396,15 +397,15 @@
                     <th style="text-align: center; width: 5%;">Avg %</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
+            <!-- <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
                 <tr>
                     <td [attr.colspan]="6">
                         <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                         <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
                     </td>
                 </tr>   
-            </ng-template>
-            <ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex">
+            </ng-template> -->
+            <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
                 <tr class="heading">
                     <!-- <td style="text-align: center; width: 5%;"></td> -->
                     <td *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false" [attr.colspan]="6">
