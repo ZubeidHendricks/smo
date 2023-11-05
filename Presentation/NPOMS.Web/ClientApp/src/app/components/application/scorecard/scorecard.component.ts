@@ -494,7 +494,6 @@ export class ScorecardComponent implements OnInit {
       (results) => {
         this.financialYears = [];
         this.applications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP && x.statusId === StatusEnum.AcceptedSLA);
-alert(this.application.id);
         this.applications.forEach(item => {
           var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
           if (!isPresent)
@@ -791,7 +790,6 @@ alert(this.application.id);
             this.captureImprovementArea = improvementArea;
             this.captureRequiredAction = requiredAction;
             this.signedByUser = this.capturedResponses[0].createdUser.fullName;
-            alert( this.signedByUser);
             this.submittedDate = this.capturedResponses[0].createdDateTime;  
             this.hascapturedImprovementArea = true;
             this.hasCapturedRequiredAction = true;   
