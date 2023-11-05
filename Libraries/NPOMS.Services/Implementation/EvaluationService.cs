@@ -63,7 +63,7 @@ namespace NPOMS.Services.Implementation
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             var questions = await _questionRepository.GetAllWithDetails();
-            var responses = await _responseRepository.GetByIdsWithDetail(fundingApplicationId, currentUser.Id);
+            var responses = await _responseRepository.GetScorecardByIdsWithDetail(fundingApplicationId, currentUser.Id);
 
             return new AllQuestionResponseViewModel(questions.ToList(), responses.ToList(), true).QuestionResponses;
         }
@@ -130,7 +130,7 @@ namespace NPOMS.Services.Implementation
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             var response = await _responseRepository.GetResponseByIds(model.FundingApplicationId, model.QuestionId, currentUser.Id);
 
-            if (response == null || (currentUser.CreatedUserId != response.CreatedUserId))
+            if (response == null)
             {
                 model.CreatedUserId = currentUser.Id;
                 model.CreatedDateTime = DateTime.Now;

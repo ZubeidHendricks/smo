@@ -1285,6 +1285,7 @@ export interface IResponseOption {
     systemName: string;
     isActive: boolean;
     responseType: IResponseType;
+    createdUserId: number;
 }
 
 export interface IWorkflowAssessment {

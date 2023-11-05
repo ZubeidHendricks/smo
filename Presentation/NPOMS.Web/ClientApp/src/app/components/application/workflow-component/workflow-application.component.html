@@ -781,7 +781,9 @@
                             (onChange)="onSaveResponse($event, question)" [disabled]="setDisable"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(preEvaluationQuestionnaire)">
-                            <textarea class="form-text" [disabled]="setDisable" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" [autoResize]="true" [disabled]="hasCapturedPreEvaluation"></textarea>
+                            <textarea class="form-text" [disabled]="setDisable" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment"
+                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
+                             [autoResize]="true" [disabled]="hasCapturedPreEvaluation"></textarea>
                         </td>
                         <td style="text-align: center;" *ngIf="hasDocument(preEvaluationQuestionnaire)">
                         </td>

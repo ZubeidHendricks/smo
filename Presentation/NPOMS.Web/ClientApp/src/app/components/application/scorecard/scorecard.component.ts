@@ -95,7 +95,7 @@ export class ScorecardComponent implements OnInit {
   rowGroupMetadataActivities: any[];
   isApplicationAvailable: boolean;
   isObjectivesAvailable: boolean;
-  overallTotalScore: number;
+  overallTotalScores: number;
   overallAvgScore: number;
   activityAvgScore: number;
 
@@ -163,7 +163,6 @@ export class ScorecardComponent implements OnInit {
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
-        this.getWorkflowCount();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -195,7 +194,8 @@ export class ScorecardComponent implements OnInit {
   private loadResponseOptions() {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
-        this.responseOptions = results;       
+        this.responseOptions = results;  
+      //  this.selectedResponses();     
       },
       (err) => {
         this._loggerService.logException(err);
@@ -263,14 +263,15 @@ export class ScorecardComponent implements OnInit {
   }
   public getStatusText(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
-    let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId == this.userId).length;
+   // let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId == this.userId).length;
+   let countReviewed = questions.filter(x => x.isSaved === true).length;
     return `${countReviewed} of ${questions.length} answered`;
   }
 
   public getStatus(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let status = '';
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
-    let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId === this.userId).length;
+    let countReviewed = questions.filter(x => x.isSaved === true).length;
     // If true, document is required but no documents were uploaded... 
     var documentRequired = false;
 
@@ -289,14 +290,14 @@ export class ScorecardComponent implements OnInit {
     let ragColour = 'rag-not-saved';
     
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4 && item.createdUserId == this.userId)
+      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4)
       {
         ragColour = 'rag-not-saved';        
       }
-      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8  && item.createdUserId == this.userId){
+      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
         ragColour = 'rag-partial';  
       }
-      else if(Number(item.responseOption.name) > 5 && item.createdUserId == this.userId){
+      else if(Number(item.responseOption.name) > 5){
         ragColour = 'rag-saved';
       }
       else{
@@ -312,14 +313,14 @@ export class ScorecardComponent implements OnInit {
     let ragText = '';
     
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4  && item.createdUserId == this.userId)
+      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4)
       {
         ragText = 'Below Expectations';       
       }
-      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8  && item.createdUserId == this.userId){
+      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
         ragText = 'Meet Expectations'; 
       }
-      else if(Number(item.responseOption.name) > 8  && item.createdUserId == this.userId){
+      else if(Number(item.responseOption.name) > 8){
         ragText = 'Exceeds  Expectations';
       }
     });
@@ -409,13 +410,16 @@ export class ScorecardComponent implements OnInit {
     this.onSave(question);
   }
 
+  public onInputCommentChange(question: IQuestionResponseViewModel) {
+    question.isSaved = false;
+  }
  
   public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
   {
     let totalAverageScore = 0;
 
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 0 && item.createdUserId == this.userId)
+      if(Number(item.responseOption.name) >= 0)
       {
         totalAverageScore  += Number(item.responseOption.name);       
       }
@@ -481,6 +485,7 @@ export class ScorecardComponent implements OnInit {
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
     this.onSave(question);
+    
   } 
 
   private loadApplications() {
@@ -489,7 +494,7 @@ export class ScorecardComponent implements OnInit {
       (results) => {
         this.financialYears = [];
         this.applications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP && x.statusId === StatusEnum.AcceptedSLA);
-
+alert(this.application.id);
         this.applications.forEach(item => {
           var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
           if (!isPresent)
@@ -602,7 +607,6 @@ export class ScorecardComponent implements OnInit {
       }
     );
   }
-  
 
   private filterWorkplanIndicators() {
    // if (this.lastWorkplanTarget && this.lastWorkplanActual) {
@@ -710,24 +714,26 @@ export class ScorecardComponent implements OnInit {
   }
 
   public selectedResponses() {
-
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
-        this._responses = results.filter(x=> x.createdUserId ===  176);
-        let overallTotalScores = 0;
+        this._responses = results;
+        let overallTotalScore = 0;
         let length = this._responses.length;
+
         this._responses.forEach(item => {
           if(Number(item.responseOption.name) >= 0)
           {
-            overallTotalScores  += Number(item.responseOption.name);       
+           
+            overallTotalScore  += Number(item.responseOption.name);       
           }
           else{
-            overallTotalScores = 0;
+            overallTotalScore = 0;
           }
         });
 
-        this.overallTotalScore = overallTotalScores;
-        this.overallAvgScore = overallTotalScores/length;
+        this.overallTotalScores = overallTotalScore;
+        this.overallAvgScore = overallTotalScore/length;
+       
       },
       (err) => {
         this._loggerService.logException(err);
@@ -776,7 +782,7 @@ export class ScorecardComponent implements OnInit {
       (results) => {
         this.capturedResponsesCount =  results.filter(x => x.questionCategoryId === 0);
 
-        this.capturedResponses =  results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.userId);
+        this.capturedResponses =  results.filter(x => x.questionCategoryId === 0);
         
         if(this.capturedResponses.length > 0)
         {
@@ -785,6 +791,7 @@ export class ScorecardComponent implements OnInit {
             this.captureImprovementArea = improvementArea;
             this.captureRequiredAction = requiredAction;
             this.signedByUser = this.capturedResponses[0].createdUser.fullName;
+            alert( this.signedByUser);
             this.submittedDate = this.capturedResponses[0].createdDateTime;  
             this.hascapturedImprovementArea = true;
             this.hasCapturedRequiredAction = true;   
