@@ -49,7 +49,7 @@
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(engagementQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"></textarea>
+                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
                         </td>
                         
                         <td style="text-align: center;">
@@ -117,7 +117,7 @@
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(timeWorkPlanQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
+                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
                         </td>
                         
                         <td style="text-align: center;">
@@ -185,7 +185,7 @@
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(impactQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
+                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
                         </td>
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(impactQuestionnaire)}}" style="font-size: 1rem"></i>
@@ -252,7 +252,7 @@
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(riskMitigationQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
+                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
                         </td>
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(riskMitigationQuestionnaire)}}" style="font-size: 1rem"></i>
