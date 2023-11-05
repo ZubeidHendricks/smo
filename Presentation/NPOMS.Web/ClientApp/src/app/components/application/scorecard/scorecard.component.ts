@@ -333,7 +333,7 @@ export class ScorecardComponent implements OnInit {
     let ragColour = 'rag-not-saved';    
     if(num !== undefined)
     {
-      if(Number(num) >= 1 && Number(num) <= 4)
+      if(Number(num) >= 1 && Number(num) < 5)
       {
         ragColour = 'rag-not-saved';        
       }
@@ -357,7 +357,7 @@ export class ScorecardComponent implements OnInit {
   let ragText = '';
   if(num !== undefined)
   {
-      if(Number(num) >= 1 && Number(num) <= 4)
+      if(Number(num) >= 1 && Number(num) < 5)
       {
         ragText = 'Below Expectations';       
       }
