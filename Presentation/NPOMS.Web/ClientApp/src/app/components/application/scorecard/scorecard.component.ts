@@ -177,6 +177,8 @@ export class ScorecardComponent implements OnInit {
     this._evaluationService.workflowAssessmentCount(Number(this.engagementQuestionnaire[0].questionCategoryId)).subscribe(
       (res) => {
 
+        alert(res);
+        alert(this.capturedResponsesCount.length);
         if(this.capturedResponsesCount.length ===  res)
         {
           alert('Add new score card limit reached. Can not add new score card');
