@@ -154,7 +154,7 @@ export class ScorecardComponent implements OnInit {
   }
 
   private loadQuestionnaire() {
-    this._evaluationService.getQuestionnaire(Number(this.id)).subscribe(
+    this._evaluationService.getAddScoreQuestionnaire(Number(this.id)).subscribe(
       (results) => {
         this.allQuestionnaires = results;
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
@@ -715,7 +715,7 @@ export class ScorecardComponent implements OnInit {
   public selectedResponses() {
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
-        this._responses = results;
+        this._responses = results.filter(x=> x.createdUserId === this.userId);
         let overallTotalScore = 0;
         let length = this._responses.length;
 
@@ -779,9 +779,9 @@ export class ScorecardComponent implements OnInit {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
 
       (results) => {
-        this.capturedResponsesCount =  results.filter(x => x.questionCategoryId === 0);
+        this.capturedResponsesCount =  results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.userId);
 
-        this.capturedResponses =  results.filter(x => x.questionCategoryId === 0);
+        this.capturedResponses =  results.filter(x => x.questionCategoryId === 0  && x.createdUser.id === this.userId);
         
         if(this.capturedResponses.length > 0)
         {
