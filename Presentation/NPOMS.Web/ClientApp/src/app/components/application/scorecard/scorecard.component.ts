@@ -163,6 +163,7 @@ export class ScorecardComponent implements OnInit {
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
+        this.getWorkflowCount();
       },
       (err) => {
         this._loggerService.logException(err);
