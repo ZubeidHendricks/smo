@@ -8,7 +8,7 @@
     <div>
         <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application RefNo: "{{application.refNo}}"</span>
             <i style="vertical-align: middle; padding: 10px;"></i>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: "{{this.financialYears[0].name}}"</span>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: "{{this.financialYears[this.financialYears.length-1].name}}"</span>
     </div>
     <div>
         <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Organisation: "{{organisation}}"</span>
@@ -484,7 +484,7 @@
             </div>
             <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasScorecardSubmitted">
                 <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
-                (click)="submit()"></button>
+                [disabled]="disableElement()" (click)="submit()"></button>
             </div>
         </p-panel>
     </div>     

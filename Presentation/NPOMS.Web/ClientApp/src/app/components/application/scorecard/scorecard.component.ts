@@ -87,6 +87,8 @@ export class ScorecardComponent implements OnInit {
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
   scrollableCols: any[];
+  finYear: number;
+  fincYear: string;
   frozenCols: any[];
   objectives: IObjective[] = [];
   activities: IActivity[];
@@ -502,7 +504,9 @@ export class ScorecardComponent implements OnInit {
           if (!isPresent)
             this.financialYears.push(item.applicationPeriod.financialYear);
         });
-
+      //  alert(this.financialYears.length);
+      //  this.fincYear = this.financialYears[this.finYear].name;
+      //  alert(this.fincYear);
         this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.financialYears[0].id);
         this.loadActivities();
         this.loadObjectives();
@@ -800,5 +804,14 @@ export class ScorecardComponent implements OnInit {
         }
         this.getWorkflowCount();
       })
+    }
+
+    public disableElement() {
+        let questions = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement"
+        || x.questionCategoryName === "Timely Work Plan Submission"
+        || x.questionCategoryName === "Impact" || x.questionCategoryName === "Risk Mitigation"
+        || x.questionCategoryName === "Appropriation of Resources");
+        let countReviewed = questions.filter(x => x.isSaved === true).length;
+        return ((questions.length === countReviewed) && (this.captureImprovementArea != undefined && this.captureImprovementArea != '') && (this.captureRequiredAction != undefined && this.captureRequiredAction != '')) ? false : true;      
     }
 }

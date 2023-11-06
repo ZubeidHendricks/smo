@@ -848,10 +848,9 @@ export class ReviewScorecardComponent implements OnInit {
       })
     }
 
-
-    // this.year.forEach(item => {
-    //   this.years.push({year: item.toString()} as IYear);
-    //   this._iYear = this.years;
-    //  });
+    public disableElement() {
+     
+      return ((this.captureImprovementArea != undefined && this.captureImprovementArea != '') && (this.captureRequiredAction != undefined && this.captureRequiredAction != '')) ? false : true;      
+  }
 
 }
