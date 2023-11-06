@@ -66,6 +66,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+        [HttpGet("funId/{funId}")]
+        public async Task<IActionResult> GetAddScoreQuestionnaire(int funId)
+        {
+            try
+            {
+                var results = await _evaluationService.GetAddScoreQuestionnaire(funId, base.GetUserIdentifier());
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetQuestionnaire action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
         [HttpGet("fId/{fId}")]
         public async Task<IActionResult> GetScorecardQuestionnaire(int fId)
         {

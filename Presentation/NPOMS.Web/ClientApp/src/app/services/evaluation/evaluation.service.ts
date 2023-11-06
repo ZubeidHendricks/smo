@@ -25,6 +25,11 @@ export class EvaluationService {
     return this._http.get<IQuestionResponseViewModel[]>(url, httpOptions);
   }
 
+  public getAddScoreQuestionnaire(funId: number) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/funId/${funId}`;
+    return this._http.get<IQuestionResponseViewModel[]>(url, httpOptions);
+  }
+
   public getScorecardQuestionnaire(fId: number) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/fId/${fId}`;
     return this._http.get<IQuestionResponseViewModel[]>(url, httpOptions);
