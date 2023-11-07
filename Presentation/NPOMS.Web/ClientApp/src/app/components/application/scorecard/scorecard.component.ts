@@ -82,6 +82,7 @@ export class ScorecardComponent implements OnInit {
   auditCols: any[];
   workplanIndicators: IWorkplanIndicator[];
   filteredWorkplanIndicators: IWorkplanIndicator[];
+  filteredWorkplanIndicators1: IWorkplanIndicator[];
   lastWorkplanTarget: boolean;
   lastWorkplanActual: boolean;
   financialYears: IFinancialYear[];
