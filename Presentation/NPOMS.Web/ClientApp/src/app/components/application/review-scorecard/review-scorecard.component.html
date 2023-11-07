@@ -8,7 +8,7 @@
     <div>
         <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application RefNo: "{{application.refNo}}"</span>
             <i style="vertical-align: middle; padding: 10px;"></i>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: "{{this.financialYears[this.financialYears.length-1].name}}"</span>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: "{{application.applicationPeriod.financialYear.name}}"</span>
     </div>
     <div>
         <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Organisation: "{{organisation}}"</span>
@@ -37,7 +37,7 @@
                         </td>
                         <td class="p-text-bold p-ml-2">{{question.questionName}}</td>
                         
-                        <td>{{question.responsesO}}</td>
+                        <td>Scorer 1 - 1, Scorer 2 - 4 </td>
                         <td><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span>
                         </td>
                         <td>{{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
@@ -386,7 +386,7 @@
         <span class="non-mandatory-content"><b>Performance</b></span>
     </div>
 </div>
-<p-table [rowHover]="true" [value]="filteredWorkplanIndicators">
+<p-table [rowHover]="true" [value]="filteredWorkplanIndicators" dataKey="rowGroupMetadataActivities[rowIndex].itemName">
     <ng-template pTemplate="header">
         <tr>
             <th style="text-align: center; width: 5%;">#</th>
@@ -397,13 +397,22 @@
             <th style="text-align: center; width: 5%;">Avg %</th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
-        <tr class="heading">
-            <!-- <td style="text-align: center; width: 5%;"></td> -->
-            <td *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false" [attr.colspan]="6">
+    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
+        <tr  *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false">
+            <!-- <td [attr.colspan]="6">
+                <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                <span class="p-text-bold">Objectives</span>
+            </td> -->
+            <td  [attr.colspan]="3">
+                <button type="button" pButton pRipple [pRowToggler]="rowGroupMetadataActivities[rowIndex].itemName" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                 <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
             </td>
-        </tr>
+            <td style="text-align: center; width: 10%;">{{rowData.totalTargets}}</td>
+            <td style="text-align: center; width: 10%;">{{rowData.totalActuals}}</td>
+            <td style="text-align: center; width: 5%;">{{rowData.totalAvg}} %</td>
+        </tr>   
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex">
         <tr class="default-font">
             <td style="text-align: center; width: 5%;">{{rowIndex + 1}}</td>
             <td style="text-align: left; width: 40%;">{{rowData.activity.activityList.description}}</td>
@@ -416,7 +425,7 @@
     <ng-template pTemplate="footer">
         <tr class="default-font">
             <td style="text-align: left; width: 20%;" colspan="5"><b>Activity Average Score</b></td>
-            <td style="text-align: center;">{{activityAvgScore}} %</td>
+            <td style="text-align: center;">{{(activityAvgScore).toFixed(2)}} %</td>
         </tr>
       
     </ng-template>

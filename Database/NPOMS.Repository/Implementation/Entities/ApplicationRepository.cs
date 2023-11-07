@@ -37,7 +37,8 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task<Application> GetById(int id)
 		{
-			return await FindByCondition(x => x.Id.Equals(id)).Include(x => x.ApplicationPeriod).AsNoTracking().FirstOrDefaultAsync();
+			return await FindByCondition(x => x.Id.Equals(id)).Include(x => x.ApplicationPeriod)
+                .ThenInclude(x => x.FinancialYear).AsNoTracking().FirstOrDefaultAsync();
 		}
 
 		public async Task<Application> GetByNpoIdAndPeriodId(int NpoId, int applicationPeriodId)

@@ -367,6 +367,8 @@ export enum PermissionsEnum {
     EvaluateOption = "WFA.Evaluate",
     PendingApprovalOption = "WFA.PendingApproval",
     ApproveOption = "WFA.Approve",
+    AddScorecard = "WFA.AddScorecard",
+    ReviewScorecard = "WFA.ReviewScorecard",
 
     /* Quick Capture*/
     ViewQC = "QC.View",

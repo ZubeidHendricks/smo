@@ -95,7 +95,7 @@ export class ReviewScorecardComponent implements OnInit {
   frozenCols: any[];
   objectives: IObjective[] = [];
   activities: IActivity[];
-  applications: IApplication[];
+  applications: IApplication;
   //npoId: string;
   statuses: IStatus[];
   rowGroupMetadataActivities: any[];
@@ -504,13 +504,13 @@ export class ReviewScorecardComponent implements OnInit {
     }
   }
 
-  financialYearChange() {
-    if (this.selectedFinancialYear) {
-      this.filteredWorkplanIndicators = [];
-      this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
-      this.loadActivities();
-    }
-  }
+  // financialYearChange() {
+  //   if (this.selectedFinancialYear) {
+  //     this.filteredWorkplanIndicators = [];
+  //     this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
+  //     this.loadActivities();
+  //   }
+  // }
 
   public getQuestionCategory()
   {    
@@ -542,19 +542,19 @@ export class ReviewScorecardComponent implements OnInit {
 
   private loadApplications() {
     this._spinner.show();
-    this._applicationRepo.getApplicationsByNpoId(Number(this.id)).subscribe(
+    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-        this.financialYears = [];
-        this.applications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP && x.statusId === StatusEnum.AcceptedSLA);
+       // this.financialYears = [];
+         this.application = results; //.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP && x.statusId === StatusEnum.AcceptedSLA);
 
-        this.applications.forEach(item => {
-          var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
-          if (!isPresent)
-            this.financialYears.push(item.applicationPeriod.financialYear);
-        });
+        // this.applications.forEach(item => {
+        //   var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
+        //   if (!isPresent)
+        //     this.financialYears.push(item.applicationPeriod.financialYear);
+        // });
 
         
-        this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.financialYears[0].id);
+     //   this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.financialYears[0].id);
         this.loadActivities();
         this.loadObjectives();
         this.loadNpo();
@@ -692,6 +692,10 @@ export class ReviewScorecardComponent implements OnInit {
         }, 0);
         
         let avg =((actualTotal/targetTotal)*100).toFixed(2);
+
+        if (isNaN(((actualTotal/targetTotal)*100))) {
+          avg = '0';
+        }
         
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
@@ -709,7 +713,7 @@ export class ReviewScorecardComponent implements OnInit {
         sumOfAvg += item.totalAvg;
       })
 
-      this.activityAvgScore = sumOfAvg/this.filteredWorkplanIndicators.length;
+      this.activityAvgScore = sumOfAvg/Number(this.filteredWorkplanIndicators.length.toFixed(2));
 
       this.updateRowGroupMetaDataAct();
       this.makeRowsSameHeight();

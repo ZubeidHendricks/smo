@@ -92,7 +92,7 @@ export class ScorecardComponent implements OnInit {
   frozenCols: any[];
   objectives: IObjective[] = [];
   activities: IActivity[];
-  applications: IApplication[];
+  applications: IApplication;
   statuses: IStatus[];
   rowGroupMetadataActivities: any[];
   isApplicationAvailable: boolean;
@@ -495,19 +495,13 @@ export class ScorecardComponent implements OnInit {
 
   private loadApplications() {
     this._spinner.show();
-    this._applicationRepo.getApplicationsByNpoId(Number(this.id)).subscribe(
+    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         this.financialYears = [];
-        this.applications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP && x.statusId === StatusEnum.AcceptedSLA);
-        this.applications.forEach(item => {
-          var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
+        this.application = results; 
+        var isPresent = this.financialYears.some(function (financialYear) { return financialYear === this.application.applicationPeriod.financialYear });
           if (!isPresent)
-            this.financialYears.push(item.applicationPeriod.financialYear);
-        });
-      //  alert(this.financialYears.length);
-      //  this.fincYear = this.financialYears[this.finYear].name;
-      //  alert(this.fincYear);
-        this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.financialYears[0].id);
+            this.financialYears.push(this.application.applicationPeriod.financialYear);
         this.loadActivities();
         this.loadObjectives();
         this.loadNpo();
@@ -643,8 +637,13 @@ export class ScorecardComponent implements OnInit {
            return sum + actual;
         }, 0);
         
-        let avg =((actualTotal/targetTotal)*100).toFixed(2);
-        
+        let avg = ((actualTotal/targetTotal)*100).toFixed(2);
+        //alert(avg);
+        if (isNaN(((actualTotal/targetTotal)*100))) {
+          avg = '0';
+        }
+       
+
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
           workplanTargets: workplanTargets,
@@ -655,13 +654,14 @@ export class ScorecardComponent implements OnInit {
         } as IWorkplanIndicator);
       });
 
+
       let sumOfAvg = 0;
 
       this.filteredWorkplanIndicators.forEach(item =>{
         sumOfAvg += item.totalAvg;
       })
 
-      this.activityAvgScore = sumOfAvg/this.filteredWorkplanIndicators.length;
+      this.activityAvgScore = sumOfAvg/Number(this.filteredWorkplanIndicators.length.toFixed(2));
 
       this.updateRowGroupMetaDataAct();
       this.makeRowsSameHeight();
