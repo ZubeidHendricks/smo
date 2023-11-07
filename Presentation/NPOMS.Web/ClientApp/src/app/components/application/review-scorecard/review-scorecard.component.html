@@ -22,12 +22,15 @@
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 20%; text-align: center;">#</th>
-                        <th style="width: 23%;">Name (Question/Statement)</th>
-                        <th style="width: 15%;">Score Per Scorer</th>
-                        <th style="width: 8%;" >Total score</th>
-                        <th style="width: 12%;">Average Category Score</th>
-                        <th style="width: 24%;">Comment</th>
+                        <th style="width: 15%; text-align: center;">#</th>
+                        <th style="width: 20%; text-align: center;">Name (Question/Statement)</th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>1</b></th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>2</b></th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>3</b></th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>4</b></th>
+                        <th style="width: 6%; text-align: center;" >Total score</th>
+                        <th style="width: 12%; text-align: center;">Average Category Score</th>
+                        <th style="width: 8%; text-align: center;">Comment</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-question let-rowIndex="rowIndex">
@@ -37,356 +40,31 @@
                         </td>
                         <td class="p-text-bold p-ml-2">{{question.questionName}}</td>
                         
-                        <td>{{question.responsesO}}</td>
-                        <td><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span>
+                        <td style="text-align: center;">{{question.responsesO[0]}}</td>
+                        <td style="text-align: center;">{{question.responsesO[1]}}</td>
+                        <td style="text-align: center;">{{question.responsesO[2]}}</td>
+                        <td style="text-align: center;">{{question.responsesO[3]}}</td>
+                        <td style="text-align: center;"><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span>
                         </td>
-                        <td>{{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
+                        <td style="text-align: center;">{{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
                         </td>
-                        <td>
+                        <td style="text-align: center;">
                             <button *ngIf="question.hasComment" pButton pRipple type="button"
                             class="p-button-text action-button" icon="fa fa-comments-o"
                             pTooltip="Comments" tooltipPosition="top"></button>
-                            <!-- <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
-                            [ngModelOptions]="{standalone: true}"
-                            [autoResize]="true"></textarea> -->
                         </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex" >
-                    <tr class="default-font">
-                        <td style="text-align: center;">{{rowIndex + 1}}</td>
-                        <td>{{question.questionName}}</td>
-                        <td [pEditableColumn]="question" pEditableColumn>
-                            <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
-                                optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
-                                placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
-                        </td>
-                        <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(engagementQuestionnaire)">
-                            <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
-                            [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"></textarea>
-                        </td>
-                        
-                        <td style="text-align: center;">
-                            <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(engagementQuestionnaire)}}" style="font-size: 1rem"></i>
-                        </td>
-                        <td style="text-align: center;" colspan="3">
-                            <span *ngIf="displayField(question)" style="font-weight: bold;" class="{{getRagColour(engagementQuestionnaire)}}">{{getRagText(engagementQuestionnaire)}}</span>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr class="default-font">
-                        <td [attr.colspan]="getColspan(allQuestionnaires, 6)" style="text-align: center;">No results found</td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="footer" *ngIf="hasWeighting(allQuestionnaires)">
-                    <!-- <tr>
-                        <td colspan="2"><span style="font-weight: bold;">Selected Score</span></td>
-                        <td [attr.colspan]="getColspan(engagementQuestionnaire, 3)"><span style="font-weight: bold;" class="{{getRagColour(engagementQuestionnaire)}}">{{getAverageScoreTotal(engagementQuestionnaire)}}</span></td>
-                        <td colspan="2"></td>
-                    </tr> -->
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr class="default-font">
-                        <td [attr.colspan]="getColspan(allQuestionnaires, 6)" style="text-align: center;">No results found</td>
                     </tr>
                 </ng-template>
         </p-table>
     </p-panel>
     <div style="height: 10px;"></div>
 </div>
-<!-- <div>
-    <p-panel header="Timely Work Plan Submission" [style]="{'font-size':'12px', 'width':'85%'}" >
-        <p-table [value]="timeWorkPlanQuestionnaire" *ngIf="timeWorkPlanQuestionnaire" [rowHover]="true" 
-            styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th style="width: 5%; text-align: center;">#</th>
-                        <th style="width: 45%;">Name (Question/Statement)</th>
-                        <th style="width: 10%;">Score/Rating</th>
-                        <th style="width: 25%;" *ngIf="hasComment(timeWorkPlanQuestionnaire)">Comment</th>
-                        <th style="width: 7%;" *ngIf="hasDocument(timeWorkPlanQuestionnaire)">Evidence</th>
-                        <th style="width: 8%;" colspan="4"></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
-                    <tr *ngIf="updateRowGroupMetaData(timeWorkPlanQuestionnaire)[question.questionSectionName].index === rowIndex">
-                        <td [attr.colspan]="getColspan(timeWorkPlanQuestionnaire, 7)">
-                            <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                            <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
-                            <div class="pull-right"><span class="{{'product-badge status-' + getStatus(timeWorkPlanQuestionnaire, question)}}">{{getStatusText(timeWorkPlanQuestionnaire, question)}}</span></div>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex" >
-                    <tr class="default-font">
-                        <td style="text-align: center;">{{rowIndex + 1}}</td>
-                        <td>{{question.questionName}}</td>
-                        <td [pEditableColumn]="question" pEditableColumn>
-                            <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
-                                optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
-                                placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
-                        </td>
-                        <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(timeWorkPlanQuestionnaire)">
-                            <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
-                            [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
-                        </td>
-                        
-                        <td style="text-align: center;">
-                            <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(timeWorkPlanQuestionnaire)}}" style="font-size: 1rem"></i>
-                        </td>
-                        <td style="text-align: center;" colspan="3">
-                            <span *ngIf="displayField(question)" style="font-weight: bold;" class="{{getRagColour(timeWorkPlanQuestionnaire)}}">{{getRagText(timeWorkPlanQuestionnaire)}}</span>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr class="default-font">
-                        <td [attr.colspan]="getColspan(timeWorkPlanQuestionnaire, 7)" style="text-align: center;">No results found</td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="footer" *ngIf="hasWeighting(timeWorkPlanQuestionnaire)">
-                    <tr>
-                        <td colspan="2"><span style="font-weight: bold;">Selected Score</span></td>
-                        <td [attr.colspan]="getColspan(timeWorkPlanQuestionnaire, 3)"><span style="font-weight: bold;" class="{{getRagColour(timeWorkPlanQuestionnaire)}}">{{getAverageScoreTotal(timeWorkPlanQuestionnaire)}}</span></td>
-                        <td colspan="2"></td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr class="default-font">
-                        <td [attr.colspan]="getColspan(timeWorkPlanQuestionnaire, 7)" style="text-align: center;">No results found</td>
-                    </tr>
-                </ng-template>
-        </p-table>
-    </p-panel>
-    <div style="height: 10px;"></div>
-</div>
-<div>
-    <p-panel header="Impact" [style]="{'font-size':'12px', 'width':'85%'}" >
-        <p-table [value]="impactQuestionnaire" *ngIf="impactQuestionnaire" [rowHover]="true" 
-            styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th style="width: 5%; text-align: center;">#</th>
-                        <th style="width: 45%;">Name (Question/Statement)</th>
-                        <th style="width: 10%;">Score/Rating</th>
-                        <th style="width: 25%;" *ngIf="hasComment(impactQuestionnaire)">Comment</th>
-                        <th style="width: 7%;" *ngIf="hasDocument(impactQuestionnaire)">Evidence</th>
-                        <th style="width: 8%;" colspan="4"></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
-                    <tr *ngIf="updateRowGroupMetaData(impactQuestionnaire)[question.questionSectionName].index === rowIndex">
-                        <td [attr.colspan]="getColspan(impactQuestionnaire, 7)">
-                            <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                            <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
-                            <div class="pull-right"><span class="{{'product-badge status-' + getStatus(impactQuestionnaire, question)}}">{{getStatusText(impactQuestionnaire, question)}}</span></div>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex" >
-                    <tr class="default-font">
-                        <td style="text-align: center;">{{rowIndex + 1}}</td>
-                        <td>{{question.questionName}}</td>
-                        <td [pEditableColumn]="question" pEditableColumn>
-                            <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
-                                optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
-                                placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
-                        </td>
-                        <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(impactQuestionnaire)">
-                            <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
-                            [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
-                        </td>
-                        <td style="text-align: center;">
-                            <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(impactQuestionnaire)}}" style="font-size: 1rem"></i>
-                        </td>
-                        <td style="text-align: center;" colspan="3">
-                            <span *ngIf="displayField(question)" style="font-weight: bold;" class="{{getRagColour(impactQuestionnaire)}}">{{getRagText(impactQuestionnaire)}}</span>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr class="default-font">
-                        <td [attr.colspan]="getColspan(impactQuestionnaire, 7)" style="text-align: center;">No results found</td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="footer" *ngIf="hasWeighting(impactQuestionnaire)">
-                    <tr>
-                        <td colspan="2"><span style="font-weight: bold;">Selected Score</span></td>
-                        <td [attr.colspan]="getColspan(impactQuestionnaire, 3)"><span style="font-weight: bold;" class="{{getRagColour(impactQuestionnaire)}}">{{getAverageScoreTotal(impactQuestionnaire)}}</span></td>
-                        <td colspan="2"></td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr class="default-font">
-                        <td [attr.colspan]="getColspan(impactQuestionnaire, 7)" style="text-align: center;">No results found</td>
-                    </tr>
-                </ng-template>
-        </p-table>
-    </p-panel>
-    <div style="height: 10px;"></div>
-</div>
-<div>
-    <p-panel header="Risk Mitigation" [style]="{'font-size':'12px', 'width':'85%'}" >
-        <p-table [value]="riskMitigationQuestionnaire" *ngIf="riskMitigationQuestionnaire" [rowHover]="true" 
-            styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th style="width: 5%; text-align: center;">#</th>
-                        <th style="width: 45%;">Name (Question/Statement)</th>
-                        <th style="width: 10%;">Score/Rating</th>
-                        <th style="width: 25%;" *ngIf="hasComment(riskMitigationQuestionnaire)">Comment</th>
-                        <th style="width: 7%;" *ngIf="hasDocument(riskMitigationQuestionnaire)">Evidence</th>
-                        <th style="width: 8%;" colspan="4"></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
-                    <tr *ngIf="updateRowGroupMetaData(riskMitigationQuestionnaire)[question.questionSectionName].index === rowIndex">
-                        <td [attr.colspan]="getColspan(riskMitigationQuestionnaire, 7)">
-                            <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                            <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
-                            <div class="pull-right"><span class="{{'product-badge status-' + getStatus(riskMitigationQuestionnaire, question)}}">{{getStatusText(riskMitigationQuestionnaire, question)}}</span></div>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex" >
-                    <tr class="default-font">
-                        <td style="text-align: center;">{{rowIndex + 1}}</td>
-                        <td>{{question.questionName}}</td>
-                        <td [pEditableColumn]="question" pEditableColumn>
-                            <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
-                                optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
-                                placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
-                        </td>
-                        <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(riskMitigationQuestionnaire)">
-                            <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
-                            [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
-                        </td>
-                        <td style="text-align: center;">
-                            <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(riskMitigationQuestionnaire)}}" style="font-size: 1rem"></i>
-                        </td>
-                        <td style="text-align: center;" colspan="3">
-                            <span *ngIf="displayField(question)" style="font-weight: bold;" class="{{getRagColour(riskMitigationQuestionnaire)}}">{{getRagText(riskMitigationQuestionnaire)}}</span>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr class="default-font">
-                        <td [attr.colspan]="getColspan(riskMitigationQuestionnaire, 7)" style="text-align: center;">No results found</td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="footer" *ngIf="hasWeighting(riskMitigationQuestionnaire)">
-                    <tr>
-                        <td colspan="2"><span style="font-weight: bold;">Selected Score</span></td>
-                        <td [attr.colspan]="getColspan(riskMitigationQuestionnaire, 3)"><span style="font-weight: bold;" class="{{getRagColour(riskMitigationQuestionnaire)}}">{{getAverageScoreTotal(riskMitigationQuestionnaire)}}</span></td>
-                        <td colspan="2"></td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr class="default-font">
-                        <td [attr.colspan]="getColspan(riskMitigationQuestionnaire, 7)" style="text-align: center;">No results found</td>
-                    </tr>
-                </ng-template>
-        </p-table>
-    </p-panel>
-    <div style="height: 10px;"></div>
-</div>
-<div>
-    <p-panel header="Appropriation of Resources" [style]="{'font-size':'12px', 'width':'85%'}" >
-        <p-table [value]="appropriationOfResourcesQuestionnaire" *ngIf="appropriationOfResourcesQuestionnaire" [rowHover]="true" 
-            styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th style="width: 5%; text-align: center;">#</th>
-                        <th style="width: 45%;">Name (Question/Statement)</th>
-                        <th style="width: 10%;">Score/Rating</th>
-                        <th style="width: 25%;" *ngIf="hasComment(appropriationOfResourcesQuestionnaire)">Comment</th>
-                        <th style="width: 7%;" *ngIf="hasDocument(appropriationOfResourcesQuestionnaire)">Evidence</th>
-                        <th style="width: 8%;" colspan="4"></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
-                    <tr *ngIf="updateRowGroupMetaData(appropriationOfResourcesQuestionnaire)[question.questionSectionName].index === rowIndex">
-                        <td [attr.colspan]="getColspan(appropriationOfResourcesQuestionnaire, 7)">
-                            <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                            <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
-                            <div class="pull-right"><span class="{{'product-badge status-' + getStatus(appropriationOfResourcesQuestionnaire, question)}}">{{getStatusText(appropriationOfResourcesQuestionnaire, question)}}</span></div>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex" >
-                    <tr class="default-font">
-                        <td style="text-align: center;">{{rowIndex + 1}}</td>
-                        <td>{{question.questionName}}</td>
-                        <td [pEditableColumn]="question" pEditableColumn>
-                            <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
-                                optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
-                                placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
-                        </td>
-                        <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(appropriationOfResourcesQuestionnaire)">
-                            <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
-                            [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
-                        </td>
-                        <td style="text-align: center;">
-                            <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(appropriationOfResourcesQuestionnaire)}}" style="font-size: 1rem"></i>
-                        </td>
-                        <td style="text-align: center;" colspan="3">
-                            <span *ngIf="displayField(question)" style="font-weight: bold;" class="{{getRagColour(appropriationOfResourcesQuestionnaire)}}">{{getRagText(appropriationOfResourcesQuestionnaire)}}</span>
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr class="default-font">
-                        <td [attr.colspan]="getColspan(appropriationOfResourcesQuestionnaire, 7)" style="text-align: center;">No results found</td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="footer" *ngIf="hasWeighting(appropriationOfResourcesQuestionnaire)">
-                    <tr>
-                        <td colspan="2"><span style="font-weight: bold;">Selected Score</span></td>
-                        <td [attr.colspan]="getColspan(appropriationOfResourcesQuestionnaire, 3)"><span style="font-weight: bold;" class="{{getRagColour(appropriationOfResourcesQuestionnaire)}}">{{getAverageScoreTotal(appropriationOfResourcesQuestionnaire)}}</span></td>
-                        <td colspan="2"></td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr class="default-font">
-                        <td [attr.colspan]="getColspan(appropriationOfResourcesQuestionnaire, 7)" style="text-align: center;">No results found</td>
-                    </tr>
-                </ng-template>
-        </p-table>
-    </p-panel>
-    <div style="height: 10px;"></div>
-        <table style="width: 80%; border-width: 1px;">
-            <tr>
-                <td style="width: 60%;"></td>
-                <td>  <span style="text-align: right;"><b>Overall Total Score</b></span></td>
-                <td><span style="text-align: left;"><b>{{overallTotalScore}}</b></span></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td style="width: 60%;"></td>
-                <td class="{{getRagColour1(overallAvgScore)}}"><span style="text-align: right;"><b>Overall Average Score</b></span></td>
-                <td> <span style="text-align: left;" class="{{getRagColour1(overallAvgScore)}}"><b>{{overallAvgScore}}</b></span></td>
-                <td><span style="text-align: center;" class="{{getRagColour1(overallAvgScore)}}"><b>{{getRagText1(overallAvgScore)}}</b></span></td>
-            </tr>
-        </table>
-    <div style="height: 10px;"></div>
-</div> -->
 <div class="p-col-fixed form-label">
     <div class="box" style="text-align: left;">
         <span class="non-mandatory-content"><b>Performance</b></span>
     </div>
 </div>
-<p-table [rowHover]="true" [value]="filteredWorkplanIndicators" dataKey="rowGroupMetadataActivities[rowIndex].itemName">
+<p-table [rowHover]="true" [value]="filteredWorkplanIndicators" dataKey="rowData.activity.objective.name">
     <ng-template pTemplate="header">
         <tr>
             <th style="text-align: center; width: 5%;">#</th>
@@ -404,7 +82,7 @@
                 <span class="p-text-bold">Objectives</span>
             </td> -->
             <td  [attr.colspan]="3">
-                <button type="button" pButton pRipple [pRowToggler]="rowGroupMetadataActivities[rowIndex].itemName" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                <button type="button" pButton pRipple [pRowToggler]="rowData.activity.objective.name" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                 <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
             </td>
             <td style="text-align: center; width: 10%;">{{rowData.totalTargets}}</td>
