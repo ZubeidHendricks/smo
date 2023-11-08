@@ -1285,7 +1285,7 @@ onAprCheckboxChange(event: any) {
       let commentRequired = questions.filter(x => x.commentRequired === true).length;
       let commentProvided = questions.filter(x => x.comment !== '').length;
      
-      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation == true)) ? false : true;      
+      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation === true)) ? false : true;      
     }
     else
       return true;
