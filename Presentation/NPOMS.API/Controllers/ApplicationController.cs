@@ -117,7 +117,10 @@ namespace NPOMS.API.Controllers
 					await CreateApplicationAudit(model);
 
 					if (!createNew)
+					{
 						await _applicationService.CloneWorkplan(model, financialYearId, base.GetUserIdentifier());
+						await _applicationService.CreateActivityRecipients(model, financialYearId);
+					}
 				}
 				else
 					await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
@@ -840,6 +843,21 @@ namespace NPOMS.API.Controllers
 			catch (Exception ex)
 			{
 				_logger.LogError($"Something went wrong inside GetApplicationReviewerSatisfactions action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("application-reviewer-satisfaction/applicationId/{applicationId}", Name = "GetReviewerSatisfactionByApplicationId")]
+		public async Task<IActionResult> GetReviewerSatisfactionByApplicationId(int applicationId)
+		{
+			try
+			{
+				var results = await _applicationService.GetReviewerSatisfactionByApplicationId(applicationId);
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetReviewerSatisfactionByApplicationId action: {ex.Message} Inner Exception: {ex.InnerException}");
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}

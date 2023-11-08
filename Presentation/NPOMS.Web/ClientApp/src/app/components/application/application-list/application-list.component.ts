@@ -209,12 +209,12 @@ export class ApplicationListComponent implements OnInit {
           target: 'Service Provision',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
+            this._router.navigateByUrl('sp-application/view/' + this.selectedApplication.id);
           }
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.DeleteApplication)) {
+      if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
         this.buttonItems[0].items.push({
           label: 'Delete Application',
           target: 'Service Provision',
@@ -290,7 +290,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funding Application',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('application/view/' + this.selectedApplication.id);
+            this._router.navigateByUrl('fa-application/view/' + this.selectedApplication.id);
           }
         });
       }
@@ -377,6 +377,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('View Application', 'Funding Application');
       this.buttonItemExists('Delete Application', 'Funding Application');
       this.buttonItemExists('Download Assessment', 'Workflow Application');
+     // this.buttonItemExists('Score Card', 'Service Provision');
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
@@ -434,6 +435,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Upload SLA', 'Service Provision');
       this.buttonItemExists('View Application', 'Service Provision');
       this.buttonItemExists('Delete Application', 'Service Provision');
+      //this.buttonItemExists('Score Card', 'Service Provision');
 
       if (this.selectedApplication.isQuickCapture)
         this.buttonItemExists('Download Application', 'Funding Application');
@@ -581,6 +583,27 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-tags wcg-icon',
           command: () => {
             this._router.navigateByUrl('workplan-indicator/manage/' + this.selectedApplication.npoId);
+          }
+        });
+      }
+
+      
+      if (this.IsAuthorized(PermissionsEnum.AddScorecard)) {
+        this.optionItems[0].items.push({
+          label: 'Add Score Card',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('scorecard/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewScorecard)) {
+        this.optionItems[0].items.push({
+          label: 'Review Score Card',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('reviewScorecard/' + this.selectedApplication.id);
           }
         });
       }

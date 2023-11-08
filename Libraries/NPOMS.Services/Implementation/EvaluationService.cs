@@ -59,6 +59,24 @@ namespace NPOMS.Services.Implementation
             return new AllQuestionResponseViewModel(questions.ToList(), responses.ToList()).QuestionResponses;
         }
 
+        public async Task<IEnumerable<QuestionResponseViewModel>> GetAddScoreQuestionnaire(int fundingApplicationId, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            var questions = await _questionRepository.GetAllWithDetails();
+            var responses = await _responseRepository.GetScorecardByIdsWithDetail(fundingApplicationId, currentUser.Id);
+
+            return new AllQuestionResponseViewModel(questions.ToList(), responses.ToList()).QuestionResponses;
+        }
+
+        public async Task<IEnumerable<QuestionResponseViewModel>> GetScorecardQuestionnaire(int fundingApplicationId, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            var questions = await _questionRepository.GetAllWithDetails();
+            var responses = await _responseRepository.GetByIdsWithDetail(fundingApplicationId, currentUser.Id);
+
+            return new AllQuestionResponseViewModel(questions.ToList(), responses.ToList(), true).QuestionResponses;
+        }
+
         public async Task<IEnumerable<QuestionResponseViewModel>> GetCompletedQuestionnaires(int fundingApplicationId, int questionCategoryId, int createdUserId)
         {
             var questionSections = await _questionSectionRepository.GetByQuestionCategoryId(questionCategoryId);
@@ -74,12 +92,49 @@ namespace NPOMS.Services.Implementation
             return await _responseHistoryRepository.GetByIds(fundingApplicationId, questionId, currentUser.Id);
         }
 
+        public async Task<IEnumerable<Response>> GetResponse(int fundingApplicationId)
+        {
+            return await _responseRepository.GetByFundingApplicationId(fundingApplicationId);
+        }
+
         public async Task<IEnumerable<ResponseHistory>> GetCapturedResponseHistory(int fundingApplicationId, int questionId, int createdUserId)
         {
             return await _responseHistoryRepository.GetByIds(fundingApplicationId, questionId, createdUserId);
         }
 
         public async Task<QuestionResponseViewModel> UpdateResponse(Response model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            var response = await _responseRepository.GetResponseByIds(model.FundingApplicationId, model.QuestionId, currentUser.Id);
+
+            if (response == null)
+            {
+                model.CreatedUserId = currentUser.Id;
+                model.CreatedDateTime = DateTime.Now;
+                await _responseRepository.CreateAsync(model);
+            }
+            else
+            {
+                response.ResponseOptionId = model.ResponseOptionId;
+                response.Comment = model.Comment;
+                response.UpdatedUserId = currentUser.Id;
+                response.UpdatedDateTime = DateTime.Now;
+                await _responseRepository.UpdateAsync(response);
+            }
+
+            var newResponse = response == null ? true : false;
+            var modelToReturn = response == null ? model : response;
+
+            await CreateResponseHistory(modelToReturn, newResponse);
+
+            var question = await _questionRepository.GetById(model.QuestionId);
+            //var documents = await _documentStoreRepository.GetByEntityTypeId((int)EntityTypeEnum.TPAEvidence);
+            //var paymentScheduleResponse = await _paymentScheduleResponseRepository.GetByIds(model.ApplicationId, model.QuestionId);
+
+            return new QuestionResponseViewModel(question, modelToReturn);
+        }
+
+        public async Task<QuestionResponseViewModel> UpdateScorecardResponse(Response model, string userIdentifier)
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             var response = await _responseRepository.GetResponseByIds(model.FundingApplicationId, model.QuestionId, currentUser.Id);

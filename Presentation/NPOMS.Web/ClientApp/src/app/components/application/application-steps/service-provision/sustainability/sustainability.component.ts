@@ -37,6 +37,7 @@ export class SustainabilityComponent implements OnInit {
   activities: IActivity[];
   selectedActivity: IActivity;
   rowGroupMetadata: any[];
+  deletedRowGroupMetadata: any[];
 
   canEdit: boolean;
 
@@ -79,7 +80,6 @@ export class SustainabilityComponent implements OnInit {
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
     this.loadActivities();
-    this.loadSustainabilityPlans();
 
     this.sustainabilityPlanCols = [
       { header: 'Risk', width: '43%' },
@@ -105,6 +105,7 @@ export class SustainabilityComponent implements OnInit {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
+        this.loadSustainabilityPlans();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -119,6 +120,18 @@ export class SustainabilityComponent implements OnInit {
       (results) => {
         this.allSustainabilityPlans = results;
         this.activeSustainabilityPlans = this.allSustainabilityPlans.filter(x => x.isActive === true);
+
+        this.activeSustainabilityPlans.forEach(plan => {
+          let activity = this.activities.find(x => x.id === plan.activityId);
+          let allFacilityLists: string = "";
+
+          activity.activityFacilityLists.forEach(item => {
+            allFacilityLists += item.facilityList.name + "; ";
+          });
+
+          plan.activity.facilityListText = allFacilityLists.slice(0, -2);
+        });
+
         this.updateRowGroupMetaData();
         this._spinner.hide();
       },
@@ -401,6 +414,60 @@ export class SustainabilityComponent implements OnInit {
 
   public viewDeletedPlans() {
     this.deletedSustainabilityPlans = this.allSustainabilityPlans.filter(x => x.isActive === false);
+    this.deletedRowGroupMetadata = [];
+
+    let plans = this.deletedSustainabilityPlans.sort((a, b) => a.activityId - b.activityId);
+
+    if (plans) {
+
+      plans.forEach(element => {
+
+        var itemExists = this.deletedRowGroupMetadata.some(function (data) { return data.itemName === element.activity.activityList.description });
+
+        this.deletedRowGroupMetadata.push({
+          itemName: element.activity.activityList.description,
+          itemExists: itemExists
+        });
+      });
+    }
     this.displayDeletedPlanDialog = true;
+  }
+
+  public reviewAllItems() {
+
+    this._confirmationService.confirm({
+      message: 'Are you sure you are satisfied with the details contained in all the Sustainability Plans?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+
+        this.activeSustainabilityPlans.forEach(item => {
+          let model = {
+            applicationId: this.application.id,
+            serviceProvisionStepId: ServiceProvisionStepsEnum.Sustainability,
+            entityId: item.id,
+            isSatisfied: true
+          } as IApplicationReviewerSatisfaction;
+
+          let lastObjectInArray = this.activeSustainabilityPlans[this.activeSustainabilityPlans.length - 1];
+
+          this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+            (resp) => {
+
+              if (item === lastObjectInArray) {
+                this.loadSustainabilityPlans();
+                this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Reviewer Satisfaction completed for all sustainability plans.' });
+              }
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        });
+      },
+      reject: () => {
+      }
+    });
   }
 }

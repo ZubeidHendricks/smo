@@ -513,6 +513,7 @@ export class CreateApplicationComponent implements OnInit {
       this._applicationRepo.updateApplication(this.application).subscribe(
         (resp) => {
           if (resp.statusId === StatusEnum.Saved) {
+            this._spinner.hide();
             this.menuActions[1].visible = false;
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           }

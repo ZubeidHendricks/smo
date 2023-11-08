@@ -28,6 +28,8 @@ namespace NPOMS.Services.Interfaces
 
         Task CloneWorkplan(Application model, int financialYearId, string userIdentifier);
 
+		Task CreateActivityRecipients(Application model, int financialYearId);
+
 		Task CreateApplication(Application model, string userIdentifier);
 
 		Task UpdateApplicationStatus(Application model, string userIdentifier);
@@ -113,6 +115,8 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateApplicationApproval(ApplicationApproval model, string userIdentifier);
 
 		Task<IEnumerable<ApplicationReviewerSatisfaction>> GetApplicationReviewerSatisfactions(int applicationId, int serviceProvisionStepId, int entityId);
+
+		Task<IEnumerable<ApplicationReviewerSatisfaction>> GetReviewerSatisfactionByApplicationId(int applicationId);
 
 		Task CreateApplicationReviewerSatisfaction(ApplicationReviewerSatisfaction model, string userIdentifier);
 		Task GetByIds(int fundingApplicationId, bool v);

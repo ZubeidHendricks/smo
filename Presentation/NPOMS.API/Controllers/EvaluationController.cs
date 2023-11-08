@@ -66,7 +66,38 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("completed-questionnaires/fundingApplicationId/{fundingApplicationId}/questionCategoryId/{questionCategoryId}/createdUserId/{createdUserId}", Name = "GetCompletedQuestionnaires")]
+        [HttpGet("funId/{funId}")]
+        public async Task<IActionResult> GetAddScoreQuestionnaire(int funId)
+        {
+            try
+            {
+                var results = await _evaluationService.GetAddScoreQuestionnaire(funId, base.GetUserIdentifier());
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetQuestionnaire action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("fId/{fId}")]
+        public async Task<IActionResult> GetScorecardQuestionnaire(int fId)
+        {
+            try
+            {
+                var results = await _evaluationService.GetScorecardQuestionnaire(fId, base.GetUserIdentifier());
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetQuestionnaire action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("completed-questionnaires/fundingApplicationId/{fundingApplicationId}/questionCategoryId/{questionCategoryId}/createdUserId/{createdUserId}", Name = "GetCompletedQuestionnaires")]
 		public async Task<IActionResult> GetCompletedQuestionnaires(int fundingApplicationId, int questionCategoryId, int createdUserId)
 		{
 			try
@@ -96,7 +127,37 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("fundingApplicationId/{fundingApplicationId}/questionId/{questionId}/createdUserId/{createdUserId}", Name = "GetCapturedResponseHistory")]
+        [HttpGet("Id/{id}")]
+        public async Task<IActionResult> GetResponse(int id)
+        {
+            try
+            {  
+                var results = await _evaluationService.GetResponse(id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("QCId/{qcId}")]
+        public async Task<IActionResult> WorkflowAssessmentCount(int qcId)
+        {
+            try
+            {  
+				var workflowAssessment = await _evaluationService.GetWorkflowAssessmentByQuestionCategoryId(qcId);
+                return Ok(workflowAssessment.NumberOfAssessments);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside WorkflowAssessmentCount action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("fundingApplicationId/{fundingApplicationId}/questionId/{questionId}/createdUserId/{createdUserId}", Name = "GetCapturedResponseHistory")]
 		public async Task<IActionResult> GetCapturedResponseHistory(int fundingApplicationId, int questionId, int createdUserId)
 		{
 			try
@@ -126,7 +187,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("captured-response/fundingApplicationId/{fundingApplicationId}", Name = "GetCapturedResponses")]
+        [HttpPut("scorecardResponse", Name = "UpdateScorecardResponse")]
+        public async Task<IActionResult> UpdateScorecardResponse([FromBody] Response model)
+        {
+            try
+            {
+                var results = await this._evaluationService.UpdateScorecardResponse(model, base.GetUserIdentifier());
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("captured-response/fundingApplicationId/{fundingApplicationId}", Name = "GetCapturedResponses")]
 		public async Task<IActionResult> GetCapturedResponses(int fundingApplicationId)
 		{
 			try
@@ -141,7 +217,23 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpPost("captured-response", Name = "CreateCapturedResponse")]
+        [HttpPost("captured-scorecardResponse", Name = "CreateScorecardResponse")]
+        public async Task<IActionResult> CreateScorecardResponse([FromBody] CapturedResponse model)
+        {
+            try
+            {
+                await this._evaluationService.CreateCapturedResponse(model, base.GetUserIdentifier());
+               // await UpdateFundingApplicationStatus(model);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateCapturedResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("captured-response", Name = "CreateCapturedResponse")]
 		public async Task<IActionResult> CreateCapturedResponse([FromBody] CapturedResponse model)
 		{
 			try

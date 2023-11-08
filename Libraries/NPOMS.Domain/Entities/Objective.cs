@@ -48,5 +48,7 @@ namespace NPOMS.Domain.Entities
 		public RecipientType RecipientType { get; set; }
 
 		public List<ObjectiveProgramme> ObjectiveProgrammes { get; set; } = new List<ObjectiveProgramme>();
+
+		public List<SubRecipient> SubRecipients { get; set; } = new List<SubRecipient>();
 	}
 }

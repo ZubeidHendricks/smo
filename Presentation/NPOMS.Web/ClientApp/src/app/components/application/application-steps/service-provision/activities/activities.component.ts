@@ -2,9 +2,10 @@ import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DropdownTypeEnum, FacilityTypeEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityFacilityList, IActivityList, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IObjective, ISubProgramme } from 'src/app/models/interfaces';
+import { DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IActivityFacilityList, IActivityList, IActivityRecipient, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, INpo, IObjective, IRecipientType, ISubProgramme } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
+import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
@@ -43,6 +44,7 @@ export class ActivitiesComponent implements OnInit {
 
   yearRange: string;
   rowGroupMetadata: any[];
+  deletedRowGroupMetadata: any[];
 
   facilities: IFacilityList[];
   selectedFacilities: IFacilityList[];
@@ -75,6 +77,13 @@ export class ActivitiesComponent implements OnInit {
 
   displayDeletedActivityDialog: boolean;
 
+  npo: INpo;
+  recipientTypes: IRecipientType[];
+
+  recipients: IActivityRecipient[];
+  selectedRecipients: IActivityRecipient[] = [];
+  selectedRecipientsText: string;
+
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
@@ -86,7 +95,8 @@ export class ActivitiesComponent implements OnInit {
     private _messageService: MessageService,
     private _applicationRepo: ApplicationService,
     private _datepipe: DatePipe,
-    private _loggerService: LoggerService
+    private _loggerService: LoggerService,
+    private _npoRepo: NpoService
   ) { }
 
   ngOnInit(): void {
@@ -104,9 +114,8 @@ export class ActivitiesComponent implements OnInit {
     this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
+    this.loadNpo();
     this.loadActivityTypes();
-    this.loadObjectives();
-    this.loadActivities();
     this.loadFacilities();
     this.setYearRange();
     this.loadAllSubProgrammes();
@@ -134,6 +143,19 @@ export class ActivitiesComponent implements OnInit {
     ];
   }
 
+  private loadNpo() {
+    this._npoRepo.getNpoById(this.application.npoId).subscribe(
+      (results) => {
+        this.npo = results;
+        this.loadRecipientTypes();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadActivityTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.ActivityTypes, false).subscribe(
       (results) => {
@@ -146,10 +168,24 @@ export class ActivitiesComponent implements OnInit {
     );
   }
 
+  private loadRecipientTypes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.RecipientTypes, false).subscribe(
+      (results) => {
+        this.recipientTypes = results.filter(x => x.isActive);
+        this.loadObjectives();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadObjectives() {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results.filter(x => x.isActive === true);
+        this.loadActivities();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -267,6 +303,10 @@ export class ActivitiesComponent implements OnInit {
     this.subProgrammes = [];
     this.selectedSubProgrammes = [];
     this.selectedActivity = null;
+
+    this.recipients = [];
+    this.selectedRecipients = [];
+
     this.displayActivityDialog = true;
 
     if (this.application.isCloned)
@@ -303,6 +343,14 @@ export class ActivitiesComponent implements OnInit {
     const subProgrammeIds = data.activitySubProgrammes.map(({ subProgrammeId }) => subProgrammeId);
     this.selectedSubProgrammes = this.subProgrammes.filter(item => subProgrammeIds.includes(item.id));
 
+    this.buildRecipientDropdown(this.selectedObjective, data);
+    
+    this.selectedRecipients = this.recipients.filter(item => {
+      return data.activityRecipients.some(recipient => {
+        return recipient.activityId === item.activityId && recipient.entityId === item.entityId && recipient.recipientTypeId === item.recipientTypeId
+      })
+    });
+
     this.getTextValues();
 
     return activity;
@@ -311,6 +359,7 @@ export class ActivitiesComponent implements OnInit {
   getTextValues() {
     let allSubProgrammes: string = "";
     let allFacilities: string = "";
+    let allRecipients: string = "";
 
     this.selectedSubProgrammes.forEach(item => {
       allSubProgrammes += item.name + ", ";
@@ -320,8 +369,52 @@ export class ActivitiesComponent implements OnInit {
       allFacilities += item.name + ";\n";
     });
 
+    this.selectedRecipients.forEach(item => {
+      allRecipients += item.recipientName + ";\n";
+    });
+
     this.selectedSubProgrammesText = allSubProgrammes.slice(0, -2);
     this.selectedFacilitiesText = allFacilities;
+    this.selectedRecipientsText = allRecipients;
+  }
+
+  private buildRecipientDropdown(objective: IObjective, activity: IActivity) {
+    this.recipients = [];
+
+    //Primary Recipient
+    this.recipients.push({
+      activityId: activity.id ? activity.id : 0,
+      entity: RecipientEntityEnum.Objective,
+      entityId: objective.id,
+      recipientTypeId: objective.recipientTypeId,
+      recipientName: `${this.npo.name} (${objective.recipientType.name} Recipient)`
+    } as IActivityRecipient);
+
+    objective.subRecipients.forEach(sr => {
+      sr.recipientType = this.recipientTypes.find(x => x.id === sr.recipientTypeId);
+
+      //Sub Recipient
+      this.recipients.push({
+        activityId: activity.id ? activity.id : 0,
+        entity: RecipientEntityEnum.SubRecipient,
+        entityId: sr.id,
+        recipientTypeId: sr.recipientTypeId,
+        recipientName: `${sr.organisationName} (${sr.recipientType.name})`
+      } as IActivityRecipient);
+
+      sr.subSubRecipients.forEach(ssr => {
+        ssr.recipientType = this.recipientTypes.find(x => x.id === ssr.recipientTypeId);
+
+        //Sub Sub Recipient
+        this.recipients.push({
+          activityId: activity.id ? activity.id : 0,
+          entity: RecipientEntityEnum.SubSubRecipient,
+          entityId: ssr.id,
+          recipientTypeId: ssr.recipientTypeId,
+          recipientName: `${ssr.organisationName} (${ssr.recipientType.name})`
+        } as IActivityRecipient);
+      });
+    });
   }
 
   deleteActivity(data: IActivity) {
@@ -342,7 +435,7 @@ export class ActivitiesComponent implements OnInit {
   disableSaveActivity() {
     let data = this.activity;
 
-    if (!this.selectedObjective || this.selectedSubProgrammes.length === 0 || !data.name || !data.description || !this.selectedActivityType || !data.timelineStartDate || !data.timelineEndDate || !data.target || this.selectedFacilities.length === 0)
+    if (!this.selectedObjective || this.selectedSubProgrammes.length === 0 || !data.name || !data.description || !this.selectedActivityType || !data.timelineStartDate || !data.timelineEndDate || !data.target || this.selectedFacilities.length === 0 || this.selectedRecipients.length === 0)
       return true;
 
     return false;
@@ -382,6 +475,8 @@ export class ActivitiesComponent implements OnInit {
 
       this.activity.activityFacilityLists.push(activityFacilityList);
     });
+
+    this.activity.activityRecipients = this.selectedRecipients;
 
     this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(
       (resp) => {
@@ -453,6 +548,8 @@ export class ActivitiesComponent implements OnInit {
 
     const subProgrammeIds = objective.objectiveProgrammes.map(({ subProgrammeId }) => subProgrammeId);
     this.subProgrammes = this.allSubProgrammes.filter(item => subProgrammeIds.includes(item.id));
+
+    this.buildRecipientDropdown(objective, this.activity);
   }
 
   addComment() {
@@ -593,6 +690,61 @@ export class ActivitiesComponent implements OnInit {
 
   public viewDeletedActivities() {
     this.deletedActivities = this.allActivities.filter(x => x.isActive === false);
+    this.deletedRowGroupMetadata = [];
+
+    let activities = this.deletedActivities.sort((a, b) => a.objectiveId - b.objectiveId);
+
+    if (activities) {
+
+      activities.forEach(element => {
+
+        var itemExists = this.deletedRowGroupMetadata.some(function (data) { return data.itemName === element.objective.name });
+
+        this.deletedRowGroupMetadata.push({
+          itemName: element.objective.name,
+          itemExists: itemExists
+        });
+      });
+    }
+
     this.displayDeletedActivityDialog = true;
+  }
+
+  public reviewAllItems() {
+
+    this._confirmationService.confirm({
+      message: 'Are you sure you are satisfied with the details contained in all the Activities?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+
+        this.activeActivities.forEach(item => {
+          let model = {
+            applicationId: this.application.id,
+            serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
+            entityId: item.id,
+            isSatisfied: true
+          } as IApplicationReviewerSatisfaction;
+
+          let lastObjectInArray = this.activeActivities[this.activeActivities.length - 1];
+
+          this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+            (resp) => {
+
+              if (item === lastObjectInArray) {
+                this.loadActivities();
+                this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Reviewer Satisfaction completed for all activities.' });
+              }
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        });
+      },
+      reject: () => {
+      }
+    });
   }
 }

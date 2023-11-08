@@ -40,6 +40,7 @@ export class ResourcingComponent implements OnInit {
   activities: IActivity[];
   selectedActivity: IActivity;
   rowGroupMetadata: any[];
+  deletedRowGroupMetadata: any[];
 
   resourceTypes: IResourceType[];
   selectedResourceType: IResourceType;
@@ -101,10 +102,9 @@ export class ResourcingComponent implements OnInit {
     this.loadResourceTypes();
     this.loadServiceTypes();
     this.loadAllocationTypes();
-    this.loadActivities();
-    this.loadResources();
     this.loadResourceList();
     this.loadProvisionTypes();
+    this.loadActivities();
 
     this.resourceCols = [
       { field: 'resourceType.name', header: 'Resource Type', width: '10%' },
@@ -170,6 +170,7 @@ export class ResourcingComponent implements OnInit {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
+        this.loadResources();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -184,6 +185,18 @@ export class ResourcingComponent implements OnInit {
       (results) => {
         this.allResources = results;
         this.activeResources = this.allResources.filter(x => x.isActive === true);
+
+        this.activeResources.forEach(plan => {
+          let activity = this.activities.find(x => x.id === plan.activityId);
+          let allFacilityLists: string = "";
+
+          activity.activityFacilityLists.forEach(item => {
+            allFacilityLists += item.facilityList.name + "; ";
+          });
+
+          plan.activity.facilityListText = allFacilityLists.slice(0, -2);
+        });
+
         this.updateRowGroupMetaData();
         this._spinner.hide();
       },
@@ -536,6 +549,61 @@ export class ResourcingComponent implements OnInit {
 
   public viewDeletedResources() {
     this.deletedResources = this.allResources.filter(x => x.isActive === false);
+    this.deletedRowGroupMetadata = [];
+
+    let resources = this.deletedResources.sort((a, b) => a.activityId - b.activityId);
+
+    if (resources) {
+
+      resources.forEach(element => {
+
+        var itemExists = this.deletedRowGroupMetadata.some(function (data) { return data.itemName === element.activity.activityList.description });
+
+        this.deletedRowGroupMetadata.push({
+          itemName: element.activity.activityList.description,
+          itemExists: itemExists
+        });
+      });
+    }
+
     this.displayDeletedResourceDialog = true;
+  }
+
+  public reviewAllItems() {
+
+    this._confirmationService.confirm({
+      message: 'Are you sure you are satisfied with the details contained in all the Resources?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+
+        this.activeResources.forEach(item => {
+          let model = {
+            applicationId: this.application.id,
+            serviceProvisionStepId: ServiceProvisionStepsEnum.Resourcing,
+            entityId: item.id,
+            isSatisfied: true
+          } as IApplicationReviewerSatisfaction;
+
+          let lastObjectInArray = this.activeResources[this.activeResources.length - 1];
+
+          this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
+            (resp) => {
+
+              if (item === lastObjectInArray) {
+                this.loadResources();
+                this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Reviewer Satisfaction completed for all resources.' });
+              }
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        });
+      },
+      reject: () => {
+      }
+    });
   }
 }

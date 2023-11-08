@@ -29,7 +29,17 @@ namespace NPOMS.Repository.Implementation.Evaluation
 							.AsNoTracking().ToListAsync();
 		}
 
-		public async Task<IEnumerable<Response>> GetByFundingApplicationId(int fundingApplicationId)
+        public async Task<IEnumerable<Response>> GetScorecardByIdsWithDetail
+        (int fundingApplicationId, int currentUserId)
+        {
+            return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId)
+                                              &&
+                                              x.CreatedUserId.Equals(currentUserId))
+                            .Include(x => x.ResponseOption)
+                            .AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IEnumerable<Response>> GetByFundingApplicationId(int fundingApplicationId)
 		{
 			return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId))
 							.Include(x => x.ResponseOption)

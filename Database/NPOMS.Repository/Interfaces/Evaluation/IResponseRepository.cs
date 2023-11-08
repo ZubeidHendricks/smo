@@ -7,8 +7,9 @@ namespace NPOMS.Repository.Interfaces.Evaluation
 	public interface IResponseRepository : IBaseRepository<Response>
 	{
 		Task<IEnumerable<Response>> GetByIdsWithDetail(int fundingApplicationId, int currentUserId);
+        Task<IEnumerable<Response>> GetScorecardByIdsWithDetail(int fundingApplicationId, int currentUserId);
 
-		Task<IEnumerable<Response>> GetByFundingApplicationId(int fundingApplicationId);
+        Task<IEnumerable<Response>> GetByFundingApplicationId(int fundingApplicationId);
 
 		Task<Response> GetResponseByIds(int fundingApplicationId, int questionId, int currentUserId);
         Task<Response> DeleteById(int id);

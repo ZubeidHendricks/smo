@@ -331,6 +331,7 @@ export interface IActivity {
     activitySubProgrammes: IActivitySubProgramme[];
     activityList: IActivityList;
     activityFacilityLists: IActivityFacilityList[];
+    activityRecipients: IActivityRecipient[];
 }
 
 export interface IAddressInformation {
@@ -525,7 +526,7 @@ export interface INpo {
 
     registrationStatusId: number;
     pboNumber: string;
-    section18Receipts: boolean;    
+    section18Receipts: boolean;
     cCode: string;
 
     organisationType: IOrganisationType;
@@ -569,6 +570,7 @@ export interface IObjective {
 
     recipientType: IRecipientType;
     objectiveProgrammes: IObjectiveProgramme[];
+    subRecipients: ISubRecipient[];
 }
 
 
@@ -593,8 +595,8 @@ export interface IQuickCaptureDetails {
     applicationPeriodId: number;
     applicationPeriod: IApplicationPeriod;
     //applicationDetails: IApplicationDetails;  
-    fundingApplicationDetails :IFundingApplicationDetails;
-    npo:INpo;    
+    fundingApplicationDetails: IFundingApplicationDetails;
+    npo: INpo;
 }
 
 
@@ -777,6 +779,41 @@ export interface IStaffMemberProfile {
     staffCategory: IStaffCategory;
 }
 
+export interface ISubRecipient {
+    id: number;
+    objectiveId: number;
+    organisationName: string;
+    fundingPeriodStartDate: string;
+    fundingPeriodEndDate: string;
+    budget: number;
+    recipientTypeId: number;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
+
+    subSubRecipients: ISubSubRecipient[];
+    recipientType: IRecipientType;
+}
+
+export interface ISubSubRecipient {
+    id: number;
+    subRecipientId: number;
+    organisationName: string;
+    fundingPeriodStartDate: string;
+    fundingPeriodEndDate: string;
+    budget: number;
+    recipientTypeId: number;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
+
+    recipientType: IRecipientType;
+}
+
 /* Lookup */
 export interface IActivityList {
     id: number;
@@ -882,6 +919,14 @@ export interface IActivityFacilityList {
 
     //activity: IActivity;
     facilityList: IFacilityList;
+}
+
+export interface IActivityRecipient {
+    activityId: number;
+    entity: string;
+    entityId: number;
+    recipientTypeId: number;
+    recipientName: string;
 }
 
 /* Other */
@@ -1003,6 +1048,7 @@ export interface IWorkplanIndicator {
     totalTargets: number;
     totalActuals: number;
     targetMet: boolean;
+    totalAvg: number;
     attentionRequired: boolean;
 }
 
@@ -1238,8 +1284,8 @@ export interface IResponseOption {
     name: string;
     systemName: string;
     isActive: boolean;
-
     responseType: IResponseType;
+    createdUserId: number;
 }
 
 export interface IWorkflowAssessment {
@@ -1298,14 +1344,18 @@ export interface IQuestionResponseViewModel {
     isSaved: boolean;
     createdUserId: number;
     responseOption: IResponseOption;
+    responsesO: number[];
+    sumOfResponse: number;
 }
 
-export interface IResponse {
+export interface IResponseOptions {
     id: number;
     fundingApplicationId: number;
     questionId: number;
     responseOptionId: number;
     comment: string;
+    createdUserId: number;
+    responseOption: IResponseOption;
 }
 
 export interface IResponseHistory {
