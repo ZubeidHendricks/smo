@@ -122,7 +122,7 @@ stages:
   - deployment: Deploy
     pool:
       vmImage: 'windows-latest'
-    environment: TapsNonProd
+    environment: TapsProd
     #variables:
     #- group: Release
     strategy:
