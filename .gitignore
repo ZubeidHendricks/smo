@@ -390,3 +390,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+/Presentation/NPOMS.Web/ClientApp/node_modules1
+/Presentation/NPOMS.Web/ClientApp/node_modules3
