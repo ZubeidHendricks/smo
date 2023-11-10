@@ -1,4 +1,7 @@
-﻿using NPOMS.Domain.Evaluation;
+﻿using Microsoft.Graph;
+using NPOMS.Domain.Evaluation;
+using System;
+using System.Collections.Generic;
 
 namespace NPOMS.Services.Models
 {
@@ -41,11 +44,15 @@ namespace NPOMS.Services.Models
 		public int CreatedUserId => Response == null ? 0 : Response.CreatedUserId;
 
 		private Response Response { get; }
+		public int SumOfResponse { get; }
+		
+		public List<int> ResponsesO { get; set; } = new();
 
-		public ResponseOption ResponseOption => Response == null ? new ResponseOption() : Response.ResponseOption;
+        public ResponseOption ResponseOption => Response == null ? new ResponseOption() : Response.ResponseOption;
 
 		public QuestionResponseViewModel(Question question, Response response)
 		{
+             
 			this.QuestionCategoryId = question.QuestionSection.QuestionCategory.Id;
 			this.QuestionCategoryName = question.QuestionSection.QuestionCategory.Name;
 			this.QuestionSectionId = question.QuestionSection.Id;
@@ -63,5 +70,64 @@ namespace NPOMS.Services.Models
 
 			this.Response = response;
 		}
-	}
+
+        public QuestionResponseViewModel(Question question, List<Response> responses, bool v)
+        {
+			try
+			{
+                this.QuestionCategoryId = question.QuestionSection.QuestionCategory.Id;
+                this.QuestionCategoryName = question.QuestionSection.QuestionCategory.Name;
+                this.QuestionSectionId = question.QuestionSection.Id;
+                this.QuestionSectionName = question.QuestionSection.Name;
+                this.ResponseTypeId = question.ResponseTypeId;
+                this.QuestionId = question.Id;
+                this.QuestionName = question.Name;
+                this.QuestionSortOrder = question.SortOrder;
+
+                this.HasComment = question.QuestionProperty.HasComment;
+                this.CommentRequired = question.QuestionProperty.CommentRequired;
+                this.HasDocument = question.QuestionProperty.HasDocument;
+                this.DocumentRequired = question.QuestionProperty.DocumentRequired;
+                this.Weighting = question.QuestionProperty.Weighting;
+				
+				foreach(var r in responses)
+				{
+					if(r.QuestionId == question.Id)
+					this.ResponsesO.Add(Int32.Parse(r.ResponseOption.Name));
+				}
+
+                foreach (var r in responses)
+                {
+                    if (r.QuestionId == question.Id)
+                        this.SumOfResponse += Int32.Parse(r.ResponseOption.Name);
+                }
+
+            }
+			catch(Exception ex)
+			{
+
+			}
+            
+        }
+
+        public QuestionResponseViewModel(Question question, List<Response> response)
+        {
+            this.QuestionCategoryId = question.QuestionSection.QuestionCategory.Id;
+            this.QuestionCategoryName = question.QuestionSection.QuestionCategory.Name;
+            this.QuestionSectionId = question.QuestionSection.Id;
+            this.QuestionSectionName = question.QuestionSection.Name;
+            this.ResponseTypeId = question.ResponseTypeId;
+            this.QuestionId = question.Id;
+            this.QuestionName = question.Name;
+            this.QuestionSortOrder = question.SortOrder;
+
+            this.HasComment = question.QuestionProperty.HasComment;
+            this.CommentRequired = question.QuestionProperty.CommentRequired;
+            this.HasDocument = question.QuestionProperty.HasDocument;
+            this.DocumentRequired = question.QuestionProperty.DocumentRequired;
+            this.Weighting = question.QuestionProperty.Weighting;
+
+            this.Response = response;
+        }
+    }
 }

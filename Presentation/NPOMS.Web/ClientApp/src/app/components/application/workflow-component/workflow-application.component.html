@@ -781,7 +781,9 @@
                             (onChange)="onSaveResponse($event, question)" [disabled]="setDisable"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(preEvaluationQuestionnaire)">
-                            <textarea class="form-text" [disabled]="setDisable" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" [autoResize]="true" [disabled]="hasCapturedPreEvaluation"></textarea>
+                            <textarea class="form-text" [disabled]="setDisable" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment"
+                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
+                             [autoResize]="true" [disabled]="hasCapturedPreEvaluation"></textarea>
                         </td>
                         <td style="text-align: center;" *ngIf="hasDocument(preEvaluationQuestionnaire)">
                         </td>
@@ -945,7 +947,7 @@
                                 <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7)" style="text-align: center;">No results found</td>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="footer" *ngIf="hasWeighting(evaluationQuestionnaire)">
+                        <!-- <ng-template pTemplate="footer" *ngIf="hasWeighting(evaluationQuestionnaire)">
                             <tr>
                                 <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
                                 <td [attr.colspan]="getColspan(evaluationQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(evaluationQuestionnaire)}}</span></td>
@@ -956,7 +958,7 @@
                             <tr class="default-font">
                                 <td [attr.colspan]="getColspan(evaluationQuestionnaire, 7)" style="text-align: center;">No results found</td>
                             </tr>
-                        </ng-template>
+                        </ng-template> -->
                     </p-table>
                 </p-panel>
                 <div style="height: 10px;"></div>

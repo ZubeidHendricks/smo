@@ -387,8 +387,6 @@ export class WorkflowApplicationComponent implements OnInit {
         this.getAuditHistory();
         this.loadApplicationApprovals();
 
-      
-
       },
     );
   }
@@ -928,7 +926,9 @@ onAprCheckboxChange(event: any) {
   }
 
   public capturePreEvaluation() {
-    switch (this.application.statusId) {
+    if(this.application && this.application.id)
+    {
+      switch (this.application.statusId) {
         case StatusEnum.PendingReview:
         case StatusEnum.Verified:
         case StatusEnum.Evaluated:
@@ -936,16 +936,19 @@ onAprCheckboxChange(event: any) {
         case StatusEnum.Approved:
         case StatusEnum.Declined: 
         case StatusEnum.NonCompliance: 
-     {
-        return true;
+        {
+          return true;
+        }
       }
-    }
+    }  
 
     return false;
   }
 
 
   public captureEvaluation() {
+    if(this.application && this.application.id)
+    {
     switch (this.application.statusId) {
         case StatusEnum.Verified:
         case StatusEnum.Evaluated:
@@ -957,11 +960,14 @@ onAprCheckboxChange(event: any) {
         return true;
       }
     }
+  }
 
     return false;
   }
 
   public captureAdjudicate() {
+    if(this.application && this.application.id)
+    {
     switch (this.application.statusId) {
         case StatusEnum.Evaluated:
         case StatusEnum.Adjudicated: 
@@ -972,6 +978,7 @@ onAprCheckboxChange(event: any) {
         return true;
       }
     }
+  }
 
     return false;
   }
@@ -1277,15 +1284,11 @@ onAprCheckboxChange(event: any) {
     }
     if (questionnaire) {
 
-      if (this.displayErrorMessages(questionnaire))
-        return true;
-
       let questions = questionnaire;
       let countReviewed = questions.filter(x => x.isSaved === true).length;
       let commentRequired = questions.filter(x => x.commentRequired === true).length;
       let commentProvided = questions.filter(x => x.comment !== '').length;
-     
-      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation == true)) ? false : true;      
+      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation == true) && (this.capturedPreEvaluationComment != (undefined || ''))) ? false : true;      
     }
     else
       return true;
@@ -1385,65 +1388,10 @@ onAprCheckboxChange(event: any) {
     return rowGroupMetadata;
   }
 
-  
-
-
-  public displayErrorMessages(questionnaire: IQuestionResponseViewModel[]) {
-    let hasErrors: boolean[] = [];
-
-    if (this.getWeightingTotal(questionnaire) > 100)
-      hasErrors.push(true);
-
-    if (this.hasZeroWeighting(questionnaire))
-      hasErrors.push(true);
-
-    return hasErrors.includes(true) ? true : false;
-  }
-
-  public getWeightingTotal(questionnaire: IQuestionResponseViewModel[]) {
-    let totalWeighting = 0;
-
-    questionnaire.forEach(item => {
-      totalWeighting += item.weighting;
-    });
-
-    if (totalWeighting > 100)
-      this.weightExceedingMessage.push({ severity: 'warn', summary: "Warning:", detail: "Total weight exceeding 100. Please contact DEDAT administrator team to rectify the weightings." });
-
-    return totalWeighting;
-  }
-
-  public hasZeroWeighting(questionnaire: IQuestionResponseViewModel[]) {
-    let zeroWeightingQuestions: boolean[] = [];
-
-    questionnaire.forEach(question => {
-      switch (question.responseTypeId) {
-        case ResponseTypeEnum.Score:
-          question.weighting === 0 ? zeroWeightingQuestions.push(true) : zeroWeightingQuestions.push(false);
-          break;
-      }
-    });
-
-    if (zeroWeightingQuestions.includes(true))
-      this.zeroWeightingMessage.push({ severity: 'warn', summary: "Warning:", detail: "Weight cannot be 0. Please contact administrator team to rectify the weightings." });
-
-    return zeroWeightingQuestions.includes(true) ? true : false;
-  }
-
-  public hasWeighting(questionnaire: IQuestionResponseViewModel[]) {
-    return questionnaire.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score });
-  }
-
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
     this.onSave(question);
-    if(question.questionCategoryName === 'Evaluation' && question.responseOption.name === 'Yes')
-    {
-
-    }
-    //if question is yes
-    //find question to update in list of questions
-    //update the response for found question
+   
   }
 
   public onSaveComment(event, question: IQuestionResponseViewModel) {
@@ -1743,6 +1691,14 @@ onAprCheckboxChange(event: any) {
 
   viewAuditHistory() {
     this.displayHistory = true;
+  }
+
+  updateNpo(data) {
+    this.npo = data
+  }
+
+  updateNpoProfile(data) {
+    this.npoProfile = data;
   }
 
 }

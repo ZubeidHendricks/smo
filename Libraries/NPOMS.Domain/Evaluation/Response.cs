@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NPOMS.Domain.Evaluation
@@ -26,5 +27,10 @@ namespace NPOMS.Domain.Evaluation
 		public Question Question { get; set; }
 
 		public ResponseOption ResponseOption { get; set; }
+
+		public static implicit operator Response(List<Response> v)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

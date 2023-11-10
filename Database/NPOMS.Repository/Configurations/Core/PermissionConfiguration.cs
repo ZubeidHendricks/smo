@@ -785,8 +785,22 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "Update Programme Selection on Funding Applications",
 					SystemName = "App.UAP",
 					CategoryName = "Application"
-				}
-			);
+				},
+                new Permission
+                {
+                    Id = 112,
+                    Name = "Add Score card",
+                    SystemName = "WFA.AddScorecard",
+                    CategoryName = "AddScorecard"
+                },
+                new Permission
+                {
+                    Id = 113,
+                    Name = "Review Score card",
+                    SystemName = "WFA.ReviewScorecard",
+                    CategoryName = "ReviewScorecard"
+                }
+            );
 		}
 	}
 }
