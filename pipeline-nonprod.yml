@@ -66,7 +66,7 @@ stages:
 
     - script: |
         cd '$(System.DefaultWorkingDirectory)/Presentation/NPOMS.Web/ClientApp'
-        npm install -g @angular/cli
+        npm install -g @angular/cli@11.2.19
         npm install --force
         ng build --configuration nonprod
       displayName: 'npm install and build'
