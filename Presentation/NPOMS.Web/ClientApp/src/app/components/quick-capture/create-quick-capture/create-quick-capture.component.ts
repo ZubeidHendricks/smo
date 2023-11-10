@@ -307,8 +307,8 @@ export class CreateQuickCaptureComponent implements OnInit {
         item.languageId = item.language ? item.language.id : null;
       });
 
-      this._npoRepo.createQCNpo(data, true).subscribe(
-        (resp) => {
+      this._npoRepo.createNpo(data).subscribe(
+        (resp) => {//
           this._spinner.hide();
           this.npo.id = resp.id;
           this.updateNpo();
