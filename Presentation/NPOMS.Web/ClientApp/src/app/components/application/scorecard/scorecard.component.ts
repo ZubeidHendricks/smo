@@ -815,4 +815,9 @@ export class ScorecardComponent implements OnInit {
         let countReviewed = questions.filter(x => x.isSaved === true).length;
         return ((questions.length === countReviewed) && (this.captureImprovementArea != undefined && this.captureImprovementArea != '') && (this.captureRequiredAction != undefined && this.captureRequiredAction != '')) ? false : true;      
     }
+
+    public download() {
+
+      this._router.navigate(['/', { outlets: { 'print': ['print', this.id,2] } }]);
+    }
 }

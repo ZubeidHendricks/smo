@@ -857,4 +857,9 @@ export class ReviewScorecardComponent implements OnInit {
       return ((this.captureImprovementArea != undefined && this.captureImprovementArea != '') && (this.captureRequiredAction != undefined && this.captureRequiredAction != '')) ? false : true;      
   }
 
+  public download() {
+
+    this._router.navigate(['application/', { outlets: { 'print': ['print', this.id,2] } }]);
+  }
+
 }
