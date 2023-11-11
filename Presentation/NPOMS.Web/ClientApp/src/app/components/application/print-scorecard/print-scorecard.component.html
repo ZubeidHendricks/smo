@@ -1,0 +1,172 @@
+<div style="width: 100%;">
+    <div style="font-size:20px;margin-top:2px;font-weight: bold;height: 26px; text-align: center;">
+        Score Card Summary
+    </div>
+</div>
+
+<div style="height: 10px;"></div>
+<div class="p-grid p-nogutter p-justify-between" style="border: solid 1px rgb(172, 168, 168);">
+    <div>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application RefNo: "{{application.refNo}}"</span>
+            <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: "{{application.applicationPeriod.financialYear.name}}"</span>
+    </div>
+    <div>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Organisation: "{{organisation}}"</span>
+            <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application Name: "{{application.applicationPeriod.name}}"</span>
+    </div>
+</div>
+<div>
+    <p-panel [style]="{'font-size':'12px', 'width':'100%'}" >
+        <p-table [value]="allQuestionnaires" *ngIf="allQuestionnaires" [rowHover]="true" 
+            styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 15%; text-align: center;">#</th>
+                        <th style="width: 20%; text-align: center;">Name (Question/Statement)</th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>1</b></th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>2</b></th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>3</b></th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>4</b></th>
+                        <th style="width: 6%; text-align: center;" >Total score</th>
+                        <th style="width: 12%; text-align: center;">Average Category Score</th>
+                        <th style="width: 8%; text-align: center;">Comment</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-question let-rowIndex="rowIndex">
+                    <tr *ngIf="updateRowGroupMetaData(allQuestionnaires)[question.questionSectionName].index === rowIndex">
+                        <td>
+                            <span class="p-text-bold p-ml-2"><b>{{question.questionCategoryName}}</b></span>
+                        </td>
+                        <td class="p-text-bold p-ml-2">{{question.questionName}}</td>
+                        
+                        <td style="text-align: center;">{{question.responsesO[0]}}</td>
+                        <td style="text-align: center;">{{question.responsesO[1]}}</td>
+                        <td style="text-align: center;">{{question.responsesO[2]}}</td>
+                        <td style="text-align: center;">{{question.responsesO[3]}}</td>
+                        <td style="text-align: center;"><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span>
+                        </td>
+                        <td style="text-align: center;">{{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
+                        </td>
+                        <td style="text-align: center;">
+                            <button *ngIf="question.hasComment" pButton pRipple type="button"
+                            class="p-button-text action-button" icon="fa fa-comments-o"
+                            pTooltip="Comments" tooltipPosition="top"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+        </p-table>
+    </p-panel>
+    <div style="height: 10px;"></div>
+</div>
+<div class="p-col-fixed form-label">
+    <div class="box" style="text-align: left;">
+        <span class="non-mandatory-content"><b>Performance</b></span>
+    </div>
+</div>
+<p-table [rowHover]="true" [value]="filteredWorkplanIndicators" dataKey="rowData.activity.objective.name">
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="text-align: center; width: 5%;">#</th>
+            <th style="text-align: center; width: 40%;">Activity</th>
+            <th style="text-align: center; width: 30%;">Indicator</th>
+            <th style="text-align: center; width: 10%;">Target</th>
+            <th style="text-align: center; width: 10%;">Actual YTD</th>
+            <th style="text-align: center; width: 5%;">Avg %</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
+        <tr  *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false">
+            <!-- <td [attr.colspan]="6">
+                <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                <span class="p-text-bold">Objectives</span>
+            </td> -->
+            <td  [attr.colspan]="3">
+                <button type="button" pButton pRipple [pRowToggler]="rowData.activity.objective.name" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
+            </td>
+            <td style="text-align: center; width: 10%;">{{rowData.totalTargets}}</td>
+            <td style="text-align: center; width: 10%;">{{rowData.totalActuals}}</td>
+            <td style="text-align: center; width: 5%;">{{rowData.totalAvg}} %</td>
+        </tr>   
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex">
+        <tr class="default-font">
+            <td style="text-align: center; width: 5%;">{{rowIndex + 1}}</td>
+            <td style="text-align: left; width: 40%;">{{rowData.activity.activityList.description}}</td>
+            <td style="text-align: left; width: 30%;">{{rowData.activity.successIndicator}}</td>
+            <td style="text-align: center; width: 10%;">{{rowData.totalTargets}}</td>
+            <td style="text-align: center; width: 10%;">{{rowData.totalActuals}}</td>
+            <td style="text-align: center; width: 5%;">{{rowData.totalAvg}} %</td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <tr class="default-font">
+            <td style="text-align: left; width: 20%;" colspan="5"><b>Activity Average Score</b></td>
+            <td style="text-align: center;">{{(activityAvgScore).toFixed(2)}} %</td>
+        </tr>
+      
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr class="default-font">
+            <td colspan="6" style="text-align: center;">No results found</td>
+        </tr>
+    </ng-template>
+</p-table>
+<div style="height: 10px;"></div>
+
+<p-panel header="Reviewer Summary">
+    <div class="p-grid">
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Improvement Areas
+                </span>
+            </div>
+        </div>
+        <div class="p-col-9">
+            <textarea class="form-text" [rows]="3" pInputTextarea 
+            [(ngModel)]="captureImprovementArea" [ngModelOptions]="{standalone: true}" 
+            [autoResize]="true" [disabled]="hascapturedImprovementArea"></textarea>
+        </div>
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Required Actions
+                </span>
+            </div>
+        </div>
+        <div class="p-col-9">
+            <textarea class="form-text" [rows]="3" pInputTextarea 
+            [(ngModel)]="captureRequiredAction" [ngModelOptions]="{standalone: true}" 
+            [autoResize]="true" [disabled]="hasCapturedRequiredAction"></textarea>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="p-grid">
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Submitted By</span>
+            </div>
+        </div>
+        <div class="p-col-9">
+            <span>{{signedByUser}}</span>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="p-grid">
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Submitted Date</span>
+            </div>
+        </div>
+        <div class="p-col-9">
+            <span>{{submittedDate | date: 'yyyy-MM-dd'}}</span>
+        </div>
+    </div>
+    <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasScorecardSubmitted">
+       
+        <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled] = "disableSubmit()"
+        (click)="submit()" [disabled]="disableElement()"></button>
+           
+    </div>
+</p-panel>
