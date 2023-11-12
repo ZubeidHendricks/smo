@@ -68,6 +68,7 @@ export class ReviewScorecardComponent implements OnInit {
   _recommendation: boolean = false;
   responseOptions: IResponseOption[];
   _responses: IResponseOptions[];
+  _responseUsers: IResponseOptions[];
   responseHistory: IResponseHistory[];
   displayHistoryDialog: boolean;
   historyCols: any[];
@@ -196,12 +197,12 @@ export class ReviewScorecardComponent implements OnInit {
       (results) => {
         this.allQuestionnaires = results.filter(x => x.questionCategoryName === "Engagement" || x.questionCategoryName === "Timely Work Plan Submission"
         || x.questionCategoryName === "Impact" || x.questionCategoryName === "Risk Mitigation" || x.questionCategoryName === "Appropriation of Resources");
-        console.log('this.allQuestionnaires',this.allQuestionnaires)
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
+        this.loadResponseOptions();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -544,18 +545,7 @@ export class ReviewScorecardComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-       // this.financialYears = [];
-         this.application = results; //.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP && x.statusId === StatusEnum.AcceptedSLA);
-
-        // this.applications.forEach(item => {
-        //   var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
-        //   if (!isPresent)
-        //     this.financialYears.push(item.applicationPeriod.financialYear);
-        // });
-
-        
-     //   this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.financialYears[0].id);
-        this.loadActivities();
+         this.application = results; this.loadActivities();
         this.loadObjectives();
         this.loadNpo();
         this._spinner.hide();
@@ -772,11 +762,10 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   public selectedResponses() {
-
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
         this._responses = results;
-        
+        this._responseUsers = results.filter(x => x.createdUserId)
         let overallTotalScores = 0;
         let length = this._responses.length;
         
@@ -791,7 +780,7 @@ export class ReviewScorecardComponent implements OnInit {
         });
 
         this.overallTotalScore = overallTotalScores;
-        this.overallAvgScore = overallTotalScores/length;
+        this.overallAvgScore = Number((overallTotalScores/length).toFixed(2));        
       },
       (err) => {
         this._loggerService.logException(err);
@@ -859,7 +848,8 @@ export class ReviewScorecardComponent implements OnInit {
 
   public download() {
 
-    this._router.navigate(['application/', { outlets: { 'print': ['print', this.id,2] } }]);
+    this._router.navigate(['/', { outlets: { 'print': ['print', this.id,2] } }]);
+    
   }
 
 }

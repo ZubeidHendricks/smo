@@ -168,7 +168,7 @@ import { ScorecardQuestionComponent } from './components/admin/utilities/scoreca
 import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
 import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
 import { ReviewScorecardComponent } from './components/application/review-scorecard/review-scorecard.component';
-import  {PrintScorecardComponent} from './components/application/print-scorecard/print-scorecard.component';
+import  {PrintScorecardComponent} from './components/application/application-steps/funding-application/print-scorecard/print-scorecard.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 

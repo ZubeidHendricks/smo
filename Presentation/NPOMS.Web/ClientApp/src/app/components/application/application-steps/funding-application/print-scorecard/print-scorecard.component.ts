@@ -177,6 +177,12 @@ export class PrintScorecardComponent implements OnInit {
       { header: 'Created Date', width: '20%' }
     ];
 
+    setTimeout(() => {
+      document.title = "DSD - Online Funding Application - Assessement";
+      window.print();
+      this._router.navigate([{ outlets: { print: null } }]);
+    }, 2500);
+
   }
 
   private loadApplication() {
@@ -196,7 +202,6 @@ export class PrintScorecardComponent implements OnInit {
       (results) => {
         this.allQuestionnaires = results.filter(x => x.questionCategoryName === "Engagement" || x.questionCategoryName === "Timely Work Plan Submission"
         || x.questionCategoryName === "Impact" || x.questionCategoryName === "Risk Mitigation" || x.questionCategoryName === "Appropriation of Resources");
-        console.log('this.allQuestionnaires',this.allQuestionnaires)
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");

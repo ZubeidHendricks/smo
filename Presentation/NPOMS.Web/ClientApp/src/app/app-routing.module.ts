@@ -84,7 +84,7 @@ import { QuestionCategoryComponent } from './components/admin/utilities/question
 import  {WorkflowApplicationComponent} from './components/application/workflow-component/workflow-application.component';
 import  {ScorecardComponent} from './components/application/scorecard/scorecard.component';
 import  {ReviewScorecardComponent} from './components/application/review-scorecard/review-scorecard.component';
-import  {PrintScorecardComponent} from './components/application/print-scorecard/print-scorecard.component';
+import  {PrintScorecardComponent} from './components/application/application-steps/funding-application/print-scorecard/print-scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
 import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
