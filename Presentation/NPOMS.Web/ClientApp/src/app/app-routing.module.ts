@@ -82,8 +82,13 @@ import { ResponseOptionComponent } from './components/admin/utilities/response-o
 import { QuestionSectionComponent } from './components/admin/utilities/question-section/question-section.component';
 import { QuestionCategoryComponent } from './components/admin/utilities/question-category/question-category.component';
 import  {WorkflowApplicationComponent} from './components/application/workflow-component/workflow-application.component';
-//import  {ScorecardComponent} from './components/application/scorecard-component/scorecard.component';
+import  {ScorecardComponent} from './components/application/scorecard/scorecard.component';
+import  {ReviewScorecardComponent} from './components/application/review-scorecard/review-scorecard.component';
+import  {PrintScorecardComponent} from './components/application/application-steps/funding-application/print-scorecard/print-scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
+import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
+import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
+import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
 
@@ -93,8 +98,10 @@ const routes: Routes = [
 
   { path: 'npo-profiles', component: ProfileListComponent },
   { path: 'npo-profile/edit/:id', component: EditProfileComponent },
+  { path: 'npo-profile/view/:id', component: ViewProfileDetailsComponent },
   { path: 'print/:id/0', outlet: 'print', component: PrintFundingApplicatonComponent },
   { path: 'print/:id/1', outlet: 'print', component: PrintWorkflowApplicationComponent },
+  { path: 'print/:id/2', outlet: 'print', component: PrintScorecardComponent },
   { path: 'access-request', component: AccessRequestComponent },
   { path: 'access-review', component: AccessReviewComponent },
 
@@ -102,33 +109,35 @@ const routes: Routes = [
   { path: 'quick-captures-editList/edit/:id', component: QuickCaptureEditListComponent },
 
   { path: 'quick-capture/create', component: CreateQuickCaptureComponent },
-  { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },  
+  { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },
 
   { path: 'quick-captures/:id', component: QuickCaptureListComponent },
 
   { path: 'npos', component: NpoListComponent },
   { path: 'npo/create', component: CreateNpoComponent },
   { path: 'npo/edit/:id', component: EditNpoComponent },
+  { path: 'npo/view/:id', component: ViewNpoDetailsComponent },
 
   { path: 'applications', component: ApplicationListComponent },
   { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },
   { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
-  
+
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },
   { path: 'application/approve/:id', component: ApproveApplicationComponent },
   { path: 'application/upload-sla/:id', component: UploadSLAComponent },
- // { path: 'application/view/:id', component: ViewApplicationComponent },
+  { path: 'scorecard/:id', component: ScorecardComponent },
+  { path: 'reviewScorecard/:id', component: ReviewScorecardComponent },
   { path: 'application-periods', component: ApplicationPeriodListComponent },
   { path: 'application-period/create', component: CreateApplicationPeriodComponent },
   { path: 'application-period/edit/:id', component: EditApplicationPeriodComponent },
-  { path: 'application/view/:id', component: WorkflowApplicationComponent },
+  { path: 'sp-application/view/:id', component: ViewApplicationComponent },
+  { path: 'fa-application/view/:id', component: WorkflowApplicationComponent },
   { path: 'application/pre-evaluate/:id', component: WorkflowApplicationComponent },
   { path: 'application/evaluate/:id', component: WorkflowApplicationComponent },
   { path: 'application/adjudicate/:id', component: WorkflowApplicationComponent },
   { path: 'application/approval/:id', component: WorkflowApplicationComponent },
-
   { path: 'npo-approval', component: NpoApprovalComponent },
   { path: 'pbi-dashboard', component: PowerbiDashboardComponent },
   { path: 'training-material', component: TrainingMaterialComponent },
@@ -169,6 +178,7 @@ const routes: Routes = [
   { path: 'utilities/response-option', component: ResponseOptionComponent },
   { path: 'utilities/response-type', component: ResponseTypeComponent },
   { path: 'utilities/workflow-assessment', component: WorkflowAssessmentComponent },
+  { path: 'utilities/scorecard-question', component: ScorecardQuestionComponent },
 
   // Error Pages
   { path: '401', component: Page401Component },
@@ -179,7 +189,7 @@ const routes: Routes = [
   { path: 'workplan-indicator/actuals/:id', component: ActualsComponent },
   { path: 'workplan-indicator/targets/:id/financial-year/:financialYearId', component: TargetsComponent },
   { path: 'workplan-indicator/summary/:npoId', component: SummaryComponent },
- // { path: 'application/scorecard/:npoId', component: ScorecardComponent },
+  // { path: 'application/scorecard/:npoId', component: ScorecardComponent },
 
   // Budgets
   { path: 'admin/department-budget', component: DepartmentBudgetComponent },

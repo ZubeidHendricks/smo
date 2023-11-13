@@ -5,7 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationDetails, IDepartment, IDocumentStore, IFacilityList, IMonitoringAndEvaluation, INpo, INpoProfile, IObjective, IProgramme, IProjectImplementation, IProjectInformation, IResource, ISubProgramme, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationDetails, IDepartment, IDocumentStore, IFacilityList, IMonitoringAndEvaluation, INpo, INpoProfile, IObjective, IProgramme, IProjectImplementation, IProjectInformation, IRecipientType, IResource, ISubProgramme, ISubSubRecipient, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -148,6 +148,9 @@ export class ViewApplicationComponent implements OnInit {
 
   selectedFacilitiesText: string;
 
+  rowGroupMetadata: any[];
+  recipientTypes: IRecipientType[];
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -262,6 +265,7 @@ export class ViewApplicationComponent implements OnInit {
         this.loadAllProgrammes();
         this.loadAllSubProgrammes();
         this.loadFacilities();
+        this.loadRecipientTypes();
 
         this.loadObjectives();
         this.loadActivities();
@@ -314,7 +318,7 @@ export class ViewApplicationComponent implements OnInit {
   }
 
   private allDataLoaded() {
-    if (this.allProgrammes && this.allSubProgrammes && this.allAssignedFacilities && this.objectives && this.activities && this.sustainabilityPlans && this.resources) {
+    if (this.allProgrammes && this.allSubProgrammes && this.allAssignedFacilities && this.objectives && this.activities && this.sustainabilityPlans && this.resources && this.recipientTypes) {
       this.isApplicationAvailable = true;
       this._spinner.hide();
     }
@@ -489,6 +493,7 @@ export class ViewApplicationComponent implements OnInit {
 
   editObjective(data: IObjective) {
     this.objective = this.cloneObjective(data);
+    this.updateRecipientRowGroupMetaData(this.objective);
     this.displayObjectiveDialog = true;
   }
 
@@ -506,6 +511,14 @@ export class ViewApplicationComponent implements OnInit {
     this.selectedSubProgrammes = this.subProgrammes.filter(item => subProgrammeIds.includes(item.id));
 
     this.getTextValues(ServiceProvisionStepsEnum.Objectives);
+
+    data.subRecipients.forEach(sr => {
+      sr.recipientType = this.recipientTypes.find(x => x.id === sr.recipientTypeId);
+
+      sr.subSubRecipients.forEach(ssr => {
+        ssr.recipientType = this.recipientTypes.find(x => x.id === ssr.recipientTypeId);
+      });
+    });
 
     return obj;
   }
@@ -741,6 +754,44 @@ export class ViewApplicationComponent implements OnInit {
       (results) => {
         this.approveFromCoCT = results.filter(x => x.approvedFrom === 'CoCT')[0];
         this.approveFromDoH = results.filter(x => x.approvedFrom === 'DoH')[0];
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public getActiveSRs() {
+    return Object.values(this.objective).length === 0 ? [] : this.objective.subRecipients.filter(x => x.isActive);
+  }
+
+  public getActiveSSRs(subSubRecipients: ISubSubRecipient[]) {
+    return subSubRecipients.filter(x => x.isActive);
+  }
+
+  private updateRecipientRowGroupMetaData(objective: IObjective) {
+    this.rowGroupMetadata = [];
+
+    if (objective.subRecipients) {
+
+      objective.subRecipients.forEach(element => {
+
+        var itemExists = this.rowGroupMetadata.some(function (data) { return data.itemName === element.organisationName });
+
+        this.rowGroupMetadata.push({
+          itemName: element.organisationName,
+          itemExists: itemExists
+        });
+      });
+    }
+  }
+
+  private loadRecipientTypes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.RecipientTypes, false).subscribe(
+      (results) => {
+        this.recipientTypes = results;
+        this.allDataLoaded();
       },
       (err) => {
         this._loggerService.logException(err);

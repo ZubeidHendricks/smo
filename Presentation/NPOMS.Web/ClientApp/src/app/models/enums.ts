@@ -11,8 +11,12 @@ export enum QuestionCategoryEnum {
     PreEvaluation,
     Adjudication,
     Evaluation,
-    Approval
-
+    Approval,
+    Engagement,
+    TimelyWorkPlanSubmission,
+    Impact,
+    RiskMitigation,
+    AppropriationofResources
 }
 
 export enum ApplicationTypeEnum {
@@ -103,6 +107,7 @@ export enum ResponseTypeEnum {
     CloseEnded2 = 3,
     CloseEnded3 = 4,
     CloseEnded4 = 5,
+    Score2 = 6
 }
 
 export enum DeclarationTypeEnum {
@@ -123,7 +128,11 @@ export enum RoleEnum {
     Applicant = 3,
     Reviewer = 4,
     MainReviewer = 5,
-    Approver = 6
+    PreEvaluator = 6,
+    Evaluator = 7,
+    Adjudicator = 8,
+    Approver = 9,
+    ViewOnly = 10
 }
 
 export enum ServiceProvisionStepsEnum {
@@ -132,7 +141,8 @@ export enum ServiceProvisionStepsEnum {
     Activities = 2,
     Sustainability = 3,
     Resourcing = 4,
-    ApplicationConfirmation = 5
+    ApplicationConfirmation = 5,
+    OverallWorkplan = 6
 }
 
 export enum StatusEnum {
@@ -193,7 +203,7 @@ export enum StatusEnum {
     Recommended = 20,
     StronglyRecommended = 21,
     NonCompliance = 22,
-    GetName 
+    GetName
 }
 
 export enum AuditorOrAffiliationEntityTypeEnum {
@@ -270,7 +280,6 @@ export enum PermissionsEnum {
     ApproveApplication = "App.Approve",
     UploadSLA = "App.Upload",
     ViewAcceptedApplication = "App.VAA",
-    DeleteApplication = "App.Delete",
     UpdateApplicationProgramme = "App.UAP",
 
     /* NPO APPROVAL MANAGEMENT */
@@ -358,6 +367,8 @@ export enum PermissionsEnum {
     EvaluateOption = "WFA.Evaluate",
     PendingApprovalOption = "WFA.PendingApproval",
     ApproveOption = "WFA.Approve",
+    AddScorecard = "WFA.AddScorecard",
+    ReviewScorecard = "WFA.ReviewScorecard",
 
     /* Quick Capture*/
     ViewQC = "QC.View",
@@ -500,6 +511,8 @@ export interface IQuestionResponseViewModel {
     comment: string;
     isSaved: boolean;
     createdUserId: number;
+    responsesO: number[];
+    sumOfResponse: number;
     responseOption: IResponseOption;
 }
 
@@ -520,12 +533,13 @@ export interface IResponseOption {
     responseType: IResponseType;
 }
 
-export interface IResponse {
+export interface IResponses {
     id: number;
     fundingApplicationId: number;
     questionId: number;
     responseOptionId: number;
     comment: string;
+    responseOption: IResponseOption;
 }
 
 export interface IResponseHistory {
@@ -534,4 +548,16 @@ export interface IResponseHistory {
     questionId: number;
     responseOptionId: number;
     comment: string;
+}
+
+export enum RecipientTypeEnum {
+    Primary = 1,
+    SubRecipient = 2,
+    SubSubRecipient = 3
+}
+
+export enum RecipientEntityEnum {
+    Objective = 'Objective',
+    SubRecipient = 'SubRecipient',
+    SubSubRecipient = 'SubSubRecipient'
 }

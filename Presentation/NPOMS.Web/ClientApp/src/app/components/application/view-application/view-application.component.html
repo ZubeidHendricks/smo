@@ -73,7 +73,7 @@
                     <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                         <tr class="heading">
                             <td *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false" [attr.colspan]="7">
-                                <span class="p-text-bold">Objective: {{rowData.objective.name}}</span>
+                                <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
                             </td>
                         </tr>
                         <tr class="default-font">
@@ -112,7 +112,7 @@
                         <tr class="heading">
                             <td *ngIf="rowGroupMetadataSustainability[rowIndex].itemExists === false"
                                 [attr.colspan]="3">
-                                <span class="p-text-bold">Activity: {{rowData.activity.activityList.name}}</span>
+                                <span><span class="p-text-bold">Activity:</span> {{rowData.activity.activityList.name}}</span>
                             </td>
                         </tr>
                         <tr class="default-font">
@@ -145,7 +145,7 @@
                     <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                         <tr class="heading">
                             <td *ngIf="rowGroupMetadataResources[rowIndex].itemExists === false" [attr.colspan]="7">
-                                <span class="p-text-bold">Activity: {{rowData.activity.activityList.name}}</span>
+                                <span><span class="p-text-bold">Activity:</span> {{rowData.activity.activityList.name}}</span>
                             </td>
                         </tr>
                         <tr class="default-font">
@@ -309,7 +309,7 @@
     </div>
 </p-panel>
 
-<p-dialog header="Objective" [(visible)]="displayObjectiveDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+<p-dialog header="Objective" [(visible)]="displayObjectiveDialog" [style]="{width: '75vw'}" [focusOnShow]="false"
     showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
     <div class="p-grid">
         <div class="p-col-fixed form-label">
@@ -405,6 +405,37 @@
                 [disabled]="true"></p-inputNumber>
         </div>
     </div>
+    <hr>
+    <p>Recipient Details</p>
+    <p-table [rowHover]="true" [value]="getActiveSRs()" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Organisation Name</th>
+                <th>Recipient Type</th>
+                <th>Funding Period</th>
+                <th>Budget</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-recipient let-rowIndex="rowIndex">
+            <tr *ngIf="rowGroupMetadata && rowGroupMetadata[rowIndex].itemExists === false">
+                <td><span class="p-text-bold">{{recipient.organisationName}}</span></td>
+                <td><span class="p-text-bold" *ngIf="recipient.recipientType">{{recipient.recipientType.name}}</span></td>
+                <td><span class="p-text-bold">{{recipient.fundingPeriodStartDate}} to {{recipient.fundingPeriodEndDate}}</span></td>
+                <td><span class="p-text-bold">{{recipient.budget}}</span></td>
+            </tr>
+            <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)" class="default-font">
+                <td style="text-align: right;">{{subSubRecipient.organisationName}}</td>
+                <td style="text-align: right;" *ngIf="subSubRecipient.recipientType">{{subSubRecipient.recipientType.name}}</td>
+                <td style="text-align: right;">{{subSubRecipient.fundingPeriodStartDate}} to {{subSubRecipient.fundingPeriodEndDate}}</td>
+                <td style="text-align: right;">{{subSubRecipient.budget}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
 </p-dialog>
 
 <p-dialog header="Activity" [(visible)]="displayActivityDialog" [style]="{width: '50vw'}" [focusOnShow]="false"

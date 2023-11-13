@@ -224,9 +224,7 @@ export class WorkflowApplicationComponent implements OnInit {
   isPreEvaluationDisable: boolean = false;
   setVisible: boolean = false;
 
-  constructor(
-
-   
+  constructor(   
     private _router: Router,
     private _authService: AuthService,
     private _spinner: NgxSpinnerService,
@@ -880,7 +878,6 @@ onAprCheckboxChange(event: any) {
         this.allQuestionnaires = results;
         
         this.preEvaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "PreEvaluation");
-        console.log('preEvaluationQuestionnaire', this.preEvaluationQuestionnaire);
         this.evaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Evaluation");
         this.adjudicationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication");
         this.approveQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Approval");
@@ -1278,15 +1275,11 @@ onAprCheckboxChange(event: any) {
     }
     if (questionnaire) {
 
-      if (this.displayErrorMessages(questionnaire))
-        return true;
-
       let questions = questionnaire;
       let countReviewed = questions.filter(x => x.isSaved === true).length;
       let commentRequired = questions.filter(x => x.commentRequired === true).length;
       let commentProvided = questions.filter(x => x.comment !== '').length;
-     
-      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation == true)) ? false : true;      
+      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation == true) && (this.capturedPreEvaluationComment != (undefined || ''))) ? false : true;      
     }
     else
       return true;

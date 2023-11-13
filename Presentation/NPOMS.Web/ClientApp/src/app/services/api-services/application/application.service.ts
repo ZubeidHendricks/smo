@@ -185,6 +185,11 @@ export class ApplicationService {
     return this._http.get<IApplicationReviewerSatisfaction[]>(url, httpOptions);
   }
 
+  public getReviewerSatisfactionByApplicationId(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/application-reviewer-satisfaction/applicationId/${applicationId}`;
+    return this._http.get<IApplicationReviewerSatisfaction[]>(url, httpOptions);
+  }
+
   public createApplicationReviewerSatisfaction(model: IApplicationReviewerSatisfaction) {
     const url = `${this._envUrl.urlAddress}/api/applications/application-reviewer-satisfaction`;
     return this._http.post<IApplicationReviewerSatisfaction>(url, model, httpOptions);

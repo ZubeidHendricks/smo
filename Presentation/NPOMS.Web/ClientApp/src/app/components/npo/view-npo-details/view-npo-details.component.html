@@ -1,0 +1,382 @@
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="View Organisation" *ngIf="isDataAvailable">
+
+    <div class="p-grid p-nogutter p-justify-between" *ngIf="npo.createdUser && npo.updatedUser">
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created By: {{npo.createdUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created Date: {{npo.createdDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated By: {{npo.updatedUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated Date: {{npo.updatedDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    
+    <div *ngIf="isDataAvailable">
+        <p-panel [style]="{'font-size':'12px'}" header="General Information" *ngIf="isDataAvailable">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-md-6">
+                    <label class="mandatory-content">Organisation Name</label>
+                    <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true">
+                    <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label class="non-mandatory-content">Year Registered</label>
+                    <input type="text" name="yearRegistered" class="form-text" pInputText [(ngModel)]="npo.yearRegistered" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label class="mandatory-content">Organisation Type</label>
+                    <input type="text" class="form-text" pInputText [(ngModel)]="npo.organisationType.name" [ngModelOptions]="{standalone: true}" #organisationType="ngModel" [ngClass]="{'ng-dirty': (organisationType.invalid && validated) || (organisationType.dirty && organisationType.invalid)}" [disabled]="true">
+                    <small *ngIf="(organisationType.invalid && validated) || (organisationType.dirty && organisationType.invalid)" class="p-error">Organisation Type is required.</small>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label class="non-mandatory-content">If the organisation is registered as a Public Benefit Organisation, please provide the PBO Number</label>
+                    <input type="text" name="pboNumber" class="form-text" pInputText [(ngModel)]="npo.pboNumber" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label class="non-mandatory-content">C-Code</label>
+                    <input type="text" name="cCode" class="form-text" pInputText [(ngModel)]="npo.cCode" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label class="non-mandatory-content">Is the organisation also registered to provide Section 18 receipts?</label>
+                    <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="npo.section18Receipts" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-selectButton>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label class="mandatory-content">Registration Status</label>
+                    <span *ngIf="npo.registrationStatus">
+                        <input type="text" class="form-text" pInputText [(ngModel)]="npo.registrationStatus.name" [ngModelOptions]="{standalone: true}" #registrationStatus="ngModel" [ngClass]="{'ng-dirty': (registrationStatus.invalid && validated) || (registrationStatus.dirty && registrationStatus.invalid)}" [disabled]="true">
+                        <small *ngIf="(registrationStatus.invalid && validated) || (registrationStatus.dirty && registrationStatus.invalid)" class="p-error">Registration Status is required.</small>
+                    </span>
+                    <span *ngIf="!npo.registrationStatus">
+                        <input type="text" class="form-text" pInputText [disabled]="true">
+                    </span>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label class="non-mandatory-content">Website</label>
+                    <input type="text" name="website" class="form-text" pInputText [(ngModel)]="npo.website" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label class="non-mandatory-content">Registration Number - Please provide your NPO's registration number. If the organisation's NPO application is in progress, please provide the NDSD Application number (APP number)</label>
+                    <input type="text" name="registrationNumber" class="form-text" pInputText [(ngModel)]="npo.registrationNumber" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+    
+                </div>
+            </div>
+        </p-panel>
+        <div style="height: 10px;"></div>
+        <p-panel [style]="{'font-size':'12px'}" header="Contact / Stakeholder Details">            
+            <div class="heading">Organisation Contact List</div>
+            <p-table [rowHover]="true" [columns]="contactCols" [value]="npo.contactInformation" *ngIf="npo.contactInformation" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr class="default-font">
+                        <td>{{rowData.title.name}} {{rowData.firstName}} {{rowData.lastName}}</td>
+                        <td>{{rowData.position.name}}</td>
+                        <td>{{rowData.emailAddress}}</td>
+                        <td>{{rowData.cellphone}}</td>
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-info-circle" (click)="viewContactInformation(rowData)" pTooltip="View" tooltipPosition="top"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="5" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <div style="height: 10px;"></div>
+            <div class="heading">Stakeholder Details</div>
+            <p-table [rowHover]="true" [columns]="stakeholderCols" [value]="stakeholderDetails" *ngIf="stakeholderDetails" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr class="default-font">
+                        <td>{{rowData.title.name}} {{rowData.firstName}} {{rowData.lastName}}</td>
+                        <td style="text-align: center;">
+                            <p-checkbox [ngModel]="rowData.isPrimaryContact" [binary]="true" [disabled]="true"></p-checkbox>
+                        </td>
+                        <td style="text-align: center;">
+                            <p-checkbox [ngModel]="rowData.isBoardMember" [binary]="true" [disabled]="true"></p-checkbox>
+                        </td>
+                        <td style="text-align: center;">
+                            <p-checkbox [ngModel]="rowData.isSignatory" [binary]="true" [disabled]="true"></p-checkbox>
+                        </td>
+                        <td style="text-align: center;">
+                            <p-checkbox [ngModel]="rowData.isWrittenAgreementSignatory" [binary]="true" [disabled]="true"></p-checkbox>
+                        </td>
+                        <td style="text-align: center;">
+                            <p-checkbox [ngModel]="rowData.isDisabled" [binary]="true" [disabled]="true"></p-checkbox>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="6" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+    </div>
+</p-panel>
+
+<p-dialog header="Contact / Stakeholder Details" 
+          [(visible)]="displayContactDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Title</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedTitle" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">First Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.firstName" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Last Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.lastName" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">RSA ID No.</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="contactInformation.rsaIdNumber" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-selectButton>
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="contactInformation.rsaIdNumber === true">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">RSA ID Number</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.idNumber" [ngModelOptions]="{standalone: true}" [minlength]="13" [maxlength]="13" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="contactInformation.rsaIdNumber === false">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Passport Number</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.passportNumber" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Email</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.emailAddress" [ngModelOptions]="{standalone: true}" #emailAddress="ngModel" [disabled]="true">
+            <div class="md-errors-spacer" [hidden]="emailAddress.valid || emailAddress.untouched">
+                <small class="text-danger" *ngIf="emailAddress.errors && emailAddress.errors.pattern">Please provide a valid email address</small>
+            </div>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Telephone</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.telephone" [ngModelOptions]="{standalone: true}" [minlength]="10" [maxlength]="10" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Cellphone</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.cellphone" [ngModelOptions]="{standalone: true}" [minlength]="10" [maxlength]="10" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Position</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedPosition" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Race</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedRace" [ngModelOptions]="{standalone: true}" [disabled]="true">
+
+        </div>
+    </div> 
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Preferred Languages</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedLanguage" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>      
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Gender</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedGender" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Qualifications</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.qualifications" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Physical Address</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.addressInformation" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>    
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Years of Experience</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.yearsOfExperience" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Date of Employment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-calendar 
+            [(ngModel)]="seletedDateofEmployment"  
+            [ngModelOptions]="{standalone: true}" dateFormat="MM yy" [style]="{'width': '50%'}"   
+            
+             inputId="time" appendTo="body" [disabled]="true"></p-calendar>
+
+            
+
+        </div>
+    </div>        
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Comments</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="contactInformation.comments" [ngModelOptions]="{standalone: true}" [maxlength]="1000" [disabled]="true"></textarea>
+        </div>
+    </div> 
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Is Primary Contact</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="contactInformation.isPrimaryContact" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-selectButton>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Disabled</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isDisabled" binary="true" inputId="binary" [disabled]="true"></p-checkbox>
+        </div>
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Bank Signatory</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isSignatory" binary="true" inputId="binary" [disabled]="true"></p-checkbox>
+        </div>
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Written Agreement Signatory</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isWrittenAgreementSignatory" binary="true" inputId="binary" [disabled]="true"></p-checkbox>
+        </div>        
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Board Member</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isBoardMember" binary="true" inputId="binary" [disabled]="true"></p-checkbox>
+        </div>
+    </div>         
+
+</p-dialog>

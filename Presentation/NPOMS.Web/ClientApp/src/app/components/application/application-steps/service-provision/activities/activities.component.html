@@ -1,5 +1,10 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header="Activities" *ngIf="activeActivities">
+    <!-- <div class="p-grid p-nogutter p-justify-end">
+        <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
+    </div>     -->
+    <div style="height: 10px;"></div>
+
     <p-table [rowHover]="true" [columns]="activityCols" [value]="activeActivities" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
@@ -13,7 +18,7 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="heading">
                 <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="getColspan()">
-                    <span class="p-text-bold">Objective: {{rowData.objective.name}}</span>
+                    <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
                 </td>
             </tr>
             <tr [ngClass]="rowData.changesRequired === true ? 'red' : 'default' && rowData.changesRequired === false ? 'green' : 'default'" class="default-font">
@@ -200,6 +205,19 @@
             <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" autoResize="autoResize"></textarea>
         </div>
     </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Recipient(s)</span>
+            </div>
+        </div>
+        <div class="p-col" *ngIf="canEdit">
+            <p-multiSelect [options]="recipients" defaultLabel="Select option(s)" optionLabel="recipientName" [(ngModel)]="selectedRecipients" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" [maxSelectedLabels]="2"></p-multiSelect>
+        </div>
+        <div class="p-col" *ngIf="!canEdit">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedRecipientsText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" autoResize="autoResize"></textarea>
+        </div>
+    </div>
     <ng-template pTemplate="footer" *ngIf="canAddComments">
         <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveActivity() (click)="saveActivity()"></button>
         <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
@@ -326,8 +344,8 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="heading">
-                <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
-                    <span class="p-text-bold">Objective: {{rowData.objective.name}}</span>
+                <td *ngIf="deletedRowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
+                    <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
                 </td>
             </tr>
             <tr class="default-font">
