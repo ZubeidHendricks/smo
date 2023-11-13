@@ -23,11 +23,11 @@ export interface IResp
 }
 
 @Component({
-  selector: 'app-review-scorecard',
-  templateUrl: './review-scorecard.component.html',
-  styleUrls: ['./review-scorecard.component.css']
+  selector: 'app-print-scorecard',
+  templateUrl: './print-scorecard.component.html',
+  styleUrls: ['./print-scorecard.component.css']
 })
-export class ReviewScorecardComponent implements OnInit {
+export class PrintScorecardComponent implements OnInit {
 
   isSystemAdmin: boolean;
   isAdmin: boolean;
@@ -68,7 +68,6 @@ export class ReviewScorecardComponent implements OnInit {
   _recommendation: boolean = false;
   responseOptions: IResponseOption[];
   _responses: IResponseOptions[];
-  _responseUsers: IResponseOptions[];
   responseHistory: IResponseHistory[];
   displayHistoryDialog: boolean;
   historyCols: any[];
@@ -102,6 +101,7 @@ export class ReviewScorecardComponent implements OnInit {
   rowGroupMetadataActivities: any[];
   isApplicationAvailable: boolean;
   isObjectivesAvailable: boolean;
+  overallTotalScore: number;
   Socrer1OverallTotalScore: number;
   Socrer2OverallTotalScore: number;
   Socrer3OverallTotalScore: number;
@@ -184,6 +184,12 @@ export class ReviewScorecardComponent implements OnInit {
       { header: 'Created Date', width: '20%' }
     ];
 
+    setTimeout(() => {
+      document.title = "DSD - Online Funding Application - Assessement";
+      window.print();
+      this._router.navigate([{ outlets: { print: null } }]);
+    }, 2500);
+
   }
 
   private loadApplication() {
@@ -208,7 +214,6 @@ export class ReviewScorecardComponent implements OnInit {
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
-        this.loadResponseOptions();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -235,7 +240,9 @@ export class ReviewScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.Statuses, true).subscribe(
       (results) => {
         this.statuses = results;
-        this._spinner.hide();        
+     
+        this._spinner.hide();
+        
       },
       (err) => {
         this._loggerService.logException(err);
@@ -505,14 +512,6 @@ export class ReviewScorecardComponent implements OnInit {
     }
   }
 
-  // financialYearChange() {
-  //   if (this.selectedFinancialYear) {
-  //     this.filteredWorkplanIndicators = [];
-  //     this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
-  //     this.loadActivities();
-  //   }
-  // }
-
   public getQuestionCategory()
   {    
     this._dropdownService.getEntities(DropdownTypeEnum.QuestionCategory, true).subscribe(
@@ -545,7 +544,8 @@ export class ReviewScorecardComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-         this.application = results; this.loadActivities();
+        this.application = results; 
+        this.loadActivities();
         this.loadObjectives();
         this.loadNpo();
         this._spinner.hide();
@@ -900,12 +900,6 @@ export class ReviewScorecardComponent implements OnInit {
     public disableElement() {
      
       return ((this.captureImprovementArea != undefined && this.captureImprovementArea != '') && (this.captureRequiredAction != undefined && this.captureRequiredAction != '')) ? false : true;      
-  }
-
-  public download() {
-
-    this._router.navigate(['/', { outlets: { 'print': ['print', this.id,2] } }]);
-    
   }
 
 }

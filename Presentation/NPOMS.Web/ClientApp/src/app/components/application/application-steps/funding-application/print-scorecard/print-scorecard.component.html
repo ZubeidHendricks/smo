@@ -4,12 +4,6 @@
     </div>
 </div>
 
-<div class="p-grid p-nogutter p-justify-end">
-       
-    <button pButton type="button" label="Download" icon="fa fa-download" *ngIf="hasScorecardSubmitted"
-    (click)="download()"></button>
-       
-</div>
 <div style="height: 10px;"></div>
 <div class="p-grid p-nogutter p-justify-between" style="border: solid 1px rgb(172, 168, 168);">
     <div>
@@ -31,10 +25,10 @@
                     <tr>
                         <th style="width: 15%; text-align: center;">#</th>
                         <th style="width: 20%; text-align: center;">Name (Question/Statement)</th>
-                        <th style="width: 8%; text-align: center;">Scorer<b> 1</b></th>
-                        <th style="width: 8%; text-align: center;">Scorer<b> 2</b></th>
-                        <th style="width: 8%; text-align: center;">Scorer<b> 3</b></th>
-                        <th style="width: 8%; text-align: center;">Scorer<b> 4</b></th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>1</b></th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>2</b></th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>3</b></th>
+                        <th style="width: 8%; text-align: center;">Score by Scorer<b>4</b></th>
                         <th style="width: 6%; text-align: center;" >Total score</th>
                         <th style="width: 12%; text-align: center;">Average Category Score</th>
                         <th style="width: 8%; text-align: center;">Comment</th>
@@ -71,27 +65,26 @@
     <tr>
         <td style="width: 15%; text-align: center;"> <span class="p-text-bold p-ml-2"><b>(Score per scorer -/50)</b></span></td>
         <td style="width: 22%; text-align: center;">&nbsp;</td>
-        <td style="width: 8%; text-align: center;"><b>{{Socrer1OverallTotalScore}}</b></td>
-        <td style="width: 8%; text-align: center;"><b>{{Socrer2OverallTotalScore}}</b></td>
-        <td style="width: 8%; text-align: center;"><b>{{Socrer3OverallTotalScore}}</b></td>
-        <td style="width: 8%; text-align: center;"><b>{{Socrer4OverallTotalScore}}</b></td>
+        <td style="width: 8%; text-align: center;">{{Socrer1OverallTotalScore}}</td>
+        <td style="width: 8%; text-align: center;">{{Socrer2OverallTotalScore}}</td>
+        <td style="width: 8%; text-align: center;">{{Socrer3OverallTotalScore}}</td>
+        <td style="width: 8%; text-align: center;">{{Socrer4OverallTotalScore}}</td>
         <td style="width: 8%; text-align: center;"></td>
         <td style="width: 12%; text-align: center;"></td>
         <td style="width: 10%; text-align: center;">&nbsp;</td>
     </tr>
     <tr>
-        <td style="width: 15%; text-align: center;"> <span class="p-text-bold p-ml-2"><b>Average scorer per scorer</b></span></td>
+        <td style="width: 15%; text-align: center;"> <span class="p-text-bold p-ml-2"><b>Average scorfe per scorer</b></span></td>
         <td style="width: 22%; text-align: center;">&nbsp;</td>
-        <td style="width: 8%; text-align: center;"><b>{{Scorer1OverallAvgScore}}</b></td>
-        <td style="width: 8%; text-align: center;"><b>{{Scorer2OverallAvgScore}}</b></td>
-        <td style="width: 8%; text-align: center;"><b>{{Scorer3OverallAvgScore}}</b></td>
-        <td style="width: 8%; text-align: center;"><b>{{Scorer4OverallAvgScore}}</b></td>
+        <td style="width: 8%; text-align: center;">{{Scorer1OverallAvgScore}}</td>
+        <td style="width: 8%; text-align: center;">{{Scorer2OverallAvgScore}}</td>
+        <td style="width: 8%; text-align: center;">{{Scorer3OverallAvgScore}}</td>
+        <td style="width: 8%; text-align: center;">{{Scorer4OverallAvgScore}}</td>
         <td style="width: 8%; text-align: center;"></td>
         <td style="width: 12%; text-align: center;"></td>
         <td style="width: 10%; text-align: center;">&nbsp;</td>
     </tr>
 </table>
-<div style="height: 10px;"></div>
 <div class="p-col-fixed form-label">
     <div class="box" style="text-align: left;">
         <span class="non-mandatory-content"><b>Performance</b></span>
@@ -108,7 +101,7 @@
             <th style="text-align: center; width: 5%;">Avg %</th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
+    <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
         <tr  *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false">
             <!-- <td [attr.colspan]="6">
                 <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
@@ -122,8 +115,6 @@
             <td style="text-align: center; width: 10%;">{{rowData.totalActuals}}</td>
             <td style="text-align: center; width: 5%;">{{rowData.totalAvg}} %</td>
         </tr>   
-    </ng-template>
-    <ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex">
         <tr class="default-font">
             <td style="text-align: center; width: 5%;">{{rowIndex + 1}}</td>
             <td style="text-align: left; width: 40%;">{{rowData.activity.activityList.description}}</td>
@@ -133,6 +124,9 @@
             <td style="text-align: center; width: 5%;">{{rowData.totalAvg}} %</td>
         </tr>
     </ng-template>
+    <!-- <ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex">
+       
+    </ng-template> -->
     <ng-template pTemplate="footer">
         <tr class="default-font">
             <td style="text-align: left; width: 20%;" colspan="5"><b>Activity Average Score</b></td>
