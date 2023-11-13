@@ -102,7 +102,14 @@ export class PrintScorecardComponent implements OnInit {
   isApplicationAvailable: boolean;
   isObjectivesAvailable: boolean;
   overallTotalScore: number;
-  overallAvgScore: number;
+  Socrer1OverallTotalScore: number;
+  Socrer2OverallTotalScore: number;
+  Socrer3OverallTotalScore: number;
+  Socrer4OverallTotalScore: number;
+  Scorer1OverallAvgScore: number;
+  Scorer2OverallAvgScore: number;
+  Scorer3OverallAvgScore: number;
+  Scorer4OverallAvgScore: number;
   activityAvgScore: number;
   objectiveTarget: number;
   objectiveActual: number;
@@ -233,11 +240,7 @@ export class PrintScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.Statuses, true).subscribe(
       (results) => {
         this.statuses = results;
-      //  this.evaluationStatuses = results.filter(x => x.name.includes('Recommended') || x.name.includes('NonCompliance') || x.name.includes('StronglyRecommended') || x.name.includes('Declined'));
-       // this.adjudicationStatuses = results.filter(x => x.name.includes('Declined') || x.name.includes('NonCompliance') || x.name.includes('Recommended') || x.name.includes('StronglyRecommended'));
-      //  this.approvalStatuses = results.filter(x => x.name.includes('Declined') || x.name.includes('Recommended') || x.name.includes('StronglyRecommended'));
-    //    this.loadCapturedResponses();
-       // this.isDataAvailable = true;
+     
         this._spinner.hide();
         
       },
@@ -509,14 +512,6 @@ export class PrintScorecardComponent implements OnInit {
     }
   }
 
-  // financialYearChange() {
-  //   if (this.selectedFinancialYear) {
-  //     this.filteredWorkplanIndicators = [];
-  //     this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
-  //     this.loadActivities();
-  //   }
-  // }
-
   public getQuestionCategory()
   {    
     this._dropdownService.getEntities(DropdownTypeEnum.QuestionCategory, true).subscribe(
@@ -549,17 +544,7 @@ export class PrintScorecardComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-       // this.financialYears = [];
-         this.application = results; //.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP && x.statusId === StatusEnum.AcceptedSLA);
-
-        // this.applications.forEach(item => {
-        //   var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });
-        //   if (!isPresent)
-        //     this.financialYears.push(item.applicationPeriod.financialYear);
-        // });
-
-        
-     //   this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.financialYears[0].id);
+        this.application = results; 
         this.loadActivities();
         this.loadObjectives();
         this.loadNpo();
@@ -777,26 +762,81 @@ export class PrintScorecardComponent implements OnInit {
   }
 
   public selectedResponses() {
-
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
         this._responses = results;
-        
-        let overallTotalScores = 0;
+        var user = this._responses.filter((item, i, arr) => arr.findIndex((t) => t.createdUserId=== item.createdUserId) === i);
+
+        let Scorer1OverallTotalScores = 0;
+        let Scorer2OverallTotalScores = 0;
+        let Scorer3OverallTotalScores = 0;
+        let Scorer4OverallTotalScores = 0;
         let length = this._responses.length;
-        
+      
         this._responses.forEach(item => {
           if(Number(item.responseOption.name) >= 0)
           {
-            overallTotalScores  += Number(item.responseOption.name);       
+            if(user[0] != undefined)
+            {
+              if(Number(item.createdUserId) == Number(user[0].createdUserId))  
+              Scorer1OverallTotalScores  += Number(item.responseOption.name); 
+            }      
           }
           else{
-            overallTotalScores = 0;
+            Scorer1OverallTotalScores = 0;
           }
         });
 
-        this.overallTotalScore = overallTotalScores;
-        this.overallAvgScore = overallTotalScores/length;
+        this._responses.forEach(item => {
+          if(Number(item.responseOption.name) >= 0)
+          {
+            if(user[1] != undefined)
+            {
+              if(Number(item.createdUserId) == Number(user[1].createdUserId))  
+              Scorer2OverallTotalScores  += Number(item.responseOption.name); 
+            }       
+          }
+          else{
+            Scorer2OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if(Number(item.responseOption.name) >= 0)
+          {
+            if(user[2] != undefined)
+            {
+              if(Number(item.createdUserId) == Number(user[2].createdUserId))  
+              Scorer3OverallTotalScores  += Number(item.responseOption.name); 
+            }       
+          }
+          else{
+            Scorer3OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if(Number(item.responseOption.name) >= 0)
+          {
+            if(user[3] != undefined)
+            {
+              if(Number(item.createdUserId) == Number(user[3].createdUserId))  
+              Scorer4OverallTotalScores  += Number(item.responseOption.name); 
+            }      
+          }
+          else{
+            Scorer4OverallTotalScores = 0;
+          }
+        });
+        this.Socrer1OverallTotalScore = Scorer1OverallTotalScores;
+        this.Socrer2OverallTotalScore = Scorer2OverallTotalScores;
+        this.Socrer3OverallTotalScore = Scorer3OverallTotalScores;
+        this.Socrer4OverallTotalScore = Scorer4OverallTotalScores;
+        this.Scorer1OverallAvgScore = Number((Scorer1OverallTotalScores/5).toFixed(2));   
+        this.Scorer2OverallAvgScore = Number((Scorer2OverallTotalScores/5).toFixed(2));
+        this.Scorer3OverallAvgScore = Number((Scorer3OverallTotalScores/5).toFixed(2));
+        this.Scorer4OverallAvgScore = Number((Scorer4OverallTotalScores/5).toFixed(2));     
+     
       },
       (err) => {
         this._loggerService.logException(err);
