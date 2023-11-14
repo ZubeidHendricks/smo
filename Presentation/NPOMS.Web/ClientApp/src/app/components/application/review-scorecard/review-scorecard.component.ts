@@ -102,14 +102,16 @@ export class ReviewScorecardComponent implements OnInit {
   rowGroupMetadataActivities: any[];
   isApplicationAvailable: boolean;
   isObjectivesAvailable: boolean;
-  Socrer1OverallTotalScore: number;
-  Socrer2OverallTotalScore: number;
-  Socrer3OverallTotalScore: number;
-  Socrer4OverallTotalScore: number;
-  Scorer1OverallAvgScore: number;
-  Scorer2OverallAvgScore: number;
-  Scorer3OverallAvgScore: number;
-  Scorer4OverallAvgScore: number;
+  socrer1OverallTotalScore: number;
+  socrer2OverallTotalScore: number;
+  socrer3OverallTotalScore: number;
+  socrer4OverallTotalScore: number;
+  allSocrerOverallTotalScore: number;
+  scorer1OverallAvgScore: number;
+  scorer2OverallAvgScore: number;
+  scorer3OverallAvgScore: number;
+  scorer4OverallAvgScore: number;
+  allScorerOverallAvgScore: number;
   activityAvgScore: number;
   objectiveTarget: number;
   objectiveActual: number;
@@ -767,10 +769,12 @@ export class ReviewScorecardComponent implements OnInit {
         this._responses = results;
         var user = this._responses.filter((item, i, arr) => arr.findIndex((t) => t.createdUserId=== item.createdUserId) === i);
 
-        let Scorer1OverallTotalScores = 0;
-        let Scorer2OverallTotalScores = 0;
-        let Scorer3OverallTotalScores = 0;
-        let Scorer4OverallTotalScores = 0;
+        let scorer1OverallTotalScores = 0;
+        let scorer2OverallTotalScores = 0;
+        let scorer3OverallTotalScores = 0;
+        let scorer4OverallTotalScores = 0;
+        let allScorerOverallTotalScores = 0;
+
         let length = this._responses.length;
       
         this._responses.forEach(item => {
@@ -779,11 +783,11 @@ export class ReviewScorecardComponent implements OnInit {
             if(user[0] != undefined)
             {
               if(Number(item.createdUserId) == Number(user[0].createdUserId))  
-              Scorer1OverallTotalScores  += Number(item.responseOption.name); 
+              scorer1OverallTotalScores  += Number(item.responseOption.name); 
             }      
           }
           else{
-            Scorer1OverallTotalScores = 0;
+            scorer1OverallTotalScores = 0;
           }
         });
 
@@ -793,11 +797,11 @@ export class ReviewScorecardComponent implements OnInit {
             if(user[1] != undefined)
             {
               if(Number(item.createdUserId) == Number(user[1].createdUserId))  
-              Scorer2OverallTotalScores  += Number(item.responseOption.name); 
+              scorer2OverallTotalScores  += Number(item.responseOption.name); 
             }       
           }
           else{
-            Scorer2OverallTotalScores = 0;
+            scorer2OverallTotalScores = 0;
           }
         });
 
@@ -807,11 +811,11 @@ export class ReviewScorecardComponent implements OnInit {
             if(user[2] != undefined)
             {
               if(Number(item.createdUserId) == Number(user[2].createdUserId))  
-              Scorer3OverallTotalScores  += Number(item.responseOption.name); 
+              scorer3OverallTotalScores  += Number(item.responseOption.name); 
             }       
           }
           else{
-            Scorer3OverallTotalScores = 0;
+            scorer3OverallTotalScores = 0;
           }
         });
 
@@ -821,21 +825,34 @@ export class ReviewScorecardComponent implements OnInit {
             if(user[3] != undefined)
             {
               if(Number(item.createdUserId) == Number(user[3].createdUserId))  
-              Scorer4OverallTotalScores  += Number(item.responseOption.name); 
+              scorer4OverallTotalScores  += Number(item.responseOption.name); 
             }      
           }
           else{
-            Scorer4OverallTotalScores = 0;
+            scorer4OverallTotalScores = 0;
           }
         });
-        this.Socrer1OverallTotalScore = Scorer1OverallTotalScores;
-        this.Socrer2OverallTotalScore = Scorer2OverallTotalScores;
-        this.Socrer3OverallTotalScore = Scorer3OverallTotalScores;
-        this.Socrer4OverallTotalScore = Scorer4OverallTotalScores;
-        this.Scorer1OverallAvgScore = Number((Scorer1OverallTotalScores/5).toFixed(2));   
-        this.Scorer2OverallAvgScore = Number((Scorer2OverallTotalScores/5).toFixed(2));
-        this.Scorer3OverallAvgScore = Number((Scorer3OverallTotalScores/5).toFixed(2));
-        this.Scorer4OverallAvgScore = Number((Scorer4OverallTotalScores/5).toFixed(2));     
+
+        this._responses.forEach(item => {
+          if(Number(item.responseOption.name) >= 0)
+          {
+            allScorerOverallTotalScores  += Number(item.responseOption.name); 
+          }
+          else{
+            allScorerOverallTotalScores = 0;
+          }
+        });
+
+        this.socrer1OverallTotalScore = scorer1OverallTotalScores;
+        this.socrer2OverallTotalScore = scorer2OverallTotalScores;
+        this.socrer3OverallTotalScore = scorer3OverallTotalScores;
+        this.socrer4OverallTotalScore = scorer4OverallTotalScores;
+        this.allSocrerOverallTotalScore = allScorerOverallTotalScores;
+        this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores/5).toFixed(2));   
+        this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores/5).toFixed(2));
+        this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores/5).toFixed(2));
+        this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores/4).toFixed(2));
+        this.allScorerOverallAvgScore = Number((allScorerOverallTotalScores/4).toFixed(2));       
      
       },
       (err) => {

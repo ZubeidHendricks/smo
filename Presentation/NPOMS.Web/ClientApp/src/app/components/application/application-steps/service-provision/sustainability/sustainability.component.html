@@ -1,8 +1,8 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header="Sustainability Plan" *ngIf="activeSustainabilityPlans">
-    <!-- <div class="p-grid p-nogutter p-justify-end">
+    <div class="p-grid p-nogutter p-justify-end">
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Sustainability Plans" (click)="reviewAllItems()"></button>
-    </div>     -->
+    </div>    
     <div style="height: 10px;"></div>
 
     <p-table [rowHover]="true" [columns]="sustainabilityPlanCols" [value]="activeSustainabilityPlans" styleClass="p-datatable-sm">
@@ -19,8 +19,8 @@
             <tr class="heading">
                 <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="getColspan()">
                     <span><span class="p-text-bold">Activity:</span> {{rowData.activity.activityList.name}}</span>
-                    <!-- <br>
-                    <span><span class="p-text-bold">Facilities and/or Community Places:</span> {{rowData.activity.facilityListText}}</span> -->
+                    <br>
+                    <span><span class="p-text-bold">Facilities and/or Community Places:</span> {{rowData.activity.facilityListText}}</span>
                 </td>
             </tr>
             <tr [ngClass]="rowData.changesRequired === true ? 'red' : 'default' && rowData.changesRequired === false ? 'green' : 'default'" class="default-font">                
