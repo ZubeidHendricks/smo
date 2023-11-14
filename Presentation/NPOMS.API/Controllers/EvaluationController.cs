@@ -127,7 +127,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-        [HttpGet("Id/{id}")]
+		[HttpGet("fundingAppId/{fundingAppId}/questionId/{questionId}", Name = "getResponses")]
+		public async Task<IActionResult> GetResponses(int fundingAppId, int questionId)
+		{
+			try
+			{
+				var results = await _evaluationService.GetResponses(fundingAppId, questionId, base.GetUserIdentifier());
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetResponseHistory action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("Id/{id}")]
         public async Task<IActionResult> GetResponse(int id)
         {
             try
@@ -171,6 +186,8 @@ namespace NPOMS.API.Controllers
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
+
+
 
 		[HttpPut("response", Name = "UpdateResponse")]
 		public async Task<IActionResult> UpdateResponse([FromBody] Response model)

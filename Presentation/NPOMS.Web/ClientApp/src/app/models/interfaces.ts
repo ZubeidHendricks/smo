@@ -1358,6 +1358,17 @@ export interface IResponseOptions {
     responseOption: IResponseOption;
 }
 
+export interface IGetResponseOptions {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+    createdUserId: number;
+    responseOption: IResponseOption;
+    createdUser: IUser;
+}
+
 export interface IResponseHistory {
     id: number;
     fundingApplicationId: number;

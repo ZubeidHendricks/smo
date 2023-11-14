@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -16,6 +16,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { QuestionCategoryComponent } from '../../admin/utilities/question-category/question-category.component';
 
 export interface IResp
 {
@@ -41,6 +42,7 @@ export class ReviewScorecardComponent implements OnInit {
     }
   }
 
+  
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
   }
@@ -68,9 +70,9 @@ export class ReviewScorecardComponent implements OnInit {
   _recommendation: boolean = false;
   responseOptions: IResponseOption[];
   _responses: IResponseOptions[];
-  _responseUsers: IResponseOptions[];
+  _responseUsers: IGetResponseOptions[];
   responseHistory: IResponseHistory[];
-  displayHistoryDialog: boolean;
+  displayCommentDialog: boolean;
   historyCols: any[];
   displayHistory: boolean;
   paramSubcriptions: Subscription;
@@ -913,6 +915,23 @@ export class ReviewScorecardComponent implements OnInit {
         }
       })
     }
+
+    public onSelectViewComment(question: IQuestionResponseViewModel) {
+      this._spinner.show();
+      this._responseUsers = [];
+      this._evaluationService.getResponses(Number(this.id), question.questionId).subscribe(
+        (results) => {
+          this._responseUsers = results;
+          this.displayCommentDialog = true;
+          this._spinner.hide();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+
 
     public disableElement() {
      
