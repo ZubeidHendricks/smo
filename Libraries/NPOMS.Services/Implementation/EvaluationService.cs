@@ -92,6 +92,11 @@ namespace NPOMS.Services.Implementation
             return await _responseHistoryRepository.GetByIds(fundingApplicationId, questionId, currentUser.Id);
         }
 
+        public async Task<IEnumerable<Response>> GetResponses(int fundingApplicationId, int questionId, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            return await _responseRepository.GetByFIdandQId(fundingApplicationId, questionId, currentUser.Id);
+        }
         public async Task<IEnumerable<Response>> GetResponse(int fundingApplicationId)
         {
             return await _responseRepository.GetByFundingApplicationId(fundingApplicationId);

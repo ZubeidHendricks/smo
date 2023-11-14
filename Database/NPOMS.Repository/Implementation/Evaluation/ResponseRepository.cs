@@ -46,6 +46,15 @@ namespace NPOMS.Repository.Implementation.Evaluation
 							.AsNoTracking().ToListAsync();
 		}
 
+		public async Task<IEnumerable<Response>> GetByFIdandQId(int fundingApplicationId, int questionId, int currentUserId)
+		{
+			return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
+											  x.QuestionId.Equals(questionId) &&
+											  x.CreatedUserId.Equals(currentUserId))
+                .Include(x => x.CreatedUser)
+                            .AsNoTracking().ToListAsync();
+		}
+
 		public async Task<Response> GetResponseByIds(int fundingApplicationId, int questionId, int currentUserId)
 		{
 			return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) && 

@@ -56,9 +56,9 @@
                         <td style="text-align: center;">{{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
                         </td>
                         <td style="text-align: center;">
-                            <button *ngIf="question.hasComment" pButton pRipple type="button"
+                            <button *ngIf="question.hasComment"  pButton pRipple type="button"
                             class="p-button-text action-button" icon="fa fa-comments-o"
-                            pTooltip="Comments" tooltipPosition="top"></button>
+                            pTooltip="Comments" tooltipPosition="top" (click)="onSelectViewComment(question)"></button>
                         </td>
                     </tr>
                 </ng-template>
@@ -76,7 +76,7 @@
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer3OverallTotalScore}}</b></td>
             <td style="width: 9%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer4OverallTotalScore}}</b></td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{allSocrerOverallTotalScore}}</b></td>
-            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
+            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
             <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
         </tr>
         <tr>
@@ -86,8 +86,8 @@
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}}</b></td>
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}}</b></td>
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}}</b></td>
+            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "class="{{getRagColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
-            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
             <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
         </tr>
     </table>
@@ -209,3 +209,30 @@
            
     </div>
 </p-panel>
+
+<p-dialog header="Comments" [(visible)]="displayCommentDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}"
+        [value]="_responseUsers" styleClass="p-datatable-sm" [showCurrentPageReport]="true">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th>
+                    #
+                </th>
+                <th>
+                    Comments
+                </th>
+                <th>
+                    Commented By
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.comment}}</td>
+                <td>{{rowData.createdUser.fullName}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
