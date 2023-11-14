@@ -66,31 +66,32 @@
     </p-panel>
     <div style="height: 10px;"></div>
 </div>
-<div style="height: 10px;"></div>
-<table style="width: 100%; border-width: 1px;">
-    <tr>
-        <td style="width: 15%; text-align: center;"> <span class="p-text-bold p-ml-2"><b>(Score per scorer -/50)</b></span></td>
-        <td style="width: 22%; text-align: center;">&nbsp;</td>
-        <td style="width: 8%; text-align: center;"><b>{{Socrer1OverallTotalScore}}</b></td>
-        <td style="width: 8%; text-align: center;"><b>{{Socrer2OverallTotalScore}}</b></td>
-        <td style="width: 8%; text-align: center;"><b>{{Socrer3OverallTotalScore}}</b></td>
-        <td style="width: 8%; text-align: center;"><b>{{Socrer4OverallTotalScore}}</b></td>
-        <td style="width: 8%; text-align: center;"></td>
-        <td style="width: 12%; text-align: center;"></td>
-        <td style="width: 10%; text-align: center;">&nbsp;</td>
-    </tr>
-    <tr>
-        <td style="width: 15%; text-align: center;"> <span class="p-text-bold p-ml-2"><b>Average scorer per scorer</b></span></td>
-        <td style="width: 22%; text-align: center;">&nbsp;</td>
-        <td style="width: 8%; text-align: center;" class="{{getRagColour1(Scorer1OverallAvgScore)}}"><b>{{Scorer1OverallAvgScore}}</b></td>
-        <td style="width: 8%; text-align: center;" class="{{getRagColour1(Scorer2OverallAvgScore)}}"><b>{{Scorer2OverallAvgScore}}</b></td>
-        <td style="width: 8%; text-align: center;" class="{{getRagColour1(Scorer3OverallAvgScore)}}"><b>{{Scorer3OverallAvgScore}}</b></td>
-        <td style="width: 8%; text-align: center;" class="{{getRagColour1(Scorer4OverallAvgScore)}}"><b>{{Scorer4OverallAvgScore}}</b></td>
-        <td style="width: 8%; text-align: center;"></td>
-        <td style="width: 12%; text-align: center;"></td>
-        <td style="width: 10%; text-align: center;">&nbsp;</td>
-    </tr>
-</table>
+<p-panel [style]="{'font-size':'12px', 'width':'100%'}" >
+    <table styleClass="p-datatable-striped" style="width: 100%;">
+        <tr>
+            <td style="width: 16%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "> <span class="p-text-bold p-ml-2"><b>(Score per scorer -/50)</b></span></td>
+            <td style="width: 21%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer1OverallTotalScore}}</b></td>
+            <td style="width: 9%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer2OverallTotalScore}}</b></td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer3OverallTotalScore}}</b></td>
+            <td style="width: 9%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer4OverallTotalScore}}</b></td>
+            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{allSocrerOverallTotalScore}}</b></td>
+            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
+            <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 15%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "> <span class="p-text-bold p-ml-2"><b>Average scorer per scorer</b></span></td>
+            <td style="width: 22%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer1OverallAvgScore)}}"><b>{{scorer1OverallAvgScore}}</b></td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}}</b></td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}}</b></td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}}</b></td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
+            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
+            <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+        </tr>
+    </table>
+</p-panel>
 <div style="height: 10px;"></div>
 <div class="p-col-fixed form-label">
     <div class="box" style="text-align: left;">
@@ -118,9 +119,15 @@
                 <button type="button" pButton pRipple [pRowToggler]="rowData.activity.objective.name" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                 <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
             </td>
-            <td style="text-align: center; width: 10%;">{{rowData.totalTargets}}</td>
-            <td style="text-align: center; width: 10%;">{{rowData.totalActuals}}</td>
-            <td style="text-align: center; width: 5%;">{{rowData.totalAvg}} %</td>
+            <td style="text-align: center; width: 10%;">
+                <!-- {{rowData.totalTargets}} -->
+            </td>
+            <td style="text-align: center; width: 10%;">
+                <!-- {{rowData.totalActuals}} -->
+            </td>
+            <td style="text-align: center; width: 5%;">
+                <!-- {{rowData.totalAvg}} % -->
+            </td>
         </tr>   
     </ng-template>
     <ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex">
