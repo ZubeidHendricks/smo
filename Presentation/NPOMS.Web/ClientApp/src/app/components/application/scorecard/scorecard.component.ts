@@ -624,7 +624,7 @@ export class ScorecardComponent implements OnInit {
        
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
         // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
-        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.applicationTypeId);
+        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId ==  this.application.applicationPeriod.financialYear.id);
         let filteredWorkplanActuals = workplanActuals.filter((el) => {
           return workplanTargets.some((f) => {
             return f.id === el.workplanTargetId;
