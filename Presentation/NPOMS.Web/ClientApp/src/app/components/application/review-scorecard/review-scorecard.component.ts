@@ -571,6 +571,10 @@ export class ReviewScorecardComponent implements OnInit {
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
         this.workplanIndicators = [];
+       
+
+       // var Objectives = results.filter((item, i, arr) => arr.findIndex((t) => t.objectiveId=== item.objectiveId) === i);
+        //console.log('Objectives', Objectives);
 
         this.activities.forEach(activity => {
           this.workplanIndicators.push({
@@ -652,10 +656,8 @@ export class ReviewScorecardComponent implements OnInit {
 
         // Filter WorkplanTargets on activity, financial year and monthly frequency
         let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id && x.frequencyId == FrequencyEnum.Monthly);
-         
         // Calculate total targets
         let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
-//alert(this.application.applicationPeriod.financialYear.id);
        
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
         // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
@@ -730,22 +732,47 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
 
-  updateRowGroupMetaDataAct() {     
+  updateRowGroupMetaDataAct() {  
+    let target = [];   
     this.rowGroupMetadataActivities = [];
     this.activities = this.activities.sort((a, b) => a.objectiveId - b.objectiveId);
 
     if (this.activities) {
       this.activities.forEach(element => {
-        var itemExists = this.rowGroupMetadataActivities.some(function (data) { return data.itemName === element.objective.name });
+        var itemExists = this.rowGroupMetadataActivities.some(function (data) 
+        { 
+          return data.itemName === element.objective.name 
+        });
 
         this.rowGroupMetadataActivities.push({
+          target: 0,
           itemName: element.objective.name,
           itemExists: itemExists
         });
+
+        // if(Number(element.target) >= 0)
+        // {
+        //   if(element.objective.name === this.rowGroupMetadataActivities..ite)
+        //   {
+        //     objectiveName  += Number(element.target); 
+        //   }      
+        // }
+
+
       });
     }        
     this.allDataLoaded();
   }
+
+  // findsum(data){    
+  //   debugger  
+  //   let value: any;   
+  //  // console.log(this.value);  
+  //   for(let j=0;j<data.length;j++){   
+  //        this.total+= this.value[j].Salary  
+  //        console.log(this.total)  
+  //   }  
+  // } 
 
   private allDataLoaded() {
     if (this.objectives && this.activities) {
