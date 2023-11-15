@@ -60,7 +60,7 @@ export class ReviewApplicationComponent implements OnInit {
   isMainReviewer: boolean;
   isSystemAdmin: boolean;
   isAdmin: boolean;
-  canReviewOrApprove: boolean;
+  canReviewOrApprove: boolean = false;
 
   reviewerSatisfactionCols: any;
   applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[];
@@ -91,7 +91,7 @@ export class ReviewApplicationComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.updateSteps();
-        this.buildMenu();        
+        this.buildMenu();
       }
     });
 
@@ -111,12 +111,6 @@ export class ReviewApplicationComponent implements OnInit {
           this.application = results;
           this.buildSteps(results.applicationPeriod);
           this.loadObjectives();
-          this.loadActivities();
-          this.loadSustainabilityPlans();
-          this.loadResources();
-          this.loadCreatedUser();
-          this.loadReviewerSatisfaction();
-          this.isApplicationAvailable = true;
         }
 
         this._spinner.hide();
@@ -146,7 +140,7 @@ export class ReviewApplicationComponent implements OnInit {
       this._userRepo.getUserById(this.application.updatedUserId).subscribe(
         (results) => {
           this.application.updatedUser = results;
-          this._spinner.hide();
+          this.loadReviewerSatisfaction();
         },
         (err) => {
           this._loggerService.logException(err);
@@ -202,6 +196,7 @@ export class ReviewApplicationComponent implements OnInit {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results.filter(x => x.isActive === true);
+        this.loadActivities();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -214,6 +209,7 @@ export class ReviewApplicationComponent implements OnInit {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
+        this.loadSustainabilityPlans();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -226,6 +222,7 @@ export class ReviewApplicationComponent implements OnInit {
     this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
       (results) => {
         this.sustainabilityPlans = results.filter(x => x.isActive === true);
+        this.loadResources();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -238,6 +235,7 @@ export class ReviewApplicationComponent implements OnInit {
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
         this.resources = results.filter(x => x.isActive === true);
+        this.loadCreatedUser();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -362,6 +360,8 @@ export class ReviewApplicationComponent implements OnInit {
     this._applicationRepo.getApplicationReviewerSatisfactions(model).subscribe(
       (results) => {
         this.applicationReviewerSatisfaction = results;
+        this.isApplicationAvailable = true;
+        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);

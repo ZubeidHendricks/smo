@@ -144,7 +144,13 @@ namespace NPOMS.Repository.Configurations.Entities
                     Id = 22,
                     Name = "NonCompliance",
                     SystemName = "Non Compliance"
-                }
+                },
+				new Status
+				{
+					Id = 23,
+					Name = "Pending Reviewer Satisfaction",
+					SystemName = "PendingReviewerSatisfaction"
+				}
             );
 		}
 	}

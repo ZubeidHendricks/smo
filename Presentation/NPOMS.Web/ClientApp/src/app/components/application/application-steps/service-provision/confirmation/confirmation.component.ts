@@ -31,10 +31,6 @@ export class ConfirmationComponent implements OnInit {
   approvalFromOptions: any[];
 
   reviewerSatisfaction: IApplicationReviewerSatisfaction[];
-  reviewerSatisfactionObjective: IApplicationReviewerSatisfaction[];
-  reviewerSatisfactionActivity: IApplicationReviewerSatisfaction[];
-  reviewerSatisfactionSustainability: IApplicationReviewerSatisfaction[];
-  reviewerSatisfactionResourcing: IApplicationReviewerSatisfaction[];
 
   objectives: IObjective[];
   activities: IActivity[];
@@ -94,8 +90,10 @@ export class ConfirmationComponent implements OnInit {
   private buildStatusOptions() {
     this.statuses.push({ name: 'Amendments Required', value: StatusEnum.AmendmentsRequired });
 
-    if (this.application.statusId === StatusEnum.PendingReview)
+    if (this.application.statusId === StatusEnum.PendingReview || this.application.statusId === StatusEnum.PendingReviewerSatisfaction) {
+      this.statuses.push({ name: 'Pending Reviewer Satisfaction', value: StatusEnum.PendingReviewerSatisfaction });
       this.statuses.push({ name: 'Accept Application (Send for Approval)', value: StatusEnum.PendingApproval });
+    }
 
     if (this.application.statusId === StatusEnum.PendingApproval || this.application.statusId === StatusEnum.ApprovalInProgress)
       this.statuses.push({ name: 'Approve Application', value: StatusEnum.PendingSLA });
@@ -195,35 +193,19 @@ export class ConfirmationComponent implements OnInit {
     );
   }
 
-  public onOpenObjective(e) {
-    let index = e.index;
-    let object = this.objectives[index];
-
-    this.reviewerSatisfactionObjective = [];
-    this.reviewerSatisfactionObjective = this.reviewerSatisfaction.filter(x => x.entityId === object.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Objectives);
+  public getReviewerSatisfactionObjective(objective: IObjective) {
+    return this.reviewerSatisfaction.filter(x => x.entityId === objective.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Objectives);
   }
 
-  public onOpenActivity(e) {
-    let index = e.index;
-    let object = this.activities[index];
-
-    this.reviewerSatisfactionActivity = [];
-    this.reviewerSatisfactionActivity = this.reviewerSatisfaction.filter(x => x.entityId === object.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Activities);
+  public getReviewerSatisfactionActivity(activity: IActivity) {
+    return this.reviewerSatisfaction.filter(x => x.entityId === activity.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Activities);
   }
 
-  public onOpenSustainability(e) {
-    let index = e.index;
-    let object = this.sustainabilityPlans[index];
-
-    this.reviewerSatisfactionSustainability = [];
-    this.reviewerSatisfactionSustainability = this.reviewerSatisfaction.filter(x => x.entityId === object.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Sustainability);
+  public getReviewerSatisfactionSustainability(plan: ISustainabilityPlan) {
+    return this.reviewerSatisfaction.filter(x => x.entityId === plan.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Sustainability);
   }
 
-  public onOpenResourcing(e) {
-    let index = e.index;
-    let object = this.resources[index];
-
-    this.reviewerSatisfactionResourcing = [];
-    this.reviewerSatisfactionResourcing = this.reviewerSatisfaction.filter(x => x.entityId === object.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Resourcing);
+  public getReviewerSatisfactionResourcing(resource: IResource) {
+    return this.reviewerSatisfaction.filter(x => x.entityId === resource.id && x.serviceProvisionStepId === ServiceProvisionStepsEnum.Resourcing);
   }
 }
