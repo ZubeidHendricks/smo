@@ -203,7 +203,7 @@ export enum StatusEnum {
     Recommended = 20,
     StronglyRecommended = 21,
     NonCompliance = 22,
-    GetName
+    PendingReviewerSatisfaction = 23
 }
 
 export enum AuditorOrAffiliationEntityTypeEnum {
