@@ -39,15 +39,18 @@
                         <td>
                             <span class="p-text-bold p-ml-2"><b>{{question.questionCategoryName}}</b></span>
                         </td>
-                        <td class="p-text-bold p-ml-2">{{question.questionName}}</td>
-                        
-                        <td style="text-align: center;">{{question.responsesO[0]}}</td>
-                        <td style="text-align: center;">{{question.responsesO[1]}}</td>
-                        <td style="text-align: center;">{{question.responsesO[2]}}</td>
-                        <td style="text-align: center;">{{question.responsesO[3]}}</td>
+                        <td class="p-text-bold p-ml-2">{{question.questionName}}</td>                        
+                        <td style="text-align: center;" class="{{getRagColour1(question.responsesO[0])}}">{{question.responsesO[0]}}</td>
+                        <td style="text-align: center;" class="{{getRagColour1(question.responsesO[1])}}">{{question.responsesO[1]}}</td>
+                        <td style="text-align: center;" class="{{getRagColour1(question.responsesO[2])}}">{{question.responsesO[2]}}</td>
+                        <td style="text-align: center;" class="{{getRagColour1(question.responsesO[3])}}">{{question.responsesO[3]}}</td>
                         <td style="text-align: center;"><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span>
                         </td>
-                        <td style="text-align: center;">{{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
+                        <td style="text-align: center;" *ngIf="question.sumOfResponse === 0 && question.responsesO.length === 0">
+                            {{0}}
+                        </td>
+                        <td style="text-align: center;" class="{{getRagColour1((question.sumOfResponse/question.responsesO.length).toFixed(2))}}" *ngIf="question.sumOfResponse > 0 && question.responsesO.length > 0">
+                            {{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
                         </td>
                         <td style="text-align: center;">
                             <button *ngIf="question.hasComment" pButton pRipple type="button"
@@ -70,7 +73,7 @@
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer3OverallTotalScore}}</b></td>
             <td style="width: 9%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer4OverallTotalScore}}</b></td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{allSocrerOverallTotalScore}}</b></td>
-            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
+            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
             <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
         </tr>
         <tr>
@@ -80,8 +83,8 @@
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}}</b></td>
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}}</b></td>
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}}</b></td>
+            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "class="{{getRagColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
-            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
             <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
         </tr>
     </table>
@@ -97,9 +100,9 @@
             <th style="text-align: center; width: 5%;">#</th>
             <th style="text-align: center; width: 40%;">Activity</th>
             <th style="text-align: center; width: 30%;">Indicator</th>
-            <th style="text-align: center; width: 10%;">Target</th>
+            <th style="text-align: center; width: 7%;">Target</th>
             <th style="text-align: center; width: 10%;">Actual YTD</th>
-            <th style="text-align: center; width: 5%;">Avg %</th>
+            <th style="text-align: center; width: 8%;">Performance %</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">

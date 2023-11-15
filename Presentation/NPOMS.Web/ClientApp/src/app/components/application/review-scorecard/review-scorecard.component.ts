@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -16,6 +16,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { QuestionCategoryComponent } from '../../admin/utilities/question-category/question-category.component';
 
 export interface IResp
 {
@@ -41,6 +42,7 @@ export class ReviewScorecardComponent implements OnInit {
     }
   }
 
+  
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
   }
@@ -68,9 +70,9 @@ export class ReviewScorecardComponent implements OnInit {
   _recommendation: boolean = false;
   responseOptions: IResponseOption[];
   _responses: IResponseOptions[];
-  _responseUsers: IResponseOptions[];
+  _responseUsers: IGetResponseOptions[];
   responseHistory: IResponseHistory[];
-  displayHistoryDialog: boolean;
+  displayCommentDialog: boolean;
   historyCols: any[];
   displayHistory: boolean;
   paramSubcriptions: Subscription;
@@ -189,7 +191,6 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   private loadApplication() {
-    //this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         this.application = results;
@@ -362,11 +363,11 @@ export class ReviewScorecardComponent implements OnInit {
     let ragColour = 'rag-not-saved';    
     if(num !== undefined)
     {
-      if(Number(num) >= 1 && Number(num) <= 4)
+      if(Number(num) >= 0 && Number(num) <= 5)
       {
         ragColour = 'rag-not-saved';        
       }
-      else if(Number(num) >= 5 && Number(num) <= 8){
+      else if(Number(num) > 5 && Number(num) <= 8){
         ragColour = 'rag-partial';  
       }
       else if(Number(num) > 8){
@@ -411,7 +412,7 @@ export class ReviewScorecardComponent implements OnInit {
         canDisplayField = true;
         break;
       case ResponseTypeEnum.Score:
-        canDisplayField = true; //question.weighting !== 0 ? true : false;
+        canDisplayField = true;
         break;
       case ResponseTypeEnum.CloseEnded2:
         canDisplayField = true;
@@ -443,7 +444,6 @@ export class ReviewScorecardComponent implements OnInit {
   public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
   {
     let totalAverageScore = 0;
-   // totalAverageScore  += Number(questionnaire);   
     questionnaire.forEach(item => {
 
       if(Number(item.responseOption.name) >= 0 && item.questionCategoryId)
@@ -454,8 +454,6 @@ export class ReviewScorecardComponent implements OnInit {
         totalAverageScore = 0;
       }
     });
-
-    //this.overallAverageScore = totalAverageScore;
 
     return totalAverageScore;
   }
@@ -475,8 +473,6 @@ export class ReviewScorecardComponent implements OnInit {
       }
     });
 
-   // this.overallAverageScore = totalAverageScore;
-    
     return this.overallAverageScore;
   }
 
@@ -506,14 +502,6 @@ export class ReviewScorecardComponent implements OnInit {
 
     }
   }
-
-  // financialYearChange() {
-  //   if (this.selectedFinancialYear) {
-  //     this.filteredWorkplanIndicators = [];
-  //     this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
-  //     this.loadActivities();
-  //   }
-  // }
 
   public getQuestionCategory()
   {    
@@ -547,7 +535,9 @@ export class ReviewScorecardComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-         this.application = results; this.loadActivities();
+         this.application = results; 
+         
+         this.loadActivities();
         this.loadObjectives();
         this.loadNpo();
         this._spinner.hide();
@@ -661,15 +651,15 @@ export class ReviewScorecardComponent implements OnInit {
       this.workplanIndicators.forEach(indicator => {
 
         // Filter WorkplanTargets on activity, financial year and monthly frequency
-        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2 && x.frequencyId == FrequencyEnum.Monthly);
-
+        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id && x.frequencyId == FrequencyEnum.Monthly);
+         
         // Calculate total targets
         let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
-
+//alert(this.application.applicationPeriod.financialYear.id);
        
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
         // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
-        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2);
+        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id);
         let filteredWorkplanActuals = workplanActuals.filter((el) => {
           return workplanTargets.some((f) => {
             return f.id === el.workplanTargetId;
@@ -682,7 +672,7 @@ export class ReviewScorecardComponent implements OnInit {
            let actual = object.actual == null ? 0 : object.actual;
            return sum + actual;
         }, 0);
-        
+
         let avg =((actualTotal/targetTotal)*100).toFixed(2);
 
         if (isNaN(((actualTotal/targetTotal)*100))) {
@@ -698,6 +688,7 @@ export class ReviewScorecardComponent implements OnInit {
           totalAvg: Number(avg)
         } as IWorkplanIndicator);
       });
+      
 
       let sumOfAvg = 0;
 
@@ -851,8 +842,8 @@ export class ReviewScorecardComponent implements OnInit {
         this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores/5).toFixed(2));   
         this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores/5).toFixed(2));
         this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores/5).toFixed(2));
-        this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores/4).toFixed(2));
-        this.allScorerOverallAvgScore = Number((allScorerOverallTotalScores/4).toFixed(2));       
+        this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores/5).toFixed(2));
+        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore)/4).toFixed(2));       
      
       },
       (err) => {
@@ -913,6 +904,23 @@ export class ReviewScorecardComponent implements OnInit {
         }
       })
     }
+
+    public onSelectViewComment(question: IQuestionResponseViewModel) {
+      this._spinner.show();
+      this._responseUsers = [];
+      this._evaluationService.getResponses(Number(this.id), question.questionId).subscribe(
+        (results) => {
+          this._responseUsers = results;
+          this.displayCommentDialog = true;
+          this._spinner.hide();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+
 
     public disableElement() {
      

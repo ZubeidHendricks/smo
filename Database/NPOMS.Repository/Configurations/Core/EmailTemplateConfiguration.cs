@@ -158,6 +158,13 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "WorkplanActualPendingApproval",
 					Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been sent for you to approve.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{npoId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
 					Subject = "Indicator Actuals Pending Approval - {NPO}"
+				},
+				new EmailTemplate
+				{
+					Id = 22,
+					Name = "StatusChangedPendingReviewerSatisfaction",
+					Body = "<p>Dear {ToUserFullName},</p><p>The application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been sent to you to indicate your reviewer satisfaction.</p><p>Please ignore this email if you have indicated your reviewer satisfaction.</p><p>Please <a href=\"{url}/#/applications\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+					Subject = "Application Pending Reviewer Satisfaction - {NPO}"
 				}
 			);
 		}

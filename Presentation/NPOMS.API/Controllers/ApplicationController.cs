@@ -271,6 +271,14 @@ namespace NPOMS.API.Controllers
 
 							await statusChangedOrgReviewComments.SubmitToQueue();
 							break;
+						case StatusEnum.PendingReviewerSatisfaction:
+							var statusChangedPendingReviewerSatisfaction = EmailTemplateFactory
+									.Create(EmailTemplateTypeEnum.StatusChangedPendingReviewerSatisfaction)
+									.Get<StatusChangedPendingReviewerSatisfactionEmailTemplate>()
+									.Init(model);
+
+							await statusChangedPendingReviewerSatisfaction.SubmitToQueue();
+							break;
 					}
 				}				
 

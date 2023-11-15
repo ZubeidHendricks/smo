@@ -368,11 +368,11 @@ export class PrintScorecardComponent implements OnInit {
     let ragColour = 'rag-not-saved';    
     if(num !== undefined)
     {
-      if(Number(num) >= 1 && Number(num) <= 4)
+      if(Number(num) >= 0 && Number(num) <= 5)
       {
         ragColour = 'rag-not-saved';        
       }
-      else if(Number(num) >= 5 && Number(num) <= 8){
+      else if(Number(num) > 5 && Number(num) <= 8){
         ragColour = 'rag-partial';  
       }
       else if(Number(num) > 8){
@@ -850,8 +850,8 @@ export class PrintScorecardComponent implements OnInit {
         this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores/5).toFixed(2));   
         this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores/5).toFixed(2));
         this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores/5).toFixed(2));
-        this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores/4).toFixed(2));
-        this.allScorerOverallAvgScore = Number((allScorerOverallTotalScores/4).toFixed(2));       
+        this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores/5).toFixed(2));
+        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore)/4).toFixed(2));            
      
       },
       (err) => {
