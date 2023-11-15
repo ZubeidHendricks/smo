@@ -652,7 +652,7 @@ export class ReviewScorecardComponent implements OnInit {
 
         // Filter WorkplanTargets on activity, financial year and monthly frequency
         let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id && x.frequencyId == FrequencyEnum.Monthly);
-
+         
         // Calculate total targets
         let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
 //alert(this.application.applicationPeriod.financialYear.id);
@@ -672,7 +672,7 @@ export class ReviewScorecardComponent implements OnInit {
            let actual = object.actual == null ? 0 : object.actual;
            return sum + actual;
         }, 0);
-        
+
         let avg =((actualTotal/targetTotal)*100).toFixed(2);
 
         if (isNaN(((actualTotal/targetTotal)*100))) {
@@ -688,6 +688,7 @@ export class ReviewScorecardComponent implements OnInit {
           totalAvg: Number(avg)
         } as IWorkplanIndicator);
       });
+      
 
       let sumOfAvg = 0;
 
