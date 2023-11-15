@@ -699,7 +699,7 @@ export class ScorecardComponent implements OnInit {
   updateRowGroupMetaDataAct() {     
     this.rowGroupMetadataActivities = [];
     this.activities = this.activities.sort((a, b) => a.objectiveId - b.objectiveId);
-
+    this.filteredWorkplanIndicators
     if (this.activities) {
       this.activities.forEach(element => {
         var itemExists = this.rowGroupMetadataActivities.some(function (data) { return data.itemName === element.objective.name });

@@ -93,6 +93,34 @@
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
             <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
         </tr>
+        <tr>
+            <td style="width: 37%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" colspan="2"> <span class="p-text-bold p-ml-2"><b>Scorer performance Comments</b></span></td>
+            <!-- <td style="width: 22%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td> -->
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">
+                <button  pButton pRipple type="button"
+                class="p-button-text action-button" icon="fa fa-comments-o"
+                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(1)"></button>
+            </td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
+                <button  pButton pRipple type="button"
+                class="p-button-text action-button" icon="fa fa-comments-o"
+                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(2)"></button>
+            </td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
+                <button  pButton pRipple type="button"
+                class="p-button-text action-button" icon="fa fa-comments-o"
+                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(3)"></button>
+            </td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
+                <button  pButton pRipple type="button"
+                class="p-button-text action-button" icon="fa fa-comments-o"
+                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(4)"></button>
+            </td>
+            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
+            </td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
+            <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+        </tr>
     </table>
 </p-panel>
 <div style="height: 10px;"></div>
@@ -123,11 +151,10 @@
                 <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
             </td>
             <td style="text-align: center; width: 10%;">
-                <!-- {{rowData.totalTargets}} -->
-                {{rowData.activity.target}}
+                <!-- {{rowData.objectiveTargets}} -->
             </td>
             <td style="text-align: center; width: 10%;">
-                {{rowData.activity.actual}}
+                <!-- {{rowData.objectiveActuals}} -->
             </td>
             <td style="text-align: center; width: 5%;">
                 <!-- {{rowData.totalAvg}} % -->
@@ -239,4 +266,57 @@
             </tr>
         </ng-template>
     </p-table>
+</p-dialog>
+
+<p-dialog header="Comments" [(visible)]="displayDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+    <!-- <p-table [rowHover]="true" [style]="{'border':'none'}"
+        styleClass="p-datatable-sm" [showCurrentPageReport]="true"> -->
+        <div class="p-grid">
+            <div class="p-col-3 form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Improvement Areas
+                    </span>
+                </div>
+            </div>
+            <div class="p-col-9">
+                <textarea class="form-text" [rows]="3" pInputTextarea 
+                [(ngModel)]="captureImprovementArea" [ngModelOptions]="{standalone: true}" 
+                [autoResize]="true" [disabled]="true"></textarea>
+            </div>
+            <div class="p-col-3 form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Required Actions
+                    </span>
+                </div>
+            </div>
+            <div class="p-col-9">
+                <textarea class="form-text" [rows]="3" pInputTextarea 
+                [(ngModel)]="captureRequiredAction" [ngModelOptions]="{standalone: true}" 
+                [autoResize]="true" [disabled]="true"></textarea>
+            </div>
+        </div>
+        <div style="height: 10px;"></div>
+        <div class="p-grid">
+            <div class="p-col-3 form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Submitted By</span>
+                </div>
+            </div>
+            <div class="p-col-9">
+                <span>{{signedByUser}}</span>
+            </div>
+        </div>
+        <div style="height: 10px;"></div>
+        <div class="p-grid">
+            <div class="p-col-3 form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Submitted Date</span>
+                </div>
+            </div>
+            <div class="p-col-9">
+                <span>{{submittedDate | date: 'yyyy-MM-dd'}}</span>
+            </div>
+        </div>
+    <!-- </p-table> -->
 </p-dialog>

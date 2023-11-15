@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator, IWorkplanIndicatorSummary } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -73,6 +73,7 @@ export class ReviewScorecardComponent implements OnInit {
   _responseUsers: IGetResponseOptions[];
   responseHistory: IResponseHistory[];
   displayCommentDialog: boolean;
+  displayDialog: boolean;
   historyCols: any[];
   displayHistory: boolean;
   paramSubcriptions: Subscription;
@@ -89,7 +90,7 @@ export class ReviewScorecardComponent implements OnInit {
   ResponseTypeentities: IResponseType[];
   auditCols: any[];
   workplanIndicators: IWorkplanIndicator[];
-  filteredWorkplanIndicators: IWorkplanIndicator[];
+  filteredWorkplanIndicators: IWorkplanIndicatorSummary[];
   lastWorkplanTarget: boolean;
   lastWorkplanActual: boolean;
   financialYears: IFinancialYear[];
@@ -104,6 +105,10 @@ export class ReviewScorecardComponent implements OnInit {
   rowGroupMetadataActivities: any[];
   isApplicationAvailable: boolean;
   isObjectivesAvailable: boolean;
+  scorer1: number;
+  scorer2: number;
+  scorer3: number;
+  scorer4: number;
   socrer1OverallTotalScore: number;
   socrer2OverallTotalScore: number;
   socrer3OverallTotalScore: number;
@@ -586,7 +591,7 @@ export class ReviewScorecardComponent implements OnInit {
           this.loadTargets(activity);
           this.loadActuals(activity);
         });
-        this.updateRowGroupMetaDataAct();
+        //this.updateRowGroupMetaDataAct();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -651,7 +656,8 @@ export class ReviewScorecardComponent implements OnInit {
   private filterWorkplanIndicators() {
    // if (this.lastWorkplanTarget && this.lastWorkplanActual) {
       this.filteredWorkplanIndicators = [];
-
+      let objTargets = 0;
+      let objActuals = 0;
       this.workplanIndicators.forEach(indicator => {
 
         // Filter WorkplanTargets on activity, financial year and monthly frequency
@@ -680,15 +686,35 @@ export class ReviewScorecardComponent implements OnInit {
         if (isNaN(((actualTotal/targetTotal)*100))) {
           avg = '0';
         }
+
+        var objective = this.workplanIndicators.filter((item, i, arr) => arr.findIndex((t) => t.activity.objective.id === item.activity.objective.id) === i);
+      //  objective = objective.filter(x => x.activity.objective.id);
+        //console.log('objective', objective);
+        // for (var val of objective.filter(x => x.activity.objective.id)) {
+        //   console.log(val); // prints values: 10, 20, 30, 40
+        // }
         
+        objective.forEach(obj => {
+           if(obj.activity.objective.id === indicator.activity.objective.id)
+           {
+            objTargets  += targetTotal;
+            objActuals += actualTotal;
+           }
+        });
+
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
           workplanTargets: workplanTargets,
           workplanActuals: filteredWorkplanActuals,
           totalTargets: targetTotal,
-          totalActuals: actualTotal,
+          totalActuals: actualTotal,          
+          objectiveId: indicator.activity.objective.id,
+          ObjectiveName: indicator.activity.objective.name,
+
+          objectiveTargets: objTargets,
+          objectiveActuals: objActuals,
           totalAvg: Number(avg)
-        } as IWorkplanIndicator);
+        } as IWorkplanIndicatorSummary);
       });
       
 
@@ -731,22 +757,26 @@ export class ReviewScorecardComponent implements OnInit {
     });
   }
 
-
   updateRowGroupMetaDataAct() {  
     let target = [];   
     this.rowGroupMetadataActivities = [];
-    this.activities = this.activities.sort((a, b) => a.objectiveId - b.objectiveId);
-
-    if (this.activities) {
-      this.activities.forEach(element => {
+    this.filteredWorkplanIndicators = this.filteredWorkplanIndicators.sort((a, b) => a.objectiveId - b.objectiveId);
+    console.log('this.filteredWorkplanIndicators',  this.filteredWorkplanIndicators);
+    if (this.filteredWorkplanIndicators) {
+      this.filteredWorkplanIndicators.forEach(element => {
         var itemExists = this.rowGroupMetadataActivities.some(function (data) 
         { 
-          return data.itemName === element.objective.name 
+          return data.itemName === element.ObjectiveName 
         });
 
+        var itemExists = this.rowGroupMetadataActivities.some(function (data) 
+        { 
+          return data.itemName === element.ObjectiveName 
+        });
+
+
         this.rowGroupMetadataActivities.push({
-          target: 0,
-          itemName: element.objective.name,
+          itemName: element.ObjectiveName,
           itemExists: itemExists
         });
 
@@ -786,7 +816,8 @@ export class ReviewScorecardComponent implements OnInit {
       (results) => {
         this._responses = results;
         var user = this._responses.filter((item, i, arr) => arr.findIndex((t) => t.createdUserId=== item.createdUserId) === i);
-
+       
+        
         let scorer1OverallTotalScores = 0;
         let scorer2OverallTotalScores = 0;
         let scorer3OverallTotalScores = 0;
@@ -800,8 +831,9 @@ export class ReviewScorecardComponent implements OnInit {
           {
             if(user[0] != undefined)
             {
+              this.scorer1 =  Number(user[0].createdUserId);
               if(Number(item.createdUserId) == Number(user[0].createdUserId))  
-              scorer1OverallTotalScores  += Number(item.responseOption.name); 
+              scorer1OverallTotalScores  += Number(item.responseOption.name);             
             }      
           }
           else{
@@ -814,6 +846,7 @@ export class ReviewScorecardComponent implements OnInit {
           {
             if(user[1] != undefined)
             {
+              this.scorer2 =  Number(user[1].createdUserId);
               if(Number(item.createdUserId) == Number(user[1].createdUserId))  
               scorer2OverallTotalScores  += Number(item.responseOption.name); 
             }       
@@ -828,6 +861,7 @@ export class ReviewScorecardComponent implements OnInit {
           {
             if(user[2] != undefined)
             {
+              this.scorer3 =  Number(user[2].createdUserId);
               if(Number(item.createdUserId) == Number(user[2].createdUserId))  
               scorer3OverallTotalScores  += Number(item.responseOption.name); 
             }       
@@ -842,6 +876,7 @@ export class ReviewScorecardComponent implements OnInit {
           {
             if(user[3] != undefined)
             {
+              this.scorer4 =  Number(user[3].createdUserId);
               if(Number(item.createdUserId) == Number(user[3].createdUserId))  
               scorer4OverallTotalScores  += Number(item.responseOption.name); 
             }      
@@ -947,7 +982,37 @@ export class ReviewScorecardComponent implements OnInit {
         }
       );
     }
+ 
+    public performanceComment(v: number)
+    {
 
+      this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
+        (results) => {
+          if(v === 1)
+            this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer1);
+          if(v === 2)
+            this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer2);
+          if(v === 3)
+            this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.scorer3);
+          if(v === 4)
+            this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.scorer4);
+         
+          if(this.capturedResponses.length > 0)
+          {
+              this.displayDialog = true;
+              let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
+              let  improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
+              this.captureImprovementArea = improvementArea;
+              this.captureRequiredAction = requiredAction;
+              this.signedByUser = this.capturedResponses[0].createdUser.fullName;
+              this.submittedDate = this.capturedResponses[0].createdDateTime;  
+             // this.hascapturedImprovementArea = true;
+             // this.hasCapturedRequiredAction = true;   
+             // this.hasScorecardSubmitted = true;      
+          }
+        }) 
+     
+    }
 
     public disableElement() {
      
