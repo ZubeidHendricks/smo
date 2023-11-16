@@ -30,13 +30,13 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th style="width: 15%; text-align: center;">#</th>
-                        <th style="width: 20%; text-align: center;">Name (Question/Statement)</th>
+                        <th style="width: 25%; text-align: center;">Name (Question/Statement)</th>
                         <th style="width: 8%; text-align: center;">Scorer<b> 1</b></th>
                         <th style="width: 8%; text-align: center;">Scorer<b> 2</b></th>
                         <th style="width: 8%; text-align: center;">Scorer<b> 3</b></th>
                         <th style="width: 8%; text-align: center;">Scorer<b> 4</b></th>
                         <th style="width: 6%; text-align: center;" >Total score</th>
-                        <th style="width: 12%; text-align: center;">Average Category Score</th>
+                        <th style="width: 10%; text-align: center; text-wrap:break-word;">Average Category Score</th>
                         <th style="width: 8%; text-align: center;">Comment</th>
                     </tr>
                 </ng-template>
@@ -65,64 +65,37 @@
                         </td>
                     </tr>
                 </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr>
+                        <td style="width: 16%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "> <span class="p-text-bold p-ml-2"><b>(Score per scorer -/50)</b></span></td>
+                        <td style="width: 21%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+                        <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer1OverallTotalScore}}</b></td>
+                        <td style="width: 9%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer2OverallTotalScore}}</b></td>
+                        <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer3OverallTotalScore}}</b></td>
+                        <td style="width: 9%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer4OverallTotalScore}}</b></td>
+                        <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{allSocrerOverallTotalScore}}</b></td>
+                        <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
+                        <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+                    </tr>                   
+                </ng-template>
         </p-table>
+        <table styleClass="p-datatable-striped" style="width: 100%;">
+            <tr>
+                <td style="width: 15%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "> <span class="p-text-bold p-ml-2"><b>Average score per scorer</b></span></td>
+                <td style="width: 25%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+                <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer1OverallAvgScore)}}"><b>{{scorer1OverallAvgScore}}</b></td>
+                <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}}</b></td>
+                <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}}</b></td>
+                <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}}</b></td>
+                <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "class="{{getRagColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
+                <td style="width: 18%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " colspan="2"></td>
+                <!-- <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td> -->
+            </tr>
+        </table>
     </p-panel>
     <div style="height: 10px;"></div>
 </div>
-<p-panel [style]="{'font-size':'12px', 'width':'100%'}" >
-    <table styleClass="p-datatable-striped" style="width: 100%;">
-        <tr>
-            <td style="width: 16%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "> <span class="p-text-bold p-ml-2"><b>(Score per scorer -/50)</b></span></td>
-            <td style="width: 21%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer1OverallTotalScore}}</b></td>
-            <td style="width: 9%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer2OverallTotalScore}}</b></td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer3OverallTotalScore}}</b></td>
-            <td style="width: 9%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{socrer4OverallTotalScore}}</b></td>
-            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "><b>{{allSocrerOverallTotalScore}}</b></td>
-            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
-            <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
-        </tr>
-        <tr>
-            <td style="width: 15%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "> <span class="p-text-bold p-ml-2"><b>Average score per scorer</b></span></td>
-            <td style="width: 22%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer1OverallAvgScore)}}"><b>{{scorer1OverallAvgScore}}</b></td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}}</b></td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}}</b></td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}}</b></td>
-            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "class="{{getRagColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
-            <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
-        </tr>
-        <tr>
-            <td style="width: 37%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" colspan="2"> <span class="p-text-bold p-ml-2"><b>Scorer performance Comments</b></span></td>
-            <!-- <td style="width: 22%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td> -->
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(1)"></button>
-            </td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(2)"></button>
-            </td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(3)"></button>
-            </td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(4)"></button>
-            </td>
-            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
-            </td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
-            <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
-        </tr>
-    </table>
-</p-panel>
+
 <div style="height: 10px;"></div>
 <div class="p-col-fixed form-label">
     <div class="box" style="text-align: left;">
@@ -142,10 +115,6 @@
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
         <tr  *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false">
-            <!-- <td [attr.colspan]="6">
-                <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                <span class="p-text-bold">Objectives</span>
-            </td> -->
             <td  [attr.colspan]="3">
                 <button type="button" pButton pRipple [pRowToggler]="rowData.activity.objective.name" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                 <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
@@ -184,7 +153,38 @@
         </tr>
     </ng-template>
 </p-table>
-<div style="height: 10px;"></div>
+<p-panel [style]="{'font-size':'12px', 'width':'100%'}" >
+    <table styleClass="p-datatable-striped" style="width: 100%;">
+        <tr>
+            <td style="width: 37%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" colspan="2"> <span class="p-text-bold p-ml-2"><b>Scorer performance Comments</b></span></td>
+            <!-- <td style="width: 22%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td> -->
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">
+                <button  pButton pRipple type="button"
+                class="p-button-text action-button" icon="fa fa-comments-o"
+                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(1)"></button>
+            </td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
+                <button  pButton pRipple type="button"
+                class="p-button-text action-button" icon="fa fa-comments-o"
+                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(2)"></button>
+            </td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
+                <button  pButton pRipple type="button"
+                class="p-button-text action-button" icon="fa fa-comments-o"
+                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(3)"></button>
+            </td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
+                <button  pButton pRipple type="button"
+                class="p-button-text action-button" icon="fa fa-comments-o"
+                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(4)"></button>
+            </td>
+            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;">
+            </td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "></td>
+            <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+        </tr>
+    </table>
+</p-panel>
 
 <p-panel header="Reviewer Summary">
     <div class="p-grid">
