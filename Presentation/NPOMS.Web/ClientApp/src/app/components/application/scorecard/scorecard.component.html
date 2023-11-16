@@ -6,14 +6,14 @@
 <div style="height: 10px;"></div>
 <div class="p-grid p-nogutter p-justify-between" style="border: solid 1px rgb(172, 168, 168);">
     <div>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application RefNo: "{{application.refNo}}"</span>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application RefNo: <span *ngIf="application">"{{application.refNo}}"</span></span>
             <i style="vertical-align: middle; padding: 10px;"></i>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: "{{this.financialYears[0].name}}"</span>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: <span *ngIf="financialYears">"{{financialYears[0].name}}"</span></span>
     </div>
     <div>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Organisation: "{{organisation}}"</span>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Organisation: <span *ngIf="organisation">"{{organisation}}"</span></span>
             <i style="vertical-align: middle; padding: 10px;"></i>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application Name: "{{application.applicationPeriod.name}}"</span>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application Name: <span *ngIf="application && application.applicationPeriod">"{{application.applicationPeriod.name}}"</span></span>
     </div>
 </div>
 <div>
@@ -428,8 +428,10 @@
             </ng-template>
             <ng-template pTemplate="footer">
                 <tr class="default-font">
-                    <td style="text-align: left; width: 20%;" colspan="5"><b>Activity Average Score</b></td>
-                    <td style="text-align: center;">{{(activityAvgScore).toFixed(2)}} %</td>
+                    <td style="text-align: left; width: 20%;" colspan="3"><b>Activity Average Score</b></td>
+                    <td style="text-align: center;">{{activityAvgScoreTarget}}</td>
+                    <td style="text-align: center;">{{activityAvgScoreActual}}</td>
+                    <td style="text-align: center;">{{(activityAvgScorePerformance).toFixed(2)}} %</td>
                 </tr>
               
             </ng-template>
