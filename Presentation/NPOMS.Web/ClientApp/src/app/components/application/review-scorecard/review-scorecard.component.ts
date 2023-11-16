@@ -577,10 +577,6 @@ export class ReviewScorecardComponent implements OnInit {
         this.activities = results.filter(x => x.isActive === true);
         this.workplanIndicators = [];
        
-
-       // var Objectives = results.filter((item, i, arr) => arr.findIndex((t) => t.objectiveId=== item.objectiveId) === i);
-        //console.log('Objectives', Objectives);
-
         this.activities.forEach(activity => {
           this.workplanIndicators.push({
             activity: activity,
@@ -591,7 +587,6 @@ export class ReviewScorecardComponent implements OnInit {
           this.loadTargets(activity);
           this.loadActuals(activity);
         });
-        //this.updateRowGroupMetaDataAct();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -656,12 +651,12 @@ export class ReviewScorecardComponent implements OnInit {
   private filterWorkplanIndicators() {
    // if (this.lastWorkplanTarget && this.lastWorkplanActual) {
       this.filteredWorkplanIndicators = [];
-      let objTargets = 0;
-      let objActuals = 0;
+      
       this.workplanIndicators.forEach(indicator => {
 
         // Filter WorkplanTargets on activity, financial year and monthly frequency
         let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id && x.frequencyId == FrequencyEnum.Monthly);
+        
         // Calculate total targets
         let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
        
@@ -674,7 +669,7 @@ export class ReviewScorecardComponent implements OnInit {
           });
         });
 
-        // Calculate total actuals
+               // Calculate total actuals
         let actualTotal =
         filteredWorkplanActuals.reduce((sum, object) => {
            let actual = object.actual == null ? 0 : object.actual;
@@ -687,21 +682,6 @@ export class ReviewScorecardComponent implements OnInit {
           avg = '0';
         }
 
-        var objective = this.workplanIndicators.filter((item, i, arr) => arr.findIndex((t) => t.activity.objective.id === item.activity.objective.id) === i);
-      //  objective = objective.filter(x => x.activity.objective.id);
-        //console.log('objective', objective);
-        // for (var val of objective.filter(x => x.activity.objective.id)) {
-        //   console.log(val); // prints values: 10, 20, 30, 40
-        // }
-        
-        objective.forEach(obj => {
-           if(obj.activity.objective.id === indicator.activity.objective.id)
-           {
-            objTargets  += targetTotal;
-            objActuals += actualTotal;
-           }
-        });
-
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
           workplanTargets: workplanTargets,
@@ -711,12 +691,9 @@ export class ReviewScorecardComponent implements OnInit {
           objectiveId: indicator.activity.objective.id,
           ObjectiveName: indicator.activity.objective.name,
 
-          objectiveTargets: objTargets,
-          objectiveActuals: objActuals,
           totalAvg: Number(avg)
         } as IWorkplanIndicatorSummary);
       });
-      
 
       let sumOfAvg = 0;
 
@@ -728,6 +705,58 @@ export class ReviewScorecardComponent implements OnInit {
 
       this.updateRowGroupMetaDataAct();
       this.makeRowsSameHeight();
+  }
+
+  public getObjectiveTargets(objective: IObjective) {
+    let totalTarget = 0;
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+
+    objectives.forEach(obj =>
+      {
+        if(obj.ObjectiveName === objective.name)  
+        totalTarget += obj.totalTargets;
+      }
+    );
+
+    return totalTarget;
+  }
+
+  public getObjectiveActuals(objective: IObjective) {
+    let totalActual = 0;
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+
+    objectives.forEach(obj =>
+      {
+        if(obj.ObjectiveName === objective.name)  
+        totalActual += obj.totalActuals;
+      }
+    );
+
+    return totalActual;
+  }
+
+  public getPerformanceAvg(objective: IObjective)
+  {
+    let totalTarget = 0;
+    let totalActual = 0;
+    let performanceAvg = '';
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+    objectives.forEach(obj =>
+      {
+        if(obj.ObjectiveName === objective.name) 
+        {
+          totalTarget += obj.totalTargets;
+          totalActual += obj.totalActuals;
+        }        
+      }
+    );
+
+    performanceAvg = ((totalActual/totalTarget)*100).toFixed(2);
+
+    if (isNaN(((totalActual/totalTarget)*100))) {
+      performanceAvg = '0';
+    }
+    return performanceAvg;
   }
 
   private makeRowsSameHeight() {
@@ -761,7 +790,6 @@ export class ReviewScorecardComponent implements OnInit {
     let target = [];   
     this.rowGroupMetadataActivities = [];
     this.filteredWorkplanIndicators = this.filteredWorkplanIndicators.sort((a, b) => a.objectiveId - b.objectiveId);
-    console.log('this.filteredWorkplanIndicators',  this.filteredWorkplanIndicators);
     if (this.filteredWorkplanIndicators) {
       this.filteredWorkplanIndicators.forEach(element => {
         var itemExists = this.rowGroupMetadataActivities.some(function (data) 
@@ -769,40 +797,15 @@ export class ReviewScorecardComponent implements OnInit {
           return data.itemName === element.ObjectiveName 
         });
 
-        var itemExists = this.rowGroupMetadataActivities.some(function (data) 
-        { 
-          return data.itemName === element.ObjectiveName 
-        });
-
-
         this.rowGroupMetadataActivities.push({
           itemName: element.ObjectiveName,
           itemExists: itemExists
         });
 
-        // if(Number(element.target) >= 0)
-        // {
-        //   if(element.objective.name === this.rowGroupMetadataActivities..ite)
-        //   {
-        //     objectiveName  += Number(element.target); 
-        //   }      
-        // }
-
-
       });
     }        
     this.allDataLoaded();
   }
-
-  // findsum(data){    
-  //   debugger  
-  //   let value: any;   
-  //  // console.log(this.value);  
-  //   for(let j=0;j<data.length;j++){   
-  //        this.total+= this.value[j].Salary  
-  //        console.log(this.total)  
-  //   }  
-  // } 
 
   private allDataLoaded() {
     if (this.objectives && this.activities) {

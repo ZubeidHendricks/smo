@@ -150,14 +150,14 @@
                 <button type="button" pButton pRipple [pRowToggler]="rowData.activity.objective.name" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                 <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
             </td>
-            <td style="text-align: center; width: 10%;">
-                <!-- {{rowData.objectiveTargets}} -->
+            <td style="text-align: center; width: 10%; font-weight: bold;">
+                {{getObjectiveTargets(rowData.activity.objective)}}
             </td>
-            <td style="text-align: center; width: 10%;">
-                <!-- {{rowData.objectiveActuals}} -->
+            <td style="text-align: center; width: 10%; font-weight: bold;">
+                {{getObjectiveActuals(rowData.activity.objective)}}
             </td>
-            <td style="text-align: center; width: 5%;">
-                <!-- {{rowData.totalAvg}} % -->
+            <td style="text-align: center; width: 5%;font-weight: bold;">
+                {{getPerformanceAvg(rowData.activity.objective)}} %
             </td>
         </tr>   
     </ng-template>

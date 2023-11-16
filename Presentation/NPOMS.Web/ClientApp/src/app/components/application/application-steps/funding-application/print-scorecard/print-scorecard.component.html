@@ -107,22 +107,18 @@
     </ng-template>
     <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
         <tr  *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false">
-            <!-- <td [attr.colspan]="6">
-                <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                <span class="p-text-bold">Objectives</span>
-            </td> -->
             <td  [attr.colspan]="3">
                 <button type="button" pButton pRipple [pRowToggler]="rowData.activity.objective.name" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                 <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
             </td>
-            <td style="text-align: center; width: 10%;">
-                <!-- {{rowData.totalTargets}} -->
+            <td style="text-align: center; width: 10%; font-weight: bold;">
+                {{getObjectiveTargets(rowData.activity.objective)}}
             </td>
-            <td style="text-align: center; width: 10%;">
-                <!-- {{rowData.totalActuals}} -->
+            <td style="text-align: center; width: 10%; font-weight: bold;">
+                {{getObjectiveActuals(rowData.activity.objective)}}
             </td>
-            <td style="text-align: center; width: 5%;">
-                <!-- {{rowData.totalAvg}} % -->
+            <td style="text-align: center; width: 5%;font-weight: bold;">
+                {{getPerformanceAvg(rowData.activity.objective)}} %
             </td>
         </tr>   
         <tr class="default-font">
