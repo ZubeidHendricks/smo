@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator, IWorkplanIndicatorSummary } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -73,6 +73,7 @@ export class ReviewScorecardComponent implements OnInit {
   _responseUsers: IGetResponseOptions[];
   responseHistory: IResponseHistory[];
   displayCommentDialog: boolean;
+  displayDialog: boolean;
   historyCols: any[];
   displayHistory: boolean;
   paramSubcriptions: Subscription;
@@ -89,7 +90,7 @@ export class ReviewScorecardComponent implements OnInit {
   ResponseTypeentities: IResponseType[];
   auditCols: any[];
   workplanIndicators: IWorkplanIndicator[];
-  filteredWorkplanIndicators: IWorkplanIndicator[];
+  filteredWorkplanIndicators: IWorkplanIndicatorSummary[];
   lastWorkplanTarget: boolean;
   lastWorkplanActual: boolean;
   financialYears: IFinancialYear[];
@@ -104,6 +105,10 @@ export class ReviewScorecardComponent implements OnInit {
   rowGroupMetadataActivities: any[];
   isApplicationAvailable: boolean;
   isObjectivesAvailable: boolean;
+  scorer1: number;
+  scorer2: number;
+  scorer3: number;
+  scorer4: number;
   socrer1OverallTotalScore: number;
   socrer2OverallTotalScore: number;
   socrer3OverallTotalScore: number;
@@ -571,7 +576,7 @@ export class ReviewScorecardComponent implements OnInit {
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
         this.workplanIndicators = [];
-
+       
         this.activities.forEach(activity => {
           this.workplanIndicators.push({
             activity: activity,
@@ -582,7 +587,6 @@ export class ReviewScorecardComponent implements OnInit {
           this.loadTargets(activity);
           this.loadActuals(activity);
         });
-        this.updateRowGroupMetaDataAct();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -647,15 +651,14 @@ export class ReviewScorecardComponent implements OnInit {
   private filterWorkplanIndicators() {
    // if (this.lastWorkplanTarget && this.lastWorkplanActual) {
       this.filteredWorkplanIndicators = [];
-
+      
       this.workplanIndicators.forEach(indicator => {
 
         // Filter WorkplanTargets on activity, financial year and monthly frequency
         let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id && x.frequencyId == FrequencyEnum.Monthly);
-         
+        
         // Calculate total targets
         let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
-//alert(this.application.applicationPeriod.financialYear.id);
        
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
         // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
@@ -666,7 +669,7 @@ export class ReviewScorecardComponent implements OnInit {
           });
         });
 
-        // Calculate total actuals
+               // Calculate total actuals
         let actualTotal =
         filteredWorkplanActuals.reduce((sum, object) => {
            let actual = object.actual == null ? 0 : object.actual;
@@ -678,17 +681,19 @@ export class ReviewScorecardComponent implements OnInit {
         if (isNaN(((actualTotal/targetTotal)*100))) {
           avg = '0';
         }
-        
+
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
           workplanTargets: workplanTargets,
           workplanActuals: filteredWorkplanActuals,
           totalTargets: targetTotal,
-          totalActuals: actualTotal,
+          totalActuals: actualTotal,          
+          objectiveId: indicator.activity.objective.id,
+          ObjectiveName: indicator.activity.objective.name,
+
           totalAvg: Number(avg)
-        } as IWorkplanIndicator);
+        } as IWorkplanIndicatorSummary);
       });
-      
 
       let sumOfAvg = 0;
 
@@ -700,6 +705,58 @@ export class ReviewScorecardComponent implements OnInit {
 
       this.updateRowGroupMetaDataAct();
       this.makeRowsSameHeight();
+  }
+
+  public getObjectiveTargets(objective: IObjective) {
+    let totalTarget = 0;
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+
+    objectives.forEach(obj =>
+      {
+        if(obj.ObjectiveName === objective.name)  
+        totalTarget += obj.totalTargets;
+      }
+    );
+
+    return totalTarget;
+  }
+
+  public getObjectiveActuals(objective: IObjective) {
+    let totalActual = 0;
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+
+    objectives.forEach(obj =>
+      {
+        if(obj.ObjectiveName === objective.name)  
+        totalActual += obj.totalActuals;
+      }
+    );
+
+    return totalActual;
+  }
+
+  public getPerformanceAvg(objective: IObjective)
+  {
+    let totalTarget = 0;
+    let totalActual = 0;
+    let performanceAvg = '';
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+    objectives.forEach(obj =>
+      {
+        if(obj.ObjectiveName === objective.name) 
+        {
+          totalTarget += obj.totalTargets;
+          totalActual += obj.totalActuals;
+        }        
+      }
+    );
+
+    performanceAvg = ((totalActual/totalTarget)*100).toFixed(2);
+
+    if (isNaN(((totalActual/totalTarget)*100))) {
+      performanceAvg = '0';
+    }
+    return performanceAvg;
   }
 
   private makeRowsSameHeight() {
@@ -729,19 +786,22 @@ export class ReviewScorecardComponent implements OnInit {
     });
   }
 
-
-  updateRowGroupMetaDataAct() {     
+  updateRowGroupMetaDataAct() {  
+    let target = [];   
     this.rowGroupMetadataActivities = [];
-    this.activities = this.activities.sort((a, b) => a.objectiveId - b.objectiveId);
-
-    if (this.activities) {
-      this.activities.forEach(element => {
-        var itemExists = this.rowGroupMetadataActivities.some(function (data) { return data.itemName === element.objective.name });
+    this.filteredWorkplanIndicators = this.filteredWorkplanIndicators.sort((a, b) => a.objectiveId - b.objectiveId);
+    if (this.filteredWorkplanIndicators) {
+      this.filteredWorkplanIndicators.forEach(element => {
+        var itemExists = this.rowGroupMetadataActivities.some(function (data) 
+        { 
+          return data.itemName === element.ObjectiveName 
+        });
 
         this.rowGroupMetadataActivities.push({
-          itemName: element.objective.name,
+          itemName: element.ObjectiveName,
           itemExists: itemExists
         });
+
       });
     }        
     this.allDataLoaded();
@@ -759,7 +819,8 @@ export class ReviewScorecardComponent implements OnInit {
       (results) => {
         this._responses = results;
         var user = this._responses.filter((item, i, arr) => arr.findIndex((t) => t.createdUserId=== item.createdUserId) === i);
-
+       
+        
         let scorer1OverallTotalScores = 0;
         let scorer2OverallTotalScores = 0;
         let scorer3OverallTotalScores = 0;
@@ -773,8 +834,9 @@ export class ReviewScorecardComponent implements OnInit {
           {
             if(user[0] != undefined)
             {
+              this.scorer1 =  Number(user[0].createdUserId);
               if(Number(item.createdUserId) == Number(user[0].createdUserId))  
-              scorer1OverallTotalScores  += Number(item.responseOption.name); 
+              scorer1OverallTotalScores  += Number(item.responseOption.name);             
             }      
           }
           else{
@@ -787,6 +849,7 @@ export class ReviewScorecardComponent implements OnInit {
           {
             if(user[1] != undefined)
             {
+              this.scorer2 =  Number(user[1].createdUserId);
               if(Number(item.createdUserId) == Number(user[1].createdUserId))  
               scorer2OverallTotalScores  += Number(item.responseOption.name); 
             }       
@@ -801,6 +864,7 @@ export class ReviewScorecardComponent implements OnInit {
           {
             if(user[2] != undefined)
             {
+              this.scorer3 =  Number(user[2].createdUserId);
               if(Number(item.createdUserId) == Number(user[2].createdUserId))  
               scorer3OverallTotalScores  += Number(item.responseOption.name); 
             }       
@@ -815,6 +879,7 @@ export class ReviewScorecardComponent implements OnInit {
           {
             if(user[3] != undefined)
             {
+              this.scorer4 =  Number(user[3].createdUserId);
               if(Number(item.createdUserId) == Number(user[3].createdUserId))  
               scorer4OverallTotalScores  += Number(item.responseOption.name); 
             }      
@@ -920,7 +985,37 @@ export class ReviewScorecardComponent implements OnInit {
         }
       );
     }
+ 
+    public performanceComment(v: number)
+    {
 
+      this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
+        (results) => {
+          if(v === 1)
+            this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer1);
+          if(v === 2)
+            this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer2);
+          if(v === 3)
+            this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer3);
+          if(v === 4)
+            this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer4);
+         
+          if(this.capturedResponses.length > 0)
+          {
+              this.displayDialog = true;
+              let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
+              let  improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
+              this.captureImprovementArea = improvementArea;
+              this.captureRequiredAction = requiredAction;
+              this.signedByUser = this.capturedResponses[0].createdUser.fullName;
+              this.submittedDate = this.capturedResponses[0].createdDateTime;  
+             // this.hascapturedImprovementArea = true;
+             // this.hasCapturedRequiredAction = true;   
+             // this.hasScorecardSubmitted = true;      
+          }
+        }) 
+     
+    }
 
     public disableElement() {
      

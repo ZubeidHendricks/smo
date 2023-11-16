@@ -6,7 +6,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, 
+  IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator,IWorkplanIndicatorSummary } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -86,7 +87,7 @@ export class PrintScorecardComponent implements OnInit {
   ResponseTypeentities: IResponseType[];
   auditCols: any[];
   workplanIndicators: IWorkplanIndicator[];
-  filteredWorkplanIndicators: IWorkplanIndicator[];
+  filteredWorkplanIndicators: IWorkplanIndicatorSummary[];
   lastWorkplanTarget: boolean;
   lastWorkplanActual: boolean;
   financialYears: IFinancialYear[];
@@ -660,15 +661,13 @@ export class PrintScorecardComponent implements OnInit {
       this.workplanIndicators.forEach(indicator => {
 
         // Filter WorkplanTargets on activity, financial year and monthly frequency
-        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2 && x.frequencyId == FrequencyEnum.Monthly);
-
+        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id && x.frequencyId == FrequencyEnum.Monthly);
         // Calculate total targets
         let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
-
        
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
         // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
-        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2);
+        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id);
         let filteredWorkplanActuals = workplanActuals.filter((el) => {
           return workplanTargets.some((f) => {
             return f.id === el.workplanTargetId;
@@ -693,9 +692,12 @@ export class PrintScorecardComponent implements OnInit {
           workplanTargets: workplanTargets,
           workplanActuals: filteredWorkplanActuals,
           totalTargets: targetTotal,
-          totalActuals: actualTotal,
+          totalActuals: actualTotal,          
+          objectiveId: indicator.activity.objective.id,
+          ObjectiveName: indicator.activity.objective.name,
+
           totalAvg: Number(avg)
-        } as IWorkplanIndicator);
+        } as IWorkplanIndicatorSummary);
       });
 
       let sumOfAvg = 0;
@@ -708,6 +710,58 @@ export class PrintScorecardComponent implements OnInit {
 
       this.updateRowGroupMetaDataAct();
       this.makeRowsSameHeight();
+  }
+
+  public getObjectiveTargets(objective: IObjective) {
+    let totalTarget = 0;
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+
+    objectives.forEach(obj =>
+      {
+        if(obj.ObjectiveName === objective.name)  
+        totalTarget += obj.totalTargets;
+      }
+    );
+
+    return totalTarget;
+  }
+
+  public getObjectiveActuals(objective: IObjective) {
+    let totalActual = 0;
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+
+    objectives.forEach(obj =>
+      {
+        if(obj.ObjectiveName === objective.name)  
+        totalActual += obj.totalActuals;
+      }
+    );
+
+    return totalActual;
+  }
+
+  public getPerformanceAvg(objective: IObjective)
+  {
+    let totalTarget = 0;
+    let totalActual = 0;
+    let performanceAvg = '';
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+    objectives.forEach(obj =>
+      {
+        if(obj.ObjectiveName === objective.name) 
+        {
+          totalTarget += obj.totalTargets;
+          totalActual += obj.totalActuals;
+        }        
+      }
+    );
+
+    performanceAvg = ((totalActual/totalTarget)*100).toFixed(2);
+
+    if (isNaN(((totalActual/totalTarget)*100))) {
+      performanceAvg = '0';
+    }
+    return performanceAvg;
   }
 
   private makeRowsSameHeight() {
@@ -739,19 +793,23 @@ export class PrintScorecardComponent implements OnInit {
 
 
   updateRowGroupMetaDataAct() {     
+    let target = [];   
     this.rowGroupMetadataActivities = [];
-    this.activities = this.activities.sort((a, b) => a.objectiveId - b.objectiveId);
-
-    if (this.activities) {
-      this.activities.forEach(element => {
-        var itemExists = this.rowGroupMetadataActivities.some(function (data) { return data.itemName === element.objective.name });
+    this.filteredWorkplanIndicators = this.filteredWorkplanIndicators.sort((a, b) => a.objectiveId - b.objectiveId);
+    if (this.filteredWorkplanIndicators) {
+      this.filteredWorkplanIndicators.forEach(element => {
+        var itemExists = this.rowGroupMetadataActivities.some(function (data) 
+        { 
+          return data.itemName === element.ObjectiveName 
+        });
 
         this.rowGroupMetadataActivities.push({
-          itemName: element.objective.name,
+          itemName: element.ObjectiveName,
           itemExists: itemExists
         });
+
       });
-    }        
+    }            
     this.allDataLoaded();
   }
 
