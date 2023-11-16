@@ -993,9 +993,9 @@ export class ReviewScorecardComponent implements OnInit {
           if(v === 2)
             this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer2);
           if(v === 3)
-            this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.scorer3);
+            this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer3);
           if(v === 4)
-            this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.scorer4);
+            this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer4);
          
           if(this.capturedResponses.length > 0)
           {
