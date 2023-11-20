@@ -405,7 +405,7 @@ export class ScorecardComponent implements OnInit {
   }
 
   public getResponseOptions(responseTypeId: number) {
-    return this.responseOptions.filter(x => x.responseTypeId === responseTypeId && x.isActive);
+    return this.responseOptions && this.responseOptions.length > 0 ? this.responseOptions.filter(x => x.responseTypeId === responseTypeId && x.isActive) : [];
   }
 
   public onSaveComment(event, question: IQuestionResponseViewModel) {
@@ -604,60 +604,61 @@ export class ScorecardComponent implements OnInit {
   }
 
   private filterWorkplanIndicators() {
-    // if (this.lastWorkplanTarget && this.lastWorkplanActual) {
-    this.filteredWorkplanIndicators = [];
+    if (this.lastWorkplanTarget && this.lastWorkplanActual) {
+      this.filteredWorkplanIndicators = [];
 
-    this.workplanIndicators.forEach(indicator => {
+      this.workplanIndicators.forEach(indicator => {
 
-      // Filter WorkplanTargets on activity, financial year and monthly frequency
-      let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id && x.frequencyId == FrequencyEnum.Monthly);
+        // Filter WorkplanTargets on activity, financial year and monthly frequency
+        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id && x.frequencyId == FrequencyEnum.Monthly);
 
-      // Calculate total targets
-      let targetTotal = workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
+        // Calculate total targets
+        let targetTotal = workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
 
 
-      // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
-      // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
-      let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id);
-      let filteredWorkplanActuals = workplanActuals.filter((el) => {
-        return workplanTargets.some((f) => {
-          return f.id === el.workplanTargetId;
+        // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
+        // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
+        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id);
+        let filteredWorkplanActuals = workplanActuals.filter((el) => {
+          return workplanTargets.some((f) => {
+            return f.id === el.workplanTargetId;
+          });
         });
+
+        // Calculate total actuals
+        let actualTotal =
+          filteredWorkplanActuals.reduce((sum, object) => {
+            let actual = object.actual == null ? 0 : object.actual;
+            return sum + actual;
+          }, 0);
+
+        let avg = ((actualTotal / targetTotal) * 100).toFixed(2);
+        if (isNaN(((actualTotal / targetTotal) * 100))) {
+          avg = '0';
+        }
+
+        this.filteredWorkplanIndicators.push({
+          activity: indicator.activity,
+          workplanTargets: workplanTargets,
+          workplanActuals: filteredWorkplanActuals,
+          totalTargets: targetTotal,
+          totalActuals: actualTotal,
+          objectiveId: indicator.activity.objective.id,
+          ObjectiveName: indicator.activity.objective.name,
+
+          totalAvg: Number(avg)
+        } as IWorkplanIndicatorSummary);
       });
 
-      // Calculate total actuals
-      let actualTotal =
-        filteredWorkplanActuals.reduce((sum, object) => {
-          let actual = object.actual == null ? 0 : object.actual;
-          return sum + actual;
-        }, 0);
+      // Sum property in array of objects...
+      // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
+      this.activityAvgScoreTarget = this.filteredWorkplanIndicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
+      this.activityAvgScoreActual = this.filteredWorkplanIndicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
+      this.activityAvgScorePerformance = (this.activityAvgScoreActual / this.activityAvgScoreTarget) * 100;
 
-      let avg = ((actualTotal / targetTotal) * 100).toFixed(2);
-      if (isNaN(((actualTotal / targetTotal) * 100))) {
-        avg = '0';
-      }
-
-      this.filteredWorkplanIndicators.push({
-        activity: indicator.activity,
-        workplanTargets: workplanTargets,
-        workplanActuals: filteredWorkplanActuals,
-        totalTargets: targetTotal,
-        totalActuals: actualTotal,
-        objectiveId: indicator.activity.objective.id,
-        ObjectiveName: indicator.activity.objective.name,
-
-        totalAvg: Number(avg)
-      } as IWorkplanIndicatorSummary);
-    });
-
-    // Sum property in array of objects...
-    // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
-    this.activityAvgScoreTarget = this.filteredWorkplanIndicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
-    this.activityAvgScoreActual = this.filteredWorkplanIndicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
-    this.activityAvgScorePerformance = (this.activityAvgScoreActual / this.activityAvgScoreTarget) * 100;
-
-    this.updateRowGroupMetaDataAct();
-    this.makeRowsSameHeight();
+      this.updateRowGroupMetaDataAct();
+      this.makeRowsSameHeight();
+    }
   }
 
   public getObjectiveTargets(objective: IObjective) {
