@@ -100,7 +100,7 @@
         <span class="non-mandatory-content"><b>Performance</b></span>
     </div>
 </div>
-<p-table [rowHover]="true" [value]="filteredWorkplanIndicators" dataKey="rowData.activity.objective.name">
+<p-table [rowHover]="true" [value]="filterWorkplanIndicators()" *ngIf="filterWorkplanIndicators()" dataKey="rowData.activity.objective.name">
     <ng-template pTemplate="header">
         <tr>
             <th style="text-align: center; width: 5%;">#</th>
@@ -135,7 +135,7 @@
             <td style="text-align: left; width: 30%;">{{rowData.activity.successIndicator}}</td>
             <td style="text-align: center; width: 10%;">{{rowData.totalTargets}}</td>
             <td style="text-align: center; width: 10%;">{{rowData.totalActuals}}</td>
-            <td style="text-align: center; width: 5%;">{{rowData.totalAvg}} %</td>
+            <td style="text-align: center; width: 5%;">{{(rowData.totalAvg).toFixed(2)}} %</td>
         </tr>
     </ng-template>
     <ng-template pTemplate="footer">
