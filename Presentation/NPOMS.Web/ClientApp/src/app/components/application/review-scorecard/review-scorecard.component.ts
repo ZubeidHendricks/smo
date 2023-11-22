@@ -92,8 +92,6 @@ export class ReviewScorecardComponent implements OnInit {
   auditCols: any[];
   workplanIndicators: IWorkplanIndicator[];
   filteredWorkplanIndicators: IWorkplanIndicatorSummary[];
-  lastWorkplanTarget: boolean;
-  lastWorkplanActual: boolean;
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
   scrollableCols: any[];
@@ -104,8 +102,6 @@ export class ReviewScorecardComponent implements OnInit {
   //npoId: string;
   statuses: IStatus[];
   rowGroupMetadataActivities: any[];
-  isApplicationAvailable: boolean;
-  isObjectivesAvailable: boolean;
   scorer1: number;
   scorer2: number;
   scorer3: number;
@@ -120,9 +116,6 @@ export class ReviewScorecardComponent implements OnInit {
   scorer3OverallAvgScore: number;
   scorer4OverallAvgScore: number;
   allScorerOverallAvgScore: number;
-  activityAvgScoreTarget: number = 0;
-  activityAvgScoreActual: number = 0;
-  activityAvgScorePerformance: number = 0;
   objectiveTarget: number;
   objectiveActual: number;
   objectiveAverage: number;
@@ -163,10 +156,7 @@ export class ReviewScorecardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
-    // this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-    //   this.npoId = params.get('npoId');
-    // });
+    this._spinner.show();
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
@@ -246,7 +236,6 @@ export class ReviewScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.Statuses, true).subscribe(
       (results) => {
         this.statuses = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -385,6 +374,48 @@ export class ReviewScorecardComponent implements OnInit {
     return ragColour;
   }
 
+  public getRagBackgroundColour1(num: Number) {
+
+    let ragColour = 'rag-not-saved-background';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) <= 5) {
+        ragColour = 'rag-not-saved-background';
+      }
+      else if (Number(num) > 5 && Number(num) <= 8) {
+        ragColour = 'rag-partial-background';
+      }
+      else if (Number(num) > 8) {
+        ragColour = 'rag-saved-background';
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
+
+  public getRagBackgroundColour(num: string) {
+
+    let ragColour = 'rag-not-saved-background';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) < 50) {
+        ragColour = 'rag-not-saved-background';
+      }
+      else if (Number(num) > 50 && Number(num) < 80) {
+        ragColour = 'rag-partial-background';
+      }
+      else if (Number(num) > 80) {
+        ragColour = 'rag-saved-background';
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
+
   public getRagText1(num: Number) {
 
     let ragText = '';
@@ -512,11 +543,10 @@ export class ReviewScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseType, true).subscribe(
       (results) => {
         this.ResponseTypeentities = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
-        this._spinner.hide()
+        this._spinner.hide();
       }
     );
   }
@@ -528,7 +558,6 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   private loadApplications() {
-    this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         this.application = results;
@@ -536,7 +565,6 @@ export class ReviewScorecardComponent implements OnInit {
         this.loadActivities();
         this.loadObjectives();
         this.loadNpo();
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -549,9 +577,7 @@ export class ReviewScorecardComponent implements OnInit {
     this._npoRepo.getNpoById(Number(this.application.npoId)).subscribe(
       (results) => {
         this.npo = results;
-
         this.organisation = this.npo.name;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -561,8 +587,6 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   private loadActivities() {
-
-    this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
@@ -590,8 +614,6 @@ export class ReviewScorecardComponent implements OnInit {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results.filter(x => x.isActive === true);
-        this.isObjectivesAvailable = true;
-        this.allDataLoaded();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -606,11 +628,6 @@ export class ReviewScorecardComponent implements OnInit {
         // Add WorkplanTargets to WorkplanIndicators at index of activity
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanTargets = results;
-
-        if (this.activities[this.activities.length - 1] === activity) {
-          this.lastWorkplanTarget = true;
-          this.filterWorkplanIndicators();
-        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -625,11 +642,6 @@ export class ReviewScorecardComponent implements OnInit {
         // Add WorkplanActuals to WorkplanIndicators at index of activity
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanActuals = results;
-
-        if (this.activities[this.activities.length - 1] === activity) {
-          this.lastWorkplanActual = true;
-          this.filterWorkplanIndicators();
-        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -639,62 +651,59 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
 
-  private filterWorkplanIndicators() {
-    if (this.lastWorkplanTarget && this.lastWorkplanActual) {
-      this.filteredWorkplanIndicators = [];
+  public filterWorkplanIndicators() {
+    this.filteredWorkplanIndicators = [];
+
+    if (this.workplanIndicators && this.workplanIndicators.length > 0) {
 
       this.workplanIndicators.forEach(indicator => {
 
-        // Filter WorkplanTargets on activity, financial year and monthly frequency
-        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id && x.frequencyId == FrequencyEnum.Monthly);
+        let totalTargets = indicator.workplanTargets.length > 0 ? (indicator.workplanTargets[0].apr + indicator.workplanTargets[0].may + indicator.workplanTargets[0].jun + indicator.workplanTargets[0].jul + indicator.workplanTargets[0].aug + indicator.workplanTargets[0].sep + indicator.workplanTargets[0].oct + indicator.workplanTargets[0].nov + indicator.workplanTargets[0].dec + indicator.workplanTargets[0].jan + indicator.workplanTargets[0].feb + indicator.workplanTargets[0].mar) : 0;
+        let totalActuals: number = 0;
 
-        // Calculate total targets
-        let targetTotal = workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
-
-        // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
-        // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
-        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id);
-        let filteredWorkplanActuals = workplanActuals.filter((el) => {
-          return workplanTargets.some((f) => {
-            return f.id === el.workplanTargetId;
-          });
+        indicator.workplanActuals.forEach(item => {
+          let actual = item.actual !== null && item.actual !== undefined ? item.actual : 0;
+          totalActuals = totalActuals + actual;
         });
-
-        // Calculate total actuals
-        let actualTotal =
-          filteredWorkplanActuals.reduce((sum, object) => {
-            let actual = object.actual == null ? 0 : object.actual;
-            return sum + actual;
-          }, 0);
-
-        let avg = ((actualTotal / targetTotal) * 100).toFixed(2);
-
-        if (isNaN(((actualTotal / targetTotal) * 100))) {
-          avg = '0';
-        }
 
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
-          workplanTargets: workplanTargets,
-          workplanActuals: filteredWorkplanActuals,
-          totalTargets: targetTotal,
-          totalActuals: actualTotal,
-          objectiveId: indicator.activity.objective.id,
+          totalTargets: totalTargets,
+          totalActuals: totalActuals,
           ObjectiveName: indicator.activity.objective.name,
-
-          totalAvg: Number(avg)
+          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : (totalActuals / totalTargets) * 100
         } as IWorkplanIndicatorSummary);
       });
 
-      // Sum property in array of objects...
-      // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
-      this.activityAvgScoreTarget = this.filteredWorkplanIndicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
-      this.activityAvgScoreActual = this.filteredWorkplanIndicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
-      this.activityAvgScorePerformance = (this.activityAvgScoreActual / this.activityAvgScoreTarget) * 100;
-
       this.updateRowGroupMetaDataAct();
-      this.makeRowsSameHeight();
     }
+
+    return this.filteredWorkplanIndicators;
+  }
+
+  public getOverallPerformancePercentage() {
+    let overallPerformancePercentage = 0;
+
+    if (this.rowGroupMetadataActivities && this.rowGroupMetadataActivities.length > 0 && this.filteredWorkplanIndicators && this.filteredWorkplanIndicators.length > 0) {
+
+      let uniqueObjectives = this.rowGroupMetadataActivities.filter(x => x.itemExists === false);
+
+      for (let i = 0; i < uniqueObjectives.length; i++) {
+        let indicators = this.filteredWorkplanIndicators.filter(x => x.ObjectiveName === uniqueObjectives[i].itemName);
+
+        // Sum property in array of objects...
+        // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
+        let targetTotal = indicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
+        let actualTotal = indicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
+        let averageTotal = actualTotal === 0 || targetTotal === 0 ? 0 : (actualTotal / targetTotal) * 100;
+
+        overallPerformancePercentage = overallPerformancePercentage + averageTotal;
+      }
+
+      overallPerformancePercentage = overallPerformancePercentage / uniqueObjectives.length;
+    }
+
+    return overallPerformancePercentage;
   }
 
   public getObjectiveTargets(objective: IObjective) {
@@ -744,40 +753,10 @@ export class ReviewScorecardComponent implements OnInit {
     return performanceAvg;
   }
 
-  private makeRowsSameHeight() {
-    setTimeout(() => {
-      if (document.getElementsByClassName('p-datatable-scrollable-wrapper').length) {
-        let wrapper = document.getElementsByClassName('p-datatable-scrollable-wrapper');
-
-        for (var i = 0; i < wrapper.length; i++) {
-
-          let w = wrapper.item(i) as HTMLElement;
-          let frozen_rows: any = w.querySelectorAll('.p-datatable-frozen-view tr');
-          let unfrozen_rows: any = w.querySelectorAll('.p-datatable-unfrozen-view tr');
-
-          for (let i = 0; i < frozen_rows.length; i++) {
-
-            if (frozen_rows[i].clientHeight > unfrozen_rows[i].clientHeight) {
-              unfrozen_rows[i].style.height = frozen_rows[i].clientHeight + "px";
-            }
-            else if (frozen_rows[i].clientHeight < unfrozen_rows[i].clientHeight) {
-              frozen_rows[i].style.height = unfrozen_rows[i].clientHeight + "px";
-            }
-          }
-        }
-
-        this._spinner.hide();
-      }
-    });
-  }
-
   updateRowGroupMetaDataAct() {
-    let target = [];
     this.rowGroupMetadataActivities = [];
 
     if (this.filteredWorkplanIndicators) {
-      this.filteredWorkplanIndicators = this.filteredWorkplanIndicators.sort((a, b) => a.objectiveId - b.objectiveId);
-
       this.filteredWorkplanIndicators.forEach(element => {
         var itemExists = this.rowGroupMetadataActivities.some(function (data) {
           return data.itemName === element.ObjectiveName
@@ -790,12 +769,12 @@ export class ReviewScorecardComponent implements OnInit {
 
       });
     }
+
     this.allDataLoaded();
   }
 
   private allDataLoaded() {
     if (this.objectives && this.activities) {
-      this.isApplicationAvailable = true;
       this._spinner.hide();
     }
   }

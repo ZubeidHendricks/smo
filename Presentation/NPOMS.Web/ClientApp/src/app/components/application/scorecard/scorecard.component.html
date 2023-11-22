@@ -383,10 +383,10 @@
         </div> -->
         <div class="p-col-fixed form-label">
             <div class="box" style="text-align: left;">
-                <span class="non-mandatory-content"><b>Performance</b></span>
+                <span class="non-mandatory-content"><b>Quantitative Performance</b></span>
             </div>
         </div>
-        <p-table [rowHover]="true" [value]="filteredWorkplanIndicators" dataKey="rowGroupMetadataActivities[rowIndex].itemName">
+        <p-table [rowHover]="true" [value]="filterWorkplanIndicators()" *ngIf="filterWorkplanIndicators()">
             <ng-template pTemplate="header">
                 <tr>
                     <th style="text-align: center; width: 5%;">#</th>
@@ -397,41 +397,26 @@
                     <th style="text-align: center; width: 8%;">Performance %</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
-                <tr  *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false">
-                   
-                    <td  [attr.colspan]="3">
-                        <button type="button" pButton pRipple [pRowToggler]="rowGroupMetadataActivities[rowIndex].itemName" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                        <span class="p-text-bold">Objective: {{rowData.activity.objective.name}}</span>
-                    </td>
-                    <td style="text-align: center; width: 10%; font-weight: bold;">
-                        {{getObjectiveTargets(rowData.activity.objective)}}
-                    </td>
-                    <td style="text-align: center; width: 10%; font-weight: bold;">
-                        {{getObjectiveActuals(rowData.activity.objective)}}
-                    </td>
-                    <td style="text-align: center; width: 5%;font-weight: bold;">
-                        {{getPerformanceAvg(rowData.activity.objective)}} %
-                    </td>
-                </tr>   
-            </ng-template>
-            <ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex">
-               
+            <ng-template pTemplate="body" let-indicator let-rowIndex="rowIndex">
+                <tr *ngIf="rowGroupMetadataActivities && rowGroupMetadataActivities[rowIndex].itemExists === false" class="heading">
+                    <td [attr.colspan]="3"><span class="p-text-bold">{{indicator.ObjectiveName}}</span></td>
+                    <td style="text-align: center;"><span class="p-text-bold">{{getObjectiveTargets(indicator.activity.objective)}}</span></td>
+                    <td style="text-align: center;"><span class="p-text-bold">{{getObjectiveActuals(indicator.activity.objective)}}</span></td>
+                    <td style="text-align: center;"><span class="p-text-bold">{{getPerformanceAvg(indicator.activity.objective)}} %</span></td>
+                </tr>
                 <tr class="default-font">
-                    <td style="text-align: center; width: 5%;">{{rowIndex + 1}}</td>
-                    <td style="text-align: left; width: 40%;">{{rowData.activity.activityList.description}}</td>
-                    <td style="text-align: left; width: 30%;">{{rowData.activity.successIndicator}}</td>
-                    <td style="text-align: center; width: 10%;">{{rowData.totalTargets}}</td>
-                    <td style="text-align: center; width: 10%;">{{rowData.totalActuals}}</td>
-                    <td style="text-align: center; width: 5%;">{{rowData.totalAvg}} %</td>
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td style="text-align: left;">{{indicator.activity.activityList.description}}</td>
+                    <td style="text-align: left;">{{indicator.activity.successIndicator}}</td>
+                    <td style="text-align: center;">{{indicator.totalTargets}}</td>
+                    <td style="text-align: center;">{{indicator.totalActuals}}</td>
+                    <td style="text-align: center;">{{(indicator.totalAvg).toFixed(2)}} %</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="footer">
                 <tr class="default-font">
-                    <td style="text-align: left; width: 20%;" colspan="3"><b>Activity Average Score</b></td>
-                    <td style="text-align: center;">{{activityAvgScoreTarget}}</td>
-                    <td style="text-align: center;">{{activityAvgScoreActual}}</td>
-                    <td style="text-align: center;">{{(activityAvgScorePerformance).toFixed(2)}} %</td>
+                    <td style="text-align: left; width: 20%;" colspan="5"><b>Overall Quantitative Performance</b></td>
+                    <td style="text-align: center;">{{(getOverallPerformancePercentage()).toFixed(2)}} %</td>
                 </tr>
               
             </ng-template>
