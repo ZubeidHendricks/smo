@@ -116,9 +116,6 @@ export class ReviewScorecardComponent implements OnInit {
   scorer3OverallAvgScore: number;
   scorer4OverallAvgScore: number;
   allScorerOverallAvgScore: number;
-  activityAvgScoreTarget: number = 0;
-  activityAvgScoreActual: number = 0;
-  activityAvgScorePerformance: number = 0;
   objectiveTarget: number;
   objectiveActual: number;
   objectiveAverage: number;
@@ -368,6 +365,48 @@ export class ReviewScorecardComponent implements OnInit {
       }
       else if (Number(num) > 8) {
         ragColour = 'rag-saved';
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
+
+  public getRagBackgroundColour1(num: Number) {
+
+    let ragColour = 'rag-not-saved-background';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) <= 5) {
+        ragColour = 'rag-not-saved-background';
+      }
+      else if (Number(num) > 5 && Number(num) <= 8) {
+        ragColour = 'rag-partial-background';
+      }
+      else if (Number(num) > 8) {
+        ragColour = 'rag-saved-background';
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
+
+  public getRagBackgroundColour(num: string) {
+
+    let ragColour = 'rag-not-saved-background';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) < 50) {
+        ragColour = 'rag-not-saved-background';
+      }
+      else if (Number(num) > 50 && Number(num) < 80) {
+        ragColour = 'rag-partial-background';
+      }
+      else if (Number(num) > 80) {
+        ragColour = 'rag-saved-background';
       }
       else {
         ragColour = '';
@@ -636,16 +675,35 @@ export class ReviewScorecardComponent implements OnInit {
         } as IWorkplanIndicatorSummary);
       });
 
-      // Sum property in array of objects...
-      // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
-      this.activityAvgScoreTarget = this.filteredWorkplanIndicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
-      this.activityAvgScoreActual = this.filteredWorkplanIndicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
-      this.activityAvgScorePerformance = this.activityAvgScoreActual === 0 || this.activityAvgScoreTarget == 0 ? 0 : (this.activityAvgScoreActual / this.activityAvgScoreTarget) * 100;
-
       this.updateRowGroupMetaDataAct();
     }
 
     return this.filteredWorkplanIndicators;
+  }
+
+  public getOverallPerformancePercentage() {
+    let overallPerformancePercentage = 0;
+
+    if (this.rowGroupMetadataActivities && this.rowGroupMetadataActivities.length > 0 && this.filteredWorkplanIndicators && this.filteredWorkplanIndicators.length > 0) {
+
+      let uniqueObjectives = this.rowGroupMetadataActivities.filter(x => x.itemExists === false);
+
+      for (let i = 0; i < uniqueObjectives.length; i++) {
+        let indicators = this.filteredWorkplanIndicators.filter(x => x.ObjectiveName === uniqueObjectives[i].itemName);
+
+        // Sum property in array of objects...
+        // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
+        let targetTotal = indicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
+        let actualTotal = indicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
+        let averageTotal = actualTotal === 0 || targetTotal === 0 ? 0 : (actualTotal / targetTotal) * 100;
+
+        overallPerformancePercentage = overallPerformancePercentage + averageTotal;
+      }
+
+      overallPerformancePercentage = overallPerformancePercentage / uniqueObjectives.length;
+    }
+
+    return overallPerformancePercentage;
   }
 
   public getObjectiveTargets(objective: IObjective) {
@@ -711,7 +769,7 @@ export class ReviewScorecardComponent implements OnInit {
 
       });
     }
-    
+
     this.allDataLoaded();
   }
 
