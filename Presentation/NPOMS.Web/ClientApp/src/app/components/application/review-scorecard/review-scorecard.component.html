@@ -121,7 +121,7 @@
         <ng-template pTemplate="footer">
             <tr class="default-font">
                 <td style="text-align: left; width: 20%;" colspan="5"><b>Overall Quantitative Performance</b></td>
-                <td style="text-align: center;" class="{{getRagBackgroundColour((getOverallPerformancePercentage()).toFixed(2))}}">{{(getOverallPerformancePercentage()).toFixed(2)}} %</td>
+                <td style="text-align: center;" class="{{getRagBackgroundColour((getOverallPerformancePercentage()).toFixed(2).toString())}}">{{(getOverallPerformancePercentage()).toFixed(2)}} %</td>
             </tr>
           
         </ng-template>
@@ -160,7 +160,7 @@
                 pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(4)"></button>
             </td>
             <td style="width: 20%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>Overall Scorecard Percentage</b></td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour((((allScorerOverallAvgScore * 10)+getOverallPerformancePercentage())/2).toFixed(2))}}"><b>{{(((allScorerOverallAvgScore * 10)+getOverallPerformancePercentage())/2).toFixed(2)}} %</b></td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour((((allScorerOverallAvgScore * 10)+getOverallPerformancePercentage())/2).toFixed(2).toString())}}"><b>{{(((allScorerOverallAvgScore * 10)+getOverallPerformancePercentage())/2).toFixed(2)}} %</b></td>
         </tr>
     </table>
 </p-panel>

@@ -395,7 +395,7 @@ export class ReviewScorecardComponent implements OnInit {
     return ragColour;
   }
 
-  public getRagBackgroundColour(num: Number) {
+  public getRagBackgroundColour(num: string) {
 
     let ragColour = 'rag-not-saved-background';
     if (num !== undefined) {
