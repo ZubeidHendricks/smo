@@ -165,8 +165,16 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "StatusChangedPendingReviewerSatisfaction",
 					Body = "<p>Dear {ToUserFullName},</p><p>The application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been sent to you to indicate your reviewer satisfaction.</p><p>Please ignore this email if you have indicated your reviewer satisfaction.</p><p>Please <a href=\"{url}/#/applications\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
 					Subject = "Application Pending Reviewer Satisfaction - {NPO}"
-				}
-			);
+				},
+                new EmailTemplate
+                {
+                    Id = 23,
+                    Name = "WorkplanIndicatorPerformanceReview",
+                    Body = "<p>Dear {ToUserFullName},</p><p>The application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been sent to you to indicate your reviewer satisfaction.</p><p>Please ignore this email if you have indicated your reviewer satisfaction.</p><p>Please <a href=\"{url}/#/applications\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                    Subject = "Workplan Indicator Performance Review - {NPO}"
+                }
+
+            );
 		}
 	}
 }

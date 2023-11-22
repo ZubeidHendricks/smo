@@ -240,7 +240,8 @@ namespace NPOMS.API.Controllers
             try
             {
                 await this._evaluationService.CreateCapturedResponse(model, base.GetUserIdentifier());
-               // await UpdateFundingApplicationStatus(model);
+                var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
+                await ConfigureEmail();
                 return Ok(model);
             }
             catch (Exception ex)
@@ -343,7 +344,26 @@ namespace NPOMS.API.Controllers
 			await ConfigureEmail(fundingApplication);
 		}
 
-		private async Task ConfigureEmail(Application fundingApplication)
+        private async Task ConfigureEmail()
+        {
+            try
+            {
+                // Send email to Capturer
+                var applicationAdjudicated = EmailTemplateFactory
+                            .Create(EmailTemplateTypeEnum.StatusChanged)
+                            .Get<StatusChangedEmailTemplate>();
+                //.Init(fundingApplication);
+
+                await applicationAdjudicated.SubmitToQueue();
+                   
+                await _emailService.SendEmailFromQueue();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside EvaluationController-ConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
+        private async Task ConfigureEmail(Application fundingApplication)
 		{
 			try
 			{
