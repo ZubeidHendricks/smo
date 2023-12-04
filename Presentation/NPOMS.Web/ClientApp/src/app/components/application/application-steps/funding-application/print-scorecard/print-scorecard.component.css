@@ -106,3 +106,22 @@ ol.roman {
 .rag-partial {
     color: #bca312;
 }
+
+.rag-saved-background {
+    background-color: green!important;
+}
+
+.rag-not-saved-background {
+    background-color: red!important;
+}
+
+.rag-partial-background {
+    background-color: #bca312!important;
+}
+
+.heading {
+    background-color: rgb(0, 51, 153)!important;
+    color: rgb(255,255,255)!important;
+    padding: 1%;
+    font-size: 12px;
+}

@@ -344,6 +344,48 @@ export class PrintScorecardComponent implements OnInit {
     return ragColour;
   } 
 
+  public getRagBackgroundColour1(num: Number) {
+
+    let ragColour = 'rag-not-saved-background';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) <= 5) {
+        ragColour = 'rag-not-saved-background';
+      }
+      else if (Number(num) > 5 && Number(num) <= 8) {
+        ragColour = 'rag-partial-background';
+      }
+      else if (Number(num) > 8) {
+        ragColour = 'rag-saved-background';
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
+
+  public getRagBackgroundColour(num: string) {
+
+    let ragColour = 'rag-not-saved-background';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) < 50) {
+        ragColour = 'rag-not-saved-background';
+      }
+      else if (Number(num) > 50 && Number(num) < 80) {
+        ragColour = 'rag-partial-background';
+      }
+      else if (Number(num) > 80) {
+        ragColour = 'rag-saved-background';
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
+
   public getRagText(questionnaire: IQuestionResponseViewModel[]) {
     
     let ragText = '';
@@ -574,46 +616,41 @@ export class PrintScorecardComponent implements OnInit {
     );
 }
 
-  private loadActivities() {
+private loadActivities() {
+  this._applicationRepo.getAllActivities(this.application).subscribe(
+    (results) => {
+      this.activities = results.filter(x => x.isActive === true);
+      this.workplanIndicators = [];
 
-    this._spinner.show();
-    this._applicationRepo.getAllActivities(this.application).subscribe(
-      (results) => {
-        this.activities = results.filter(x => x.isActive === true);
-        this.workplanIndicators = [];
+      this.activities.forEach(activity => {
+        this.workplanIndicators.push({
+          activity: activity,
+          workplanTargets: [],
+          workplanActuals: []
+        } as IWorkplanIndicator);
 
-        this.activities.forEach(activity => {
-          this.workplanIndicators.push({
-            activity: activity,
-            workplanTargets: [],
-            workplanActuals: []
-          } as IWorkplanIndicator);
+        this.loadTargets(activity);
+        this.loadActuals(activity);
+      });
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
 
-          this.loadTargets(activity);
-          this.loadActuals(activity);
-        });
-        this.updateRowGroupMetaDataAct();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadObjectives() {
-    this._applicationRepo.getAllObjectives(this.application).subscribe(
-      (results) => {
-        this.objectives = results.filter(x => x.isActive === true);
-        this.isObjectivesAvailable = true;
-        this.allDataLoaded();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+private loadObjectives() {
+  this._applicationRepo.getAllObjectives(this.application).subscribe(
+    (results) => {
+      this.objectives = results.filter(x => x.isActive === true);
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
 
   private loadTargets(activity: IActivity) {
     this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
@@ -621,11 +658,6 @@ export class PrintScorecardComponent implements OnInit {
         // Add WorkplanTargets to WorkplanIndicators at index of activity
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanTargets = results;
-
-        if (this.activities[this.activities.length - 1] === activity) {
-          this.lastWorkplanTarget = true;
-          this.filterWorkplanIndicators();
-        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -640,11 +672,6 @@ export class PrintScorecardComponent implements OnInit {
         // Add WorkplanActuals to WorkplanIndicators at index of activity
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanActuals = results;
-
-        if (this.activities[this.activities.length - 1] === activity) {
-          this.lastWorkplanActual = true;
-          this.filterWorkplanIndicators();
-        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -653,74 +680,69 @@ export class PrintScorecardComponent implements OnInit {
     );
   }
   
+  public getOverallPerformancePercentage() {
+    let overallPerformancePercentage = 0;
 
-  private filterWorkplanIndicators() {
-   // if (this.lastWorkplanTarget && this.lastWorkplanActual) {
-      this.filteredWorkplanIndicators = [];
+    if (this.rowGroupMetadataActivities && this.rowGroupMetadataActivities.length > 0 && this.filteredWorkplanIndicators && this.filteredWorkplanIndicators.length > 0) {
+
+      let uniqueObjectives = this.rowGroupMetadataActivities.filter(x => x.itemExists === false);
+
+      for (let i = 0; i < uniqueObjectives.length; i++) {
+        let indicators = this.filteredWorkplanIndicators.filter(x => x.ObjectiveName === uniqueObjectives[i].itemName);
+
+        // Sum property in array of objects...
+        // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
+        let targetTotal = indicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
+        let actualTotal = indicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
+        let averageTotal = actualTotal === 0 || targetTotal === 0 ? 0 : (actualTotal / targetTotal) * 100;
+
+        overallPerformancePercentage = overallPerformancePercentage + averageTotal;
+      }
+
+      overallPerformancePercentage = overallPerformancePercentage / uniqueObjectives.length;
+    }
+
+    return overallPerformancePercentage;
+  }
+
+  public filterWorkplanIndicators() {
+    this.filteredWorkplanIndicators = [];
+
+    if (this.workplanIndicators && this.workplanIndicators.length > 0) {
 
       this.workplanIndicators.forEach(indicator => {
 
-        // Filter WorkplanTargets on activity, financial year and monthly frequency
-        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id && x.frequencyId == FrequencyEnum.Monthly);
-        // Calculate total targets
-        let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
-       
-        // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
-        // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
-        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.application.applicationPeriod.financialYear.id);
-        let filteredWorkplanActuals = workplanActuals.filter((el) => {
-          return workplanTargets.some((f) => {
-            return f.id === el.workplanTargetId;
-          });
+        let totalTargets = indicator.workplanTargets.length > 0 ? (indicator.workplanTargets[0].apr + indicator.workplanTargets[0].may + indicator.workplanTargets[0].jun + indicator.workplanTargets[0].jul + indicator.workplanTargets[0].aug + indicator.workplanTargets[0].sep + indicator.workplanTargets[0].oct + indicator.workplanTargets[0].nov + indicator.workplanTargets[0].dec + indicator.workplanTargets[0].jan + indicator.workplanTargets[0].feb + indicator.workplanTargets[0].mar) : 0;
+        let totalActuals: number = 0;
+
+        indicator.workplanActuals.forEach(item => {
+          let actual = item.actual !== null && item.actual !== undefined ? item.actual : 0;
+          totalActuals = totalActuals + actual;
         });
 
-        // Calculate total actuals
-        let actualTotal =
-        filteredWorkplanActuals.reduce((sum, object) => {
-           let actual = object.actual == null ? 0 : object.actual;
-           return sum + actual;
-        }, 0);
-        
-        let avg =((actualTotal/targetTotal)*100).toFixed(2);
-
-        if (isNaN(((actualTotal/targetTotal)*100))) {
-          avg = '0';
-        }
-        
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
-          workplanTargets: workplanTargets,
-          workplanActuals: filteredWorkplanActuals,
-          totalTargets: targetTotal,
-          totalActuals: actualTotal,          
-          objectiveId: indicator.activity.objective.id,
+          totalTargets: totalTargets,
+          totalActuals: totalActuals,
           ObjectiveName: indicator.activity.objective.name,
-
-          totalAvg: Number(avg)
+          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : (totalActuals / totalTargets) * 100
         } as IWorkplanIndicatorSummary);
       });
 
-      let sumOfAvg = 0;
-
-      this.filteredWorkplanIndicators.forEach(item =>{
-        sumOfAvg += item.totalAvg;
-      })
-
-      this.activityAvgScore = sumOfAvg/Number(this.filteredWorkplanIndicators.length.toFixed(2));
-
       this.updateRowGroupMetaDataAct();
-      this.makeRowsSameHeight();
+    }
+
+    return this.filteredWorkplanIndicators;
   }
 
   public getObjectiveTargets(objective: IObjective) {
     let totalTarget = 0;
     let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
 
-    objectives.forEach(obj =>
-      {
-        if(obj.ObjectiveName === objective.name)  
+    objectives.forEach(obj => {
+      if (obj.ObjectiveName === objective.name)
         totalTarget += obj.totalTargets;
-      }
+    }
     );
 
     return totalTarget;
@@ -730,35 +752,31 @@ export class PrintScorecardComponent implements OnInit {
     let totalActual = 0;
     let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
 
-    objectives.forEach(obj =>
-      {
-        if(obj.ObjectiveName === objective.name)  
+    objectives.forEach(obj => {
+      if (obj.ObjectiveName === objective.name)
         totalActual += obj.totalActuals;
-      }
+    }
     );
 
     return totalActual;
   }
 
-  public getPerformanceAvg(objective: IObjective)
-  {
+  public getPerformanceAvg(objective: IObjective) {
     let totalTarget = 0;
     let totalActual = 0;
     let performanceAvg = '';
     let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
-    objectives.forEach(obj =>
-      {
-        if(obj.ObjectiveName === objective.name) 
-        {
-          totalTarget += obj.totalTargets;
-          totalActual += obj.totalActuals;
-        }        
+    objectives.forEach(obj => {
+      if (obj.ObjectiveName === objective.name) {
+        totalTarget += obj.totalTargets;
+        totalActual += obj.totalActuals;
       }
+    }
     );
 
-    performanceAvg = ((totalActual/totalTarget)*100).toFixed(2);
+    performanceAvg = ((totalActual / totalTarget) * 100).toFixed(2);
 
-    if (isNaN(((totalActual/totalTarget)*100))) {
+    if (isNaN(((totalActual / totalTarget) * 100))) {
       performanceAvg = '0';
     }
     return performanceAvg;
@@ -792,15 +810,13 @@ export class PrintScorecardComponent implements OnInit {
   }
 
 
-  updateRowGroupMetaDataAct() {     
-    let target = [];   
+  updateRowGroupMetaDataAct() {
     this.rowGroupMetadataActivities = [];
-    this.filteredWorkplanIndicators = this.filteredWorkplanIndicators.sort((a, b) => a.objectiveId - b.objectiveId);
+
     if (this.filteredWorkplanIndicators) {
       this.filteredWorkplanIndicators.forEach(element => {
-        var itemExists = this.rowGroupMetadataActivities.some(function (data) 
-        { 
-          return data.itemName === element.ObjectiveName 
+        var itemExists = this.rowGroupMetadataActivities.some(function (data) {
+          return data.itemName === element.ObjectiveName
         });
 
         this.rowGroupMetadataActivities.push({
@@ -809,13 +825,13 @@ export class PrintScorecardComponent implements OnInit {
         });
 
       });
-    }            
+    }
+
     this.allDataLoaded();
   }
 
   private allDataLoaded() {
     if (this.objectives && this.activities) {
-      this.isApplicationAvailable = true;
       this._spinner.hide();
     }
   }
