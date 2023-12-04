@@ -241,7 +241,7 @@ namespace NPOMS.API.Controllers
             {
                 await this._evaluationService.CreateCapturedResponse(model, base.GetUserIdentifier());
                 var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
-                await ConfigureEmail();
+                await ScorecardSummaryEmail(fundingApplication);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -344,17 +344,17 @@ namespace NPOMS.API.Controllers
 			await ConfigureEmail(fundingApplication);
 		}
 
-        private async Task ConfigureEmail()
+        private async Task ScorecardSummaryEmail(Application fundingApplication)
         {
             try
             {
                 // Send email to Capturer
-                var applicationAdjudicated = EmailTemplateFactory
-                            .Create(EmailTemplateTypeEnum.StatusChanged)
-                            .Get<StatusChangedEmailTemplate>();
-                //.Init(fundingApplication);
+                var scorecardSummary = EmailTemplateFactory
+                            .Create(EmailTemplateTypeEnum.ScorecardSummary)
+                            .Get<ScorecardSummaryEmailTemplates>()
+							.Init(fundingApplication);
 
-                await applicationAdjudicated.SubmitToQueue();
+                await scorecardSummary.SubmitToQueue();
                    
                 await _emailService.SendEmailFromQueue();
             }
