@@ -114,6 +114,7 @@ export class ScorecardComponent implements OnInit {
   organisation: string;
   capturedResponses: ICapturedResponse[];
   capturedResponsesCount: ICapturedResponse[];
+  capturedResponseCount: ICapturedResponse[];
   userId: number;
   workFlowCount: IWorkflowAssessment[];
 
@@ -179,10 +180,13 @@ export class ScorecardComponent implements OnInit {
       this._evaluationService.workflowAssessmentCount(Number(this.engagementQuestionnaire[0].questionCategoryId)).subscribe(
         (res) => {
 
-          //  alert(res);
-          //  alert(this.capturedResponsesCount.length);
-          if (this.capturedResponsesCount && this.capturedResponsesCount.length === res) {
+          if (this.capturedResponsesCount && this.capturedResponsesCount.length === 10) {
             alert('Add new score card limit reached. Can not add new score card');
+            this._router.navigateByUrl('applications');
+          }
+
+          if (this.capturedResponseCount && this.capturedResponseCount.length > 0) {
+            alert('Scorecard review completed for this application. Can not add new score card');
             this._router.navigateByUrl('applications');
           }
 
@@ -775,6 +779,7 @@ export class ScorecardComponent implements OnInit {
 
       (results) => {
         this.capturedResponsesCount = results.filter(x => x.questionCategoryId === 0);
+        this.capturedResponseCount = results.filter(x => x.questionCategoryId === 100);
 
         this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.userId);
 
