@@ -75,14 +75,14 @@
                     <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{allSocrerOverallTotalScore}}</b></td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #CCCCCC;"> <span class="p-text-bold p-ml-2"><b>Overall Qualitative Performance</b></span></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;">&nbsp;</td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;" class="{{getRagBackgroundColour1(scorer1OverallAvgScore)}}"><b>{{scorer1OverallAvgScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;" class="{{getRagBackgroundColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;" class="{{getRagBackgroundColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;" class="{{getRagBackgroundColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;" colspan="2"></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;" class="{{getRagBackgroundColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore * 10}} %</b></td>
+                    <td style="border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; "> <span class="p-text-bold p-ml-2"><b>Overall Qualitative Performance</b></span></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer1OverallAvgScore)}}"><b>{{scorer1OverallAvgScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " colspan="2"></td>
                 </tr>
             </ng-template>
     </p-table>
@@ -99,7 +99,7 @@
                 <th style="text-align: center; width: 24%;">Indicator</th>
                 <th style="text-align: center; width: 10%;">Target</th>
                 <th style="text-align: center; width: 10%;">Actual YTD</th>
-                <th style="text-align: center; width: 8%;">Performance %</th>
+                <th style="text-align: center; width: 8%;">Performance</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-indicator let-rowIndex="rowIndex">
@@ -107,7 +107,7 @@
                 <td [attr.colspan]="3"><span class="p-text-bold">{{indicator.ObjectiveName}}</span></td>
                 <td style="text-align: center;"><span class="p-text-bold">{{getObjectiveTargets(indicator.activity.objective)}}</span></td>
                 <td style="text-align: center;"><span class="p-text-bold">{{getObjectiveActuals(indicator.activity.objective)}}</span></td>
-                <td style="text-align: center;"><span class="p-text-bold">{{getPerformanceAvg(indicator.activity.objective)}} %</span></td>
+                <td style="text-align: center;"><span class="p-text-bold">{{getPerformanceAvg(indicator.activity.objective)}}</span></td>
             </tr>
             <tr class="default-font">
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
@@ -115,13 +115,13 @@
                 <td style="text-align: left;">{{indicator.activity.successIndicator}}</td>
                 <td style="text-align: center;">{{indicator.totalTargets}}</td>
                 <td style="text-align: center;">{{indicator.totalActuals}}</td>
-                <td style="text-align: center;">{{(indicator.totalAvg).toFixed(2)}} %</td>
+                <td style="text-align: center;">{{(indicator.totalAvg).toFixed(2)}}</td>
             </tr>
         </ng-template>
         <ng-template pTemplate="footer">
             <tr class="default-font">
                 <td style="text-align: left; width: 20%;" colspan="5"><b>Overall Quantitative Performance</b></td>
-                <td style="text-align: center;" class="{{getRagBackgroundColour((getOverallPerformancePercentage()).toFixed(2).toString())}}">{{(getOverallPerformancePercentage()).toFixed(2)}} %</td>
+                <td style="text-align: center;" class="{{getRagBackgroundColour((getOverallPerformancePercentage()/10).toFixed(2).toString())}}">{{(getOverallPerformancePercentage()/10).toFixed(2)}}</td>
             </tr>
           
         </ng-template>
@@ -159,8 +159,8 @@
                 class="p-button-text action-button" icon="fa fa-comments-o"
                 pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(4)"></button>
             </td>
-            <td style="width: 20%; text-align: center; border: 1px solid #CCCCCC;"><b>Overall Scorecard Percentage</b></td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;" class="{{getRagBackgroundColour((((allScorerOverallAvgScore * 10)+getOverallPerformancePercentage())/2).toFixed(2).toString())}}"><b>{{(((allScorerOverallAvgScore * 10)+getOverallPerformancePercentage())/2).toFixed(2)}} %</b></td>
+            <td style="width: 20%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>Overall Scorecard Performance</b></td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour((((allScorerOverallAvgScore)+getOverallPerformancePercentage()/10)/2).toFixed(2).toString())}}"><b>{{(((allScorerOverallAvgScore)+getOverallPerformancePercentage()/10)/2).toFixed(2)}}</b></td>
         </tr>
     </table>
 </p-panel>
