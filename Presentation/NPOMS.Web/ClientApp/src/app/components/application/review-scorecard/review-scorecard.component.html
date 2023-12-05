@@ -116,7 +116,7 @@
                 <td style="text-align: center;">{{indicator.totalTargets}}</td>
                 <td style="text-align: center;">{{indicator.totalActuals}}</td>
                 <td style="text-align: center;" *ngIf="indicator.totalAvg > 10" >{{10}}</td>
-                <td style="text-align: center;" *ngIf="indicator.totalAvg < 10">{{(indicator.totalAvg).toFixed(2)}}</td>
+                <td style="text-align: center;">{{(indicator.totalAvg).toFixed(2)}}</td>
             </tr>
         </ng-template>
         <ng-template pTemplate="footer">
