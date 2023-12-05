@@ -399,13 +399,13 @@ export class ReviewScorecardComponent implements OnInit {
 
     let ragColour = 'rag-not-saved-background';
     if (num !== undefined) {
-      if (Number(num) >= 0 && Number(num) < 50) {
+      if (Number(num) >= 0 && Number(num) < 5) {
         ragColour = 'rag-not-saved-background';
       }
-      else if (Number(num) > 50 && Number(num) < 80) {
+      else if (Number(num) > 5 && Number(num) < 8) {
         ragColour = 'rag-partial-background';
       }
-      else if (Number(num) > 80) {
+      else if (Number(num) > 8) {
         ragColour = 'rag-saved-background';
       }
       else {
