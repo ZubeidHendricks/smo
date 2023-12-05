@@ -816,7 +816,7 @@ export class ReviewScorecardComponent implements OnInit {
         let scorer10OverallTotalScores = 0;
         let allScorerOverallTotalScores = 0;
 
-        let length = this._responses.length;
+        let length = user.length;
 
         this._responses.forEach(item => {
           if (Number(item.responseOption.name) >= 0) {
