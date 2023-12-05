@@ -671,7 +671,7 @@ export class ReviewScorecardComponent implements OnInit {
           totalTargets: totalTargets,
           totalActuals: totalActuals,
           ObjectiveName: indicator.activity.objective.name,
-          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : (totalActuals / totalTargets) * 100
+          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : ((totalActuals / totalTargets)/10) * 100
         } as IWorkplanIndicatorSummary);
       });
 
@@ -745,9 +745,9 @@ export class ReviewScorecardComponent implements OnInit {
     }
     );
 
-    performanceAvg = ((totalActual / totalTarget) * 100).toFixed(2);
+    performanceAvg = (((totalActual / totalTarget)/10) * 100).toFixed(2);
 
-    if (isNaN(((totalActual / totalTarget) * 100))) {
+    if (isNaN((((totalActual / totalTarget)/10) * 100))) {
       performanceAvg = '0';
     }
     return performanceAvg;
