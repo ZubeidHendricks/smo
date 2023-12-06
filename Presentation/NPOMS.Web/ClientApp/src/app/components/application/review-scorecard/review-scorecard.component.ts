@@ -106,15 +106,33 @@ export class ReviewScorecardComponent implements OnInit {
   scorer2: number;
   scorer3: number;
   scorer4: number;
+  scorer5: number;
+  scorer6: number;
+  scorer7: number;
+  scorer8: number;
+  scorer9: number;
+  scorer10: number;
   socrer1OverallTotalScore: number;
   socrer2OverallTotalScore: number;
   socrer3OverallTotalScore: number;
   socrer4OverallTotalScore: number;
+  socrer5OverallTotalScore: number;
+  socrer6OverallTotalScore: number;
+  socrer7OverallTotalScore: number;
+  socrer8OverallTotalScore: number;
+  socrer9OverallTotalScore: number;
+  socrer10OverallTotalScore: number;
   allSocrerOverallTotalScore: number;
   scorer1OverallAvgScore: number;
   scorer2OverallAvgScore: number;
   scorer3OverallAvgScore: number;
   scorer4OverallAvgScore: number;
+  scorer5OverallAvgScore: number;
+  scorer6OverallAvgScore: number;
+  scorer7OverallAvgScore: number;
+  scorer8OverallAvgScore: number;
+  scorer9OverallAvgScore: number;
+  scorer10OverallAvgScore: number;
   allScorerOverallAvgScore: number;
   objectiveTarget: number;
   objectiveActual: number;
@@ -122,6 +140,8 @@ export class ReviewScorecardComponent implements OnInit {
 
   captureImprovementArea: string;
   captureRequiredAction: string;
+  captureImprovementAreaComment: string;
+  captureRequiredActionComment: string;
 
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
@@ -129,6 +149,8 @@ export class ReviewScorecardComponent implements OnInit {
 
   signedByUser: string;
   submittedDate: Date;
+  signedByUserScorecardUser: string;
+  submittedDateByScorecardUser: Date;
   npo: INpo;
   organisation: string;
   capturedResponses: ICapturedResponse[];
@@ -399,13 +421,13 @@ export class ReviewScorecardComponent implements OnInit {
 
     let ragColour = 'rag-not-saved-background';
     if (num !== undefined) {
-      if (Number(num) >= 0 && Number(num) < 50) {
+      if (Number(num) >= 0 && Number(num) < 5) {
         ragColour = 'rag-not-saved-background';
       }
-      else if (Number(num) > 50 && Number(num) < 80) {
+      else if (Number(num) > 5 && Number(num) < 8) {
         ragColour = 'rag-partial-background';
       }
-      else if (Number(num) > 80) {
+      else if (Number(num) > 8) {
         ragColour = 'rag-saved-background';
       }
       else {
@@ -671,7 +693,7 @@ export class ReviewScorecardComponent implements OnInit {
           totalTargets: totalTargets,
           totalActuals: totalActuals,
           ObjectiveName: indicator.activity.objective.name,
-          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : (totalActuals / totalTargets) * 100
+          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : ((totalActuals / totalTargets)/10) * 100
         } as IWorkplanIndicatorSummary);
       });
 
@@ -700,7 +722,7 @@ export class ReviewScorecardComponent implements OnInit {
         overallPerformancePercentage = overallPerformancePercentage + averageTotal;
       }
 
-      overallPerformancePercentage = overallPerformancePercentage / uniqueObjectives.length;
+      overallPerformancePercentage = ((overallPerformancePercentage / uniqueObjectives.length)/10) > 10 ? 10 : ((overallPerformancePercentage / uniqueObjectives.length)/10);
     }
 
     return overallPerformancePercentage;
@@ -745,11 +767,17 @@ export class ReviewScorecardComponent implements OnInit {
     }
     );
 
-    performanceAvg = ((totalActual / totalTarget) * 100).toFixed(2);
+    performanceAvg = (((totalActual / totalTarget)/10) * 100).toFixed(2);
 
-    if (isNaN(((totalActual / totalTarget) * 100))) {
+    if (isNaN((((totalActual / totalTarget)/10) * 100))) {
       performanceAvg = '0';
     }
+
+    if((((totalActual / totalTarget)/10) * 100) > 10)
+    {
+      performanceAvg = '10'
+    }
+
     return performanceAvg;
   }
 
@@ -790,9 +818,15 @@ export class ReviewScorecardComponent implements OnInit {
         let scorer2OverallTotalScores = 0;
         let scorer3OverallTotalScores = 0;
         let scorer4OverallTotalScores = 0;
+        let scorer5OverallTotalScores = 0;
+        let scorer6OverallTotalScores = 0;
+        let scorer7OverallTotalScores = 0;
+        let scorer8OverallTotalScores = 0;
+        let scorer9OverallTotalScores = 0;
+        let scorer10OverallTotalScores = 0;
         let allScorerOverallTotalScores = 0;
 
-        let length = this._responses.length;
+        let length = user.length;
 
         this._responses.forEach(item => {
           if (Number(item.responseOption.name) >= 0) {
@@ -848,6 +882,84 @@ export class ReviewScorecardComponent implements OnInit {
 
         this._responses.forEach(item => {
           if (Number(item.responseOption.name) >= 0) {
+            if (user[4] != undefined) {
+              this.scorer5 = Number(user[4].createdUserId);
+              if (Number(item.createdUserId) == Number(user[4].createdUserId))
+                scorer5OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer5OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[5] != undefined) {
+              this.scorer6 = Number(user[5].createdUserId);
+              if (Number(item.createdUserId) == Number(user[5].createdUserId))
+                scorer6OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer6OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[6] != undefined) {
+              this.scorer7 = Number(user[6].createdUserId);
+              if (Number(item.createdUserId) == Number(user[6].createdUserId))
+                scorer7OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer7OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[7] != undefined) {
+              this.scorer8 = Number(user[7].createdUserId);
+              if (Number(item.createdUserId) == Number(user[7].createdUserId))
+                scorer8OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer8OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[8] != undefined) {
+              this.scorer9 = Number(user[8].createdUserId);
+              if (Number(item.createdUserId) == Number(user[8].createdUserId))
+                scorer9OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer9OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[9] != undefined) {
+              this.scorer10 = Number(user[9].createdUserId);
+              if (Number(item.createdUserId) == Number(user[9].createdUserId))
+                scorer10OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer10OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
             allScorerOverallTotalScores += Number(item.responseOption.name);
           }
           else {
@@ -859,13 +971,27 @@ export class ReviewScorecardComponent implements OnInit {
         this.socrer2OverallTotalScore = scorer2OverallTotalScores;
         this.socrer3OverallTotalScore = scorer3OverallTotalScores;
         this.socrer4OverallTotalScore = scorer4OverallTotalScores;
+        this.socrer5OverallTotalScore = scorer5OverallTotalScores;
+        this.socrer6OverallTotalScore = scorer6OverallTotalScores;
+        this.socrer7OverallTotalScore = scorer7OverallTotalScores;
+        this.socrer8OverallTotalScore = scorer8OverallTotalScores;
+        this.socrer9OverallTotalScore = scorer9OverallTotalScores;
+        this.socrer10OverallTotalScore = scorer10OverallTotalScores;
         this.allSocrerOverallTotalScore = allScorerOverallTotalScores;
         this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores / 5).toFixed(2));
         this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores / 5).toFixed(2));
         this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores / 5).toFixed(2));
         this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores / 5).toFixed(2));
-        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore) / 4).toFixed(2));
-
+        this.scorer5OverallAvgScore = Number((scorer5OverallTotalScores / 5).toFixed(2));
+        this.scorer6OverallAvgScore = Number((scorer6OverallTotalScores / 5).toFixed(2));
+        this.scorer7OverallAvgScore = Number((scorer7OverallTotalScores / 5).toFixed(2));
+        this.scorer8OverallAvgScore = Number((scorer8OverallTotalScores / 5).toFixed(2));
+        this.scorer9OverallAvgScore = Number((scorer9OverallTotalScores / 5).toFixed(2));
+        this.scorer10OverallAvgScore = Number((scorer10OverallTotalScores / 5).toFixed(2));
+        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore + this.scorer5OverallAvgScore + this.scorer6OverallAvgScore + this.scorer7OverallAvgScore + this.scorer8OverallAvgScore + this.scorer9OverallAvgScore + this.scorer10OverallAvgScore) / length).toFixed(2));
+        if (isNaN(this.allScorerOverallAvgScore)) {
+          this.allScorerOverallAvgScore = 0;
+        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -953,18 +1079,27 @@ export class ReviewScorecardComponent implements OnInit {
           this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer3);
         if (v === 4)
           this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer4);
+        if (v === 5)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer5);
+        if (v === 6)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer6);
+        if (v === 7)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer7);
+        if (v === 8)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer8);
+        if (v === 9)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer9);
+        if (v === 10)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer10);
 
         if (this.capturedResponses.length > 0) {
           this.displayDialog = true;
           let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
           let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
-          this.captureImprovementArea = improvementArea;
-          this.captureRequiredAction = requiredAction;
-          this.signedByUser = this.capturedResponses[0].createdUser.fullName;
-          this.submittedDate = this.capturedResponses[0].createdDateTime;
-          // this.hascapturedImprovementArea = true;
-          // this.hasCapturedRequiredAction = true;   
-          // this.hasScorecardSubmitted = true;      
+          this.captureImprovementAreaComment = improvementArea;
+          this.captureRequiredActionComment = requiredAction;
+          this.signedByUserScorecardUser = this.capturedResponses[0].createdUser.fullName;
+          this.submittedDateByScorecardUser = this.capturedResponses[0].createdDateTime;
         }
       })
 
