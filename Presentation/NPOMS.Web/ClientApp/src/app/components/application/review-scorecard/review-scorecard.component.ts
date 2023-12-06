@@ -722,11 +722,7 @@ export class ReviewScorecardComponent implements OnInit {
         overallPerformancePercentage = overallPerformancePercentage + averageTotal;
       }
 
-      overallPerformancePercentage = overallPerformancePercentage / uniqueObjectives.length;
-      if(overallPerformancePercentage > 10)
-      {
-        overallPerformancePercentage = 10;
-      }
+      overallPerformancePercentage = ((overallPerformancePercentage / uniqueObjectives.length)/10) > 10 ? 10 : ((overallPerformancePercentage / uniqueObjectives.length)/10);
     }
 
     return overallPerformancePercentage;
