@@ -140,6 +140,8 @@ export class ReviewScorecardComponent implements OnInit {
 
   captureImprovementArea: string;
   captureRequiredAction: string;
+  captureImprovementAreaComment: string;
+  captureRequiredActionComment: string;
 
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
@@ -147,6 +149,8 @@ export class ReviewScorecardComponent implements OnInit {
 
   signedByUser: string;
   submittedDate: Date;
+  signedByUserScorecardUser: string;
+  submittedDateByScorecardUser: Date;
   npo: INpo;
   organisation: string;
   capturedResponses: ICapturedResponse[];
@@ -768,6 +772,11 @@ export class ReviewScorecardComponent implements OnInit {
     if (isNaN((((totalActual / totalTarget)/10) * 100))) {
       performanceAvg = '0';
     }
+
+    if(performanceAvg > '10')
+    {
+      performanceAvg = '10'
+    }
     return performanceAvg;
   }
 
@@ -1086,13 +1095,10 @@ export class ReviewScorecardComponent implements OnInit {
           this.displayDialog = true;
           let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
           let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
-          this.captureImprovementArea = improvementArea;
-          this.captureRequiredAction = requiredAction;
-          this.signedByUser = this.capturedResponses[0].createdUser.fullName;
-          this.submittedDate = this.capturedResponses[0].createdDateTime;
-          // this.hascapturedImprovementArea = true;
-          // this.hasCapturedRequiredAction = true;   
-          // this.hasScorecardSubmitted = true;      
+          this.captureImprovementAreaComment = improvementArea;
+          this.captureRequiredActionComment = requiredAction;
+          this.signedByUserScorecardUser = this.capturedResponses[0].createdUser.fullName;
+          this.submittedDateByScorecardUser = this.capturedResponses[0].createdDateTime;
         }
       })
 

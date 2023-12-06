@@ -316,7 +316,7 @@
             </div>
             <div class="p-col-9">
                 <textarea class="form-text" [rows]="3" pInputTextarea 
-                [(ngModel)]="captureImprovementArea" [ngModelOptions]="{standalone: true}" 
+                [(ngModel)]="captureImprovementAreaComment" [ngModelOptions]="{standalone: true}" 
                 [autoResize]="true" [disabled]="true"></textarea>
             </div>
             <div class="p-col-3 form-label">
@@ -327,7 +327,7 @@
             </div>
             <div class="p-col-9">
                 <textarea class="form-text" [rows]="3" pInputTextarea 
-                [(ngModel)]="captureRequiredAction" [ngModelOptions]="{standalone: true}" 
+                [(ngModel)]="captureRequiredActionComment" [ngModelOptions]="{standalone: true}" 
                 [autoResize]="true" [disabled]="true"></textarea>
             </div>
         </div>
@@ -339,7 +339,7 @@
                 </div>
             </div>
             <div class="p-col-9">
-                <span>{{signedByUser}}</span>
+                <span>{{signedByUserScorecardUser}}</span>
             </div>
         </div>
         <div style="height: 10px;"></div>
@@ -350,7 +350,7 @@
                 </div>
             </div>
             <div class="p-col-9">
-                <span>{{submittedDate | date: 'yyyy-MM-dd'}}</span>
+                <span>{{submittedDateByScorecardUser | date: 'yyyy-MM-dd'}}</span>
             </div>
         </div>
     <!-- </p-table> -->
