@@ -41,7 +41,7 @@
                     <th style="width: 8%; text-align: center;">Scorer<b> 9</b></th>
                     <th style="width: 8%; text-align: center;">Scorer<b> 10</b></th>
                     <th style="width: 10%; text-align: center; text-wrap:break-word;">Average Category Score</th>
-                    <th style="width: 10%; text-align: center;">Comment</th>
+                    <th style="width: 10%; text-align: center;">View Comment</th>
                     <th style="width: 8%; text-align: center;" >Total score</th>
                 </tr>
             </ng-template>
@@ -146,7 +146,7 @@
         <ng-template pTemplate="footer">
             <tr class="default-font">
                 <td style="text-align: left; width: 20%;" colspan="5"><b>Overall Quantitative Performance</b></td>
-                <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"  *ngIf="getOverallPerformancePercentage() === 0" class="{{getRagBackgroundColour(0)}}">{{0}}</td>
+                <!-- <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"  *ngIf="getOverallPerformancePercentage() === 0" class="{{getRagBackgroundColour(0)}}">{{0}}</td> -->
                 <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" class="{{getRagBackgroundColour((getOverallPerformancePercentage()/10).toFixed(2).toString())}}">{{(getOverallPerformancePercentage()/10).toFixed(2)}}</td>
             </tr>
            
@@ -215,7 +215,8 @@
                 class="p-button-text action-button" icon="fa fa-comments-o"
                 pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(10)"></button>
             </td>
-            <td style="width: 17%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>Overall Scorecard Performance</b></td>
+            <td style="width: 17%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>Overall Score Performance</b></td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " *ngIf = "(((allScorerOverallAvgScore)+getOverallPerformancePercentage()/10)/2) > 10" class="{{getRagBackgroundColour(10)}}"><b>{{10}}</b></td>
             <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour((((allScorerOverallAvgScore)+getOverallPerformancePercentage()/10)/2).toFixed(2).toString())}}"><b>{{(((allScorerOverallAvgScore)+getOverallPerformancePercentage()/10)/2).toFixed(2)}}</b></td>
         </tr>
     </table>

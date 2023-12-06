@@ -723,6 +723,10 @@ export class ReviewScorecardComponent implements OnInit {
       }
 
       overallPerformancePercentage = overallPerformancePercentage / uniqueObjectives.length;
+      if(overallPerformancePercentage > 10)
+      {
+        overallPerformancePercentage = 10;
+      }
     }
 
     return overallPerformancePercentage;
@@ -773,10 +777,11 @@ export class ReviewScorecardComponent implements OnInit {
       performanceAvg = '0';
     }
 
-    if(performanceAvg > '10')
+    if((((totalActual / totalTarget)/10) * 100) > 10)
     {
       performanceAvg = '10'
     }
+
     return performanceAvg;
   }
 
