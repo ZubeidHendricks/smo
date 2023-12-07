@@ -23,12 +23,14 @@
 		WorkplanActualStatusChanged = 19,
 		WorkplanActualPendingReview = 20,
 		WorkplanActualPendingApproval = 21,
-        StatusChanged = 22,
-        StatusChangedPending = 23,
+		StatusChanged = 22,
+		StatusChangedPending = 23,
 		NewFundingApplication = 24,
 		StatusChangedApproved = 25,
 		AccessRequestLogged = 26,
-        StatusChangedSubmitted = 27,
-        StatusChangedVerified = 28
-    }
+		StatusChangedSubmitted = 27,
+		StatusChangedVerified = 28,
+		StatusChangedPendingReviewerSatisfaction = 29,
+		ScorecardSummary = 30
+	}
 }

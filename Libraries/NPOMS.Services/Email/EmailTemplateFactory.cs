@@ -73,7 +73,13 @@ namespace NPOMS.Services.Email
 				case EmailTemplateTypeEnum.WorkplanActualPendingApproval:
 					_template = new WorkplanActualPendingApprovalEmailTemplate();
 					break;
-				default:
+				case EmailTemplateTypeEnum.StatusChangedPendingReviewerSatisfaction:
+					_template = new StatusChangedPendingReviewerSatisfactionEmailTemplate();
+					break;
+                case EmailTemplateTypeEnum.ScorecardSummary:
+                    _template = new ScorecardSummaryEmailTemplates();
+                    break;
+                default:
 					_template = null;
 					break;
 			}

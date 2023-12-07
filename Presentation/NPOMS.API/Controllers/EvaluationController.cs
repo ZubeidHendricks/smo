@@ -127,7 +127,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-        [HttpGet("Id/{id}")]
+		[HttpGet("fundingAppId/{fundingAppId}/questionId/{questionId}", Name = "getResponses")]
+		public async Task<IActionResult> GetResponses(int fundingAppId, int questionId)
+		{
+			try
+			{
+				var results = await _evaluationService.GetResponses(fundingAppId, questionId, base.GetUserIdentifier());
+				return Ok(results);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError($"Something went wrong inside GetResponseHistory action: {ex.Message} Inner Exception: {ex.InnerException}");
+				return StatusCode(500, $"Internal server error: {ex.Message}");
+			}
+		}
+
+		[HttpGet("Id/{id}")]
         public async Task<IActionResult> GetResponse(int id)
         {
             try
@@ -171,6 +186,8 @@ namespace NPOMS.API.Controllers
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
+
+
 
 		[HttpPut("response", Name = "UpdateResponse")]
 		public async Task<IActionResult> UpdateResponse([FromBody] Response model)
@@ -223,7 +240,8 @@ namespace NPOMS.API.Controllers
             try
             {
                 await this._evaluationService.CreateCapturedResponse(model, base.GetUserIdentifier());
-               // await UpdateFundingApplicationStatus(model);
+                var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
+                await ScorecardSummaryEmail(fundingApplication);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -326,7 +344,26 @@ namespace NPOMS.API.Controllers
 			await ConfigureEmail(fundingApplication);
 		}
 
-		private async Task ConfigureEmail(Application fundingApplication)
+        private async Task ScorecardSummaryEmail(Application fundingApplication)
+        {
+            try
+            {
+                // Send email to Capturer
+                var scorecardSummary = EmailTemplateFactory
+                            .Create(EmailTemplateTypeEnum.ScorecardSummary)
+                            .Get<ScorecardSummaryEmailTemplates>()
+							.Init(fundingApplication);
+
+                await scorecardSummary.SubmitToQueue();
+                   
+                await _emailService.SendEmailFromQueue();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside EvaluationController-ConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
+        private async Task ConfigureEmail(Application fundingApplication)
 		{
 			try
 			{

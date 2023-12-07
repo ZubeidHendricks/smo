@@ -51,12 +51,12 @@ namespace NPOMS.Services.Implementation
 
 				foreach (var queuedEmail in queuedEmails)
 				{
-					using (var request = new HttpRequestMessage(new HttpMethod("POST"), queuedEmail.EmailTemplate.EmailAccount.Host))
-					{
-						request.Headers.TryAddWithoutValidation("accept", "*/*");
+                    using (var request = new HttpRequestMessage(new HttpMethod("POST"), queuedEmail.EmailTemplate.EmailAccount.Host))
+                    {
+						request.Headers.TryAddWithoutValidation("accept", "*/*"); 
 
-						var content = "\"to\":\"{0}\",\"from\":\"{1}\",\"from_text\":\"{2}\",\"subject\":\"{3}\",\"body\":\"{4}\",\"attachments\":[]";
-						content = string.Format(content, queuedEmail.RecipientEmail, queuedEmail.EmailTemplate.EmailAccount.FromEmail, queuedEmail.EmailTemplate.EmailAccount.FromDisplayName, queuedEmail.Subject, queuedEmail.Message.Replace("\"", "'"));
+                        var content = "\"to\":\"{0}\",\"from\":\"{1}\",\"from_text\":\"{2}\",\"subject\":\"{3}\",\"body\":\"{4}\",\"attachments\":[]";
+						content = string.Format(content, queuedEmail.RecipientEmail, queuedEmail.FromEmailAddress, queuedEmail.RecipientName, queuedEmail.Subject, queuedEmail.Message.Replace("\"", "'"));
 						request.Content = new StringContent("{" + content + "}");
 						request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json-patch+json");
 

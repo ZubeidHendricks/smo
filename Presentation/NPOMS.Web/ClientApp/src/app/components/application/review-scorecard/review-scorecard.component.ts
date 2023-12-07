@@ -4,9 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
-  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import {
+  ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
+  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum
+} from 'src/app/models/enums';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator, IWorkplanIndicatorSummary } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -16,9 +18,9 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { QuestionCategoryComponent } from '../../admin/utilities/question-category/question-category.component';
 
-export interface IResp
-{
+export interface IResp {
   name: string
 }
 
@@ -34,12 +36,13 @@ export class ReviewScorecardComponent implements OnInit {
   hasAdminRole: boolean;
   profile: IUser;
 
-   /* Permission logic */
-   public IsAuthorized(permission: PermissionsEnum): boolean {
+  /* Permission logic */
+  public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
   }
+
 
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
@@ -63,14 +66,15 @@ export class ReviewScorecardComponent implements OnInit {
   public get FrequencyPeriodEnum(): typeof FrequencyPeriodEnum {
     return FrequencyPeriodEnum;
   }
-  
+
   applicationAudits: IApplicationAudit[];
   _recommendation: boolean = false;
   responseOptions: IResponseOption[];
   _responses: IResponseOptions[];
-  _responseUsers: IResponseOptions[];
+  _responseUsers: IGetResponseOptions[];
   responseHistory: IResponseHistory[];
-  displayHistoryDialog: boolean;
+  displayCommentDialog: boolean;
+  displayDialog: boolean;
   historyCols: any[];
   displayHistory: boolean;
   paramSubcriptions: Subscription;
@@ -87,9 +91,7 @@ export class ReviewScorecardComponent implements OnInit {
   ResponseTypeentities: IResponseType[];
   auditCols: any[];
   workplanIndicators: IWorkplanIndicator[];
-  filteredWorkplanIndicators: IWorkplanIndicator[];
-  lastWorkplanTarget: boolean;
-  lastWorkplanActual: boolean;
+  filteredWorkplanIndicators: IWorkplanIndicatorSummary[];
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
   scrollableCols: any[];
@@ -100,23 +102,46 @@ export class ReviewScorecardComponent implements OnInit {
   //npoId: string;
   statuses: IStatus[];
   rowGroupMetadataActivities: any[];
-  isApplicationAvailable: boolean;
-  isObjectivesAvailable: boolean;
-  Socrer1OverallTotalScore: number;
-  Socrer2OverallTotalScore: number;
-  Socrer3OverallTotalScore: number;
-  Socrer4OverallTotalScore: number;
-  Scorer1OverallAvgScore: number;
-  Scorer2OverallAvgScore: number;
-  Scorer3OverallAvgScore: number;
-  Scorer4OverallAvgScore: number;
-  activityAvgScore: number;
+  scorer1: number;
+  scorer2: number;
+  scorer3: number;
+  scorer4: number;
+  scorer5: number;
+  scorer6: number;
+  scorer7: number;
+  scorer8: number;
+  scorer9: number;
+  scorer10: number;
+  socrer1OverallTotalScore: number;
+  socrer2OverallTotalScore: number;
+  socrer3OverallTotalScore: number;
+  socrer4OverallTotalScore: number;
+  socrer5OverallTotalScore: number;
+  socrer6OverallTotalScore: number;
+  socrer7OverallTotalScore: number;
+  socrer8OverallTotalScore: number;
+  socrer9OverallTotalScore: number;
+  socrer10OverallTotalScore: number;
+  allSocrerOverallTotalScore: number;
+  scorer1OverallAvgScore: number;
+  scorer2OverallAvgScore: number;
+  scorer3OverallAvgScore: number;
+  scorer4OverallAvgScore: number;
+  scorer5OverallAvgScore: number;
+  scorer6OverallAvgScore: number;
+  scorer7OverallAvgScore: number;
+  scorer8OverallAvgScore: number;
+  scorer9OverallAvgScore: number;
+  scorer10OverallAvgScore: number;
+  allScorerOverallAvgScore: number;
   objectiveTarget: number;
   objectiveActual: number;
   objectiveAverage: number;
 
   captureImprovementArea: string;
   captureRequiredAction: string;
+  captureImprovementAreaComment: string;
+  captureRequiredActionComment: string;
 
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
@@ -124,11 +149,13 @@ export class ReviewScorecardComponent implements OnInit {
 
   signedByUser: string;
   submittedDate: Date;
+  signedByUserScorecardUser: string;
+  submittedDateByScorecardUser: Date;
   npo: INpo;
   organisation: string;
   capturedResponses: ICapturedResponse[];
   name: IResp[] = [];
-  _name: IResp[] =[];
+  _name: IResp[] = [];
   userId: number;
   constructor(
     private _router: Router,
@@ -151,23 +178,20 @@ export class ReviewScorecardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
-     // this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-    //   this.npoId = params.get('npoId');
-    // });
+    this._spinner.show();
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      this.id = params.get('id');      
+      this.id = params.get('id');
     });
 
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-      
+
         this.userId = this.profile.id;
         this.loadCapturedResponses();
       }
-    }); 
+    });
 
     this.getQuestionCategory();
     this.getResponseType();
@@ -187,11 +211,10 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   private loadApplication() {
-    //this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         this.application = results;
-       
+
         this.loadQuestionnaire();
         this.loadObjectives();
       },
@@ -202,7 +225,7 @@ export class ReviewScorecardComponent implements OnInit {
     this._evaluationService.getScorecardQuestionnaire(Number(this.id)).subscribe(
       (results) => {
         this.allQuestionnaires = results.filter(x => x.questionCategoryName === "Engagement" || x.questionCategoryName === "Timely Work Plan Submission"
-        || x.questionCategoryName === "Impact" || x.questionCategoryName === "Risk Mitigation" || x.questionCategoryName === "Appropriation of Resources");
+          || x.questionCategoryName === "Impact" || x.questionCategoryName === "Risk Mitigation" || x.questionCategoryName === "Appropriation of Resources");
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
@@ -220,7 +243,7 @@ export class ReviewScorecardComponent implements OnInit {
   private loadResponseOptions() {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
-        this.responseOptions = results;       
+        this.responseOptions = results;
         this.selectedResponses();
         this.loadStatuses();
       },
@@ -235,7 +258,6 @@ export class ReviewScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.Statuses, true).subscribe(
       (results) => {
         this.statuses = results;
-        this._spinner.hide();        
       },
       (err) => {
         this._loggerService.logException(err);
@@ -313,41 +335,39 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   public getRagColour(questionnaire: IQuestionResponseViewModel[]) {
-    
+
     let ragColour = 'rag-not-saved';
-    
+
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4)
-      {
-        ragColour = 'rag-not-saved';        
+      if (Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4) {
+        ragColour = 'rag-not-saved';
       }
-      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
-        ragColour = 'rag-partial';  
+      else if (Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8) {
+        ragColour = 'rag-partial';
       }
-      else if(Number(item.responseOption.name) > 5){
+      else if (Number(item.responseOption.name) > 5) {
         ragColour = 'rag-saved';
       }
-      else{
+      else {
         ragColour = '';
       }
     });
 
     return ragColour;
-  } 
+  }
 
   public getRagText(questionnaire: IQuestionResponseViewModel[]) {
-    
+
     let ragText = '';
-    
+
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4)
-      {
-        ragText = 'Below Expectations';       
+      if (Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4) {
+        ragText = 'Below Expectations';
       }
-      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
-        ragText = 'Meet Expectations'; 
+      else if (Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8) {
+        ragText = 'Meet Expectations';
       }
-      else if(Number(item.responseOption.name) > 8){
+      else if (Number(item.responseOption.name) > 8) {
         ragText = 'Exceeds  Expectations';
       }
     });
@@ -356,48 +376,85 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   public getRagColour1(num: Number) {
-    
-    let ragColour = 'rag-not-saved';    
-    if(num !== undefined)
-    {
-      if(Number(num) >= 1 && Number(num) <= 4)
-      {
-        ragColour = 'rag-not-saved';        
+
+    let ragColour = 'rag-not-saved';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) <= 5) {
+        ragColour = 'rag-not-saved';
       }
-      else if(Number(num) >= 5 && Number(num) <= 8){
-        ragColour = 'rag-partial';  
+      else if (Number(num) > 5 && Number(num) <= 8) {
+        ragColour = 'rag-partial';
       }
-      else if(Number(num) > 8){
+      else if (Number(num) > 8) {
         ragColour = 'rag-saved';
-      } 
-      else
-      {
-        ragColour = '';  
-      } 
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
+
+  public getRagBackgroundColour1(num: Number) {
+
+    let ragColour = 'rag-not-saved-background';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) <= 5) {
+        ragColour = 'rag-not-saved-background';
+      }
+      else if (Number(num) > 5 && Number(num) <= 8) {
+        ragColour = 'rag-partial-background';
+      }
+      else if (Number(num) > 8) {
+        ragColour = 'rag-saved-background';
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
+
+  public getRagBackgroundColour(num: string) {
+
+    let ragColour = 'rag-not-saved-background';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) < 5) {
+        ragColour = 'rag-not-saved-background';
+      }
+      else if (Number(num) > 5 && Number(num) < 8) {
+        ragColour = 'rag-partial-background';
+      }
+      else if (Number(num) > 8) {
+        ragColour = 'rag-saved-background';
+      }
+      else {
+        ragColour = '';
+      }
     }
 
     return ragColour;
   }
 
   public getRagText1(num: Number) {
-   
-  let ragText = '';
-  if(num !== undefined)
-  {
-      if(Number(num) >= 1 && Number(num) <= 4)
-      {
-        ragText = 'Below Expectations';       
+
+    let ragText = '';
+    if (num !== undefined) {
+      if (Number(num) >= 1 && Number(num) <= 4) {
+        ragText = 'Below Expectations';
       }
-      else if(Number(num) >= 5 && Number(num) <= 8){
-        ragText = 'Meet Expectations';  
+      else if (Number(num) >= 5 && Number(num) <= 8) {
+        ragText = 'Meet Expectations';
       }
-      else if(Number(num) > 8){
+      else if (Number(num) > 8) {
         ragText = 'Exceeds  Expectations';
-      } 
-      else{
+      }
+      else {
         ragText = '';
-      } 
-    }  
+      }
+    }
 
     return ragText;
   }
@@ -409,7 +466,7 @@ export class ReviewScorecardComponent implements OnInit {
         canDisplayField = true;
         break;
       case ResponseTypeEnum.Score:
-        canDisplayField = true; //question.weighting !== 0 ? true : false;
+        canDisplayField = true;
         break;
       case ResponseTypeEnum.CloseEnded2:
         canDisplayField = true;
@@ -437,51 +494,42 @@ export class ReviewScorecardComponent implements OnInit {
     this.onSave(question);
   }
 
- 
-  public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
-  {
+
+  public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) {
     let totalAverageScore = 0;
-   // totalAverageScore  += Number(questionnaire);   
     questionnaire.forEach(item => {
 
-      if(Number(item.responseOption.name) >= 0 && item.questionCategoryId)
-      {
-        totalAverageScore  += Number(item.responseOption.name);       
+      if (Number(item.responseOption.name) >= 0 && item.questionCategoryId) {
+        totalAverageScore += Number(item.responseOption.name);
       }
-      else{
+      else {
         totalAverageScore = 0;
       }
     });
-
-    //this.overallAverageScore = totalAverageScore;
 
     return totalAverageScore;
   }
 
 
-  public getOverallScoreTotal(questionnaire: IQuestionResponseViewModel[]) 
-  {
+  public getOverallScoreTotal(questionnaire: IQuestionResponseViewModel[]) {
     let overAllScore = 0;
 
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 0)
-      {
-        this.overallAverageScore  += Number(item.responseOption.name);       
+      if (Number(item.responseOption.name) >= 0) {
+        this.overallAverageScore += Number(item.responseOption.name);
       }
-      else{
+      else {
         this.overallAverageScore = 0;
       }
     });
 
-   // this.overallAverageScore = totalAverageScore;
-    
     return this.overallAverageScore;
   }
 
-  
- public onSave(question: IQuestionResponseViewModel) {
+
+  public onSave(question: IQuestionResponseViewModel) {
     if (question.responseOptionId != 0) {
-    
+
       let response = {} as IResponse;
       response.fundingApplicationId = this.application.id;
       response.questionId = question.questionId;
@@ -492,7 +540,7 @@ export class ReviewScorecardComponent implements OnInit {
         (results) => {
           let returnValue = results as IQuestionResponseViewModel;
           question.responseId = returnValue.responseId;
-          question.isSaved = returnValue.isSaved; 
+          question.isSaved = returnValue.isSaved;
           this.selectedResponses();
         },
         (err) => {
@@ -505,19 +553,10 @@ export class ReviewScorecardComponent implements OnInit {
     }
   }
 
-  // financialYearChange() {
-  //   if (this.selectedFinancialYear) {
-  //     this.filteredWorkplanIndicators = [];
-  //     this.application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
-  //     this.loadActivities();
-  //   }
-  // }
-
-  public getQuestionCategory()
-  {    
+  public getQuestionCategory() {
     this._dropdownService.getEntities(DropdownTypeEnum.QuestionCategory, true).subscribe(
       (results) => {
-        this.QuestionCategoryentities  = results;       
+        this.QuestionCategoryentities = results;
       },
     );
   }
@@ -526,11 +565,10 @@ export class ReviewScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseType, true).subscribe(
       (results) => {
         this.ResponseTypeentities = results;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
-        this._spinner.hide()
+        this._spinner.hide();
       }
     );
   }
@@ -539,16 +577,16 @@ export class ReviewScorecardComponent implements OnInit {
     question.responseOptionId = event.value.id;
     this.onSave(question);
     this.selectedResponses();
-  } 
+  }
 
   private loadApplications() {
-    this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-         this.application = results; this.loadActivities();
+        this.application = results;
+
+        this.loadActivities();
         this.loadObjectives();
         this.loadNpo();
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -561,20 +599,16 @@ export class ReviewScorecardComponent implements OnInit {
     this._npoRepo.getNpoById(Number(this.application.npoId)).subscribe(
       (results) => {
         this.npo = results;
-
         this.organisation = this.npo.name;
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
     );
-}
+  }
 
   private loadActivities() {
-
-    this._spinner.show();
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
@@ -590,7 +624,6 @@ export class ReviewScorecardComponent implements OnInit {
           this.loadTargets(activity);
           this.loadActuals(activity);
         });
-        this.updateRowGroupMetaDataAct();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -603,8 +636,6 @@ export class ReviewScorecardComponent implements OnInit {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results.filter(x => x.isActive === true);
-        this.isObjectivesAvailable = true;
-        this.allDataLoaded();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -619,11 +650,6 @@ export class ReviewScorecardComponent implements OnInit {
         // Add WorkplanTargets to WorkplanIndicators at index of activity
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanTargets = results;
-
-        if (this.activities[this.activities.length - 1] === activity) {
-          this.lastWorkplanTarget = true;
-          this.filterWorkplanIndicators();
-        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -638,11 +664,6 @@ export class ReviewScorecardComponent implements OnInit {
         // Add WorkplanActuals to WorkplanIndicators at index of activity
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanActuals = results;
-
-        if (this.activities[this.activities.length - 1] === activity) {
-          this.lastWorkplanActual = true;
-          this.filterWorkplanIndicators();
-        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -650,113 +671,138 @@ export class ReviewScorecardComponent implements OnInit {
       }
     );
   }
-  
 
-  private filterWorkplanIndicators() {
-   // if (this.lastWorkplanTarget && this.lastWorkplanActual) {
-      this.filteredWorkplanIndicators = [];
+
+  public filterWorkplanIndicators() {
+    this.filteredWorkplanIndicators = [];
+
+    if (this.workplanIndicators && this.workplanIndicators.length > 0) {
 
       this.workplanIndicators.forEach(indicator => {
 
-        // Filter WorkplanTargets on activity, financial year and monthly frequency
-        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2 && x.frequencyId == FrequencyEnum.Monthly);
+        let totalTargets = indicator.workplanTargets.length > 0 ? (indicator.workplanTargets[0].apr + indicator.workplanTargets[0].may + indicator.workplanTargets[0].jun + indicator.workplanTargets[0].jul + indicator.workplanTargets[0].aug + indicator.workplanTargets[0].sep + indicator.workplanTargets[0].oct + indicator.workplanTargets[0].nov + indicator.workplanTargets[0].dec + indicator.workplanTargets[0].jan + indicator.workplanTargets[0].feb + indicator.workplanTargets[0].mar) : 0;
+        let totalActuals: number = 0;
 
-        // Calculate total targets
-        let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
-
-       
-        // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
-        // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
-        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2);
-        let filteredWorkplanActuals = workplanActuals.filter((el) => {
-          return workplanTargets.some((f) => {
-            return f.id === el.workplanTargetId;
-          });
+        indicator.workplanActuals.forEach(item => {
+          let actual = item.actual !== null && item.actual !== undefined ? item.actual : 0;
+          totalActuals = totalActuals + actual;
         });
 
-        // Calculate total actuals
-        let actualTotal =
-        filteredWorkplanActuals.reduce((sum, object) => {
-           let actual = object.actual == null ? 0 : object.actual;
-           return sum + actual;
-        }, 0);
-        
-        let avg =((actualTotal/targetTotal)*100).toFixed(2);
-
-        if (isNaN(((actualTotal/targetTotal)*100))) {
-          avg = '0';
-        }
-        
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
-          workplanTargets: workplanTargets,
-          workplanActuals: filteredWorkplanActuals,
-          totalTargets: targetTotal,
-          totalActuals: actualTotal,
-          totalAvg: Number(avg)
-        } as IWorkplanIndicator);
+          totalTargets: totalTargets,
+          totalActuals: totalActuals,
+          ObjectiveName: indicator.activity.objective.name,
+          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : ((totalActuals / totalTargets)/10) * 100
+        } as IWorkplanIndicatorSummary);
       });
-
-      let sumOfAvg = 0;
-
-      this.filteredWorkplanIndicators.forEach(item =>{
-        sumOfAvg += item.totalAvg;
-      })
-
-      this.activityAvgScore = sumOfAvg/Number(this.filteredWorkplanIndicators.length.toFixed(2));
 
       this.updateRowGroupMetaDataAct();
-      this.makeRowsSameHeight();
+    }
+
+    return this.filteredWorkplanIndicators;
   }
 
-  private makeRowsSameHeight() {
-    setTimeout(() => {
-      if (document.getElementsByClassName('p-datatable-scrollable-wrapper').length) {
-        let wrapper = document.getElementsByClassName('p-datatable-scrollable-wrapper');
+  public getOverallPerformancePercentage() {
+    let overallPerformancePercentage = 0;
 
-        for (var i = 0; i < wrapper.length; i++) {
+    if (this.rowGroupMetadataActivities && this.rowGroupMetadataActivities.length > 0 && this.filteredWorkplanIndicators && this.filteredWorkplanIndicators.length > 0) {
 
-          let w = wrapper.item(i) as HTMLElement;
-          let frozen_rows: any = w.querySelectorAll('.p-datatable-frozen-view tr');
-          let unfrozen_rows: any = w.querySelectorAll('.p-datatable-unfrozen-view tr');
+      let uniqueObjectives = this.rowGroupMetadataActivities.filter(x => x.itemExists === false);
 
-          for (let i = 0; i < frozen_rows.length; i++) {
+      for (let i = 0; i < uniqueObjectives.length; i++) {
+        let indicators = this.filteredWorkplanIndicators.filter(x => x.ObjectiveName === uniqueObjectives[i].itemName);
 
-            if (frozen_rows[i].clientHeight > unfrozen_rows[i].clientHeight) {
-              unfrozen_rows[i].style.height = frozen_rows[i].clientHeight + "px";
-            }
-            else if (frozen_rows[i].clientHeight < unfrozen_rows[i].clientHeight) {
-              frozen_rows[i].style.height = unfrozen_rows[i].clientHeight + "px";
-            }
-          }
-        }
+        // Sum property in array of objects...
+        // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
+        let targetTotal = indicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
+        let actualTotal = indicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
+        let averageTotal = actualTotal === 0 || targetTotal === 0 ? 0 : (actualTotal / targetTotal) * 100;
 
-        this._spinner.hide();
+        overallPerformancePercentage = overallPerformancePercentage + averageTotal;
       }
-    });
+
+      overallPerformancePercentage = ((overallPerformancePercentage / uniqueObjectives.length)/10) > 10 ? 10 : ((overallPerformancePercentage / uniqueObjectives.length)/10);
+    }
+
+    return overallPerformancePercentage;
   }
 
+  public getObjectiveTargets(objective: IObjective) {
+    let totalTarget = 0;
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
 
-  updateRowGroupMetaDataAct() {     
+    objectives.forEach(obj => {
+      if (obj.ObjectiveName === objective.name)
+        totalTarget += obj.totalTargets;
+    }
+    );
+
+    return totalTarget;
+  }
+
+  public getObjectiveActuals(objective: IObjective) {
+    let totalActual = 0;
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+
+    objectives.forEach(obj => {
+      if (obj.ObjectiveName === objective.name)
+        totalActual += obj.totalActuals;
+    }
+    );
+
+    return totalActual;
+  }
+
+  public getPerformanceAvg(objective: IObjective) {
+    let totalTarget = 0;
+    let totalActual = 0;
+    let performanceAvg = '';
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+    objectives.forEach(obj => {
+      if (obj.ObjectiveName === objective.name) {
+        totalTarget += obj.totalTargets;
+        totalActual += obj.totalActuals;
+      }
+    }
+    );
+
+    performanceAvg = (((totalActual / totalTarget)/10) * 100).toFixed(2);
+
+    if (isNaN((((totalActual / totalTarget)/10) * 100))) {
+      performanceAvg = '0';
+    }
+
+    if((((totalActual / totalTarget)/10) * 100) > 10)
+    {
+      performanceAvg = '10'
+    }
+
+    return performanceAvg;
+  }
+
+  updateRowGroupMetaDataAct() {
     this.rowGroupMetadataActivities = [];
-    this.activities = this.activities.sort((a, b) => a.objectiveId - b.objectiveId);
 
-    if (this.activities) {
-      this.activities.forEach(element => {
-        var itemExists = this.rowGroupMetadataActivities.some(function (data) { return data.itemName === element.objective.name });
+    if (this.filteredWorkplanIndicators) {
+      this.filteredWorkplanIndicators.forEach(element => {
+        var itemExists = this.rowGroupMetadataActivities.some(function (data) {
+          return data.itemName === element.ObjectiveName
+        });
 
         this.rowGroupMetadataActivities.push({
-          itemName: element.objective.name,
+          itemName: element.ObjectiveName,
           itemExists: itemExists
         });
+
       });
-    }        
+    }
+
     this.allDataLoaded();
   }
 
   private allDataLoaded() {
     if (this.objectives && this.activities) {
-      this.isApplicationAvailable = true;
       this._spinner.hide();
     }
   }
@@ -765,78 +811,187 @@ export class ReviewScorecardComponent implements OnInit {
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
         this._responses = results;
-        var user = this._responses.filter((item, i, arr) => arr.findIndex((t) => t.createdUserId=== item.createdUserId) === i);
+        var user = this._responses.filter((item, i, arr) => arr.findIndex((t) => t.createdUserId === item.createdUserId) === i);
 
-        let Scorer1OverallTotalScores = 0;
-        let Scorer2OverallTotalScores = 0;
-        let Scorer3OverallTotalScores = 0;
-        let Scorer4OverallTotalScores = 0;
-        let length = this._responses.length;
-      
+
+        let scorer1OverallTotalScores = 0;
+        let scorer2OverallTotalScores = 0;
+        let scorer3OverallTotalScores = 0;
+        let scorer4OverallTotalScores = 0;
+        let scorer5OverallTotalScores = 0;
+        let scorer6OverallTotalScores = 0;
+        let scorer7OverallTotalScores = 0;
+        let scorer8OverallTotalScores = 0;
+        let scorer9OverallTotalScores = 0;
+        let scorer10OverallTotalScores = 0;
+        let allScorerOverallTotalScores = 0;
+
+        let length = user.length;
+
         this._responses.forEach(item => {
-          if(Number(item.responseOption.name) >= 0)
-          {
-            if(user[0] != undefined)
-            {
-              if(Number(item.createdUserId) == Number(user[0].createdUserId))  
-              Scorer1OverallTotalScores  += Number(item.responseOption.name); 
-            }      
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[0] != undefined) {
+              this.scorer1 = Number(user[0].createdUserId);
+              if (Number(item.createdUserId) == Number(user[0].createdUserId))
+                scorer1OverallTotalScores += Number(item.responseOption.name);
+            }
           }
-          else{
-            Scorer1OverallTotalScores = 0;
+          else {
+            scorer1OverallTotalScores = 0;
           }
         });
 
         this._responses.forEach(item => {
-          if(Number(item.responseOption.name) >= 0)
-          {
-            if(user[1] != undefined)
-            {
-              if(Number(item.createdUserId) == Number(user[1].createdUserId))  
-              Scorer2OverallTotalScores  += Number(item.responseOption.name); 
-            }       
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[1] != undefined) {
+              this.scorer2 = Number(user[1].createdUserId);
+              if (Number(item.createdUserId) == Number(user[1].createdUserId))
+                scorer2OverallTotalScores += Number(item.responseOption.name);
+            }
           }
-          else{
-            Scorer2OverallTotalScores = 0;
-          }
-        });
-
-        this._responses.forEach(item => {
-          if(Number(item.responseOption.name) >= 0)
-          {
-            if(user[2] != undefined)
-            {
-              if(Number(item.createdUserId) == Number(user[2].createdUserId))  
-              Scorer3OverallTotalScores  += Number(item.responseOption.name); 
-            }       
-          }
-          else{
-            Scorer3OverallTotalScores = 0;
+          else {
+            scorer2OverallTotalScores = 0;
           }
         });
 
         this._responses.forEach(item => {
-          if(Number(item.responseOption.name) >= 0)
-          {
-            if(user[3] != undefined)
-            {
-              if(Number(item.createdUserId) == Number(user[3].createdUserId))  
-              Scorer4OverallTotalScores  += Number(item.responseOption.name); 
-            }      
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[2] != undefined) {
+              this.scorer3 = Number(user[2].createdUserId);
+              if (Number(item.createdUserId) == Number(user[2].createdUserId))
+                scorer3OverallTotalScores += Number(item.responseOption.name);
+            }
           }
-          else{
-            Scorer4OverallTotalScores = 0;
+          else {
+            scorer3OverallTotalScores = 0;
           }
         });
-        this.Socrer1OverallTotalScore = Scorer1OverallTotalScores;
-        this.Socrer2OverallTotalScore = Scorer2OverallTotalScores;
-        this.Socrer3OverallTotalScore = Scorer3OverallTotalScores;
-        this.Socrer4OverallTotalScore = Scorer4OverallTotalScores;
-        this.Scorer1OverallAvgScore = Number((Scorer1OverallTotalScores/5).toFixed(2));   
-        this.Scorer2OverallAvgScore = Number((Scorer2OverallTotalScores/5).toFixed(2));
-        this.Scorer3OverallAvgScore = Number((Scorer3OverallTotalScores/5).toFixed(2));
-        this.Scorer4OverallAvgScore = Number((Scorer4OverallTotalScores/5).toFixed(2));     
-     
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[3] != undefined) {
+              this.scorer4 = Number(user[3].createdUserId);
+              if (Number(item.createdUserId) == Number(user[3].createdUserId))
+                scorer4OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer4OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[4] != undefined) {
+              this.scorer5 = Number(user[4].createdUserId);
+              if (Number(item.createdUserId) == Number(user[4].createdUserId))
+                scorer5OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer5OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[5] != undefined) {
+              this.scorer6 = Number(user[5].createdUserId);
+              if (Number(item.createdUserId) == Number(user[5].createdUserId))
+                scorer6OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer6OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[6] != undefined) {
+              this.scorer7 = Number(user[6].createdUserId);
+              if (Number(item.createdUserId) == Number(user[6].createdUserId))
+                scorer7OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer7OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[7] != undefined) {
+              this.scorer8 = Number(user[7].createdUserId);
+              if (Number(item.createdUserId) == Number(user[7].createdUserId))
+                scorer8OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer8OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[8] != undefined) {
+              this.scorer9 = Number(user[8].createdUserId);
+              if (Number(item.createdUserId) == Number(user[8].createdUserId))
+                scorer9OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer9OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[9] != undefined) {
+              this.scorer10 = Number(user[9].createdUserId);
+              if (Number(item.createdUserId) == Number(user[9].createdUserId))
+                scorer10OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer10OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            allScorerOverallTotalScores += Number(item.responseOption.name);
+          }
+          else {
+            allScorerOverallTotalScores = 0;
+          }
+        });
+
+        this.socrer1OverallTotalScore = scorer1OverallTotalScores;
+        this.socrer2OverallTotalScore = scorer2OverallTotalScores;
+        this.socrer3OverallTotalScore = scorer3OverallTotalScores;
+        this.socrer4OverallTotalScore = scorer4OverallTotalScores;
+        this.socrer5OverallTotalScore = scorer5OverallTotalScores;
+        this.socrer6OverallTotalScore = scorer6OverallTotalScores;
+        this.socrer7OverallTotalScore = scorer7OverallTotalScores;
+        this.socrer8OverallTotalScore = scorer8OverallTotalScores;
+        this.socrer9OverallTotalScore = scorer9OverallTotalScores;
+        this.socrer10OverallTotalScore = scorer10OverallTotalScores;
+        this.allSocrerOverallTotalScore = allScorerOverallTotalScores;
+        this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores / 5).toFixed(2));
+        this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores / 5).toFixed(2));
+        this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores / 5).toFixed(2));
+        this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores / 5).toFixed(2));
+        this.scorer5OverallAvgScore = Number((scorer5OverallTotalScores / 5).toFixed(2));
+        this.scorer6OverallAvgScore = Number((scorer6OverallTotalScores / 5).toFixed(2));
+        this.scorer7OverallAvgScore = Number((scorer7OverallTotalScores / 5).toFixed(2));
+        this.scorer8OverallAvgScore = Number((scorer8OverallTotalScores / 5).toFixed(2));
+        this.scorer9OverallAvgScore = Number((scorer9OverallTotalScores / 5).toFixed(2));
+        this.scorer10OverallAvgScore = Number((scorer10OverallTotalScores / 5).toFixed(2));
+        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore + this.scorer5OverallAvgScore + this.scorer6OverallAvgScore + this.scorer7OverallAvgScore + this.scorer8OverallAvgScore + this.scorer9OverallAvgScore + this.scorer10OverallAvgScore) / length).toFixed(2));
+        if (isNaN(this.allScorerOverallAvgScore)) {
+          this.allScorerOverallAvgScore = 0;
+        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -845,7 +1000,7 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   public disableSubmit() {
-       return false;  
+    return false;
   }
 
   public submit() {
@@ -854,9 +1009,9 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   private createCapturedResponse() {
-        
+
     let capturedResponse = {
-      fundingApplicationId: this.application.id,     
+      fundingApplicationId: this.application.id,
       statusId: 0,
       questionCategoryId: 100,
       comments: this.captureImprovementArea + '/' + this.captureRequiredAction,
@@ -865,7 +1020,7 @@ export class ReviewScorecardComponent implements OnInit {
       isDeclarationAccepted: true,
       selectedStatus: 0
     } as ICapturedResponse;
-   
+
     this._evaluationService.createScorecardResponse(capturedResponse).subscribe(
       (results) => {
         this._spinner.hide();
@@ -882,30 +1037,83 @@ export class ReviewScorecardComponent implements OnInit {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
       (results) => {
         this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.userId);
-        if(this.capturedResponses.length > 0)
-        {
-            let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
-            let  improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
-            this.captureImprovementArea = improvementArea;
-            this.captureRequiredAction = requiredAction;
-            this.signedByUser = this.capturedResponses[0].createdUser.fullName;
-            this.submittedDate = this.capturedResponses[0].createdDateTime;  
-            this.hascapturedImprovementArea = true;
-            this.hasCapturedRequiredAction = true;   
-            this.hasScorecardSubmitted = true;      
+        if (this.capturedResponses.length > 0) {
+          let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
+          let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
+          this.captureImprovementArea = improvementArea;
+          this.captureRequiredAction = requiredAction;
+          this.signedByUser = this.capturedResponses[0].createdUser.fullName;
+          this.submittedDate = this.capturedResponses[0].createdDateTime;
+          this.hascapturedImprovementArea = true;
+          this.hasCapturedRequiredAction = true;
+          this.hasScorecardSubmitted = true;
         }
       })
-    }
+  }
 
-    public disableElement() {
-     
-      return ((this.captureImprovementArea != undefined && this.captureImprovementArea != '') && (this.captureRequiredAction != undefined && this.captureRequiredAction != '')) ? false : true;      
+  public onSelectViewComment(question: IQuestionResponseViewModel) {
+    this._spinner.show();
+    this._responseUsers = [];
+    this._evaluationService.getResponses(Number(this.id), question.questionId).subscribe(
+      (results) => {
+        this._responseUsers = results;
+        this.displayCommentDialog = true;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public performanceComment(v: number) {
+
+    this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
+      (results) => {
+        if (v === 1)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer1);
+        if (v === 2)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer2);
+        if (v === 3)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer3);
+        if (v === 4)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer4);
+        if (v === 5)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer5);
+        if (v === 6)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer6);
+        if (v === 7)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer7);
+        if (v === 8)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer8);
+        if (v === 9)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer9);
+        if (v === 10)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer10);
+
+        if (this.capturedResponses.length > 0) {
+          this.displayDialog = true;
+          let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
+          let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
+          this.captureImprovementAreaComment = improvementArea;
+          this.captureRequiredActionComment = requiredAction;
+          this.signedByUserScorecardUser = this.capturedResponses[0].createdUser.fullName;
+          this.submittedDateByScorecardUser = this.capturedResponses[0].createdDateTime;
+        }
+      })
+
+  }
+
+  public disableElement() {
+
+    return ((this.captureImprovementArea != undefined && this.captureImprovementArea != '') && (this.captureRequiredAction != undefined && this.captureRequiredAction != '')) ? false : true;
   }
 
   public download() {
 
-    this._router.navigate(['/', { outlets: { 'print': ['print', this.id,2] } }]);
-    
+    this._router.navigate(['/', { outlets: { 'print': ['print', this.id, 2] } }]);
+
   }
 
 }

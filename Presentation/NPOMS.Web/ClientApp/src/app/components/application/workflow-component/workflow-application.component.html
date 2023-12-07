@@ -791,7 +791,8 @@
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;">
-                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                            <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                            (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
                         </td>
                     </tr>
                 </ng-template>

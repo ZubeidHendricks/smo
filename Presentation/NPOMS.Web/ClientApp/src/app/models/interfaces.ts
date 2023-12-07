@@ -1052,6 +1052,21 @@ export interface IWorkplanIndicator {
     attentionRequired: boolean;
 }
 
+export interface IWorkplanIndicatorSummary {
+    activity: IActivity;
+    workplanTargets: IWorkplanTarget[];
+    workplanActuals: IWorkplanActual[];
+    totalTargets: number;
+    totalActuals: number;
+    objectiveTargets: number;
+    objectiveActuals: number;
+    targetMet: boolean;
+    totalAvg: number;
+    objectiveId: number;
+    ObjectiveName: string;
+    attentionRequired: boolean;
+}
+
 export interface IWorkplanComment {
     id: number;
     workplanActualId: number;
@@ -1356,6 +1371,17 @@ export interface IResponseOptions {
     comment: string;
     createdUserId: number;
     responseOption: IResponseOption;
+}
+
+export interface IGetResponseOptions {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+    createdUserId: number;
+    responseOption: IResponseOption;
+    createdUser: IUser;
 }
 
 export interface IResponseHistory {

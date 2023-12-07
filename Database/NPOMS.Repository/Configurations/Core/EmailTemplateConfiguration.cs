@@ -158,8 +158,23 @@ namespace NPOMS.Repository.Configurations.Core
 					Name = "WorkplanActualPendingApproval",
 					Body = "<p>Dear {ToUserFullName},</p><p>The indicator actuals for application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been sent for you to approve.</p><p>The financial year and month is <span style=\"font-weight: bold;\">{financialYear}</span> and <span style=\"font-weight: bold;\">{frequencyPeriod}</span> respectively.</p><p>Please <a href=\"{url}/#/workplan-indicator/manage/{npoId}\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
 					Subject = "Indicator Actuals Pending Approval - {NPO}"
-				}
-			);
+				},
+				new EmailTemplate
+				{
+					Id = 22,
+					Name = "StatusChangedPendingReviewerSatisfaction",
+					Body = "<p>Dear {ToUserFullName},</p><p>The application with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been sent to you to indicate your reviewer satisfaction.</p><p>Please ignore this email if you have indicated your reviewer satisfaction.</p><p>Please <a href=\"{url}/#/applications\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+					Subject = "Application Pending Reviewer Satisfaction - {NPO}"
+				},
+                new EmailTemplate
+                {
+                    Id = 23,
+                    Name = "ScorecardSummary",
+                    Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for application with reference number</p><p><strong>{ApplicationRefNo}</strong> for financial year<strong> {financialYear} </strong> has been completed.</p><p>To view the scorecard summary please&nbsp;</p><p><a href=\"{url}/#/reviewScorecard/{npoId}(print:print/{npoId}/2)\">click here</a> to download a printable version.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
+                    Subject = "Scorecard Summary Review - {NPO}"
+                }
+
+            );
 		}
 	}
 }

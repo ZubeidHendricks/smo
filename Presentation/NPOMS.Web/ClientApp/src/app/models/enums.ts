@@ -102,12 +102,12 @@ export enum EntityEnum {
 }
 
 export enum ResponseTypeEnum {
-    CloseEnded = 1,
-    Score = 2,
-    CloseEnded2 = 3,
-    CloseEnded3 = 4,
-    CloseEnded4 = 5,
-    Score2 = 6
+    CloseEnded = 2,
+    Score = 3,
+    CloseEnded2 = 4,
+    CloseEnded3 = 5,
+    CloseEnded4 = 6,
+    Score2 = 7
 }
 
 export enum DeclarationTypeEnum {
@@ -203,7 +203,7 @@ export enum StatusEnum {
     Recommended = 20,
     StronglyRecommended = 21,
     NonCompliance = 22,
-    GetName
+    PendingReviewerSatisfaction = 23
 }
 
 export enum AuditorOrAffiliationEntityTypeEnum {

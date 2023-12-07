@@ -6,7 +6,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, 
+  IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator,IWorkplanIndicatorSummary } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -86,7 +87,7 @@ export class PrintScorecardComponent implements OnInit {
   ResponseTypeentities: IResponseType[];
   auditCols: any[];
   workplanIndicators: IWorkplanIndicator[];
-  filteredWorkplanIndicators: IWorkplanIndicator[];
+  filteredWorkplanIndicators: IWorkplanIndicatorSummary[];
   lastWorkplanTarget: boolean;
   lastWorkplanActual: boolean;
   financialYears: IFinancialYear[];
@@ -101,15 +102,16 @@ export class PrintScorecardComponent implements OnInit {
   rowGroupMetadataActivities: any[];
   isApplicationAvailable: boolean;
   isObjectivesAvailable: boolean;
-  overallTotalScore: number;
-  Socrer1OverallTotalScore: number;
-  Socrer2OverallTotalScore: number;
-  Socrer3OverallTotalScore: number;
-  Socrer4OverallTotalScore: number;
-  Scorer1OverallAvgScore: number;
-  Scorer2OverallAvgScore: number;
-  Scorer3OverallAvgScore: number;
-  Scorer4OverallAvgScore: number;
+  socrer1OverallTotalScore: number;
+  socrer2OverallTotalScore: number;
+  socrer3OverallTotalScore: number;
+  socrer4OverallTotalScore: number;
+  allSocrerOverallTotalScore: number;
+  scorer1OverallAvgScore: number;
+  scorer2OverallAvgScore: number;
+  scorer3OverallAvgScore: number;
+  scorer4OverallAvgScore: number;
+  allScorerOverallAvgScore: number;
   activityAvgScore: number;
   objectiveTarget: number;
   objectiveActual: number;
@@ -342,6 +344,48 @@ export class PrintScorecardComponent implements OnInit {
     return ragColour;
   } 
 
+  public getRagBackgroundColour1(num: Number) {
+
+    let ragColour = 'rag-not-saved-background';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) <= 5) {
+        ragColour = 'rag-not-saved-background';
+      }
+      else if (Number(num) > 5 && Number(num) <= 8) {
+        ragColour = 'rag-partial-background';
+      }
+      else if (Number(num) > 8) {
+        ragColour = 'rag-saved-background';
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
+
+  public getRagBackgroundColour(num: string) {
+
+    let ragColour = 'rag-not-saved-background';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) < 50) {
+        ragColour = 'rag-not-saved-background';
+      }
+      else if (Number(num) > 50 && Number(num) < 80) {
+        ragColour = 'rag-partial-background';
+      }
+      else if (Number(num) > 80) {
+        ragColour = 'rag-saved-background';
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
+
   public getRagText(questionnaire: IQuestionResponseViewModel[]) {
     
     let ragText = '';
@@ -367,11 +411,11 @@ export class PrintScorecardComponent implements OnInit {
     let ragColour = 'rag-not-saved';    
     if(num !== undefined)
     {
-      if(Number(num) >= 1 && Number(num) <= 4)
+      if(Number(num) >= 0 && Number(num) <= 5)
       {
         ragColour = 'rag-not-saved';        
       }
-      else if(Number(num) >= 5 && Number(num) <= 8){
+      else if(Number(num) > 5 && Number(num) <= 8){
         ragColour = 'rag-partial';  
       }
       else if(Number(num) > 8){
@@ -572,46 +616,41 @@ export class PrintScorecardComponent implements OnInit {
     );
 }
 
-  private loadActivities() {
+private loadActivities() {
+  this._applicationRepo.getAllActivities(this.application).subscribe(
+    (results) => {
+      this.activities = results.filter(x => x.isActive === true);
+      this.workplanIndicators = [];
 
-    this._spinner.show();
-    this._applicationRepo.getAllActivities(this.application).subscribe(
-      (results) => {
-        this.activities = results.filter(x => x.isActive === true);
-        this.workplanIndicators = [];
+      this.activities.forEach(activity => {
+        this.workplanIndicators.push({
+          activity: activity,
+          workplanTargets: [],
+          workplanActuals: []
+        } as IWorkplanIndicator);
 
-        this.activities.forEach(activity => {
-          this.workplanIndicators.push({
-            activity: activity,
-            workplanTargets: [],
-            workplanActuals: []
-          } as IWorkplanIndicator);
+        this.loadTargets(activity);
+        this.loadActuals(activity);
+      });
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
 
-          this.loadTargets(activity);
-          this.loadActuals(activity);
-        });
-        this.updateRowGroupMetaDataAct();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadObjectives() {
-    this._applicationRepo.getAllObjectives(this.application).subscribe(
-      (results) => {
-        this.objectives = results.filter(x => x.isActive === true);
-        this.isObjectivesAvailable = true;
-        this.allDataLoaded();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+private loadObjectives() {
+  this._applicationRepo.getAllObjectives(this.application).subscribe(
+    (results) => {
+      this.objectives = results.filter(x => x.isActive === true);
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
 
   private loadTargets(activity: IActivity) {
     this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
@@ -619,11 +658,6 @@ export class PrintScorecardComponent implements OnInit {
         // Add WorkplanTargets to WorkplanIndicators at index of activity
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanTargets = results;
-
-        if (this.activities[this.activities.length - 1] === activity) {
-          this.lastWorkplanTarget = true;
-          this.filterWorkplanIndicators();
-        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -638,11 +672,6 @@ export class PrintScorecardComponent implements OnInit {
         // Add WorkplanActuals to WorkplanIndicators at index of activity
         var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
         this.workplanIndicators[index].workplanActuals = results;
-
-        if (this.activities[this.activities.length - 1] === activity) {
-          this.lastWorkplanActual = true;
-          this.filterWorkplanIndicators();
-        }
       },
       (err) => {
         this._loggerService.logException(err);
@@ -651,62 +680,106 @@ export class PrintScorecardComponent implements OnInit {
     );
   }
   
+  public getOverallPerformancePercentage() {
+    let overallPerformancePercentage = 0;
 
-  private filterWorkplanIndicators() {
-   // if (this.lastWorkplanTarget && this.lastWorkplanActual) {
-      this.filteredWorkplanIndicators = [];
+    if (this.rowGroupMetadataActivities && this.rowGroupMetadataActivities.length > 0 && this.filteredWorkplanIndicators && this.filteredWorkplanIndicators.length > 0) {
+
+      let uniqueObjectives = this.rowGroupMetadataActivities.filter(x => x.itemExists === false);
+
+      for (let i = 0; i < uniqueObjectives.length; i++) {
+        let indicators = this.filteredWorkplanIndicators.filter(x => x.ObjectiveName === uniqueObjectives[i].itemName);
+
+        // Sum property in array of objects...
+        // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
+        let targetTotal = indicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
+        let actualTotal = indicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
+        let averageTotal = actualTotal === 0 || targetTotal === 0 ? 0 : (actualTotal / targetTotal) * 100;
+
+        overallPerformancePercentage = overallPerformancePercentage + averageTotal;
+      }
+
+      overallPerformancePercentage = overallPerformancePercentage / uniqueObjectives.length;
+    }
+
+    return overallPerformancePercentage;
+  }
+
+  public filterWorkplanIndicators() {
+    this.filteredWorkplanIndicators = [];
+
+    if (this.workplanIndicators && this.workplanIndicators.length > 0) {
 
       this.workplanIndicators.forEach(indicator => {
 
-        // Filter WorkplanTargets on activity, financial year and monthly frequency
-        let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2 && x.frequencyId == FrequencyEnum.Monthly);
+        let totalTargets = indicator.workplanTargets.length > 0 ? (indicator.workplanTargets[0].apr + indicator.workplanTargets[0].may + indicator.workplanTargets[0].jun + indicator.workplanTargets[0].jul + indicator.workplanTargets[0].aug + indicator.workplanTargets[0].sep + indicator.workplanTargets[0].oct + indicator.workplanTargets[0].nov + indicator.workplanTargets[0].dec + indicator.workplanTargets[0].jan + indicator.workplanTargets[0].feb + indicator.workplanTargets[0].mar) : 0;
+        let totalActuals: number = 0;
 
-        // Calculate total targets
-        let targetTotal =  workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].jun + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].sep + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].dec + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].mar) : 0;
-
-       
-        // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
-        // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
-        let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == 2);
-        let filteredWorkplanActuals = workplanActuals.filter((el) => {
-          return workplanTargets.some((f) => {
-            return f.id === el.workplanTargetId;
-          });
+        indicator.workplanActuals.forEach(item => {
+          let actual = item.actual !== null && item.actual !== undefined ? item.actual : 0;
+          totalActuals = totalActuals + actual;
         });
 
-        // Calculate total actuals
-        let actualTotal =
-        filteredWorkplanActuals.reduce((sum, object) => {
-           let actual = object.actual == null ? 0 : object.actual;
-           return sum + actual;
-        }, 0);
-        
-        let avg =((actualTotal/targetTotal)*100).toFixed(2);
-
-        if (isNaN(((actualTotal/targetTotal)*100))) {
-          avg = '0';
-        }
-        
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
-          workplanTargets: workplanTargets,
-          workplanActuals: filteredWorkplanActuals,
-          totalTargets: targetTotal,
-          totalActuals: actualTotal,
-          totalAvg: Number(avg)
-        } as IWorkplanIndicator);
+          totalTargets: totalTargets,
+          totalActuals: totalActuals,
+          ObjectiveName: indicator.activity.objective.name,
+          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : (totalActuals / totalTargets) * 100
+        } as IWorkplanIndicatorSummary);
       });
 
-      let sumOfAvg = 0;
-
-      this.filteredWorkplanIndicators.forEach(item =>{
-        sumOfAvg += item.totalAvg;
-      })
-
-      this.activityAvgScore = sumOfAvg/Number(this.filteredWorkplanIndicators.length.toFixed(2));
-
       this.updateRowGroupMetaDataAct();
-      this.makeRowsSameHeight();
+    }
+
+    return this.filteredWorkplanIndicators;
+  }
+
+  public getObjectiveTargets(objective: IObjective) {
+    let totalTarget = 0;
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+
+    objectives.forEach(obj => {
+      if (obj.ObjectiveName === objective.name)
+        totalTarget += obj.totalTargets;
+    }
+    );
+
+    return totalTarget;
+  }
+
+  public getObjectiveActuals(objective: IObjective) {
+    let totalActual = 0;
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+
+    objectives.forEach(obj => {
+      if (obj.ObjectiveName === objective.name)
+        totalActual += obj.totalActuals;
+    }
+    );
+
+    return totalActual;
+  }
+
+  public getPerformanceAvg(objective: IObjective) {
+    let totalTarget = 0;
+    let totalActual = 0;
+    let performanceAvg = '';
+    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
+    objectives.forEach(obj => {
+      if (obj.ObjectiveName === objective.name) {
+        totalTarget += obj.totalTargets;
+        totalActual += obj.totalActuals;
+      }
+    }
+    );
+
+    performanceAvg = ((totalActual / totalTarget) * 100).toFixed(2);
+
+    if (isNaN(((totalActual / totalTarget) * 100))) {
+      performanceAvg = '0';
+    }
+    return performanceAvg;
   }
 
   private makeRowsSameHeight() {
@@ -737,26 +810,28 @@ export class PrintScorecardComponent implements OnInit {
   }
 
 
-  updateRowGroupMetaDataAct() {     
+  updateRowGroupMetaDataAct() {
     this.rowGroupMetadataActivities = [];
-    this.activities = this.activities.sort((a, b) => a.objectiveId - b.objectiveId);
 
-    if (this.activities) {
-      this.activities.forEach(element => {
-        var itemExists = this.rowGroupMetadataActivities.some(function (data) { return data.itemName === element.objective.name });
+    if (this.filteredWorkplanIndicators) {
+      this.filteredWorkplanIndicators.forEach(element => {
+        var itemExists = this.rowGroupMetadataActivities.some(function (data) {
+          return data.itemName === element.ObjectiveName
+        });
 
         this.rowGroupMetadataActivities.push({
-          itemName: element.objective.name,
+          itemName: element.ObjectiveName,
           itemExists: itemExists
         });
+
       });
-    }        
+    }
+
     this.allDataLoaded();
   }
 
   private allDataLoaded() {
     if (this.objectives && this.activities) {
-      this.isApplicationAvailable = true;
       this._spinner.hide();
     }
   }
@@ -767,10 +842,12 @@ export class PrintScorecardComponent implements OnInit {
         this._responses = results;
         var user = this._responses.filter((item, i, arr) => arr.findIndex((t) => t.createdUserId=== item.createdUserId) === i);
 
-        let Scorer1OverallTotalScores = 0;
-        let Scorer2OverallTotalScores = 0;
-        let Scorer3OverallTotalScores = 0;
-        let Scorer4OverallTotalScores = 0;
+        let scorer1OverallTotalScores = 0;
+        let scorer2OverallTotalScores = 0;
+        let scorer3OverallTotalScores = 0;
+        let scorer4OverallTotalScores = 0;
+        let allScorerOverallTotalScores = 0;
+
         let length = this._responses.length;
       
         this._responses.forEach(item => {
@@ -779,11 +856,11 @@ export class PrintScorecardComponent implements OnInit {
             if(user[0] != undefined)
             {
               if(Number(item.createdUserId) == Number(user[0].createdUserId))  
-              Scorer1OverallTotalScores  += Number(item.responseOption.name); 
+              scorer1OverallTotalScores  += Number(item.responseOption.name); 
             }      
           }
           else{
-            Scorer1OverallTotalScores = 0;
+            scorer1OverallTotalScores = 0;
           }
         });
 
@@ -793,11 +870,11 @@ export class PrintScorecardComponent implements OnInit {
             if(user[1] != undefined)
             {
               if(Number(item.createdUserId) == Number(user[1].createdUserId))  
-              Scorer2OverallTotalScores  += Number(item.responseOption.name); 
+              scorer2OverallTotalScores  += Number(item.responseOption.name); 
             }       
           }
           else{
-            Scorer2OverallTotalScores = 0;
+            scorer2OverallTotalScores = 0;
           }
         });
 
@@ -807,11 +884,11 @@ export class PrintScorecardComponent implements OnInit {
             if(user[2] != undefined)
             {
               if(Number(item.createdUserId) == Number(user[2].createdUserId))  
-              Scorer3OverallTotalScores  += Number(item.responseOption.name); 
+              scorer3OverallTotalScores  += Number(item.responseOption.name); 
             }       
           }
           else{
-            Scorer3OverallTotalScores = 0;
+            scorer3OverallTotalScores = 0;
           }
         });
 
@@ -821,21 +898,34 @@ export class PrintScorecardComponent implements OnInit {
             if(user[3] != undefined)
             {
               if(Number(item.createdUserId) == Number(user[3].createdUserId))  
-              Scorer4OverallTotalScores  += Number(item.responseOption.name); 
+              scorer4OverallTotalScores  += Number(item.responseOption.name); 
             }      
           }
           else{
-            Scorer4OverallTotalScores = 0;
+            scorer4OverallTotalScores = 0;
           }
         });
-        this.Socrer1OverallTotalScore = Scorer1OverallTotalScores;
-        this.Socrer2OverallTotalScore = Scorer2OverallTotalScores;
-        this.Socrer3OverallTotalScore = Scorer3OverallTotalScores;
-        this.Socrer4OverallTotalScore = Scorer4OverallTotalScores;
-        this.Scorer1OverallAvgScore = Number((Scorer1OverallTotalScores/5).toFixed(2));   
-        this.Scorer2OverallAvgScore = Number((Scorer2OverallTotalScores/5).toFixed(2));
-        this.Scorer3OverallAvgScore = Number((Scorer3OverallTotalScores/5).toFixed(2));
-        this.Scorer4OverallAvgScore = Number((Scorer4OverallTotalScores/5).toFixed(2));     
+
+        this._responses.forEach(item => {
+          if(Number(item.responseOption.name) >= 0)
+          {
+            allScorerOverallTotalScores  += Number(item.responseOption.name); 
+          }
+          else{
+            allScorerOverallTotalScores = 0;
+          }
+        });
+
+        this.socrer1OverallTotalScore = scorer1OverallTotalScores;
+        this.socrer2OverallTotalScore = scorer2OverallTotalScores;
+        this.socrer3OverallTotalScore = scorer3OverallTotalScores;
+        this.socrer4OverallTotalScore = scorer4OverallTotalScores;
+        this.allSocrerOverallTotalScore = allScorerOverallTotalScores;
+        this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores/5).toFixed(2));   
+        this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores/5).toFixed(2));
+        this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores/5).toFixed(2));
+        this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores/5).toFixed(2));
+        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore)/4).toFixed(2));            
      
       },
       (err) => {

@@ -32,7 +32,7 @@
         <app-confirmation *ngIf="activeStep == ServiceProvisionStepsEnum.ApplicationConfirmation" [(activeStep)]="activeStep" [application]="application" [(status)]="status" [profile]="profile" [approveApplication]="false"></app-confirmation>
         
         <br>
-        <!-- <p-accordion>
+        <p-accordion>
             <p-accordionTab header="Overall Workplan Satisfaction" *ngIf="activeStep !== ServiceProvisionStepsEnum.NpoConfirmation">
                 <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [paginator]="true" [rows]="10" [value]="applicationReviewerSatisfaction" *ngIf="applicationReviewerSatisfaction" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
                     <ng-template pTemplate="header" let-columns>
@@ -70,7 +70,7 @@
                     </ng-template>
                 </p-table>
             </p-accordionTab>
-        </p-accordion> -->
+        </p-accordion>
     </div>
     <div style="height: 10px;"></div>
     <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
