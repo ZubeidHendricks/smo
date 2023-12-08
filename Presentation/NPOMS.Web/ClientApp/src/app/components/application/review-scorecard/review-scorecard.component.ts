@@ -438,7 +438,7 @@ export class ReviewScorecardComponent implements OnInit {
     return ragColour;
   }
 
-  public getRagText1(num: Number) {
+  public getRagText1(num: string) {
 
     let ragText = '';
     if (num !== undefined) {
