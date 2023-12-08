@@ -62,8 +62,17 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task<Npo> GetByNameAndOrgTypeId(string name, int organisationTypeId, string CCode)
 		{
-			return await FindByCondition(x => x.Name.ToLower().Equals(name.ToLower()) && x.OrganisationTypeId.Equals(organisationTypeId) && x.CCode.ToLower().Equals(CCode.ToLower()))
-							.Where(x => x.IsActive).AsNoTracking().FirstOrDefaultAsync();
+			if(string.IsNullOrEmpty(CCode))
+			{
+                return await FindByCondition(x => x.Name.ToLower().Equals(name.ToLower()) && x.OrganisationTypeId.Equals(organisationTypeId) && x.CCode.ToLower().Equals(CCode))
+                                            .Where(x => x.IsActive).AsNoTracking().FirstOrDefaultAsync();
+            }
+			else
+			{
+                return await FindByCondition(x => x.Name.ToLower().Equals(name.ToLower()) && x.OrganisationTypeId.Equals(organisationTypeId) && x.CCode.ToLower().Equals(CCode.ToLower()))
+                            .Where(x => x.IsActive).AsNoTracking().FirstOrDefaultAsync();
+            }
+			
 		}
 
 		public async Task CreateEntity(Npo model)

@@ -438,18 +438,18 @@ export class ReviewScorecardComponent implements OnInit {
     return ragColour;
   }
 
-  public getRagText1(num: Number) {
+  public getRagText1(num: string) {
 
     let ragText = '';
     if (num !== undefined) {
-      if (Number(num) >= 1 && Number(num) <= 4) {
-        ragText = 'Below Expectations';
+      if (Number(num) >= 1 && Number(num) < 5) {
+        ragText = 'Poor';
       }
-      else if (Number(num) >= 5 && Number(num) <= 8) {
+      else if (Number(num) >= 5 && Number(num) < 8) {
         ragText = 'Meet Expectations';
       }
-      else if (Number(num) > 8) {
-        ragText = 'Exceeds  Expectations';
+      else if (Number(num) >= 8) {
+        ragText = 'Excellent';
       }
       else {
         ragText = '';
