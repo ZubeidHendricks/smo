@@ -215,9 +215,10 @@
                 class="p-button-text action-button" icon="fa fa-comments-o"
                 pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(10)"></button>
             </td>
-            <td style="width: 17%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>Overall Score Performance</b></td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " *ngIf = "(((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2) > 10" class="{{getRagBackgroundColour(10)}}"><b>{{10}}</b></td>
-            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour((((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2).toFixed(2).toString())}}"><b>{{(((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2).toFixed(2)}}</b></td>
+            <td style="width: 15%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>Overall Performance Score</b></td>
+            <td style="width: 8%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" *ngIf = "(((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2) > 10" class="{{getRagBackgroundColour(10)}}"><b>{{10}}</b></td>
+            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" class="{{getRagBackgroundColour((((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2).toFixed(2).toString())}}"><b>{{(((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2).toFixed(2)}}</b></td>
+            <td style="width: 12%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" class="{{getRagBackgroundColour((((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2).toFixed(2).toString())}}"><b>{{getRagText1((((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2).toFixed(2).toString())}}</b></td>
         </tr>
     </table>
 </p-panel>
