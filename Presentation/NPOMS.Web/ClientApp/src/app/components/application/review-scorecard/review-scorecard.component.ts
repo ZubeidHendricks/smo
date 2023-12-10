@@ -339,13 +339,13 @@ export class ReviewScorecardComponent implements OnInit {
     let ragColour = 'rag-not-saved';
 
     questionnaire.forEach(item => {
-      if (Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4) {
+      if (Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) < 5) {
         ragColour = 'rag-not-saved';
       }
-      else if (Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8) {
+      else if (Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) < 8) {
         ragColour = 'rag-partial';
       }
-      else if (Number(item.responseOption.name) > 5) {
+      else if (Number(item.responseOption.name) >= 8) {
         ragColour = 'rag-saved';
       }
       else {
@@ -361,13 +361,13 @@ export class ReviewScorecardComponent implements OnInit {
     let ragText = '';
 
     questionnaire.forEach(item => {
-      if (Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4) {
+      if (Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) < 5) {
         ragText = 'Below Expectations';
       }
-      else if (Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8) {
+      else if (Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) < 8) {
         ragText = 'Meet Expectations';
       }
-      else if (Number(item.responseOption.name) > 8) {
+      else if (Number(item.responseOption.name) >= 8) {
         ragText = 'Exceeds  Expectations';
       }
     });
@@ -379,13 +379,13 @@ export class ReviewScorecardComponent implements OnInit {
 
     let ragColour = 'rag-not-saved';
     if (num !== undefined) {
-      if (Number(num) >= 0 && Number(num) <= 5) {
+      if (Number(num) >= 0 && Number(num) < 5) {
         ragColour = 'rag-not-saved';
       }
-      else if (Number(num) > 5 && Number(num) <= 8) {
+      else if (Number(num) >= 5 && Number(num) < 8) {
         ragColour = 'rag-partial';
       }
-      else if (Number(num) > 8) {
+      else if (Number(num) >= 8) {
         ragColour = 'rag-saved';
       }
       else {
@@ -400,13 +400,13 @@ export class ReviewScorecardComponent implements OnInit {
 
     let ragColour = 'rag-not-saved-background';
     if (num !== undefined) {
-      if (Number(num) >= 0 && Number(num) <= 5) {
+      if (Number(num) >= 0 && Number(num) < 5) {
         ragColour = 'rag-not-saved-background';
       }
-      else if (Number(num) > 5 && Number(num) <= 8) {
+      else if (Number(num) >= 5 && Number(num) < 8) {
         ragColour = 'rag-partial-background';
       }
-      else if (Number(num) > 8) {
+      else if (Number(num) >= 8) {
         ragColour = 'rag-saved-background';
       }
       else {
@@ -424,10 +424,10 @@ export class ReviewScorecardComponent implements OnInit {
       if (Number(num) >= 0 && Number(num) < 5) {
         ragColour = 'rag-not-saved-background';
       }
-      else if (Number(num) > 5 && Number(num) < 8) {
+      else if (Number(num) >= 5 && Number(num) < 8) {
         ragColour = 'rag-partial-background';
       }
-      else if (Number(num) > 8) {
+      else if (Number(num) >= 8) {
         ragColour = 'rag-saved-background';
       }
       else {
@@ -442,7 +442,7 @@ export class ReviewScorecardComponent implements OnInit {
 
     let ragText = '';
     if (num !== undefined) {
-      if (Number(num) >= 1 && Number(num) < 5) {
+      if (Number(num) >= 0 && Number(num) < 5) {
         ragText = 'Poor';
       }
       else if (Number(num) >= 5 && Number(num) < 8) {
