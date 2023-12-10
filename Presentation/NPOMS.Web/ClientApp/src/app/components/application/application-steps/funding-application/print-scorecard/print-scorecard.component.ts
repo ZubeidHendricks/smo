@@ -5,8 +5,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
-  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, 
+  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum } from 'src/app/models/enums';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, IGetResponseOptions, INpo, IObjective, IQuestionCategory, 
   IResponse, IResponseOption, IResponseOptions, IStatus, IUser, IWorkplanIndicator,IWorkplanIndicatorSummary } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
@@ -69,8 +69,10 @@ export class PrintScorecardComponent implements OnInit {
   _recommendation: boolean = false;
   responseOptions: IResponseOption[];
   _responses: IResponseOptions[];
+  _responseUsers: IGetResponseOptions[];
   responseHistory: IResponseHistory[];
-  displayHistoryDialog: boolean;
+  displayCommentDialog: boolean;
+  displayDialog: boolean;
   historyCols: any[];
   displayHistory: boolean;
   paramSubcriptions: Subscription;
@@ -88,8 +90,6 @@ export class PrintScorecardComponent implements OnInit {
   auditCols: any[];
   workplanIndicators: IWorkplanIndicator[];
   filteredWorkplanIndicators: IWorkplanIndicatorSummary[];
-  lastWorkplanTarget: boolean;
-  lastWorkplanActual: boolean;
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
   scrollableCols: any[];
@@ -100,25 +100,46 @@ export class PrintScorecardComponent implements OnInit {
   //npoId: string;
   statuses: IStatus[];
   rowGroupMetadataActivities: any[];
-  isApplicationAvailable: boolean;
-  isObjectivesAvailable: boolean;
+  scorer1: number;
+  scorer2: number;
+  scorer3: number;
+  scorer4: number;
+  scorer5: number;
+  scorer6: number;
+  scorer7: number;
+  scorer8: number;
+  scorer9: number;
+  scorer10: number;
   socrer1OverallTotalScore: number;
   socrer2OverallTotalScore: number;
   socrer3OverallTotalScore: number;
   socrer4OverallTotalScore: number;
+  socrer5OverallTotalScore: number;
+  socrer6OverallTotalScore: number;
+  socrer7OverallTotalScore: number;
+  socrer8OverallTotalScore: number;
+  socrer9OverallTotalScore: number;
+  socrer10OverallTotalScore: number;
   allSocrerOverallTotalScore: number;
   scorer1OverallAvgScore: number;
   scorer2OverallAvgScore: number;
   scorer3OverallAvgScore: number;
   scorer4OverallAvgScore: number;
+  scorer5OverallAvgScore: number;
+  scorer6OverallAvgScore: number;
+  scorer7OverallAvgScore: number;
+  scorer8OverallAvgScore: number;
+  scorer9OverallAvgScore: number;
+  scorer10OverallAvgScore: number;
   allScorerOverallAvgScore: number;
-  activityAvgScore: number;
   objectiveTarget: number;
   objectiveActual: number;
   objectiveAverage: number;
 
   captureImprovementArea: string;
   captureRequiredAction: string;
+  captureImprovementAreaComment: string;
+  captureRequiredActionComment: string;
 
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
@@ -126,11 +147,13 @@ export class PrintScorecardComponent implements OnInit {
 
   signedByUser: string;
   submittedDate: Date;
+  signedByUserScorecardUser: string;
+  submittedDateByScorecardUser: Date;
   npo: INpo;
   organisation: string;
   capturedResponses: ICapturedResponse[];
   name: IResp[] = [];
-  _name: IResp[] =[];
+  _name: IResp[] = [];
   userId: number;
   constructor(
     private _router: Router,
@@ -138,25 +161,15 @@ export class PrintScorecardComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
-    private _dropdownRepo: DropdownService,
-    private _applicationPeriodRepo: ApplicationPeriodService,
     private _evaluationService: EvaluationService,
-    private _documentStore: DocumentStoreService,
     private _loggerService: LoggerService,
     private _dropdownService: DropdownService,
-    private confirmationService: ConfirmationService,
-    private _messageService: MessageService,
-    private _datepipe: DatePipe,
     private _indicatorRepo: IndicatorService,
     private _npoRepo: NpoService
 
   ) { }
 
   ngOnInit(): void {
-
-     // this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-    //   this.npoId = params.get('npoId');
-    // });
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');      
@@ -322,27 +335,66 @@ export class PrintScorecardComponent implements OnInit {
   }
 
   public getRagColour(questionnaire: IQuestionResponseViewModel[]) {
-    
+
     let ragColour = 'rag-not-saved';
-    
+
     questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4)
-      {
-        ragColour = 'rag-not-saved';        
+      if (Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4) {
+        ragColour = 'rag-not-saved';
       }
-      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
-        ragColour = 'rag-partial';  
+      else if (Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8) {
+        ragColour = 'rag-partial';
       }
-      else if(Number(item.responseOption.name) > 5){
+      else if (Number(item.responseOption.name) > 5) {
         ragColour = 'rag-saved';
       }
-      else{
+      else {
         ragColour = '';
       }
     });
 
     return ragColour;
-  } 
+  }
+
+  public getRagText(questionnaire: IQuestionResponseViewModel[]) {
+
+    let ragText = '';
+
+    questionnaire.forEach(item => {
+      if (Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4) {
+        ragText = 'Below Expectations';
+      }
+      else if (Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8) {
+        ragText = 'Meet Expectations';
+      }
+      else if (Number(item.responseOption.name) > 8) {
+        ragText = 'Exceeds  Expectations';
+      }
+    });
+
+    return ragText;
+  }
+
+  public getRagColour1(num: Number) {
+
+    let ragColour = 'rag-not-saved';
+    if (num !== undefined) {
+      if (Number(num) >= 0 && Number(num) <= 5) {
+        ragColour = 'rag-not-saved';
+      }
+      else if (Number(num) > 5 && Number(num) <= 8) {
+        ragColour = 'rag-partial';
+      }
+      else if (Number(num) > 8) {
+        ragColour = 'rag-saved';
+      }
+      else {
+        ragColour = '';
+      }
+    }
+
+    return ragColour;
+  }
 
   public getRagBackgroundColour1(num: Number) {
 
@@ -369,13 +421,13 @@ export class PrintScorecardComponent implements OnInit {
 
     let ragColour = 'rag-not-saved-background';
     if (num !== undefined) {
-      if (Number(num) >= 0 && Number(num) < 50) {
+      if (Number(num) >= 0 && Number(num) < 5) {
         ragColour = 'rag-not-saved-background';
       }
-      else if (Number(num) > 50 && Number(num) < 80) {
+      else if (Number(num) > 5 && Number(num) < 8) {
         ragColour = 'rag-partial-background';
       }
-      else if (Number(num) > 80) {
+      else if (Number(num) > 8) {
         ragColour = 'rag-saved-background';
       }
       else {
@@ -386,69 +438,23 @@ export class PrintScorecardComponent implements OnInit {
     return ragColour;
   }
 
-  public getRagText(questionnaire: IQuestionResponseViewModel[]) {
-    
+  public getRagText1(num: string) {
+
     let ragText = '';
-    
-    questionnaire.forEach(item => {
-      if(Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4)
-      {
-        ragText = 'Below Expectations';       
+    if (num !== undefined) {
+      if (Number(num) >= 1 && Number(num) < 5) {
+        ragText = 'Poor';
       }
-      else if(Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8){
-        ragText = 'Meet Expectations'; 
+      else if (Number(num) >= 5 && Number(num) < 8) {
+        ragText = 'Meet Expectations';
       }
-      else if(Number(item.responseOption.name) > 8){
-        ragText = 'Exceeds  Expectations';
+      else if (Number(num) >= 8) {
+        ragText = 'Excellent';
       }
-    });
-
-    return ragText;
-  }
-
-  public getRagColour1(num: Number) {
-    
-    let ragColour = 'rag-not-saved';    
-    if(num !== undefined)
-    {
-      if(Number(num) >= 0 && Number(num) <= 5)
-      {
-        ragColour = 'rag-not-saved';        
-      }
-      else if(Number(num) > 5 && Number(num) <= 8){
-        ragColour = 'rag-partial';  
-      }
-      else if(Number(num) > 8){
-        ragColour = 'rag-saved';
-      } 
-      else
-      {
-        ragColour = '';  
-      } 
-    }
-
-    return ragColour;
-  }
-
-  public getRagText1(num: Number) {
-   
-  let ragText = '';
-  if(num !== undefined)
-  {
-      if(Number(num) >= 1 && Number(num) <= 4)
-      {
-        ragText = 'Below Expectations';       
-      }
-      else if(Number(num) >= 5 && Number(num) <= 8){
-        ragText = 'Meet Expectations';  
-      }
-      else if(Number(num) > 8){
-        ragText = 'Exceeds  Expectations';
-      } 
-      else{
+      else {
         ragText = '';
-      } 
-    }  
+      }
+    }
 
     return ragText;
   }
@@ -585,14 +591,13 @@ export class PrintScorecardComponent implements OnInit {
   } 
 
   private loadApplications() {
-    this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-        this.application = results; 
+        this.application = results;
+
         this.loadActivities();
         this.loadObjectives();
         this.loadNpo();
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -652,33 +657,33 @@ private loadObjectives() {
   );
 }
 
-  private loadTargets(activity: IActivity) {
-    this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
-      (results) => {
-        // Add WorkplanTargets to WorkplanIndicators at index of activity
-        var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
-        this.workplanIndicators[index].workplanTargets = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+private loadTargets(activity: IActivity) {
+  this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
+    (results) => {
+      // Add WorkplanTargets to WorkplanIndicators at index of activity
+      var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
+      this.workplanIndicators[index].workplanTargets = results;
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
 
-  private loadActuals(activity: IActivity) {
-    this._indicatorRepo.getActualsByActivityId(activity.id).subscribe(
-      (results) => {
-        // Add WorkplanActuals to WorkplanIndicators at index of activity
-        var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
-        this.workplanIndicators[index].workplanActuals = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+private loadActuals(activity: IActivity) {
+  this._indicatorRepo.getActualsByActivityId(activity.id).subscribe(
+    (results) => {
+      // Add WorkplanActuals to WorkplanIndicators at index of activity
+      var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
+      this.workplanIndicators[index].workplanActuals = results;
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
   
   public getOverallPerformancePercentage() {
     let overallPerformancePercentage = 0;
@@ -699,7 +704,7 @@ private loadObjectives() {
         overallPerformancePercentage = overallPerformancePercentage + averageTotal;
       }
 
-      overallPerformancePercentage = overallPerformancePercentage / uniqueObjectives.length;
+      overallPerformancePercentage = ((overallPerformancePercentage / uniqueObjectives.length)/10) > 10 ? 10 : ((overallPerformancePercentage / uniqueObjectives.length)/10);
     }
 
     return overallPerformancePercentage;
@@ -725,7 +730,7 @@ private loadObjectives() {
           totalTargets: totalTargets,
           totalActuals: totalActuals,
           ObjectiveName: indicator.activity.objective.name,
-          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : (totalActuals / totalTargets) * 100
+          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : ((totalActuals / totalTargets)/10) * 100
         } as IWorkplanIndicatorSummary);
       });
 
@@ -774,11 +779,17 @@ private loadObjectives() {
     }
     );
 
-    performanceAvg = ((totalActual / totalTarget) * 100).toFixed(2);
+    performanceAvg = (((totalActual / totalTarget)/10) * 100).toFixed(2);
 
-    if (isNaN(((totalActual / totalTarget) * 100))) {
+    if (isNaN((((totalActual / totalTarget)/10) * 100))) {
       performanceAvg = '0';
     }
+
+    if((((totalActual / totalTarget)/10) * 100) > 10)
+    {
+      performanceAvg = '10'
+    }
+
     return performanceAvg;
   }
 
@@ -809,11 +820,11 @@ private loadObjectives() {
     });
   }
 
-
   updateRowGroupMetaDataAct() {
     this.rowGroupMetadataActivities = [];
 
     if (this.filteredWorkplanIndicators) {
+      // this.filteredWorkplanIndicators = this.filteredWorkplanIndicators.sort((a, b) => a.objectiveId - b.objectiveId);
       this.filteredWorkplanIndicators.forEach(element => {
         var itemExists = this.rowGroupMetadataActivities.some(function (data) {
           return data.itemName === element.ObjectiveName
@@ -840,78 +851,158 @@ private loadObjectives() {
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
         this._responses = results;
-        var user = this._responses.filter((item, i, arr) => arr.findIndex((t) => t.createdUserId=== item.createdUserId) === i);
+        var user = this._responses.filter((item, i, arr) => arr.findIndex((t) => t.createdUserId === item.createdUserId) === i);
+
 
         let scorer1OverallTotalScores = 0;
         let scorer2OverallTotalScores = 0;
         let scorer3OverallTotalScores = 0;
         let scorer4OverallTotalScores = 0;
+        let scorer5OverallTotalScores = 0;
+        let scorer6OverallTotalScores = 0;
+        let scorer7OverallTotalScores = 0;
+        let scorer8OverallTotalScores = 0;
+        let scorer9OverallTotalScores = 0;
+        let scorer10OverallTotalScores = 0;
         let allScorerOverallTotalScores = 0;
 
-        let length = this._responses.length;
-      
+        let length = user.length;
+
         this._responses.forEach(item => {
-          if(Number(item.responseOption.name) >= 0)
-          {
-            if(user[0] != undefined)
-            {
-              if(Number(item.createdUserId) == Number(user[0].createdUserId))  
-              scorer1OverallTotalScores  += Number(item.responseOption.name); 
-            }      
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[0] != undefined) {
+              this.scorer1 = Number(user[0].createdUserId);
+              if (Number(item.createdUserId) == Number(user[0].createdUserId))
+                scorer1OverallTotalScores += Number(item.responseOption.name);
+            }
           }
-          else{
+          else {
             scorer1OverallTotalScores = 0;
           }
         });
 
         this._responses.forEach(item => {
-          if(Number(item.responseOption.name) >= 0)
-          {
-            if(user[1] != undefined)
-            {
-              if(Number(item.createdUserId) == Number(user[1].createdUserId))  
-              scorer2OverallTotalScores  += Number(item.responseOption.name); 
-            }       
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[1] != undefined) {
+              this.scorer2 = Number(user[1].createdUserId);
+              if (Number(item.createdUserId) == Number(user[1].createdUserId))
+                scorer2OverallTotalScores += Number(item.responseOption.name);
+            }
           }
-          else{
+          else {
             scorer2OverallTotalScores = 0;
           }
         });
 
         this._responses.forEach(item => {
-          if(Number(item.responseOption.name) >= 0)
-          {
-            if(user[2] != undefined)
-            {
-              if(Number(item.createdUserId) == Number(user[2].createdUserId))  
-              scorer3OverallTotalScores  += Number(item.responseOption.name); 
-            }       
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[2] != undefined) {
+              this.scorer3 = Number(user[2].createdUserId);
+              if (Number(item.createdUserId) == Number(user[2].createdUserId))
+                scorer3OverallTotalScores += Number(item.responseOption.name);
+            }
           }
-          else{
+          else {
             scorer3OverallTotalScores = 0;
           }
         });
 
         this._responses.forEach(item => {
-          if(Number(item.responseOption.name) >= 0)
-          {
-            if(user[3] != undefined)
-            {
-              if(Number(item.createdUserId) == Number(user[3].createdUserId))  
-              scorer4OverallTotalScores  += Number(item.responseOption.name); 
-            }      
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[3] != undefined) {
+              this.scorer4 = Number(user[3].createdUserId);
+              if (Number(item.createdUserId) == Number(user[3].createdUserId))
+                scorer4OverallTotalScores += Number(item.responseOption.name);
+            }
           }
-          else{
+          else {
             scorer4OverallTotalScores = 0;
           }
         });
 
         this._responses.forEach(item => {
-          if(Number(item.responseOption.name) >= 0)
-          {
-            allScorerOverallTotalScores  += Number(item.responseOption.name); 
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[4] != undefined) {
+              this.scorer5 = Number(user[4].createdUserId);
+              if (Number(item.createdUserId) == Number(user[4].createdUserId))
+                scorer5OverallTotalScores += Number(item.responseOption.name);
+            }
           }
-          else{
+          else {
+            scorer5OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[5] != undefined) {
+              this.scorer6 = Number(user[5].createdUserId);
+              if (Number(item.createdUserId) == Number(user[5].createdUserId))
+                scorer6OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer6OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[6] != undefined) {
+              this.scorer7 = Number(user[6].createdUserId);
+              if (Number(item.createdUserId) == Number(user[6].createdUserId))
+                scorer7OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer7OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[7] != undefined) {
+              this.scorer8 = Number(user[7].createdUserId);
+              if (Number(item.createdUserId) == Number(user[7].createdUserId))
+                scorer8OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer8OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[8] != undefined) {
+              this.scorer9 = Number(user[8].createdUserId);
+              if (Number(item.createdUserId) == Number(user[8].createdUserId))
+                scorer9OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer9OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            if (user[9] != undefined) {
+              this.scorer10 = Number(user[9].createdUserId);
+              if (Number(item.createdUserId) == Number(user[9].createdUserId))
+                scorer10OverallTotalScores += Number(item.responseOption.name);
+            }
+          }
+          else {
+            scorer10OverallTotalScores = 0;
+          }
+        });
+
+        this._responses.forEach(item => {
+          if (Number(item.responseOption.name) >= 0) {
+            allScorerOverallTotalScores += Number(item.responseOption.name);
+          }
+          else {
             allScorerOverallTotalScores = 0;
           }
         });
@@ -920,13 +1011,27 @@ private loadObjectives() {
         this.socrer2OverallTotalScore = scorer2OverallTotalScores;
         this.socrer3OverallTotalScore = scorer3OverallTotalScores;
         this.socrer4OverallTotalScore = scorer4OverallTotalScores;
+        this.socrer5OverallTotalScore = scorer5OverallTotalScores;
+        this.socrer6OverallTotalScore = scorer6OverallTotalScores;
+        this.socrer7OverallTotalScore = scorer7OverallTotalScores;
+        this.socrer8OverallTotalScore = scorer8OverallTotalScores;
+        this.socrer9OverallTotalScore = scorer9OverallTotalScores;
+        this.socrer10OverallTotalScore = scorer10OverallTotalScores;
         this.allSocrerOverallTotalScore = allScorerOverallTotalScores;
-        this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores/5).toFixed(2));   
-        this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores/5).toFixed(2));
-        this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores/5).toFixed(2));
-        this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores/5).toFixed(2));
-        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore)/4).toFixed(2));            
-     
+        this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores / 5).toFixed(2));
+        this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores / 5).toFixed(2));
+        this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores / 5).toFixed(2));
+        this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores / 5).toFixed(2));
+        this.scorer5OverallAvgScore = Number((scorer5OverallTotalScores / 5).toFixed(2));
+        this.scorer6OverallAvgScore = Number((scorer6OverallTotalScores / 5).toFixed(2));
+        this.scorer7OverallAvgScore = Number((scorer7OverallTotalScores / 5).toFixed(2));
+        this.scorer8OverallAvgScore = Number((scorer8OverallTotalScores / 5).toFixed(2));
+        this.scorer9OverallAvgScore = Number((scorer9OverallTotalScores / 5).toFixed(2));
+        this.scorer10OverallAvgScore = Number((scorer10OverallTotalScores / 5).toFixed(2));
+        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore + this.scorer5OverallAvgScore + this.scorer6OverallAvgScore + this.scorer7OverallAvgScore + this.scorer8OverallAvgScore + this.scorer9OverallAvgScore + this.scorer10OverallAvgScore) / length).toFixed(2));
+        if (isNaN(this.allScorerOverallAvgScore)) {
+          this.allScorerOverallAvgScore = 0;
+        }
       },
       (err) => {
         this._loggerService.logException(err);
