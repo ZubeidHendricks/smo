@@ -799,6 +799,13 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "Review Score card",
                     SystemName = "WFA.ReviewScorecard",
                     CategoryName = "ReviewScorecard"
+                },
+                new Permission
+                {
+                    Id = 114,
+                    Name = "View Score card",
+                    SystemName = "WFA.ViewScorecard",
+                    CategoryName = "ViewScorecard"
                 }
             );
 		}
