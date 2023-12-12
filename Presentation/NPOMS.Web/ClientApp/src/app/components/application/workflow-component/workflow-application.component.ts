@@ -1294,7 +1294,9 @@ onAprCheckboxChange(event: any) {
     let countReviewed = questions.filter(x => x.isSaved === true).length;
     let commentRequired = questions.filter(x => x.commentRequired === true).length;
     let commentProvided = questions.filter(x => x.comment !== '').length;
-    return ((questions.length === countReviewed) && (commentRequired === commentProvided)) ? false : true;  
+
+    return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && (this.capturedEvaluationComment != (undefined || ''))) ? false : true;      
+   // return ((questions.length === countReviewed) && (commentRequired === commentProvided)) ? false : true;  
   }
 
 
@@ -1326,10 +1328,6 @@ onAprCheckboxChange(event: any) {
 
     return ragColour;
   }
-
- 
-
-
 
   public displayField(question: IQuestionResponseViewModel) {
     let canDisplayField: boolean;
@@ -1455,18 +1453,18 @@ onAprCheckboxChange(event: any) {
     questionnaire.forEach(item => {
       if(Number(item.responseOption.name) >= 0)
       {
+       
         this.totalAverageScore += Number(item.responseOption.name);
       }
       else{
         this.totalAverageScore = 0;
       }
     });
-
     if (questionnaire[0].questionCategoryId === QuestionCategoryEnum.Evaluation)
     this.updateEvaluationStatus(this.totalAverageScore);
 
     return this.totalAverageScore;
-  }
+ }
 
   private updateEvaluationStatus(totalAverageScore: number) {
 

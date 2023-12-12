@@ -394,7 +394,7 @@
                     <th style="text-align: center; width: 30%;">Indicator</th>
                     <th style="text-align: center; width: 7%;">Target</th>
                     <th style="text-align: center; width: 10%;">Actual YTD</th>
-                    <th style="text-align: center; width: 8%;">Performance %</th>
+                    <th style="text-align: center; width: 8%;">Performance</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-indicator let-rowIndex="rowIndex">
@@ -402,7 +402,7 @@
                     <td [attr.colspan]="3"><span class="p-text-bold">{{indicator.ObjectiveName}}</span></td>
                     <td style="text-align: center;"><span class="p-text-bold">{{getObjectiveTargets(indicator.activity.objective)}}</span></td>
                     <td style="text-align: center;"><span class="p-text-bold">{{getObjectiveActuals(indicator.activity.objective)}}</span></td>
-                    <td style="text-align: center;"><span class="p-text-bold">{{getPerformanceAvg(indicator.activity.objective)}} %</span></td>
+                    <td style="text-align: center;"><span class="p-text-bold">{{getPerformanceAvg(indicator.activity.objective)}}</span></td>
                 </tr>
                 <tr class="default-font">
                     <td style="text-align: center;">{{rowIndex + 1}}</td>
@@ -410,13 +410,13 @@
                     <td style="text-align: left;">{{indicator.activity.successIndicator}}</td>
                     <td style="text-align: center;">{{indicator.totalTargets}}</td>
                     <td style="text-align: center;">{{indicator.totalActuals}}</td>
-                    <td style="text-align: center;">{{(indicator.totalAvg).toFixed(2)}} %</td>
+                    <td style="text-align: center;">{{(indicator.totalAvg).toFixed(2)}}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="footer">
                 <tr class="default-font">
                     <td style="text-align: left; width: 20%;" colspan="5"><b>Overall Quantitative Performance</b></td>
-                    <td style="text-align: center;">{{(getOverallPerformancePercentage()).toFixed(2)}} %</td>
+                    <td style="text-align: center;">{{(getOverallPerformancePercentage()).toFixed(2)}}</td>
                 </tr>
               
             </ng-template>

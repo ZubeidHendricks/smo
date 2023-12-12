@@ -494,7 +494,7 @@ namespace NPOMS.Repository.Migrations
                         },
                         new
                         {
-                            Id = 20,
+                            Id = 9,
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
                             Description = "NPC/ Trust / PBO Registration Certificate (copies of all applicable)",

@@ -596,7 +596,7 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ReviewScorecard)) {
+      if (this.IsAuthorized(PermissionsEnum.ReviewScorecard) || this.IsAuthorized(PermissionsEnum.ViewScorecard)) {
         this.optionItems[0].items.push({
           label: 'Review Score Card',
           icon: 'fa fa-file-text-o',
