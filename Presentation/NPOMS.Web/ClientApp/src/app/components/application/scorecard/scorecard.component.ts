@@ -604,7 +604,8 @@ export class ScorecardComponent implements OnInit {
           totalTargets: totalTargets,
           totalActuals: totalActuals,
           ObjectiveName: indicator.activity.objective.name,
-          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : (totalActuals / totalTargets) * 100
+         // totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : (totalActuals / totalTargets) * 100
+         totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : ((totalActuals / totalTargets)/10) * 100
         } as IWorkplanIndicatorSummary);
       });
 
@@ -624,6 +625,8 @@ export class ScorecardComponent implements OnInit {
       for (let i = 0; i < uniqueObjectives.length; i++) {
         let indicators = this.filteredWorkplanIndicators.filter(x => x.ObjectiveName === uniqueObjectives[i].itemName);
 
+        // Sum property in array of objects...
+        // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
         let targetTotal = indicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
         let actualTotal = indicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
         let averageTotal = actualTotal === 0 || targetTotal === 0 ? 0 : (actualTotal / targetTotal) * 100;
@@ -631,8 +634,8 @@ export class ScorecardComponent implements OnInit {
         overallPerformancePercentage = overallPerformancePercentage + averageTotal;
       }
 
-      overallPerformancePercentage = overallPerformancePercentage / uniqueObjectives.length;
-    }
+      overallPerformancePercentage = ((overallPerformancePercentage / uniqueObjectives.length)/10) > 10 ? 10 : ((overallPerformancePercentage / uniqueObjectives.length)/10);
+   }
 
     return overallPerformancePercentage;
   }
@@ -676,11 +679,17 @@ export class ScorecardComponent implements OnInit {
     }
     );
 
-    performanceAvg = ((totalActual / totalTarget) * 100).toFixed(2);
+    performanceAvg = (((totalActual / totalTarget)/10) * 100).toFixed(2);
 
-    if (isNaN(((totalActual / totalTarget) * 100))) {
+    if (isNaN((((totalActual / totalTarget)/10) * 100))) {
       performanceAvg = '0';
     }
+
+    if((((totalActual / totalTarget)/10) * 100) > 10)
+    {
+      performanceAvg = '10'
+    }
+    
     return performanceAvg;
   }
 
@@ -688,7 +697,6 @@ export class ScorecardComponent implements OnInit {
     this.rowGroupMetadataActivities = [];
 
     if (this.filteredWorkplanIndicators) {
-      // this.filteredWorkplanIndicators = this.filteredWorkplanIndicators.sort((a, b) => a.objectiveId - b.objectiveId);
       this.filteredWorkplanIndicators.forEach(element => {
         var itemExists = this.rowGroupMetadataActivities.some(function (data) {
           return data.itemName === element.ObjectiveName

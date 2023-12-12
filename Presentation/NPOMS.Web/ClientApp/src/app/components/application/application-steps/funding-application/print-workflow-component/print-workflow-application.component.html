@@ -178,7 +178,7 @@
                                     <td>{{question.questionName}}</td>
                                     <td [pEditableColumn]="question" pEditableColumn>
                                         <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
-                                            optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
+                                            optionLabel="systemName" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                             placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
                                             (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
                                     </td>
