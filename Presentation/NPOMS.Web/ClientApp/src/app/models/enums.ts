@@ -459,6 +459,23 @@ export enum QCStepsEnum {
     ApplicationDocument = 3
 }
 
+export enum QuickCaptureFundedStepsEnum {
+    NpoConfirmationDetails = 0,
+    Applications = 1,
+    Objectives = 2,
+    Activities = 3,
+    ApplicationDocument = 4
+}
+
+export enum QCStepsFundedEnum {
+    NpoCreate = 0,
+    Applications = 1,
+    ApplicationDetail = 2,
+    Objectives = 3,
+    Activities = 4,
+    ApplicationDocument = 5
+}
+
 
 export enum DocumentUploadLocationsEnum {
     NpoProfile = 'NpoProfile',

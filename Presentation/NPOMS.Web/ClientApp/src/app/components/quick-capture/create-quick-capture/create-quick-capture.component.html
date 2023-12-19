@@ -1,10 +1,13 @@
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="New Organisation" *ngIf="profile">
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="General Information" *ngIf="npo">
+        <label class="mandatory-content" style="font-size: medium; font-style: oblique;">Add Organisation</label>
+        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-plus" (click)="onRowSelect(rowData)" *ngIf="IsAuthorized(PermissionsEnum.AddApplication)" pTooltip="Add Organisation" tooltipPosition="left"></button>
+        <div style="height: 10px;"></div>
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Organisation Name</label>
-                <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" required (change)="updateNpo()">
+                <input type="text" [disabled]="isDisabled" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" required (change)="updateNpo()">
                 <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small>
             </div>
             <div class="p-field p-col-12 p-md-6">
@@ -79,12 +82,188 @@
             </ng-template>
         </p-table>
     </p-panel>
-    
+<!-- 
+    <div style="height: 10px;"></div>
+    <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Profile of Staff Members">
+        <p-table [rowHover]="true" [value]="staffMemberProfiles" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th rowspan="3">Categories of staff members</th>
+                    <th rowspan="3">Number of Vacant Posts</th>
+                    <th rowspan="3">Number of Filled Posts</th>
+                    <th rowspan="3">Number of Consultants appointed</th>
+                    <th rowspan="3">Number of Staff with disabilities</th>
+                    <th colspan="8" style="text-align: center;">Representivity</th>
+                </tr>
+                <tr>
+                    <th colspan="2" style="text-align: center;">African</th>
+                    <th colspan="2" style="text-align: center;">Indian</th>
+                    <th colspan="2" style="text-align: center;">Coloured</th>
+                    <th colspan="2" style="text-align: center;">White</th>
+                </tr>
+                <tr>
+                    <th>No. of Male(s)</th>
+                    <th>No. of Female(s)</th>
+                    <th>No. of Male(s)</th>
+                    <th>No. of Female(s)</th>
+                    <th>No. of Male(s)</th>
+                    <th>No. of Female(s)</th>
+                    <th>No. of Male(s)</th>
+                    <th>No. of Female(s)</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData>
+                <tr>
+                    <td *ngIf="rowData.staffCategory && rowData.staffCategory.id !== StaffCategoryEnum.Other">{{rowData.staffCategory.name}}</td>
+                    <td *ngIf="rowData.staffCategory && rowData.staffCategory.id === StaffCategoryEnum.Other" pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input type="text" class="form-text" pInputText [(ngModel)]="rowData.otherSpecify" [ngModelOptions]="{standalone: true}" (change)="updateStaffMemberProfile(rowData)" placeholder="Other (Please specify)">
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.otherSpecify}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.vacantPosts" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.vacantPosts}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.filledPosts" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.filledPosts}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.consultantsAppointed" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.consultantsAppointed}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.staffWithDisabilities" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.staffWithDisabilities}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.africanMale" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.africanMale}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.africanFemale" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.africanFemale}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.indianMale" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.indianMale}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.indianFemale" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.indianFemale}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.colouredMale" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.colouredMale}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.colouredFemale" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.colouredFemale}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.whiteMale" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.whiteMale}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td pEditableColumn style="text-align: center;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber [(ngModel)]="rowData.whiteFemale" inputId="integeronly" (onBlur)="updateStaffMemberProfile(rowData)" [inputStyle]="{'width':'100%', 'text-align':'center'}"></p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">{{rowData.whiteFemale}}</ng-template>
+                        </p-cellEditor>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <tr>
+                    <td><span style="font-weight: bold;">Total</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.vacantPosts}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.filledPosts}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.consultantsAppointed}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.staffWithDisabilities}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.africanMale}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.africanFemale}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.indianMale}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.indianFemale}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.colouredMale}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.colouredFemale}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.whiteMale}}</span></td>
+                    <td style="text-align: center;"><span style="font-weight: bold;">{{totalStaffMemberProfile.whiteFemale}}</span></td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary" let-rowData>
+                <div style="text-align:left">
+                    <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addOther()"></button>
+                </div>
+            </ng-template>
+        </p-table>
+    </p-panel>
+     -->
     <div style="height: 10px;"></div>
     <div class="p-grid p-nogutter p-justify-end">
         <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
     </div>
 </p-panel>
+
+
+
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>
+
 
 <p-dialog header="Contact / Stakeholder Details" 
           [(visible)]="displayContactDialog" 
@@ -328,11 +507,75 @@
     </ng-template>
 </p-dialog>
 
-<div class="content-section implementation">
-    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
-        <p-footer>
-            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
-            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
-        </p-footer>
-    </p-confirmDialog>
-</div>
+
+<p-dialog header="Create application for:" 
+          [(visible)]="displayDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Organisation Selection</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-autoComplete appendTo="body" id="selectedNPO"                      
+                [(ngModel)]="selectedNPO"
+                [style]="{'width':'100%'}"
+                [inputStyle]="{'width':'100%'}"
+                [suggestions]="allNpos"
+                field="name"
+                (completeMethod)="search($event)"
+                [size]="20"
+                placeholder="Find Organisation (type 4 letters)"
+                [forceSelection]="true"
+                [minLength]="4"
+                [showTransitionOptions]="'0ms'"
+                [hideTransitionOptions]="'0ms'"
+                emptyMessage="No results found"
+                name="npo"
+                [showEmptyMessage]="true"
+                (onSelect)="selectedNPOChange()">
+            </p-autoComplete>
+        </div>
+        <div class="p-col" *ngIf="!hasAdminRole">
+            <p-dropdown [options]="allNpos" placeholder="Select an Organisation" optionLabel="name" [(ngModel)]="selectedNPO" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="selectedNPOChange()"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <button pButton pRipple type="button" label="Add new organisation" class="p-button-text"  [disabled] = "isDisabled" (click)="selectNPO()"></button>
+            </div>
+        </div>
+    </div>
+    <!-- <div *ngIf="selectedApplicationPeriod && selectedApplicationPeriod.applicationType.id === ApplicationTypeEnum.SP">
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">New or Existing</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="selectedOption" [ngModelOptions]="{standalone: true}" (onChange)="selectedOptionChange()"></p-selectButton>
+            </div>
+        </div>
+        <div class="p-grid" *ngIf="selectedOption === false">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Financial Year</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+            </div>
+        </div>
+    </div> -->
+    
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Select" class="p-button-text" icon="fa fa-hand-o-up" [disabled]=disableSelect() (click)="selectNPO()"></button>
+    </ng-template>
+</p-dialog>

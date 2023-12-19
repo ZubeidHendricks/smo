@@ -2,12 +2,13 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IContactInformation, IGender, ILanguage, INpo, IOrganisationType, IPosition, IRace, IRegistrationStatus, ITitle, IUser } from 'src/app/models/interfaces';
+import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum, StaffCategoryEnum, StatusEnum } from 'src/app/models/enums';
+import { IApplication, IApplicationPeriod, IContactInformation, IGender, ILanguage, INpo, INpoProfile, IOrganisationType, IPosition, IRace, IRegistrationStatus, IStaffCategory, IStaffMemberProfile, ITitle, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
+import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 
 @Component({
   selector: 'app-create-quick-capture',
@@ -32,6 +33,10 @@ export class CreateQuickCaptureComponent implements OnInit {
     return PermissionsEnum;
   }
 
+  public get StaffCategoryEnum(): typeof StaffCategoryEnum {
+    return StaffCategoryEnum;
+  }
+
   profile: IUser;
   stateOptions: any[];
 
@@ -47,18 +52,22 @@ export class CreateQuickCaptureComponent implements OnInit {
   positions: IPosition[];
   selectedPosition: IPosition;
 
+  isSystemAdmin: boolean = true;
+  isAdmin: boolean = false;
   races: IRace[];
   selectedRace: IRace;
 
+  allNpos: INpo[];
+  selectedNPO: INpo;
+  isDisabled: boolean = true;
   gender: IGender[];
   selectedGender: IGender;
-
+  hasAdminRole: boolean = false;
   languages: ILanguage[];
   selectedLanguage: ILanguage;
-
+  displayDialog: boolean;
   minDate: Date;
   maxDate: Date;
-
   contactCols: any[];
   isContactInformationEdit: boolean;
   newContactInformation: boolean;
@@ -66,8 +75,17 @@ export class CreateQuickCaptureComponent implements OnInit {
   selectedContactInformation: IContactInformation;
   displayContactDialog: boolean;
 
+  application: IApplication = {} as IApplication;
+  allApplicationPeriods: IApplicationPeriod[];
+  applicationPeriodId: number;
+
   // Highlight required fields on validate click
   validated: boolean = false;
+
+  staffMemberProfiles: IStaffMemberProfile[];
+  staffCategories: IStaffCategory[];
+
+  npoProfile: INpoProfile;
 
   constructor(
     private _router: Router,
@@ -76,7 +94,7 @@ export class CreateQuickCaptureComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _confirmationService: ConfirmationService,
     private _npoRepo: NpoService,
-    // private _npoProfileRepo: NpoProfileService,
+     private _npoProfileRepo: NpoProfileService,
     private _loggerService: LoggerService,
     private _messageService: MessageService
     // private _addressLookupService: AddressLookupService
@@ -88,8 +106,17 @@ export class CreateQuickCaptureComponent implements OnInit {
         this.profile = profile;
 
         if (!this.IsAuthorized(PermissionsEnum.AddNpo))
+        {
           this._router.navigate(['401']);
+        }
+        
+          this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+          this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
 
+        if (this.isSystemAdmin || this.isAdmin)
+        this.hasAdminRole = true;
+
+        this.loadNpos();
         this.loadOrganisationTypes();
         this.loadRegistrationStatuses();
         this.loadTitles();
@@ -487,4 +514,146 @@ export class CreateQuickCaptureComponent implements OnInit {
     this.npo.registrationStatusId = registrationStatus.id;
     this.updateNpo();
   }
+
+  private loadNpos() {
+    this._spinner.show();
+    this._npoRepo.getAllNpos(AccessStatusEnum.Approved).subscribe(
+      (results) => {
+        this.allNpos = results;
+      //  this.loadStaffMemberProfiles();
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  search(event) {
+    let query = event.query;
+    this._npoRepo.getNpoByName(query).subscribe((results) => {
+      this.allNpos = results;
+      if(this.allNpos.length === 0)
+      {
+        this.isDisabled = false;
+      }
+    });
+  }
+
+  
+  onRowSelect() {
+    this.displayDialog = true;
+  }
+
+  selectNPO() {
+    this.displayDialog = false;
+    this.addOrganisation();
+  }
+
+  private addOrganisation() {
+    this.application.npoId = this.selectedNPO.id;
+    this.application.applicationPeriodId = this.applicationPeriodId;
+    this.application.statusId = StatusEnum.New;
+
+    if (this.selectedNPO.id != null) {
+      this._npoRepo.getNpoById(Number(this.selectedNPO.id)).subscribe(
+        (results) => {         
+          this.selectedOrganisationType = results.organisationType;
+          this.selectedRegistrationStatus = results.registrationStatus;
+          this.npo = results;        
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+   }
+
+   disableSelect() {
+    if (!this.selectedNPO)
+      return true;
+
+    // if (this.selectedApplicationPeriod.applicationType.id === ApplicationTypeEnum.SP && !this.selectedOption) {
+    //   if (!this.selectedFinancialYear)
+    //     return true
+    // }
+    return false;
+  }
+
+  private loadStaffMemberProfiles() {
+    this._npoProfileRepo.getStaffMemberProfilesByNpoProfileId(72).subscribe(
+      (results) => {
+        this.staffMemberProfiles = results ? results : [] as IStaffMemberProfile[];
+
+        this.staffMemberProfiles.forEach(item => {
+          item.staffCategory = this.staffCategories.find(x => x.id === item.staffCategoryId);
+        });
+
+        let filteredCategories = this.staffCategories.filter(x => x.id !== StaffCategoryEnum.Other);
+        let memberProfiles = this.staffMemberProfiles;
+
+        if (this.staffMemberProfiles.length > 0) {
+          filteredCategories = filteredCategories.filter(function (category) {
+            return !memberProfiles.find(function (profile) {
+              return category.id === profile.staffCategoryId;
+            });
+          });
+        }
+
+        filteredCategories.forEach(item => {
+          this.staffMemberProfiles.push({
+            staffCategoryId: item.id,
+            staffCategory: item,
+            vacantPosts: 0,
+            filledPosts: 0,
+            consultantsAppointed: 0,
+            staffWithDisabilities: 0,
+            africanMale: 0,
+            africanFemale: 0,
+            indianMale: 0,
+            indianFemale: 0,
+            colouredMale: 0,
+            colouredFemale: 0,
+            whiteMale: 0,
+            whiteFemale: 0,
+            otherSpecify: null
+          } as IStaffMemberProfile);
+        });
+
+        //Sort Staff Member Profiles by Staff Category Id
+        this.staffMemberProfiles.sort((a, b) => a.staffCategoryId - b.staffCategoryId);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public addOther() {
+    this.staffMemberProfiles.push({
+      staffCategoryId: this.staffCategories.find(x => x.id === StaffCategoryEnum.Other).id,
+      staffCategory: this.staffCategories.find(x => x.id === StaffCategoryEnum.Other),
+      vacantPosts: 0,
+      filledPosts: 0,
+      consultantsAppointed: 0,
+      staffWithDisabilities: 0,
+      africanMale: 0,
+      africanFemale: 0,
+      indianMale: 0,
+      indianFemale: 0,
+      colouredMale: 0,
+      colouredFemale: 0,
+      whiteMale: 0,
+      whiteFemale: 0,
+      otherSpecify: null
+    } as IStaffMemberProfile);
+  }
+
+  selectedNPOChange() {
+    //this.getExistingWorkplanFinancialYear();
+  }
+
 }

@@ -1,0 +1,182 @@
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Application Details" *ngIf="isDataAvailable">
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Department</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="department.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Application Type</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="applicationType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Programme</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="programme.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Financial Year</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="financialYear.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Sub-Programme</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="subProgramme.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Name</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="applicationPeriod.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+
+        <br>
+
+        <div class="p-field p-col-12 p-md-3">
+            <label class="mandatory-content">District Council</label>
+            <p-dropdown [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name" [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="districtCouncilDropdownChange($event.value)" [disabled]="readonly()"></p-dropdown>
+        </div>
+        <div class="p-field p-col-12 p-md-3">
+            <label class="mandatory-content">Local Municipalities</label>
+            <p-dropdown [options]="filteredLocalMunicipalities" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" placeholder="Select Local Municipalities" [style]="{'width':'100%'}" appendTo="body" (onChange)="localMunicipalityDropdownChange($event.value)" selectedItemsLabel="{0} items selected" [disabled]="readonly()"></p-dropdown>
+        </div>
+        <div class="p-field p-col-12 p-md-3">
+            <label class="mandatory-content">Region</label>
+            <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredRegions" [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="regionDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+        <div class="p-field p-col-12 p-md-3">
+            <label class="mandatory-content">Service Delivery Area</label>
+            <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredServiceDeliveryAreas" [ngModelOptions]="{standalone: true}" appendTo="body" [(ngModel)]="selectedSDAs" (onChange)="sdaDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+    </div>
+
+    <div class="p-field p-col-12 p-md-6">
+        <label class="mandatory-content">Rand amount you applying for</label>
+        <!-- <input type="text" class="form-text" pKeyFilter="int" pInputText name="amountApplyingFor" id="amountApplyingFor" (ngModelChange)="onAmountChange($event)" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" autofocus autocomplete="off" [disabled]="readonly()"/> -->
+        <p-inputNumber inputId="integeronly" [(ngModel)]="amount" class="form-text" [disabled]="readonly()" (onInput)="onAmountChange($event.value)"></p-inputNumber>
+    </div>
+
+    <p-table [value]="sourceOfInformation">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th class="p-text-center">Where did you hear about the Call for Proposals?</th>
+                <th>
+                    <label class="mandatory-content">&nbsp;</label>
+
+                    <select #ref (change)="getSelectedValue(ref.value)">
+                        <option value="">Please Select</option>
+                        <option value="1">Printed newspaper</option>
+                        <option value="2">Online</option>
+                        <option value="3">DSD circular to NPOs</option>
+                        <option value="4">Other (specify)</option>
+                    </select>
+                </th>
+                <th>
+                    <label class="mandatory-content">Please Specify</label>
+                    <input [ngStyle]="{'width': 100 + '%'}" type="text" class="form-text" pInputText [(ngModel)]="specify" [ngModelOptions]="{standalone: true}" [disabled]="false">
+                    <button pButton pRipple type="button" label="Save Information" class="p-button-text" icon="fa fa-floppy-o" (click)="save()"></button>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+            <tr>
+                <th class="p-text-center"> <input [ngStyle]="{'width': 100 + '%'}" type="text" pInputText [ngModelOptions]="{standalone: true}" [disabled]="true"></th>
+                <th class="p-text-center">
+                    <input [ngStyle]="{'width': 100 + '%'}" type="text" pInputText [(ngModel)]="rowData.sourceOfInformationText" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                </th>
+                <th class="p-text-center">
+                    <input [ngStyle]="{'width': 100 + '%'}" type="text" class="form-text" pInputText [(ngModel)]="rowData.additionalSourceInformation" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                </th>
+            </tr>
+        </ng-template>
+    </p-table>
+    <br>
+    <p-table>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th class="p-text-center">
+                    Is this application submitted as an affiliation?  
+                    <br>
+                    If yes, please provide the following details.
+                </th>
+                <th>
+                    <p-selectButton [options]="stateOptions" optionLabel="label" (onChange)="showTable($event)" optionValue="value" [style]="{'font-size': '12px'}" [ngModelOptions]="{standalone: true}" [required]="true"></p-selectButton>
+                </th>
+            </tr>
+        </ng-template>
+    </p-table>
+    <br>
+    <p-table id="affliatedOrganisationInfoTable" [hidden]="true" [value]="affliatedOrganisationInfo">
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="p-text-center">Name of Affiliated organisation</th>
+                <th class="p-text-center">Contact Person</th>
+                <th class="p-text-center">Email Address</th>
+                <th class="p-text-center">Telephone</th>
+                <th class="p-text-center">Website</th>
+            </tr>                
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+            <tr style="height: 50px;">
+                <td pEditableColumn class="p-text-center">
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.nameOfOrganisation" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">                                   
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{rowData.nameOfOrganisation}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn class="p-text-center">
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.contactPerson" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{rowData.contactPerson}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn class="p-text-center">
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.emailAddress" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">                                   
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{rowData.emailAddress}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn class="p-text-center">
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.telephoneNumber" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{rowData.telephoneNumber}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn class="p-text-center">
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input type="text" [ngStyle]="{'width': 100 + '%'}" class="form-text" pInputText [(ngModel)]="rowData.website" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{rowData.website}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <tr>
+                <td colspan="5" class="p-text-right">                            
+                    <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()" style="float: left;"></button>                            
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <!-- <br> -->
+    <div style="height: 10px;"></div>
+    <div class="p-grid p-nogutter p-justify-between">
+        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+        <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
+    </div>
+</p-panel>

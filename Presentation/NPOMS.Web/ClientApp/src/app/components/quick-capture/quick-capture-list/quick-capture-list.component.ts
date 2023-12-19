@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { PermissionsEnum, QCStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { PermissionsEnum, QCStepsEnum, StatusEnum, QuickCaptureFundedStepsEnum, QCStepsFundedEnum } from 'src/app/models/enums';
 import { IUser, INpo, IContactInformation, IApplicationPeriod, IApplication, IDistrictCouncil, ILocalMunicipality, IRegion, ISDA, IFundingApplicationDetails, IFundAppSDADetail, IApplicationDetails } from 'src/app/models/interfaces';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MenuItem, Message, MessageService } from 'primeng/api';
@@ -52,6 +52,9 @@ export class QuickCaptureListComponent implements OnInit {
   menuActions: MenuItem[];
   validationErrors: Message[];
   qcItems: MenuItem[];
+  qcItemsFunded: MenuItem[];
+
+  qcFunded: number;
 
   amount: number;
   sourceOfInformation: ISourceOfInformation[];
@@ -92,8 +95,17 @@ export class QuickCaptureListComponent implements OnInit {
 
         if (!this.IsAuthorized(PermissionsEnum.AddApplication))
           this._router.navigate(['401']);
+       
+        if(this.profile.departments[0].name === 'Health')
+        {
+          this.qCStepsFunded();
+          this.qcFunded = 1;
+        }
+        else{
+          this.qCSteps();
+          this.qcFunded = 0;
+        }
 
-        this.qCSteps();
         this.buildMenu();
       }
     });
@@ -294,6 +306,16 @@ export class QuickCaptureListComponent implements OnInit {
     return orgDetailsError;
   }
 
+  private validateApplication() {
+    let data = this.applicationPeriod;
+    let applicationError: string[] = [];
+
+    if (!data)
+      applicationError.push("Please select a programme from the list provided");
+
+    return applicationError;
+  }
+
   private validateApplications() {
     let data = this.applicationPeriod;
     let applicationError: string[] = [];
@@ -386,6 +408,17 @@ export class QuickCaptureListComponent implements OnInit {
     ];
   }
 
+  private qCStepsFunded() {
+    this.qcItemsFunded = [
+      { label: 'Organisation Details' },   
+      { label: 'Applications' },  
+      { label: 'Application Detail' },
+      { label: 'Objectives' },
+      { label: 'Activities' },
+      { label: 'Application Document' }
+    ];
+  }
+
   public validateStep(goToStep: number, currentStep: number) {
     if (goToStep > currentStep) {
       switch (currentStep) {
@@ -450,4 +483,117 @@ export class QuickCaptureListComponent implements OnInit {
     else
       this.activeStep = goToStep;
   }
+
+  public validateStepFunded(goToStep: number, currentStep: number) {
+    if (goToStep > currentStep) {
+      switch (currentStep) {
+        case QCStepsFundedEnum.NpoCreate: {
+          var orgDetailsError = this.validateOrganisationDetails();
+
+          if (orgDetailsError.length > 0) {
+            this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+            this.organisationDetails.setValidated(true);
+            break;
+          }
+
+          this.activeStep = goToStep;
+          break;
+        }
+        case QCStepsFundedEnum.Applications: {
+          var orgDetailsError = this.validateOrganisationDetails();
+          var applicationError = this.validateApplications();
+
+          if (orgDetailsError.length > 0 || applicationError.length > 0) {
+
+            if (orgDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+
+            if (applicationError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+           
+            //   if (applicationDetailsError.length > 0)
+            // this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+
+            break;
+          }
+
+          this.activeStep = goToStep;
+          break;
+        }
+        case QCStepsFundedEnum.ApplicationDetail: {
+          var orgDetailsError = this.validateOrganisationDetails();
+          var applicationError = this.validateApplications();
+          var applicationDetailsError = this.validateApplicationDetails();
+
+          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+
+            if (orgDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+
+            if (applicationError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+
+            if (applicationDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+
+            break;
+          }
+
+          this.activeStep = goToStep;
+          break;
+        }
+        case QCStepsFundedEnum.Objectives: {
+          var orgDetailsError = this.validateOrganisationDetails();
+          var applicationError = this.validateApplications();
+          var applicationDetailsError = this.validateApplicationDetails();
+
+          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+
+            if (orgDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+
+            if (applicationError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+
+            if (applicationDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+
+            break;
+          }
+
+          this.activeStep = goToStep;
+          break;
+        }
+        case QCStepsFundedEnum.Activities: {
+          var orgDetailsError = this.validateOrganisationDetails();
+          var applicationError = this.validateApplications();
+          var applicationDetailsError = this.validateApplicationDetails();
+
+          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+
+            if (orgDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+
+            if (applicationError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+
+            if (applicationDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+
+            break;
+          }
+
+          this.activeStep = goToStep;
+          break;
+        }
+        case QCStepsFundedEnum.ApplicationDocument: {
+          this.activeStep = goToStep;
+          break;
+        }
+      }
+    }
+    else
+      this.activeStep = goToStep;
+  }
+
 }

@@ -16,11 +16,11 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-qc-application-details',
-  templateUrl: './qc-application-details.component.html',
-  styleUrls: ['./qc-application-details.component.css']
+  selector: 'app-qc-application-detail',
+  templateUrl: './qc-application-detail.component.html',
+  styleUrls: ['./qc-application-detail.component.css']
 })
-export class QcApplicationDetailsComponent implements OnInit {
+export class QcApplicationDetailComponent implements OnInit {
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();

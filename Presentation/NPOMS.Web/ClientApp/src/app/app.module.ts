@@ -141,6 +141,7 @@ import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick
 import { QcApplicationDetailsComponent } from './components/application/application-steps/quick-capture/qc-application-details/qc-application-details.component';
 import { QcDocumentUploadComponent } from './components/application/application-steps/quick-capture/qc-document-upload/qc-document-upload.component';
 import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
+import { QcApplicationDetailComponent } from './components/application/application-steps/quick-capture/qc-application-detail/qc-application-detail.component';
 
 import { QuestionComponent } from './components/admin/utilities/question/question.component';
 import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
@@ -308,6 +309,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     QcApplicationDetailsComponent,
     QcDocumentUploadComponent,
     QcApplicationPeriodsComponent,
+    QcApplicationDetailComponent,
     QuestionComponent,
     ResponseTypeComponent,
     WorkflowAssessmentComponent,
