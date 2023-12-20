@@ -45,13 +45,12 @@
         </div>
     </div>
 
-    <div class="p-field p-col-12 p-md-6">
+    <!-- <div class="p-field p-col-12 p-md-6">
         <label class="mandatory-content">Rand amount you applying for</label>
-        <!-- <input type="text" class="form-text" pKeyFilter="int" pInputText name="amountApplyingFor" id="amountApplyingFor" (ngModelChange)="onAmountChange($event)" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" autofocus autocomplete="off" [disabled]="readonly()"/> -->
         <p-inputNumber inputId="integeronly" [(ngModel)]="amount" class="form-text" [disabled]="readonly()" (onInput)="onAmountChange($event.value)"></p-inputNumber>
-    </div>
+    </div> -->
 
-    <p-table [value]="sourceOfInformation">
+    <!-- <p-table [value]="sourceOfInformation">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th class="p-text-center">Where did you hear about the Call for Proposals?</th>
@@ -85,8 +84,8 @@
             </tr>
         </ng-template>
     </p-table>
-    <br>
-    <p-table>
+    <br> -->
+    <!-- <p-table>
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th class="p-text-center">
@@ -172,7 +171,7 @@
                 </td>
             </tr>
         </ng-template>
-    </p-table>
+    </p-table> -->
     <!-- <br> -->
     <div style="height: 10px;"></div>
     <div class="p-grid p-nogutter p-justify-between">

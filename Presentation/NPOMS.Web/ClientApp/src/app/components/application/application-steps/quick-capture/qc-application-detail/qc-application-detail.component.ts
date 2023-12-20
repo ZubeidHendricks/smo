@@ -36,7 +36,7 @@ export class QcApplicationDetailComponent implements OnInit {
   @Input() sdas: ISDA[];
   @Output() sdasChange: EventEmitter<ISDA[]> = new EventEmitter<ISDA[]>();
 
-  @Input() amount: number;
+  //@Input() amount: number;
   @Output() amountChange: EventEmitter<number> = new EventEmitter<number>();
 
   @Input() sourceOfInformation: ISourceOfInformation[];
@@ -745,7 +745,7 @@ export class QcApplicationDetailComponent implements OnInit {
         //create funding application details
         this.fundingApplicationDetails.applicationId = this.application.id;
         this.fundingApplicationDetails.applicationPeriodId = this.applicationPeriod.id;
-        this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.amount;
+       // this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.amount;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.selectedDistrictCouncil;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
@@ -767,7 +767,7 @@ export class QcApplicationDetailComponent implements OnInit {
         );
       }
       else {
-        this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.amount;
+      //  this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.amount;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.selectedDistrictCouncil;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
@@ -814,8 +814,8 @@ export class QcApplicationDetailComponent implements OnInit {
     if (!this.selectedDistrictCouncil || !this.selectedLocalMunicipality || this.selectedRegions.length === 0 || this.selectedSDAs.length === 0)
       applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
 
-    if (!this.amount)
-      applicationDetailsError.push("Please specify the Rand amount you applying for");
+    // if (!this.amount)
+    //   applicationDetailsError.push("Please specify the Rand amount you applying for");
 
     if (applicationDetailsError.length > 0)
       this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });

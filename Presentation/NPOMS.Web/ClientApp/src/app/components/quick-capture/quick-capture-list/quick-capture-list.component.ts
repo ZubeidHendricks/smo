@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PermissionsEnum, QCStepsEnum, StatusEnum, QuickCaptureFundedStepsEnum, QCStepsFundedEnum } from 'src/app/models/enums';
-import { IUser, INpo, IContactInformation, IApplicationPeriod, IApplication, IDistrictCouncil, ILocalMunicipality, IRegion, ISDA, IFundingApplicationDetails, IFundAppSDADetail, IApplicationDetails } from 'src/app/models/interfaces';
+import { IUser, INpo, IContactInformation, IApplicationPeriod, IApplication, IDistrictCouncil, ILocalMunicipality, IRegion, ISDA, IFundingApplicationDetails, IFundAppSDADetail, IApplicationDetails, IObjective, IActivity } from 'src/app/models/interfaces';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MenuItem, Message, MessageService } from 'primeng/api';
 import { CreateQuickCaptureComponent } from '../create-quick-capture/create-quick-capture.component';
@@ -34,6 +34,10 @@ export class QuickCaptureListComponent implements OnInit {
     return QCStepsEnum;
   }
 
+  public get QCStepsFundedEnum(): typeof QCStepsFundedEnum {
+    return QCStepsFundedEnum;
+  }
+
   profile: IUser;
 
   npo: INpo = {
@@ -43,6 +47,9 @@ export class QuickCaptureListComponent implements OnInit {
 
   applicationPeriod: IApplicationPeriod;
   application: IApplication;
+
+  objectives: IObjective[] = [];
+  activities: IActivity[] = [];
 
   districtCouncil: IDistrictCouncil;
   localMunicipality: ILocalMunicipality;
@@ -332,8 +339,8 @@ export class QuickCaptureListComponent implements OnInit {
     if (!this.districtCouncil || !this.localMunicipality || this.regions.length === 0 || this.sdas.length === 0)
       applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
 
-    if (!this.amount)
-      applicationDetailsError.push("Please specify the Rand amount you applying for");
+    // if (!this.amount)
+    //   applicationDetailsError.push("Please specify the Rand amount you applying for");
 
     return applicationDetailsError;
   }
@@ -511,9 +518,6 @@ export class QuickCaptureListComponent implements OnInit {
             if (applicationError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
            
-            //   if (applicationDetailsError.length > 0)
-            // this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
-
             break;
           }
 
@@ -543,23 +547,23 @@ export class QuickCaptureListComponent implements OnInit {
           break;
         }
         case QCStepsFundedEnum.Objectives: {
-          var orgDetailsError = this.validateOrganisationDetails();
-          var applicationError = this.validateApplications();
-          var applicationDetailsError = this.validateApplicationDetails();
+          // var orgDetailsError = this.validateOrganisationDetails();
+          // var applicationError = this.validateApplications();
+          // var applicationDetailsError = this.validateApplicationDetails();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+          // if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
 
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+          //   if (orgDetailsError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
 
-            if (applicationError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+          //   if (applicationError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
 
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+          //   if (applicationDetailsError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
 
-            break;
-          }
+          //   break;
+          // }
 
           this.activeStep = goToStep;
           break;
@@ -594,6 +598,30 @@ export class QuickCaptureListComponent implements OnInit {
     }
     else
       this.activeStep = goToStep;
+  }
+
+  private loadObjectives() {
+    this._applicationRepo.getAllObjectives(this.application).subscribe(
+      (results) => {
+        this.objectives = results.filter(x => x.isActive === true);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadActivities() {
+    this._applicationRepo.getAllActivities(this.application).subscribe(
+      (results) => {
+        this.activities = results.filter(x => x.isActive === true);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
 }
