@@ -142,6 +142,8 @@ import { QcApplicationDetailsComponent } from './components/application/applicat
 import { QcDocumentUploadComponent } from './components/application/application-steps/quick-capture/qc-document-upload/qc-document-upload.component';
 import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
 import { QcApplicationDetailComponent } from './components/application/application-steps/quick-capture/qc-application-detail/qc-application-detail.component';
+import { QCActivitiesComponent } from './components/application/application-steps/quick-capture/qc-activities/qc-activities.component';
+import { QcObjectivesComponent } from './components/application/application-steps/quick-capture/qc-objectives/qc-objectives.component';
 
 import { QuestionComponent } from './components/admin/utilities/question/question.component';
 import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
@@ -336,7 +338,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ViewNpoDetailsComponent,
     ViewProfileDetailsComponent,
     ReviewScorecardComponent,
-    PrintScorecardComponent
+    PrintScorecardComponent,
+    QCActivitiesComponent, 
+    QcObjectivesComponent
    // ScorecardComponent
   ],
   schemas: [

@@ -325,7 +325,8 @@ export interface IActivity {
     description: string;
     facilityListText: string;
     isNew: boolean;
-
+    financialYear: string;
+    quarter: string;
     objective: IObjective;
     activityType: IActivityType;
     activitySubProgrammes: IActivitySubProgramme[];
@@ -567,6 +568,8 @@ export interface IObjective {
     isActive: boolean;
     changesRequired: boolean;
     isNew: boolean;
+    financialYear: string;
+    quarter: string;
 
     recipientType: IRecipientType;
     objectiveProgrammes: IObjectiveProgramme[];

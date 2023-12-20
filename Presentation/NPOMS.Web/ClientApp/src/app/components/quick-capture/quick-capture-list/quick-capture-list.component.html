@@ -67,12 +67,12 @@
         [(affliatedOrganisationInfo)]="affliatedOrganisationInfo"
         [(fundingApplicationDetails)]="fundingApplicationDetails">
     </app-qc-application-detail>
-    <app-objectives *ngIf="activeStep == QCStepsFundedEnum.Objectives" [(activeStep)]="activeStep"
+    <app-qc-objectives *ngIf="activeStep == QCStepsFundedEnum.Objectives" [(activeStep)]="activeStep"
     [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"
-    [isReview]="false" [currentUserId]="profile.id"></app-objectives>
-    <app-activities *ngIf="activeStep == QCStepsFundedEnum.Activities" [(activeStep)]="activeStep"
+    [isReview]="false" [currentUserId]="profile.id"></app-qc-objectives>
+    <app-qc-activities *ngIf="activeStep == QCStepsFundedEnum.Activities" [(activeStep)]="activeStep"
     [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
-    [isReview]="false"></app-activities>
+    [isReview]="false"></app-qc-activities>
     <app-qc-document-upload *ngIf="activeStep == QCStepsFundedEnum.ApplicationDocument"
         [(activeStep)]="activeStep"
         [application]="application"
