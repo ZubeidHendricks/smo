@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, RecipientTypeEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IDepartment, IFinancialYear, IObjective, IObjectiveProgramme, IProgramme, IRecipientType, ISubProgramme, ISubRecipient, ISubSubRecipient } from 'src/app/models/interfaces';
+import { IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IDepartment, IFinancialYear, IObjective, IObjectiveProgramme, IProgramme, IQuarterlyPeriod, IRecipientType, ISubProgramme, ISubRecipient, ISubSubRecipient } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -88,6 +88,8 @@ export class QcObjectivesComponent implements OnInit {
   selectedQuarter = '';
   selectedFinancialYear: IFinancialYear;
   financialYears: IFinancialYear[];
+  selectedQuarterlyPeriod: IQuarterlyPeriod;
+  quarterlyPeriod: IQuarterlyPeriod[];
   constructor(
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
@@ -120,6 +122,7 @@ export class QcObjectivesComponent implements OnInit {
     this.loadObjectives();
     this.setYearRange();
     this.loadFinancialYears();
+    this.loadQuarterlyPeriod();
 
     this.objectiveCols = [
       { header: 'Objective Name', width: '20%' },
@@ -371,7 +374,7 @@ export class QcObjectivesComponent implements OnInit {
   disableSaveObjective() {
     let data = this.objective;
 
-    if (!data.name || !data.description || !this.selectedFinancialYear)
+    if (!data.name || !data.description || !this.selectedFinancialYear || !this.selectedQuarterlyPeriod)
       return true;
 
     return false;
@@ -379,6 +382,7 @@ export class QcObjectivesComponent implements OnInit {
 
   saveObjective() {
     this.objective.financialYear = this.selectedFinancialYear.name;
+    this.objective.quarter = this.selectedQuarterlyPeriod.name;
     this.objective.recipientType = null;
     this.objective.recipientTypeId = this.selectedRecipientType == null ? 0 : this.selectedRecipientType.id;
     this.objective.isActive = true;
@@ -808,6 +812,19 @@ export class QcObjectivesComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
       (results) => {
         this.financialYears = results;
+        //this.getFinancialYearRange(financialYear);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadQuarterlyPeriod() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.QuarterlyPeriod, false).subscribe(
+      (results) => {
+        this.quarterlyPeriod = results;
         //this.getFinancialYearRange(financialYear);
       },
       (err) => {

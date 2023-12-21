@@ -79,6 +79,7 @@ namespace NPOMS.Services.Implementation
         private IResponseTypeRepository _responseTypeRepository;
         private IWorkflowAssessmentRepository _workflowAssessmentRepository;
         private IFundingTemplateTypeRepository _fundingTemplateTypeRepository;
+        private IQuarterlyPeriodRepository _quarterlyPeriodRepository;
         #endregion
 
         #region Constructors
@@ -140,7 +141,8 @@ namespace NPOMS.Services.Implementation
             IResponseOptionRepository responseOptionRepository,
             IResponseTypeRepository responseTypeRepository,
             IWorkflowAssessmentRepository workflowAssessmentRepository,
-            IFundingTemplateTypeRepository fundingTemplateTypeRepository)
+            IFundingTemplateTypeRepository fundingTemplateTypeRepository,
+            IQuarterlyPeriodRepository quarterlyPeriodRepository)
         {
             _mapper = mapper;
             _roleRepository = roleRepository;
@@ -199,6 +201,7 @@ namespace NPOMS.Services.Implementation
             _responseTypeRepository = responseTypeRepository;
             _workflowAssessmentRepository = workflowAssessmentRepository;
             _fundingTemplateTypeRepository = fundingTemplateTypeRepository;
+            _quarterlyPeriodRepository = quarterlyPeriodRepository;
         }
 
         #endregion
@@ -526,6 +529,11 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<FinancialYear>> GetFinancialYears(bool returnInactive)
         {
             return await _financialYearRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<QuarterlyPeriod>> GetQuarterlyPeriod(bool returnInactive)
+        {
+            return await _quarterlyPeriodRepository.GetEntities(returnInactive);
         }
 
         public async Task<IEnumerable<FinancialYear>> GetFromCurrentFinancialYear()

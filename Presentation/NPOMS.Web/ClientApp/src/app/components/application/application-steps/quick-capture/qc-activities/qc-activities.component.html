@@ -85,12 +85,7 @@
             </div>
         </div>
         <div class="p-col">
-            <select name="demo" id="#">
-                <option selected="selected" value="Q1">Quarter 1</option>
-                <option value="Q2">Quarter 2</option>
-                <option value="Q3">Quarter 3</option>
-                <option value="Q4">Quarter 4</option>
-            </select>
+            <p-dropdown [options]="quarterlyPeriod" placeholder="Select a Quarterly Period" optionLabel="name" [(ngModel)]=selectedQuarterlyPeriod [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
         </div>
     </div>
     <div class="p-grid">

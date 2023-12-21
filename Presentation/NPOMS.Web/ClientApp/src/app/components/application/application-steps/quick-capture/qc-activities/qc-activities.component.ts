@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityFacilityList, IActivityList, IActivityRecipient, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IFinancialYear, IFundingApplicationDetails, INpo, IObjective, IPlace, IProjectImplementation, IRecipientType, ISDA, ISubPlace, ISubProgramme } from 'src/app/models/interfaces';
+import { IActivity, IActivityFacilityList, IActivityList, IActivityRecipient, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IFinancialYear, IFundingApplicationDetails, INpo, IObjective, IPlace, IProjectImplementation, IQuarterlyPeriod, IRecipientType, ISDA, ISubPlace, ISubProgramme } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -116,6 +116,9 @@ export class QCActivitiesComponent implements OnInit {
   selectedFinancialYear: IFinancialYear;
   financialYears: IFinancialYear[];
 
+  selectedQuarterlyPeriod: IQuarterlyPeriod;
+  quarterlyPeriod: IQuarterlyPeriod[];
+
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
@@ -155,6 +158,7 @@ export class QCActivitiesComponent implements OnInit {
     this.setYearRange();
     this.loadAllSubProgrammes();
     this.loadFinancialYears();
+    this.loadQuarterlyPeriod();
 
     this.activityCols = [
       { header: 'Activity Name', width: '20%' },
@@ -471,7 +475,7 @@ export class QCActivitiesComponent implements OnInit {
   disableSaveActivity() {
     let data = this.activity;
 
-    if (!this.selectedObjective || !data.name || !data.description || !data.successIndicator)
+    if (!this.selectedObjective || !data.name || !this.selectedQuarterlyPeriod || !data.description || !data.successIndicator)
       return true;
 
     return false;
@@ -479,6 +483,7 @@ export class QCActivitiesComponent implements OnInit {
 
   saveActivity() {
     this.activity.financialYear = this.selectedFinancialYear.name;
+    this.activity.quarter = this.selectedQuarterlyPeriod.name;
     this.activity.objective = null;
     this.activity.activityType = null;
     this.activity.changesRequired = this.activity.changesRequired == null ? null : false;
@@ -798,6 +803,18 @@ export class QCActivitiesComponent implements OnInit {
     );
   }
 
+  private loadQuarterlyPeriod() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.QuarterlyPeriod, false).subscribe(
+      (results) => {
+        this.quarterlyPeriod = results;
+        //this.getFinancialYearRange(financialYear);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
   disableSubPlacesOrPlace(): boolean {
 

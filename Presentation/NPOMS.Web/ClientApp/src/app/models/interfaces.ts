@@ -47,6 +47,13 @@ export interface IFinancialYear {
     isActive: boolean;
 }
 
+export interface IQuarterlyPeriod {
+    id: number;
+    abbreviation: string;
+    name: string;
+    isActive: boolean;
+}
+
 export interface IPermission {
     id: number,
     name: string,

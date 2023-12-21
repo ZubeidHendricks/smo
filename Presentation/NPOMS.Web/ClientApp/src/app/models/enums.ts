@@ -85,7 +85,8 @@ export enum DropdownTypeEnum {
     ResponseType = 52,
     Question = 53,
     ResponseOption = 54,
-    WorkflowAssessment = 55
+    WorkflowAssessment = 55,
+    QuarterlyPeriod = 56
 }
 
 export enum EntityTypeEnum {
