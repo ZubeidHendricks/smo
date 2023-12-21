@@ -49,8 +49,16 @@ export class QcApplicationDetailComponent implements OnInit {
 
   @Input() isReadOnly: boolean;
   @Input() initiatedQuestion: string;
-  @Input() purposeQuestion: string;
+  //@Input() purposeQuestion: string;
   @Output() purposeQuestionChange = new EventEmitter();
+  purposeQuestion: string;
+  fundingApplicationDetail: IFundingApplicationDetails = {
+    financialMatters: [],
+    implementations: [],
+    projectInformation: {} as IProjectInformation,
+    monitoringEvaluation: {} as IMonitoringAndEvaluation,
+    applicationDetails: {} as IApplicationDetails
+  } as IFundingApplicationDetails;
 
   profile: IUser;
 
@@ -60,6 +68,7 @@ export class QcApplicationDetailComponent implements OnInit {
   subProgramme: ISubProgramme;
   applicationType: IApplicationType;
   financialYear: IFinancialYear;
+  projectInformation: IProjectInformation;
 
   allDistrictCouncils: IDistrictCouncil[];
   selectedDistrictCouncil: IDistrictCouncil;
@@ -310,7 +319,7 @@ export class QcApplicationDetailComponent implements OnInit {
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSDAs;        
-
+       // this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
         this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
           (resp) => {
             this._spinner.hide();
@@ -332,6 +341,7 @@ export class QcApplicationDetailComponent implements OnInit {
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSDAs;
+       // this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
         this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
           (resp) => {
             this._spinner.hide();
@@ -346,7 +356,7 @@ export class QcApplicationDetailComponent implements OnInit {
           }
         );
       }
-     // this.bidForm(StatusEnum.Saved);
+      this.bidForm(StatusEnum.Saved);
     }
 
    }
@@ -486,18 +496,15 @@ export class QcApplicationDetailComponent implements OnInit {
 
 
   private bidForm(status: StatusEnum) {
-    this.application.status = null;
       this.application.statusId = status;
-      const applicationIdOnBid = this.fundingApplicationDetails;
 
-      if (applicationIdOnBid.id == null) {
+      if (!this.fundingApplicationDetails.id) {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
         //  this._menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           resp;
         });
       }
-
      else {
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
           if (resp) {
@@ -507,12 +514,12 @@ export class QcApplicationDetailComponent implements OnInit {
         });
      }
 
-      if (status == StatusEnum.PendingReview) {
+      // if (status == StatusEnum.PendingReview) {
 
-        this.application.statusId = status;
-        this._applicationRepo.updateApplication(this.application).subscribe();
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._router.navigateByUrl('applications');
-      };
+      //   this.application.statusId = status;
+      //   this._applicationRepo.updateApplication(this.application).subscribe();
+      //   this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+      //   this._router.navigateByUrl('applications');
+      // };
   }
 }

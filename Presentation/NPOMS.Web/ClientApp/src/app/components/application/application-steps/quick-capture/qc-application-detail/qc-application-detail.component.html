@@ -52,8 +52,8 @@
               <label for="purposeQuestion" style="font-weight:bold">What is the purpose of the project? <span
                   class="bid-required">*</span></label>
                   <div style="height: 15px;"></div>
-              <p-editor [(ngModel)]="purposeQuestion" [ngModelOptions]="{standalone: true}"
-                (ngModelChange)="onPurposeQuestionChange($event)" [(ngModel)]="purposeQuestion" [disabled]="readonly()">
+              <p-editor pInputText [(ngModel)]="purposeQuestion" [ngModelOptions]="{standalone: true}"
+                 >
               </p-editor>
             </div>
           </div>
