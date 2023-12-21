@@ -123,10 +123,10 @@ export class QcObjectivesComponent implements OnInit {
 
     this.objectiveCols = [
       { header: 'Objective Name', width: '20%' },
-      { header: 'Funding Source', width: '15%' },
-      { header: 'Funding Period', width: '18%' },
+      { header: 'Description', width: '30%' },
       { header: 'Recipient Type', width: '15%' },
-      { header: 'Budget', width: '15%' }
+      { header: 'Financial Year', width: '10%' },     
+      { header: 'Quarter', width: '10%' }
     ];
 
     this.commentCols = [
@@ -371,14 +371,14 @@ export class QcObjectivesComponent implements OnInit {
   disableSaveObjective() {
     let data = this.objective;
 
-    if (!data.name || !data.description || !data.financialYear)
+    if (!data.name || !data.description || !this.selectedFinancialYear)
       return true;
 
     return false;
   }
 
   saveObjective() {
-    this.objective.financialYear = this.objective.financialYear;
+    this.objective.financialYear = this.selectedFinancialYear.name;
     this.objective.recipientType = null;
     this.objective.recipientTypeId = this.selectedRecipientType == null ? 0 : this.selectedRecipientType.id;
     this.objective.isActive = true;

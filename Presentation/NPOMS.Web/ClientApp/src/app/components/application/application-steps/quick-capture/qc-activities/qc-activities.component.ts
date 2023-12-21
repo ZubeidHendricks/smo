@@ -159,7 +159,7 @@ export class QCActivitiesComponent implements OnInit {
     this.activityCols = [
       { header: 'Activity Name', width: '20%' },
       { header: 'Activity Type', width: '10%' },
-      { header: 'SuccessIndicator', width: '36%' },
+      { header: 'Success Indicator', width: '36%' },
       { header: 'FinancialYear', width: '10%' },
       { header: 'Quarter', width: '10%' }
     ];

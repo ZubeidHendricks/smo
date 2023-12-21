@@ -18,10 +18,10 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr [ngClass]="rowData.changesRequired === true ? 'red' : 'default' && rowData.changesRequired === false ? 'green' : 'default'" class="default-font">
                 <td>{{rowData.name}}</td>
-                <td>{{rowData.fundingSource}}</td>
-                <td>{{rowData.fundingPeriodStartDate}} to {{rowData.fundingPeriodEndDate}}</td>
+                <td>{{rowData.description}}</td>
                 <td>{{rowData.recipientType.name}}</td>
-                <td>{{rowData.budget}}</td>
+                <td>{{rowData.financialYear}}</td>
+                <td>{{rowData.quarter}}</td>
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editObjective(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
                     <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteObjective(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="p-col">
-            <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]=objective.financialYear [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+            <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]=selectedFinancialYear [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
         </div>
     </div>
     <div class="p-grid">
