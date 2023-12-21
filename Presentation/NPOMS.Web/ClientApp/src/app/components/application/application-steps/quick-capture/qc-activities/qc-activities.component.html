@@ -108,7 +108,7 @@
             <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
         </div>
     </div>
-    <div class="p-grid">
+    <!-- <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Sub-Programme</span>
@@ -148,7 +148,7 @@
                 [disabled]="!canEdit">
             </p-autoComplete>
         </div>
-    </div>
+    </div> -->
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -180,7 +180,7 @@
             <p-dropdown [options]="activityTypes" placeholder="Select an Activity Type" optionLabel="name" [(ngModel)]="selectedActivityType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
         </div>
     </div>
-    <div class="p-grid">
+    <!-- <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Timeline</span>
@@ -191,7 +191,7 @@
             &nbsp; to &nbsp;
             <p-calendar [(ngModel)]="activity.timelineEndDate" placeholder="Select a End Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
         </div>
-    </div>
+    </div> -->
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -212,7 +212,7 @@
             <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit">
         </div>
     </div>
-    <div class="p-grid">
+    <!-- <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Facility and Community Place</span>
@@ -224,8 +224,8 @@
         <div class="p-col" *ngIf="!canEdit">
             <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" autoResize="autoResize"></textarea>
         </div>
-    </div>
-    <div class="p-grid">
+    </div> -->
+    <!-- <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Recipient(s)</span>
@@ -237,7 +237,7 @@
         <div class="p-col" *ngIf="!canEdit">
             <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedRecipientsText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" autoResize="autoResize"></textarea>
         </div>
-    </div>
+    </div> -->
     <ng-template pTemplate="footer">
         <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveActivity() (click)="saveActivity()"></button>
         <!-- <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button> -->

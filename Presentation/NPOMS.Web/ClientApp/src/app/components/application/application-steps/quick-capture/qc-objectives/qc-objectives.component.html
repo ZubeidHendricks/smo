@@ -105,7 +105,7 @@
             <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="objective.description" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
         </div>
     </div>
-    <div class="p-grid">
+    <!-- <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Funding Source</span>
@@ -114,8 +114,8 @@
         <div class="p-col">
             <input type="text" class="form-text" pInputText [(ngModel)]="objective.fundingSource" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit">
         </div>
-    </div>
-    <div class="p-grid">
+    </div> -->
+    <!-- <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Programme</span>
@@ -127,7 +127,7 @@
         <div class="p-col" *ngIf="!canEdit">
             <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
         </div>
-    </div>
+    </div> 
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -140,7 +140,7 @@
         <div class="p-col" *ngIf="!canEdit">
             <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
         </div>
-    </div>
+    </div>-->
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -151,7 +151,7 @@
             <p-dropdown [options]="getFilteredRecipientTypes(RecipientTypeEnum.Primary)" placeholder="Select a Recipient Type" optionLabel="name" [(ngModel)]="selectedRecipientType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
         </div>
     </div>
-    <div class="p-grid">
+    <!-- <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Funding Period</span>
@@ -172,9 +172,9 @@
         <div class="p-col">
             <p-inputNumber [(ngModel)]="objective.budget" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}" [disabled]="!canEdit"></p-inputNumber>
         </div>
-    </div>
+    </div> -->
     <hr>
-    <p>Recipient Details</p>
+     <p>Recipient Details</p>
     <p-table [rowHover]="true" [value]="getActiveSRs(objective)" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
             <tr>
