@@ -52,13 +52,16 @@ export class QcApplicationDetailComponent implements OnInit {
   //@Input() purposeQuestion: string;
   @Output() purposeQuestionChange = new EventEmitter();
   purposeQuestion: string;
-  fundingApplicationDetail: IFundingApplicationDetails = {
-    financialMatters: [],
-    implementations: [],
-    projectInformation: {} as IProjectInformation,
-    monitoringEvaluation: {} as IMonitoringAndEvaluation,
-    applicationDetails: {} as IApplicationDetails
-  } as IFundingApplicationDetails;
+
+ //purposeQuestion: IProjectInformation;
+ 
+  // fundingApplicationDetail: IFundingApplicationDetails = {
+  //   financialMatters: [],
+  //   implementations: [],
+  //   projectInformation: {} as IProjectInformation,
+  //   monitoringEvaluation: {} as IMonitoringAndEvaluation,
+  //   applicationDetails: {} as IApplicationDetails
+  // } as IFundingApplicationDetails;
 
   profile: IUser;
 
@@ -319,7 +322,7 @@ export class QcApplicationDetailComponent implements OnInit {
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSDAs;        
-       // this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
+        this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
         this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
           (resp) => {
             this._spinner.hide();
@@ -341,7 +344,7 @@ export class QcApplicationDetailComponent implements OnInit {
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
         this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSDAs;
-       // this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
+        this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
         this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
           (resp) => {
             this._spinner.hide();

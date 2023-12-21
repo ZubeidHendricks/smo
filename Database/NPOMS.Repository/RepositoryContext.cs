@@ -79,6 +79,7 @@ namespace NPOMS.Repository
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
         public DbSet<EntityType> EntityTypes { get; set; }
         public DbSet<FinancialYear> FinancialYears { get; set; }
+        public DbSet<QuarterlyPeriod> QuarterlyPeriod { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
@@ -239,6 +240,7 @@ namespace NPOMS.Repository
             modelBuilder.ApplyConfiguration(new EmailTemplateConfiguration());
             modelBuilder.ApplyConfiguration(new EntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new FinancialYearConfiguration());
+            modelBuilder.ApplyConfiguration(new QuarterlyPeriodConfiguration());
             modelBuilder.ApplyConfiguration(new PermissionConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
