@@ -201,8 +201,7 @@ export class QcFundedDocumentUploadComponent implements OnInit {
   }
 
   private loadNpoProfile() {
-    //if (this.npoProfileId != null) {
-      this._npoProfileRepo.getNpoProfileById(Number(this.application.npoId)).subscribe(
+      this._npoProfileRepo.getNpoProfileByNpoId(Number(this.application.npoId)).subscribe(
         (results) => {
         //  results.addressInformation = results.addressInformation != null ? results.addressInformation : {} as IAddressInformation;
 

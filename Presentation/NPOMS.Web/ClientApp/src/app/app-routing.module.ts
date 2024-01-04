@@ -86,6 +86,7 @@ import  {ScorecardComponent} from './components/application/scorecard/scorecard.
 import  {ReviewScorecardComponent} from './components/application/review-scorecard/review-scorecard.component';
 import  {PrintScorecardComponent} from './components/application/application-steps/funding-application/print-scorecard/print-scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
+import { EditQuickCaptureDohListComponent } from './components/quick-capture/edit-quick-capture-doh-list/edit-quick-capture-doh-list.component';
 import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
 import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
 import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
@@ -107,6 +108,7 @@ const routes: Routes = [
 
   { path: 'quick-captures', component: QuickCaptureListComponent },
   { path: 'quick-captures-editList/edit/:id', component: QuickCaptureEditListComponent },
+  { path: 'quick-captures-editList-doh/edit/:id', component: EditQuickCaptureDohListComponent },
 
   { path: 'quick-capture/create', component: CreateQuickCaptureComponent },
   { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },
