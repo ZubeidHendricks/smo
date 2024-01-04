@@ -31,6 +31,13 @@ namespace NPOMS.Repository.Configurations.Dropdown
                     Name = "Score Card Template",
                     SystemName = "ScoreCardTemplate",
                     IsActive = true
+                },
+                new FundingTemplateType
+                {
+                    Id = 3,
+                    Name = "Business Plan Template",
+                    SystemName = "BusinessPlanTemplate",
+                    IsActive = true
                 }
             );
         }

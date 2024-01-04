@@ -34,6 +34,24 @@
                 <p-calendar [(ngModel)]="applicationPeriod.openingDate" [showTime]="true" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" (onSelect)="openingDateSelected($event)" [disabled]="disableOpeningDate" [minDate]="openingMinDate" #openingDate="ngModel" [ngClass]="{'ng-dirty': (openingDate.invalid && validated) || (openingDate.dirty && openingDate.invalid)}" required [monthNavigator]="true" [yearNavigator]="true" [yearRange]="finYearRange"></p-calendar>
                 <small *ngIf="(openingDate.invalid && validated) || (openingDate.dirty && openingDate.invalid)" class="p-error">Opening Date is required.</small>
             </div>
+            
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Person</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="programme.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Contact Name</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="financialYear.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Contact Number</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="programme.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Contact Email</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="financialYear.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Name</label>
                 <input type="text" class="form-text" pInputText [(ngModel)]="applicationPeriod.name" [ngModelOptions]="{standalone: true}" #applicationName="ngModel" [ngClass]="{'ng-dirty': (applicationName.invalid && validated) || (applicationName.dirty && applicationName.invalid)}" required>

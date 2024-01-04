@@ -73,11 +73,11 @@
     <app-qc-activities *ngIf="activeStep == QCStepsFundedEnum.Activities" [(activeStep)]="activeStep"
     [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
     [isReview]="false"></app-qc-activities>
-    <app-qc-document-upload *ngIf="activeStep == QCStepsFundedEnum.ApplicationDocument"
+    <app-qc-funded-document-upload *ngIf="activeStep == QCStepsFundedEnum.ApplicationFundedDocument"
         [(activeStep)]="activeStep"
         [application]="application"
         [isView]="false">            
-    </app-qc-document-upload>
+    </app-qc-funded-document-upload>
     </div>
 
     <div style="height: 10px;"></div>

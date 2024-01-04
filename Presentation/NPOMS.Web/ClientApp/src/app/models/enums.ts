@@ -99,7 +99,8 @@ export enum EntityEnum {
     NpoProfile = 'NpoProfile',
     Application = 'Application',
     WorkplanIndicators = 'WorkplanIndicators',
-    FundingApplicationDetails = 'FundingApplicationDetails'
+    FundingApplicationDetails = 'FundingApplicationDetails',
+    FundedNpo = 'FundedNpo'
 }
 
 export enum ResponseTypeEnum {
@@ -108,7 +109,8 @@ export enum ResponseTypeEnum {
     CloseEnded2 = 4,
     CloseEnded3 = 5,
     CloseEnded4 = 6,
-    Score2 = 7
+    Score2 = 7,
+    Score3 = 8
 }
 
 export enum DeclarationTypeEnum {
@@ -474,7 +476,7 @@ export enum QCStepsFundedEnum {
     ApplicationDetail = 2,
     Objectives = 3,
     Activities = 4,
-    ApplicationDocument = 5
+    ApplicationFundedDocument = 5
 }
 
 
@@ -483,7 +485,8 @@ export enum DocumentUploadLocationsEnum {
     Workplan = 'Workplan',
     WorkplanActuals = 'WorkplanActuals',
     FundApp = "FundApp",
-    QuickCapture = "QuickCapture"
+    QuickCapture = "QuickCapture",
+    FundedNpo = "FundedNpo"
 }
 
 //export enum FundingTemplateTypeEnum {

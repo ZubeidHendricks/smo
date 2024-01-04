@@ -302,14 +302,14 @@ export class QuickCaptureListComponent implements OnInit {
     let data = this.npo;
     let orgDetailsError: string[] = [];
 
-    if (!data.name || !data.organisationTypeId || !data.registrationStatusId)
-      orgDetailsError.push("Missing detail required under General Information");
+    // if (!data.name || !data.organisationTypeId || !data.registrationStatusId)
+    //   orgDetailsError.push("Missing detail required under General Information");
 
-    if (data.contactInformation.length === 0)
-      orgDetailsError.push("The Organisation Contact List cannot be empty under Contact / Stakeholder Details");
+    // if (data.contactInformation.length === 0)
+    //   orgDetailsError.push("The Organisation Contact List cannot be empty under Contact / Stakeholder Details");
 
-    if (data.contactInformation.length > 0 && data.contactInformation.filter(x => x.isPrimaryContact === true).length === 0)
-      orgDetailsError.push("Please specify the primary contact under Contact / Stakeholder Details");
+    // if (data.contactInformation.length > 0 && data.contactInformation.filter(x => x.isPrimaryContact === true).length === 0)
+    //   orgDetailsError.push("Please specify the primary contact under Contact / Stakeholder Details");
 
     return orgDetailsError;
   }
@@ -496,53 +496,53 @@ export class QuickCaptureListComponent implements OnInit {
     if (goToStep > currentStep) {
       switch (currentStep) {
         case QCStepsFundedEnum.NpoCreate: {
-          var orgDetailsError = this.validateOrganisationDetails();
+        //  var orgDetailsError = this.validateOrganisationDetails();
 
-          if (orgDetailsError.length > 0) {
-            this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-            this.organisationDetails.setValidated(true);
-            break;
-          }
+          // if (orgDetailsError.length > 0) {
+          //   this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+          //   this.organisationDetails.setValidated(true);
+          //   break;
+          // }
 
           this.activeStep = goToStep;
           break;
         }
         case QCStepsFundedEnum.Applications: {
-          var orgDetailsError = this.validateOrganisationDetails();
-          var applicationError = this.validateApplications();
+          // var orgDetailsError = this.validateOrganisationDetails();
+          // var applicationError = this.validateApplications();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0) {
+          // if (orgDetailsError.length > 0 || applicationError.length > 0) {
 
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+          //   if (orgDetailsError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
 
-            if (applicationError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+          //   if (applicationError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
            
-            break;
-          }
+          //   break;
+          // }
 
           this.activeStep = goToStep;
           break;
         }
         case QCStepsFundedEnum.ApplicationDetail: {
-          var orgDetailsError = this.validateOrganisationDetails();
-          var applicationError = this.validateApplications();
-          var applicationDetailsError = this.validateApplicationDetails();
+          // var orgDetailsError = this.validateOrganisationDetails();
+          // var applicationError = this.validateApplications();
+          // var applicationDetailsError = this.validateApplicationDetails();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+          // if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
 
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+          //   if (orgDetailsError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
 
-            if (applicationError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+          //   if (applicationError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
 
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+          //   if (applicationDetailsError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
 
-            break;
-          }
+          //   break;
+          // }
 
           this.activeStep = goToStep;
           break;
@@ -570,28 +570,28 @@ export class QuickCaptureListComponent implements OnInit {
           break;
         }
         case QCStepsFundedEnum.Activities: {
-          var orgDetailsError = this.validateOrganisationDetails();
-          var applicationError = this.validateApplications();
-          var applicationDetailsError = this.validateApplicationDetails();
+          // var orgDetailsError = this.validateOrganisationDetails();
+          // var applicationError = this.validateApplications();
+          // var applicationDetailsError = this.validateApplicationDetails();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+          // if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
 
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+          //   if (orgDetailsError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
 
-            if (applicationError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+          //   if (applicationError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
 
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+          //   if (applicationDetailsError.length > 0)
+          //     this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
 
-            break;
-          }
+          //   break;
+          // }
 
           this.activeStep = goToStep;
           break;
         }
-        case QCStepsFundedEnum.ApplicationDocument: {
+        case QCStepsFundedEnum.ApplicationFundedDocument: {
           this.activeStep = goToStep;
           break;
         }
