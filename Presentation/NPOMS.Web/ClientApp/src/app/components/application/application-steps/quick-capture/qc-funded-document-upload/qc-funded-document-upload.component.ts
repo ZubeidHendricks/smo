@@ -138,7 +138,7 @@ export class QcFundedDocumentUploadComponent implements OnInit {
         { header: 'Document Type', width: '20%' },
         { header: 'Document Type Description', width: '75%' }
       ];
-      
+
     });
     // this.loadfundingDropdowns();
     // this._spinner.show();
@@ -157,10 +157,10 @@ export class QcFundedDocumentUploadComponent implements OnInit {
     // });
 
     // this._spinner.hide();
-    this.documentCols = [
-      { field: 'name', header: 'Document Type', width: '70%' },
-      { header: 'No. of Linked Document(s)', width: '15%' }
-    ];
+    // this.documentCols = [
+    //   { field: 'name', header: 'Document Type', width: '70%' },
+    //   { header: 'No. of Linked Document(s)', width: '15%' }
+    // ];
     // this.uploadedFileCols = [
     //   // { header: '', width: '5%' },
     //   { header: 'Document Type', width: '25%' },
