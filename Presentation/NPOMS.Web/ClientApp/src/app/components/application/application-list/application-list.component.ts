@@ -317,6 +317,39 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Review Application',
+          target: 'Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('qc-application/view/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.EditApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Edit Application',
+          target: 'Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('quick-captures-editList-doh/edit/' + this.selectedApplication.id );
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Delete Application',
+          target: 'Funded Npo',
+          icon: 'fa fa-trash',
+          command: () => {
+            this.deleteApplication();
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
         this.buttonItems[0].items.push({
           label: 'Delete Application',
@@ -377,6 +410,9 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('View Application', 'Funding Application');
       this.buttonItemExists('Delete Application', 'Funding Application');
       this.buttonItemExists('Download Assessment', 'Workflow Application');
+      this.buttonItemExists('Edit Application', 'Funded Npo');
+      this.buttonItemExists('Review Application', 'Funded Npo');
+      this.buttonItemExists('Delete Application', 'Funded Npo');
       // this.buttonItemExists('Score Card', 'Service Provision');
 
       switch (this.selectedApplication.statusId) {
@@ -436,6 +472,10 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Upload SLA', 'Service Provision');
       this.buttonItemExists('View Application', 'Service Provision');
       this.buttonItemExists('Delete Application', 'Service Provision');
+
+      this.buttonItemExists('Edit Application', 'Funded Npo');
+      this.buttonItemExists('Review Application', 'Funded Npo');
+      this.buttonItemExists('Delete Application', 'Funded Npo');
       //this.buttonItemExists('Score Card', 'Service Provision');
 
       if (this.selectedApplication.isQuickCapture)
@@ -526,7 +566,7 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    /*if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11) {
 
       // Hide Service Provision actions
       this.buttonItemExists('Edit Application', 'Service Provision');
@@ -534,28 +574,30 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Service Provision');
       this.buttonItemExists('Upload SLA', 'Service Provision');
       this.buttonItemExists('View Application', 'Service Provision');
+      this.buttonItemExists('Download Assessment', 'Workflow Application');
+      this.buttonItemExists('Delete Application', 'Service Provision');
+      this.buttonItemExists('Edit Application', 'Funding Application');
+      this.buttonItemExists('Download Application', 'Funding Application');
+      this.buttonItemExists('View Application', 'Funding Application');
+      this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Adjudicate Application', 'Funding Application');
+      this.buttonItemExists('Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Approve Application', 'Funding Application');
+      this.buttonItemExists('Edit Application', 'Funding Application');
+      this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Adjudicate Application', 'Funding Application');
+      this.buttonItemExists('Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Approve Application', 'Funding Application');
+      this.buttonItemExists('Delete Application', 'Funding Application');
 
-      switch (this.selectedApplication.statusId) {
-        case StatusEnum.Saved: {
-          this.buttonItemExists('Edit Application', 'Funding Application');
-          this.buttonItemExists('Download Application', 'Funding Application');
-          this.buttonItemExists('View Application', 'Funding Application');
-          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
-          this.buttonItemExists('Adjudicate Application', 'Funding Application');
-          this.buttonItemExists('Evaluate Application', 'Funding Application');
-          this.buttonItemExists('Approve Application', 'Funding Application');
-          break;
-        }
-        case StatusEnum.Submitted: {
-          this.buttonItemExists('Edit Application', 'Funding Application');
-          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
-          this.buttonItemExists('Adjudicate Application', 'Funding Application');
-          this.buttonItemExists('Evaluate Application', 'Funding Application');
-          this.buttonItemExists('Approve Application', 'Funding Application');
-          break;
-        }
-      }
-    }*/
+     switch (this.selectedApplication.statusId) {
+        case StatusEnum.PendingReview: {
+          this.buttonItemExists('Delete Application', 'Funded Npo');
+          this.buttonItemExists('Edit Application', 'Funded Npo');
+         break;
+       }
+     }
+    }
   }
 
   private buttonItemExists(label: string, target: string) {

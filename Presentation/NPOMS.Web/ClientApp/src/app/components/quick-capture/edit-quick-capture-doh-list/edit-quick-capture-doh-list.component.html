@@ -1,0 +1,101 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Quick Capture" *ngIf="isDataAvailable">
+
+    <div class="p-grid p-nogutter p-justify-between" *ngIf="application.createdUser && application.updatedUser">
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created By: {{application.createdUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created Date: {{application.createdDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated By: {{application.updatedUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated Date: {{application.updatedDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"></p-menubar>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+    <p-steps [model]="qcItems" [readonly]="false" [activeIndex]="activeStep" (activeIndexChange)="validateStep($event, activeStep)"></p-steps>
+
+    <div style="height: 10px;"></div>
+    <div>
+    <app-create-quick-capture *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"
+        [(activeStep)]="activeStep"
+        [(npo)]="npo">
+    </app-create-quick-capture>
+    <app-qc-application-periods *ngIf="activeStep == QCStepsFundedEnum.Applications"
+        [(activeStep)]="activeStep"
+        [npo]="npo"
+        [(applicationPeriod)]="applicationPeriod"
+        [(application)]="application"
+        [isEdit]="false">
+    </app-qc-application-periods>
+    <app-qc-application-detail *ngIf="activeStep == QCStepsFundedEnum.ApplicationDetail"
+        [(activeStep)]="activeStep"
+        [applicationPeriod]="applicationPeriod"
+        [application]="application"
+        [(districtCouncil)]="districtCouncil"
+        [(localMunicipality)]="localMunicipality"
+        [(regions)]="regions"
+        [(sdas)]="sdas"
+        [(amount)]="amount"
+        [(sourceOfInformation)]="sourceOfInformation"
+        [(affliatedOrganisationInfo)]="affliatedOrganisationInfo"
+        [(projectInformation)]="projectInformation"
+        [(fundingApplicationDetails)]="fundingApplicationDetails">
+    </app-qc-application-detail>
+    <app-qc-objectives *ngIf="activeStep == QCStepsFundedEnum.Objectives" [(activeStep)]="activeStep"
+    [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"
+    [isReview]="false" [currentUserId]="profile.id"></app-qc-objectives>
+    <app-qc-activities *ngIf="activeStep == QCStepsFundedEnum.Activities" [(activeStep)]="activeStep"
+    [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
+    [isReview]="false"></app-qc-activities>
+    <app-qc-funded-document-upload *ngIf="activeStep == QCStepsFundedEnum.ApplicationFundedDocument"
+        [(activeStep)]="activeStep"
+        [application]="application"
+        [isView]="false">            
+    </app-qc-funded-document-upload>
+    </div>
+    <div style="height: 10px;"></div>
+
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"></p-menubar>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+
+</p-panel>
+
+<!-- <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Quick Captures">
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+    <p-steps [model]="qcItems" [readonly]="false" [activeIndex]="activeStep"></p-steps>
+    <div style="height: 10px;"></div>
+    <div>
+    <app-edit-quick-capture *ngIf="activeStep == QCStepsEnum.NpoCreate"
+        [(activeStep)]="activeStep" [application]="application" 
+        [newApplication]="false">
+    </app-edit-quick-capture>
+    <app-qc-application-periods *ngIf="activeStep == QCStepsEnum.Applications" 
+    [(activeStep)]="activeStep"
+            [(applnPeriodId)]="applnPeriodId" [application]="application">
+    </app-qc-application-periods>
+    <app-qc-application-details-edit *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor" [(activeStep)]="activeStep"
+            [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails"
+            [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" (getPlace)="places($event)"
+            (getSubPlace)=" subPlaces($event)">
+    </app-qc-application-details-edit>
+    <app-qc-document-upload-edit *ngIf="activeStep == QCStepsEnum.ApplicationDocument" [(activeStep)]="activeStep"
+    [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails">
+    </app-qc-document-upload-edit>
+
+    </div>
+</p-panel> -->

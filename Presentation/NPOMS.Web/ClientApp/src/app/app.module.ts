@@ -165,6 +165,7 @@ import { FundingApplicationViewComponent } from './components/application/applic
 import { WorkflowApplicationComponent } from './components/application/workflow-component/workflow-application.component';
 //import { ScorecardComponent } from './components/application/scorecard-component/scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
+import { EditQuickCaptureDohListComponent } from './components/quick-capture/edit-quick-capture-doh-list/edit-quick-capture-doh-list.component';
 import { QcApplicationDetailsEditComponent } from './components/application/application-steps/quick-capture/qc-application-details-edit/qc-application-details-edit.component';
 import { QcDocumentUploadEditComponent } from './components/application/application-steps/quick-capture/qc-document-upload-edit/qc-document-upload-edit.component';
 import { ScorecardComponent } from './components/application/scorecard/scorecard.component';
@@ -332,7 +333,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     FundingApplicationViewComponent,
     WorkflowApplicationComponent,
     QuickCaptureEditListComponent,
-    QuickCaptureEditListComponent,
+    EditQuickCaptureDohListComponent,
     QcApplicationDetailsEditComponent,
     QcDocumentUploadEditComponent,
     ScorecardComponent,
