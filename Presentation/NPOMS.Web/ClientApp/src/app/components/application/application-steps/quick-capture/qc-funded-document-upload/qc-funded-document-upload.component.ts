@@ -11,6 +11,7 @@ import { IFundingApplicationDetails, IApplication, IUser, IDocumentStore, IDocum
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
+import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EnvironmentUrlService } from 'src/app/services/environment-url/environment-url.service';
@@ -105,6 +106,7 @@ export class QcFundedDocumentUploadComponent implements OnInit {
     private _messageService: MessageService,
     private _dropdownRepo: DropdownService,
     private _loggerService: LoggerService,
+    private _npoProfileRepo: NpoProfileService,
     // private http: HttpClient,
     // private fb: FormBuilder,
     // private envUrl: EnvironmentUrlService,
@@ -121,6 +123,7 @@ export class QcFundedDocumentUploadComponent implements OnInit {
        // this._spinner.show();
         this.profile = profile;
 
+        this.loadNpoProfile();
         this.loadDocumentTypes();
       }
 
@@ -196,9 +199,35 @@ export class QcFundedDocumentUploadComponent implements OnInit {
       }
     );
   }
+
+  private loadNpoProfile() {
+    //if (this.npoProfileId != null) {
+      this._npoProfileRepo.getNpoProfileById(Number(this.application.npoId)).subscribe(
+        (results) => {
+        //  results.addressInformation = results.addressInformation != null ? results.addressInformation : {} as IAddressInformation;
+
+          this.npoProfile = results;
+          this.getDocuments();
+
+          // this.loadFacilities(Number(this.npoProfileId));
+          // this.loadServicesRendered(Number(this.npoProfileId));
+          // this.loadBankDetails(Number(this.npoProfileId));
+          // this.loadStaffMemberProfiles();
+
+          // this.loadAuditorOrAffiliations();
+          // this.loadCreatedUser();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+   // }
+  }
+
   public onUploadChange = (event, form) => {
     if (event.files[0].documentType) {
-      this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments, Number(this.npoProfile.id), EntityEnum.FundedNpo, this.npoProfile.refNo, event.files[0].documentType.id).subscribe(
+      this._documentStore.upload(event.files, EntityTypeEnum.SupportingDocuments, Number(this.application.npoId), EntityEnum.FundedNpo, this.npoProfile.refNo, event.files[0].documentType.id).subscribe(
         event => {
           if (event.type === HttpEventType.UploadProgress)
             this._spinner.show();
@@ -333,6 +362,43 @@ export class QcFundedDocumentUploadComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  onDownloadDocument(doc: any) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to download document?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this._documentStore.download(doc).subscribe();
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  onDeleteDocument(doc: any) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this document?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this._spinner.show();
+
+        this._documentStore.delete(doc.resourceId).subscribe(
+          event => {
+            this.getDocuments();
+            this._spinner.hide();
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      },
+      reject: () => {
+      }
+    });
   }
 
   // private loadApplication() {

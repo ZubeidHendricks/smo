@@ -279,22 +279,22 @@ export class CreateApplicationPeriodComponent implements OnInit {
     }
   }
 
-  displayDOHInfo()
-  {
-    alert(this.selectedApplicationType.name);
-    if (this.selectedApplicationType.name !== 'undefined' && this.selectedDepartment.name !== 'undefined')
-    {
-      if (this.selectedApplicationType.name === 'Quick Capture' && this.selectedDepartment.name === 'Health')
-      {
-        return false;
-      }
-      else{
-        return true;
-      } 
-    }
-    return true;
+  // displayDOHInfo()
+  // {
+  //   alert(this.selectedApplicationType.name);
+  //   if (this.selectedApplicationType.name !== 'undefined' && this.selectedDepartment.name !== 'undefined')
+  //   {
+  //     if (this.selectedApplicationType.name === 'Quick Capture' && this.selectedDepartment.name === 'Health')
+  //     {
+  //       return false;
+  //     }
+  //     else{
+  //       return true;
+  //     } 
+  //   }
+  //   return true;
     
-  }
+  // }
 
   programmeChange(programme: IProgramme) {
     this.selectedSubProgramme = null;

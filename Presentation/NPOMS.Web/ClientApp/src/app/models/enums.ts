@@ -16,7 +16,8 @@ export enum QuestionCategoryEnum {
     TimelyWorkPlanSubmission,
     Impact,
     RiskMitigation,
-    AppropriationofResources
+    AppropriationofResources,
+    Adjudication2
 }
 
 export enum ApplicationTypeEnum {
