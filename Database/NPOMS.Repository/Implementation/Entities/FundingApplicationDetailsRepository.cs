@@ -49,10 +49,11 @@ namespace NPOMS.Repository.Implementation.Entities
 							.Include(x => x.ApplicationDetails)
 								.ThenInclude(x => x.FundAppSDADetail)
 									.ThenInclude(x => x.DistrictCouncil)
-							.Include(x => x.ApplicationDetails)
-								.ThenInclude(x => x.FundAppSDADetail)
+							.Include(x => x.ApplicationDetails)                            
+                                .ThenInclude(x => x.FundAppSDADetail)
 									.ThenInclude(x => x.LocalMunicipality)
-							.AsNoTracking().FirstOrDefaultAsync();
+                                    .Include(x => x.ProjectInformation)
+                            .AsNoTracking().FirstOrDefaultAsync();
 		}
 
 
