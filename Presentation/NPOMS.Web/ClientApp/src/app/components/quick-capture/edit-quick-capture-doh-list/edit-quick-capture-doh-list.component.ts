@@ -73,7 +73,7 @@ export class EditQuickCaptureDohListComponent implements OnInit {
   localMunicipality: ILocalMunicipality;
   regions: IRegion[];
   sdas: ISDA[];
-
+  projectInformation: IProjectInformation;
   menuActions: MenuItem[];
   validationErrors: Message[];
   qcItems: MenuItem[];
@@ -82,19 +82,19 @@ export class EditQuickCaptureDohListComponent implements OnInit {
   sourceOfInformation: ISourceOfInformation[];
   affliatedOrganisationInfo: IAffiliatedOrganisation[];
 
-  fundingApplicationDetails: IFundingApplicationDetails;
+ // fundingApplicationDetails: IFundingApplicationDetails;
 
-  // fundingApplicationDetails: IFundingApplicationDetails = {
-  //   applicationDetails: {
-  //     fundAppSDADetail: {
-  //       districtCouncil: {} as IDistrictCouncil,
-  //       localMunicipality: {} as ILocalMunicipality,
-  //       regions: [],
-  //       serviceDeliveryAreas: [],
-  //     } as IFundAppSDADetail
-  //   } as IApplicationDetails,
-  //   projectInformation: {} as IProjectInformation
-  // } as IFundingApplicationDetails;
+  fundingApplicationDetails: IFundingApplicationDetails = {
+    applicationDetails: {
+      fundAppSDADetail: {
+        districtCouncil: {} as IDistrictCouncil,
+        localMunicipality: {} as ILocalMunicipality,
+        regions: [],
+        serviceDeliveryAreas: [],
+      } as IFundAppSDADetail
+    } as IApplicationDetails,
+    projectInformation: {} as IProjectInformation
+  } as IFundingApplicationDetails;
 
   activeStep: number = 0;
 
@@ -263,7 +263,12 @@ export class EditQuickCaptureDohListComponent implements OnInit {
         this.amount = this.fundingApplicationDetails.applicationDetails.amountApplyingFor;
         this.districtCouncil = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil;
         this.localMunicipality = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality;
-
+        if (this.fundingApplicationDetails.projectInformation != null) {
+          this.projectInformation = this.fundingApplicationDetails.projectInformation;
+        }
+        else {
+          this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
+        }
         // this.regions = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions;
         // this.sdas = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas;
 

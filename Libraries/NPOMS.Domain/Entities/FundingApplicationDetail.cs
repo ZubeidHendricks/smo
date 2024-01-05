@@ -21,7 +21,7 @@ namespace NPOMS.Domain.Entities
         public int ApplicationDetailId { get; set; }
         public ApplicationDetail ApplicationDetails { get; set; }
         public virtual ApplicationPeriod ApplicationPeriod { get; set; }
-        public virtual ProjectInformation ProjectInformation { get; set; }
+        public ProjectInformation ProjectInformation { get; set; }
         public virtual ICollection<ProjectImplementation> Implementations
         {
             get => _implementations ?? (_implementations = new List<ProjectImplementation>());
@@ -33,7 +33,5 @@ namespace NPOMS.Domain.Entities
             get => _financialMatters ?? (_financialMatters = new List<FinancialMatters>());
             protected set => _financialMatters = value;
         }
-
-
     }
 }
