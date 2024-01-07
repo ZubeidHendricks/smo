@@ -6,8 +6,6 @@ import { IApplication, IFundingApplicationDetails } from 'src/app/models/interfa
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 
-
-
 @Component({
   selector: 'app-project-information',
   templateUrl: './project-information.component.html',

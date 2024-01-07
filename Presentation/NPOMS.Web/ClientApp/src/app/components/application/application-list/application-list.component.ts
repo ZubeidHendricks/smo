@@ -323,7 +323,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funded Npo',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('qc-application/view/' + this.selectedApplication.id);
+            this._router.navigateByUrl('quick-captures-doh/review/' + this.selectedApplication.id);
           }
         });
       }
@@ -346,6 +346,17 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-trash',
           command: () => {
             this.deleteApplication();
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+        this.buttonItems[0].items.push({
+          label: 'View Application',
+          target: 'Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('quick-captures-doh/view/' + this.selectedApplication.id);
           }
         });
       }
@@ -413,6 +424,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Edit Application', 'Funded Npo');
       this.buttonItemExists('Review Application', 'Funded Npo');
       this.buttonItemExists('Delete Application', 'Funded Npo');
+      this.buttonItemExists('View Application', 'Funded Npo');
       // this.buttonItemExists('Score Card', 'Service Provision');
 
       switch (this.selectedApplication.statusId) {
@@ -476,6 +488,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Edit Application', 'Funded Npo');
       this.buttonItemExists('Review Application', 'Funded Npo');
       this.buttonItemExists('Delete Application', 'Funded Npo');
+      this.buttonItemExists('View Application', 'Funded Npo');
       //this.buttonItemExists('Score Card', 'Service Provision');
 
       if (this.selectedApplication.isQuickCapture)
@@ -596,6 +609,18 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Edit Application', 'Funded Npo');
          break;
        }
+     }
+
+     switch (this.selectedApplication.statusId) {
+      case StatusEnum.Saved: {
+        this.buttonItemExists('Review Application', 'Funded Npo');
+       break;
+     }
+   }
+
+     if(this.selectedApplication.statusId !== StatusEnum.Saved)
+     {
+      this.buttonItemExists('Edit Application', 'Funded Npo');
      }
     }
   }

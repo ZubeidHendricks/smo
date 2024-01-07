@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { Table } from 'primeng/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { PermissionsEnum, AccessStatusEnum, ApplicationTypeEnum, QCStepsEnum, FundingApplicationStepsEnum, StatusEnum, DropdownTypeEnum, QCStepsFundedEnum } from 'src/app/models/enums';
-import { IUser, INpo, IApplicationPeriod, IFundingApplicationDetails, IDistrictCouncil, ILocalMunicipality, IFundAppSDADetail, IApplicationDetails, IApplication, IPlace, ISubPlace, ISDA, IRegion, IObjective, IActivity, ISustainabilityPlan, IResource, IQuickCaptureDetails, IFinancialYear, IProjectInformation } from 'src/app/models/interfaces';
+import { PermissionsEnum, AccessStatusEnum, ApplicationTypeEnum, QCStepsEnum, FundingApplicationStepsEnum, StatusEnum, DropdownTypeEnum, QCStepsFundedEnum, RoleEnum } from 'src/app/models/enums';
+import { IUser, INpo, IApplicationPeriod, IFundingApplicationDetails, IDistrictCouncil, ILocalMunicipality, IFundAppSDADetail, IApplicationDetails, IApplication, IPlace, ISubPlace, ISDA, IRegion, IObjective, IActivity, ISustainabilityPlan, IResource, IQuickCaptureDetails, IFinancialYear, IProjectInformation, IApplicationApproval } from 'src/app/models/interfaces';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -20,11 +20,11 @@ import { UserService } from 'src/app/services/api-services/user/user.service';
 
 
 @Component({
-  selector: 'app-edit-quick-capture-doh-list',
-  templateUrl: './edit-quick-capture-doh-list.component.html',
-  styleUrls: ['./edit-quick-capture-doh-list.component.css']
+  selector: 'app-view-quick-capture-doh',
+  templateUrl: './view-quick-capture-doh.component.html',
+  styleUrls: ['./view-quick-capture-doh.component.css']
 })
-export class EditQuickCaptureDohListComponent implements OnInit {
+export class ViewQuickCaptureDohComponent implements OnInit {
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -32,7 +32,7 @@ export class EditQuickCaptureDohListComponent implements OnInit {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
   }
-
+ 
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
   }
@@ -43,8 +43,13 @@ export class EditQuickCaptureDohListComponent implements OnInit {
   public get QCStepsFundedEnum(): typeof QCStepsFundedEnum {
     return QCStepsFundedEnum;
   }
- 
+
   profile: IUser;
+
+  isMainReviewer: boolean;
+  isSystemAdmin: boolean;
+  isAdmin: boolean;
+  canReviewOrApprove: boolean = false;
 
   paramSubcriptions: Subscription;
   applicationId: string;
@@ -52,15 +57,18 @@ export class EditQuickCaptureDohListComponent implements OnInit {
   npo: INpo;
   applicationPeriod: IApplicationPeriod;
   application: IApplication;
+  status: StatusEnum;
 
   districtCouncil: IDistrictCouncil;
   localMunicipality: ILocalMunicipality;
   regions: IRegion[];
   sdas: ISDA[];
+  projectInformation: IProjectInformation;
   purposeQuestion: string;
   menuActions: MenuItem[];
   validationErrors: Message[];
   qcItems: MenuItem[];
+  isStepsAvailable: boolean;
 
   amount: number;
   sourceOfInformation: ISourceOfInformation[];
@@ -96,6 +104,7 @@ export class EditQuickCaptureDohListComponent implements OnInit {
     private _fundAppService: FundingApplicationService,
     private _npoProfile: NpoProfileService,
     private _userRepo: UserService
+    // private _bidService: BidService
   ) { }
 
   ngOnInit(): void {
@@ -108,8 +117,18 @@ export class EditQuickCaptureDohListComponent implements OnInit {
         this.profile = profile;
         this._spinner.show();
 
-        if (!this.IsAuthorized(PermissionsEnum.EditApplication))
-          this._router.navigate(['401']);
+        // if (!this.IsAuthorized(PermissionsEnum.EditApplication))
+        //   this._router.navigate(['401']);
+
+          this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+          this.isAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+          this.isMainReviewer = this.profile.roles.some(function (role) { return role.id === RoleEnum.MainReviewer });
+    
+          // Add confirmation step if Main Reviewer
+          if (this.isSystemAdmin || this.isAdmin || this.isMainReviewer) {
+           // this.qcItems.push({ label: 'Confirmation' });
+            this.canReviewOrApprove = true;
+          }
 
         this.loadApplication();
         this.qCSteps();
@@ -181,7 +200,6 @@ export class EditQuickCaptureDohListComponent implements OnInit {
   private loadFundingApplicationDetails() {
     this._fundAppService.getFundingApplicationDetails(this.application.id).subscribe(
       (results) => {
-
         this.fundingApplicationDetails = results;
         this.amount = this.fundingApplicationDetails.applicationDetails.amountApplyingFor;
         this.districtCouncil = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil;
@@ -192,7 +210,7 @@ export class EditQuickCaptureDohListComponent implements OnInit {
         else {
           this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
         }
-
+       
         this.loadRegions();
       },
       (err) => {
@@ -262,8 +280,9 @@ export class EditQuickCaptureDohListComponent implements OnInit {
           label: 'Validate',
           icon: 'fa fa-check',
           command: () => {
-            // this.formValidate();
+            this.formValidate();
           },
+          disabled: !this.canReviewOrApprove,
           visible: false
         },
         {
@@ -278,15 +297,19 @@ export class EditQuickCaptureDohListComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-            this.bidForm(StatusEnum.Saved);
+            this._router.navigateByUrl('applications');
           }
         },
         {
           label: 'Submit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.bidForm(StatusEnum.PendingReview);
-          }
+            if (this.status)
+              this.saveItems(this.status);
+            else
+              this._messageService.add({ severity: 'error', summary: "Confirmation:", detail: "Please select an option." });
+          },
+          disabled: !this.canReviewOrApprove
         },
         {
           label: 'Go Back',
@@ -299,68 +322,38 @@ export class EditQuickCaptureDohListComponent implements OnInit {
     }
   }
 
-  private bidForm(status: StatusEnum) {
+  private formValidate() {
+    this.validationErrors = [];
 
-    if (this.bidCanContinue(status)) {
+    if (!this.status)
+      this.validationErrors.push({ severity: 'error', summary: "Confirmation:", detail: "Please select an option." });
+
+    if (this.validationErrors.length == 0)
+      this.menuActions[1].visible = false;
+    else
+      this.menuActions[1].visible = true;
+  }
+
+  private clearMessages() {
+    this.validationErrors = [];
+    this.menuActions[1].visible = false;
+  }
+
+  private saveItems(status: StatusEnum) {
+    if (this.canContinue()) {
       this._spinner.show();
+      this.application.statusId = status;
 
-      let data = this.npo;
+      let applicationApproval = {
+        applicationId: this.application.id
+      } as IApplicationApproval;
 
-      data.contactInformation.forEach(item => {
-        item.titleId = item.title.id;
-        item.positionId = item.position.id;
-        item.genderId = item.gender ? item.gender.id : null;
-        item.raceId = item.race ? item.race.id : null;
-        item.languageId = item.language ? item.language.id : null;
-      });
-
-      this._npoRepo.createNpo(data).subscribe(
+      this._applicationRepo.updateApplicationApproval(applicationApproval).subscribe(
         (resp) => {
-
-          this.application.statusId = status;
-
-          this._applicationRepo.createApplication(this.application, true, null).subscribe(
+          this._applicationRepo.updateApplication(this.application).subscribe(
             (resp) => {
-
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.districtCouncil;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.localMunicipality;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.regions;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.sdas;
-
-              if (!this.fundingApplicationDetails.id) {
-                this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-                  (resp) => {
-                    this._spinner.hide();
-
-                    if (status === StatusEnum.Saved)
-                      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-                    if (status === StatusEnum.PendingReview)
-                      this._router.navigateByUrl('applications');
-                  },
-                  (err) => {
-                    this._loggerService.logException(err);
-                    this._spinner.hide();
-                  }
-                );
-              }
-              else {
-                this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-                  (resp) => {
-                    this._spinner.hide();
-
-                    if (status === StatusEnum.Saved)
-                      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-                    if (status === StatusEnum.PendingReview)
-                      this._router.navigateByUrl('applications');
-                  },
-                  (err) => {
-                    this._loggerService.logException(err);
-                    this._spinner.hide();
-                  }
-                );
-              }
+              this._spinner.hide();
+              this._router.navigateByUrl('applications');
             },
             (err) => {
               this._loggerService.logException(err);
@@ -376,80 +369,22 @@ export class EditQuickCaptureDohListComponent implements OnInit {
     }
   }
 
+  private canContinue() {
+    this.validationErrors = [];
+    this.formValidate();
+
+    if (this.validationErrors.length == 0)
+      return true;
+
+    return false;
+  }
+
   private bidCanContinue(status: StatusEnum) {
     this.validationErrors = [];
-
-    if (status === StatusEnum.Saved)
-      var orgDetailsError = this.validateOrganisationDetails();
-
-    if (status === StatusEnum.PendingReview) {
-      var orgDetailsError = this.validateOrganisationDetails();
-      var applicationError = this.validateApplications();
-      var applicationDetailsError = this.validateApplicationDetails();
-    }
-
-    if (orgDetailsError.length > 0) {
-      this.validationErrors.push({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-      this.organisationDetails.setValidated(true);
-    }
-
-    if (status === StatusEnum.PendingReview) {
-      if (applicationError.length > 0) {
-        this.validationErrors.push({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
-      }
-
-      if (applicationDetailsError.length > 0)
-        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
-    }
-
-    if (this.validationErrors.length > 0)
-      this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please scroll to top to view errors.' });
-
     this.menuActions[1].visible = this.validationErrors.length > 0 ? true : false;
     return this.validationErrors.length === 0 ? true : false;
   }
-
-  private validateOrganisationDetails() {
-    let data = this.npo;
-    let orgDetailsError: string[] = [];
-
-    if (!data.name || !data.organisationTypeId || !data.registrationStatusId)
-      orgDetailsError.push("Missing detail required under General Information");
-
-    if (data.contactInformation.length === 0)
-      orgDetailsError.push("The Organisation Contact List cannot be empty under Contact / Stakeholder Details");
-
-    if (data.contactInformation.length > 0 && data.contactInformation.filter(x => x.isPrimaryContact === true).length === 0)
-      orgDetailsError.push("Please specify the primary contact under Contact / Stakeholder Details");
-
-    return orgDetailsError;
-  }
-
-  private validateApplications() {
-    let data = this.applicationPeriod;
-    let applicationError: string[] = [];
-
-    if (!data)
-      applicationError.push("Please select a programme from the list provided");
-
-    return applicationError;
-  }
-
-  private validateApplicationDetails() {
-    let applicationDetailsError: string[] = [];
-
-    if (!this.districtCouncil || !this.localMunicipality || this.regions.length === 0 || this.sdas.length === 0)
-      applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
-
-    return applicationDetailsError;
-  }
-
-  private clearMessages() {
-    this.validationErrors = [];
-    this.menuActions[1].visible = false;
-    this.organisationDetails.setValidated(false);
-  }
-
+  
 
   private qCSteps() {
     this.qcItems = [
@@ -460,87 +395,45 @@ export class EditQuickCaptureDohListComponent implements OnInit {
       { label: 'Activities' },
       { label: 'Application Document' }
     ];
+    this.updateSteps();
+  }
+
+  private updateSteps() {
+    if (this.profile != null) {
+      this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+      this.isAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+      this.isMainReviewer = this.profile.roles.some(function (role) { return role.id === RoleEnum.MainReviewer });
+
+      // Add confirmation step if Main Reviewer
+      if (this.isSystemAdmin || this.isAdmin || this.isMainReviewer) {
+        this.qcItems.push({ label: 'Confirmation' });
+        this.canReviewOrApprove = true;
+      }
+
+      this.isStepsAvailable = true;
+    }
   }
 
   public validateStep(goToStep: number, currentStep: number) {
     if (goToStep > currentStep) {
       switch (currentStep) {
         case QCStepsFundedEnum.NpoCreate: {
-          var orgDetailsError = this.validateOrganisationDetails();
-
-          if (orgDetailsError.length > 0) {
-            this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-            this.organisationDetails.setValidated(true);
-            break;
-          }
-
           this.activeStep = goToStep;
           break;
         }
         case QCStepsFundedEnum.Applications: {
-          var orgDetailsError = this.validateOrganisationDetails();
-          var applicationError = this.validateApplications();
-
-          if (orgDetailsError.length > 0 || applicationError.length > 0) {
-
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-
-            if (applicationError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
-
-            break;
-          }
-
           this.activeStep = goToStep;
           break;
         }
         case QCStepsFundedEnum.ApplicationDetail: {
-          var orgDetailsError = this.validateOrganisationDetails();
-          var applicationError = this.validateApplications();
-          var applicationDetailsError = this.validateApplicationDetails();
-
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
-
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-
-            if (applicationError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
-
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
-
-            break;
-          }
-
           this.activeStep = goToStep;
           break;
         }
         case QCStepsFundedEnum.Objectives: {
-
           this.activeStep = goToStep;
           break;
         }
         case QCStepsFundedEnum.Activities: {
-          var orgDetailsError = this.validateOrganisationDetails();
-          var applicationError = this.validateApplications();
-          var applicationDetailsError = this.validateApplicationDetails();
-
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
-
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-
-            if (applicationError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
-
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
-
-            break;
-          }
-
           this.activeStep = goToStep;
           break;
         }

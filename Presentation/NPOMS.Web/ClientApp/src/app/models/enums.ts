@@ -477,7 +477,8 @@ export enum QCStepsFundedEnum {
     ApplicationDetail = 2,
     Objectives = 3,
     Activities = 4,
-    ApplicationFundedDocument = 5
+    ApplicationFundedDocument = 5,
+    ApplicationConfirmation = 6
 }
 
 
