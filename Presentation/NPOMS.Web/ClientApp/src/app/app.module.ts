@@ -166,6 +166,7 @@ import { WorkflowApplicationComponent } from './components/application/workflow-
 //import { ScorecardComponent } from './components/application/scorecard-component/scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 import { EditQuickCaptureDohListComponent } from './components/quick-capture/edit-quick-capture-doh-list/edit-quick-capture-doh-list.component';
+import { ReviewQuickCaptureDohComponent } from './components/quick-capture/review-quick-capture-doh/review-quick-capture-doh.component';
 import { QcApplicationDetailsEditComponent } from './components/application/application-steps/quick-capture/qc-application-details-edit/qc-application-details-edit.component';
 import { QcDocumentUploadEditComponent } from './components/application/application-steps/quick-capture/qc-document-upload-edit/qc-document-upload-edit.component';
 import { ScorecardComponent } from './components/application/scorecard/scorecard.component';
@@ -174,6 +175,15 @@ import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-
 import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
 import { ReviewScorecardComponent } from './components/application/review-scorecard/review-scorecard.component';
 import  {PrintScorecardComponent} from './components/application/application-steps/funding-application/print-scorecard/print-scorecard.component';
+
+
+import { QcConfirmationComponent } from './components/application/application-steps/quick-capture-view/qc-confirmation/qc-confirmation.component';
+import { QCActivitiesViewComponent } from './components/application/application-steps/quick-capture-view/qc-activities-view/qc-activities-view.component';
+import { QcApplicationDetailViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-detail-view/qc-application-detail-view.component';
+import { QcApplicationPeriodsViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-periods-view/qc-application-periods-view.component';
+import { QcFundedDocumentUploadViewComponent } from './components/application/application-steps/quick-capture-view/qc-funded-document-upload-view/qc-funded-document-upload-view.component';
+import { QcObjectivesViewComponent } from './components/application/application-steps/quick-capture-view/qc-objectives-view/qc-objectives-view.component';
+
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -334,6 +344,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     WorkflowApplicationComponent,
     QuickCaptureEditListComponent,
     EditQuickCaptureDohListComponent,
+    ReviewQuickCaptureDohComponent,
     QcApplicationDetailsEditComponent,
     QcDocumentUploadEditComponent,
     ScorecardComponent,
@@ -343,7 +354,13 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ReviewScorecardComponent,
     PrintScorecardComponent,
     QCActivitiesComponent, 
-    QcObjectivesComponent
+    QcObjectivesComponent,
+    QcConfirmationComponent, 
+    QCActivitiesViewComponent, 
+    QcApplicationDetailViewComponent, 
+    QcApplicationPeriodsViewComponent,
+    QcFundedDocumentUploadViewComponent, 
+    QcObjectivesViewComponent
    // ScorecardComponent
   ],
   schemas: [

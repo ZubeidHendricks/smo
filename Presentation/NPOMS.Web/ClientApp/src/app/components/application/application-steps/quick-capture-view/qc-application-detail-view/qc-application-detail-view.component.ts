@@ -16,11 +16,11 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-qc-application-detail',
-  templateUrl: './qc-application-detail.component.html',
-  styleUrls: ['./qc-application-detail.component.css']
+  selector: 'app-qc-application-detail-view',
+  templateUrl: './qc-application-detail-view.component.html',
+  styleUrls: ['./qc-application-detail-view.component.css']
 })
-export class QcApplicationDetailComponent implements OnInit {
+export class QcApplicationDetailViewComponent implements OnInit {
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
@@ -310,56 +310,59 @@ export class QcApplicationDetailComponent implements OnInit {
   }
 
   nextPage() {
-    if (this.canContinue()) {
 
-      if (!this.fundingApplicationDetails.id) {
-        //create funding application details
-        this.fundingApplicationDetails.applicationId = this.application.id;
-        this.fundingApplicationDetails.applicationPeriodId = this.applicationPeriod.id;
-       // this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.amount;
-        this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.selectedDistrictCouncil;
-        this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
-        this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
-        this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSDAs;        
-        this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
-        this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-          (resp) => {
-            this._spinner.hide();
-            this.fundingApplicationDetails.id = resp.id;
-            this.fundingApplicationDetailsChange.emit(resp);
+    this.activeStep = this.activeStep + 1;
+    this.activeStepChange.emit(this.activeStep);
+    // if (this.canContinue()) {
 
-            this.activeStep = this.activeStep + 1;
-            this.activeStepChange.emit(this.activeStep);
-          },
-          (err) => {
-            this._loggerService.logException(err);
-            this._spinner.hide();
-          }
-        );
-      }
-      else {
-      //  this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.amount;
-        this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.selectedDistrictCouncil;
-        this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
-        this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
-        this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSDAs;
-        this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
-        this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-          (resp) => {
-            this._spinner.hide();
-            this.fundingApplicationDetailsChange.emit(resp);
+    //   if (!this.fundingApplicationDetails.id) {
+    //     //create funding application details
+    //     this.fundingApplicationDetails.applicationId = this.application.id;
+    //     this.fundingApplicationDetails.applicationPeriodId = this.applicationPeriod.id;
+    //    // this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.amount;
+    //     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.selectedDistrictCouncil;
+    //     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
+    //     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
+    //     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSDAs;        
+    //     this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
+    //     this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
+    //       (resp) => {
+    //         this._spinner.hide();
+    //         this.fundingApplicationDetails.id = resp.id;
+    //         this.fundingApplicationDetailsChange.emit(resp);
 
-            this.activeStep = this.activeStep + 1;
-            this.activeStepChange.emit(this.activeStep);
-          },
-          (err) => {
-            this._loggerService.logException(err);
-            this._spinner.hide();
-          }
-        );
-      }
-      this.bidForm(StatusEnum.Saved);
-    }
+    //         this.activeStep = this.activeStep + 1;
+    //         this.activeStepChange.emit(this.activeStep);
+    //       },
+    //       (err) => {
+    //         this._loggerService.logException(err);
+    //         this._spinner.hide();
+    //       }
+    //     );
+    //   }
+    //   else {
+    //   //  this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.amount;
+    //     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.selectedDistrictCouncil;
+    //     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
+    //     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
+    //     this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSDAs;
+    //     this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
+    //     this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
+    //       (resp) => {
+    //         this._spinner.hide();
+    //         this.fundingApplicationDetailsChange.emit(resp);
+
+    //         this.activeStep = this.activeStep + 1;
+    //         this.activeStepChange.emit(this.activeStep);
+    //       },
+    //       (err) => {
+    //         this._loggerService.logException(err);
+    //         this._spinner.hide();
+    //       }
+    //     );
+    //   }
+    //   this.bidForm(StatusEnum.Saved);
+    // }
 
    }
 

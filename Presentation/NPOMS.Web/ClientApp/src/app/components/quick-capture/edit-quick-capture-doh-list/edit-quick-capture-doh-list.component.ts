@@ -26,25 +26,12 @@ import { UserService } from 'src/app/services/api-services/user/user.service';
 })
 export class EditQuickCaptureDohListComponent implements OnInit {
 
-  // canEdit: boolean = false;
-  // applicationIdOnBid: any;
-  // subPlacesAll: ISubPlace[];
-  // place: IPlace[];
-
-  // placesAll: IPlace[] = [];
-  // subPlacesAll: ISubPlace[] = [];
-
-  // dropdownTouched: boolean = false;
-
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
   }
-  // public get ApplicationTypeEnum(): typeof ApplicationTypeEnum {
-  //   return ApplicationTypeEnum;
-  // }
 
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
@@ -56,10 +43,7 @@ export class EditQuickCaptureDohListComponent implements OnInit {
   public get QCStepsFundedEnum(): typeof QCStepsFundedEnum {
     return QCStepsFundedEnum;
   }
-  // public get FundingApplicationStepsEnum(): typeof FundingApplicationStepsEnum {
-  //   return FundingApplicationStepsEnum;
-  // }
-
+ 
   profile: IUser;
 
   paramSubcriptions: Subscription;
@@ -73,7 +57,7 @@ export class EditQuickCaptureDohListComponent implements OnInit {
   localMunicipality: ILocalMunicipality;
   regions: IRegion[];
   sdas: ISDA[];
-  projectInformation: IProjectInformation;
+  purposeQuestion: string;
   menuActions: MenuItem[];
   validationErrors: Message[];
   qcItems: MenuItem[];
@@ -81,8 +65,6 @@ export class EditQuickCaptureDohListComponent implements OnInit {
   amount: number;
   sourceOfInformation: ISourceOfInformation[];
   affliatedOrganisationInfo: IAffiliatedOrganisation[];
-
- // fundingApplicationDetails: IFundingApplicationDetails;
 
   fundingApplicationDetails: IFundingApplicationDetails = {
     applicationDetails: {
@@ -102,65 +84,6 @@ export class EditQuickCaptureDohListComponent implements OnInit {
 
   isDataAvailable: boolean;
 
-  // cols: any[];
-  // allNPOs: INpo[];
-
-  // paramSubcriptions: Subscription;
-  // npoId: string;
-  // applicationPeriodId: number;
-  // id: string;
-
-  // menuActions: MenuItem[];
-  // validationErrors: Message[];
-
-  // applicationPeriod: IApplicationPeriod;
-  // isApplicationAvailable: boolean;
-  // placeAll: IPlace[] = [];
-
-  // funding dropdowns
-  // districtCouncils: IDistrictCouncil[] = [];
-  // localMunicipalitiesAll: ILocalMunicipality[] = [];
-  // localMunicipalities: ILocalMunicipality[] = [];
-  // regions: IRegion[] = [];
-  // regionsAll: IRegion[] = [];
-  // sdasAll: ISDA[] = [];
-  // sdas: ISDA[] = [];
-  // end of funding dropdowns
-
-  // items: MenuItem[];
-  // faItems: MenuItem[];
-  // qcItems: MenuItem[];
-
-  // activeStep: number = 0;
-  // application: IApplication;
-
-  // selectedOption: boolean;
-
-  // financialYears: IFinancialYear[];
-  // selectedFinancialYear: IFinancialYear;
-
-  // Used for table filtering
-  // @ViewChild('dt') dt: Table | undefined;
-
-  // funding dropdowns
-
-  // fundingApplicationDetails: IFundingApplicationDetails = {
-  //   applicationDetails: {
-  //     fundAppSDADetail: {
-  //       districtCouncil: {} as IDistrictCouncil,
-  //       localMunicipality: {} as ILocalMunicipality,
-  //       regions: [],
-  //       serviceDeliveryAreas: [],
-  //     } as IFundAppSDADetail,
-  //   } as IApplicationDetails,
-
-  //   financialMatters: [],
-  //   implementations: [],
-
-  // } as IFundingApplicationDetails;
-
-
-
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -173,7 +96,6 @@ export class EditQuickCaptureDohListComponent implements OnInit {
     private _fundAppService: FundingApplicationService,
     private _npoProfile: NpoProfileService,
     private _userRepo: UserService
-    // private _bidService: BidService
   ) { }
 
   ngOnInit(): void {
@@ -259,18 +181,17 @@ export class EditQuickCaptureDohListComponent implements OnInit {
   private loadFundingApplicationDetails() {
     this._fundAppService.getFundingApplicationDetails(this.application.id).subscribe(
       (results) => {
+
         this.fundingApplicationDetails = results;
         this.amount = this.fundingApplicationDetails.applicationDetails.amountApplyingFor;
         this.districtCouncil = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil;
         this.localMunicipality = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality;
         if (this.fundingApplicationDetails.projectInformation != null) {
-          this.projectInformation = this.fundingApplicationDetails.projectInformation;
+          this.purposeQuestion = this.fundingApplicationDetails.projectInformation.purposeQuestion;
         }
         else {
           this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
         }
-        // this.regions = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions;
-        // this.sdas = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas;
 
         this.loadRegions();
       },
@@ -520,9 +441,6 @@ export class EditQuickCaptureDohListComponent implements OnInit {
     if (!this.districtCouncil || !this.localMunicipality || this.regions.length === 0 || this.sdas.length === 0)
       applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
 
-    // if (!this.amount)
-    //   applicationDetailsError.push("Please specify the Rand amount you applying for");
-
     return applicationDetailsError;
   }
 
@@ -532,101 +450,6 @@ export class EditQuickCaptureDohListComponent implements OnInit {
     this.organisationDetails.setValidated(false);
   }
 
-  // private bidForm(status: StatusEnum) {
-  //   this.application.status = null;
-  //   if (status === StatusEnum.Saved) {
-  //     this.application.statusId = status;
-  //   }
-  //   if (status === StatusEnum.PendingReview) {
-  //     this.application.statusId = status;
-  //   }
-  //   if (this.bidCanContinue(status)) {
-  //     this.application.statusId = status;
-  //     if (this.validationErrors.length == 0) {
-  //       this._applicationRepo.updateApplication(this.application).subscribe();
-  //     }
-  //     this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-  //     this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-  //     if (status == StatusEnum.PendingReview) {
-  //       this.application.status.name = "PendingReview";
-  //       this._applicationRepo.updateApplication(this.application).subscribe();
-
-  //       this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-  //       this._router.navigateByUrl('applications');
-  //     };
-  //   }
-  // }
-
-
-  // private bidCanContinue(status: StatusEnum) {
-  //   this.validationErrors = [];
-  //   if (status === StatusEnum.PendingReview)
-  //     this.formValidate();
-  //   if (this.validationErrors.length == 0)
-  //     return true;
-
-  //   return false;
-  // }
-
-
-  // private formValidate() {
-  //   this.validationErrors = [];
-  // }
-
-  // private clearMessages() {
-  //   this.validationErrors = [];
-  //   this.menuActions[1].visible = false;
-  // }
-
-
-
-
-  // private canContinue(status: StatusEnum) {
-  //   this.validationErrors = [];
-
-  //   if (status === StatusEnum.PendingReview)
-  //     this.formValidate();
-
-  //   if (this.validationErrors.length == 0)
-  //     return true;
-
-  //   return false;
-  // }
-
-
-
-  // places(place: IPlace[]) {
-  //   this.placeAll = place;
-  // }
-
-  // subPlaces(subPlaces: ISubPlace[]) {
-  //   this.subPlacesAll = subPlaces;
-  // }
-
-
-  // getCellData(row: any, col: any): any {
-  //   const nestedProperties: string[] = col.field.split('.');
-  //   let value: any = row;
-
-  //   for (const prop of nestedProperties) {
-  //     value = value[prop];
-  //   }
-
-  //   return value;
-  // }
-
-  // applyFilterGlobal($event: any, stringVal: any) {
-  //   this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
-  // }
-
-  // add() {
-  //   this._router.navigateByUrl('npo/create');
-  // }
-
-  // edit(npo: INpo) {
-  //   this._router.navigateByUrl('npo/edit/' + npo.id);
-  // }
 
   private qCSteps() {
     this.qcItems = [
@@ -695,23 +518,6 @@ export class EditQuickCaptureDohListComponent implements OnInit {
           break;
         }
         case QCStepsFundedEnum.Objectives: {
-          // var orgDetailsError = this.validateOrganisationDetails();
-          // var applicationError = this.validateApplications();
-          // var applicationDetailsError = this.validateApplicationDetails();
-
-          // if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
-
-          //   if (orgDetailsError.length > 0)
-          //     this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-
-          //   if (applicationError.length > 0)
-          //     this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
-
-          //   if (applicationDetailsError.length > 0)
-          //     this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
-
-          //   break;
-          // }
 
           this.activeStep = goToStep;
           break;

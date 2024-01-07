@@ -323,7 +323,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funded Npo',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('qc-application/view/' + this.selectedApplication.id);
+            this._router.navigateByUrl('quick-captures-doh/review/' + this.selectedApplication.id);
           }
         });
       }
