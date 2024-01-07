@@ -36,7 +36,7 @@ export class QcObjectivesViewComponent implements OnInit {
   allObjectives: IObjective[];
   activeObjectives: IObjective[];
   deletedObjectives: IObjective[];
-
+  headerTitle: string;
   objectiveCols: any[];
   displayObjectiveDialog: boolean;
   newObjective: boolean;
@@ -102,6 +102,9 @@ export class QcObjectivesViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
     this._spinner.show();
 
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||

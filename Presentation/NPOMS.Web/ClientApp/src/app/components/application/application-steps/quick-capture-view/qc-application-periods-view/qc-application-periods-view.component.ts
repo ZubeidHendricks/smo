@@ -14,7 +14,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-qc-application-periods=view',
+  selector: 'app-qc-application-periods-view',
   templateUrl: './qc-application-periods-view.component.html',
   styleUrls: ['./qc-application-periods-view.component.css']
 })
@@ -55,7 +55,7 @@ export class QcApplicationPeriodsViewComponent implements OnInit {
   // }
 
   profile: IUser;
-
+  headerTitle: string;
   cols: any[];
   allApplicationPeriods: IApplicationPeriod[];
 
@@ -99,6 +99,8 @@ export class QcApplicationPeriodsViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -187,29 +189,27 @@ export class QcApplicationPeriodsViewComponent implements OnInit {
   // }
 
   nextPage() {
-    this.activeStep = this.activeStep + 1;
-    this.activeStepChange.emit(this.activeStep);
-    // if (this.canContinue()) {
-    //   let application = {
-    //     npoId: this.npo.id,
-    //     applicationPeriodId: this.applicationPeriod.id,
-    //     isQuickCapture: true,
-    //     statusId: StatusEnum.Saved
-    //   } as IApplication;
+    if (this.canContinue()) {
+      let application = {
+        npoId: this.npo.id,
+        applicationPeriodId: this.applicationPeriod.id,
+        isQuickCapture: true,
+        statusId: StatusEnum.Saved
+      } as IApplication;
 
-    //   this._applicationRepo.createApplication(application, true, null).subscribe(
-    //     (resp) => {
-    //       this.applicationChange.emit(resp);
-    //       this.activeStep = this.activeStep + 1;
-    //       this.activeStepChange.emit(this.activeStep);
-    //       this.disableSelectApplication = true;
-    //     },
-    //     (err) => {
-    //       this._loggerService.logException(err);
-    //       this._spinner.hide();
-    //     }
-    //   );
-    // }
+      this._applicationRepo.createApplication(application, true, null).subscribe(
+        (resp) => {
+          this.applicationChange.emit(resp);
+          this.activeStep = this.activeStep + 1;
+          this.activeStepChange.emit(this.activeStep);
+          this.disableSelectApplication = true;
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
     //   this.activeStep = this.activeStep + 1;
     //   this.activeStepChange.emit(this.activeStep);
     //   this.newlySavedNpoIdChange.emit(this.activeStep);  

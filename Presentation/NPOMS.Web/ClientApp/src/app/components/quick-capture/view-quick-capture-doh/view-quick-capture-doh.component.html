@@ -18,26 +18,19 @@
     </div>
     <div style="height: 10px;"></div>
 
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"></p-menubar>
-    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
-    <div style="height: 10px;"></div>
-    <p-steps [model]="qcItems" [readonly]="false" [activeIndex]="activeStep" (activeIndexChange)="validateStep($event, activeStep)"></p-steps>
-
-    <div style="height: 10px;"></div>
+     <div style="height: 10px;"></div>
     <div>
-    <app-qc-npo-details-view *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"
-    [(activeStep)]="activeStep" [application]="application"
+    <app-qc-npo-details-view 
+     [application]="application"
     [newApplication]="false">
     </app-qc-npo-details-view>
-    <app-qc-application-periods-view *ngIf="activeStep == QCStepsFundedEnum.Applications"
-        [(activeStep)]="activeStep"
+    <app-qc-application-periods-view 
         [npo]="npo"
         [(applicationPeriod)]="applicationPeriod"
         [(application)]="application"
         [isEdit]="false">
     </app-qc-application-periods-view>
-    <app-qc-application-detail-view *ngIf="activeStep == QCStepsFundedEnum.ApplicationDetail"
-        [(activeStep)]="activeStep"
+    <app-qc-application-detail-view 
         [applicationPeriod]="applicationPeriod"
         [application]="application"
         [(districtCouncil)]="districtCouncil"
@@ -51,11 +44,11 @@
         [(fundingApplicationDetails)]="fundingApplicationDetails"
         [isEdit]="false">
     </app-qc-application-detail-view>
-    <app-qc-objectives-view *ngIf="activeStep == QCStepsFundedEnum.Objectives" [(activeStep)]="activeStep"
+    <app-qc-objectives-view
     [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"
     [isReview]="false" [currentUserId]="profile.id"
     [isEdit]="false"></app-qc-objectives-view>
-    <app-qc-activities-view *ngIf="activeStep == QCStepsFundedEnum.Activities" [(activeStep)]="activeStep"
+    <app-qc-activities-view
     [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
     [isReview]="false"
     [isEdit]="false"></app-qc-activities-view>
@@ -64,12 +57,11 @@
         [application]="application"
         [isView]="true">            
     </app-qc-funded-document-upload-view>
-    <app-qc-confirmation *ngIf="activeStep == QCStepsFundedEnum.ApplicationConfirmation" [(activeStep)]="activeStep" [application]="application" [(status)]="status" [profile]="profile" [approveApplication]="false"></app-qc-confirmation>
+    <app-qc-confirmation [application]="application" [(status)]="status" 
+    [profile]="profile" [approveApplication]="false"></app-qc-confirmation>
     </div>
     <div style="height: 10px;"></div>
 
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"></p-menubar>
-    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
-    <div style="height: 10px;"></div>
+   
 
 </p-panel>

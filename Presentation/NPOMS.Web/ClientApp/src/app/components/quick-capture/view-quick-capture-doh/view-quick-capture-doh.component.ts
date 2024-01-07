@@ -20,11 +20,11 @@ import { UserService } from 'src/app/services/api-services/user/user.service';
 
 
 @Component({
-  selector: 'app-review-quick-capture-doh',
-  templateUrl: './review-quick-capture-doh.component.html',
-  styleUrls: ['./review-quick-capture-doh.component.css']
+  selector: 'app-view-quick-capture-doh',
+  templateUrl: './view-quick-capture-doh.component.html',
+  styleUrls: ['./view-quick-capture-doh.component.css']
 })
-export class ReviewQuickCaptureDohComponent implements OnInit {
+export class ViewQuickCaptureDohComponent implements OnInit {
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {

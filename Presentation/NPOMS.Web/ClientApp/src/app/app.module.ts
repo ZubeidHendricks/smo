@@ -167,6 +167,7 @@ import { WorkflowApplicationComponent } from './components/application/workflow-
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
 import { EditQuickCaptureDohListComponent } from './components/quick-capture/edit-quick-capture-doh-list/edit-quick-capture-doh-list.component';
 import { ReviewQuickCaptureDohComponent } from './components/quick-capture/review-quick-capture-doh/review-quick-capture-doh.component';
+import { ViewQuickCaptureDohComponent } from './components/quick-capture/view-quick-capture-doh/view-quick-capture-doh.component';
 import { QcApplicationDetailsEditComponent } from './components/application/application-steps/quick-capture/qc-application-details-edit/qc-application-details-edit.component';
 import { QcDocumentUploadEditComponent } from './components/application/application-steps/quick-capture/qc-document-upload-edit/qc-document-upload-edit.component';
 import { ScorecardComponent } from './components/application/scorecard/scorecard.component';
@@ -183,7 +184,7 @@ import { QcApplicationDetailViewComponent } from './components/application/appli
 import { QcApplicationPeriodsViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-periods-view/qc-application-periods-view.component';
 import { QcFundedDocumentUploadViewComponent } from './components/application/application-steps/quick-capture-view/qc-funded-document-upload-view/qc-funded-document-upload-view.component';
 import { QcObjectivesViewComponent } from './components/application/application-steps/quick-capture-view/qc-objectives-view/qc-objectives-view.component';
-
+import { QcNpoDetailsViewComponent } from './components/application/application-steps/quick-capture-view/qc-npo-details-view/qc-npo-details-view.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -360,7 +361,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     QcApplicationDetailViewComponent, 
     QcApplicationPeriodsViewComponent,
     QcFundedDocumentUploadViewComponent, 
-    QcObjectivesViewComponent
+    QcObjectivesViewComponent,
+    QcNpoDetailsViewComponent,
+    ViewQuickCaptureDohComponent
    // ScorecardComponent
   ],
   schemas: [

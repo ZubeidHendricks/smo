@@ -74,8 +74,7 @@ export class QcFundedDocumentUploadViewComponent implements OnInit {
   documentTypes: IDocumentType[];
   compulsoryDocuments: IDocumentType[] = [];
   nonCompulsoryDocuments: IDocumentType[] = [];
-  // docTypeNames: any[];
-  // documentTypeName: string;
+  headerTitle: string;
 
   // validationErrors: Message[];
   // menuActions: MenuItem[];
@@ -118,6 +117,9 @@ export class QcFundedDocumentUploadViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
        // this._spinner.show();
@@ -715,9 +717,5 @@ export class QcFundedDocumentUploadViewComponent implements OnInit {
     this.activeStep = this.activeStep - 1;
     this.activeStepChange.emit(this.activeStep);
   }
-  // nextPage() {
-  //   this.bidForm(StatusEnum.Saved);
-  //   this._messageService.add({ severity: 'success', summary: 'Success', detail: 'File(s) Saved Successfully' });
-  //   this._router.navigateByUrl('applications');
-  // }
+ 
 }

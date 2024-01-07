@@ -54,12 +54,13 @@
         </div>
     </div>
 
+
     <p-panel [style]="{'font-size':'12px'}" header="Project Vision">
           <div style="height: 15px;"></div>
           <div class="p-fluid">
             <div class="p-field">
-              <label for="purposeQuestion" style="font-weight:bold">What is the purpose of the project? <span
-                  class="bid-required">*</span></label>
+              <label for="purposeQuestion" style="font-weight:bold">What is the purpose of the project? 
+             </label>
                   <div style="height: 15px;"></div>
               <p-editor pInputText [(ngModel)]="purposeQuestion" [ngModelOptions]="{standalone: true}"
               (ngModelChange)="onPurposeQuestionChange($event)">

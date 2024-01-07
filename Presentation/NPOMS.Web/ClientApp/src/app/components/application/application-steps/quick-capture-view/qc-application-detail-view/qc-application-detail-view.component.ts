@@ -63,7 +63,7 @@ export class QcApplicationDetailViewComponent implements OnInit {
   // } as IFundingApplicationDetails;
 
   profile: IUser;
-
+  headerTitle: string;
   isDataAvailable: boolean;
   department: IDepartment;
   programme: IProgramme;
@@ -109,7 +109,9 @@ export class QcApplicationDetailViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
+    
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this._spinner.show();

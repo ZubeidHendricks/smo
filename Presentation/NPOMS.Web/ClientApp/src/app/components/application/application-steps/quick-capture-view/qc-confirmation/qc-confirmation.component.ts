@@ -29,7 +29,7 @@ export class QcConfirmationComponent implements OnInit {
   displayHistory: boolean;
 
   approvalFromOptions: any[];
-
+  headerTitle: string;
   reviewerSatisfaction: IApplicationReviewerSatisfaction[];
 
   objectives: IObjective[];
@@ -46,6 +46,9 @@ export class QcConfirmationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
     this.buildStatusOptions();
 
     this.auditCols = [
