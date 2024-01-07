@@ -92,6 +92,7 @@ import { ViewQuickCaptureDohComponent } from './components/quick-capture/view-qu
 import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
 import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
 import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
+import{DownloadQuickCaptureDohComponent} from './components/quick-capture/download-quick-capture-doh/download-quick-capture-doh.component';
 
 import { QcConfirmationComponent } from './components/application/application-steps/quick-capture-view/qc-confirmation/qc-confirmation.component';
 import { QCActivitiesViewComponent } from './components/application/application-steps/quick-capture-view/qc-activities-view/qc-activities-view.component';
@@ -113,6 +114,7 @@ const routes: Routes = [
   { path: 'print/:id/0', outlet: 'print', component: PrintFundingApplicatonComponent },
   { path: 'print/:id/1', outlet: 'print', component: PrintWorkflowApplicationComponent },
   { path: 'print/:id/2', outlet: 'print', component: PrintScorecardComponent },
+  { path: 'print/:id/3', outlet: 'print', component: DownloadQuickCaptureDohComponent },
   { path: 'access-request', component: AccessRequestComponent },
   { path: 'access-review', component: AccessReviewComponent },
 
