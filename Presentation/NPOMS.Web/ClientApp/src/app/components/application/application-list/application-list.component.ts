@@ -361,6 +361,17 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Download Application',
+          target: 'Funded Npo',
+          icon: 'fa fa-download',
+          command: () => {
+            this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id, 3] } }]);
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
         this.buttonItems[0].items.push({
           label: 'Delete Application',
@@ -425,6 +436,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Review Application', 'Funded Npo');
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
+      this.buttonItemExists('Download Application', 'Funded Npo');
       // this.buttonItemExists('Score Card', 'Service Provision');
 
       switch (this.selectedApplication.statusId) {
@@ -489,6 +501,7 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Review Application', 'Funded Npo');
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
+      this.buttonItemExists('Download Application', 'Funded Npo');
       //this.buttonItemExists('Score Card', 'Service Provision');
 
       if (this.selectedApplication.isQuickCapture)

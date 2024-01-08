@@ -1,10 +1,6 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header="Activities" *ngIf="activeActivities">
-    <!-- <div class="p-grid p-nogutter p-justify-end">
-        <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
-    </div>    
-    <div style="height: 10px;"></div> -->
-
+  
     <p-table [rowHover]="true" [columns]="activityCols" [value]="activeActivities" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
@@ -29,9 +25,6 @@
                 <td>{{rowData.quarter}}</td>
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActivity(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
-                    <!-- <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
-                    <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
-                    <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button> -->
                 </td>
                 <td *ngIf="application.isCloned && isReview">
                     {{GetDifference(rowData.isNew)}}
@@ -43,11 +36,7 @@
                 <td colspan="6" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>
-        <!-- <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
-            <div style="text-align:left">
-                <button pButton pRipple type="button" label="Add Activity" class="p-button-text" icon="fa fa-plus" (click)="addActivity()"></button>
-            </div>
-        </ng-template> -->
+       
         <ng-template pTemplate="summary" let-rowData *ngIf="application.isCloned && isReview">
             <div style="text-align:left">
                 <button pButton pRipple type="button" label="View Deleted Activities" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedActivities()"></button>
@@ -108,47 +97,7 @@
             <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
         </div>
     </div>
-    <!-- <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Sub-Programme</span>
-            </div>
-        </div>
-        <div class="p-col" *ngIf="canEdit">
-            <p-multiSelect [options]="subProgrammes" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedSubProgrammes" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgramme()" selectedItemsLabel="{0} items selected"></p-multiSelect>
-        </div>
-        <div class="p-col" *ngIf="!canEdit">
-            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Activity Lookup</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-autoComplete appendTo="body" id="selectedActivity"                      
-                [(ngModel)]="selectedActivity"
-                [style]="{'width':'100%'}"
-                [inputStyle]="{'width':'100%'}"
-                [suggestions]="activityList"
-                field="name"
-                (completeMethod)="search($event)"
-                [size]="20"
-                placeholder="Find Activity (type 4 letters)"
-                [forceSelection]="true"
-                [minLength]="4"
-                [showTransitionOptions]="'0ms'"
-                [hideTransitionOptions]="'0ms'"
-                emptyMessage="No results found"
-                name="facility"
-                [showEmptyMessage]="true"
-                (onSelect)="selectActivity($event)"
-                [disabled]="!canEdit">
-            </p-autoComplete>
-        </div>
-    </div> -->
+    
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -180,18 +129,7 @@
             <p-dropdown [options]="activityTypes" placeholder="Select an Activity Type" optionLabel="name" [(ngModel)]="selectedActivityType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
         </div>
     </div>
-    <!-- <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Timeline</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-calendar [(ngModel)]="activity.timelineStartDate" placeholder="Select a Start Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
-            &nbsp; to &nbsp;
-            <p-calendar [(ngModel)]="activity.timelineEndDate" placeholder="Select a End Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
-        </div>
-    </div> -->
+    
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">

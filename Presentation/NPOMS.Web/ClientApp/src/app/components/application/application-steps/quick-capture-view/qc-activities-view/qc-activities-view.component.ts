@@ -58,6 +58,7 @@ export class QCActivitiesViewComponent implements OnInit {
   rangeDates: Date[];
   timeframes: Date[] = [];
   headerTitle: string;
+  headerTitle2: string;
   allActivities: IActivity[];
   activeActivities: IActivity[];
   deletedActivities: IActivity[];
@@ -141,6 +142,7 @@ export class QCActivitiesViewComponent implements OnInit {
     this._spinner.show();
     var splitUrl = window.location.href.split('/');
     this.headerTitle = splitUrl[5];
+    this.headerTitle2 = splitUrl[4].substring(0,3);
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
