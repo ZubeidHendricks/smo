@@ -362,9 +362,11 @@ export interface IApplication {
     isQuickCapture: boolean;
     createdUserId: number;
     updatedUserId: number;
+    closeScorecard: number;
+    initiateScorecard: number;  
 
     applicationPeriod: IApplicationPeriod;
-    status: IStatus;
+    status: IStatus;     
     createdUser: IUser;
     updatedUser: IUser;
 }
