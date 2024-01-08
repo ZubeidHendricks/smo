@@ -616,26 +616,32 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Funding Application');
       this.buttonItemExists('Delete Application', 'Funding Application');
 
-     switch (this.selectedApplication.statusId) {
-        case StatusEnum.PendingReview: {
-          this.buttonItemExists('Delete Application', 'Funded Npo');
-          this.buttonItemExists('Edit Application', 'Funded Npo');
-         break;
-       }
-     }
+      switch (this.selectedApplication.statusId) {
+          case StatusEnum.PendingReview: {
+            this.buttonItemExists('Delete Application', 'Funded Npo');
+            this.buttonItemExists('Edit Application', 'Funded Npo');
+          break;
+        }
+      }
 
-     switch (this.selectedApplication.statusId) {
-      case StatusEnum.Saved: {
-        this.buttonItemExists('Review Application', 'Funded Npo');
-       break;
-     }
+      switch (this.selectedApplication.statusId) {
+        case StatusEnum.Saved:
+          case StatusEnum.Approved:
+            case StatusEnum.Declined: {
+          this.buttonItemExists('Review Application', 'Funded Npo');
+        break;
+      }
    }
 
-     if(this.selectedApplication.statusId !== StatusEnum.Saved)
-     {
+   switch (this.selectedApplication.statusId) {
+      case StatusEnum.Approved:
+        case StatusEnum.Declined: {
       this.buttonItemExists('Edit Application', 'Funded Npo');
-     }
-    }
+     break;
+   }
+ }
+
+  }
   }
 
   private buttonItemExists(label: string, target: string) {
@@ -665,7 +671,6 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-
       if (this.IsAuthorized(PermissionsEnum.AddScorecard)) {
         this.optionItems[0].items.push({
           label: 'Add Score Card',
@@ -682,6 +687,26 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl('reviewScorecard/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.InitiateScorecard) && this.selectedApplication.id) {
+        this.optionItems[0].items.push({
+          label: 'Initiate Score Card',
+          icon: 'fa fa-envelope-open-o',
+          command: () => {
+            this._router.navigateByUrl('initiate/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.CloseScorecard)) {
+        this.optionItems[0].items.push({
+          label: 'Close Score Card',
+          icon: 'fa fa-window-close-o',
+          command: () => {
+            this._router.navigateByUrl('close/' + this.selectedApplication.id);
           }
         });
       }

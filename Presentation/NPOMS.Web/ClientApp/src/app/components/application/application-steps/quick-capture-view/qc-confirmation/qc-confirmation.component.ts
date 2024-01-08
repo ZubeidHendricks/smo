@@ -91,17 +91,19 @@ export class QcConfirmationComponent implements OnInit {
   }
 
   private buildStatusOptions() {
+    this.statuses.push({ name: 'Approve Application', value: StatusEnum.Approved });
     this.statuses.push({ name: 'Amendments Required', value: StatusEnum.AmendmentsRequired });
-
-    if (this.application.statusId === StatusEnum.PendingReview || this.application.statusId === StatusEnum.PendingReviewerSatisfaction) {
-      this.statuses.push({ name: 'Pending Reviewer Satisfaction', value: StatusEnum.PendingReviewerSatisfaction });
-      this.statuses.push({ name: 'Accept Application (Send for Approval)', value: StatusEnum.PendingApproval });
-    }
-
-    if (this.application.statusId === StatusEnum.PendingApproval || this.application.statusId === StatusEnum.ApprovalInProgress)
-      this.statuses.push({ name: 'Approve Application', value: StatusEnum.PendingSLA });
-
     this.statuses.push({ name: 'Declined Application', value: StatusEnum.Declined });
+
+    // if (this.application.statusId === StatusEnum.PendingReview || this.application.statusId === StatusEnum.PendingReviewerSatisfaction) {
+    //   this.statuses.push({ name: 'Pending Reviewer Satisfaction', value: StatusEnum.PendingReviewerSatisfaction });
+    //   this.statuses.push({ name: 'Accept Application (Send for Approval)', value: StatusEnum.PendingApproval });
+    // }
+
+    // if (this.application.statusId === StatusEnum.PendingApproval || this.application.statusId === StatusEnum.ApprovalInProgress)
+    //   this.statuses.push({ name: 'Approve Application', value: StatusEnum.PendingSLA });
+
+    // this.statuses.push({ name: 'Declined Application', value: StatusEnum.Declined });
   }
 
   prevPage() {
