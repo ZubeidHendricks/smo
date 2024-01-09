@@ -93,7 +93,7 @@ import { ScorecardQuestionComponent } from './components/admin/utilities/scoreca
 import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
 import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
 import{DownloadQuickCaptureDohComponent} from './components/quick-capture/download-quick-capture-doh/download-quick-capture-doh.component';
-
+import { ScorecardActionComponent } from './components/application/scorecard-action/scorecard-action.component';
 import { QcConfirmationComponent } from './components/application/application-steps/quick-capture-view/qc-confirmation/qc-confirmation.component';
 import { QCActivitiesViewComponent } from './components/application/application-steps/quick-capture-view/qc-activities-view/qc-activities-view.component';
 import { QcApplicationDetailViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-detail-view/qc-application-detail-view.component';
@@ -144,6 +144,8 @@ const routes: Routes = [
   { path: 'application/approve/:id', component: ApproveApplicationComponent },
   { path: 'application/upload-sla/:id', component: UploadSLAComponent },
   { path: 'scorecard/:id', component: ScorecardComponent },
+  { path: 'initiate/:id', component: ScorecardActionComponent },
+  { path: 'close/:id', component: ScorecardActionComponent },
   { path: 'reviewScorecard/:id', component: ReviewScorecardComponent },
   { path: 'application-periods', component: ApplicationPeriodListComponent },
   { path: 'application-period/create', component: CreateApplicationPeriodComponent },

@@ -79,6 +79,9 @@ namespace NPOMS.Services.Email
                 case EmailTemplateTypeEnum.ScorecardSummary:
                     _template = new ScorecardSummaryEmailTemplates();
                     break;
+                case EmailTemplateTypeEnum.InitiateScorecard:
+                    _template = new InitiateScorecardEmailTemplates();
+                    break;
                 default:
 					_template = null;
 					break;

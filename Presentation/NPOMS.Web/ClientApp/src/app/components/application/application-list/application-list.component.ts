@@ -409,9 +409,40 @@ export class ApplicationListComponent implements OnInit {
     });
   }
 
-  // get canShowOptions() {
-  //   return this.IsAuthorized(PermissionsEnum.EditOption) || this.IsAuthorized(PermissionsEnum.ViewOptions) || this.IsAuthorized(PermissionsEnum.DownloadOption);
-  // }
+  public updateOptionItems()
+  {
+     // Show all options
+     this.optionItems[0].items.forEach(option => {
+      option.visible = true;
+    });
+
+    // Hide options based on status
+    if(this.selectedApplication.initiateScorecard === 1)
+    {
+      this.optionItemExists('Initiate Score Card');      
+    } 
+    
+    if(this.selectedApplication.closeScorecard === 0)
+    {
+      this.optionItemExists('Close Score Card');
+    }  
+
+    if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount > 0)
+    {
+      this.optionItemExists('Add Score Card');
+    }
+
+    if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount === 0)
+    {
+      this.optionItemExists('Add Score Card');
+    }
+
+    if(this.selectedApplication.scorecardCount === 0)
+    {
+      this.optionItemExists('Review Score Card');
+    }
+
+  }
 
   public updateButtonItems() {
     // Show all buttons
@@ -651,6 +682,13 @@ export class ApplicationListComponent implements OnInit {
       buttonItem.visible = false;
   }
 
+  private optionItemExists(label: string) {
+    let optionItem = this.optionItems[0].items.find(x => x.label === label);
+
+    if (optionItem)
+    optionItem.visible = false;
+  }
+
   private buildOptionItems() {
     this.optionItems = [];
 
@@ -691,14 +729,14 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.InitiateScorecard) && this.selectedApplication.id) {
-        this.optionItems[0].items.push({
-          label: 'Initiate Score Card',
-          icon: 'fa fa-envelope-open-o',
-          command: () => {
-            this._router.navigateByUrl('initiate/' + this.selectedApplication.id);
-          }
-        });
+      if (this.IsAuthorized(PermissionsEnum.InitiateScorecard)) {
+          this.optionItems[0].items.push({
+            label: 'Initiate Score Card',
+            icon: 'fa fa-envelope-open-o',
+            command: () => {
+              this._router.navigateByUrl('initiate/' + this.selectedApplication.id);
+            }
+          });
       }
 
       if (this.IsAuthorized(PermissionsEnum.CloseScorecard)) {

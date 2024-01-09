@@ -930,64 +930,59 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		#endregion
+        [HttpPut("UpdateInitiateScorecardValue/applicationId/{applicationId}", Name = "UpdateInitiateScorecardValue")]
+        public async Task<IActionResult> UpdateInitiateScorecardValue(int applicationId)
+        {
+            try
+            {
+                var fundingApplication = await _applicationService.GetById(applicationId);
+                await _applicationService.UpdateInitiateScorecardValue(applicationId, base.GetUserIdentifier());
+				await InitiateScorecardNotificationEmail(fundingApplication);
 
-		#region Place-SubPlace
-		//[HttpPost]
-		//[Route("places")]
-		//public async Task<IActionResult> GetPlaces([FromBody] IEnumerable<ServiceDeliveryArea> sdas)
-		//{
-		//    try
-		//    {
-		//        var sdaIds = sdas.Select(p => p.Id).ToList();
-		//        var items = await _applicationService.GetPlaces(sdaIds);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateInitiateScorecardValue action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
-		//        return Ok(items);
-		//    }
-		//    catch (Exception ex)
-		//    {
-		//        _logger.LogError("Get places", ex);
-		//        return StatusCode(500, $"Internal server error: {ex.Message}");
-		//    }
-		//}
+        [HttpPut("UpdateCloseScorecardValue/applicationId/{applicationId}", Name = "UpdateCloseScorecardValue")]
+        public async Task<IActionResult> UpdateApplicationById(int applicationId)
+        {
+            try
+            {
+                await _applicationService.UpdateCloseScorecardValue(applicationId, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside DeleteApplicationById action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
-		//[HttpPost]
-		//[Route("subPlaces")]
-		//public async Task<IActionResult> GetSubPlaces([FromBody] IEnumerable<Place> places)
-		//{
-		//    try
-		//    {
-		//        var placesIds = places.Select(p => p.Id).ToList();
-		//        var items = await _applicationService.GetSubplaces(placesIds);
+        private async Task InitiateScorecardNotificationEmail(Application fundingApplication)
+        {
+            try
+            {
+                // Send email to Capturer
+                var initiateScorecardEmail = EmailTemplateFactory
+                            .Create(EmailTemplateTypeEnum.InitiateScorecard)
+                            .Get<InitiateScorecardEmailTemplates>()
+                            .Init(fundingApplication);
 
-		//        return Ok(items);
-		//    }
-		//    catch (Exception ex)
-		//    {
-		//        _logger.LogError("Get sub-places", ex);
-		//        return StatusCode(500, $"Internal server error: {ex.Message}");
-		//    }
-		//}
+                await initiateScorecardEmail.SubmitToQueue();
 
-		//[HttpGet("applicationId/{applicationId}", Name = "GetapplicationIDAsync")]
-		//public ActionResult GetapplicationIDAsync(int applicationId)
-		//{
+                await _emailService.SendEmailFromQueue();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside EvaluationController-ConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
 
-
-		//    try
-		//    {
-		//        var userIdentifier = GetUserIdentifier();
-		//        var bid = await _applicationService.GetapplicationIDAsync(applicationId);
-
-		//        return Ok(bid);
-		//    }
-		//    catch (Exception ex)
-		//    {
-		//        _logger.LogError($"Get one Application, id: {applicationId}", ex);
-		//        return StatusCode(500, $"Internal server error: {ex.Message}");
-		//    }
-		//}
-
-		#endregion
-	}
+        #endregion       
+    }
 }

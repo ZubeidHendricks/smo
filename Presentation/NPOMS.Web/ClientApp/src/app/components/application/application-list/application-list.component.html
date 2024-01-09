@@ -49,7 +49,7 @@
             <tr class="default-font">
                 <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" 
-                    (click)="selectedApplication=rowData; menu.toggle($event)" pTooltip="Options" tooltipPosition="right" 
+                    (click)="selectedApplication=rowData; menu.toggle($event); updateOptionItems();" pTooltip="Options" tooltipPosition="right" 
                     *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && rowData.statusId === StatusEnum.AcceptedSLA"></button>
                     <p-menu #menu [popup]="true" [model]="optionItems" appendTo="body"></p-menu>
                 </td>
