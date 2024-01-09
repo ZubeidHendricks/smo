@@ -24,6 +24,8 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateFundingApplicationStatus(string userIdentifier, int fundingApplicationId, int statusId, int step);
 
+        Task UpdateFundedApplicationScorecardCount(string userIdentifier, int fundingApplicationId);
+
         //Task<FundingApplication> GetFundingApplicationById(int id, bool returnAllDetails);
 
         Task CloneWorkplan(Application model, int financialYearId, string userIdentifier);
@@ -37,8 +39,10 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateApplication(Application model, string userIdentifier);
 
 		Task DeleteApplicationById(int id, string userIdentifier);
+        Task UpdateInitiateScorecardValue(int id, string userIdentifier);
+        Task UpdateCloseScorecardValue(int id, string userIdentifier);
 
-		Task<IEnumerable<Objective>> GetAllObjectivesAsync(int NpoId, int applicationPeriodId);
+        Task<IEnumerable<Objective>> GetAllObjectivesAsync(int NpoId, int applicationPeriodId);
 
 		Task CreateObjective(Objective model, string userIdentifier);
 

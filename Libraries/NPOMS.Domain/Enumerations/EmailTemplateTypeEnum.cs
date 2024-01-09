@@ -31,6 +31,7 @@
 		StatusChangedSubmitted = 27,
 		StatusChangedVerified = 28,
 		StatusChangedPendingReviewerSatisfaction = 29,
-		ScorecardSummary = 30
-	}
+		ScorecardSummary = 30,
+        InitiateScorecard = 31
+    }
 }

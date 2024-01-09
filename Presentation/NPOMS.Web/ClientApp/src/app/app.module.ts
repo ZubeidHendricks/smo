@@ -172,6 +172,7 @@ import{DownloadQuickCaptureDohComponent} from './components/quick-capture/downlo
 import { QcApplicationDetailsEditComponent } from './components/application/application-steps/quick-capture/qc-application-details-edit/qc-application-details-edit.component';
 import { QcDocumentUploadEditComponent } from './components/application/application-steps/quick-capture/qc-document-upload-edit/qc-document-upload-edit.component';
 import { ScorecardComponent } from './components/application/scorecard/scorecard.component';
+import { ScorecardActionComponent } from './components/application/scorecard-action/scorecard-action.component';
 import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
 import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
 import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
@@ -365,7 +366,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     QcObjectivesViewComponent,
     QcNpoDetailsViewComponent,
     ViewQuickCaptureDohComponent,
-    DownloadQuickCaptureDohComponent
+    DownloadQuickCaptureDohComponent,
+    ScorecardActionComponent
    // ScorecardComponent
   ],
   schemas: [

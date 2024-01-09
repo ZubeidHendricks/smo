@@ -31,6 +31,7 @@ namespace NPOMS.Domain.Entities
 		public int Step { get; set; }
         public int InitiateScorecard { get; set; }
         public int CloseScorecard { get; set; }
+		public int ScorecardCount { get; set; }
         public Npo Npo { get; set; }
 
 		public ApplicationPeriod ApplicationPeriod { get; set; }

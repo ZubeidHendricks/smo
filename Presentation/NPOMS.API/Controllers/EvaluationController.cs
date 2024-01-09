@@ -241,7 +241,11 @@ namespace NPOMS.API.Controllers
             {
                 await this._evaluationService.CreateCapturedResponse(model, base.GetUserIdentifier());
                 var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
-                await ScorecardSummaryEmail(fundingApplication);
+                if(model.StatusId == 0)
+				{
+					await UpdateFundedApplicationScorecardCount(model);
+                }
+				await ScorecardSummaryEmail(fundingApplication);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -267,7 +271,18 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		private async Task UpdateFundingApplicationStatus(CapturedResponse model)
+        private async Task UpdateFundedApplicationScorecardCount(CapturedResponse model)
+        {
+            var workflowAssessment = await _evaluationService.GetWorkflowAssessmentByQuestionCategoryId(model.QuestionCategoryId);
+
+            var capturedResponses = await _evaluationService.GetCapturedResponsesByIds(model.FundingApplicationId, model.QuestionCategoryId);
+            var numberOfCapturedResponses = capturedResponses.Select(x => x.CreatedUserId).Distinct();
+
+            
+            await _applicationService.UpdateFundedApplicationScorecardCount(base.GetUserIdentifier(), model.FundingApplicationId);
+        }
+
+        private async Task UpdateFundingApplicationStatus(CapturedResponse model)
 		{
 			var workflowAssessment = await _evaluationService.GetWorkflowAssessmentByQuestionCategoryId(model.QuestionCategoryId);
 
@@ -360,7 +375,7 @@ namespace NPOMS.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside EvaluationController-ConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+                _logger.LogError($"Something went wrong inside EvaluationController-ScorecardSummary Email: {ex.Message} Inner Exception: {ex.InnerException}");
             }
         }
         private async Task ConfigureEmail(Application fundingApplication)

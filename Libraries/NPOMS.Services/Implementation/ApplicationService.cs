@@ -438,7 +438,16 @@ namespace NPOMS.Services.Implementation
 
 		}
 
-		public async Task UpdateApplicationStatus(Application model, string userIdentifier)
+		public async Task UpdateFundedApplicationScorecardCount(string userIdentifier, int fundingApplicationId)
+		{
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            var fundingApplication = await _applicationRepository.GetById(fundingApplicationId);
+            fundingApplication.ScorecardCount = fundingApplication.ScorecardCount + 1;
+            fundingApplication.UpdatedUserId = currentUser.Id;
+            fundingApplication.UpdatedDateTime = DateTime.Now;
+            await _applicationRepository.UpdateAsync(fundingApplication);
+        }
+        public async Task UpdateApplicationStatus(Application model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
@@ -467,7 +476,33 @@ namespace NPOMS.Services.Implementation
 			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
-		public async Task<IEnumerable<Objective>> GetAllObjectivesAsync(int NpoId, int applicationPeriodId)
+        public async Task UpdateInitiateScorecardValue(int id, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            var model = await _applicationRepository.GetById(id);
+            model.InitiateScorecard = 1;
+            model.CloseScorecard = 1;
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
+        }
+
+        public async Task UpdateCloseScorecardValue(int id, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            var model = await _applicationRepository.GetById(id);
+            model.InitiateScorecard = 0;
+			model.CloseScorecard = 0;
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
+        }
+
+        public async Task<IEnumerable<Objective>> GetAllObjectivesAsync(int NpoId, int applicationPeriodId)
 		{
 			var application = await _applicationRepository.GetByNpoIdAndPeriodId(NpoId, applicationPeriodId);
 
