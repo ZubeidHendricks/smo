@@ -177,7 +177,7 @@ namespace NPOMS.Repository.Configurations.Core
                 {
                     Id = 24,
                     Name = "InitiateScorecard",
-                    Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for application with reference number</p><p><strong>{ApplicationRefNo}</strong> for financial year<strong> {financialYear} </strong> has been initiated.</p><p>Please &nbsp;</p><p><a href=\"{url}/#/applications\">click here</a> to add score card.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
+                    Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for <strong>{organisationName}</strong> with reference number <strong>{ApplicationRefNo}</strong> is now available for rating.</p><p>If you are required to rate this workplan, please <a href=\"{url}/#/applications\">click here</a> to access.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
                     Subject = "Scorecard Initiated Notification - {NPO}"
                 }
 

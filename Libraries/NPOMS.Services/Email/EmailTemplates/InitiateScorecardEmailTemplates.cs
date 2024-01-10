@@ -38,9 +38,31 @@ namespace NPOMS.Services.Email.EmailTemplates
             var application = await applicationRepository.GetById(this._application.Id);
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
-            var user = await userRepository.GetByUserName("Sharief.Hendricks@westerncape.gov.za");
+            var user = await userRepository.GetByUserName("Shafieka.Samuels@westerncape.gov.za");
+            //var users = await userRepository.GetByIds((int)RoleEnum.Reviewer, application.ApplicationPeriod.DepartmentId);
+            var npoRepository = EngineContext.Current.Resolve<INpoRepository>();
+            var npo = await npoRepository.GetById(application.NpoId);
             try
             {
+                /*
+                
+                foreach (var user in users)
+				{
+					EmailQueue emailQueue = new EmailQueue()
+					{
+						CreatedDateTime = DateTime.Now,
+						EmailTemplateId = emailTemplate.Id,
+						FromEmailAddress = emailTemplate.EmailAccount.FromEmail,
+						FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
+						Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, user, npo),
+						Subject = ReplacePlaceholders(emailTemplate.Subject, application, requestOrigin, user, npo),
+						RecipientEmail = user.Email,
+						RecipientName = user.FullName
+					};
+
+					await emailQueueService.Create(emailQueue);
+				}
+                */
                 var action = string.Empty;
                 var contactPersonFullName = string.Empty;
                 var contactPersonName = user.UserName; // (x => x.FirstName == "Sharief").FirstOrDefault();
@@ -56,7 +78,7 @@ namespace NPOMS.Services.Email.EmailTemplates
                     EmailTemplateId = emailTemplate.Id,
                     FromEmailAddress = emailTemplate.EmailAccount.FromEmail,
                     FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
-                    Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, contactPersonFullName, application.Id),
+                    Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, contactPersonFullName, application.Id, npo),
                     Subject = emailTemplate.Subject,
                     RecipientEmail = user.Email,
                     RecipientName = contactPersonFullName
@@ -71,13 +93,14 @@ namespace NPOMS.Services.Email.EmailTemplates
             }
         //}
         }
-        private string ReplacePlaceholders(string value, Application application, string origin, string contactPerson, int id)
+        private string ReplacePlaceholders(string value, Application application, string origin, string contactPerson, int id, Npo npo)
         {
 
             var returnResult = value.Replace("{ToUserFullName}", contactPerson)
                                     .Replace("{ApplicationRefNo}", application.RefNo)
                                     .Replace("{url}", origin)
                                     .Replace("{npoId}", id.ToString())
+                                    .Replace("{organisationName}", npo.Name)
                                     .Replace("{financialYear}", application.ApplicationPeriod.FinancialYear.Name);
 
             return returnResult;
