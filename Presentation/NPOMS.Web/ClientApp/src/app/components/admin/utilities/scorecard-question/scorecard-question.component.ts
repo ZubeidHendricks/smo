@@ -98,7 +98,7 @@ export class ScorecardQuestionComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.QuestionSection, true).subscribe(
       (results) => {
         this.questionSections = results;
-        this.filteredQuestionSections = this.questionSections.filter(x => x.isActive);
+        this.filteredQuestionSections = this.questionSections.filter(x => x.isActive && (x.name.includes('Engagement with department of Health') || x.name.includes('Timely work plan submission') || x.name.includes('Impact of activities') || x.name.includes('Risk Mitigation') || x.name.includes('Appropriation of resources')));
         this.loadResponseTypes();
       },
       (err) => {

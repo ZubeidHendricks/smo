@@ -1,0 +1,160 @@
+<div style="width: 100%;">
+    <div style="font-size:20px;margin-top:2px;font-weight: bold;height: 26px; text-align: center;">
+        Score Card
+    </div>
+</div>
+<div style="height: 10px;"></div>
+<div class="p-grid p-nogutter p-justify-between" style="border: solid 1px rgb(172, 168, 168);">
+    <!-- <div>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application RefNo: <span *ngIf="application">"{{application.refNo}}"</span></span>
+            <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: <span *ngIf="financialYears">"{{financialYears[0].name}}"</span></span>
+    </div>
+    <div>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Organisation: <span *ngIf="organisation">"{{organisation}}"</span></span>
+            <i style="vertical-align: middle; padding: 10px;"></i>
+        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application Name: <span *ngIf="application && application.applicationPeriod">"{{application.applicationPeriod.name}}"</span></span>
+    </div> -->
+</div>
+<div>
+    <p-panel header="Adjudication" [style]="{'font-size':'12px', 'width':'100%'}" >
+        <p-table [value]="npoAdjudication" *ngIf="npoAdjudication" [rowHover]="true" 
+        styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width: 5%; text-align: center;">#</th>
+                    <th style="width: 45%;">Element / Question</th>
+                    <th style="width: 10%;">Value</th>
+                    <th style="width: 25%;">Captured Score</th>
+                    <!-- <th style="width: 7%;" *ngIf="hasDocument(npoAdjudication)">Evidence</th> -->
+                    <th style="width: 8%;" colspan="2"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
+                <tr *ngIf="updateRowGroupMetaData(npoAdjudication)[question.questionSectionName].index === rowIndex">
+                    <td [attr.colspan]="getColspan(npoAdjudication, 7)">
+                        <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                        <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
+                        <div class="pull-right"><span class="{{'product-badge status-' + getStatus(npoAdjudication, question)}}">{{getStatusText(npoAdjudication, question)}}</span></div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex" >
+                <tr class="default-font">
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td>{{question.questionName}}</td>
+                    <td [pEditableColumn]="question" pEditableColumn>
+                        <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
+                            optionLabel="systemName" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
+                            (onChange)="onSaveResponse($event, question)" [disabled]="isEvaluationDisable"></p-dropdown>
+                    </td>
+                    <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(npoAdjudication)">
+                        <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
+                        [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
+                        [autoResize]="true"   [disabled]="isEvaluationDisable"></textarea>
+                    </td>
+                  
+                    <td style="text-align: center;">
+                        <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
+                    </td>
+                    <!-- <td style="text-align: center;">
+                        <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                        (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                    </td> -->
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td [attr.colspan]="getColspan(npoAdjudication, 7)" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+           <ng-template pTemplate="footer" *ngIf="hasWeighting(npoAdjudication)">
+                <tr>
+                    <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
+                    <td [attr.colspan]="getColspan(npoAdjudication, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(npoAdjudication)}}</span></td>
+                    <td colspan="2"></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+    <div style="height: 10px;"></div>
+</div>
+
+<!-- <div>
+    <div style="height: 10px;"></div>
+        <table style="width: 80%; border-width: 1px;">
+            <tr>
+                <td style="width: 60%;"></td>
+                <td>  <span style="text-align: right;"><b>Overall Total Score</b></span></td>
+                <td><span style="text-align: left;"><b>{{overallTotalScores}}</b></span></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="width: 60%;"></td>
+                <td class="{{getRagColour1(overallAvgScore)}}"><span style="text-align: right;"><b>Overall Average Score</b></span></td>
+                <td> <span style="text-align: left;" class="{{getRagColour1(overallAvgScore)}}"><b>{{overallAvgScore.toFixed(2)}}/10</b></span></td>
+                <td><span style="text-align: center;" class="{{getRagColour1(overallAvgScore)}}"><b>{{getRagText1(overallAvgScore)}}</b></span></td>
+            </tr>
+        </table>
+    <div style="height: 10px;"></div>
+</div> -->
+<div style="height: 10px;"></div>   
+    <div style="width: 100%;">
+        
+        <div style="height: 10px;"></div>
+        <p-panel>
+            <div class="p-grid">
+                <div class="p-col-3 form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Improvement Areas
+                        </span>
+                    </div>
+                </div>
+                <div class="p-col-9">
+                    <textarea class="form-text" [rows]="3" pInputTextarea 
+                    [(ngModel)]="captureImprovementArea" [ngModelOptions]="{standalone: true}" 
+                    [autoResize]="true" [disabled]="hascapturedImprovementArea"></textarea>
+                </div>
+                <div class="p-col-3 form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Required Actions
+                        </span>
+                    </div>
+                </div>
+                <div class="p-col-9">
+                    <textarea class="form-text" [rows]="3" pInputTextarea 
+                    [(ngModel)]="captureRequiredAction" [ngModelOptions]="{standalone: true}" 
+                    [autoResize]="true" [disabled]="hasCapturedRequiredAction"></textarea>
+                </div>
+            </div>
+            <div style="height: 10px;"></div>
+            <div class="p-grid">
+                <div class="p-col-3 form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Submitted By</span>
+                    </div>
+                </div>
+                <div class="p-col-9">
+                    <span>{{signedByUser}}</span>
+                </div>
+            </div>
+            <div style="height: 10px;"></div>
+            <div class="p-grid">
+                <div class="p-col-3 form-label">
+                    <div class="box">
+                        <span class="non-mandatory-content">Submitted Date</span>
+                    </div>
+                </div>
+                <div class="p-col-9">
+                    <span>{{submittedDate | date: 'yyyy-MM-dd'}}</span>
+                </div>
+            </div>
+            <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasScorecardSubmitted">
+                <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
+                [disabled]="disableElement()" (click)="submit()"></button>
+            </div>
+        </p-panel>
+    </div>     
+
+

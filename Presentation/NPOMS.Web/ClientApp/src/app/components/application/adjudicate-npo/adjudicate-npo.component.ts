@@ -23,11 +23,11 @@ import { EvaluationService } from 'src/app/services/evaluation/evaluation.servic
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-scorecard',
-  templateUrl: './scorecard.component.html',
-  styleUrls: ['./scorecard.component.css']
+  selector: 'app-adjudicate-npo',
+  templateUrl: './adjudicate-npo.component.html',
+  styleUrls: ['./adjudicate-npo.component.css']
 })
-export class ScorecardComponent implements OnInit {
+export class AdjudicateNpoComponent implements OnInit {
 
   isSystemAdmin: boolean;
   isAdmin: boolean;
@@ -76,6 +76,7 @@ export class ScorecardComponent implements OnInit {
   id: string;
   application: IApplication;
   allQuestionnaires: IQuestionResponseViewModel[] = [];
+  npoAdjudication: IQuestionResponseViewModel[];
   engagementQuestionnaire: IQuestionResponseViewModel[];
   timeWorkPlanQuestionnaire: IQuestionResponseViewModel[];
   impactQuestionnaire: IQuestionResponseViewModel[];
@@ -134,7 +135,7 @@ export class ScorecardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this._spinner.show();
+    //this._spinner.show();
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
@@ -160,13 +161,14 @@ export class ScorecardComponent implements OnInit {
     this._evaluationService.getAddScoreQuestionnaire(Number(this.id)).subscribe(
       (results) => {
         this.allQuestionnaires = results;
-        this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
-        this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
-        this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
-        this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
-        this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
+        this.npoAdjudication = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication2");
+        // this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
+        // this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
+        // this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
+        // this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
+        // this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
-        this.getWorkflowCount();
+        console.log('this.npoAdjudication',this.npoAdjudication);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -226,7 +228,7 @@ export class ScorecardComponent implements OnInit {
   }
 
   public hasWeighting(questionnaire: IQuestionResponseViewModel[]) {
-    return questionnaire.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score3 });
+    return questionnaire.some(function (item) { return (item.responseTypeId === ResponseTypeEnum.Score2) || (item.responseTypeId === ResponseTypeEnum.Score3)});
   }
 
   public updateRowGroupMetaData(questionnaire: IQuestionResponseViewModel[]) {
@@ -492,10 +494,10 @@ export class ScorecardComponent implements OnInit {
       (results) => {
         this.financialYears = [];
         this.application = results;
-        var isPresent = this.financialYears.some(function (financialYear) { return financialYear === this.application.applicationPeriod.financialYear });
+        // var isPresent = this.financialYears.some(function (financialYear) { return financialYear === this.application.applicationPeriod.financialYear });
 
-        if (!isPresent)
-          this.financialYears.push(this.application.applicationPeriod.financialYear);
+        // if (!isPresent)
+        //   this.financialYears.push(this.application.applicationPeriod.financialYear);
 
         this.loadActivities();
         this.loadObjectives();
@@ -612,7 +614,7 @@ export class ScorecardComponent implements OnInit {
         } as IWorkplanIndicatorSummary);
       });
 
-      this.updateRowGroupMetaDataAct();
+     // this.updateRowGroupMetaDataAct();
     }
 
     return this.filteredWorkplanIndicators;
@@ -696,25 +698,25 @@ export class ScorecardComponent implements OnInit {
     return performanceAvg;
   }
 
-  updateRowGroupMetaDataAct() {
-    this.rowGroupMetadataActivities = [];
+  // updateRowGroupMetaDataAct() {
+  //   this.rowGroupMetadataActivities = [];
 
-    if (this.filteredWorkplanIndicators) {
-      this.filteredWorkplanIndicators.forEach(element => {
-        var itemExists = this.rowGroupMetadataActivities.some(function (data) {
-          return data.itemName === element.ObjectiveName
-        });
+  //   if (this.filteredWorkplanIndicators) {
+  //     this.filteredWorkplanIndicators.forEach(element => {
+  //       var itemExists = this.rowGroupMetadataActivities.some(function (data) {
+  //         return data.itemName === element.ObjectiveName
+  //       });
 
-        this.rowGroupMetadataActivities.push({
-          itemName: element.ObjectiveName,
-          itemExists: itemExists
-        });
+  //       this.rowGroupMetadataActivities.push({
+  //         itemName: element.ObjectiveName,
+  //         itemExists: itemExists
+  //       });
 
-      });
-    }
+  //     });
+  //   }
 
-    this.allDataLoaded();
-  }
+  //   this.allDataLoaded();
+  // }
 
   private allDataLoaded() {
     if (this.objectives && this.activities) {
