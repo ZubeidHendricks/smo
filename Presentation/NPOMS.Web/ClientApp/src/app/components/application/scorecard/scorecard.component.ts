@@ -226,7 +226,7 @@ export class ScorecardComponent implements OnInit {
   }
 
   public hasWeighting(questionnaire: IQuestionResponseViewModel[]) {
-    return questionnaire.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score2 });
+    return questionnaire.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score3 });
   }
 
   public updateRowGroupMetaData(questionnaire: IQuestionResponseViewModel[]) {
@@ -394,6 +394,9 @@ export class ScorecardComponent implements OnInit {
         canDisplayField = true;
         break;
       case ResponseTypeEnum.Score2:
+        canDisplayField = true;
+        break;
+      case ResponseTypeEnum.Score3:
         canDisplayField = true;
         break;
     }
