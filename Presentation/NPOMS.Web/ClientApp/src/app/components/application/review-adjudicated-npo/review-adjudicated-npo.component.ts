@@ -2,13 +2,13 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import {
   ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum
 } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator, IWorkplanIndicatorSummary } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator, IWorkplanIndicatorSummary, IApplicationPeriod, IDistrictCouncil, IApplicationDetails, IFundAppSDADetail, IFundingApplicationDetails, ILocalMunicipality, IProjectInformation, IRegion, ISDA } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -19,6 +19,10 @@ import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { QuestionCategoryComponent } from '../../admin/utilities/question-category/question-category.component';
+import { ISourceOfInformation, IAffiliatedOrganisation } from 'src/app/models/FinancialMatters';
+import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
+import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
+import { UserService } from 'src/app/services/api-services/user/user.service';
 
 export interface IResp {
   name: string
@@ -99,6 +103,8 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   objectives: IObjective[] = [];
   activities: IActivity[];
   applications: IApplication;
+  evaluationStatuses: IStatus[];
+  selectedStatus: IStatus;
   //npoId: string;
   statuses: IStatus[];
   rowGroupMetadataActivities: any[];
@@ -106,39 +112,21 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   scorer2: number;
   scorer3: number;
   scorer4: number;
-  // scorer5: number;
-  // scorer6: number;
-  // scorer7: number;
-  // scorer8: number;
-  // scorer9: number;
-  // scorer10: number;
   socrer1OverallTotalScore: number;
   socrer2OverallTotalScore: number;
   socrer3OverallTotalScore: number;
   socrer4OverallTotalScore: number;
-  // socrer5OverallTotalScore: number;
-  // socrer6OverallTotalScore: number;
-  // socrer7OverallTotalScore: number;
-  // socrer8OverallTotalScore: number;
-  // socrer9OverallTotalScore: number;
-  // socrer10OverallTotalScore: number;
   allSocrerOverallTotalScore: number;
   scorer1OverallAvgScore: number;
   scorer2OverallAvgScore: number;
   scorer3OverallAvgScore: number;
   scorer4OverallAvgScore: number;
-  // scorer5OverallAvgScore: number;
-  // scorer6OverallAvgScore: number;
-  // scorer7OverallAvgScore: number;
-  // scorer8OverallAvgScore: number;
-  // scorer9OverallAvgScore: number;
-  // scorer10OverallAvgScore: number;
   allScorerOverallAvgScore: number;
   objectiveTarget: number;
   objectiveActual: number;
   objectiveAverage: number;
 
-  captureImprovementArea: string;
+  reasonOfNonRecommendation: string;
   captureRequiredAction: string;
   captureImprovementAreaComment: string;
   captureRequiredActionComment: string;
@@ -146,7 +134,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
   hasScorecardSubmitted: boolean = false;
-
+  isDataAvailable: boolean;
   signedByUser: string;
   submittedDate: Date;
   signedByUserScorecardUser: string;
@@ -157,6 +145,43 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   name: IResp[] = [];
   _name: IResp[] = [];
   userId: number;
+
+
+  isMainReviewer: boolean;
+  canReviewOrApprove: boolean = false;
+
+  applicationId: string;
+
+  applicationPeriod: IApplicationPeriod;
+  status: StatusEnum;
+
+  districtCouncil: IDistrictCouncil;
+  localMunicipality: ILocalMunicipality;
+  regions: IRegion[];
+  sdas: ISDA[];
+  projectInformation: IProjectInformation;
+  purposeQuestion: string;
+  menuActions: MenuItem[];
+  validationErrors: Message[];
+  qcItems: MenuItem[];
+  isStepsAvailable: boolean;
+
+  amount: number;
+  sourceOfInformation: ISourceOfInformation[];
+  affliatedOrganisationInfo: IAffiliatedOrganisation[];
+
+  fundingApplicationDetails: IFundingApplicationDetails = {
+    applicationDetails: {
+      fundAppSDADetail: {
+        districtCouncil: {} as IDistrictCouncil,
+        localMunicipality: {} as ILocalMunicipality,
+        regions: [],
+        serviceDeliveryAreas: [],
+      } as IFundAppSDADetail
+    } as IApplicationDetails,
+    projectInformation: {} as IProjectInformation
+  } as IFundingApplicationDetails;
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -173,7 +198,10 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     private _messageService: MessageService,
     private _datepipe: DatePipe,
     private _indicatorRepo: IndicatorService,
-    private _npoRepo: NpoService
+    private _fundAppService: FundingApplicationService,
+    private _npoProfile: NpoProfileService,
+    private _userRepo: UserService,
+    private _npoRepo: NpoService,
 
   ) { }
 
@@ -216,7 +244,9 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
         this.application = results;
 
         this.loadQuestionnaire();
-        this.loadObjectives();
+        this.applicationPeriod = this.application.applicationPeriod;
+        this.loadNpo();
+
       },
     );
   }
@@ -225,11 +255,6 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     this._evaluationService.getScorecardQuestionnaire(Number(this.id)).subscribe(
       (results) => {
         this.allQuestionnaires = results.filter(x => x.questionCategoryName === "Adjudication2");
-        // this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
-        // this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
-        // this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
-        // this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
-        // this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
       },
       (err) => {
@@ -256,7 +281,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   private loadStatuses() {
     this._dropdownService.getEntities(DropdownTypeEnum.Statuses, true).subscribe(
       (results) => {
-        this.statuses = results;
+        this.statuses = results.filter(x => x.name.includes('Recommended') || x.name.includes('Declined') && x.name != 'StronglyRecommended');
       },
       (err) => {
         this._loggerService.logException(err);
@@ -267,6 +292,65 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
 
   public hasWeighting(questionnaire: IQuestionResponseViewModel[]) {
     return questionnaire.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score2 });
+  }
+
+  public getRagPercent(questionnaire: IQuestionResponseViewModel) {
+
+    let ragPercent = '';
+     
+      if(questionnaire.responseTypeId ===  ResponseTypeEnum.Score2)
+      {
+        if (Number(questionnaire.responseOption.name) === 1){
+          ragPercent = ((Number(questionnaire.responseOption.name)/5) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 2){
+        ragPercent = ((Number(questionnaire.responseOption.name)/5) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 3){
+          ragPercent = ((Number(questionnaire.responseOption.name)/5) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 4){
+          ragPercent = ((Number(questionnaire.responseOption.name)/5) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 5){
+          ragPercent = ((Number(questionnaire.responseOption.name)/5) * 100).toFixed(2).toString();
+        }
+      }
+      if(questionnaire.responseTypeId ===  ResponseTypeEnum.Score3)
+      {
+        if (Number(questionnaire.responseOption.name) === 1){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 2){
+        ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 3){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 4){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 5){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 6){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 7){
+        ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 8){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 9){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 10){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+      }
+     
+    return ragPercent;
   }
 
   public updateRowGroupMetaData(questionnaire: IQuestionResponseViewModel[]) {
@@ -292,22 +376,6 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     return rowGroupMetadata;
   }
 
-  public hasComment(questionnaire: IQuestionResponseViewModel[]) {
-    return questionnaire.some(function (item) { return item.hasComment === true });
-  }
-
-  public hasDocument(questionnaire: IQuestionResponseViewModel[]) {
-    return questionnaire.some(function (item) { return item.hasDocument === true });
-  }
-
-  public getColspan(questionnaire: IQuestionResponseViewModel[], defaultColspan: number) {
-    let colspan = defaultColspan;
-
-    colspan = this.hasComment(questionnaire) ? colspan + 1 : colspan;
-    colspan = this.hasDocument(questionnaire) ? colspan + 1 : colspan;
-
-    return colspan;
-  }
   public getStatusText(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
     let countReviewed = questions.filter(x => x.isSaved === true).length;
@@ -582,9 +650,6 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         this.application = results;
-
-        this.loadActivities();
-        this.loadObjectives();
         this.loadNpo();
       },
       (err) => {
@@ -607,101 +672,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     );
   }
 
-  private loadActivities() {
-    this._applicationRepo.getAllActivities(this.application).subscribe(
-      (results) => {
-        this.activities = results.filter(x => x.isActive === true);
-        this.workplanIndicators = [];
-
-        this.activities.forEach(activity => {
-          this.workplanIndicators.push({
-            activity: activity,
-            workplanTargets: [],
-            workplanActuals: []
-          } as IWorkplanIndicator);
-
-          this.loadTargets(activity);
-          this.loadActuals(activity);
-        });
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadObjectives() {
-    this._applicationRepo.getAllObjectives(this.application).subscribe(
-      (results) => {
-        this.objectives = results.filter(x => x.isActive === true);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadTargets(activity: IActivity) {
-    this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
-      (results) => {
-        // Add WorkplanTargets to WorkplanIndicators at index of activity
-        var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
-        this.workplanIndicators[index].workplanTargets = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadActuals(activity: IActivity) {
-    this._indicatorRepo.getActualsByActivityId(activity.id).subscribe(
-      (results) => {
-        // Add WorkplanActuals to WorkplanIndicators at index of activity
-        var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
-        this.workplanIndicators[index].workplanActuals = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-
-  public filterWorkplanIndicators() {
-    this.filteredWorkplanIndicators = [];
-
-    if (this.workplanIndicators && this.workplanIndicators.length > 0) {
-
-      this.workplanIndicators.forEach(indicator => {
-
-        let totalTargets = indicator.workplanTargets.length > 0 ? (indicator.workplanTargets[0].apr + indicator.workplanTargets[0].may + indicator.workplanTargets[0].jun + indicator.workplanTargets[0].jul + indicator.workplanTargets[0].aug + indicator.workplanTargets[0].sep + indicator.workplanTargets[0].oct + indicator.workplanTargets[0].nov + indicator.workplanTargets[0].dec + indicator.workplanTargets[0].jan + indicator.workplanTargets[0].feb + indicator.workplanTargets[0].mar) : 0;
-        let totalActuals: number = 0;
-
-        indicator.workplanActuals.forEach(item => {
-          let actual = item.actual !== null && item.actual !== undefined ? item.actual : 0;
-          totalActuals = totalActuals + actual;
-        });
-
-        this.filteredWorkplanIndicators.push({
-          activity: indicator.activity,
-          totalTargets: totalTargets,
-          totalActuals: totalActuals,
-          ObjectiveName: indicator.activity.objective.name,
-          totalAvg: totalActuals === 0 || totalTargets === 0 ? 0 : ((totalActuals / totalTargets)/10) * 100
-        } as IWorkplanIndicatorSummary);
-      });
-
-      this.updateRowGroupMetaDataAct();
-    }
-
-    return this.filteredWorkplanIndicators;
-  }
-
+  
   public getOverallPerformancePercentage() {
     let overallPerformancePercentage = 0;
 
@@ -727,32 +698,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     return overallPerformancePercentage;
   }
 
-  public getObjectiveTargets(objective: IObjective) {
-    let totalTarget = 0;
-    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
-
-    objectives.forEach(obj => {
-      if (obj.ObjectiveName === objective.name)
-        totalTarget += obj.totalTargets;
-    }
-    );
-
-    return totalTarget;
-  }
-
-  public getObjectiveActuals(objective: IObjective) {
-    let totalActual = 0;
-    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
-
-    objectives.forEach(obj => {
-      if (obj.ObjectiveName === objective.name)
-        totalActual += obj.totalActuals;
-    }
-    );
-
-    return totalActual;
-  }
-
+ 
   public getPerformanceAvg(objective: IObjective) {
     let totalTarget = 0;
     let totalActual = 0;
@@ -780,32 +726,6 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     return performanceAvg;
   }
 
-  updateRowGroupMetaDataAct() {
-    this.rowGroupMetadataActivities = [];
-
-    if (this.filteredWorkplanIndicators) {
-      this.filteredWorkplanIndicators.forEach(element => {
-        var itemExists = this.rowGroupMetadataActivities.some(function (data) {
-          return data.itemName === element.ObjectiveName
-        });
-
-        this.rowGroupMetadataActivities.push({
-          itemName: element.ObjectiveName,
-          itemExists: itemExists
-        });
-
-      });
-    }
-
-    this.allDataLoaded();
-  }
-
-  private allDataLoaded() {
-    if (this.objectives && this.activities) {
-      this._spinner.hide();
-    }
-  }
-
   public selectedResponses() {
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
@@ -817,16 +737,10 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
         let scorer2OverallTotalScores = 0;
         let scorer3OverallTotalScores = 0;
         let scorer4OverallTotalScores = 0;
-        // let scorer5OverallTotalScores = 0;
-        // let scorer6OverallTotalScores = 0;
-        // let scorer7OverallTotalScores = 0;
-        // let scorer8OverallTotalScores = 0;
-        // let scorer9OverallTotalScores = 0;
-        // let scorer10OverallTotalScores = 0;
-         let allScorerOverallTotalScores = 0;
-
+        let allScorerOverallTotalScores = 0;
         let length = user.length;
 
+        
         this._responses.forEach(item => {
           if (Number(item.responseOption.name) >= 0) {
             if (user[0] != undefined) {
@@ -879,84 +793,6 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
           }
         });
 
-        // this._responses.forEach(item => {
-        //   if (Number(item.responseOption.name) >= 0) {
-        //     if (user[4] != undefined) {
-        //       this.scorer5 = Number(user[4].createdUserId);
-        //       if (Number(item.createdUserId) == Number(user[4].createdUserId))
-        //         scorer5OverallTotalScores += Number(item.responseOption.name);
-        //     }
-        //   }
-        //   else {
-        //     scorer5OverallTotalScores = 0;
-        //   }
-        // });
-
-        // this._responses.forEach(item => {
-        //   if (Number(item.responseOption.name) >= 0) {
-        //     if (user[5] != undefined) {
-        //       this.scorer6 = Number(user[5].createdUserId);
-        //       if (Number(item.createdUserId) == Number(user[5].createdUserId))
-        //         scorer6OverallTotalScores += Number(item.responseOption.name);
-        //     }
-        //   }
-        //   else {
-        //     scorer6OverallTotalScores = 0;
-        //   }
-        // });
-
-        // this._responses.forEach(item => {
-        //   if (Number(item.responseOption.name) >= 0) {
-        //     if (user[6] != undefined) {
-        //       this.scorer7 = Number(user[6].createdUserId);
-        //       if (Number(item.createdUserId) == Number(user[6].createdUserId))
-        //         scorer7OverallTotalScores += Number(item.responseOption.name);
-        //     }
-        //   }
-        //   else {
-        //     scorer7OverallTotalScores = 0;
-        //   }
-        // });
-
-        // this._responses.forEach(item => {
-        //   if (Number(item.responseOption.name) >= 0) {
-        //     if (user[7] != undefined) {
-        //       this.scorer8 = Number(user[7].createdUserId);
-        //       if (Number(item.createdUserId) == Number(user[7].createdUserId))
-        //         scorer8OverallTotalScores += Number(item.responseOption.name);
-        //     }
-        //   }
-        //   else {
-        //     scorer8OverallTotalScores = 0;
-        //   }
-        // });
-
-        // this._responses.forEach(item => {
-        //   if (Number(item.responseOption.name) >= 0) {
-        //     if (user[8] != undefined) {
-        //       this.scorer9 = Number(user[8].createdUserId);
-        //       if (Number(item.createdUserId) == Number(user[8].createdUserId))
-        //         scorer9OverallTotalScores += Number(item.responseOption.name);
-        //     }
-        //   }
-        //   else {
-        //     scorer9OverallTotalScores = 0;
-        //   }
-        // });
-
-        // this._responses.forEach(item => {
-        //   if (Number(item.responseOption.name) >= 0) {
-        //     if (user[9] != undefined) {
-        //       this.scorer10 = Number(user[9].createdUserId);
-        //       if (Number(item.createdUserId) == Number(user[9].createdUserId))
-        //         scorer10OverallTotalScores += Number(item.responseOption.name);
-        //     }
-        //   }
-        //   else {
-        //     scorer10OverallTotalScores = 0;
-        //   }
-        // });
-
         this._responses.forEach(item => {
           if (Number(item.responseOption.name) >= 0) {
             allScorerOverallTotalScores += Number(item.responseOption.name);
@@ -970,25 +806,12 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
         this.socrer2OverallTotalScore = scorer2OverallTotalScores;
         this.socrer3OverallTotalScore = scorer3OverallTotalScores;
         this.socrer4OverallTotalScore = scorer4OverallTotalScores;
-        // this.socrer5OverallTotalScore = scorer5OverallTotalScores;
-        // this.socrer6OverallTotalScore = scorer6OverallTotalScores;
-        // this.socrer7OverallTotalScore = scorer7OverallTotalScores;
-        // this.socrer8OverallTotalScore = scorer8OverallTotalScores;
-        // this.socrer9OverallTotalScore = scorer9OverallTotalScores;
-        // this.socrer10OverallTotalScore = scorer10OverallTotalScores;
         this.allSocrerOverallTotalScore = allScorerOverallTotalScores;
-        this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores / 5).toFixed(2));
-        this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores / 5).toFixed(2));
-        this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores / 5).toFixed(2));
-        this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores / 5).toFixed(2));
-        // this.scorer5OverallAvgScore = Number((scorer5OverallTotalScores / 5).toFixed(2));
-        // this.scorer6OverallAvgScore = Number((scorer6OverallTotalScores / 5).toFixed(2));
-        // this.scorer7OverallAvgScore = Number((scorer7OverallTotalScores / 5).toFixed(2));
-        // this.scorer8OverallAvgScore = Number((scorer8OverallTotalScores / 5).toFixed(2));
-        // this.scorer9OverallAvgScore = Number((scorer9OverallTotalScores / 5).toFixed(2));
-        // this.scorer10OverallAvgScore = Number((scorer10OverallTotalScores / 5).toFixed(2));
-        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore) / length).toFixed(2));
-          // + this.scorer5OverallAvgScore + this.scorer6OverallAvgScore + this.scorer7OverallAvgScore + this.scorer8OverallAvgScore + this.scorer9OverallAvgScore + this.scorer10OverallAvgScore
+        this.scorer1OverallAvgScore = Number(((scorer1OverallTotalScores / 5)*10).toFixed(2));
+        this.scorer2OverallAvgScore = Number(((scorer2OverallTotalScores / 5)*10).toFixed(2));
+        this.scorer3OverallAvgScore = Number(((scorer3OverallTotalScores / 5)*10).toFixed(2));
+        this.scorer4OverallAvgScore = Number(((scorer4OverallTotalScores / 5)*10).toFixed(2));
+        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore) / 4).toFixed(2));
         if (isNaN(this.allScorerOverallAvgScore)) {
           this.allScorerOverallAvgScore = 0;
         }
@@ -1009,12 +832,12 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   }
 
   private createCapturedResponse() {
-
     let capturedResponse = {
       fundingApplicationId: this.application.id,
-      statusId: 0,
-      questionCategoryId: 100,
-      comments: this.captureImprovementArea + '/' + this.captureRequiredAction,
+       
+      statusId: this.selectedStatus.id,
+      questionCategoryId: 200,
+      comments: this.reasonOfNonRecommendation,
       isActive: true,
       isSignedOff: true,
       isDeclarationAccepted: true,
@@ -1036,12 +859,22 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   private loadCapturedResponses() {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
       (results) => {
-        this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.userId);
+        this.capturedResponses = results.filter(x => x.questionCategoryId === 200 && x.createdUser.id === this.userId);
         if (this.capturedResponses.length > 0) {
-          let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
-          let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
-          this.captureImprovementArea = improvementArea;
-          this.captureRequiredAction = requiredAction;
+          let num  = this.capturedResponses[0].selectedStatus;
+          switch (num) {
+            case Number(StatusEnum.Declined):
+              this.selectedStatus = this.statuses.find(x => x.id === StatusEnum.Declined);
+              break;
+            case Number(StatusEnum.Recommended):
+              this.selectedStatus = this.statuses.find(x => x.id === StatusEnum.Recommended);
+              break;
+            case Number(StatusEnum.StronglyRecommended):
+              this.selectedStatus = this.statuses.find(x => x.id === StatusEnum.StronglyRecommended);
+              break;
+          }
+        //  this.selectedStatus = this.capturedResponses[0].statusId
+          this.reasonOfNonRecommendation = this.capturedResponses[0].comments;
           this.signedByUser = this.capturedResponses[0].createdUser.fullName;
           this.submittedDate = this.capturedResponses[0].createdDateTime;
           this.hascapturedImprovementArea = true;
@@ -1051,14 +884,50 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
       })
   }
 
-  public onSelectViewComment(question: IQuestionResponseViewModel) {
-    this._spinner.show();
-    this._responseUsers = [];
-    this._evaluationService.getResponses(Number(this.id), question.questionId).subscribe(
+  public disableElement() {
+
+    return ((this.selectedStatus != undefined && !this.selectedStatus)) ? false : true;
+  }
+
+  public download() {
+
+    this._router.navigate(['/', { outlets: { 'print': ['print', this.id, 2] } }]);
+
+  }
+
+  
+  private loadUpdatedUser() {
+    if (this.application.updatedUserId) {
+      this._userRepo.getUserById(this.application.updatedUserId).subscribe(
+        (results) => {
+          this.application.updatedUser = results;
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+    else {
+      this.application.updatedUser = {} as IUser;
+    }
+  }
+
+  private loadFundingApplicationDetails() {
+    this._fundAppService.getFundingApplicationDetails(this.application.id).subscribe(
       (results) => {
-        this._responseUsers = results;
-        this.displayCommentDialog = true;
-        this._spinner.hide();
+        this.fundingApplicationDetails = results;
+        this.amount = this.fundingApplicationDetails.applicationDetails.amountApplyingFor;
+        this.districtCouncil = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil;
+        this.localMunicipality = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality;
+        if (this.fundingApplicationDetails.projectInformation != null) {
+          this.purposeQuestion = this.fundingApplicationDetails.projectInformation.purposeQuestion;
+        }
+        else {
+          this.fundingApplicationDetails.projectInformation = {} as IProjectInformation;
+        }
+       
+        this.loadRegions();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1067,53 +936,57 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     );
   }
 
-  public performanceComment(v: number) {
-
-    this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
+  private loadRegions() {
+    this._fundAppService.getRegions(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.id).subscribe(
       (results) => {
-        if (v === 1)
-          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer1);
-        if (v === 2)
-          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer2);
-        if (v === 3)
-          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer3);
-        if (v === 4)
-          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer4);
-        // if (v === 5)
-        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer5);
-        // if (v === 6)
-        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer6);
-        // if (v === 7)
-        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer7);
-        // if (v === 8)
-        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer8);
-        // if (v === 9)
-        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer9);
-        // if (v === 10)
-        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer10);
-
-        if (this.capturedResponses.length > 0) {
-          this.displayDialog = true;
-          let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
-          let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
-          this.captureImprovementAreaComment = improvementArea;
-          this.captureRequiredActionComment = requiredAction;
-          this.signedByUserScorecardUser = this.capturedResponses[0].createdUser.fullName;
-          this.submittedDateByScorecardUser = this.capturedResponses[0].createdDateTime;
-        }
-      })
-
+        this.regions = results;
+        this.loadServiceDeliveryAreas();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
-  public disableElement() {
-
-    return ((this.captureImprovementArea != undefined && this.captureImprovementArea != '') && (this.captureRequiredAction != undefined && this.captureRequiredAction != '')) ? false : true;
+  private loadServiceDeliveryAreas() {
+    this._fundAppService.getSdas(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.id).subscribe(
+      (results) => {
+        this.sdas = results;
+        this.loadSourceOfInformation();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
-  public download() {
+  private loadSourceOfInformation() {
+    this._npoProfile.getSourceOfInformationById(this.application.id).subscribe(
+      (results) => {
+        this.sourceOfInformation = results;
+        this.loadAffiliatedOrganisation();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
-    this._router.navigate(['/', { outlets: { 'print': ['print', this.id, 2] } }]);
-
+  private loadAffiliatedOrganisation() {
+    this._npoProfile.getAffiliatedOrganisationById(this.application.id).subscribe(
+      (results) => {
+        this.affliatedOrganisationInfo = results;
+        this.isDataAvailable = true;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
 }
