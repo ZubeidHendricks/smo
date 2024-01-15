@@ -47,12 +47,18 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
-                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">
+                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (canShowOptions || canShowOptionsNpo)">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" 
                     (click)="selectedApplication=rowData; menu.toggle($event); updateOptionItems();" pTooltip="Options" tooltipPosition="right" 
-                    *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && rowData.statusId === StatusEnum.AcceptedSLA"></button>
+                    *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (rowData.statusId === StatusEnum.AcceptedSLA || rowData.statusId === StatusEnum.Approved)"></button>
                     <p-menu #menu [popup]="true" [model]="optionItems" appendTo="body"></p-menu>
                 </td>
+                <!-- <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptionsNpo">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" 
+                    (click)="selectedApplication=rowData; menu.toggle($event); updateOptionItems();" pTooltip="Options" tooltipPosition="right" 
+                    *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && rowData.statusId === StatusEnum.Approved"></button>
+                    <p-menu #menu [popup]="true" [model]="optionItems" appendTo="body"></p-menu>
+                </td> -->
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
                 <td *ngFor="let col of columns">
                     <span>{{getCellData(rowData, col)}}</span>

@@ -178,7 +178,8 @@ import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-
 import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
 import { ReviewScorecardComponent } from './components/application/review-scorecard/review-scorecard.component';
 import  {PrintScorecardComponent} from './components/application/application-steps/funding-application/print-scorecard/print-scorecard.component';
-
+import { AdjudicateNpoComponent } from './components/application/adjudicate-npo/adjudicate-npo.component';
+import { ReviewAdjudicatedNpoComponent } from './components/application/review-adjudicated-npo/review-adjudicated-npo.component';
 
 import { QcConfirmationComponent } from './components/application/application-steps/quick-capture-view/qc-confirmation/qc-confirmation.component';
 import { QCActivitiesViewComponent } from './components/application/application-steps/quick-capture-view/qc-activities-view/qc-activities-view.component';
@@ -367,7 +368,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     QcNpoDetailsViewComponent,
     ViewQuickCaptureDohComponent,
     DownloadQuickCaptureDohComponent,
-    ScorecardActionComponent
+    ScorecardActionComponent,
+    AdjudicateNpoComponent,
+    ReviewAdjudicatedNpoComponent
    // ScorecardComponent
   ],
   schemas: [

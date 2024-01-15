@@ -55,6 +55,7 @@ export class ApplicationListComponent implements OnInit {
   @ViewChild('dt') dt: Table | undefined;
 
   canShowOptions: boolean = false;
+  canShowOptionsNpo: boolean = false;
 
   constructor(
     private _router: Router,
@@ -123,8 +124,8 @@ export class ApplicationListComponent implements OnInit {
         });
 
         this.allApplications = results;
-        this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA });
-
+        this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
+        this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved});
         this.buildButtonItems();
         this.buildOptionItems();
 
@@ -415,6 +416,20 @@ export class ApplicationListComponent implements OnInit {
      this.optionItems[0].items.forEach(option => {
       option.visible = true;
     });
+
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11)
+    {
+      this.optionItemExists('Manage Indicators');  
+      this.optionItemExists('Add Score Card');  
+      this.optionItemExists('Review Score Card');  
+      this.optionItemExists('Initiate Score Card');  
+      this.optionItemExists('Close Score Card');  
+      this.optionItemExists('Summary');  
+    }
+    else{
+      this.optionItemExists('Adjudicate Funded Npo');  
+      this.optionItemExists('Review Adjudicated Funded Npo'); 
+    }
 
     // Hide options based on status
     if(this.selectedApplication.initiateScorecard === 1)
@@ -755,6 +770,26 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-tasks wcg-icon',
           command: () => {
             this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.npoId);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)) {
+        this.optionItems[0].items.push({
+          label: 'Adjudicate Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('adjudicateNpo/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewAdjudicatedFundedNpo)) {
+        this.optionItems[0].items.push({
+          label: 'Review Adjudicated Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('reviewAdjudicatedNpo/' + this.selectedApplication.id);
           }
         });
       }
