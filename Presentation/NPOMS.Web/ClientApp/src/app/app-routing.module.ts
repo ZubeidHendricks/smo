@@ -94,6 +94,9 @@ import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-
 import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
 import{DownloadQuickCaptureDohComponent} from './components/quick-capture/download-quick-capture-doh/download-quick-capture-doh.component';
 import { ScorecardActionComponent } from './components/application/scorecard-action/scorecard-action.component';
+import { AdjudicateNpoComponent } from './components/application/adjudicate-npo/adjudicate-npo.component';
+import { ReviewAdjudicatedNpoComponent } from './components/application/review-adjudicated-npo/review-adjudicated-npo.component';
+
 import { QcConfirmationComponent } from './components/application/application-steps/quick-capture-view/qc-confirmation/qc-confirmation.component';
 import { QCActivitiesViewComponent } from './components/application/application-steps/quick-capture-view/qc-activities-view/qc-activities-view.component';
 import { QcApplicationDetailViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-detail-view/qc-application-detail-view.component';
@@ -144,6 +147,8 @@ const routes: Routes = [
   { path: 'application/approve/:id', component: ApproveApplicationComponent },
   { path: 'application/upload-sla/:id', component: UploadSLAComponent },
   { path: 'scorecard/:id', component: ScorecardComponent },
+  { path: 'adjudicateNpo/:id', component: AdjudicateNpoComponent},
+  { path: 'reviewAdjudicatedNpo/:id', component: ReviewAdjudicatedNpoComponent},
   { path: 'initiate/:id', component: ScorecardActionComponent },
   { path: 'close/:id', component: ScorecardActionComponent },
   { path: 'reviewScorecard/:id', component: ReviewScorecardComponent },

@@ -9,7 +9,7 @@
     <div *ngIf="entities">
         <div class="heading">
             <span><b>Engagement</b></span>
-        </div> <!-- getQuestions(QuestionCategoryEnum.PreAdjudication)  -->
+        </div>
         <p-table styleClass="p-datatable-striped" [rowHover]="true"
          [value]="getQuestions('Engagement')"        
          sortMode="multiple" [style]="{'border':'none'}" selectionMode="single" [showCurrentPageReport]="true" 
@@ -357,7 +357,7 @@
                 <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="entity.questionProperty.commentRequired" [ngModelOptions]="{standalone: true}"></p-selectButton>
             </div>
         </div>
-        <div class="p-grid">
+        <!-- <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
                     <span class="mandatory-content">Has Document?</span>
@@ -376,7 +376,7 @@
             <div class="p-col">
                 <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="entity.questionProperty.documentRequired" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-selectButton>
             </div>
-        </div>
+        </div> -->
         <div class="p-grid" *ngIf="selectedResponseType && selectedResponseType.id === ResponseTypeEnum.Score">
             <div class="p-col-fixed form-label">
                 <div class="box">

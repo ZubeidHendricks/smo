@@ -820,6 +820,20 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "Close Score card",
                     SystemName = "WFA.CloseScorecard",
                     CategoryName = "CloseScorecard"
+                },
+                new Permission
+                {
+                    Id = 117,
+                    Name = "Adjudicate Funded Npo",
+                    SystemName = "WFA.AdjudicateFundedNpo",
+                    CategoryName = "AdjudicateFundedNpo"
+                },
+                new Permission
+                {
+                    Id = 118,
+                    Name = "Review Adjudicated FundedNpo",
+                    SystemName = "WFA.ReviewAdjudicatedFundedNpo",
+                    CategoryName = "ReviewAdjudicatedFundedNpo"
                 }
             );
 		}

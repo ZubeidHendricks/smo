@@ -376,6 +376,8 @@ export enum PermissionsEnum {
     ViewScorecard = "WFA.ViewScorecard",
     InitiateScorecard = "WFA.InitiateScorecard",
     CloseScorecard = "WFA.CloseScorecard",
+    AdjudicateFundedNpo = "WFA.AdjudicateFundedNpo",
+    ReviewAdjudicatedFundedNpo = "WFA.ReviewAdjudicatedFundedNpo",
 
     /* Quick Capture*/
     ViewQC = "QC.View",
