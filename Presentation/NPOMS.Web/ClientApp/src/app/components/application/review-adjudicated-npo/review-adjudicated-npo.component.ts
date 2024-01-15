@@ -18,7 +18,6 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
-import { QuestionCategoryComponent } from '../../admin/utilities/question-category/question-category.component';
 import { ISourceOfInformation, IAffiliatedOrganisation } from 'src/app/models/FinancialMatters';
 import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
@@ -105,7 +104,6 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   applications: IApplication;
   evaluationStatuses: IStatus[];
   selectedStatus: IStatus;
-  //npoId: string;
   statuses: IStatus[];
   rowGroupMetadataActivities: any[];
   scorer1: number;
@@ -224,7 +222,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     this.getQuestionCategory();
     this.getResponseType();
 
-    //this.loadApplication();
+    this.loadApplication();
     this.loadApplications();
     this.selectedResponses();
     this.loadQuestionnaire();
@@ -242,8 +240,6 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         this.application = results;
-
-        this.loadQuestionnaire();
         this.applicationPeriod = this.application.applicationPeriod;
         this.loadNpo();
 
@@ -467,17 +463,20 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
 
     let ragColour = 'rag-not-saved-background';
     if (num !== undefined) {
-      if (Number(num) >= 0 && Number(num) < 5) {
-        ragColour = 'rag-not-saved-background';
+      if (Number(num) >= 0 && Number(num) <= 20) {
+        ragColour = 'rag-very-poor-background';
       }
-      else if (Number(num) >= 5 && Number(num) < 8) {
-        ragColour = 'rag-partial-background';
+      if (Number(num) > 20 && Number(num) <= 40) {
+        ragColour = 'rag-poor-background';
       }
-      else if (Number(num) >= 8) {
+      if (Number(num) > 40 && Number(num) <= 60) {
+        ragColour = 'rag-average-background';
+      }
+      if (Number(num) > 60 && Number(num) <= 80) {
+        ragColour = 'rag-good-background';
+      }
+      if (Number(num) > 80) {
         ragColour = 'rag-saved-background';
-      }
-      else {
-        ragColour = '';
       }
     }
 
@@ -509,17 +508,20 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
 
     let ragText = '';
     if (num !== undefined) {
-      if (Number(num) >= 0 && Number(num) < 5) {
+      if (Number(num) >= 0 && Number(num) <= 20) {
+        ragText = 'Very Poor';
+      }
+      if (Number(num) > 20 && Number(num) <= 40) {
         ragText = 'Poor';
       }
-      else if (Number(num) >= 5 && Number(num) < 8) {
-        ragText = 'Meet Expectations';
+      if (Number(num) > 40 && Number(num) <= 60) {
+        ragText = 'Average';
       }
-      else if (Number(num) >= 8) {
+      if (Number(num) > 60 && Number(num) <= 80) {
+        ragText = 'Good';
+      }
+      if (Number(num) > 80) {
         ragText = 'Excellent';
-      }
-      else {
-        ragText = '';
       }
     }
 
@@ -649,8 +651,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   private loadApplications() {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-        this.application = results;
-        this.loadNpo();
+        this.application = results;        
       },
       (err) => {
         this._loggerService.logException(err);
@@ -664,66 +665,13 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
       (results) => {
         this.npo = results;
         this.organisation = this.npo.name;
+        this.loadFundingApplicationDetails();
       },
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
     );
-  }
-
-  
-  public getOverallPerformancePercentage() {
-    let overallPerformancePercentage = 0;
-
-    if (this.rowGroupMetadataActivities && this.rowGroupMetadataActivities.length > 0 && this.filteredWorkplanIndicators && this.filteredWorkplanIndicators.length > 0) {
-
-      let uniqueObjectives = this.rowGroupMetadataActivities.filter(x => x.itemExists === false);
-
-      for (let i = 0; i < uniqueObjectives.length; i++) {
-        let indicators = this.filteredWorkplanIndicators.filter(x => x.ObjectiveName === uniqueObjectives[i].itemName);
-
-        // Sum property in array of objects...
-        // Found at https://stackoverflow.com/questions/23247859/better-way-to-sum-a-property-value-in-an-array
-        let targetTotal = indicators.reduce((n, { totalTargets }) => n + totalTargets, 0);
-        let actualTotal = indicators.reduce((n, { totalActuals }) => n + totalActuals, 0);
-        let averageTotal = actualTotal === 0 || targetTotal === 0 ? 0 : (actualTotal / targetTotal) * 100;
-
-        overallPerformancePercentage = overallPerformancePercentage + averageTotal;
-      }
-
-      overallPerformancePercentage = ((overallPerformancePercentage / uniqueObjectives.length)/10) > 10 ? 10 : ((overallPerformancePercentage / uniqueObjectives.length)/10);
-    }
-
-    return overallPerformancePercentage;
-  }
-
- 
-  public getPerformanceAvg(objective: IObjective) {
-    let totalTarget = 0;
-    let totalActual = 0;
-    let performanceAvg = '';
-    let objectives = this.filteredWorkplanIndicators.filter(x => x.activity.objective.name === objective.name);
-    objectives.forEach(obj => {
-      if (obj.ObjectiveName === objective.name) {
-        totalTarget += obj.totalTargets;
-        totalActual += obj.totalActuals;
-      }
-    }
-    );
-
-    performanceAvg = (((totalActual / totalTarget)/10) * 100).toFixed(2);
-
-    if (isNaN((((totalActual / totalTarget)/10) * 100))) {
-      performanceAvg = '0';
-    }
-
-    if((((totalActual / totalTarget)/10) * 100) > 10)
-    {
-      performanceAvg = '10'
-    }
-
-    return performanceAvg;
   }
 
   public selectedResponses() {
@@ -738,6 +686,10 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
         let scorer3OverallTotalScores = 0;
         let scorer4OverallTotalScores = 0;
         let allScorerOverallTotalScores = 0;
+        let totalScoreUser1 = 0;
+        let totalScoreUser2 = 0;
+        let totalScoreUser3 = 0;
+        let totalScoreUser4 = 0;
         let length = user.length;
 
         
@@ -747,6 +699,14 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
               this.scorer1 = Number(user[0].createdUserId);
               if (Number(item.createdUserId) == Number(user[0].createdUserId))
                 scorer1OverallTotalScores += Number(item.responseOption.name);
+                if(Number(item.responseOption.responseTypeId) === 7)
+                {
+                  totalScoreUser1 += 5;
+                }
+                if(Number(item.responseOption.responseTypeId) === 8)
+                {
+                  totalScoreUser1 += 10;
+                }
             }
           }
           else {
@@ -760,6 +720,14 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
               this.scorer2 = Number(user[1].createdUserId);
               if (Number(item.createdUserId) == Number(user[1].createdUserId))
                 scorer2OverallTotalScores += Number(item.responseOption.name);
+                if(Number(item.responseOption.responseTypeId) === 7)
+                {
+                  totalScoreUser2 += 5;
+                }
+                if(Number(item.responseOption.responseTypeId) === 8)
+                {
+                  totalScoreUser2 += 10;
+                }
             }
           }
           else {
@@ -773,6 +741,14 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
               this.scorer3 = Number(user[2].createdUserId);
               if (Number(item.createdUserId) == Number(user[2].createdUserId))
                 scorer3OverallTotalScores += Number(item.responseOption.name);
+                if(Number(item.responseOption.responseTypeId) === 7)
+                {
+                  totalScoreUser3 += 5;
+                }
+                if(Number(item.responseOption.responseTypeId) === 8)
+                {
+                  totalScoreUser3 += 10;
+                }
             }
           }
           else {
@@ -786,6 +762,14 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
               this.scorer4 = Number(user[3].createdUserId);
               if (Number(item.createdUserId) == Number(user[3].createdUserId))
                 scorer4OverallTotalScores += Number(item.responseOption.name);
+                if(Number(item.responseOption.responseTypeId) === 7)
+                {
+                  totalScoreUser4 += 5;
+                }
+                if(Number(item.responseOption.responseTypeId) === 8)
+                {
+                  totalScoreUser4 += 10;
+                }
             }
           }
           else {
@@ -801,17 +785,18 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
             allScorerOverallTotalScores = 0;
           }
         });
-
+       
         this.socrer1OverallTotalScore = scorer1OverallTotalScores;
         this.socrer2OverallTotalScore = scorer2OverallTotalScores;
         this.socrer3OverallTotalScore = scorer3OverallTotalScores;
         this.socrer4OverallTotalScore = scorer4OverallTotalScores;
         this.allSocrerOverallTotalScore = allScorerOverallTotalScores;
-        this.scorer1OverallAvgScore = Number(((scorer1OverallTotalScores / 5)*10).toFixed(2));
-        this.scorer2OverallAvgScore = Number(((scorer2OverallTotalScores / 5)*10).toFixed(2));
-        this.scorer3OverallAvgScore = Number(((scorer3OverallTotalScores / 5)*10).toFixed(2));
-        this.scorer4OverallAvgScore = Number(((scorer4OverallTotalScores / 5)*10).toFixed(2));
+        this.scorer1OverallAvgScore = totalScoreUser1 !== 0? Number(((scorer1OverallTotalScores / totalScoreUser1)*100).toFixed(2)): 0;
+        this.scorer2OverallAvgScore = totalScoreUser2 !== 0? Number(((scorer2OverallTotalScores / totalScoreUser2)*100).toFixed(2)): 0;
+        this.scorer3OverallAvgScore = totalScoreUser3 !== 0? Number(((scorer3OverallTotalScores / totalScoreUser3)*100).toFixed(2)): 0;
+        this.scorer4OverallAvgScore = totalScoreUser4 !== 0? Number(((scorer4OverallTotalScores / totalScoreUser4)*100).toFixed(2)): 0;
         this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore) / 4).toFixed(2));
+        
         if (isNaN(this.allScorerOverallAvgScore)) {
           this.allScorerOverallAvgScore = 0;
         }
