@@ -140,6 +140,7 @@ export class ScorecardComponent implements OnInit {
       this.id = params.get('id');
     });
 
+  
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -149,14 +150,15 @@ export class ScorecardComponent implements OnInit {
       }
     });
 
+    
     this.getQuestionCategory();
-    this.getResponseType();
-    this.loadApplications();
-    this.selectedResponses();
+    this.getResponseType();      
     this.loadQuestionnaire();
+
   }
 
   private loadQuestionnaire() {
+    this.loadApplications();
     this._evaluationService.getAddScoreQuestionnaire(Number(this.id)).subscribe(
       (results) => {
         this.allQuestionnaires = results;
@@ -167,6 +169,8 @@ export class ScorecardComponent implements OnInit {
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
         this.getWorkflowCount();
+       
+         this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -203,7 +207,7 @@ export class ScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
         this.responseOptions = results;
-        //  this.selectedResponses();     
+        this.selectedResponses();     
       },
       (err) => {
         this._loggerService.logException(err);
@@ -495,11 +499,12 @@ export class ScorecardComponent implements OnInit {
         var isPresent = this.financialYears.some(function (financialYear) { return financialYear === this.application.applicationPeriod.financialYear });
 
         if (!isPresent)
+        {
           this.financialYears.push(this.application.applicationPeriod.financialYear);
-
+        }
         this.loadActivities();
         this.loadObjectives();
-        this.loadNpo();
+        this.loadNpo();        
       },
       (err) => {
         this._loggerService.logException(err);
@@ -523,21 +528,47 @@ export class ScorecardComponent implements OnInit {
   }
 
   private loadActivities() {
-
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
         this.workplanIndicators = [];
 
         this.activities.forEach(activity => {
-          this.workplanIndicators.push({
+        //  alert(activity.name)
+        this._spinner.show();
+          this.workplanIndicators.push({           
             activity: activity,
             workplanTargets: [],
             workplanActuals: []
           } as IWorkplanIndicator);
 
-          this.loadTargets(activity);
-          this.loadActuals(activity);
+          
+          this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
+            (results) => {
+              // Add WorkplanTargets to WorkplanIndicators at index of activity
+              var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
+              this.workplanIndicators[index].workplanTargets = results;
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+
+          this._indicatorRepo.getActualsByActivityId(activity.id).subscribe(
+            (results) => {
+              // Add WorkplanActuals to WorkplanIndicators at index of activity
+              var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
+              this.workplanIndicators[index].workplanActuals = results;
+            },
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          )
+          this._spinner.hide();
+        //  this.loadTargets(activity);
+         // this.loadActuals(activity);
         });
       },
       (err) => {

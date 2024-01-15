@@ -11,6 +11,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Linq;
+using NPOMS.Repository.Implementation.Core;
 
 namespace NPOMS.Services.Email.EmailTemplates
 {
@@ -38,14 +39,16 @@ namespace NPOMS.Services.Email.EmailTemplates
             var application = await applicationRepository.GetById(this._application.Id);
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
             //var status = await statusRepository.GetById(this._fundingApplication.StatusId);
+            var userRepository = EngineContext.Current.Resolve<IUserRepository>();
+            var user = await userRepository.GetByUserName("Shafieka.Samuels@westerncape.gov.za");
             try
             {
                 var action = string.Empty;
                 var contactPersonFullName = string.Empty;
-                var contactPersonName = contactPerson.Where(x => x.IsPrimaryContact == true).FirstOrDefault();
+                var contactPersonName = user.UserName; // contactPerson.Where(x => x.IsPrimaryContact == true).FirstOrDefault();
                 if (contactPersonName != null)
                 {
-                    contactPersonFullName = contactPersonName.FirstName + " " + contactPersonName.LastName;
+                    contactPersonFullName = user.FirstName + " " + user.LastName;
                 }
                 // StatusEnum applicationStatus = (StatusEnum)this._fundingApplication.StatusId;
 
@@ -70,7 +73,7 @@ namespace NPOMS.Services.Email.EmailTemplates
                     FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
                     Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, contactPersonFullName, application.Id),
                     Subject = emailTemplate.Subject, // ReplacePlaceholders(emailTemplate.Subject, application, "", ""),
-                    RecipientEmail = contactPersonName.EmailAddress,
+                    RecipientEmail = user.Email,
                     RecipientName = contactPersonFullName
                 };
 

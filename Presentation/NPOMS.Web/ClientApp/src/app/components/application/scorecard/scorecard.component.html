@@ -18,7 +18,7 @@
 </div>
 <div>
     <p-panel header="Engagement" [style]="{'font-size':'12px', 'width':'100%'}" >
-        <p-table [value]="engagementQuestionnaire" *ngIf="engagementQuestionnaire" [rowHover]="true" 
+        <p-table [value]="engagementQuestionnaire" *ngIf="engagementQuestionnaire" [rowHover]="false" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
                     <tr>
@@ -26,7 +26,6 @@
                         <th style="width: 45%;">Name (Question/Statement)</th>
                         <th style="width: 10%;">Score/Rating</th>
                         <th style="width: 25%;" *ngIf="hasComment(engagementQuestionnaire)">Comment</th>
-                        <!-- <th style="width: 7%;" *ngIf="hasDocument(engagementQuestionnaire)">Evidence</th> -->
                         <th style="width: 8%;" colspan="4"></th>
                     </tr>
                 </ng-template>
@@ -42,12 +41,13 @@
                         <td>{{question.questionName}}</td>
                         <td [pEditableColumn]="question" pEditableColumn>
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
-                                optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
+                                optionLabel="systemName" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
                                 (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
                         </td>
+
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(engagementQuestionnaire)">
-                            <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
+                            <textarea class="form-text" *ngIf="question.hasComment"  pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)"
                              (keydown)="onInputCommentChange(question)" [disabled]="hasScorecardSubmitted"
                             [autoResize]="true"></textarea>
@@ -87,7 +87,7 @@
 </div>
 <div>
     <p-panel header="Timely Work Plan Submission" [style]="{'font-size':'12px', 'width':'100%'}" >
-        <p-table [value]="timeWorkPlanQuestionnaire" *ngIf="timeWorkPlanQuestionnaire" [rowHover]="true" 
+        <p-table [value]="timeWorkPlanQuestionnaire" *ngIf="timeWorkPlanQuestionnaire" [rowHover]="false" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
                     <tr>
@@ -95,7 +95,6 @@
                         <th style="width: 45%;">Name (Question/Statement)</th>
                         <th style="width: 10%;">Score/Rating</th>
                         <th style="width: 25%;" *ngIf="hasComment(timeWorkPlanQuestionnaire)">Comment</th>
-                        <!-- <th style="width: 7%;" *ngIf="hasDocument(timeWorkPlanQuestionnaire)">Evidence</th> -->
                         <th style="width: 8%;" colspan="4"></th>
                     </tr>
                 </ng-template>
@@ -116,7 +115,7 @@
                                 (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(timeWorkPlanQuestionnaire)">
-                            <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
+                            <textarea class="form-text" *ngIf="question.hasComment" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
                             [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
                         </td>
@@ -155,7 +154,7 @@
 </div>
 <div>
     <p-panel header="Impact" [style]="{'font-size':'12px', 'width':'100%'}" >
-        <p-table [value]="impactQuestionnaire" *ngIf="impactQuestionnaire" [rowHover]="true" 
+        <p-table [value]="impactQuestionnaire" *ngIf="impactQuestionnaire" [rowHover]="false" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
                     <tr>
@@ -163,7 +162,6 @@
                         <th style="width: 45%;">Name (Question/Statement)</th>
                         <th style="width: 10%;">Score/Rating</th>
                         <th style="width: 25%;" *ngIf="hasComment(impactQuestionnaire)">Comment</th>
-                        <!-- <th style="width: 7%;" *ngIf="hasDocument(impactQuestionnaire)">Evidence</th> -->
                         <th style="width: 8%;" colspan="4"></th>
                     </tr>
                 </ng-template>
@@ -222,7 +220,7 @@
 </div>
 <div>
     <p-panel header="Risk Mitigation" [style]="{'font-size':'12px', 'width':'100%'}" >
-        <p-table [value]="riskMitigationQuestionnaire" *ngIf="riskMitigationQuestionnaire" [rowHover]="true" 
+        <p-table [value]="riskMitigationQuestionnaire" *ngIf="riskMitigationQuestionnaire" [rowHover]="false" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
                     <tr>
@@ -230,7 +228,6 @@
                         <th style="width: 45%;">Name (Question/Statement)</th>
                         <th style="width: 10%;">Score/Rating</th>
                         <th style="width: 25%;" *ngIf="hasComment(riskMitigationQuestionnaire)">Comment</th>
-                        <!-- <th style="width: 7%;" *ngIf="hasDocument(riskMitigationQuestionnaire)">Evidence</th> -->
                         <th style="width: 8%;" colspan="4"></th>
                     </tr>
                 </ng-template>
@@ -289,7 +286,7 @@
 </div>
 <div>
     <p-panel header="Appropriation of Resources" [style]="{'font-size':'12px', 'width':'100%'}" >
-        <p-table [value]="appropriationOfResourcesQuestionnaire" *ngIf="appropriationOfResourcesQuestionnaire" [rowHover]="true" 
+        <p-table [value]="appropriationOfResourcesQuestionnaire" *ngIf="appropriationOfResourcesQuestionnaire" [rowHover]="false" 
             styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
                 <ng-template pTemplate="header">
                     <tr>
@@ -297,7 +294,6 @@
                         <th style="width: 45%;">Name (Question/Statement)</th>
                         <th style="width: 10%;">Score/Rating</th>
                         <th style="width: 25%;" *ngIf="hasComment(appropriationOfResourcesQuestionnaire)">Comment</th>
-                        <!-- <th style="width: 7%;" *ngIf="hasDocument(appropriationOfResourcesQuestionnaire)">Evidence</th> -->
                         <th style="width: 8%;" colspan="4"></th>
                     </tr>
                 </ng-template>
@@ -371,22 +367,12 @@
 </div>
 <div style="height: 10px;"></div>   
     <div style="width: 100%;">
-        <!-- <div class="p-grid" style="width: 25%;">
-            <div>
-                <div class="p-col">
-                    <span>&nbsp;&nbsp;<b>Financial Year</b></span>
-                </div>
-            </div>
-            <div class="p-col">
-                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange()"></p-dropdown>
-            </div>
-        </div> -->
         <div class="p-col-fixed form-label">
             <div class="box" style="text-align: left;">
                 <span class="non-mandatory-content"><b>Quantitative Performance</b></span>
             </div>
         </div>
-        <p-table [rowHover]="true" [value]="filterWorkplanIndicators()" *ngIf="filterWorkplanIndicators()">
+        <p-table [rowHover]="false" [value]="filterWorkplanIndicators()" *ngIf="filterWorkplanIndicators()">
             <ng-template pTemplate="header">
                 <tr>
                     <th style="text-align: center; width: 5%;">#</th>

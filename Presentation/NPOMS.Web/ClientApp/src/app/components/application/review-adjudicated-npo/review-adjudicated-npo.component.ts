@@ -106,33 +106,33 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   scorer2: number;
   scorer3: number;
   scorer4: number;
-  scorer5: number;
-  scorer6: number;
-  scorer7: number;
-  scorer8: number;
-  scorer9: number;
-  scorer10: number;
+  // scorer5: number;
+  // scorer6: number;
+  // scorer7: number;
+  // scorer8: number;
+  // scorer9: number;
+  // scorer10: number;
   socrer1OverallTotalScore: number;
   socrer2OverallTotalScore: number;
   socrer3OverallTotalScore: number;
   socrer4OverallTotalScore: number;
-  socrer5OverallTotalScore: number;
-  socrer6OverallTotalScore: number;
-  socrer7OverallTotalScore: number;
-  socrer8OverallTotalScore: number;
-  socrer9OverallTotalScore: number;
-  socrer10OverallTotalScore: number;
+  // socrer5OverallTotalScore: number;
+  // socrer6OverallTotalScore: number;
+  // socrer7OverallTotalScore: number;
+  // socrer8OverallTotalScore: number;
+  // socrer9OverallTotalScore: number;
+  // socrer10OverallTotalScore: number;
   allSocrerOverallTotalScore: number;
   scorer1OverallAvgScore: number;
   scorer2OverallAvgScore: number;
   scorer3OverallAvgScore: number;
   scorer4OverallAvgScore: number;
-  scorer5OverallAvgScore: number;
-  scorer6OverallAvgScore: number;
-  scorer7OverallAvgScore: number;
-  scorer8OverallAvgScore: number;
-  scorer9OverallAvgScore: number;
-  scorer10OverallAvgScore: number;
+  // scorer5OverallAvgScore: number;
+  // scorer6OverallAvgScore: number;
+  // scorer7OverallAvgScore: number;
+  // scorer8OverallAvgScore: number;
+  // scorer9OverallAvgScore: number;
+  // scorer10OverallAvgScore: number;
   allScorerOverallAvgScore: number;
   objectiveTarget: number;
   objectiveActual: number;
@@ -178,7 +178,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this._spinner.show();
+   // this._spinner.show();
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
@@ -224,13 +224,12 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   private loadQuestionnaire() {
     this._evaluationService.getScorecardQuestionnaire(Number(this.id)).subscribe(
       (results) => {
-        this.allQuestionnaires = results.filter(x => x.questionCategoryName === "Engagement" || x.questionCategoryName === "Timely Work Plan Submission"
-          || x.questionCategoryName === "Impact" || x.questionCategoryName === "Risk Mitigation" || x.questionCategoryName === "Appropriation of Resources");
-        this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
-        this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
-        this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
-        this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
-        this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
+        this.allQuestionnaires = results.filter(x => x.questionCategoryName === "Adjudication2");
+        // this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
+        // this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
+        // this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
+        // this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
+        // this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
       },
       (err) => {
@@ -818,13 +817,13 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
         let scorer2OverallTotalScores = 0;
         let scorer3OverallTotalScores = 0;
         let scorer4OverallTotalScores = 0;
-        let scorer5OverallTotalScores = 0;
-        let scorer6OverallTotalScores = 0;
-        let scorer7OverallTotalScores = 0;
-        let scorer8OverallTotalScores = 0;
-        let scorer9OverallTotalScores = 0;
-        let scorer10OverallTotalScores = 0;
-        let allScorerOverallTotalScores = 0;
+        // let scorer5OverallTotalScores = 0;
+        // let scorer6OverallTotalScores = 0;
+        // let scorer7OverallTotalScores = 0;
+        // let scorer8OverallTotalScores = 0;
+        // let scorer9OverallTotalScores = 0;
+        // let scorer10OverallTotalScores = 0;
+         let allScorerOverallTotalScores = 0;
 
         let length = user.length;
 
@@ -880,83 +879,83 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
           }
         });
 
-        this._responses.forEach(item => {
-          if (Number(item.responseOption.name) >= 0) {
-            if (user[4] != undefined) {
-              this.scorer5 = Number(user[4].createdUserId);
-              if (Number(item.createdUserId) == Number(user[4].createdUserId))
-                scorer5OverallTotalScores += Number(item.responseOption.name);
-            }
-          }
-          else {
-            scorer5OverallTotalScores = 0;
-          }
-        });
+        // this._responses.forEach(item => {
+        //   if (Number(item.responseOption.name) >= 0) {
+        //     if (user[4] != undefined) {
+        //       this.scorer5 = Number(user[4].createdUserId);
+        //       if (Number(item.createdUserId) == Number(user[4].createdUserId))
+        //         scorer5OverallTotalScores += Number(item.responseOption.name);
+        //     }
+        //   }
+        //   else {
+        //     scorer5OverallTotalScores = 0;
+        //   }
+        // });
 
-        this._responses.forEach(item => {
-          if (Number(item.responseOption.name) >= 0) {
-            if (user[5] != undefined) {
-              this.scorer6 = Number(user[5].createdUserId);
-              if (Number(item.createdUserId) == Number(user[5].createdUserId))
-                scorer6OverallTotalScores += Number(item.responseOption.name);
-            }
-          }
-          else {
-            scorer6OverallTotalScores = 0;
-          }
-        });
+        // this._responses.forEach(item => {
+        //   if (Number(item.responseOption.name) >= 0) {
+        //     if (user[5] != undefined) {
+        //       this.scorer6 = Number(user[5].createdUserId);
+        //       if (Number(item.createdUserId) == Number(user[5].createdUserId))
+        //         scorer6OverallTotalScores += Number(item.responseOption.name);
+        //     }
+        //   }
+        //   else {
+        //     scorer6OverallTotalScores = 0;
+        //   }
+        // });
 
-        this._responses.forEach(item => {
-          if (Number(item.responseOption.name) >= 0) {
-            if (user[6] != undefined) {
-              this.scorer7 = Number(user[6].createdUserId);
-              if (Number(item.createdUserId) == Number(user[6].createdUserId))
-                scorer7OverallTotalScores += Number(item.responseOption.name);
-            }
-          }
-          else {
-            scorer7OverallTotalScores = 0;
-          }
-        });
+        // this._responses.forEach(item => {
+        //   if (Number(item.responseOption.name) >= 0) {
+        //     if (user[6] != undefined) {
+        //       this.scorer7 = Number(user[6].createdUserId);
+        //       if (Number(item.createdUserId) == Number(user[6].createdUserId))
+        //         scorer7OverallTotalScores += Number(item.responseOption.name);
+        //     }
+        //   }
+        //   else {
+        //     scorer7OverallTotalScores = 0;
+        //   }
+        // });
 
-        this._responses.forEach(item => {
-          if (Number(item.responseOption.name) >= 0) {
-            if (user[7] != undefined) {
-              this.scorer8 = Number(user[7].createdUserId);
-              if (Number(item.createdUserId) == Number(user[7].createdUserId))
-                scorer8OverallTotalScores += Number(item.responseOption.name);
-            }
-          }
-          else {
-            scorer8OverallTotalScores = 0;
-          }
-        });
+        // this._responses.forEach(item => {
+        //   if (Number(item.responseOption.name) >= 0) {
+        //     if (user[7] != undefined) {
+        //       this.scorer8 = Number(user[7].createdUserId);
+        //       if (Number(item.createdUserId) == Number(user[7].createdUserId))
+        //         scorer8OverallTotalScores += Number(item.responseOption.name);
+        //     }
+        //   }
+        //   else {
+        //     scorer8OverallTotalScores = 0;
+        //   }
+        // });
 
-        this._responses.forEach(item => {
-          if (Number(item.responseOption.name) >= 0) {
-            if (user[8] != undefined) {
-              this.scorer9 = Number(user[8].createdUserId);
-              if (Number(item.createdUserId) == Number(user[8].createdUserId))
-                scorer9OverallTotalScores += Number(item.responseOption.name);
-            }
-          }
-          else {
-            scorer9OverallTotalScores = 0;
-          }
-        });
+        // this._responses.forEach(item => {
+        //   if (Number(item.responseOption.name) >= 0) {
+        //     if (user[8] != undefined) {
+        //       this.scorer9 = Number(user[8].createdUserId);
+        //       if (Number(item.createdUserId) == Number(user[8].createdUserId))
+        //         scorer9OverallTotalScores += Number(item.responseOption.name);
+        //     }
+        //   }
+        //   else {
+        //     scorer9OverallTotalScores = 0;
+        //   }
+        // });
 
-        this._responses.forEach(item => {
-          if (Number(item.responseOption.name) >= 0) {
-            if (user[9] != undefined) {
-              this.scorer10 = Number(user[9].createdUserId);
-              if (Number(item.createdUserId) == Number(user[9].createdUserId))
-                scorer10OverallTotalScores += Number(item.responseOption.name);
-            }
-          }
-          else {
-            scorer10OverallTotalScores = 0;
-          }
-        });
+        // this._responses.forEach(item => {
+        //   if (Number(item.responseOption.name) >= 0) {
+        //     if (user[9] != undefined) {
+        //       this.scorer10 = Number(user[9].createdUserId);
+        //       if (Number(item.createdUserId) == Number(user[9].createdUserId))
+        //         scorer10OverallTotalScores += Number(item.responseOption.name);
+        //     }
+        //   }
+        //   else {
+        //     scorer10OverallTotalScores = 0;
+        //   }
+        // });
 
         this._responses.forEach(item => {
           if (Number(item.responseOption.name) >= 0) {
@@ -971,24 +970,25 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
         this.socrer2OverallTotalScore = scorer2OverallTotalScores;
         this.socrer3OverallTotalScore = scorer3OverallTotalScores;
         this.socrer4OverallTotalScore = scorer4OverallTotalScores;
-        this.socrer5OverallTotalScore = scorer5OverallTotalScores;
-        this.socrer6OverallTotalScore = scorer6OverallTotalScores;
-        this.socrer7OverallTotalScore = scorer7OverallTotalScores;
-        this.socrer8OverallTotalScore = scorer8OverallTotalScores;
-        this.socrer9OverallTotalScore = scorer9OverallTotalScores;
-        this.socrer10OverallTotalScore = scorer10OverallTotalScores;
+        // this.socrer5OverallTotalScore = scorer5OverallTotalScores;
+        // this.socrer6OverallTotalScore = scorer6OverallTotalScores;
+        // this.socrer7OverallTotalScore = scorer7OverallTotalScores;
+        // this.socrer8OverallTotalScore = scorer8OverallTotalScores;
+        // this.socrer9OverallTotalScore = scorer9OverallTotalScores;
+        // this.socrer10OverallTotalScore = scorer10OverallTotalScores;
         this.allSocrerOverallTotalScore = allScorerOverallTotalScores;
         this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores / 5).toFixed(2));
         this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores / 5).toFixed(2));
         this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores / 5).toFixed(2));
         this.scorer4OverallAvgScore = Number((scorer4OverallTotalScores / 5).toFixed(2));
-        this.scorer5OverallAvgScore = Number((scorer5OverallTotalScores / 5).toFixed(2));
-        this.scorer6OverallAvgScore = Number((scorer6OverallTotalScores / 5).toFixed(2));
-        this.scorer7OverallAvgScore = Number((scorer7OverallTotalScores / 5).toFixed(2));
-        this.scorer8OverallAvgScore = Number((scorer8OverallTotalScores / 5).toFixed(2));
-        this.scorer9OverallAvgScore = Number((scorer9OverallTotalScores / 5).toFixed(2));
-        this.scorer10OverallAvgScore = Number((scorer10OverallTotalScores / 5).toFixed(2));
-        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore + this.scorer5OverallAvgScore + this.scorer6OverallAvgScore + this.scorer7OverallAvgScore + this.scorer8OverallAvgScore + this.scorer9OverallAvgScore + this.scorer10OverallAvgScore) / length).toFixed(2));
+        // this.scorer5OverallAvgScore = Number((scorer5OverallTotalScores / 5).toFixed(2));
+        // this.scorer6OverallAvgScore = Number((scorer6OverallTotalScores / 5).toFixed(2));
+        // this.scorer7OverallAvgScore = Number((scorer7OverallTotalScores / 5).toFixed(2));
+        // this.scorer8OverallAvgScore = Number((scorer8OverallTotalScores / 5).toFixed(2));
+        // this.scorer9OverallAvgScore = Number((scorer9OverallTotalScores / 5).toFixed(2));
+        // this.scorer10OverallAvgScore = Number((scorer10OverallTotalScores / 5).toFixed(2));
+        this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore) / length).toFixed(2));
+          // + this.scorer5OverallAvgScore + this.scorer6OverallAvgScore + this.scorer7OverallAvgScore + this.scorer8OverallAvgScore + this.scorer9OverallAvgScore + this.scorer10OverallAvgScore
         if (isNaN(this.allScorerOverallAvgScore)) {
           this.allScorerOverallAvgScore = 0;
         }
@@ -1079,18 +1079,18 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
           this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer3);
         if (v === 4)
           this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer4);
-        if (v === 5)
-          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer5);
-        if (v === 6)
-          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer6);
-        if (v === 7)
-          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer7);
-        if (v === 8)
-          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer8);
-        if (v === 9)
-          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer9);
-        if (v === 10)
-          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer10);
+        // if (v === 5)
+        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer5);
+        // if (v === 6)
+        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer6);
+        // if (v === 7)
+        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer7);
+        // if (v === 8)
+        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer8);
+        // if (v === 9)
+        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer9);
+        // if (v === 10)
+        //   this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer10);
 
         if (this.capturedResponses.length > 0) {
           this.displayDialog = true;

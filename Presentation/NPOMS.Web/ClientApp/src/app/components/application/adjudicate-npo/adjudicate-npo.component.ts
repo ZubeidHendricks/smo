@@ -82,7 +82,11 @@ export class AdjudicateNpoComponent implements OnInit {
   impactQuestionnaire: IQuestionResponseViewModel[];
   riskMitigationQuestionnaire: IQuestionResponseViewModel[];
   appropriationOfResourcesQuestionnaire: IQuestionResponseViewModel[];
+  totalQuestionValue: number = 0;
   overallAverageScore: number = 0;
+  totalLegend: string;
+  totalPercentage: number;
+
   QuestionCategoryentities: IQuestionCategory[];
   ResponseTypeentities: IResponseType[];
   auditCols: any[];
@@ -162,6 +166,7 @@ export class AdjudicateNpoComponent implements OnInit {
       (results) => {
         this.allQuestionnaires = results;
         this.npoAdjudication = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication2");
+        console.log('npoAdjudication', this.npoAdjudication);
         // this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         // this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         // this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
@@ -182,13 +187,13 @@ export class AdjudicateNpoComponent implements OnInit {
       this._evaluationService.workflowAssessmentCount(Number(this.engagementQuestionnaire[0].questionCategoryId)).subscribe(
         (res) => {
 
-          if (this.capturedResponsesCount && this.capturedResponsesCount.length === 10) {
-            alert('Add new score card limit reached. Can not add new score card');
+          if (this.capturedResponsesCount && this.capturedResponsesCount.length === 4) {
+            alert('Adjudication limit reached.');
             this._router.navigateByUrl('applications');
           }
 
           if (this.capturedResponseCount && this.capturedResponseCount.length > 0) {
-            alert('Scorecard review completed for this application. Can not add new score card');
+            alert('Application adjudicated. Process closed');
             this._router.navigateByUrl('applications');
           }
 
@@ -229,6 +234,13 @@ export class AdjudicateNpoComponent implements OnInit {
 
   public hasWeighting(questionnaire: IQuestionResponseViewModel[]) {
     return questionnaire.some(function (item) { return (item.responseTypeId === ResponseTypeEnum.Score2) || (item.responseTypeId === ResponseTypeEnum.Score3)});
+  }
+
+  
+  public getCompletedQuestionnaire(capturedResponse: ICapturedResponse) {
+    var questionnaires = this.capturedResponses.find(x => x.id === capturedResponse.id).questionnaires;
+    this.updateRowGroupMetaData(questionnaires);
+    return questionnaires;
   }
 
   public updateRowGroupMetaData(questionnaire: IQuestionResponseViewModel[]) {
@@ -294,10 +306,26 @@ export class AdjudicateNpoComponent implements OnInit {
     return status;
   }
 
+  public getQuestionValue(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
+    let questionValue = '';
+    let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
+    
+    if(question.responseTypeId === ResponseTypeEnum.Score2)
+    {
+      questionValue = Number(questions.length * 5).toString();
+    }
+
+    if(question.responseTypeId === ResponseTypeEnum.Score3)
+    {
+      questionValue = Number(questions.length * 10).toString();
+    }
+    return questionValue;
+  }
+
   public getRagColour(questionnaire: IQuestionResponseViewModel[]) {
 
     let ragColour = 'rag-not-saved';
-
+ 
     questionnaire.forEach(item => {
       if (Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4) {
         ragColour = 'rag-not-saved';
@@ -316,21 +344,117 @@ export class AdjudicateNpoComponent implements OnInit {
     return ragColour;
   }
 
-  public getRagText(questionnaire: IQuestionResponseViewModel[]) {
+  public getCapturedScore(questionnaire: IQuestionResponseViewModel) {
+    let capturedScore = '';
+   // questionnaire.forEach(item => {
+      capturedScore = questionnaire.responseOption.name;
+   // });
+    return capturedScore;
+  }
+
+  public getRagPercent(questionnaire: IQuestionResponseViewModel) {
+
+    let ragPercent = '';
+     
+      if(questionnaire.responseTypeId ===  ResponseTypeEnum.Score2)
+      {
+        if (Number(questionnaire.responseOption.name) === 1){
+          ragPercent = ((Number(questionnaire.responseOption.name)/5) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 2){
+        ragPercent = ((Number(questionnaire.responseOption.name)/5) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 3){
+          ragPercent = ((Number(questionnaire.responseOption.name)/5) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 4){
+          ragPercent = ((Number(questionnaire.responseOption.name)/5) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 5){
+          ragPercent = ((Number(questionnaire.responseOption.name)/5) * 100).toFixed(2).toString();
+        }
+      }
+      if(questionnaire.responseTypeId ===  ResponseTypeEnum.Score3)
+      {
+        if (Number(questionnaire.responseOption.name) === 1){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 2){
+        ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 3){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 4){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 5){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 6){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 7){
+        ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 8){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 9){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+        if (Number(questionnaire.responseOption.name) === 10){
+          ragPercent = ((Number(questionnaire.responseOption.name)/10) * 100).toFixed(2).toString();
+        }
+      }
+     
+    return ragPercent;
+  }
+
+
+  public getRagText(questionnaire: IQuestionResponseViewModel) {
 
     let ragText = '';
-
-    questionnaire.forEach(item => {
-      if (Number(item.responseOption.name) >= 1 && Number(item.responseOption.name) <= 4) {
-        ragText = 'Below Expectations';
+   // questionnaire.forEach(item => {
+     
+      if(questionnaire.responseTypeId ===  ResponseTypeEnum.Score2)
+      {
+        if (Number(questionnaire.responseOption.name) <= 1){
+          ragText = 'Very Poor';
+        }
+        else if (Number(questionnaire.responseOption.name) > 1 && Number(questionnaire.responseOption.name) <= 2) {
+          ragText = 'Poor';
+        }
+        else if (Number(questionnaire.responseOption.name) > 2 && Number(questionnaire.responseOption.name) <= 3 ) {
+          ragText = 'Average';
+        }
+        else if (Number(questionnaire.responseOption.name) > 3 && Number(questionnaire.responseOption.name) <= 4 ) {
+          ragText = 'Good';
+        }
+        else{
+          ragText = 'Excellent';
+        }
       }
-      else if (Number(item.responseOption.name) >= 5 && Number(item.responseOption.name) <= 8) {
-        ragText = 'Meet Expectations';
+      if(questionnaire.responseTypeId ===  ResponseTypeEnum.Score3)
+      {
+        if (Number(questionnaire.responseOption.name) < 3){
+          ragText = 'Very Poor';
+        }
+        else if (Number(questionnaire.responseOption.name) >= 3 && Number(questionnaire.responseOption.name) < 5) {
+          ragText = 'Poor';
+        }
+        else if (Number(questionnaire.responseOption.name) >= 5 && Number(questionnaire.responseOption.name) < 7 ) {
+          ragText = 'Average';
+        }
+        else if (Number(questionnaire.responseOption.name) >= 7 && Number(questionnaire.responseOption.name) < 9 ) {
+          ragText = 'Good';
+        }
+        else{
+          ragText = 'Excellent';
+        }
       }
-      else if (Number(item.responseOption.name) > 8) {
-        ragText = 'Exceeds  Expectations';
-      }
-    });
+     
+   // });
 
     return ragText;
   }
@@ -419,9 +543,44 @@ export class AdjudicateNpoComponent implements OnInit {
     question.isSaved = false;
   }
 
+  public getOverallPercentage()
+  {
+    let overallPercentage = 0;
+    overallPercentage = ((Number(this.overallAverageScore)/Number(this.totalQuestionValue))*100);
+
+    this.totalPercentage = overallPercentage;
+    return this.totalPercentage.toFixed(2);
+  }
+  public getOverallLegend()
+  {
+    let overallPercentage = 0;
+    let legendDesc = '';
+    overallPercentage = ((Number(this.overallAverageScore)/Number(this.totalQuestionValue))*100);
+
+    this.totalPercentage = overallPercentage;
+
+    if (Number(this.totalPercentage) > 0 && Number(this.totalPercentage) <= 20){
+      legendDesc = 'Very Poor';
+    }
+    if (Number(this.totalPercentage) > 20 && Number(this.totalPercentage) <= 40){
+      legendDesc = 'Poor';
+    }
+    if (Number(this.totalPercentage) > 40 && Number(this.totalPercentage) <= 60){
+      legendDesc = 'Average';
+    }
+    if (Number(this.totalPercentage) > 60 && Number(this.totalPercentage) <= 80){
+      legendDesc = 'Good';
+    }
+    if (Number(this.totalPercentage) > 80){
+      legendDesc = 'Excellent';
+    }
+
+    this.totalLegend = legendDesc;
+    return  this.totalLegend;
+  }
+
   public getAverageScoreTotal(questionnaire: IQuestionResponseViewModel[]) {
     let totalAverageScore = 0;
-
     questionnaire.forEach(item => {
       if (Number(item.responseOption.name) >= 0) {
         totalAverageScore += Number(item.responseOption.name);
@@ -430,10 +589,38 @@ export class AdjudicateNpoComponent implements OnInit {
         totalAverageScore = 0;
       }
     });
-
     this.overallAverageScore = totalAverageScore;
 
     return totalAverageScore;
+  }
+
+  public gettotalQuestionValue(questionnaire: IQuestionResponseViewModel[]) {
+    let totalQuestionVal = 0;
+
+    questionnaire.forEach(item => {
+      if(item.responseTypeId === ResponseTypeEnum.Score2)
+      {
+        if (Number(item.responseOption.name) >= 0) {
+          totalQuestionVal += 5;
+        }
+        else {
+          totalQuestionVal = 0;
+        }
+      }
+      if(item.responseTypeId === ResponseTypeEnum.Score3)
+      {
+        if (Number(item.responseOption.name) >= 0) {
+          totalQuestionVal += 10;
+        }
+        else {
+          totalQuestionVal = 0;
+        }
+      }     
+    });
+
+    this.totalQuestionValue = totalQuestionVal;
+
+    return this.totalQuestionValue;
   }
 
 
@@ -486,6 +673,7 @@ export class AdjudicateNpoComponent implements OnInit {
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
     this.onSave(question);
+
 
   }
 
@@ -813,12 +1001,9 @@ export class AdjudicateNpoComponent implements OnInit {
   }
 
   public disableElement() {
-    let questions = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement"
-      || x.questionCategoryName === "Timely Work Plan Submission"
-      || x.questionCategoryName === "Impact" || x.questionCategoryName === "Risk Mitigation"
-      || x.questionCategoryName === "Appropriation of Resources");
+    let questions = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication2");
     let countReviewed = questions.filter(x => x.isSaved === true).length;
-    return ((questions.length === countReviewed) && (this.captureImprovementArea != undefined && this.captureImprovementArea != '') && (this.captureRequiredAction != undefined && this.captureRequiredAction != '')) ? false : true;
+    return (questions.length === countReviewed) ? false : true;
   }
 
 }

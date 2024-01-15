@@ -426,6 +426,10 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('Close Score Card');  
       this.optionItemExists('Summary');  
     }
+    else{
+      this.optionItemExists('Adjudicate Funded Npo');  
+      this.optionItemExists('Review Adjudicated Funded Npo'); 
+    }
 
     // Hide options based on status
     if(this.selectedApplication.initiateScorecard === 1)
