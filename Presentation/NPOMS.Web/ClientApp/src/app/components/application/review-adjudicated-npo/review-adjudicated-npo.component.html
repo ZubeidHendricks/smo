@@ -4,90 +4,94 @@
     </div>
 </div>
 
-<!-- <div class="p-grid p-nogutter p-justify-end">
-       
-    <button pButton type="button" label="Download" icon="fa fa-download" *ngIf="hasScorecardSubmitted"
-    (click)="download()"></button>
-       
-</div> -->
+<!--
+<div>
+<app-qc-npo-details-view 
+     [application]="application"
+    [newApplication]="false">
+    </app-qc-npo-details-view>
+    <app-qc-application-periods-view 
+        [npo]="npo"
+        [(applicationPeriod)]="applicationPeriod"
+        [(application)]="application"
+        [isEdit]="false">
+    </app-qc-application-periods-view>
+    <app-qc-application-detail-view 
+        [applicationPeriod]="applicationPeriod"
+        [application]="application"
+        [(districtCouncil)]="districtCouncil"
+        [(localMunicipality)]="localMunicipality"
+        [(regions)]="regions"
+        [(sdas)]="sdas"
+        [(amount)]="amount"
+        [(sourceOfInformation)]="sourceOfInformation"
+        [(affliatedOrganisationInfo)]="affliatedOrganisationInfo"
+        [(purposeQuestion)]="purposeQuestion"
+        [(fundingApplicationDetails)]="fundingApplicationDetails"
+        [isEdit]="false">
+    </app-qc-application-detail-view>
+    <app-qc-objectives-view
+    [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"
+    [isReview]="false" [currentUserId]="profile.id"
+    [isEdit]="false"></app-qc-objectives-view>
+    <app-qc-activities-view
+    [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
+    [isReview]="false"
+    [isEdit]="false"></app-qc-activities-view>
+    <app-qc-funded-document-upload-view *ngIf="activeStep == QCStepsFundedEnum.ApplicationFundedDocument"
+        [(activeStep)]="activeStep"
+        [application]="application"
+        [isView]="true">            
+    </app-qc-funded-document-upload-view>
+</div>
+
+-->
 <div style="height: 10px;"></div>
-<!-- <div class="p-grid p-nogutter p-justify-between" style="border: solid 1px rgb(172, 168, 168);">
-    <div>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application RefNo: <span *ngIf="application">"{{application.refNo}}"</span></span>
-            <i style="vertical-align: middle; padding: 10px;"></i>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Financial Year: <span *ngIf="application && application.applicationPeriod">"{{application.applicationPeriod.financialYear.name}}"</span></span>
-    </div>
-    <div>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Organisation: <span *ngIf="organisation">"{{organisation}}"</span></span>
-            <i style="vertical-align: middle; padding: 10px;"></i>
-        <span class="ui-panel-title text-uppercase text-muted" style="font-size:12px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Application Name: <span *ngIf="application && application.applicationPeriod">"{{application.applicationPeriod.name}}"</span></span>
-    </div>
-</div> -->
-<p-panel [style]="{'font-size':'12px', 'width':'100%'}" header="Adjudication Summary">
+<p-panel [style]="{'font-size':'12px', 'width':'100%'}" header="Score">
     <p-table [value]="allQuestionnaires" *ngIf="allQuestionnaires" [rowHover]="true" 
         styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
             <ng-template pTemplate="header">
                 <tr>
-                    <th style="width: 15%; text-align: center;">#</th>
-                    <th style="width: 25%; text-align: center;">Name (Question/Statement)</th>
+                    <!-- <th style="width: 15%; text-align: center;">#</th>
+                    <th style="width: 25%; text-align: center;">Name (Question/Statement)</th> -->
                     <th style="width: 8%; text-align: center;">Scorer<b> 1</b></th>
                     <th style="width: 8%; text-align: center;">Scorer<b> 2</b></th>
                     <th style="width: 8%; text-align: center;">Scorer<b> 3</b></th>
                     <th style="width: 8%; text-align: center;">Scorer<b> 4</b></th>
-                    <!-- <th style="width: 8%; text-align: center;">Scorer<b> 5</b></th>
-                    <th style="width: 8%; text-align: center;">Scorer<b> 6</b></th>
-                    <th style="width: 8%; text-align: center;">Scorer<b> 7</b></th>
-                    <th style="width: 8%; text-align: center;">Scorer<b> 8</b></th>
-                    <th style="width: 8%; text-align: center;">Scorer<b> 9</b></th>
-                    <th style="width: 8%; text-align: center;">Scorer<b> 10</b></th> -->
-                    <!-- <th style="width: 10%; text-align: center; text-wrap:break-word;">Average Category Score</th> -->
-                    <th style="width: 8%; text-align: center;" >Total score</th>
+                    <th style="width: 8%; text-align: center;" >Aggregated Score</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-question let-rowIndex="rowIndex">
                 <tr *ngIf="updateRowGroupMetaData(allQuestionnaires)[question.questionSectionName].index === rowIndex">
-                    <td style="text-align: center;">
+                    <!-- <td style="text-align: center;">
                         <span class="p-text-bold p-ml-2"><b>{{question.questionCategoryName}}</b></span>
                     </td>
-                    <td class="p-text-bold p-ml-2">{{question.questionName}}</td>                        
-                    <td style="text-align: center;" class="{{getRagColour1(question.responsesO[0])}}">{{question.responsesO[0]}}</td>
+                    <td class="p-text-bold p-ml-2">{{question.questionName}}</td>                         -->
+                    <!-- <td style="text-align: center;" class="{{getRagColour1(question.responsesO[0])}}">  {{getRagPercent(question)}} %   </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[1])}}">{{question.responsesO[1]}}</td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[2])}}">{{question.responsesO[2]}}</td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[3])}}">{{question.responsesO[3]}}</td> 
-                    <!-- <td style="text-align: center;" class="{{getRagColour1(question.responsesO[5])}}">{{question.responsesO[5]}}</td>
-                    <td style="text-align: center;" class="{{getRagColour1(question.responsesO[6])}}">{{question.responsesO[6]}}</td>
-                    <td style="text-align: center;" class="{{getRagColour1(question.responsesO[7])}}">{{question.responsesO[7]}}</td>
-                    <td style="text-align: center;" class="{{getRagColour1(question.responsesO[8])}}">{{question.responsesO[8]}}</td>  
-                    <td style="text-align: center;" class="{{getRagColour1(question.responsesO[9])}}">{{question.responsesO[9]}}</td>
-                    <td style="text-align: center;" class="{{getRagColour1(question.responsesO[10])}}">{{question.responsesO[10]}}</td>                         -->
-                    <!-- <td style="text-align: center;" class="{{getRagColour1((question.sumOfResponse/question.responsesO.length).toFixed(2))}}" *ngIf="question.sumOfResponse > 0 && question.responsesO.length > 0">
-                        {{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
-                    </td>
-                    <td style="text-align: center;">
-                        <button *ngIf="question.hasComment"  pButton pRipple type="button"
-                        class="p-button-text action-button" icon="fa fa-comments-o"
-                        pTooltip="Comments" tooltipPosition="top" (click)="onSelectViewComment(question)"></button>
-                    </td> -->
-                    <td style="text-align: center;"><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span></td>
-                    <td style="text-align: center;" *ngIf="question.sumOfResponse === 0 && question.responsesO.length === 0">
+                    <td style="text-align: center;"><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span></td> -->
+                    <!-- <td style="text-align: center;" *ngIf="question.sumOfResponse === 0 && question.responsesO.length === 0">
                         {{0}}
-                    </td>
+                    </td> -->
                 </tr>
             </ng-template>
             <ng-template pTemplate="footer">
                 <tr>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer1OverallAvgScore)}}"><b>{{scorer1OverallAvgScore}} %</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}} %</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}} %</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}} %</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}} %</b></td>
+                </tr>
+                <!-- <tr>
                     <td style="border: 1px solid #CCCCCC; text-align: center; "> <span class="p-text-bold p-ml-2"><b>(Score per scorer -/50)</b></span></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;">&nbsp;</td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer1OverallTotalScore}}</b></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer2OverallTotalScore}}</b></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer3OverallTotalScore}}</b></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer4OverallTotalScore}}</b></td>
-                    <!-- <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer5OverallTotalScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer6OverallTotalScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer7OverallTotalScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer8OverallTotalScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer9OverallTotalScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer10OverallTotalScore}}</b></td> -->
                     <td style="text-align: center; border: 1px solid #CCCCCC;" colspan="2"></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{allSocrerOverallTotalScore}}</b></td>
                 </tr>
@@ -98,107 +102,39 @@
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}}</b></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}}</b></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}}</b></td>
-                    <!-- <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer5OverallAvgScore)}}"><b>{{scorer5OverallAvgScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer6OverallAvgScore)}}"><b>{{scorer6OverallAvgScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer7OverallAvgScore)}}"><b>{{scorer7OverallAvgScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer8OverallAvgScore)}}"><b>{{scorer8OverallAvgScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer9OverallAvgScore)}}"><b>{{scorer9OverallAvgScore}}</b></td>
-                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer10OverallAvgScore)}}"><b>{{scorer10OverallAvgScore}}</b></td> -->
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " colspan="2"></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
-                </tr>
+                </tr> -->
             </ng-template>
     </p-table>
 </p-panel>
 
 <div style="height: 10px;"></div>
-
-<p-panel [style]="{'font-size':'12px', 'width':'100%'}" >
-    <table styleClass="p-datatable-striped" style="width: 100%;">
-        <tr>
-            <td style="width: 15%; text-align: center; border: 1px solid #CCCCCC;"> <span class="p-text-bold p-ml-2"><b>Scorer performance Comments</b></span></td>
-            <!-- <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(1)"></button>
-            </td>
-            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(2)"></button>
-            </td>
-            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(3)"></button>
-            </td>
-            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(4)"></button>
-            </td>
-            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(5)"></button>
-            </td>
-            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(6)"></button>
-            </td>
-            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(7)"></button>
-            </td>
-            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(8)"></button>
-            </td>
-            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(9)"></button>
-            </td>
-            <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button"
-                class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Comments" tooltipPosition="top" (click)="performanceComment(10)"></button>
-            </td> -->
-            <!-- <td style="width: 13%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>Overall Performance Score</b></td>
-            <td style="width: 10%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" *ngIf = "(((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2) > 10" class="{{getRagBackgroundColour(10)}}"><b>{{10}} - {{getRagText1("10")}}</b></td>
-            <td style="width: 20%; text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" class="{{getRagBackgroundColour((((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2).toFixed(2).toString())}}"><b>{{(((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2).toFixed(2)}} - {{getRagText1((((allScorerOverallAvgScore)+getOverallPerformancePercentage())/2).toFixed(2))}}</b></td> -->
-        </tr>
-    </table>
-</p-panel>
-
-<p-panel header="Reviewer Summary">
-    <!-- <div class="p-grid">
+<p-panel header="Recommended or Not for Funding">
+    <div class="p-grid">
         <div class="p-col-3 form-label">
             <div class="box">
-                <span class="non-mandatory-content">Improvement Areas
+                <span class="mandatory-content">Select the Option</span>
+            </div>
+        </div>
+        <div class="p-col-9">
+            <p-dropdown class="form-text"  defaultLabel="Choose the option" [options]="statuses" 
+            placeholder="Select a Option" optionLabel="name" 
+            [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
+            ></p-dropdown>
+        </div>
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="non-mandatory-content"> Justifiable reason for non recommendation:
                 </span>
             </div>
         </div>
         <div class="p-col-9">
             <textarea class="form-text" [rows]="3" pInputTextarea 
-            [(ngModel)]="captureImprovementArea" [ngModelOptions]="{standalone: true}" 
+            [(ngModel)]="reasonOfNonRecommendation" [ngModelOptions]="{standalone: true}" 
             [autoResize]="true" [disabled]="hascapturedImprovementArea"></textarea>
         </div>
-        <div class="p-col-3 form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Required Actions
-                </span>
-            </div>
-        </div>
-        <div class="p-col-9">
-            <textarea class="form-text" [rows]="3" pInputTextarea 
-            [(ngModel)]="captureRequiredAction" [ngModelOptions]="{standalone: true}" 
-            [autoResize]="true" [disabled]="hasCapturedRequiredAction"></textarea>
-        </div>
-    </div> -->
+    </div>
     <div style="height: 10px;"></div>
     <div class="p-grid">
         <div class="p-col-3 form-label">
@@ -224,7 +160,7 @@
     <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasScorecardSubmitted && this.IsAuthorized(PermissionsEnum.ReviewScorecard)">
        
         <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled] = "disableSubmit()"
-        (click)="submit()" [disabled]="disableElement()"></button>
+        (click)="submit()"></button>
            
     </div>
 </p-panel>
@@ -256,55 +192,3 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Comments" [(visible)]="displayDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
-    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
-    <!-- <p-table [rowHover]="true" [style]="{'border':'none'}"
-        styleClass="p-datatable-sm" [showCurrentPageReport]="true"> -->
-        <div class="p-grid">
-            <div class="p-col-3 form-label">
-                <div class="box">
-                    <span class="non-mandatory-content">Improvement Areas
-                    </span>
-                </div>
-            </div>
-            <div class="p-col-9">
-                <textarea class="form-text" [rows]="3" pInputTextarea 
-                [(ngModel)]="captureImprovementAreaComment" [ngModelOptions]="{standalone: true}" 
-                [autoResize]="true" [disabled]="true"></textarea>
-            </div>
-            <div class="p-col-3 form-label">
-                <div class="box">
-                    <span class="non-mandatory-content">Required Actions
-                    </span>
-                </div>
-            </div>
-            <div class="p-col-9">
-                <textarea class="form-text" [rows]="3" pInputTextarea 
-                [(ngModel)]="captureRequiredActionComment" [ngModelOptions]="{standalone: true}" 
-                [autoResize]="true" [disabled]="true"></textarea>
-            </div>
-        </div>
-        <div style="height: 10px;"></div>
-        <div class="p-grid">
-            <div class="p-col-3 form-label">
-                <div class="box">
-                    <span class="non-mandatory-content">Submitted By</span>
-                </div>
-            </div>
-            <div class="p-col-9">
-                <span>{{signedByUserScorecardUser}}</span>
-            </div>
-        </div>
-        <div style="height: 10px;"></div>
-        <div class="p-grid">
-            <div class="p-col-3 form-label">
-                <div class="box">
-                    <span class="non-mandatory-content">Submitted Date</span>
-                </div>
-            </div>
-            <div class="p-col-9">
-                <span>{{submittedDateByScorecardUser | date: 'yyyy-MM-dd'}}</span>
-            </div>
-        </div>
-    <!-- </p-table> -->
-</p-dialog>
