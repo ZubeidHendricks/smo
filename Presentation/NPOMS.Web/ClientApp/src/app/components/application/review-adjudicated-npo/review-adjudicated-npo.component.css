@@ -111,8 +111,20 @@ ol.roman {
     background-color: green!important;
 }
 
-.rag-not-saved-background {
+.rag-very-poor-background {
     background-color: red!important;
+}
+
+.rag-poor-background {
+    background-color: rgb(220, 109, 109)!important;
+}
+
+.rag-average-background{
+    background-color: rgb(183, 219, 149)!important;
+}
+
+.rag-good-background{
+    background-color: rgb(149, 219, 162)!important;
 }
 
 .rag-partial-background {
