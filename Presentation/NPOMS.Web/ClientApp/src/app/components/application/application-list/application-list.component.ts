@@ -125,7 +125,8 @@ export class ApplicationListComponent implements OnInit {
 
         this.allApplications = results;
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
-        this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved});
+        this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
+          && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && item.applicationPeriod.departmentId === 11});
         this.buildButtonItems();
         this.buildOptionItems();
 
@@ -533,7 +534,7 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA || (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId !== 11)) {
 
       // Hide Service Provision actions
       this.buttonItemExists('Edit Application', 'Service Provision');

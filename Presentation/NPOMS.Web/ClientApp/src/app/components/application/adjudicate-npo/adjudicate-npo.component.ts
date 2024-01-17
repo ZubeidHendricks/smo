@@ -86,7 +86,6 @@ export class AdjudicateNpoComponent implements OnInit {
   overallAverageScore: number = 0;
   totalLegend: string;
   totalPercentage: number;
-
   QuestionCategoryentities: IQuestionCategory[];
   ResponseTypeentities: IResponseType[];
   auditCols: any[];
@@ -173,6 +172,7 @@ export class AdjudicateNpoComponent implements OnInit {
         // this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         // this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
+        this.updateRowGroupMetaDataAct();
         console.log('this.npoAdjudication',this.npoAdjudication);
       },
       (err) => {
@@ -242,6 +242,7 @@ export class AdjudicateNpoComponent implements OnInit {
     this.updateRowGroupMetaData(questionnaires);
     return questionnaires;
   }
+  
 
   public updateRowGroupMetaData(questionnaire: IQuestionResponseViewModel[]) {
     let rowGroupMetadata = {};
@@ -306,7 +307,7 @@ export class AdjudicateNpoComponent implements OnInit {
     return status;
   }
 
-  public getQuestionValue(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
+  public getTotalQuestionValue(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let questionValue = '';
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
     
@@ -320,6 +321,113 @@ export class AdjudicateNpoComponent implements OnInit {
       questionValue = Number(questions.length * 10).toString();
     }
     return questionValue;
+  }
+
+  public getAvgQuestionValue(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
+    let questionValue = 0;
+    let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
+    questions.forEach(item => {
+      if (Number(item.responseOption.name) > 0) {
+        questionValue += Number(item.responseOption.name);
+      }      
+    });
+    
+    return questionValue;
+  }
+
+  public getSubTotalLegend(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
+    let questionValue1 = 0;
+    let questionValue2 = 0;
+    let questionLenght1 = 0;
+    let questionLenght2 = 0;
+    let questionValue = 0;
+    let legend = '';
+    let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
+    questions.forEach(item => {
+      if(item.responseTypeId === ResponseTypeEnum.Score2)
+      {
+        questionLenght1 = questions.length;
+
+        if (Number(item.responseOption.name) > 0) {
+          questionValue1 += Number(item.responseOption.name);
+        }   
+      }  
+      
+      if(item.responseTypeId === ResponseTypeEnum.Score3)
+      {
+        questionLenght2 = questions.length;
+        if (Number(item.responseOption.name) > 0) {
+          questionValue2 += Number(item.responseOption.name);
+        }   
+      } 
+
+    });
+
+    if(question.responseTypeId === ResponseTypeEnum.Score2)
+    {
+      questionValue = ((Number(questionValue1)/(questionLenght1*5))*100);
+    }
+
+    if(question.responseTypeId === ResponseTypeEnum.Score3)
+    {
+      questionValue = ((Number(questionValue2)/(questionLenght2*10))*100);
+    }
+    
+    if (Number(questionValue) >= 0 && Number(questionValue) <= 20) {
+      legend = 'Very Poor';
+    }
+    if (Number(questionValue) > 20 && Number(questionValue) <= 40) {
+      legend = 'Poor';
+    }
+    if (Number(questionValue) > 40 && Number(questionValue) <= 60) {
+      legend = 'Average';
+    }
+    if (Number(questionValue) > 60 && Number(questionValue) <= 80) {
+      legend = 'Good';
+    }
+    if (Number(questionValue) > 80) {
+      legend = 'Excellent';
+    }
+    
+    return legend;
+  }
+
+  public getSubTotalPercentage(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
+    let questionValue1 = 0;
+    let questionValue2 = 0;
+    let questionLenght1 = 0;
+    let questionLenght2 = 0;
+    let subPercentage = '';
+    let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
+    questions.forEach(item => {
+      if(item.responseTypeId === ResponseTypeEnum.Score2)
+      {
+        questionLenght1 = questions.length;
+
+        if (Number(item.responseOption.name) > 0) {
+          questionValue1 += Number(item.responseOption.name);
+        }   
+      }  
+      
+      if(item.responseTypeId === ResponseTypeEnum.Score3)
+      {
+        questionLenght2 = questions.length;
+        if (Number(item.responseOption.name) > 0) {
+          questionValue2 += Number(item.responseOption.name);
+        }   
+      }      
+    });
+
+    if(question.responseTypeId === ResponseTypeEnum.Score2)
+    {
+      subPercentage = ((Number(questionValue1)/(questionLenght1*5))*100).toFixed(2).toString();
+    }
+    if(question.responseTypeId === ResponseTypeEnum.Score3)
+    {
+      subPercentage = ((Number(questionValue2)/(questionLenght2*10))*100).toFixed(2).toString();
+    }
+
+    return subPercentage
   }
 
   public getRagColour(questionnaire: IQuestionResponseViewModel[]) {
@@ -886,25 +994,25 @@ export class AdjudicateNpoComponent implements OnInit {
     return performanceAvg;
   }
 
-  // updateRowGroupMetaDataAct() {
-  //   this.rowGroupMetadataActivities = [];
+  updateRowGroupMetaDataAct() {
+    this.rowGroupMetadataActivities = [];
 
-  //   if (this.filteredWorkplanIndicators) {
-  //     this.filteredWorkplanIndicators.forEach(element => {
-  //       var itemExists = this.rowGroupMetadataActivities.some(function (data) {
-  //         return data.itemName === element.ObjectiveName
-  //       });
+  //  if (this.filteredWorkplanIndicators) {
+      this.npoAdjudication.forEach(element => {
+        var itemExists = this.rowGroupMetadataActivities.some(function (data) {
+          return data.itemName === element.questionSectionName
+        });
 
-  //       this.rowGroupMetadataActivities.push({
-  //         itemName: element.ObjectiveName,
-  //         itemExists: itemExists
-  //       });
+        this.rowGroupMetadataActivities.push({
+          itemName: element.questionSectionName,
+          itemExists: itemExists
+        });
 
-  //     });
-  //   }
+      });
+   // }
 
-  //   this.allDataLoaded();
-  // }
+   // this.allDataLoaded();
+  }
 
   private allDataLoaded() {
     if (this.objectives && this.activities) {

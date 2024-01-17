@@ -140,7 +140,8 @@ export class ScorecardComponent implements OnInit {
       this.id = params.get('id');
     });
 
-  
+    this.loadApplications();
+
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -158,7 +159,7 @@ export class ScorecardComponent implements OnInit {
   }
 
   private loadQuestionnaire() {
-    this.loadApplications();
+   
     this._evaluationService.getAddScoreQuestionnaire(Number(this.id)).subscribe(
       (results) => {
         this.allQuestionnaires = results;
@@ -492,7 +493,9 @@ export class ScorecardComponent implements OnInit {
   }
 
   private loadApplications() {
+    console.log('hi');
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
+
       (results) => {
         this.financialYears = [];
         this.application = results;
@@ -542,33 +545,8 @@ export class ScorecardComponent implements OnInit {
             workplanActuals: []
           } as IWorkplanIndicator);
 
-          
-          this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
-            (results) => {
-              // Add WorkplanTargets to WorkplanIndicators at index of activity
-              var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
-              this.workplanIndicators[index].workplanTargets = results;
-            },
-            (err) => {
-              this._loggerService.logException(err);
-              this._spinner.hide();
-            }
-          );
-
-          this._indicatorRepo.getActualsByActivityId(activity.id).subscribe(
-            (results) => {
-              // Add WorkplanActuals to WorkplanIndicators at index of activity
-              var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
-              this.workplanIndicators[index].workplanActuals = results;
-            },
-            (err) => {
-              this._loggerService.logException(err);
-              this._spinner.hide();
-            }
-          )
-          this._spinner.hide();
-        //  this.loadTargets(activity);
-         // this.loadActuals(activity);
+          this.loadTargets(activity);
+          this.loadActuals(activity);
         });
       },
       (err) => {

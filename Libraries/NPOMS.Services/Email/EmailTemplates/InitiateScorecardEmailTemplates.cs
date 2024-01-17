@@ -38,7 +38,7 @@ namespace NPOMS.Services.Email.EmailTemplates
             var application = await applicationRepository.GetById(this._application.Id);
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
-            var user = await userRepository.GetByUserName("Shafieka.Samuels@westerncape.gov.za");
+            var user = await userRepository.GetByUserName("Millicent.Finney@westerncape.gov.za");
             //var users = await userRepository.GetByIds((int)RoleEnum.Reviewer, application.ApplicationPeriod.DepartmentId);
             var npoRepository = EngineContext.Current.Resolve<INpoRepository>();
             var npo = await npoRepository.GetById(application.NpoId);

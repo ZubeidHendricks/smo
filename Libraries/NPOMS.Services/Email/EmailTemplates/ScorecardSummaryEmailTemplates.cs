@@ -40,7 +40,7 @@ namespace NPOMS.Services.Email.EmailTemplates
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
             //var status = await statusRepository.GetById(this._fundingApplication.StatusId);
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
-            var user = await userRepository.GetByUserName("Shafieka.Samuels@westerncape.gov.za");
+            var user = await userRepository.GetByUserName("Millicent.Finney@westerncape.gov.za");
             try
             {
                 var action = string.Empty;
