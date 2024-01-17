@@ -123,8 +123,8 @@
         <div class="p-col-9">
             <p-dropdown class="form-text"  defaultLabel="Choose the option" [options]="statuses" 
             placeholder="Select a Option" optionLabel="name" 
-            [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
-            ></p-dropdown>
+            [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
+            appendTo="body" [disabled] ="hasScorecardSubmitted"></p-dropdown>
         </div>
         <div class="p-col-3 form-label">
             <div class="box">
@@ -157,7 +157,7 @@
             </div>
         </div>
         <div class="p-col-9">
-            <span>{{submittedDate | date: 'yyyy-MM-dd'}}</span>
+            <span>{{submittedDate | date: 'yyyy-MM-dd'}}</span> 
         </div>
     </div>
     <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasScorecardSubmitted && this.IsAuthorized(PermissionsEnum.ReviewScorecard)">

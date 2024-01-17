@@ -826,7 +826,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
       isActive: true,
       isSignedOff: true,
       isDeclarationAccepted: true,
-      selectedStatus: 0
+      selectedStatus: this.selectedStatus.id,
     } as ICapturedResponse;
 
     this._evaluationService.createScorecardResponse(capturedResponse).subscribe(
@@ -844,9 +844,9 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   private loadCapturedResponses() {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
       (results) => {
-        this.capturedResponses = results.filter(x => x.questionCategoryId === 200 && x.createdUser.id === this.userId);
+        this.capturedResponses = results.filter(x => x.questionCategoryId === 200);
         if (this.capturedResponses.length > 0) {
-          let num  = this.capturedResponses[0].selectedStatus;
+          let num  = this.capturedResponses[0].statusId;
           switch (num) {
             case Number(StatusEnum.Declined):
               this.selectedStatus = this.statuses.find(x => x.id === StatusEnum.Declined);
@@ -858,7 +858,6 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
               this.selectedStatus = this.statuses.find(x => x.id === StatusEnum.StronglyRecommended);
               break;
           }
-        //  this.selectedStatus = this.capturedResponses[0].statusId
           this.reasonOfNonRecommendation = this.capturedResponses[0].comments;
           this.signedByUser = this.capturedResponses[0].createdUser.fullName;
           this.submittedDate = this.capturedResponses[0].createdDateTime;
