@@ -18,8 +18,9 @@
 </div>
 <div>
     <p-panel header="Adjudication" [style]="{'font-size':'12px', 'width':'100%'}" >
-        <p-table [value]="npoAdjudication" *ngIf="npoAdjudication" [rowHover]="true" 
+    <p-table [value]="npoAdjudication" *ngIf="npoAdjudication" [rowHover]="true" 
         styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
+        <p-inplace [closable]="true">
             <ng-template pTemplate="header">
                 <tr>
                     <th style="width: 5%; text-align: center;">#</th>
@@ -38,7 +39,14 @@
                         <div class="pull-right"><span class="{{'product-badge status-' + getStatus(npoAdjudication, question)}}">{{getStatusText(npoAdjudication, question)}}</span></div>
                     </td>
                 </tr>
-            </ng-template><!--  -->
+                <tr *ngIf="rowGroupMetadataActivities && rowGroupMetadataActivities[rowIndex].itemExists === false">
+                    <td colspan="2" style="text-align: center;"><strong>SUB TOTAL</strong></td> 
+                    <td style="text-align: center;"><strong>{{getTotalQuestionValue(npoAdjudication, question)}}</strong></td>
+                    <td style="text-align: center;"><strong>{{getAvgQuestionValue(npoAdjudication, question)}}</strong></td>
+                    <td style="text-align: center;"><strong>{{getSubTotalLegend(npoAdjudication, question)}}</strong></td>
+                    <td colspan="2" style="text-align: center;"><strong>{{getSubTotalPercentage(npoAdjudication, question)}} %</strong></td>
+                </tr>
+            </ng-template>
             <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex" >
                 <tr class="default-font">
                     <td style="text-align: center;">{{rowIndex + 1}}</td>
@@ -59,38 +67,28 @@
                     <td style="text-align: center;" colspan="2">    
                         {{getRagPercent(question)}} %                  
                     </td> 
-                </tr>
-              
-            </ng-template>
-            <!-- <ng-template pTemplate="emptymessage" let-question let-rowIndex="rowIndex" >
-                <tr>
-                    <td colspan="2"><strong>SUB TOTAL</strong></td>
-                    <td><strong>{{getQuestionValue(npoAdjudication, question)}}</strong></td>
-                    <td><strong>SUB TOTAL</strong></td>
-                    <td><strong>SUB TOTAL</strong></td>
-                    <td colspan="2"><strong>SUB TOTAL</strong></td>
-                </tr>
-            </ng-template> -->
-
-            <ng-template pTemplate="emptymessage">
-                <tr class="default-font">
-                    <td [attr.colspan]="getColspan(npoAdjudication, 7)" style="text-align: center;">No results found</td>
-                </tr>
-            </ng-template>
-           <ng-template pTemplate="footer" *ngIf="hasWeighting(npoAdjudication)">
-                <tr>
-                    <td colspan="2"><span style="font-weight: bold;">TOTAL TECHNICAL EVALUATION</span></td>
-                    <td style="text-align: center;"><strong>{{gettotalQuestionValue(npoAdjudication)}}</strong></td>
-                    <td style="text-align: center;"><span style="font-weight: bold;">{{getAverageScoreTotal(npoAdjudication)}}</span></td>
-                    <td style="text-align: center;">{{getOverallLegend()}}</td>
-                    <td colspan="2" style="text-align: center;">{{getOverallPercentage()}} %</td>
-                </tr>
-            </ng-template>
-        </p-table>
+                </tr>                             
+            </ng-template>     
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td [attr.colspan]="getColspan(npoAdjudication, 7)" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer" *ngIf="hasWeighting(npoAdjudication)">
+                    <tr>
+                        <td colspan="2"><span style="font-weight: bold;">TOTAL TECHNICAL EVALUATION</span></td>
+                        <td style="text-align: center;"><strong>{{gettotalQuestionValue(npoAdjudication)}}</strong></td>
+                        <td style="text-align: center;"><span style="font-weight: bold;">{{getAverageScoreTotal(npoAdjudication)}}</span></td>
+                        <td style="text-align: center;">{{getOverallLegend()}}</td>
+                        <td colspan="2" style="text-align: center;">{{getOverallPercentage()}} %</td>
+                    </tr>
+                </ng-template>
+            
+        </p-inplace>
+    </p-table>
     </p-panel>
     <div style="height: 10px;"></div>
 </div>
-
 <!-- <div>
     <div style="height: 10px;"></div>
         <table style="width: 80%; border-width: 1px;">
