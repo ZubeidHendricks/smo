@@ -373,7 +373,7 @@ export class AdjudicateNpoComponent implements OnInit {
       questionValue = ((Number(questionValue2)/(questionLenght2*10))*100);
     }
     
-    if (Number(questionValue) >= 0 && Number(questionValue) <= 20) {
+    if (Number(questionValue) > 0 && Number(questionValue) <= 20) {
       legend = 'Very Poor';
     }
     if (Number(questionValue) > 20 && Number(questionValue) <= 40) {
@@ -527,7 +527,7 @@ export class AdjudicateNpoComponent implements OnInit {
      
       if(questionnaire.responseTypeId ===  ResponseTypeEnum.Score2)
       {
-        if (Number(questionnaire.responseOption.name) <= 1){
+        if (Number(questionnaire.responseOption.name) > 0 && Number(questionnaire.responseOption.name) <= 1){
           ragText = 'Very Poor';
         }
         else if (Number(questionnaire.responseOption.name) > 1 && Number(questionnaire.responseOption.name) <= 2) {
