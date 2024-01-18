@@ -40,7 +40,7 @@ export class QcNpoDetailsViewComponent implements OnInit {
 
   ngOnInit(): void {
     var splitUrl = window.location.href.split('/');
-    this.headerTitle = splitUrl[5];
+    this.headerTitle = splitUrl[4];
     this.loadApplication();
     this.validationErrors.push({ severity: 'warn', summary: "Warning:", detail: "Application already captured. Please go to 'Submissions' to access this application." });
   }

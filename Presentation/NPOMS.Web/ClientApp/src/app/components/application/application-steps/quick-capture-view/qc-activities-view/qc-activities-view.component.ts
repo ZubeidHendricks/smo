@@ -141,8 +141,7 @@ export class QCActivitiesViewComponent implements OnInit {
   ngOnInit(): void {
     this._spinner.show();
     var splitUrl = window.location.href.split('/');
-    this.headerTitle = splitUrl[5];
-    this.headerTitle2 = splitUrl[4].substring(0,3);
+    this.headerTitle = splitUrl[4];
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||

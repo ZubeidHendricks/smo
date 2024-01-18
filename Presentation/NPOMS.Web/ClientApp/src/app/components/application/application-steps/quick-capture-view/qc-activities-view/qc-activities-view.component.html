@@ -44,7 +44,7 @@
         </ng-template>
     </p-table>
     <div style="height: 10px;"></div>
-    <div class="p-grid p-nogutter p-justify-between">
+    <div class="p-grid p-nogutter p-justify-between" *ngIf="headerTitle !== 'reviewAdjudicatedNpo'">
         <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left" *ngIf ="headerTitle !== 'view'"></p-button>
         <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right" *ngIf ="headerTitle !== 'view'"></p-button>
     </div>

@@ -307,19 +307,31 @@ export class AdjudicateNpoComponent implements OnInit {
     return status;
   }
 
-  public getTotalQuestionValue(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
-    let questionValue = '';
-    let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
+  public getTotalQuestionValue(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) 
+  {
+    let questionValue = 0;
+    let qs = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
+    qs.forEach(item => {
+      if(item.responseTypeId === ResponseTypeEnum.Score2)
+      {
+        if (Number(item.responseOption.name) >= 0) {
+          questionValue += 5;
+        }
+        else {
+          questionValue = 0;
+        }
+      }
+      if(item.responseTypeId === ResponseTypeEnum.Score3)
+      {
+        if (Number(item.responseOption.name) >= 0) {
+          questionValue += 10;
+        }
+        else {
+          questionValue = 0;
+        }
+      }     
+    });
     
-    if(question.responseTypeId === ResponseTypeEnum.Score2)
-    {
-      questionValue = Number(questions.length * 5).toString();
-    }
-
-    if(question.responseTypeId === ResponseTypeEnum.Score3)
-    {
-      questionValue = Number(questions.length * 10).toString();
-    }
     return questionValue;
   }
 

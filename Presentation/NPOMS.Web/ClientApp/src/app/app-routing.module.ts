@@ -56,6 +56,11 @@ import { ManageComponent } from './components/indicators/workplan/manage/manage.
 import { ActualsComponent } from './components/indicators/workplan/actuals/actuals.component';
 import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
 import { SummaryComponent } from './components/indicators/workplan/summary/summary.component';
+import { ManageBusinessPlanComponent } from './components/indicators/businessplan/manage-businessplan/manage-businessplan.component';
+import { ActualsBusinessPlanComponent } from './components/indicators/businessplan/actuals-businessplan/actuals-businessplan.component';
+import { TargetsBusinessPlanComponent } from './components/indicators/businessplan/targets-businessplan/targets-businessplan.component';
+import { SummaryBusinessPlanComponent } from './components/indicators/businessplan/summary-businessplan/summary-businessplan.component';
+
 import { SubProgrammeTypeComponent } from './components/admin/utilities/sub-programme-type/sub-programme-type.component';
 import { DepartmentBudgetComponent } from './components/admin/budgets/department-budget/department-budget.component';
 import { DirectorateBudgetComponent } from './components/admin/budgets/directorate-budget/directorate-budget.component';
@@ -212,7 +217,12 @@ const routes: Routes = [
   { path: 'workplan-indicator/actuals/:id', component: ActualsComponent },
   { path: 'workplan-indicator/targets/:id/financial-year/:financialYearId', component: TargetsComponent },
   { path: 'workplan-indicator/summary/:npoId', component: SummaryComponent },
-  // { path: 'application/scorecard/:npoId', component: ScorecardComponent },
+
+   // businessplan Indicators
+   { path: 'businessplan-indicator/manage/:npoId', component: ManageBusinessPlanComponent },
+   { path: 'businessplan-indicator/actuals/:id', component: ActualsBusinessPlanComponent },
+   { path: 'businessplan-indicator/targets/:id/financial-year/:financialYearId', component: TargetsBusinessPlanComponent },
+   { path: 'businessplan-indicator/summary/:npoId', component: SummaryBusinessPlanComponent },
 
   // Budgets
   { path: 'admin/department-budget', component: DepartmentBudgetComponent },

@@ -12,7 +12,7 @@
         (retrievedNpoProfile)="updateNpoProfile($event)">
     </app-view-profile> -->
     <div style="height: 10px;"></div>
-    <div class="p-grid p-nogutter p-justify-end">
+    <div class="p-grid p-nogutter p-justify-end" *ngIf="headerTitle !== 'reviewAdjudicatedNpo'">
         <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right" *ngIf ="headerTitle !== 'view'"></p-button>
     </div>
 </p-panel>
