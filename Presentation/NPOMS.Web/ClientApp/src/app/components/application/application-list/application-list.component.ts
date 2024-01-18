@@ -421,15 +421,17 @@ export class ApplicationListComponent implements OnInit {
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11)
     {
       this.optionItemExists('Manage Indicators');  
-      this.optionItemExists('Add Score Card');  
+      this.optionItemExists('Capture Scorecard');  
       this.optionItemExists('Review Score Card');  
       this.optionItemExists('Initiate Score Card');  
-      this.optionItemExists('Close Score Card');  
+      this.optionItemExists('Conclude Scorecard');  
       this.optionItemExists('Summary');  
     }
     else{
       this.optionItemExists('Adjudicate Funded Npo');  
       this.optionItemExists('Review Adjudicated Funded Npo'); 
+      this.optionItemExists('Businessplan Indicators'); 
+      this.optionItemExists('BusinessPlan Summary');   
     }
 
     // Hide options based on status
@@ -440,17 +442,17 @@ export class ApplicationListComponent implements OnInit {
     
     if(this.selectedApplication.closeScorecard === 0)
     {
-      this.optionItemExists('Close Score Card');
+      this.optionItemExists('Conclude Scorecard');
     }  
 
     if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount > 0)
     {
-      this.optionItemExists('Add Score Card');
+      this.optionItemExists('Capture Scorecard');
     }
 
     if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount === 0)
     {
-      this.optionItemExists('Add Score Card');
+      this.optionItemExists('Capture Scorecard');
     }
 
     if(this.selectedApplication.scorecardCount === 0)
@@ -725,9 +727,19 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
+        this.optionItems[0].items.push({
+          label: 'Businessplan Indicators',
+          icon: 'fa fa-tags wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('businessplan-indicator/manage/' + this.selectedApplication.npoId);
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.AddScorecard)) {
         this.optionItems[0].items.push({
-          label: 'Add Score Card',
+          label: 'Capture Scorecard',
           icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl('scorecard/' + this.selectedApplication.id);
@@ -757,7 +769,7 @@ export class ApplicationListComponent implements OnInit {
 
       if (this.IsAuthorized(PermissionsEnum.CloseScorecard)) {
         this.optionItems[0].items.push({
-          label: 'Close Score Card',
+          label: 'Conclude Scorecard',
           icon: 'fa fa-window-close-o',
           command: () => {
             this._router.navigateByUrl('close/' + this.selectedApplication.id);
@@ -771,6 +783,16 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-tasks wcg-icon',
           command: () => {
             this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.npoId);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
+        this.optionItems[0].items.push({
+          label: 'BusinessPlan Summary',
+          icon: 'fa fa-tasks wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('businessplan-indicator/summary/' + this.selectedApplication.npoId);
           }
         });
       }

@@ -505,7 +505,7 @@ export class ScorecardComponent implements OnInit {
         {
           this.financialYears.push(this.application.applicationPeriod.financialYear);
         }
-        this.loadActivities();
+       this.loadActivities();
         this.loadObjectives();
         this.loadNpo();        
       },
