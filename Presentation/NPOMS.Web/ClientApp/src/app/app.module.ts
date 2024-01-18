@@ -110,6 +110,10 @@ import { ManageComponent } from './components/indicators/workplan/manage/manage.
 import { ActualsComponent } from './components/indicators/workplan/actuals/actuals.component';
 import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
 import { SummaryComponent } from './components/indicators/workplan/summary/summary.component';
+import { ManageBusinessPlanComponent } from './components/indicators/businessplan/manage-businessplan/manage-businessplan.component';
+import { ActualsBusinessPlanComponent } from './components/indicators/businessplan/actuals-businessplan/actuals-businessplan.component';
+import { TargetsBusinessPlanComponent } from './components/indicators/businessplan/targets-businessplan/targets-businessplan.component';
+import { SummaryBusinessPlanComponent } from './components/indicators/businessplan/summary-businessplan/summary-businessplan.component';
 import { SubProgrammeTypeComponent } from './components/admin/utilities/sub-programme-type/sub-programme-type.component';
 import { DepartmentBudgetComponent } from './components/admin/budgets/department-budget/department-budget.component';
 import { DirectorateBudgetComponent } from './components/admin/budgets/directorate-budget/directorate-budget.component';
@@ -296,6 +300,10 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ActualsComponent,
     TargetsComponent,
     SummaryComponent,
+    ManageBusinessPlanComponent,
+    ActualsBusinessPlanComponent,
+    TargetsBusinessPlanComponent,
+    SummaryBusinessPlanComponent,
     SubProgrammeTypeComponent,
     DirectorateBudgetComponent,
     DepartmentBudgetComponent,

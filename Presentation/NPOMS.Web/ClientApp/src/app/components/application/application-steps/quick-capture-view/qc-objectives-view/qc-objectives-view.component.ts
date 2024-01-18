@@ -104,7 +104,7 @@ export class QcObjectivesViewComponent implements OnInit {
   ngOnInit(): void {
 
     var splitUrl = window.location.href.split('/');
-    this.headerTitle = splitUrl[5];
+    this.headerTitle = splitUrl[4];
     this._spinner.show();
 
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||

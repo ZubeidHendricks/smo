@@ -208,6 +208,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
 
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
+      this.loadCapturedResponses();
     });
 
     this._authService.profile$.subscribe(profile => {
@@ -215,7 +216,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
         this.profile = profile;
 
         this.userId = this.profile.id;
-        this.loadCapturedResponses();
+       // this.loadCapturedResponses();
       }
     });
 
@@ -226,7 +227,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     this.loadApplications();
     this.selectedResponses();
     this.loadQuestionnaire();
-    this.loadCapturedResponses();
+   
     this.auditCols = [
       { header: '', width: '5%' },
       { header: 'Status', width: '55%' },
@@ -845,11 +846,12 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
       (results) => {
         this.capturedResponses = results.filter(x => x.questionCategoryId === 200);
-        if (this.capturedResponses.length > 0) {
+      
+      //  if (this.capturedResponses.length > 0) {
           let num  = this.capturedResponses[0].statusId;
           switch (num) {
             case Number(StatusEnum.Declined):
-              this.selectedStatus = this.statuses.find(x => x.id === StatusEnum.Declined);
+              this.selectedStatus =  this.statuses.find(x => x.id === StatusEnum.Declined);
               break;
             case Number(StatusEnum.Recommended):
               this.selectedStatus = this.statuses.find(x => x.id === StatusEnum.Recommended);
@@ -864,7 +866,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
           this.hascapturedImprovementArea = true;
           this.hasCapturedRequiredAction = true;
           this.hasScorecardSubmitted = true;
-        }
+      //  }
       })
   }
 

@@ -100,7 +100,7 @@ export class QcApplicationPeriodsViewComponent implements OnInit {
 
   ngOnInit(): void {
     var splitUrl = window.location.href.split('/');
-    this.headerTitle = splitUrl[5];
+    this.headerTitle = splitUrl[4];
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
