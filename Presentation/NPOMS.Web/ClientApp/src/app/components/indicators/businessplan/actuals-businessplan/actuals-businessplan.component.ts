@@ -436,16 +436,7 @@ export class ActualsBusinessPlanComponent implements OnInit {
 
     if (this.selectedFinancialYear) {
       this.getFilteredWorkplanIndicators();
-
-      /*let currentDate = new Date();
-
-      let currentFinancialYear = this.allFinancialYears.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
-      this.isPreviousFinancialYear = this.selectedFinancialYear.id >= currentFinancialYear.id ? false : true;
-
-      // If previous financial year, disable all buttons besides comments and view history
-      for (let i = 0; i < this.buttonItems[0].items.length - 2; i++) {
-        this.buttonItems[0].items[i].disabled = this.isPreviousFinancialYear;
-      }*/
+      
     }
   }
 
@@ -478,6 +469,7 @@ export class ActualsBusinessPlanComponent implements OnInit {
             switch (workplanActuals[0].frequencyPeriodId) {
               case FrequencyPeriodEnum.Q1:
                 capturedTarget = workplanTargets[0].quarter1;
+                alert(capturedTarget);
                 break;
               case FrequencyPeriodEnum.Q2:
                 capturedTarget = workplanTargets[0].quarter2;
@@ -488,30 +480,6 @@ export class ActualsBusinessPlanComponent implements OnInit {
               case FrequencyPeriodEnum.Q4:
                 capturedTarget = workplanTargets[0].quarter4;
                 break;
-              // case FrequencyPeriodEnum.Aug:
-              //   capturedTarget = workplanTargets[0].aug;
-              //   break;
-              // case FrequencyPeriodEnum.Sep:
-              //   capturedTarget = workplanTargets[0].sep;
-              //   break;
-              // case FrequencyPeriodEnum.Oct:
-              //   capturedTarget = workplanTargets[0].oct;
-              //   break;
-              // case FrequencyPeriodEnum.Nov:
-              //   capturedTarget = workplanTargets[0].nov;
-              //   break;
-              // case FrequencyPeriodEnum.Dec:
-              //   capturedTarget = workplanTargets[0].dec;
-              //   break;
-              // case FrequencyPeriodEnum.Jan:
-              //   capturedTarget = workplanTargets[0].jan;
-              //   break;
-              // case FrequencyPeriodEnum.Feb:
-              //   capturedTarget = workplanTargets[0].feb;
-              //   break;
-              // case FrequencyPeriodEnum.Mar:
-              //   capturedTarget = workplanTargets[0].mar;
-              //   break;
             }
 
             targetMet = workplanActuals[0].actual < 0 ? null : workplanActuals[0].actual >= capturedTarget;

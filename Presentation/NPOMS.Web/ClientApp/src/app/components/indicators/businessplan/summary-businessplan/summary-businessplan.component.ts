@@ -242,84 +242,36 @@ export class SummaryBusinessPlanComponent implements OnInit {
       let quarter2Target = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].quarter2 : defaultTargetValue;
       let quarter3Target = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].quarter3 : defaultTargetValue;
       let quarter4Target = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].quarter4 : defaultTargetValue;
-      // let augustTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].aug : defaultTargetValue;
-      // let septemberTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].sep : defaultTargetValue;
-      // let octoberTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].oct : defaultTargetValue;
-      // let novemberTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].nov : defaultTargetValue;
-      // let decemberTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].dec : defaultTargetValue;
-      // let januaryTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].jan : defaultTargetValue;
-      // let februaryTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].feb : defaultTargetValue;
-      // let marchTarget = indicator.workplanTargets.length > 0 ? indicator.workplanTargets[0].mar : defaultTargetValue;
-
+     
       /* Actuals */
       let quarter1Actual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[0].actual : defaultActualValue;
       let quarter2Actual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[1].actual : defaultActualValue;
       let quarter3Actual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[2].actual : defaultActualValue;
       let quarter4Actual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[3].actual : defaultActualValue;
-      // let augustActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[4].actual : defaultActualValue;
-      // let septemberActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[5].actual : defaultActualValue;
-      // let octoberActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[6].actual : defaultActualValue;
-      // let novemberActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[7].actual : defaultActualValue;
-      // let decemberActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[8].actual : defaultActualValue;
-      // let januaryActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[9].actual : defaultActualValue;
-      // let februaryActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[10].actual : defaultActualValue;
-      // let marchActual = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[11].actual : defaultActualValue;
 
       /* Statements */
       let quarter1Statement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[0].statement : defaultStatementValue;
       let quarter2Statement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[1].statement : defaultStatementValue;
       let quarter3Statement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[2].statement : defaultStatementValue;
       let quarter4Statement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[3].statement : defaultStatementValue;
-      // let augustStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[4].statement : defaultStatementValue;
-      // let septemberStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[5].statement : defaultStatementValue;
-      // let octoberStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[6].statement : defaultStatementValue;
-      // let novemberStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[7].statement : defaultStatementValue;
-      // let decemberStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[8].statement : defaultStatementValue;
-      // let januaryStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[9].statement : defaultStatementValue;
-      // let februaryStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[10].statement : defaultStatementValue;
-      // let marchStatement = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[11].statement : defaultStatementValue;
-
+      
       /* Deviation Reasons */
       let quarter1DeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[0].deviationReason : defaultDeviationReasonValue;
       let quarter2DeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[1].deviationReason : defaultDeviationReasonValue;
       let quarter3DeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[2].deviationReason : defaultDeviationReasonValue;
       let quarter4DeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[3].deviationReason : defaultDeviationReasonValue;
-      // let augustDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[4].deviationReason : defaultDeviationReasonValue;
-      // let septemberDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[5].deviationReason : defaultDeviationReasonValue;
-      // let octoberDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[6].deviationReason : defaultDeviationReasonValue;
-      // let novemberDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[7].deviationReason : defaultDeviationReasonValue;
-      // let decemberDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[8].deviationReason : defaultDeviationReasonValue;
-      // let januaryDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[9].deviationReason : defaultDeviationReasonValue;
-      // let februaryDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[10].deviationReason : defaultDeviationReasonValue;
-      // let marchDeviationReason = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[11].deviationReason : defaultDeviationReasonValue;
-
+      
       /* Actions */
       let quarter1Action = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[0].action : defaultActionvalue;
       let quarter2Action = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[1].action : defaultActionvalue;
       let quarter3Action = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[2].action : defaultActionvalue;
       let quarter4Action = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[3].action : defaultActionvalue;
-      // let augustAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[4].action : defaultActionvalue;
-      // let septemberAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[5].action : defaultActionvalue;
-      // let octoberAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[6].action : defaultActionvalue;
-      // let novemberAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[7].action : defaultActionvalue;
-      // let decemberAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[8].action : defaultActionvalue;
-      // let januaryAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[9].action : defaultActionvalue;
-      // let februaryAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[10].action : defaultActionvalue;
-      // let marchAction = indicator.workplanActuals.length > 0 ? indicator.workplanActuals[11].action : defaultActionvalue;
-
+     
       worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Quarter': 'Quarter1', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': quarter1Target, 'Actual': quarter1Actual, 'Statement': quarter1Statement, 'DeviationReason': quarter1DeviationReason, 'Action': quarter1Action });
       worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Quarter': 'Quarter2', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': quarter2Target, 'Actual': quarter2Actual, 'Statement': quarter2Statement, 'DeviationReason': quarter2DeviationReason, 'Action': quarter2Action });
       worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Quarter': 'Quarter3', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': quarter3Target, 'Actual': quarter3Actual, 'Statement': quarter3Statement, 'DeviationReason': quarter3DeviationReason, 'Action': quarter3Action });
       worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Quarter': 'Quarter4', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': quarter4Target, 'Actual': quarter4Actual, 'Statement': quarter4Statement, 'DeviationReason': quarter4DeviationReason, 'Action': quarter4Action });
-      // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'August', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': augustTarget, 'Actual': augustActual, 'Statement': augustStatement, 'DeviationReason': augustDeviationReason, 'Action': augustAction });
-      // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'September', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': septemberTarget, 'Actual': septemberActual, 'Statement': septemberStatement, 'DeviationReason': septemberDeviationReason, 'Action': septemberAction });
-      // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'October', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': octoberTarget, 'Actual': octoberActual, 'Statement': octoberStatement, 'DeviationReason': octoberDeviationReason, 'Action': octoberAction });
-      // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'November', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': novemberTarget, 'Actual': novemberActual, 'Statement': novemberStatement, 'DeviationReason': novemberDeviationReason, 'Action': novemberAction });
-      // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'December', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': decemberTarget, 'Actual': decemberActual, 'Statement': decemberStatement, 'DeviationReason': decemberDeviationReason, 'Action': decemberAction });
-      // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'January', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': januaryTarget, 'Actual': januaryActual, 'Statement': januaryStatement, 'DeviationReason': januaryDeviationReason, 'Action': januaryAction });
-      // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'February', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': februaryTarget, 'Actual': februaryActual, 'Statement': februaryStatement, 'DeviationReason': februaryDeviationReason, 'Action': februaryAction });
-      // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'March', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': marchTarget, 'Actual': marchActual, 'Statement': marchStatement, 'DeviationReason': marchDeviationReason, 'Action': marchAction });
-
+     
       worksheet.getRow(1).fill = {
         type: 'pattern',
         pattern: 'solid',
@@ -380,8 +332,6 @@ export class SummaryBusinessPlanComponent implements OnInit {
           totalActuals: actualTotal
         } as IWorkplanIndicator);
       });
-
-      console.log('this.filteredWorkplanIndicators',this.filteredWorkplanIndicators);
 
       this.makeRowsSameHeight();
     }
