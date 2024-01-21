@@ -484,7 +484,7 @@ export class ActualsBusinessPlanComponent implements OnInit {
                 break;
               case FrequencyPeriodEnum.Q3:
                 capturedTarget = workplanTargets[0].quarter3;
-                break;
+                break; 
               case FrequencyPeriodEnum.Q4:
                 capturedTarget = workplanTargets[0].quarter4;
                 break;

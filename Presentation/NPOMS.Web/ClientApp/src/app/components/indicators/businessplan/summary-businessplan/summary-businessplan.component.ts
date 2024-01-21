@@ -310,7 +310,7 @@ export class SummaryBusinessPlanComponent implements OnInit {
       worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Quarter': 'Quarter1', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': quarter1Target, 'Actual': quarter1Actual, 'Statement': quarter1Statement, 'DeviationReason': quarter1DeviationReason, 'Action': quarter1Action });
       worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Quarter': 'Quarter2', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': quarter2Target, 'Actual': quarter2Actual, 'Statement': quarter2Statement, 'DeviationReason': quarter2DeviationReason, 'Action': quarter2Action });
       worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Quarter': 'Quarter3', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': quarter3Target, 'Actual': quarter3Actual, 'Statement': quarter3Statement, 'DeviationReason': quarter3DeviationReason, 'Action': quarter3Action });
-      worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Quarter': 'Quarter4', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': quarter4Statement, 'Actual': quarter4Action, 'Statement': quarter4Statement, 'DeviationReason': quarter4DeviationReason, 'Action': quarter4Action });
+      worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Quarter': 'Quarter4', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': quarter4Target, 'Actual': quarter4Actual, 'Statement': quarter4Statement, 'DeviationReason': quarter4DeviationReason, 'Action': quarter4Action });
       // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'August', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': augustTarget, 'Actual': augustActual, 'Statement': augustStatement, 'DeviationReason': augustDeviationReason, 'Action': augustAction });
       // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'September', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': septemberTarget, 'Actual': septemberActual, 'Statement': septemberStatement, 'DeviationReason': septemberDeviationReason, 'Action': septemberAction });
       // worksheet.addRow({ 'FinancialYear': this.selectedFinancialYear.name, 'Month': 'October', 'Activity': indicator.activity.activityList.description, 'Indicator': indicator.activity.successIndicator, 'Target': octoberTarget, 'Actual': octoberActual, 'Statement': octoberStatement, 'DeviationReason': octoberDeviationReason, 'Action': octoberAction });
@@ -351,15 +351,13 @@ export class SummaryBusinessPlanComponent implements OnInit {
 
         // Filter WorkplanTargets on activity, financial year and monthly frequency
         let workplanTargets = indicator.workplanTargets.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id && x.frequencyId == FrequencyEnum.Quarterly);
-console.log('workplanTargets',workplanTargets);
+     
         // Calculate total targets
        // let targetTotal = workplanTargets[0] ? (workplanTargets[0].apr + workplanTargets[0].may + workplanTargets[0].quarter1 + workplanTargets[0].jul + workplanTargets[0].aug + workplanTargets[0].quarter2 + workplanTargets[0].oct + workplanTargets[0].nov + workplanTargets[0].quarter3 + workplanTargets[0].jan + workplanTargets[0].feb + workplanTargets[0].quarter4) : 0;
        let targetTotal = workplanTargets[0] ? (workplanTargets[0].quarter1 + workplanTargets[0].quarter2 + workplanTargets[0].quarter3 + workplanTargets[0].quarter4) : 0;
-alert(targetTotal);
         // Filter WorkplanActuals on activity and financial year, then filter on WorkplanTargets.
         // This will retrieve the WorkplanActuals for all activities for the selected financial year and monthly WorkplanTargets
         let workplanActuals = indicator.workplanActuals.filter(x => x.activityId == indicator.activity.id && x.financialYearId == this.selectedFinancialYear.id);
-        console.log('workplanActuals',workplanActuals);
         let filteredWorkplanActuals = workplanActuals.filter((el) => {
           return workplanTargets.some((f) => {
             return f.id === el.workplanTargetId;
@@ -371,6 +369,8 @@ alert(targetTotal);
           let actual = object.actual == null ? 0 : object.actual;
           return sum + actual;
         }, 0);
+
+       
 
         this.filteredWorkplanIndicators.push({
           activity: indicator.activity,
