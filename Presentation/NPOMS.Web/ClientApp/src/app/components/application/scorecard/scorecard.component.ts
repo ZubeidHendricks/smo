@@ -449,9 +449,9 @@ export class ScorecardComponent implements OnInit {
       this._evaluationService.updateScorecardResponse(response).subscribe(
         (results) => {
         
-          // let returnValue = results as IQuestionResponseViewModel;
-          // question.responseId = returnValue.responseId;
-          // question.isSaved = returnValue.isSaved;
+          let returnValue = results as IQuestionResponseViewModel;
+          question.responseId = returnValue.responseId;
+          question.isSaved = returnValue.isSaved;
           this.selectedResponses();
          
         },
@@ -515,12 +515,13 @@ export class ScorecardComponent implements OnInit {
   }
 
   public toggleDiv() {
-
-    this.loadActivities();
-    this.loadObjectives();
-    this.loadNpo();   
     this.showDiv = !this.showDiv;
-
+    if(this.showDiv === true)
+    {
+      this.loadActivities();
+      this.loadObjectives();
+      this.loadNpo();   
+    }
   }
 
   private loadNpo() {
@@ -764,7 +765,7 @@ export class ScorecardComponent implements OnInit {
         this._loggerService.logException(err);
       }
     );
-    this._router.navigate(['scorecard/' + this.id]);
+   // this._router.navigate(['scorecard/' + this.id]);
   }
 
   public disableSubmit() {
