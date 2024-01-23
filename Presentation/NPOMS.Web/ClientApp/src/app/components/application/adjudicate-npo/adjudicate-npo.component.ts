@@ -348,42 +348,41 @@ export class AdjudicateNpoComponent implements OnInit {
   }
 
   public getSubTotalLegend(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
-    let questionValue1 = 0;
-    let questionValue2 = 0;
-    let questionLenght1 = 0;
-    let questionLenght2 = 0;
+
+    let subQuestionValue = 0;
+    let subAvgQuestionValue = 0;
     let questionValue = 0;
     let legend = '';
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
+    
     questions.forEach(item => {
       if(item.responseTypeId === ResponseTypeEnum.Score2)
       {
-        questionLenght1 = questions.length;
-
-        if (Number(item.responseOption.name) > 0) {
-          questionValue1 += Number(item.responseOption.name);
-        }   
-      }  
-      
+        if (Number(item.responseOption.name) >= 0) {
+          subQuestionValue += 5;
+        }
+        else {
+          subQuestionValue = 0;
+        }
+      }
       if(item.responseTypeId === ResponseTypeEnum.Score3)
       {
-        questionLenght2 = questions.length;
-        if (Number(item.responseOption.name) > 0) {
-          questionValue2 += Number(item.responseOption.name);
-        }   
-      } 
-
+        if (Number(item.responseOption.name) >= 0) {
+          subQuestionValue += 10;
+        }
+        else {
+          subQuestionValue = 0;
+        }
+      }     
     });
 
-    if(question.responseTypeId === ResponseTypeEnum.Score2)
-    {
-      questionValue = ((Number(questionValue1)/(questionLenght1*5))*100);
-    }
+    questions.forEach(item => {
+      if (Number(item.responseOption.name) > 0) {
+        subAvgQuestionValue += Number(item.responseOption.name);
+      }      
+    });
 
-    if(question.responseTypeId === ResponseTypeEnum.Score3)
-    {
-      questionValue = ((Number(questionValue2)/(questionLenght2*10))*100);
-    }
+    questionValue = ((Number(subAvgQuestionValue)/(subQuestionValue))*100);
     
     if (Number(questionValue) > 0 && Number(questionValue) <= 20) {
       legend = 'Very Poor';
@@ -405,40 +404,38 @@ export class AdjudicateNpoComponent implements OnInit {
   }
 
   public getSubTotalPercentage(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
-    let questionValue1 = 0;
-    let questionValue2 = 0;
-    let questionLenght1 = 0;
-    let questionLenght2 = 0;
+    let subQuestionValue = 0;
+    let subAvgQuestionValue = 0;
     let subPercentage = '';
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
+    
     questions.forEach(item => {
       if(item.responseTypeId === ResponseTypeEnum.Score2)
       {
-        questionLenght1 = questions.length;
-
-        if (Number(item.responseOption.name) > 0) {
-          questionValue1 += Number(item.responseOption.name);
-        }   
-      }  
-      
+        if (Number(item.responseOption.name) >= 0) {
+          subQuestionValue += 5;
+        }
+        else {
+          subQuestionValue = 0;
+        }
+      }
       if(item.responseTypeId === ResponseTypeEnum.Score3)
       {
-        questionLenght2 = questions.length;
-        if (Number(item.responseOption.name) > 0) {
-          questionValue2 += Number(item.responseOption.name);
-        }   
-      }      
+        if (Number(item.responseOption.name) >= 0) {
+          subQuestionValue += 10;
+        }
+        else {
+          subQuestionValue = 0;
+        }
+      }     
     });
 
-    if(question.responseTypeId === ResponseTypeEnum.Score2)
-    {
-      subPercentage = ((Number(questionValue1)/(questionLenght1*5))*100).toFixed(2).toString();
-    }
-    if(question.responseTypeId === ResponseTypeEnum.Score3)
-    {
-      subPercentage = ((Number(questionValue2)/(questionLenght2*10))*100).toFixed(2).toString();
-    }
-
+    questions.forEach(item => {
+      if (Number(item.responseOption.name) > 0) {
+        subAvgQuestionValue += Number(item.responseOption.name);
+      }      
+    });
+    subPercentage = ((Number(subAvgQuestionValue)/(subQuestionValue))*100).toFixed(2).toString();
     return subPercentage
   }
 

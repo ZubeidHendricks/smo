@@ -152,7 +152,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
 
   applicationPeriod: IApplicationPeriod;
   status: StatusEnum;
-
+  npoId:number;
   districtCouncil: IDistrictCouncil;
   localMunicipality: ILocalMunicipality;
   regions: IRegion[];
@@ -241,10 +241,25 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
         this.application = results;
+        this.npoId = this.application.npoId;
         this.applicationPeriod = this.application.applicationPeriod;
         this.loadNpo();
+        this.loadCreatedUser();
 
       },
+    );
+  }
+
+  private loadCreatedUser() {
+    this._userRepo.getUserById(this.application.createdUserId).subscribe(
+      (results) => {
+        this.application.createdUser = results;
+        this.loadUpdatedUser();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
     );
   }
 
@@ -652,7 +667,8 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   private loadApplications() {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-        this.application = results;        
+        this.application = results;   
+        this.loadNpo();     
       },
       (err) => {
         this._loggerService.logException(err);
@@ -843,11 +859,10 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   }
 
   private loadCapturedResponses() {
+    this.loadStatuses();
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
       (results) => {
         this.capturedResponses = results.filter(x => x.questionCategoryId === 200);
-      
-      //  if (this.capturedResponses.length > 0) {
           let num  = this.capturedResponses[0].statusId;
           switch (num) {
             case Number(StatusEnum.Declined):
@@ -866,7 +881,6 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
           this.hascapturedImprovementArea = true;
           this.hasCapturedRequiredAction = true;
           this.hasScorecardSubmitted = true;
-      //  }
       })
   }
 

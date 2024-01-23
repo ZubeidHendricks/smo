@@ -894,7 +894,6 @@ onAprCheckboxChange(event: any) {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
         this.responseOptions = results;
-        console.log('responseOptions', this.responseOptions);
         this.loadStatuses();
       },
       (err) => {

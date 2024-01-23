@@ -408,8 +408,8 @@ export class ActualsBusinessPlanComponent implements OnInit {
     this._indicatorRepo.getWorkplanActualAudits(workplanIndicator.workplanActuals[0].id).subscribe(
       (results) => {
         this.workplanActualAudits = results;
-        this._spinner.hide();
-        this.displayHistory = true;
+        this._spinner.hide();  
+        this.displayHistory = true;           
       },
       (err) => {
         this._loggerService.logException(err);
@@ -469,7 +469,6 @@ export class ActualsBusinessPlanComponent implements OnInit {
             switch (workplanActuals[0].frequencyPeriodId) {
               case FrequencyPeriodEnum.Q1:
                 capturedTarget = workplanTargets[0].quarter1;
-                alert(capturedTarget);
                 break;
               case FrequencyPeriodEnum.Q2:
                 capturedTarget = workplanTargets[0].quarter2;
