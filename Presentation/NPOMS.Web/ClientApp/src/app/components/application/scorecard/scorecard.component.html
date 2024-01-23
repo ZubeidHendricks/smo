@@ -366,53 +366,57 @@
     <div style="height: 10px;"></div>
 </div>
 <div style="height: 10px;"></div>   
+<button (click)="toggleDiv()">Click to view Quantitative Performance</button>
+<div style="height: 10px;"></div>
     <div style="width: 100%;">
-        <div class="p-col-fixed form-label">
-            <div class="box" style="text-align: left;">
-                <span class="non-mandatory-content"><b>Quantitative Performance</b></span>
-            </div>
+        <div *ngIf="showDiv">
+            <div class="p-col-fixed form-label">
+                <div class="box" style="text-align: left;">
+                    <span class="non-mandatory-content"><b>Quantitative Performance</b></span>
+                </div>
+            </div>       
+            <p-table [rowHover]="false" [value]="filterWorkplanIndicators()" *ngIf="filterWorkplanIndicators()" >
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="text-align: center; width: 5%;">#</th>
+                        <th style="text-align: center; width: 40%;">Activity</th>
+                        <th style="text-align: center; width: 30%;">Indicator</th>
+                        <th style="text-align: center; width: 7%;">Target</th>
+                        <th style="text-align: center; width: 10%;">Actual YTD</th>
+                        <th style="text-align: center; width: 8%;">Performance</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-indicator let-rowIndex="rowIndex">
+                    <tr *ngIf="rowGroupMetadataActivities && rowGroupMetadataActivities[rowIndex].itemExists === false" class="heading">
+                        <td [attr.colspan]="3"><span class="p-text-bold">{{indicator.ObjectiveName}}</span></td>
+                        <td style="text-align: center;"><span class="p-text-bold">{{getObjectiveTargets(indicator.activity.objective)}}</span></td>
+                        <td style="text-align: center;"><span class="p-text-bold">{{getObjectiveActuals(indicator.activity.objective)}}</span></td>
+                        <td style="text-align: center;"><span class="p-text-bold">{{getPerformanceAvg(indicator.activity.objective)}}</span></td>
+                    </tr>
+                    <tr class="default-font">
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td style="text-align: left;">{{indicator.activity.activityList.description}}</td>
+                        <td style="text-align: left;">{{indicator.activity.successIndicator}}</td>
+                        <td style="text-align: center;">{{indicator.totalTargets}}</td>
+                        <td style="text-align: center;">{{indicator.totalActuals}}</td>
+                        <td style="text-align: center;" *ngIf="indicator.totalAvg > 10" >{{10}}</td>
+                        <td style="text-align: center;">{{(indicator.totalAvg).toFixed(2)}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr class="default-font">
+                        <td style="text-align: left; width: 20%;" colspan="5"><b>Overall Quantitative Performance</b></td>
+                        <td style="text-align: center;">{{(getOverallPerformancePercentage()).toFixed(2)}}</td>
+                    </tr>
+                
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="6" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
-        <p-table [rowHover]="false" [value]="filterWorkplanIndicators()" *ngIf="filterWorkplanIndicators()">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th style="text-align: center; width: 5%;">#</th>
-                    <th style="text-align: center; width: 40%;">Activity</th>
-                    <th style="text-align: center; width: 30%;">Indicator</th>
-                    <th style="text-align: center; width: 7%;">Target</th>
-                    <th style="text-align: center; width: 10%;">Actual YTD</th>
-                    <th style="text-align: center; width: 8%;">Performance</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-indicator let-rowIndex="rowIndex">
-                <tr *ngIf="rowGroupMetadataActivities && rowGroupMetadataActivities[rowIndex].itemExists === false" class="heading">
-                    <td [attr.colspan]="3"><span class="p-text-bold">{{indicator.ObjectiveName}}</span></td>
-                    <td style="text-align: center;"><span class="p-text-bold">{{getObjectiveTargets(indicator.activity.objective)}}</span></td>
-                    <td style="text-align: center;"><span class="p-text-bold">{{getObjectiveActuals(indicator.activity.objective)}}</span></td>
-                    <td style="text-align: center;"><span class="p-text-bold">{{getPerformanceAvg(indicator.activity.objective)}}</span></td>
-                </tr>
-                <tr class="default-font">
-                    <td style="text-align: center;">{{rowIndex + 1}}</td>
-                    <td style="text-align: left;">{{indicator.activity.activityList.description}}</td>
-                    <td style="text-align: left;">{{indicator.activity.successIndicator}}</td>
-                    <td style="text-align: center;">{{indicator.totalTargets}}</td>
-                    <td style="text-align: center;">{{indicator.totalActuals}}</td>
-                    <td style="text-align: center;" *ngIf="indicator.totalAvg > 10" >{{10}}</td>
-                    <td style="text-align: center;">{{(indicator.totalAvg).toFixed(2)}}</td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="footer">
-                <tr class="default-font">
-                    <td style="text-align: left; width: 20%;" colspan="5"><b>Overall Quantitative Performance</b></td>
-                    <td style="text-align: center;">{{(getOverallPerformancePercentage()).toFixed(2)}}</td>
-                </tr>
-              
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                <tr class="default-font">
-                    <td colspan="6" style="text-align: center;">No results found</td>
-                </tr>
-            </ng-template>
-        </p-table>
         <div style="height: 10px;"></div>
         <p-panel>
             <div class="p-grid">
