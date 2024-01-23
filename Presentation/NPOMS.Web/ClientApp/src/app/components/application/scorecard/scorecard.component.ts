@@ -100,6 +100,7 @@ export class ScorecardComponent implements OnInit {
   rowGroupMetadataActivities: any[];
   overallTotalScores: number = 0;
   overallAvgScore: number = 0;
+  showDiv: boolean = false;
 
   captureImprovementArea: string;
   captureRequiredAction: string;
@@ -140,8 +141,6 @@ export class ScorecardComponent implements OnInit {
       this.id = params.get('id');
     });
 
-    this.loadApplications();
-
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -150,12 +149,11 @@ export class ScorecardComponent implements OnInit {
         this.loadCapturedResponses();
       }
     });
-
     
     this.getQuestionCategory();
-    this.getResponseType();      
     this.loadQuestionnaire();
-
+    this.getResponseType();      
+    this.loadApplications();
   }
 
   private loadQuestionnaire() {
@@ -275,7 +273,6 @@ export class ScorecardComponent implements OnInit {
   }
   public getStatusText(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
-    // let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId == this.userId).length;
     let countReviewed = questions.filter(x => x.isSaved === true).length;
     return `${countReviewed} of ${questions.length} answered`;
   }
@@ -451,10 +448,12 @@ export class ScorecardComponent implements OnInit {
 
       this._evaluationService.updateScorecardResponse(response).subscribe(
         (results) => {
-          let returnValue = results as IQuestionResponseViewModel;
-          question.responseId = returnValue.responseId;
-          question.isSaved = returnValue.isSaved;
+        
+          // let returnValue = results as IQuestionResponseViewModel;
+          // question.responseId = returnValue.responseId;
+          // question.isSaved = returnValue.isSaved;
           this.selectedResponses();
+         
         },
         (err) => {
           this._loggerService.logException(err);
@@ -489,11 +488,12 @@ export class ScorecardComponent implements OnInit {
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
     this.onSave(question);
-
+    
   }
 
+ 
+
   private loadApplications() {
-    console.log('hi');
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
 
       (results) => {
@@ -505,15 +505,22 @@ export class ScorecardComponent implements OnInit {
         {
           this.financialYears.push(this.application.applicationPeriod.financialYear);
         }
-       this.loadActivities();
-        this.loadObjectives();
-        this.loadNpo();        
+           
       },
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
     );
+  }
+
+  public toggleDiv() {
+
+    this.loadActivities();
+    this.loadObjectives();
+    this.loadNpo();   
+    this.showDiv = !this.showDiv;
+
   }
 
   private loadNpo() {
@@ -537,7 +544,6 @@ export class ScorecardComponent implements OnInit {
         this.workplanIndicators = [];
 
         this.activities.forEach(activity => {
-        //  alert(activity.name)
         this._spinner.show();
           this.workplanIndicators.push({           
             activity: activity,
@@ -758,6 +764,7 @@ export class ScorecardComponent implements OnInit {
         this._loggerService.logException(err);
       }
     );
+    this._router.navigate(['scorecard/' + this.id]);
   }
 
   public disableSubmit() {
