@@ -834,6 +834,13 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "Review Adjudicated FundedNpo",
                     SystemName = "WFA.ReviewAdjudicatedFundedNpo",
                     CategoryName = "ReviewAdjudicatedFundedNpo"
+                },
+                new Permission
+                {
+                    Id = 119,
+                    Name = "Download Assessment",
+                    SystemName = "WFA.DownloadAssessment",
+                    CategoryName = "DownloadAssessment"
                 }
             );
 		}
