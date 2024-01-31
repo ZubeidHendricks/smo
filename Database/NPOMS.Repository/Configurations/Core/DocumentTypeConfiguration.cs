@@ -197,6 +197,15 @@ namespace NPOMS.Repository.Configurations.Core
                     Location = "FundedNpo",
                     IsActive = true,
                     IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 27,
+                    Name = "BusinessPlan",
+                    Description = "Business Plan",
+                    Location = "FundedNpo",
+                    IsActive = true,
+                    IsCompulsory = false
                 }
 
             );
