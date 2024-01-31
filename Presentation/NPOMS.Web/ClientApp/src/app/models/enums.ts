@@ -361,6 +361,7 @@ export enum PermissionsEnum {
     ViewOption = "WFA.View",
     EditOption = "WFA.Edit",
     DownloadOption = "WFA.Download",
+    DownloadAssessmentOption = "WFA.DownloadAssessment",
     DeleteOption = "WFA.Delete",
 
     PendingPreEvaluateOption = "WFA.PendingPreEvaluation",
