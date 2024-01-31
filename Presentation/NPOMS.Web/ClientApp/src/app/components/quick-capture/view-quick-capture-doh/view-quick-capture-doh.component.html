@@ -52,8 +52,7 @@
     [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
     [isReview]="false"
     [isEdit]="false"></app-qc-activities-view>
-    <app-qc-funded-document-upload-view *ngIf="activeStep == QCStepsFundedEnum.ApplicationFundedDocument"
-        [(activeStep)]="activeStep"
+    <app-qc-funded-document-upload-view
         [application]="application"
         [isView]="true">            
     </app-qc-funded-document-upload-view>
