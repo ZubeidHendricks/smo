@@ -20,7 +20,10 @@ namespace NPOMS.Domain.Entities
 		[Column(TypeName = "nvarchar(255)")]
 		public string FundingSource { get; set; }
 
-		[Column(TypeName = "nvarchar(50)")]
+        public string FinancialYear { get; set; }
+        public string Quarter { get; set; }
+
+        [Column(TypeName = "nvarchar(50)")]
 		public string FundingPeriodStartDate { get; set; }
 
 		[Column(TypeName = "nvarchar(50)")]

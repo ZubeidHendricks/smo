@@ -67,6 +67,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IEmailQueueRepository, EmailQueueRepository>();
             services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>();
             services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
+            services.AddScoped<IQuarterlyPeriodRepository, QuarterlyPeriodRepository>();
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

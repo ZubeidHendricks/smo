@@ -1,0 +1,35 @@
+<p-panel [style]="{'font-size':'12px'}" header="Confirmation">
+    <!-- <div class="p-grid p-nogutter p-justify-end">
+        <button pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="View All Reviewer Satisfactions" (click)="viewReviewerSatisfaction()"></button>
+    </div>    
+    <div style="height: 10px;"></div> -->
+
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Status</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="statuses" placeholder="Select an option" optionLabel="name" [style]="{'width':'100%'}" appendTo="body" (onChange)="statusEnumChange($event.value)"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="approveApplication">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Approval From</span>
+            </div>
+        </div>
+        <div class="p-col" *ngIf ="headerTitle === 'view'">
+            <p-dropdown [disabled]="true" [options]="approvalFromOptions" placeholder="Select an option" optionLabel="name" [style]="{'width':'100%'}" appendTo="body" (onChange)="approvedFromChange($event.value)"></p-dropdown>
+        </div>
+        <div class="p-col" *ngIf ="headerTitle !== 'view'">
+            <p-dropdown [options]="approvalFromOptions" placeholder="Select an option" optionLabel="name" [style]="{'width':'100%'}" appendTo="body" (onChange)="approvedFromChange($event.value)"></p-dropdown>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="p-grid p-nogutter p-justify-between" *ngIf ="headerTitle !== 'view'">
+        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+        <!-- <p-button label="View History" (onClick)="viewAuditHistory()" icon="fa fa-history"></p-button> -->
+    </div> 
+</p-panel>

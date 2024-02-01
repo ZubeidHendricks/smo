@@ -195,6 +195,8 @@ export class DropdownService {
         break;
       case DropdownTypeEnum.WorkflowAssessment:
         data = this._http.get<IWorkflowAssessment[]>(url, httpOptions);
+      case DropdownTypeEnum.QuarterlyPeriod:
+        data = this._http.get<IWorkflowAssessment[]>(url, httpOptions);
         break;
     }
 

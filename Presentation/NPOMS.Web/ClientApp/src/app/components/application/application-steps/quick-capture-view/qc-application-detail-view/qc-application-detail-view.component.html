@@ -1,0 +1,77 @@
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Application Details" *ngIf="isDataAvailable">
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Department</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="department.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Application Type</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="applicationType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Programme</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="programme.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Financial Year</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="financialYear.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Sub-Programme</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="subProgramme.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Name</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="applicationPeriod.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+
+        <!-- <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Person</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="programme.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Contact Name</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="financialYear.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div> -->
+
+        <br>
+
+        <div class="p-field p-col-12 p-md-3">
+            <label class="mandatory-content">District Council</label>
+            <p-dropdown [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name" [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="districtCouncilDropdownChange($event.value)" [disabled]="readonly()"></p-dropdown>
+        </div>
+        <div class="p-field p-col-12 p-md-3">
+            <label class="mandatory-content">Local Municipalities</label>
+            <p-dropdown [options]="filteredLocalMunicipalities" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" placeholder="Select Local Municipalities" [style]="{'width':'100%'}" appendTo="body" (onChange)="localMunicipalityDropdownChange($event.value)" selectedItemsLabel="{0} items selected" [disabled]="readonly()"></p-dropdown>
+        </div>
+        <div class="p-field p-col-12 p-md-3">
+            <label class="mandatory-content">Region</label>
+            <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredRegions" [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="regionDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+        <div class="p-field p-col-12 p-md-3">
+            <label class="mandatory-content">Service Delivery Area</label>
+            <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredServiceDeliveryAreas" [ngModelOptions]="{standalone: true}" appendTo="body" [(ngModel)]="selectedSDAs" (onChange)="sdaDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+    </div>
+
+    <p-panel [style]="{'font-size':'12px'}" header="Project Vision">
+          <div style="height: 15px;"></div>
+          <div class="p-fluid">
+            <div class="p-field">
+              <label for="purposeQuestion" style="font-weight:bold">What is the purpose of the project? <span
+                  class="bid-required">*</span></label>
+                  <div style="height: 15px;"></div>
+              <p-editor pInputText [(ngModel)]="purposeQuestion" [disabled] = "true" [ngModelOptions]="{standalone: true}"
+              (ngModelChange)="onPurposeQuestionChange($event)">
+              </p-editor>
+            </div>
+          </div>
+          <div style="height: 15px;"></div>
+      </p-panel>
+
+    <div style="height: 10px;"></div>
+    <div class="p-grid p-nogutter p-justify-between" *ngIf="headerTitle !== 'reviewAdjudicatedNpo'">
+        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left" *ngIf ="headerTitle !== 'view'"></p-button>
+        <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right" *ngIf ="headerTitle !== 'view'"></p-button>
+    </div>
+</p-panel>

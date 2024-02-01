@@ -73,7 +73,7 @@ namespace NPOMS.Services.Interfaces
         Task UpdateSubProgramme(SubProgramme model, string userIdentifier);
 
         Task<IEnumerable<FinancialYear>> GetFinancialYears(bool returnInactive);
-
+        Task<IEnumerable<QuarterlyPeriod>> GetQuarterlyPeriod(bool returnInactive);
         Task<IEnumerable<FinancialYear>> GetFromCurrentFinancialYear();
 
         Task CreateFinancialYear(FinancialYear model, string userIdentifier);

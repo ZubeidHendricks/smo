@@ -242,7 +242,7 @@ export class QcApplicationDetailsComponent implements OnInit {
         this.loadDistrictCouncils();
       },
       (err) => {
-        this._loggerService.logException(err);
+        this._loggerService.logException(err);  
         this._spinner.hide();
       }
     );

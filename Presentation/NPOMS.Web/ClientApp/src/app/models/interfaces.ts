@@ -47,6 +47,13 @@ export interface IFinancialYear {
     isActive: boolean;
 }
 
+export interface IQuarterlyPeriod {
+    id: number;
+    abbreviation: string;
+    name: string;
+    isActive: boolean;
+}
+
 export interface IPermission {
     id: number,
     name: string,
@@ -325,7 +332,8 @@ export interface IActivity {
     description: string;
     facilityListText: string;
     isNew: boolean;
-
+    financialYear: string;
+    quarter: string;
     objective: IObjective;
     activityType: IActivityType;
     activitySubProgrammes: IActivitySubProgramme[];
@@ -354,9 +362,11 @@ export interface IApplication {
     isQuickCapture: boolean;
     createdUserId: number;
     updatedUserId: number;
-
+    closeScorecard: number;
+    initiateScorecard: number;  
+    scorecardCount: number;
     applicationPeriod: IApplicationPeriod;
-    status: IStatus;
+    status: IStatus;     
     createdUser: IUser;
     updatedUser: IUser;
 }
@@ -567,6 +577,8 @@ export interface IObjective {
     isActive: boolean;
     changesRequired: boolean;
     isNew: boolean;
+    financialYear: string;
+    quarter: string;
 
     recipientType: IRecipientType;
     objectiveProgrammes: IObjectiveProgramme[];

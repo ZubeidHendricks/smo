@@ -881,7 +881,6 @@ onAprCheckboxChange(event: any) {
         this.evaluationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Evaluation");
         this.adjudicationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication");
         this.approveQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Approval");
-       console.log('evaluationQuestionnaire', this.evaluationQuestionnaire);
         this.loadResponseOptions();
       },
       (err) => {
@@ -895,7 +894,6 @@ onAprCheckboxChange(event: any) {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
         this.responseOptions = results;
-        console.log('responseOptions', this.responseOptions);
         this.loadStatuses();
       },
       (err) => {

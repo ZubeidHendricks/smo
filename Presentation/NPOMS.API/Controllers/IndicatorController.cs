@@ -135,7 +135,7 @@ namespace NPOMS.API.Controllers
 			{
 				await _indicatorService.UpdateActual(model, base.GetUserIdentifier());
 				await CreateWorkplanActualAudit(model);
-				await ConfigureEmail(model);
+				//await ConfigureEmail(model);
 
 				return Ok(model);
 			}

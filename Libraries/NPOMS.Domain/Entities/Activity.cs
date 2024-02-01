@@ -29,8 +29,10 @@ namespace NPOMS.Domain.Entities
 
 		[Column(TypeName = "nvarchar(255)")]
 		public string SuccessIndicator { get; set; }
+        public string FinancialYear { get; set; }
+        public string Quarter { get; set; }
 
-		public bool IsActive { get; set; }
+        public bool IsActive { get; set; }
 
 		public int CreatedUserId { get; set; }
 

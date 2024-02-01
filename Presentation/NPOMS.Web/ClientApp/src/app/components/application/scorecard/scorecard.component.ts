@@ -100,6 +100,7 @@ export class ScorecardComponent implements OnInit {
   rowGroupMetadataActivities: any[];
   overallTotalScores: number = 0;
   overallAvgScore: number = 0;
+  showDiv: boolean = false;
 
   captureImprovementArea: string;
   captureRequiredAction: string;
@@ -148,15 +149,15 @@ export class ScorecardComponent implements OnInit {
         this.loadCapturedResponses();
       }
     });
-
+    
     this.getQuestionCategory();
-    this.getResponseType();
-    this.loadApplications();
-    this.selectedResponses();
     this.loadQuestionnaire();
+    this.getResponseType();      
+    this.loadApplications();
   }
 
   private loadQuestionnaire() {
+   
     this._evaluationService.getAddScoreQuestionnaire(Number(this.id)).subscribe(
       (results) => {
         this.allQuestionnaires = results;
@@ -167,6 +168,8 @@ export class ScorecardComponent implements OnInit {
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
         this.getWorkflowCount();
+       
+         this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -203,7 +206,7 @@ export class ScorecardComponent implements OnInit {
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
         this.responseOptions = results;
-        //  this.selectedResponses();     
+        this.selectedResponses();     
       },
       (err) => {
         this._loggerService.logException(err);
@@ -226,7 +229,7 @@ export class ScorecardComponent implements OnInit {
   }
 
   public hasWeighting(questionnaire: IQuestionResponseViewModel[]) {
-    return questionnaire.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score2 });
+    return questionnaire.some(function (item) { return item.responseTypeId === ResponseTypeEnum.Score3 });
   }
 
   public updateRowGroupMetaData(questionnaire: IQuestionResponseViewModel[]) {
@@ -270,7 +273,6 @@ export class ScorecardComponent implements OnInit {
   }
   public getStatusText(questionnaire: IQuestionResponseViewModel[], question: IQuestionResponseViewModel) {
     let questions = questionnaire.filter(x => x.questionSectionName === question.questionSectionName && x.questionCategoryName == question.questionCategoryName);
-    // let countReviewed = questions.filter(x => x.isSaved === true && x.createdUserId == this.userId).length;
     let countReviewed = questions.filter(x => x.isSaved === true).length;
     return `${countReviewed} of ${questions.length} answered`;
   }
@@ -282,7 +284,7 @@ export class ScorecardComponent implements OnInit {
     // If true, document is required but no documents were uploaded... 
     var documentRequired = false;
 
-    if (questions.length === countReviewed && !documentRequired)
+    if (questions.length === countReviewed && !documentRequired) 
       status = 'complete';
     else if (questions.length === countReviewed && documentRequired)
       status = 'partially-complete';
@@ -396,6 +398,9 @@ export class ScorecardComponent implements OnInit {
       case ResponseTypeEnum.Score2:
         canDisplayField = true;
         break;
+      case ResponseTypeEnum.Score3:
+        canDisplayField = true;
+        break;
     }
 
     return canDisplayField;
@@ -443,10 +448,12 @@ export class ScorecardComponent implements OnInit {
 
       this._evaluationService.updateScorecardResponse(response).subscribe(
         (results) => {
+        
           let returnValue = results as IQuestionResponseViewModel;
           question.responseId = returnValue.responseId;
           question.isSaved = returnValue.isSaved;
           this.selectedResponses();
+         
         },
         (err) => {
           this._loggerService.logException(err);
@@ -481,28 +488,40 @@ export class ScorecardComponent implements OnInit {
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
     this.onSave(question);
-
+    
   }
+
+ 
 
   private loadApplications() {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
+
       (results) => {
         this.financialYears = [];
         this.application = results;
         var isPresent = this.financialYears.some(function (financialYear) { return financialYear === this.application.applicationPeriod.financialYear });
 
         if (!isPresent)
+        {
           this.financialYears.push(this.application.applicationPeriod.financialYear);
-
-        this.loadActivities();
-        this.loadObjectives();
-        this.loadNpo();
+        }
+           
       },
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
     );
+  }
+
+  public toggleDiv() {
+    this.showDiv = !this.showDiv;
+    if(this.showDiv === true)
+    {
+      this.loadActivities();
+      this.loadObjectives();
+      this.loadNpo();   
+    }
   }
 
   private loadNpo() {
@@ -520,14 +539,14 @@ export class ScorecardComponent implements OnInit {
   }
 
   private loadActivities() {
-
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
         this.workplanIndicators = [];
 
         this.activities.forEach(activity => {
-          this.workplanIndicators.push({
+        this._spinner.show();
+          this.workplanIndicators.push({           
             activity: activity,
             workplanTargets: [],
             workplanActuals: []
@@ -746,6 +765,7 @@ export class ScorecardComponent implements OnInit {
         this._loggerService.logException(err);
       }
     );
+   // this._router.navigate(['scorecard/' + this.id]);
   }
 
   public disableSubmit() {

@@ -172,6 +172,13 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "ScorecardSummary",
                     Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for application with reference number</p><p><strong>{ApplicationRefNo}</strong> for financial year<strong> {financialYear} </strong> has been completed.</p><p>To view the scorecard summary please&nbsp;</p><p><a href=\"{url}/#/reviewScorecard/{npoId}(print:print/{npoId}/2)\">click here</a> to download a printable version.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
                     Subject = "Scorecard Summary Review - {NPO}"
+                },
+                new EmailTemplate
+                {
+                    Id = 24,
+                    Name = "InitiateScorecard",
+                    Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for <strong>{organisationName}</strong> with reference number <strong>{ApplicationRefNo}</strong> is now available for rating.</p><p>If you are required to rate this workplan, please <a href=\"{url}/#/applications\">click here</a> to access.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
+                    Subject = "Scorecard Initiated Notification - {NPO}"
                 }
 
             );

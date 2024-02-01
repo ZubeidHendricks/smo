@@ -230,6 +230,9 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.WorkflowAssessment:
                         var assessments = await _dropdownService.GetWorkflowAssessments(returnInactive);
                         return Ok(assessments);
+                    case DropdownTypeEnum.QuarterlyPeriod:
+                        var quarterlyPeriod = await _dropdownService.GetQuarterlyPeriod(returnInactive);
+                        return Ok(quarterlyPeriod);
                 }
 
                 return Ok();

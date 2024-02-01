@@ -1,0 +1,168 @@
+<div style="width: 100%;">
+    <div style="font-size:20px;margin-top:2px;font-weight: bold;height: 26px; text-align: center;">
+        Adjudication Summary
+    </div>
+</div>
+<div style="height: 10px;"></div>
+<div>
+    <app-qc-npo-details-view 
+        [application]="application"
+        [newApplication]="false">
+    </app-qc-npo-details-view>
+    <app-qc-application-periods-view 
+        [(applicationPeriod)]="applicationPeriod"
+        [(application)]="application"
+        [isEdit]="false">
+    </app-qc-application-periods-view>
+   <app-qc-application-detail-view 
+        [applicationPeriod]="applicationPeriod"
+        [application]="application"
+        [(districtCouncil)]="districtCouncil"
+        [(localMunicipality)]="localMunicipality"
+        [(regions)]="regions"
+        [(sdas)]="sdas"
+        [(amount)]="amount"
+        [(sourceOfInformation)]="sourceOfInformation"
+        [(affliatedOrganisationInfo)]="affliatedOrganisationInfo"
+        [(purposeQuestion)]="purposeQuestion"
+        [(fundingApplicationDetails)]="fundingApplicationDetails"
+        [isEdit]="false">
+    </app-qc-application-detail-view>
+    <app-qc-objectives-view
+    [application]="application" [canAddComments]="true"
+    [isReview]="false" [currentUserId]="profile.id"
+    [isEdit]="false"></app-qc-objectives-view>
+    <app-qc-activities-view
+    [application]="application" [canAddComments]="true"
+    [isReview]="false"
+    [isEdit]="false"></app-qc-activities-view>
+    <app-qc-funded-document-upload-view
+        [application]="application"
+        [isView]="true">            
+    </app-qc-funded-document-upload-view>
+</div>
+<div style="height: 10px;"></div>
+<p-panel [style]="{'font-size':'12px', 'width':'100%'}" header="Score">
+    <p-table [value]="allQuestionnaires" *ngIf="allQuestionnaires" [rowHover]="true" 
+        styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
+            <ng-template pTemplate="header">
+                <tr>
+                    <!-- <th style="width: 15%; text-align: center;">#</th>
+                    <th style="width: 25%; text-align: center;">Name (Question/Statement)</th> -->
+                    <th style="width: 8%; text-align: center;">Scorer<b> 1</b></th>
+                    <th style="width: 8%; text-align: center;">Scorer<b> 2</b></th>
+                    <th style="width: 8%; text-align: center;">Scorer<b> 3</b></th>
+                    <th style="width: 8%; text-align: center;">Scorer<b> 4</b></th>
+                    <th style="width: 8%; text-align: center;" >Aggregated Score</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-question let-rowIndex="rowIndex">
+                <tr *ngIf="updateRowGroupMetaData(allQuestionnaires)[question.questionSectionName].index === rowIndex">
+                    <!-- <td style="text-align: center;">
+                        <span class="p-text-bold p-ml-2"><b>{{question.questionCategoryName}}</b></span>
+                    </td>
+                    <td class="p-text-bold p-ml-2">{{question.questionName}}</td>                         -->
+                    <!-- <td style="text-align: center;" class="{{getRagColour1(question.responsesO[0])}}">  {{getRagPercent(question)}} %   </td>
+                    <td style="text-align: center;" class="{{getRagColour1(question.responsesO[1])}}">{{question.responsesO[1]}}</td>
+                    <td style="text-align: center;" class="{{getRagColour1(question.responsesO[2])}}">{{question.responsesO[2]}}</td>
+                    <td style="text-align: center;" class="{{getRagColour1(question.responsesO[3])}}">{{question.responsesO[3]}}</td> 
+                    <td style="text-align: center;"><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span></td> -->
+                    <!-- <td style="text-align: center;" *ngIf="question.sumOfResponse === 0 && question.responsesO.length === 0">
+                        {{0}}
+                    </td> -->
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <tr>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" class="{{getRagBackgroundColour1(scorer1OverallAvgScore)}}"><b>{{scorer1OverallAvgScore}} %</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" class="{{getRagBackgroundColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}} %</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" class="{{getRagBackgroundColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}} %</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" class="{{getRagBackgroundColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}} %</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;" class="{{getRagBackgroundColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}} %</b></td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>{{getRagText1(scorer1OverallAvgScore)}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>{{getRagText1(scorer2OverallAvgScore)}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>{{getRagText1(scorer3OverallAvgScore)}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>{{getRagText1(scorer4OverallAvgScore)}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px;"><b>{{getRagText1(allScorerOverallAvgScore)}}</b></td>
+                </tr>
+                <!-- <tr>
+                    <td style="border: 1px solid #CCCCCC; text-align: center; "> <span class="p-text-bold p-ml-2"><b>(Score per scorer -/50)</b></span></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;">&nbsp;</td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer1OverallTotalScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer2OverallTotalScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer3OverallTotalScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{socrer4OverallTotalScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;" colspan="2"></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{allSocrerOverallTotalScore}}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; text-align: center; "> <span class="p-text-bold p-ml-2"><b>Overall Qualitative Performance</b></span></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; ">&nbsp;</td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer1OverallAvgScore)}}"><b>{{scorer1OverallAvgScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer2OverallAvgScore)}}"><b>{{scorer2OverallAvgScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer3OverallAvgScore)}}"><b>{{scorer3OverallAvgScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer4OverallAvgScore)}}"><b>{{scorer4OverallAvgScore}}</b></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " colspan="2"></td>
+                    <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
+                </tr> -->
+            </ng-template>
+    </p-table>
+</p-panel>
+
+<div style="height: 10px;"></div>
+<p-panel header="Recommended or Not for Funding">
+    <div class="p-grid">
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="mandatory-content">Select the Option</span>
+            </div>
+        </div>
+        <div class="p-col-9">
+            <p-dropdown class="form-text"  defaultLabel="Choose the option" [options]="statuses" 
+            placeholder="Select a Option" optionLabel="name" 
+            [(ngModel)]="selectedStatus" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
+            appendTo="body" [disabled] ="hasScorecardSubmitted"></p-dropdown>
+        </div>
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="non-mandatory-content"> Justifiable reason for non recommendation:
+                </span>
+            </div>
+        </div>
+        <div class="p-col-9">
+            <textarea class="form-text" [rows]="3" pInputTextarea 
+            [(ngModel)]="reasonOfNonRecommendation" [ngModelOptions]="{standalone: true}" 
+            [autoResize]="true" [disabled]="hascapturedImprovementArea"></textarea>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="p-grid">
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Submitted By</span>
+            </div>
+        </div>
+        <div class="p-col-9">
+            <span>{{signedByUser}}</span>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="p-grid">
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Submitted Date</span>
+            </div>
+        </div>
+        <div class="p-col-9">
+            <span>{{submittedDate | date: 'yyyy-MM-dd'}}</span> 
+        </div>
+    </div>
+    <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasScorecardSubmitted && this.IsAuthorized(PermissionsEnum.ReviewScorecard)">
+       
+        <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled] = "disableSubmit()"
+        (click)="submit()"></button>
+           
+    </div>
+</p-panel>

@@ -56,6 +56,11 @@ import { ManageComponent } from './components/indicators/workplan/manage/manage.
 import { ActualsComponent } from './components/indicators/workplan/actuals/actuals.component';
 import { TargetsComponent } from './components/indicators/workplan/targets/targets.component';
 import { SummaryComponent } from './components/indicators/workplan/summary/summary.component';
+import { ManageBusinessPlanComponent } from './components/indicators/businessplan/manage-businessplan/manage-businessplan.component';
+import { ActualsBusinessPlanComponent } from './components/indicators/businessplan/actuals-businessplan/actuals-businessplan.component';
+import { TargetsBusinessPlanComponent } from './components/indicators/businessplan/targets-businessplan/targets-businessplan.component';
+import { SummaryBusinessPlanComponent } from './components/indicators/businessplan/summary-businessplan/summary-businessplan.component';
+
 import { SubProgrammeTypeComponent } from './components/admin/utilities/sub-programme-type/sub-programme-type.component';
 import { DepartmentBudgetComponent } from './components/admin/budgets/department-budget/department-budget.component';
 import { DirectorateBudgetComponent } from './components/admin/budgets/directorate-budget/directorate-budget.component';
@@ -86,9 +91,24 @@ import  {ScorecardComponent} from './components/application/scorecard/scorecard.
 import  {ReviewScorecardComponent} from './components/application/review-scorecard/review-scorecard.component';
 import  {PrintScorecardComponent} from './components/application/application-steps/funding-application/print-scorecard/print-scorecard.component';
 import { QuickCaptureEditListComponent } from './components/quick-capture/quick-capture-edit-list/quick-capture-edit-list.component';
+import { EditQuickCaptureDohListComponent } from './components/quick-capture/edit-quick-capture-doh-list/edit-quick-capture-doh-list.component';
+import { ReviewQuickCaptureDohComponent } from './components/quick-capture/review-quick-capture-doh/review-quick-capture-doh.component';
+import { ViewQuickCaptureDohComponent } from './components/quick-capture/view-quick-capture-doh/view-quick-capture-doh.component';
 import { ScorecardQuestionComponent } from './components/admin/utilities/scorecard-question/scorecard-question.component';
 import { ViewNpoDetailsComponent } from './components/npo/view-npo-details/view-npo-details.component';
 import { ViewProfileDetailsComponent } from './components/npo-profile/view-profile-details/view-profile-details.component';
+import{DownloadQuickCaptureDohComponent} from './components/quick-capture/download-quick-capture-doh/download-quick-capture-doh.component';
+import { ScorecardActionComponent } from './components/application/scorecard-action/scorecard-action.component';
+import { AdjudicateNpoComponent } from './components/application/adjudicate-npo/adjudicate-npo.component';
+import { ReviewAdjudicatedNpoComponent } from './components/application/review-adjudicated-npo/review-adjudicated-npo.component';
+
+import { QcConfirmationComponent } from './components/application/application-steps/quick-capture-view/qc-confirmation/qc-confirmation.component';
+import { QCActivitiesViewComponent } from './components/application/application-steps/quick-capture-view/qc-activities-view/qc-activities-view.component';
+import { QcApplicationDetailViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-detail-view/qc-application-detail-view.component';
+import { QcApplicationPeriodsViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-periods-view/qc-application-periods-view.component';
+import { QcFundedDocumentUploadViewComponent } from './components/application/application-steps/quick-capture-view/qc-funded-document-upload-view/qc-funded-document-upload-view.component';
+import { QcObjectivesViewComponent } from './components/application/application-steps/quick-capture-view/qc-objectives-view/qc-objectives-view.component';
+
 const routes: Routes = [
   { path: '', component: HomeComponent },
 
@@ -102,11 +122,15 @@ const routes: Routes = [
   { path: 'print/:id/0', outlet: 'print', component: PrintFundingApplicatonComponent },
   { path: 'print/:id/1', outlet: 'print', component: PrintWorkflowApplicationComponent },
   { path: 'print/:id/2', outlet: 'print', component: PrintScorecardComponent },
+  { path: 'print/:id/3', outlet: 'print', component: DownloadQuickCaptureDohComponent },
   { path: 'access-request', component: AccessRequestComponent },
   { path: 'access-review', component: AccessReviewComponent },
 
   { path: 'quick-captures', component: QuickCaptureListComponent },
   { path: 'quick-captures-editList/edit/:id', component: QuickCaptureEditListComponent },
+  { path: 'quick-captures-editList-doh/edit/:id', component: EditQuickCaptureDohListComponent },
+  { path: 'quick-captures-doh/review/:id', component: ReviewQuickCaptureDohComponent },
+  { path: 'quick-captures-doh/view/:id', component: ViewQuickCaptureDohComponent },
 
   { path: 'quick-capture/create', component: CreateQuickCaptureComponent },
   { path: 'quick-capture/edit/:id', component: EditQuickCaptureComponent },
@@ -128,6 +152,10 @@ const routes: Routes = [
   { path: 'application/approve/:id', component: ApproveApplicationComponent },
   { path: 'application/upload-sla/:id', component: UploadSLAComponent },
   { path: 'scorecard/:id', component: ScorecardComponent },
+  { path: 'adjudicateNpo/:id', component: AdjudicateNpoComponent},
+  { path: 'reviewAdjudicatedNpo/:id', component: ReviewAdjudicatedNpoComponent},
+  { path: 'initiate/:id', component: ScorecardActionComponent },
+  { path: 'close/:id', component: ScorecardActionComponent },
   { path: 'reviewScorecard/:id', component: ReviewScorecardComponent },
   { path: 'application-periods', component: ApplicationPeriodListComponent },
   { path: 'application-period/create', component: CreateApplicationPeriodComponent },
@@ -189,7 +217,12 @@ const routes: Routes = [
   { path: 'workplan-indicator/actuals/:id', component: ActualsComponent },
   { path: 'workplan-indicator/targets/:id/financial-year/:financialYearId', component: TargetsComponent },
   { path: 'workplan-indicator/summary/:npoId', component: SummaryComponent },
-  // { path: 'application/scorecard/:npoId', component: ScorecardComponent },
+
+   // businessplan Indicators
+   { path: 'businessplan-indicator/manage/:npoId', component: ManageBusinessPlanComponent },
+   { path: 'businessplan-indicator/actuals/:id', component: ActualsBusinessPlanComponent },
+   { path: 'businessplan-indicator/targets/:id/financial-year/:financialYearId', component: TargetsBusinessPlanComponent },
+   { path: 'businessplan-indicator/summary/:npoId', component: SummaryBusinessPlanComponent },
 
   // Budgets
   { path: 'admin/department-budget', component: DepartmentBudgetComponent },

@@ -6,10 +6,11 @@
     <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"></p-menubar>
     <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>
-    <p-steps [model]="qcItems" [readonly]="false" [activeIndex]="activeStep" (activeIndexChange)="validateStep($event, activeStep)"></p-steps>
+    <p-steps [model]="qcItems" *ngIf = "this.qcFunded == 0" [readonly]="false" [activeIndex]="activeStep" (activeIndexChange)="validateStep($event, activeStep)"></p-steps>
+    <p-steps [model]="qcItemsFunded" *ngIf = "this.qcFunded == 1" [readonly]="false" [activeIndex]="activeStep" (activeIndexChange)="validateStep($event, activeStep)"></p-steps>
 
     <div style="height: 10px;"></div>
-    <div>
+    <div *ngIf = "this.qcFunded == 0">
         <app-create-quick-capture *ngIf="activeStep == QCStepsEnum.NpoCreate"
             [(activeStep)]="activeStep"
             [(npo)]="npo">
@@ -39,41 +40,45 @@
             [application]="application"
             [isView]="false">            
         </app-qc-document-upload>
-
-
-        <!-- <app-create-quick-capture *ngIf="activeStep == QCStepsEnum.NpoCreate"
-            [(activeStep)]="activeStep" 
-            [(newlySavedNpoId)]="newlySavedNpoId" 
-            [application]="application" 
-            [newApplication]="true">
-        </app-create-quick-capture> -->
-        <!-- <app-qc-application-periods *ngIf="activeStep == QCStepsEnum.Applications" 
-            [(activeStep)]="activeStep" 
-            [(newlySavedNpoId)]="newlySavedNpoId" 
-            [(newlySavedApplicationId)]="newlySavedApplicationId"  
-            [(applnPeriodId)]="applnPeriodId"  
-            [application]="application">
-         </app-qc-application-periods>         -->
-        <!-- <app-qc-application-details *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor" 
-            [(activeStep)]="activeStep" 
-            [(newlySavedApplicationId)]="newlySavedApplicationId"
-            [(applnPeriodId)]="applnPeriodId" 
-            [application]="application" 
-            [(fundingApplicationDetails)]="fundingApplicationDetails" 
-            [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
-            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
-            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
-            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
-            [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
-            (getPlace)="places($event)" 
-            (getSubPlace)=" subPlaces($event)">
-        </app-qc-application-details>          -->
-        <!-- <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
-            [(activeStep)]="activeStep" 
-            [application]="application"
-            [(newlySavedApplicationId)]="newlySavedApplicationId"
-            [(applnPeriodId)]="applnPeriodId" 
-            [(fundingApplicationDetails)]="fundingApplicationDetails">
-        </app-qc-document-upload> -->
     </div>
+
+    <div *ngIf = "this.qcFunded == 1">
+        <app-create-quick-capture *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"
+        [(activeStep)]="activeStep"
+        [(npo)]="npo">
+    </app-create-quick-capture>
+    <app-qc-application-periods *ngIf="activeStep == QCStepsFundedEnum.Applications"
+        [(activeStep)]="activeStep"
+        [npo]="npo"
+        [(applicationPeriod)]="applicationPeriod"
+        [(application)]="application"
+        [isEdit]="false">
+    </app-qc-application-periods>
+    <app-qc-application-detail *ngIf="activeStep == QCStepsFundedEnum.ApplicationDetail"
+        [(activeStep)]="activeStep"
+        [applicationPeriod]="applicationPeriod"
+        [application]="application"
+        [(districtCouncil)]="districtCouncil"
+        [(localMunicipality)]="localMunicipality"
+        [(regions)]="regions"
+        [(sdas)]="sdas"
+        [(purposeQuestion)]="purposeQuestion"
+        [(fundingApplicationDetails)]="fundingApplicationDetails">
+    </app-qc-application-detail>
+    <app-qc-objectives *ngIf="activeStep == QCStepsFundedEnum.Objectives" [(activeStep)]="activeStep"
+    [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"
+    [isReview]="false" [currentUserId]="profile.id"></app-qc-objectives>
+    <app-qc-activities *ngIf="activeStep == QCStepsFundedEnum.Activities" [(activeStep)]="activeStep"
+    [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
+    [isReview]="false"></app-qc-activities>
+    <app-qc-funded-document-upload *ngIf="activeStep == QCStepsFundedEnum.ApplicationFundedDocument"
+        [(activeStep)]="activeStep"
+        [application]="application"
+        [isView]="false">            
+    </app-qc-funded-document-upload>
+    </div>
+
+    <div style="height: 10px;"></div>
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"></p-menubar>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
 </p-panel>

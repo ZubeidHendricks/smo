@@ -1,0 +1,198 @@
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Capture Targets">
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowWorkplanTargetActions)"></p-menubar>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+    <p-panel [style]="{'font-size':'12px'}" header="Targets" *ngIf="isDataAvailable">
+        <p-card subheader="Activity Information" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+            <div style="margin-top: 0px;" class="p-grid">
+                <div class="p-col-6">
+                    <div class="p-fluid">
+                        <div class="p-grid">
+                            <div class="p-col-fixed form-label">
+                                <div class="box">
+                                    <span class="non-mandatory-content">Activity</span>
+                                </div>
+                            </div>
+                            <div class="p-col">
+                                <textarea class="form-text" rows="3" cols="30" pInputTextarea [(ngModel)]="activity.activityList.description" autoResize="autoResize" [disabled]="true"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-6">
+                    <div class="p-fluid">
+                        <div class="p-grid">
+                            <div class="p-col-fixed form-label">
+                                <div class="box">
+                                    <span class="non-mandatory-content">Indicator</span>
+                                </div>
+                            </div>
+                            <div class="p-col">
+                                <textarea class="form-text" rows="1" cols="30" pInputTextarea [(ngModel)]="activity.successIndicator" autoResize="autoResize" [disabled]="true"></textarea>
+                            </div>
+                        </div>
+                        <div class="p-grid">
+                            <div class="p-col-fixed form-label">
+                                <div class="box">
+                                    <span class="non-mandatory-content">Target</span>
+                                </div>
+                            </div>
+                            <div class="p-col">
+                                <p-inputNumber [(ngModel)]="activity.target" inputId="integeronly" [style]="{'width':'100%'}" [disabled]="true"></p-inputNumber>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-card>
+        <div style="height: 10px;"></div>
+        <p-card [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+            <div style="margin-top: 0px;" class="p-grid">
+                <div class="p-col-6">
+                    <div class="p-fluid">
+                        <div class="p-grid">
+                            <div class="p-col-fixed form-label">
+                                <div class="box">
+                                    <span class="mandatory-content">Financial Year</span>
+                                </div>
+                            </div>
+                            <div class="p-col">
+                                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-6">
+                    <div class="p-fluid">
+                        <div class="p-grid">
+                            <div class="p-col-fixed form-label">
+                                <div class="box">
+                                    <span class="mandatory-content">Frequency</span>
+                                </div>
+                            </div>
+                            <div class="p-col">
+                                <p-dropdown [options]="frequencies" placeholder="Select a Frequency" optionLabel="name" [(ngModel)]="selectedFrequency" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="frequencyChange()" #frequency="ngModel" [ngClass]="{'ng-dirty': (frequency.invalid && validated) || (frequency.dirty && frequency.invalid)}" required></p-dropdown>
+                                <small *ngIf="(frequency.invalid && validated) || (frequency.dirty && frequency.invalid)" class="p-error">Frequency is required.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-card>
+        <div style="height: 10px;" *ngIf="selectedFinancialYear && selectedFrequency"></div>
+        <div *ngIf="selectedFinancialYear && selectedFrequency">
+            <div *ngIf="selectedFrequency.id == FrequencyEnum.Annually">
+                <p-card subheader="Annual Targets" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">Annual Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.annual" inputId="integeronly" [style]="{'width':'100%'}" #annual="ngModel" [ngClass]="{'ng-dirty': (annual.invalid && validated) || (annual.dirty && annual.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(annual.invalid && validated) || (annual.dirty && annual.invalid)" class="p-error">Annual Target is required.</small>
+                        </div>
+                    </div>
+                </p-card>
+            </div>
+            <div *ngIf="selectedFrequency.id == FrequencyEnum.Monthly">
+                <p-card subheader="Monthly Targets" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">April Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.apr" inputId="integeronly" [style]="{'width':'100%'}" #april="ngModel" [ngClass]="{'ng-dirty': (april.invalid && validated) || (april.dirty && april.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(april.invalid && validated) || (april.dirty && april.invalid)" class="p-error">April Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">May Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.may" inputId="integeronly" [style]="{'width':'100%'}" #may="ngModel" [ngClass]="{'ng-dirty': (may.invalid && validated) || (may.dirty && may.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(may.invalid && validated) || (may.dirty && may.invalid)" class="p-error">May Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">June Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.jun" inputId="integeronly" [style]="{'width':'100%'}" #june="ngModel" [ngClass]="{'ng-dirty': (june.invalid && validated) || (june.dirty && june.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(june.invalid && validated) || (june.dirty && june.invalid)" class="p-error">June Target is required.</small>
+                        </div>
+                    </div>
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">July Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.jul" inputId="integeronly" [style]="{'width':'100%'}" #july="ngModel" [ngClass]="{'ng-dirty': (july.invalid && validated) || (july.dirty && july.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(july.invalid && validated) || (july.dirty && july.invalid)" class="p-error">July Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">August Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.aug" inputId="integeronly" [style]="{'width':'100%'}" #august="ngModel" [ngClass]="{'ng-dirty': (august.invalid && validated) || (august.dirty && august.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(august.invalid && validated) || (august.dirty && august.invalid)" class="p-error">August Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">September Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.sep" inputId="integeronly" [style]="{'width':'100%'}" #september="ngModel" [ngClass]="{'ng-dirty': (september.invalid && validated) || (september.dirty && september.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(september.invalid && validated) || (september.dirty && september.invalid)" class="p-error">September Target is required.</small>
+                        </div>
+                    </div>
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">October Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.oct" inputId="integeronly" [style]="{'width':'100%'}" #october="ngModel" [ngClass]="{'ng-dirty': (october.invalid && validated) || (october.dirty && october.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(october.invalid && validated) || (october.dirty && october.invalid)" class="p-error">October Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">November Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.nov" inputId="integeronly" [style]="{'width':'100%'}" #november="ngModel" [ngClass]="{'ng-dirty': (november.invalid && validated) || (november.dirty && november.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(november.invalid && validated) || (november.dirty && november.invalid)" class="p-error">November Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">December Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.dec" inputId="integeronly" [style]="{'width':'100%'}" #december="ngModel" [ngClass]="{'ng-dirty': (december.invalid && validated) || (december.dirty && december.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(december.invalid && validated) || (december.dirty && december.invalid)" class="p-error">December Target is required.</small>
+                        </div>
+                    </div>
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">January Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.jan" inputId="integeronly" [style]="{'width':'100%'}" #january="ngModel" [ngClass]="{'ng-dirty': (january.invalid && validated) || (january.dirty && january.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(january.invalid && validated) || (january.dirty && january.invalid)" class="p-error">January Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">February Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.feb" inputId="integeronly" [style]="{'width':'100%'}" #february="ngModel" [ngClass]="{'ng-dirty': (february.invalid && validated) || (february.dirty && february.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(february.invalid && validated) || (february.dirty && february.invalid)" class="p-error">February Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-4">
+                            <label class="mandatory-content">March Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.mar" inputId="integeronly" [style]="{'width':'100%'}" #march="ngModel" [ngClass]="{'ng-dirty': (march.invalid && validated) || (march.dirty && march.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(march.invalid && validated) || (march.dirty && march.invalid)" class="p-error">March Target is required.</small>
+                        </div>
+                    </div>
+                </p-card>
+            </div>
+            <div *ngIf="selectedFrequency.id == FrequencyEnum.Quarterly">
+                <p-card subheader="Quarterly Targets" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+                    <div class="p-fluid p-formgrid p-grid">
+                        <div class="p-field p-col-12 p-md-3">
+                            <label class="mandatory-content">Q1 Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.quarter1" inputId="integeronly" [style]="{'width':'100%'}" #q1="ngModel" [ngClass]="{'ng-dirty': (q1.invalid && validated) || (q1.dirty && q1.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(q1.invalid && validated) || (q1.dirty && q1.invalid)" class="p-error">Q1 Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-3">
+                            <label class="mandatory-content">Q2 Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.quarter2" inputId="integeronly" [style]="{'width':'100%'}" #q2="ngModel" [ngClass]="{'ng-dirty': (q2.invalid && validated) || (q2.dirty && q2.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(q2.invalid && validated) || (q2.dirty && q2.invalid)" class="p-error">Q2 Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-3">
+                            <label class="mandatory-content">Q3 Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.quarter3" inputId="integeronly" [style]="{'width':'100%'}" #q3="ngModel" [ngClass]="{'ng-dirty': (q3.invalid && validated) || (q3.dirty && q3.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(q3.invalid && validated) || (q3.dirty && q3.invalid)" class="p-error">Q3 Target is required.</small>
+                        </div>
+                        <div class="p-field p-col-12 p-md-3">
+                            <label class="mandatory-content">Q4 Target</label>
+                            <p-inputNumber class="form-text" [(ngModel)]="selectedWorkplanTarget.quarter4" inputId="integeronly" [style]="{'width':'100%'}" #q4="ngModel" [ngClass]="{'ng-dirty': (q4.invalid && validated) || (q4.dirty && q4.invalid)}" required></p-inputNumber>
+                            <small *ngIf="(q4.invalid && validated) || (q4.dirty && q4.invalid)" class="p-error">Q4 Target is required.</small>
+                        </div>
+                    </div>
+                </p-card>
+            </div>
+        </div>
+        <div style="height: 10px;"></div>
+        <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowWorkplanTargetActions)"></p-menubar>        
+    </p-panel>
+</p-panel>

@@ -152,8 +152,63 @@ namespace NPOMS.Repository.Configurations.Core
 					Location = "QuickCapture",
 					IsActive = true,
 					IsCompulsory = false
-				}
-			);
+				},
+                new DocumentType
+                {
+                    Id = 22,
+                    Name = "Declaration of Interest",
+                    Description = "Declaration of Interest",
+                    Location = "FundedNpo",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 23,
+                    Name = "Declaration of Bidder Interest",
+                    Description = "Declaration of Bidder Interest",
+                    Location = "FundedNpo",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 24,
+                    Name = "Duly Authorized Representative Signature",
+                    Description = "Duly Authorized Representative Signature",
+                    Location = "FundedNpo",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 25,
+                    Name = "Testimonials",
+                    Description = "Testimonials",
+                    Location = "FundedNpo",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 26,
+                    Name = "Others",
+                    Description = "Others",
+                    Location = "FundedNpo",
+                    IsActive = true,
+                    IsCompulsory = false
+                },
+                new DocumentType
+                {
+                    Id = 27,
+                    Name = "BusinessPlan",
+                    Description = "Business Plan",
+                    Location = "FundedNpo",
+                    IsActive = true,
+                    IsCompulsory = false
+                }
+
+            );
 		}
 	}
 }

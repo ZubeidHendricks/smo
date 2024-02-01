@@ -219,4 +219,14 @@ export class ApplicationService {
     const url = `${this._envUrl.urlAddress}/api/applications/my-content-link`;
     return this._http.put<IMyContentLink>(url, model, httpOptions);
   }
+
+  public UpdateInitiateScorecardValue(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/UpdateInitiateScorecardValue/applicationId/${applicationId}`;
+    return this._http.put<IApplication>(url, httpOptions);
+  }
+
+  public UpdateCloseScorecardValue(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/UpdateCloseScorecardValue/applicationId/${applicationId}`;
+    return this._http.put<IApplication>(url, httpOptions);
+  }  
 }

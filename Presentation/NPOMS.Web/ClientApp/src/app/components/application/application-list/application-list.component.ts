@@ -55,6 +55,7 @@ export class ApplicationListComponent implements OnInit {
   @ViewChild('dt') dt: Table | undefined;
 
   canShowOptions: boolean = false;
+  canShowOptionsNpo: boolean = false;
 
   constructor(
     private _router: Router,
@@ -123,8 +124,9 @@ export class ApplicationListComponent implements OnInit {
         });
 
         this.allApplications = results;
-        this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA });
-
+        this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
+        this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
+          && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && item.applicationPeriod.departmentId === 11});
         this.buildButtonItems();
         this.buildOptionItems();
 
@@ -306,13 +308,68 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
+      if (this.IsAuthorized(PermissionsEnum.DownloadAssessmentOption)) {
         this.buttonItems[0].items.push({
           label: 'Download Assessment',
           target: 'Workflow Application',
           icon: 'fa fa-download',
           command: () => {
             this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id, 1] } }]);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Review Application',
+          target: 'Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('quick-captures-doh/review/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.EditApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Edit Application',
+          target: 'Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('quick-captures-editList-doh/edit/' + this.selectedApplication.id );
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.DeleteOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Delete Application',
+          target: 'Funded Npo',
+          icon: 'fa fa-trash',
+          command: () => {
+            this.deleteApplication();
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+        this.buttonItems[0].items.push({
+          label: 'View Application',
+          target: 'Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('quick-captures-doh/view/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Download Application',
+          target: 'Funded Npo',
+          icon: 'fa fa-download',
+          command: () => {
+            this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id, 3] } }]);
           }
         });
       }
@@ -354,9 +411,56 @@ export class ApplicationListComponent implements OnInit {
     });
   }
 
-  // get canShowOptions() {
-  //   return this.IsAuthorized(PermissionsEnum.EditOption) || this.IsAuthorized(PermissionsEnum.ViewOptions) || this.IsAuthorized(PermissionsEnum.DownloadOption);
-  // }
+  public updateOptionItems()
+  {
+     // Show all options
+     this.optionItems[0].items.forEach(option => {
+      option.visible = true;
+    });
+
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11)
+    {
+      this.optionItemExists('Manage Indicators');  
+      this.optionItemExists('Capture Scorecard');  
+      this.optionItemExists('Review Score Card');  
+      this.optionItemExists('Initiate Score Card');  
+      this.optionItemExists('Conclude Scorecard');  
+      this.optionItemExists('Summary');  
+    }
+    else{
+      this.optionItemExists('Adjudicate Funded Npo');  
+      this.optionItemExists('Review Adjudicated Funded Npo'); 
+      this.optionItemExists('Businessplan Indicators'); 
+      this.optionItemExists('BusinessPlan Summary');   
+    }
+
+    // Hide options based on status
+    if(this.selectedApplication.initiateScorecard === 1)
+    {
+      this.optionItemExists('Initiate Score Card');      
+    } 
+    
+    if(this.selectedApplication.closeScorecard === 0)
+    {
+      this.optionItemExists('Conclude Scorecard');
+    }  
+
+    if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount > 0)
+    {
+      this.optionItemExists('Capture Scorecard');
+    }
+
+    if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount === 0)
+    {
+      this.optionItemExists('Capture Scorecard');
+    }
+
+    if(this.selectedApplication.scorecardCount === 0)
+    {
+      this.optionItemExists('Review Score Card');
+    }
+
+  }
 
   public updateButtonItems() {
     // Show all buttons
@@ -377,6 +481,11 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('View Application', 'Funding Application');
       this.buttonItemExists('Delete Application', 'Funding Application');
       this.buttonItemExists('Download Assessment', 'Workflow Application');
+      this.buttonItemExists('Edit Application', 'Funded Npo');
+      this.buttonItemExists('Review Application', 'Funded Npo');
+      this.buttonItemExists('Delete Application', 'Funded Npo');
+      this.buttonItemExists('View Application', 'Funded Npo');
+      this.buttonItemExists('Download Application', 'Funded Npo');
       // this.buttonItemExists('Score Card', 'Service Provision');
 
       switch (this.selectedApplication.statusId) {
@@ -427,7 +536,7 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA || (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId !== 11)) {
 
       // Hide Service Provision actions
       this.buttonItemExists('Edit Application', 'Service Provision');
@@ -436,6 +545,12 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Upload SLA', 'Service Provision');
       this.buttonItemExists('View Application', 'Service Provision');
       this.buttonItemExists('Delete Application', 'Service Provision');
+
+      this.buttonItemExists('Edit Application', 'Funded Npo');
+      this.buttonItemExists('Review Application', 'Funded Npo');
+      this.buttonItemExists('Delete Application', 'Funded Npo');
+      this.buttonItemExists('View Application', 'Funded Npo');
+      this.buttonItemExists('Download Application', 'Funded Npo');
       //this.buttonItemExists('Score Card', 'Service Provision');
 
       if (this.selectedApplication.isQuickCapture)
@@ -526,7 +641,7 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    /*if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC) {
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11) {
 
       // Hide Service Provision actions
       this.buttonItemExists('Edit Application', 'Service Provision');
@@ -534,28 +649,48 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Approve Application', 'Service Provision');
       this.buttonItemExists('Upload SLA', 'Service Provision');
       this.buttonItemExists('View Application', 'Service Provision');
+      this.buttonItemExists('Download Assessment', 'Workflow Application');
+      this.buttonItemExists('Delete Application', 'Service Provision');
+      this.buttonItemExists('Edit Application', 'Funding Application');
+      this.buttonItemExists('Download Application', 'Funding Application');
+      this.buttonItemExists('View Application', 'Funding Application');
+      this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Adjudicate Application', 'Funding Application');
+      this.buttonItemExists('Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Approve Application', 'Funding Application');
+      this.buttonItemExists('Edit Application', 'Funding Application');
+      this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Adjudicate Application', 'Funding Application');
+      this.buttonItemExists('Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Approve Application', 'Funding Application');
+      this.buttonItemExists('Delete Application', 'Funding Application');
 
       switch (this.selectedApplication.statusId) {
-        case StatusEnum.Saved: {
-          this.buttonItemExists('Edit Application', 'Funding Application');
-          this.buttonItemExists('Download Application', 'Funding Application');
-          this.buttonItemExists('View Application', 'Funding Application');
-          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
-          this.buttonItemExists('Adjudicate Application', 'Funding Application');
-          this.buttonItemExists('Evaluate Application', 'Funding Application');
-          this.buttonItemExists('Approve Application', 'Funding Application');
-          break;
-        }
-        case StatusEnum.Submitted: {
-          this.buttonItemExists('Edit Application', 'Funding Application');
-          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
-          this.buttonItemExists('Adjudicate Application', 'Funding Application');
-          this.buttonItemExists('Evaluate Application', 'Funding Application');
-          this.buttonItemExists('Approve Application', 'Funding Application');
+          case StatusEnum.PendingReview: {
+            this.buttonItemExists('Delete Application', 'Funded Npo');
+            this.buttonItemExists('Edit Application', 'Funded Npo');
           break;
         }
       }
-    }*/
+
+      switch (this.selectedApplication.statusId) {
+        case StatusEnum.Saved:
+          case StatusEnum.Approved:
+            case StatusEnum.Declined: {
+          this.buttonItemExists('Review Application', 'Funded Npo');
+        break;
+      }
+   }
+
+   switch (this.selectedApplication.statusId) {
+      case StatusEnum.Approved:
+        case StatusEnum.Declined: {
+      this.buttonItemExists('Edit Application', 'Funded Npo');
+     break;
+   }
+ }
+
+  }
   }
 
   private buttonItemExists(label: string, target: string) {
@@ -563,6 +698,13 @@ export class ApplicationListComponent implements OnInit {
 
     if (buttonItem)
       buttonItem.visible = false;
+  }
+
+  private optionItemExists(label: string) {
+    let optionItem = this.optionItems[0].items.find(x => x.label === label);
+
+    if (optionItem)
+    optionItem.visible = false;
   }
 
   private buildOptionItems() {
@@ -585,10 +727,19 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
+        this.optionItems[0].items.push({
+          label: 'Businessplan Indicators',
+          icon: 'fa fa-tags wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('businessplan-indicator/manage/' + this.selectedApplication.npoId);
+          }
+        });
+      }
 
       if (this.IsAuthorized(PermissionsEnum.AddScorecard)) {
         this.optionItems[0].items.push({
-          label: 'Add Score Card',
+          label: 'Capture Scorecard',
           icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl('scorecard/' + this.selectedApplication.id);
@@ -606,12 +757,62 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.InitiateScorecard)) {
+          this.optionItems[0].items.push({
+            label: 'Initiate Score Card',
+            icon: 'fa fa-envelope-open-o',
+            command: () => {
+              this._router.navigateByUrl('initiate/' + this.selectedApplication.id);
+            }
+          });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.CloseScorecard)) {
+        this.optionItems[0].items.push({
+          label: 'Conclude Scorecard',
+          icon: 'fa fa-window-close-o',
+          command: () => {
+            this._router.navigateByUrl('close/' + this.selectedApplication.id);
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
         this.optionItems[0].items.push({
           label: 'Summary',
           icon: 'fa fa-tasks wcg-icon',
           command: () => {
             this._router.navigateByUrl('workplan-indicator/summary/' + this.selectedApplication.npoId);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
+        this.optionItems[0].items.push({
+          label: 'BusinessPlan Summary',
+          icon: 'fa fa-tasks wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('businessplan-indicator/summary/' + this.selectedApplication.npoId);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)) {
+        this.optionItems[0].items.push({
+          label: 'Adjudicate Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('adjudicateNpo/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewAdjudicatedFundedNpo)) {
+        this.optionItems[0].items.push({
+          label: 'Review Adjudicated Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('reviewAdjudicatedNpo/' + this.selectedApplication.id);
           }
         });
       }

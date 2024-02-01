@@ -16,7 +16,8 @@ export enum QuestionCategoryEnum {
     TimelyWorkPlanSubmission,
     Impact,
     RiskMitigation,
-    AppropriationofResources
+    AppropriationofResources,
+    Adjudication2
 }
 
 export enum ApplicationTypeEnum {
@@ -85,7 +86,8 @@ export enum DropdownTypeEnum {
     ResponseType = 52,
     Question = 53,
     ResponseOption = 54,
-    WorkflowAssessment = 55
+    WorkflowAssessment = 55,
+    QuarterlyPeriod = 56
 }
 
 export enum EntityTypeEnum {
@@ -98,7 +100,8 @@ export enum EntityEnum {
     NpoProfile = 'NpoProfile',
     Application = 'Application',
     WorkplanIndicators = 'WorkplanIndicators',
-    FundingApplicationDetails = 'FundingApplicationDetails'
+    FundingApplicationDetails = 'FundingApplicationDetails',
+    FundedNpo = 'FundedNpo'
 }
 
 export enum ResponseTypeEnum {
@@ -107,7 +110,8 @@ export enum ResponseTypeEnum {
     CloseEnded2 = 4,
     CloseEnded3 = 5,
     CloseEnded4 = 6,
-    Score2 = 7
+    Score2 = 7,
+    Score3 = 8
 }
 
 export enum DeclarationTypeEnum {
@@ -203,7 +207,7 @@ export enum StatusEnum {
     Recommended = 20,
     StronglyRecommended = 21,
     NonCompliance = 22,
-    PendingReviewerSatisfaction = 23
+    PendingReviewerSatisfaction = 23    
 }
 
 export enum AuditorOrAffiliationEntityTypeEnum {
@@ -357,6 +361,7 @@ export enum PermissionsEnum {
     ViewOption = "WFA.View",
     EditOption = "WFA.Edit",
     DownloadOption = "WFA.Download",
+    DownloadAssessmentOption = "WFA.DownloadAssessment",
     DeleteOption = "WFA.Delete",
 
     PendingPreEvaluateOption = "WFA.PendingPreEvaluation",
@@ -370,6 +375,10 @@ export enum PermissionsEnum {
     AddScorecard = "WFA.AddScorecard",
     ReviewScorecard = "WFA.ReviewScorecard",
     ViewScorecard = "WFA.ViewScorecard",
+    InitiateScorecard = "WFA.InitiateScorecard",
+    CloseScorecard = "WFA.CloseScorecard",
+    AdjudicateFundedNpo = "WFA.AdjudicateFundedNpo",
+    ReviewAdjudicatedFundedNpo = "WFA.ReviewAdjudicatedFundedNpo",
 
     /* Quick Capture*/
     ViewQC = "QC.View",
@@ -459,13 +468,32 @@ export enum QCStepsEnum {
     ApplicationDocument = 3
 }
 
+export enum QuickCaptureFundedStepsEnum {
+    NpoConfirmationDetails = 0,
+    Applications = 1,
+    Objectives = 2,
+    Activities = 3,
+    ApplicationDocument = 4
+}
+
+export enum QCStepsFundedEnum {
+    NpoCreate = 0,
+    Applications = 1,
+    ApplicationDetail = 2,
+    Objectives = 3,
+    Activities = 4,
+    ApplicationFundedDocument = 5,
+    ApplicationConfirmation = 6
+}
+
 
 export enum DocumentUploadLocationsEnum {
     NpoProfile = 'NpoProfile',
     Workplan = 'Workplan',
     WorkplanActuals = 'WorkplanActuals',
     FundApp = "FundApp",
-    QuickCapture = "QuickCapture"
+    QuickCapture = "QuickCapture",
+    FundedNpo = "FundedNpo"
 }
 
 //export enum FundingTemplateTypeEnum {

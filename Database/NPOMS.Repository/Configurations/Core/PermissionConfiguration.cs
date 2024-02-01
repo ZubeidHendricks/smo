@@ -806,6 +806,41 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "View Score card",
                     SystemName = "WFA.ViewScorecard",
                     CategoryName = "ViewScorecard"
+                },
+                new Permission
+                {
+                    Id = 115,
+                    Name = "Initiate Score card",
+                    SystemName = "WFA.InitiateScorecard",
+                    CategoryName = "InitiateScorecard"
+                },
+                new Permission
+                {
+                    Id = 116,
+                    Name = "Close Score card",
+                    SystemName = "WFA.CloseScorecard",
+                    CategoryName = "CloseScorecard"
+                },
+                new Permission
+                {
+                    Id = 117,
+                    Name = "Adjudicate Funded Npo",
+                    SystemName = "WFA.AdjudicateFundedNpo",
+                    CategoryName = "AdjudicateFundedNpo"
+                },
+                new Permission
+                {
+                    Id = 118,
+                    Name = "Review Adjudicated FundedNpo",
+                    SystemName = "WFA.ReviewAdjudicatedFundedNpo",
+                    CategoryName = "ReviewAdjudicatedFundedNpo"
+                },
+                new Permission
+                {
+                    Id = 119,
+                    Name = "Download Assessment",
+                    SystemName = "WFA.DownloadAssessment",
+                    CategoryName = "DownloadAssessment"
                 }
             );
 		}

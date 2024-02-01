@@ -1,0 +1,63 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="large" color="#fff" type="ball-spin-clockwise">
+    <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Quick Capture" *ngIf="isDataAvailable">
+
+    <div class="p-grid p-nogutter p-justify-between" *ngIf="application.createdUser && application.updatedUser">
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created By: {{application.createdUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created Date: {{application.createdDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated By: {{application.updatedUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated Date: {{application.updatedDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+
+     <div style="height: 10px;"></div>
+    <div>
+    <app-qc-npo-details-view 
+     [application]="application"
+    [newApplication]="false">
+    </app-qc-npo-details-view>
+    <app-qc-application-periods-view 
+        [npo]="npo"
+        [(applicationPeriod)]="applicationPeriod"
+        [(application)]="application"
+        [isEdit]="false">
+    </app-qc-application-periods-view>
+    <app-qc-application-detail-view 
+        [applicationPeriod]="applicationPeriod"
+        [application]="application"
+        [(districtCouncil)]="districtCouncil"
+        [(localMunicipality)]="localMunicipality"
+        [(regions)]="regions"
+        [(sdas)]="sdas"
+        [(amount)]="amount"
+        [(sourceOfInformation)]="sourceOfInformation"
+        [(affliatedOrganisationInfo)]="affliatedOrganisationInfo"
+        [(purposeQuestion)]="purposeQuestion"
+        [(fundingApplicationDetails)]="fundingApplicationDetails"
+        [isEdit]="false">
+    </app-qc-application-detail-view>
+    <app-qc-objectives-view
+    [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"
+    [isReview]="false" [currentUserId]="profile.id"
+    [isEdit]="false"></app-qc-objectives-view>
+    <app-qc-activities-view
+    [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
+    [isReview]="false"
+    [isEdit]="false"></app-qc-activities-view>
+    <app-qc-funded-document-upload-view
+        [application]="application"
+        [isView]="true">            
+    </app-qc-funded-document-upload-view>
+    <!-- <app-qc-confirmation [application]="application" [(status)]="status" 
+    [profile]="profile" [approveApplication]="false"></app-qc-confirmation> -->
+    </div>
+    <div style="height: 10px;"></div>  
+</p-panel>
