@@ -278,10 +278,10 @@ export class SustainabilityComponent implements OnInit {
 
       this.activeSustainabilityPlans.forEach(element => {
 
-        var itemExists = this.rowGroupMetadata.some(function (data) { return data.itemName === element.activity.activityList.description });
+        var itemExists = this.rowGroupMetadata.some(function (data) { return data.itemName === element.activity.activityList.name });
 
         this.rowGroupMetadata.push({
-          itemName: element.activity.activityList.description,
+          itemName: element.activity.activityList.name,
           itemExists: itemExists
         });
       });

@@ -661,10 +661,10 @@ export class ViewApplicationComponent implements OnInit {
 
         if (this.sustainabilityPlans) {
           this.sustainabilityPlans.forEach(element => {
-            var itemExists = this.rowGroupMetadataSustainability.some(function (data) { return data.itemName === element.activity.activityList.description });
+            var itemExists = this.rowGroupMetadataSustainability.some(function (data) { return data.itemName === element.activity.activityList.name });
 
             this.rowGroupMetadataSustainability.push({
-              itemName: element.activity.activityList.description,
+              itemName: element.activity.activityList.name,
               itemExists: itemExists
             });
           });
@@ -676,10 +676,10 @@ export class ViewApplicationComponent implements OnInit {
 
         if (this.resources) {
           this.resources.forEach(element => {
-            var itemExists = this.rowGroupMetadataResources.some(function (data) { return data.itemName === element.activity.activityList.description });
+            var itemExists = this.rowGroupMetadataResources.some(function (data) { return data.itemName === element.activity.activityList.name });
 
             this.rowGroupMetadataResources.push({
-              itemName: element.activity.activityList.description,
+              itemName: element.activity.activityList.name,
               itemExists: itemExists
             });
           });

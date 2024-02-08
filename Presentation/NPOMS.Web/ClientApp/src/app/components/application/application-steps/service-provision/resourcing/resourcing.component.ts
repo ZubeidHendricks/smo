@@ -557,10 +557,10 @@ export class ResourcingComponent implements OnInit {
 
       resources.forEach(element => {
 
-        var itemExists = this.deletedRowGroupMetadata.some(function (data) { return data.itemName === element.activity.activityList.description });
+        var itemExists = this.deletedRowGroupMetadata.some(function (data) { return data.itemName === element.activity.activityList.name });
 
         this.deletedRowGroupMetadata.push({
-          itemName: element.activity.activityList.description,
+          itemName: element.activity.activityList.name,
           itemExists: itemExists
         });
       });
