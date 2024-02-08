@@ -43,7 +43,7 @@
             <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
                 <tr [ngClass]="getRowColour(rowData)" class="default-font">
                     <td style="text-align: center;">{{rowIndex + 1}}</td>
-                    <td>{{rowData.activity.activityList.description}}</td>
+                    <td>{{rowData.activity.activityList.name}}</td>
                     <td>{{rowData.activity.successIndicator}}</td>
                     <td style="text-align: center;">
                         <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Q1">{{rowData.workplanTargets[0].quarter1}}</span>
