@@ -526,7 +526,7 @@ export class CreateQuickCaptureComponent implements OnInit {
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
-      }
+      } 
     );
   }
 

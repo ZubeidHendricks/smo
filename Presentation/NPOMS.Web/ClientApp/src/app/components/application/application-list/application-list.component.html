@@ -54,7 +54,7 @@
                     <p-menu #menu [popup]="true" [model]="optionItems" appendTo="body"></p-menu>
                 </td>
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
-                <td *ngFor="let col of columns">
+                <td *ngFor="let col of columns"> 
                     <span>{{getCellData(rowData, col)}}</span>
                 </td>
                 <td style="text-align: center;">

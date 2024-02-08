@@ -75,7 +75,7 @@ export class ManageComponent implements OnInit {
     });
 
     this.cols = [
-      { field: 'activityList.description', header: 'Activity', width: '50%' },
+      { field: 'activityList.name', header: 'Activity', width: '50%' },
       { field: 'successIndicator', header: 'Indicator', width: '30%' },
       { field: 'target', header: 'Target', width: '9%' },
     ];
