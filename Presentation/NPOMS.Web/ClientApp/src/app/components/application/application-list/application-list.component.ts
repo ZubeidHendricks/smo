@@ -5,7 +5,7 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ActionSequence } from 'protractor';
 import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationPeriod, ICapturedResponse, INpo, IUser } from 'src/app/models/interfaces';
+import { IApplication, IApplicationPeriod, ICapturedResponse, INpo, IStatus, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -45,7 +45,7 @@ export class ApplicationListComponent implements OnInit {
   isAdmin: boolean = false;
   hasAdminRole: boolean = false;
   headerTitle: string;
-
+  statusName: string;
   allNpos: INpo[];
 
   buttonItems: MenuItem[];
@@ -119,15 +119,24 @@ export class ApplicationListComponent implements OnInit {
   private loadApplications() {
     this._applicationRepo.getAllApplications().subscribe(
       (results) => {
+
         results.forEach(application => {
           this.setStatus(application.applicationPeriod);
         });
 
-        this.allApplications = results;
+        results.forEach(
+          application => {
+           this.updateStatus(application.status, application.statusId, application.applicationPeriod.applicationType.name);     
+          }
+        )
+        this.allApplications = results;       
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
         this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
           && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && item.applicationPeriod.departmentId === 11});
-        this.buildButtonItems();
+        
+        
+        
+          this.buildButtonItems();
         this.buildOptionItems();
 
         this._spinner.hide();
@@ -150,6 +159,15 @@ export class ApplicationListComponent implements OnInit {
       applicationPeriod.status = 'Closed';
   }
 
+  private updateStatus(status: IStatus, statusId: number, appType: string) {
+    if(appType != 'Service Provision')
+    {
+      if(statusId === 6 || statusId === 13 || statusId === 22)
+      {
+        status.name = 'In Progress';
+      }
+    }   
+  }
 
   private buildButtonItems() {
     this.buttonItems = [];
