@@ -11,6 +11,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace NPOMS.Services.Email.EmailTemplates
 {
@@ -38,14 +39,12 @@ namespace NPOMS.Services.Email.EmailTemplates
             var application = await applicationRepository.GetById(this._application.Id);
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
-            var user = await userRepository.GetByUserName("Millicent.Finney@westerncape.gov.za");
-            //var users = await userRepository.GetByIds((int)RoleEnum.Reviewer, application.ApplicationPeriod.DepartmentId);
+            //fetch reviewer of DoH 
+            var users = await userRepository.GetByRoleAndDepartmentId(4,11);
             var npoRepository = EngineContext.Current.Resolve<INpoRepository>();
             var npo = await npoRepository.GetById(application.NpoId);
             try
             {
-                /*
-                
                 foreach (var user in users)
 				{
 					EmailQueue emailQueue = new EmailQueue()
@@ -54,44 +53,22 @@ namespace NPOMS.Services.Email.EmailTemplates
 						EmailTemplateId = emailTemplate.Id,
 						FromEmailAddress = emailTemplate.EmailAccount.FromEmail,
 						FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
-						Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, user, npo),
-						Subject = ReplacePlaceholders(emailTemplate.Subject, application, requestOrigin, user, npo),
-						RecipientEmail = user.Email,
+						Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, user.FullName, application.Id, npo),
+                        Subject = emailTemplate.Subject,
+
+                        RecipientEmail = user.Email,
 						RecipientName = user.FullName
 					};
 
 					await emailQueueService.Create(emailQueue);
 				}
-                */
-                var action = string.Empty;
-                var contactPersonFullName = string.Empty;
-                var contactPersonName = user.UserName; // (x => x.FirstName == "Sharief").FirstOrDefault();
-                if (contactPersonName != null)
-                {
-                    // contactPersonFullName = contactPersonName.FirstName + " " + contactPersonName.LastName;
-                    contactPersonFullName = user.FirstName + " " + user.LastName;
-                }
-
-                EmailQueue emailQueue = new EmailQueue()
-                {
-                    CreatedDateTime = DateTime.Now,
-                    EmailTemplateId = emailTemplate.Id,
-                    FromEmailAddress = emailTemplate.EmailAccount.FromEmail,
-                    FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
-                    Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, contactPersonFullName, application.Id, npo),
-                    Subject = emailTemplate.Subject,
-                    RecipientEmail = user.Email,
-                    RecipientName = contactPersonFullName
-                };
-
-                await emailQueueService.Create(emailQueue);
+                
             }
             catch (Exception ex)
             {
                 logger.LogError($"Something went wrong inside InitiateScorecardEmailTemplate-SubmitToQueue action: {ex.Message} Inner Exception: {ex.InnerException}");
                 throw;
             }
-        //}
         }
         private string ReplacePlaceholders(string value, Application application, string origin, string contactPerson, int id, Npo npo)
         {

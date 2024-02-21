@@ -131,6 +131,14 @@ namespace NPOMS.Repository.Implementation.Core
                             .Where(x => x.IsActive).ToListAsync();
         }
 
+        public async Task<IEnumerable<User>> GetByRoleAndDepartmentId(int roleId, int departmentId)
+        {
+            return await FindByCondition(x => x.Roles.Where(z => z.IsActive).Any(y => y.RoleId.Equals(roleId)) && x.Departments.Any(y => y.DepartmentId.Equals(departmentId)))
+                            .Include(x=>x.Roles)
+                            .Include(x=>x.Departments)
+                            .Where(x => x.IsActive).ToListAsync();
+        }
+
         public async Task<User> GetUserByIdAsync(int id)
         {
             return await FindByCondition(sp => sp.Id.Equals(id))
