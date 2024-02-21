@@ -133,10 +133,9 @@ export class ApplicationListComponent implements OnInit {
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
         this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
           && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && item.applicationPeriod.departmentId === 11});
+              
         
-        
-        
-          this.buildButtonItems();
+        this.buildButtonItems();
         this.buildOptionItems();
 
         this._spinner.hide();
