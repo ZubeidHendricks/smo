@@ -69,7 +69,7 @@ namespace NPOMS.Services.Email.EmailTemplates
                     FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
                     Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, contactPersonFullName, application.Id),
                     Subject = emailTemplate.Subject, 
-                    RecipientEmail = "shafieka.samuels@westerncape.gov.za", //user.Email,
+                    RecipientEmail = user.Email,
                     RecipientName = contactPersonFullName
                 };
 
@@ -81,7 +81,7 @@ namespace NPOMS.Services.Email.EmailTemplates
                     FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
                     Message = ReplacePlaceholders1(emailTemplate.Body, application, requestOrigin, contactPersonFullName1, application.Id),
                     Subject = emailTemplate.Subject, 
-                    RecipientEmail = "shafieka.samuels@westerncape.gov.za", //user1.Email,
+                    RecipientEmail = user1.Email,
                     RecipientName = contactPersonFullName1
                 };
 

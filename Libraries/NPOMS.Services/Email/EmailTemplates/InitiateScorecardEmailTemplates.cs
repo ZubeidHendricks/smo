@@ -56,7 +56,7 @@ namespace NPOMS.Services.Email.EmailTemplates
                         Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, user.FullName, application.Id, npo),
                         Subject = emailTemplate.Subject,
 
-                        RecipientEmail = "shafieka.samuels@westerncape.gov.za", // user.Email,
+                        RecipientEmail = user.Email,
 						RecipientName = user.FullName
 					};
 
