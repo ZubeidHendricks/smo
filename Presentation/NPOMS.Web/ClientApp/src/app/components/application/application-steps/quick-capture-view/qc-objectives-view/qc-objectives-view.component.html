@@ -16,7 +16,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
-            <tr [ngClass]="rowData.changesRequired === true ? 'red' : 'default' && rowData.changesRequired === false ? 'green' : 'default'" class="default-font">
+            <tr [ngClass]="default" class="default-font">
                 <td>{{rowData.name}}</td>
                 <td>{{rowData.description}}</td>
                 <td>{{rowData.recipientType.name}}</td>
@@ -24,6 +24,7 @@
                 <td>{{rowData.quarter}}</td>
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editObjective(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
+                    <button  pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
                     <!-- <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteObjective(rowData)" pTooltip="Delete" tooltipPosition="top"></button> -->
                     <!-- <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button> -->
                     <!-- <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button> -->
@@ -333,7 +334,11 @@
         <div class="p-col">
             <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="comment" [ngModelOptions]="{standalone: true}"></textarea>
         </div>
-    </div>        
+    </div>  
+    <ng-template pTemplate="footer">
+        <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
+        <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button>
+    </ng-template>      
    </p-dialog>
 
 <p-dialog header="View Comments" 
@@ -363,6 +368,11 @@
             <tr class="default-font">
                 <td colspan="4" style="text-align: center;">No results found</td>
             </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div style="text-align:right"  *ngIf="headerTitle !== 'view'">
+                <button pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
+            </div>
         </ng-template>
     </p-table>
 </p-dialog>

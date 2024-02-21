@@ -47,16 +47,16 @@ namespace NPOMS.Services.Email.EmailTemplates
             {
                 foreach (var user in users)
 				{
-					EmailQueue emailQueue = new EmailQueue()
-					{
-						CreatedDateTime = DateTime.Now,
-						EmailTemplateId = emailTemplate.Id,
-						FromEmailAddress = emailTemplate.EmailAccount.FromEmail,
-						FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
-						Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, user.FullName, application.Id, npo),
+                    EmailQueue emailQueue = new EmailQueue()
+                    {
+                        CreatedDateTime = DateTime.Now,
+                        EmailTemplateId = emailTemplate.Id,
+                        FromEmailAddress = emailTemplate.EmailAccount.FromEmail,
+                        FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
+                        Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, user.FullName, application.Id, npo),
                         Subject = emailTemplate.Subject,
 
-                        RecipientEmail = user.Email,
+                        RecipientEmail = "shafieka.samuels@westerncape.gov.za", // user.Email,
 						RecipientName = user.FullName
 					};
 
