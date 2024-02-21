@@ -30,6 +30,7 @@ namespace NPOMS.Repository.Interfaces.Core
         Task<IEnumerable<User>> GetByIds(int roleId, int departmentId);
 
         Task<IEnumerable<User>> GetByRoleId(int roleId);
+        Task<IEnumerable<User>> GetByRoleAndDepartmentId(int roleId, int departmentId);
 
         /// <summary>
         /// Get Users by UserIds
