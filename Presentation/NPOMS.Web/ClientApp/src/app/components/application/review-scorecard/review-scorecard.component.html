@@ -267,7 +267,7 @@
             <span>{{submittedDate | date: 'yyyy-MM-dd'}}</span>
         </div>
     </div>
-    <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasScorecardSubmitted && this.IsAuthorized(PermissionsEnum.ReviewScorecard)">
+    <div class="p-grid p-nogutter p-justify-end">
        
         <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled] = "disableSubmit()"
         (click)="submit()" [disabled]="disableElement()"></button>
