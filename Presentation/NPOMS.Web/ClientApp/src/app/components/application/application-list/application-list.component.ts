@@ -133,10 +133,9 @@ export class ApplicationListComponent implements OnInit {
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
         this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
           && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && item.applicationPeriod.departmentId === 11});
+              
         
-        
-        
-          this.buildButtonItems();
+        this.buildButtonItems();
         this.buildOptionItems();
 
         this._spinner.hide();
@@ -745,15 +744,15 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
-        this.optionItems[0].items.push({
-          label: 'Businessplan Indicators',
-          icon: 'fa fa-tags wcg-icon',
-          command: () => {
-            this._router.navigateByUrl('businessplan-indicator/manage/' + this.selectedApplication.npoId);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
+      //   this.optionItems[0].items.push({
+      //     label: 'Businessplan Indicators',
+      //     icon: 'fa fa-tags wcg-icon',
+      //     command: () => {
+      //       this._router.navigateByUrl('businessplan-indicator/manage/' + this.selectedApplication.npoId);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.AddScorecard)) {
         this.optionItems[0].items.push({
@@ -805,35 +804,35 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
-        this.optionItems[0].items.push({
-          label: 'BusinessPlan Summary',
-          icon: 'fa fa-tasks wcg-icon',
-          command: () => {
-            this._router.navigateByUrl('businessplan-indicator/summary/' + this.selectedApplication.npoId);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
+      //   this.optionItems[0].items.push({
+      //     label: 'BusinessPlan Summary',
+      //     icon: 'fa fa-tasks wcg-icon',
+      //     command: () => {
+      //       this._router.navigateByUrl('businessplan-indicator/summary/' + this.selectedApplication.npoId);
+      //     }
+      //   });
+      // }
 
-      if (this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)) {
-        this.optionItems[0].items.push({
-          label: 'Adjudicate Funded Npo',
-          icon: 'fa fa-file-text-o',
-          command: () => {
-            this._router.navigateByUrl('adjudicateNpo/' + this.selectedApplication.id);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)) {
+      //   this.optionItems[0].items.push({
+      //     label: 'Adjudicate Funded Npo',
+      //     icon: 'fa fa-file-text-o',
+      //     command: () => {
+      //       this._router.navigateByUrl('adjudicateNpo/' + this.selectedApplication.id);
+      //     }
+      //   });
+      // }
 
-      if (this.IsAuthorized(PermissionsEnum.ReviewAdjudicatedFundedNpo)) {
-        this.optionItems[0].items.push({
-          label: 'Review Adjudicated Funded Npo',
-          icon: 'fa fa-file-text-o',
-          command: () => {
-            this._router.navigateByUrl('reviewAdjudicatedNpo/' + this.selectedApplication.id);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.ReviewAdjudicatedFundedNpo)) {
+      //   this.optionItems[0].items.push({
+      //     label: 'Review Adjudicated Funded Npo',
+      //     icon: 'fa fa-file-text-o',
+      //     command: () => {
+      //       this._router.navigateByUrl('reviewAdjudicatedNpo/' + this.selectedApplication.id);
+      //     }
+      //   });
+      // }
     }
   }
 
