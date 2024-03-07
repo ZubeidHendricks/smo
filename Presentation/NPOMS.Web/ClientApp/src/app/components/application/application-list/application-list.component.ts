@@ -814,25 +814,25 @@ export class ApplicationListComponent implements OnInit {
       //   });
       // }
 
-      // if (this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)) {
-      //   this.optionItems[0].items.push({
-      //     label: 'Adjudicate Funded Npo',
-      //     icon: 'fa fa-file-text-o',
-      //     command: () => {
-      //       this._router.navigateByUrl('adjudicateNpo/' + this.selectedApplication.id);
-      //     }
-      //   });
-      // }
+      if (this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)) {
+        this.optionItems[0].items.push({
+          label: 'Adjudicate Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('adjudicateNpo/' + this.selectedApplication.id);
+          }
+        });
+      }
 
-      // if (this.IsAuthorized(PermissionsEnum.ReviewAdjudicatedFundedNpo)) {
-      //   this.optionItems[0].items.push({
-      //     label: 'Review Adjudicated Funded Npo',
-      //     icon: 'fa fa-file-text-o',
-      //     command: () => {
-      //       this._router.navigateByUrl('reviewAdjudicatedNpo/' + this.selectedApplication.id);
-      //     }
-      //   });
-      // }
+      if (this.IsAuthorized(PermissionsEnum.ReviewAdjudicatedFundedNpo)) {
+        this.optionItems[0].items.push({
+          label: 'Review Adjudicated Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('reviewAdjudicatedNpo/' + this.selectedApplication.id);
+          }
+        });
+      }
     }
   }
 
