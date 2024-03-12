@@ -746,6 +746,14 @@ export class ScorecardComponent implements OnInit {
         let length = this._responses.length;
 
         this._responses.forEach(item => {
+
+          // if(item.rejectionComment !== null)
+          // {
+          //   this.hasScorecardSubmitted = false;
+          //   this.hascapturedImprovementArea = false;
+          //   this.hasCapturedRequiredAction = false;
+          // }
+
           if (Number(item.responseOption.name) >= 0) {
 
             overallTotalScore += Number(item.responseOption.name);
@@ -818,9 +826,19 @@ export class ScorecardComponent implements OnInit {
           this.captureRequiredAction = requiredAction;
           this.signedByUser = this.capturedResponses[0].createdUser.fullName;
           this.submittedDate = this.capturedResponses[0].createdDateTime;
-          this.hascapturedImprovementArea = true;
-          this.hasCapturedRequiredAction = true;
-          this.hasScorecardSubmitted = true;
+          if(this.capturedResponses[0].disableFlag === 1)
+          {
+            this.hascapturedImprovementArea = false;
+            this.hasCapturedRequiredAction = false;
+            this.hasScorecardSubmitted = false;
+          }
+          else
+          {
+            this.hascapturedImprovementArea = true;
+            this.hasCapturedRequiredAction = true;
+            this.hasScorecardSubmitted = true;
+          }
+          
         }
 
         this.getWorkflowCount();

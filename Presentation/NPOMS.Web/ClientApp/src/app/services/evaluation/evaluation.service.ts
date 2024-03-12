@@ -74,6 +74,12 @@ export class EvaluationService {
     const url = `${this._envUrl.urlAddress}/api/evaluation/scorecardResponse`;
     return this._http.put<IQuestionResponseViewModel>(url, response, httpOptions);
   }
+
+  public updateRejectionComment(response: IResponse) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/scorecardRejectResponse`;
+    return this._http.put<IQuestionResponseViewModel>(url, response, httpOptions);
+  }
+
   public getCapturedResponses(fundingApplicationId: number) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/captured-response/fundingApplicationId/${fundingApplicationId}`;
     return this._http.get<ICapturedResponse[]>(url, httpOptions);
@@ -86,6 +92,11 @@ export class EvaluationService {
 
   public createScorecardResponse(caputerdResponse: ICapturedResponse) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/captured-scorecardResponse`;
+    return this._http.post<ICapturedResponse>(url, caputerdResponse, httpOptions);
+  }
+
+  public addReviewerComment(caputerdResponse: ICapturedResponse) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/captured-reviewerComment`;
     return this._http.post<ICapturedResponse>(url, caputerdResponse, httpOptions);
   }
 }

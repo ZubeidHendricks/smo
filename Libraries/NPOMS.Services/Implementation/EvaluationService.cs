@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NPOMS.Domain.Entities;
 
 namespace NPOMS.Services.Implementation
 {
@@ -171,6 +172,46 @@ namespace NPOMS.Services.Implementation
             return new QuestionResponseViewModel(question, modelToReturn);
         }
 
+        public async Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            var response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId);
+            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, response.CreatedUserId);
+
+            capturedResponse.disableFlag = 1;
+
+             CapturedResponse cr = new CapturedResponse();
+            
+            if (response == null)
+            {
+                model.CreatedUserId = currentUser.Id;
+                model.CreatedDateTime = DateTime.Now;
+                await _responseRepository.CreateAsync(model);
+            }
+            else
+            {
+                response.ResponseOptionId = model.ResponseOptionId;
+                response.RejectionComment = model.Comment;
+                response.RejectedByUserId = currentUser.Id;
+                response.UpdatedUserId = currentUser.Id;
+                response.UpdatedDateTime = DateTime.Now;
+                await _responseRepository.UpdateAsync(response);
+            }
+
+            await _capturedResponseRepository.UpdateAsync(capturedResponse);
+
+            var newResponse = response == null ? true : false;
+            var modelToReturn = response == null ? model : response;
+
+            await CreateResponseHistory(modelToReturn, newResponse);
+
+            var question = await _questionRepository.GetById(model.QuestionId);
+            //var documents = await _documentStoreRepository.GetByEntityTypeId((int)EntityTypeEnum.TPAEvidence);
+            //var paymentScheduleResponse = await _paymentScheduleResponseRepository.GetByIds(model.ApplicationId, model.QuestionId);
+
+            return new QuestionResponseViewModel(question, modelToReturn);
+        }
+
         private async Task CreateResponseHistory(Response model, bool newResponse)
         {
             await _responseHistoryRepository.CreateAsync(
@@ -195,15 +236,44 @@ namespace NPOMS.Services.Implementation
             return await _capturedResponseRepository.GetByFundingApplicationId(fundingApplicationId);
         }
 
+        public async Task UpdateReviewerComment(CapturedResponse model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            CapturedResponse capturedResponse = await _capturedResponseRepository.GetById(model.Id);
+
+            if (capturedResponse != null)
+            {
+                capturedResponse.ReviewerComment = model.Comments;
+                capturedResponse.UpdatedDateTime = DateTime.Now;
+                capturedResponse.UpdatedUserId = currentUser.Id;
+
+                await _capturedResponseRepository.UpdateAsync(capturedResponse);
+
+            }
+        }
         public async Task CreateCapturedResponse(CapturedResponse model, string userIdentifier)
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, model.QuestionCategoryId, currentUser.Id);
+           
+            if (capturedResponse == null)
+            {
+                model.CreatedUser = null;
+                model.CreatedUserId = currentUser.Id;
+                model.CreatedDateTime = DateTime.Now;
+                model.disableFlag = 0;
 
-            model.CreatedUser = null;
-            model.CreatedUserId = currentUser.Id;
-            model.CreatedDateTime = DateTime.Now;
+                await _capturedResponseRepository.CreateAsync(model);
+            }
+            else
+            {
+                capturedResponse.Comments = model.Comments;
+                capturedResponse.UpdatedDateTime = DateTime.Now;
+                capturedResponse.UpdatedUserId = currentUser.Id;
+                capturedResponse.disableFlag = 0;
 
-            await _capturedResponseRepository.CreateAsync(model);
+                await _capturedResponseRepository.UpdateAsync(capturedResponse);
+            }          
         }
 
         public async Task<WorkflowAssessment> GetWorkflowAssessmentByQuestionCategoryId(int questionCategoryId)
