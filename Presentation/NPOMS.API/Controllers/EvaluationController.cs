@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NPOMS.Services.Implementation;
+using NPOMS.Repository.Interfaces.Evaluation;
 
 namespace NPOMS.API.Controllers
 {
@@ -25,18 +26,22 @@ namespace NPOMS.API.Controllers
 		private IApplicationService _applicationService;
 		private IEmailService _emailService;
 		private IDropdownService _dropdownService;
+		private ICapturedResponseRepository _capturedResponseRepository;
+        private IResponseRepository _responseRepository;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		public EvaluationController(
+        public EvaluationController(
 			ILogger<EvaluationController> logger,
 			IEvaluationService evaluationService,
 			//IFundingApplicationService fundingApplicationService,
 			IApplicationService applicationService,
 			IEmailService emailService,
-			IDropdownService dropdownService)
+			IDropdownService dropdownService,
+            ICapturedResponseRepository capturedResponseRepository,
+            IResponseRepository responseRepository)
 		{
 			_logger = logger;
 			_evaluationService = evaluationService;
@@ -44,6 +49,8 @@ namespace NPOMS.API.Controllers
 			_applicationService = applicationService;
 			_emailService = emailService;
 			_dropdownService = dropdownService;
+			_capturedResponseRepository = capturedResponseRepository;	
+			_responseRepository = responseRepository;
 
         }
 
@@ -219,6 +226,27 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("scorecardRejectResponse", Name = "UpdateScorecardRejectResponse")]
+        public async Task<IActionResult> UpdateScorecardRejectResponse([FromBody] Response model)
+        {
+            try
+            {
+                Response response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId);
+                
+				var results = await this._evaluationService.UpdateScorecardRejectionResponse(model, base.GetUserIdentifier());
+				
+				await RejectedScorecardEmail(response);
+
+
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateScorecardRejectionResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("captured-response/fundingApplicationId/{fundingApplicationId}", Name = "GetCapturedResponses")]
 		public async Task<IActionResult> GetCapturedResponses(int fundingApplicationId)
 		{
@@ -246,6 +274,22 @@ namespace NPOMS.API.Controllers
 					await UpdateFundedApplicationScorecardCount(model);
                 }
 				await ScorecardSummaryEmail(fundingApplication);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateCapturedResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("captured-reviewerComment", Name = "AddReviewerComment")]
+        public async Task<IActionResult> AddReviewerComment([FromBody] CapturedResponse model)
+        {
+            try
+            {
+                await this._evaluationService.UpdateReviewerComment(model, base.GetUserIdentifier());
+               
                 return Ok(model);
             }
             catch (Exception ex)
@@ -378,6 +422,7 @@ namespace NPOMS.API.Controllers
                 _logger.LogError($"Something went wrong inside EvaluationController-ScorecardSummary Email: {ex.Message} Inner Exception: {ex.InnerException}");
             }
         }
+
         private async Task ConfigureEmail(Application fundingApplication)
 		{
 			try
@@ -447,6 +492,26 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		#endregion
-	}
+        private async Task RejectedScorecardEmail(Response response)
+        {
+            try
+            {
+                // Send email to Capturer
+                var rejectedScorecardEmail = EmailTemplateFactory
+                            .Create(EmailTemplateTypeEnum.RejectedScorecard)
+                            .Get<RejectedScorecardEmailTemplate>()
+                            .Init(response);
+
+                await rejectedScorecardEmail.SubmitToQueue();
+
+                await _emailService.SendEmailFromQueue();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside EvaluationController-ScorecardSummary Email: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
+
+        #endregion
+    }
 }
