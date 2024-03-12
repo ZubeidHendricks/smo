@@ -43,6 +43,22 @@ namespace NPOMS.Repository.Implementation.Evaluation
 							.AsNoTracking().ToListAsync();
 		}
 
+        public async Task<CapturedResponse> GetByIds(int fundingApplicationId, int questionCategoryId, int userId)
+        {
+            return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
+                                              x.QuestionCategoryId.Equals(questionCategoryId) &&
+											  x.CreatedUserId.Equals(userId) &&
+                                              x.IsActive)
+                            .AsNoTracking().FirstOrDefaultAsync();
+        }
+
+        public async Task<CapturedResponse> GetById(int id)
+        {
+            return await FindByCondition(x => x.Id.Equals(id) &&
+                                              x.IsActive)
+                            .AsNoTracking().FirstOrDefaultAsync();
+        }
+
         public async Task<CapturedResponse> DeleteById(int id)
         {
             var model = await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();

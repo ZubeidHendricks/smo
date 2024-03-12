@@ -74,6 +74,8 @@ export class ReviewScorecardComponent implements OnInit {
   _responseUsers: IGetResponseOptions[];
   responseHistory: IResponseHistory[];
   displayCommentDialog: boolean;
+  displayRejectCommentDialog: boolean;
+  displayReviewerCommentDialog: boolean;
   displayDialog: boolean;
   historyCols: any[];
   displayHistory: boolean;
@@ -99,6 +101,9 @@ export class ReviewScorecardComponent implements OnInit {
   objectives: IObjective[] = [];
   activities: IActivity[];
   applications: IApplication;
+  comment: string;
+  RejectComment: string;
+  ReviewerComment: string;
   //npoId: string;
   statuses: IStatus[];
   rowGroupMetadataActivities: any[];
@@ -146,17 +151,25 @@ export class ReviewScorecardComponent implements OnInit {
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
   hasScorecardSubmitted: boolean = false;
-
+ 
   signedByUser: string;
   submittedDate: Date;
   signedByUserScorecardUser: string;
+  capturedResponseId: number;
   submittedDateByScorecardUser: Date;
   npo: INpo;
   organisation: string;
   capturedResponses: ICapturedResponse[];
   name: IResp[] = [];
   _name: IResp[] = [];
+
   userId: number;
+  rejectedByUserId: number
+  fundingApplicationId: number;
+  questionId: number;
+  responseOptionId: number;
+  displayHistoryDialog: boolean
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -206,6 +219,13 @@ export class ReviewScorecardComponent implements OnInit {
       { header: 'Status', width: '55%' },
       { header: 'Created User', width: '20%' },
       { header: 'Created Date', width: '20%' }
+    ];
+
+    this.historyCols = [
+      { field: 'responseOption.name', header: 'Response', width: '10%' },
+      { field: 'comment', header: 'Comment', width: '50%' },
+      { field: 'createdUser.fullName', header: 'Created By', width: '20%' },
+      { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
   }
@@ -1033,6 +1053,8 @@ export class ReviewScorecardComponent implements OnInit {
     );
   }
 
+
+
   private loadCapturedResponses() {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
       (results) => {
@@ -1098,11 +1120,125 @@ export class ReviewScorecardComponent implements OnInit {
           let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
           this.captureImprovementAreaComment = improvementArea;
           this.captureRequiredActionComment = requiredAction;
+          this.ReviewerComment = this.capturedResponses[0].reviewerComment;
           this.signedByUserScorecardUser = this.capturedResponses[0].createdUser.fullName;
           this.submittedDateByScorecardUser = this.capturedResponses[0].createdDateTime;
+          this.capturedResponseId = this.capturedResponses[0].id;
         }
       })
 
+  }
+
+  public click(fundingApplicationId: number, questionId: number, userId: number, responseOptionId: number )
+  {
+    this.RejectComment = null;
+    this.displayRejectCommentDialog = true; 
+    this.fundingApplicationId = fundingApplicationId;
+    this.questionId = questionId;
+    this.rejectedByUserId = this.userId;
+    this.responseOptionId = responseOptionId;
+  }
+
+  public click1(id: number)
+  {
+    this.ReviewerComment = null;
+    this.displayReviewerCommentDialog = true; 
+    this.capturedResponseId = id;
+  }
+  
+  addComment() {
+    
+    this.RejectComment = null;
+    this.displayRejectCommentDialog = true;    
+  }
+
+  disableSaveComment() {
+    if (!this.RejectComment)
+      return true;
+
+    return false;
+  }
+
+  disableReviewerSaveComment()
+  {
+    if (!this.ReviewerComment)
+      return true;
+
+    return false;
+  }
+
+  saveRejectComment(changesRequired: boolean, origin: string) {
+    let response = {} as IResponse;
+      response.fundingApplicationId = this.fundingApplicationId;
+      response.questionId = this.questionId;
+      response.responseOptionId = this.responseOptionId;
+      response.comment = this.RejectComment;
+
+     this._evaluationService.updateRejectionComment(response).subscribe(
+       (results) => {
+        let returnValue = results as IQuestionResponseViewModel;
+        this.displayRejectCommentDialog = false;  
+        this.displayCommentDialog = false;       
+     }
+   );
+  }
+
+  saveReviewerComment(changesRequired: boolean, origin: string)
+  {
+    let capturedResponse = {
+      id: this.capturedResponseId,
+      fundingApplicationId: Number(this.id),
+      statusId: 0,
+      questionCategoryId: 0,
+      comments: this.ReviewerComment,
+      isActive: true,
+      isSignedOff: true,
+      isDeclarationAccepted: true,
+      selectedStatus: 0
+    } as ICapturedResponse;
+
+    this._evaluationService.addReviewerComment(capturedResponse).subscribe(
+      (results) => {
+        //this._router.navigateByUrl('applications');
+        this.displayReviewerCommentDialog = false;
+        this.displayDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public onSelectViewHistory(question: IQuestionResponseViewModel) {
+    this._spinner.show();
+    this.responseHistory = [];
+
+    this._evaluationService.getResponseHistory(this.application.id, question.questionId).subscribe(
+      (results) => {
+        this.responseHistory = results;
+        this.displayHistoryDialog = true;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public getCellData(row: any, col: any): any {
+    const nestedProperties: string[] = col.field.split('.');
+    let value: any = row;
+
+    for (const prop of nestedProperties) {
+      value = value[prop];
+    }
+
+    if (col.field == 'createdDateTime')
+      value = this._datepipe.transform(value, 'yyyy-MM-dd HH:mm:ss');
+
+    return value;
   }
 
   public disableElement() {

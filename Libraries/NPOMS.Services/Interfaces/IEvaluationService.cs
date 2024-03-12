@@ -25,12 +25,15 @@ namespace NPOMS.Services.Interfaces
 		Task<QuestionResponseViewModel> UpdateResponse(Response model, string userIdentifier);
         Task<QuestionResponseViewModel> UpdateScorecardResponse(Response model, string userIdentifier);
 
+        Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier);
+
         Task<IEnumerable<CapturedResponse>> GetCapturedResponsesByIds(int fundingApplicationId, int questionCategoryId);
 
 		Task<IEnumerable<CapturedResponse>> GetCapturedResponses(int fundingApplicationId);
 
 		Task CreateCapturedResponse(CapturedResponse model, string userIdentifier);
+        Task UpdateReviewerComment(CapturedResponse model, string userIdentifier);        
 
-		Task<WorkflowAssessment> GetWorkflowAssessmentByQuestionCategoryId(int questionCategoryId);
+        Task<WorkflowAssessment> GetWorkflowAssessmentByQuestionCategoryId(int questionCategoryId);
 	}
 }

@@ -1330,8 +1330,11 @@ export interface ICapturedResponse {
     questionCategoryId: number;
     statusId: number;
     comments: string;
+    reviewerComment: string;
+    reviewerUserId: number;
     isActive: boolean;
     isSignedOff: boolean;
+    disableFlag: number;
     isDeclarationAccepted: boolean;
     createdDateTime: Date;
     selectedStatus: number;
@@ -1381,6 +1384,7 @@ export interface IResponseOptions {
     questionId: number;
     responseOptionId: number;
     comment: string;
+    rejectionComment: string;
     createdUserId: number;
     responseOption: IResponseOption;
 }
@@ -1391,7 +1395,9 @@ export interface IGetResponseOptions {
     questionId: number;
     responseOptionId: number;
     comment: string;
+    rejectionComment: string;
     createdUserId: number;
+    rejectedByUserId: number;
     responseOption: IResponseOption;
     createdUser: IUser;
 }

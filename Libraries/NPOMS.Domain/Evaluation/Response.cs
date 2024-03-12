@@ -17,7 +17,12 @@ namespace NPOMS.Domain.Evaluation
 		[Column(TypeName = "nvarchar(MAX)")]
 		public string Comment { get; set; }
 
-		public int CreatedUserId { get; set; }
+        [Column(TypeName = "nvarchar(MAX)")]
+        public string RejectionComment { get; set; }
+
+        public int RejectedByUserId { get; set; }
+
+        public int CreatedUserId { get; set; }
 
 		public DateTime CreatedDateTime { get; set; }
 
