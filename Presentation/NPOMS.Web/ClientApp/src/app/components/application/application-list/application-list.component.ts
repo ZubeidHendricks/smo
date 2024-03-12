@@ -744,15 +744,15 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      // if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
-      //   this.optionItems[0].items.push({
-      //     label: 'Businessplan Indicators',
-      //     icon: 'fa fa-tags wcg-icon',
-      //     command: () => {
-      //       this._router.navigateByUrl('businessplan-indicator/manage/' + this.selectedApplication.npoId);
-      //     }
-      //   });
-      // }
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewManageIndicatorsOption)) {
+        this.optionItems[0].items.push({
+          label: 'Businessplan Indicators',
+          icon: 'fa fa-tags wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('businessplan-indicator/manage/' + this.selectedApplication.npoId);
+          }
+        });
+      }
 
       if (this.IsAuthorized(PermissionsEnum.AddScorecard)) {
         this.optionItems[0].items.push({
@@ -804,15 +804,15 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      // if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
-      //   this.optionItems[0].items.push({
-      //     label: 'BusinessPlan Summary',
-      //     icon: 'fa fa-tasks wcg-icon',
-      //     command: () => {
-      //       this._router.navigateByUrl('businessplan-indicator/summary/' + this.selectedApplication.npoId);
-      //     }
-      //   });
-      // }
+      if (this.IsAuthorized(PermissionsEnum.ViewOptions) && this.IsAuthorized(PermissionsEnum.ViewSummaryOption)) {
+        this.optionItems[0].items.push({
+          label: 'BusinessPlan Summary',
+          icon: 'fa fa-tasks wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('businessplan-indicator/summary/' + this.selectedApplication.npoId);
+          }
+        });
+      }
 
       if (this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)) {
         this.optionItems[0].items.push({
