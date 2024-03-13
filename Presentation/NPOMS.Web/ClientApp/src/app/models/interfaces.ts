@@ -1402,6 +1402,20 @@ export interface IGetResponseOptions {
     createdUser: IUser;
 }
 
+export interface IGetResponseOption {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    comment: string;
+    rejectionComment: string;
+    createdUserId: number;
+    rejectedByUserId: number;
+    rejectedByUser: string;
+    responseOption: IResponseOption;
+    createdUser: IUser;
+}
+
 export interface IResponseHistory {
     id: number;
     fundingApplicationId: number;
