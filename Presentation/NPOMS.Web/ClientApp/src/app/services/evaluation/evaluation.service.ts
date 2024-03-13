@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentUrlService } from '../environment-url/environment-url.service';
-import { ICapturedResponse, IQuestionResponseViewModel, IResponse, IResponseHistory, IResponseOptions, IWorkflowAssessment, IGetResponseOptions } from 'src/app/models/interfaces';
+import { ICapturedResponse, IQuestionResponseViewModel, IResponse, IResponseHistory, IResponseOptions, IWorkflowAssessment, IGetResponseOptions, IGetResponseOption } from 'src/app/models/interfaces';
 import { IResponses } from 'src/app/models/enums';
 
 const httpOptions = {
@@ -43,6 +43,11 @@ export class EvaluationService {
   public getResponses(fundingAppId: number, questionId: number) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/fundingAppId/${fundingAppId}/questionId/${questionId}`;
     return this._http.get<IGetResponseOptions[]>(url, httpOptions);
+  }
+
+  public getReviewerResponse(fundingAppId: number, questionId: number) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/fundingAppId/${fundingAppId}/questionId/${questionId}`;
+    return this._http.get<IGetResponseOption[]>(url, httpOptions);
   }
 
   public getResponseHistory(fundingApplicationId: number, questionId: number) {
