@@ -8,7 +8,7 @@ import {
   ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
   ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum
 } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator, IWorkplanIndicatorSummary } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator, IWorkplanIndicatorSummary, IGetResponseOption } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -19,6 +19,7 @@ import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { QuestionCategoryComponent } from '../../admin/utilities/question-category/question-category.component';
+import { UserService } from 'src/app/services/api-services/user/user.service';
 
 export interface IResp {
   name: string
@@ -35,6 +36,7 @@ export class ReviewScorecardComponent implements OnInit {
   isAdmin: boolean;
   hasAdminRole: boolean;
   profile: IUser;
+  user: IUser;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -71,7 +73,7 @@ export class ReviewScorecardComponent implements OnInit {
   _recommendation: boolean = false;
   responseOptions: IResponseOption[];
   _responses: IResponseOptions[];
-  _responseUsers: IGetResponseOptions[];
+  _responseUsers: IGetResponseOption[];
   responseHistory: IResponseHistory[];
   displayCommentDialog: boolean;
   displayRejectCommentDialog: boolean;
@@ -168,7 +170,8 @@ export class ReviewScorecardComponent implements OnInit {
   fundingApplicationId: number;
   questionId: number;
   responseOptionId: number;
-  displayHistoryDialog: boolean
+  displayHistoryDialog: boolean;
+  reviewerName: string;
 
   constructor(
     private _router: Router,
@@ -176,7 +179,7 @@ export class ReviewScorecardComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
-    private _dropdownRepo: DropdownService,
+    private _userRepo: UserService,
     private _applicationPeriodRepo: ApplicationPeriodService,
     private _evaluationService: EvaluationService,
     private _documentStore: DocumentStoreService,
@@ -1076,8 +1079,13 @@ export class ReviewScorecardComponent implements OnInit {
   public onSelectViewComment(question: IQuestionResponseViewModel) {
     this._spinner.show();
     this._responseUsers = [];
-    this._evaluationService.getResponses(Number(this.id), question.questionId).subscribe(
+    this._evaluationService.getReviewerResponse(Number(this.id), question.questionId).subscribe(
       (results) => {
+
+        results.forEach(data => {
+          this.setReviewerName(data);
+        });
+
         this._responseUsers = results;
         this.displayCommentDialog = true;
         this._spinner.hide();
@@ -1087,6 +1095,20 @@ export class ReviewScorecardComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  private setReviewerName(data: IGetResponseOption) {
+    this._userRepo.getUserById(data.rejectedByUserId).subscribe(
+      (results) => {
+        this.user = results
+        data.rejectedByUser = this.user.fullName;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+
   }
 
   public performanceComment(v: number) {
