@@ -538,6 +538,7 @@ export interface IQuestionResponseViewModel {
     fundingApplicationId: number;
     responseOptionId: number;
     comment: string;
+    rejectionComment: string;
     isSaved: boolean;
     createdUserId: number;
     responsesO: number[];

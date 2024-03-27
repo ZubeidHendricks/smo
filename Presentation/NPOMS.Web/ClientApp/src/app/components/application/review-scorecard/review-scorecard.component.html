@@ -241,7 +241,7 @@
     </table>
 </p-panel>
 
-<p-panel header="Reviewer Summary">
+<p-panel header="Main Reviewer Summary">
     <div class="p-grid">
         <div class="p-col-3 form-label">
             <div class="box">
@@ -290,7 +290,7 @@
     </div>
     <div class="p-grid p-nogutter p-justify-end">
        
-        <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled] = "disableSubmit()"
+        <button pButton type="button" label="Submit Scorecard" icon="fa fa-floppy-o" [disabled] = "disableSubmit()"
         (click)="submit()" [disabled]="disableElement()"></button>
            
     </div>
@@ -312,10 +312,10 @@
                     Commented By
                 </th>
                 <th>
-                    Rejection Comments
+                    Main Reviewer Comments
                 </th>
                 <th>
-                    Rejected By
+                    Requested By
                 </th>
                 <th></th>
             </tr>
@@ -326,11 +326,13 @@
                 <td>{{rowData.comment}}</td>
                 <td>{{rowData.createdUser.fullName}}</td>
                 <td>{{rowData.rejectionComment}}</td>
-                <td>{{rowData.rejectedByUser}}</td>
+                <td><span>{{rowData.rejectedByUser}}</span><br>
+                    <span>{{ReviewerUpdatedDateTime | date: 'yyyy-MM-dd'}}</span>
+                </td>
                 <td>
                     <button type="button"
                     (click)="click(rowData.fundingApplicationId, rowData.questionId, rowData.createdUser.id, rowData.responseOptionId)"> 
-                    Reject
+                    Amendments Required
                     </button>
                 </td>
             </tr>

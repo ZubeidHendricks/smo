@@ -244,6 +244,7 @@ namespace NPOMS.Services.Implementation
             if (capturedResponse != null)
             {
                 capturedResponse.ReviewerComment = model.Comments;
+                capturedResponse.ReviewerUpdatedDateTime = DateTime.Now;
                 capturedResponse.UpdatedDateTime = DateTime.Now;
                 capturedResponse.UpdatedUserId = currentUser.Id;
 

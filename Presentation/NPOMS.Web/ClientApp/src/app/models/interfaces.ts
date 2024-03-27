@@ -1311,6 +1311,7 @@ export interface IResponseOption {
     name: string;
     systemName: string;
     isActive: boolean;
+    rejectionComment: boolean;
     responseType: IResponseType;
     createdUserId: number;
 }
@@ -1371,6 +1372,7 @@ export interface IQuestionResponseViewModel {
     fundingApplicationId: number;
     responseOptionId: number;
     comment: string;
+    rejectionComment: string;
     isSaved: boolean;
     createdUserId: number;
     responseOption: IResponseOption;
@@ -1398,6 +1400,7 @@ export interface IGetResponseOptions {
     rejectionComment: string;
     createdUserId: number;
     rejectedByUserId: number;
+    reviewerUpdatedDateTime: string;    
     responseOption: IResponseOption;
     createdUser: IUser;
 }
