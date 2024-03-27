@@ -39,7 +39,9 @@ namespace NPOMS.Services.Models
 
 		public string Comment => Response == null ? string.Empty : Response.Comment;
 
-		public bool IsSaved => Response != null && Response.Id > 0;
+        public string RejectionComment => Response == null ? string.Empty : Response.RejectionComment;
+
+        public bool IsSaved => Response != null && Response.Id > 0;
 
 		public int CreatedUserId => Response == null ? 0 : Response.CreatedUserId;
 

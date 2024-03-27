@@ -273,7 +273,15 @@ namespace NPOMS.API.Controllers
 				{
 					await UpdateFundedApplicationScorecardCount(model);
                 }
-				await ScorecardSummaryEmail(fundingApplication);
+				if(model.disableFlag == 0)
+				{
+					await ScorecardAmmendmentEmail(model);
+                }
+				else
+				{
+                    await ScorecardSummaryEmail(fundingApplication);
+                }
+				
                 return Ok(model);
             }
             catch (Exception ex)
@@ -402,6 +410,26 @@ namespace NPOMS.API.Controllers
 			var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
 			await ConfigureEmail(fundingApplication);
 		}
+
+        private async Task ScorecardAmmendmentEmail(CapturedResponse fundingApplication)
+        {
+            try
+            {
+                // Send email to Capturer
+                var ammendedScorecard = EmailTemplateFactory
+                            .Create(EmailTemplateTypeEnum.AmendedScorecard)
+                            .Get<AmmendedScorecardEmailTemplate>()
+                            .Init(fundingApplication);
+
+                await ammendedScorecard.SubmitToQueue();
+
+                await _emailService.SendEmailFromQueue();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside EvaluationController-ScorecardSummary Email: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
 
         private async Task ScorecardSummaryEmail(Application fundingApplication)
         {

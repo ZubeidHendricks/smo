@@ -57,7 +57,12 @@
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(engagementQuestionnaire)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;" colspan="3">
-                            <!-- <span *ngIf="displayField(question)" style="font-weight: bold;" class="{{getRagColour(engagementQuestionnaire)}}">{{getRagText(engagementQuestionnaire)}}</span> -->
+                            <span *ngIf="hasAmendedComment(engagementQuestionnaire)" style="font-weight: bold;" class="{{getRagColour(engagementQuestionnaire)}}">
+                                <button type="button"
+                                (click)="click(question.rejectionComment)"> 
+                                Reviewer Comment
+                                </button>
+                            </span>
                         </td>
                     </tr>
                 </ng-template>
@@ -124,7 +129,12 @@
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(timeWorkPlanQuestionnaire)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;" colspan="3">
-                            <!-- <span *ngIf="displayField(question)" style="font-weight: bold;" class="{{getRagColour(timeWorkPlanQuestionnaire)}}">{{getRagText(timeWorkPlanQuestionnaire)}}</span> -->
+                            <span *ngIf="hasAmendedComment(timeWorkPlanQuestionnaire)" style="font-weight: bold;" class="{{getRagColour(timeWorkPlanQuestionnaire)}}">
+                                <button type="button"
+                                (click)="click(question.rejectionComment)"> 
+                                Reviewer Comment
+                                </button>
+                            </span>
                         </td>
                     </tr>
                 </ng-template>
@@ -190,7 +200,12 @@
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(impactQuestionnaire)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;" colspan="3">
-                            <!-- <span *ngIf="displayField(question)" style="font-weight: bold;" class="{{getRagColour(impactQuestionnaire)}}">{{getRagText(impactQuestionnaire)}}</span> -->
+                            <span *ngIf="hasAmendedComment(impactQuestionnaire)" style="font-weight: bold;" class="{{getRagColour(impactQuestionnaire)}}">
+                                <button type="button"
+                                (click)="click(question.rejectionComment)"> 
+                                Reviewer Comment
+                                </button>
+                            </span>
                         </td>
                     </tr>
                 </ng-template>
@@ -256,7 +271,12 @@
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(riskMitigationQuestionnaire)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;" colspan="3">
-                            <!-- <span *ngIf="displayField(question)" style="font-weight: bold;" class="{{getRagColour(riskMitigationQuestionnaire)}}">{{getRagText(riskMitigationQuestionnaire)}}</span> -->
+                            <span *ngIf="hasAmendedComment(riskMitigationQuestionnaire)" style="font-weight: bold;" class="{{getRagColour(riskMitigationQuestionnaire)}}">
+                                <button type="button"
+                                (click)="click(question.rejectionComment)"> 
+                                Reviewer Comment
+                                </button>
+                            </span>
                         </td>
                     </tr>
                 </ng-template>
@@ -322,7 +342,12 @@
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(appropriationOfResourcesQuestionnaire)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;" colspan="3">
-                            <!-- <span *ngIf="displayField(question)" style="font-weight: bold;" class="{{getRagColour(appropriationOfResourcesQuestionnaire)}}">{{getRagText(appropriationOfResourcesQuestionnaire)}}</span> -->
+                            <span *ngIf="hasAmendedComment(appropriationOfResourcesQuestionnaire)" style="font-weight: bold;" class="{{getRagColour(appropriationOfResourcesQuestionnaire)}}">
+                                <button type="button"
+                                (click)="click(question.rejectionComment)"> 
+                                Reviewer Comment
+                                </button>
+                            </span>
                         </td>
                     </tr>
                 </ng-template>
@@ -470,6 +495,25 @@
                 [disabled]="disableElement()" (click)="submit()"></button>
             </div>
         </p-panel>
-    </div>     
+    </div>    
+    
+    <p-dialog header="Main Reviewer Comment" 
+          [(visible)]="displayReviewerCommentDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Main ReviewerComment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" disabled = "true" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="reviewerComment" [ngModelOptions]="{standalone: true}"></textarea>
+        </div>
+    </div>        
+</p-dialog>
 
 

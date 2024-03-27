@@ -108,6 +108,7 @@ export class ScorecardComponent implements OnInit {
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
   hasScorecardSubmitted: boolean = false;
+  isAmmended: boolean;
 
   signedByUser: string;
   submittedDate: Date;
@@ -118,6 +119,8 @@ export class ScorecardComponent implements OnInit {
   capturedResponseCount: ICapturedResponse[];
   userId: number;
   workFlowCount: IWorkflowAssessment[];
+  displayReviewerCommentDialog: boolean;
+  reviewerComment: string;
 
   constructor(
 
@@ -251,7 +254,6 @@ export class ScorecardComponent implements OnInit {
         }
       }
     }
-
     return rowGroupMetadata;
   }
 
@@ -259,8 +261,18 @@ export class ScorecardComponent implements OnInit {
     return questionnaire.some(function (item) { return item.hasComment === true });
   }
 
+  public hasAmendedComment(questionnaire: IQuestionResponseViewModel[]) {
+    return questionnaire.some(function (item) { return item.rejectionComment !== null? true: false });
+  }
+
   public hasDocument(questionnaire: IQuestionResponseViewModel[]) {
     return questionnaire.some(function (item) { return item.hasDocument === true });
+  }
+
+  public click(rejectionComment: string)
+  {
+    this.displayReviewerCommentDialog = true; 
+    this.reviewerComment = rejectionComment
   }
 
   public getColspan(questionnaire: IQuestionResponseViewModel[], defaultColspan: number) {
@@ -487,11 +499,8 @@ export class ScorecardComponent implements OnInit {
 
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
-    this.onSave(question);
-    
+    this.onSave(question);    
   }
-
- 
 
   private loadApplications() {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
@@ -786,7 +795,14 @@ export class ScorecardComponent implements OnInit {
   }
 
   private createCapturedResponse() {
-
+    let isDisable: number;
+    if(this.isAmmended === true)
+    {
+      isDisable = 0;
+    }
+    else{
+      isDisable = 1;
+    }
     let capturedResponse = {
       fundingApplicationId: Number(this.id),
       statusId: 0,
@@ -795,7 +811,8 @@ export class ScorecardComponent implements OnInit {
       isActive: true,
       isSignedOff: true,
       isDeclarationAccepted: true,
-      selectedStatus: 0
+      selectedStatus: 0,
+      disableFlag: isDisable
     } as ICapturedResponse;
 
     this._evaluationService.createScorecardResponse(capturedResponse).subscribe(
@@ -831,12 +848,14 @@ export class ScorecardComponent implements OnInit {
             this.hascapturedImprovementArea = false;
             this.hasCapturedRequiredAction = false;
             this.hasScorecardSubmitted = false;
+            this.isAmmended = true;
           }
           else
           {
             this.hascapturedImprovementArea = true;
             this.hasCapturedRequiredAction = true;
             this.hasScorecardSubmitted = true;
+            this.isAmmended = false;
           }
           
         }

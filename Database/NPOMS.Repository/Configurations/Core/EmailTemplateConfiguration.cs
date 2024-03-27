@@ -184,8 +184,15 @@ namespace NPOMS.Repository.Configurations.Core
                 {
                     Id = 25,
                     Name = "RejectedScorecard",
-                    Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for <strong>{organisationName}</strong> with reference number <strong>{ApplicationRefNo}</strong> has been rejected.</p><p>To review the rejection, please <a href=\"{url}/#/applications\">click here</a> to access.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
-                    Subject = "Scorecard Rejected Notification - {NPO}"
+                    Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for <strong>{organisationName}</strong> with reference number <strong>{ApplicationRefNo}</strong> requires amendments.</p><p>To make the amendments, please <a href=\"{url}/#/applications\">click here</a> to access.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
+                    Subject = "Scorecard Amendment Notification - {NPO}"
+                },
+                new EmailTemplate
+                {
+                    Id = 26,
+                    Name = "AmendedScorecard",
+                    Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for <strong>{organisationName}</strong> with reference number <strong>{ApplicationRefNo}</strong> has been resubmitted.</p><p>To review the amended scorecard, please <a href=\"{url}/#/applications\">click here</a> to access.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
+                    Subject = "Scorecard Amendment Notification - {NPO}"
                 }
 
             );
