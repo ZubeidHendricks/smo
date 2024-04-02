@@ -34,7 +34,7 @@ namespace NPOMS.Services.Email.EmailTemplates
             var applicationRepository = EngineContext.Current.Resolve<IApplicationRepository>();
             var httpContextAccessor = EngineContext.Current.Resolve<IHttpContextAccessor>();
             var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.RejectedScorecard);
-            var application = await applicationRepository.GetById(this._response.Id);
+            var application = await applicationRepository.GetById(this._response.FundingApplicationId);
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
 

@@ -25,7 +25,7 @@ namespace NPOMS.Services.Interfaces
 		Task<QuestionResponseViewModel> UpdateResponse(Response model, string userIdentifier);
         Task<QuestionResponseViewModel> UpdateScorecardResponse(Response model, string userIdentifier);
 
-        Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier);
+        Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier, int param);
 
         Task<IEnumerable<CapturedResponse>> GetCapturedResponsesByIds(int fundingApplicationId, int questionCategoryId);
 

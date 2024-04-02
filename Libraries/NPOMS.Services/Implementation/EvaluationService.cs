@@ -172,13 +172,14 @@ namespace NPOMS.Services.Implementation
             return new QuestionResponseViewModel(question, modelToReturn);
         }
 
-        public async Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier)
+        public async Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier, int param)
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             var response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId);
             CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, response.CreatedUserId);
 
-            capturedResponse.disableFlag = 1;
+            capturedResponse.disableFlag = param;
+            response.RejectionFlag = param;
 
              CapturedResponse cr = new CapturedResponse();
             
@@ -191,7 +192,10 @@ namespace NPOMS.Services.Implementation
             else
             {
                 response.ResponseOptionId = model.ResponseOptionId;
-                response.RejectionComment = model.Comment;
+                if(param == 1)
+                    response.RejectionComment = "Ammend - " + model.Comment;
+                else
+                    response.RejectionComment = model.Comment;
                 response.RejectedByUserId = currentUser.Id;
                 response.UpdatedUserId = currentUser.Id;
                 response.UpdatedDateTime = DateTime.Now;

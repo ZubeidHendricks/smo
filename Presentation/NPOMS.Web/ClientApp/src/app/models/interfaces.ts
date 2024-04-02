@@ -1373,6 +1373,7 @@ export interface IQuestionResponseViewModel {
     responseOptionId: number;
     comment: string;
     rejectionComment: string;
+    rejectionFlag: boolean;
     isSaved: boolean;
     createdUserId: number;
     responseOption: IResponseOption;
@@ -1387,6 +1388,8 @@ export interface IResponseOptions {
     responseOptionId: number;
     comment: string;
     rejectionComment: string;
+    rejectedByUserId: number;
+    rejectionFlag: number;
     createdUserId: number;
     responseOption: IResponseOption;
 }

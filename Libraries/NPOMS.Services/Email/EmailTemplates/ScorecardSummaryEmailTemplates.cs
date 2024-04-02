@@ -33,15 +33,14 @@ namespace NPOMS.Services.Email.EmailTemplates
             var logger = EngineContext.Current.Resolve<ILogger<ScorecardSummaryEmailTemplates>>();
             var applicationRepository = EngineContext.Current.Resolve<IApplicationRepository>();
             var httpContextAccessor = EngineContext.Current.Resolve<IHttpContextAccessor>();
-            var statusRepository = EngineContext.Current.Resolve<IStatusRepository>();
-            var contactPerson = await contactInformationRepository.GetByNpoId(this._application.Id);
             var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.ScorecardSummary);
             var application = await applicationRepository.GetById(this._application.Id);
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
-            //var status = await statusRepository.GetById(this._fundingApplication.StatusId);
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
-            var user = await userRepository.GetByUserName("brent.lewin@westerncape.gov.za");
-            var user1 = await userRepository.GetByUserName("sebastian.gelderbloem@westerncape.gov.za");
+            //var user = await userRepository.GetByUserName("brent.lewin@westerncape.gov.za");
+            //var user1 = await userRepository.GetByUserName("sebastian.gelderbloem@westerncape.gov.za");
+            var user = await userRepository.GetByUserName("sharief.hendricks@westerncape.gov.za");
+            var user1 = await userRepository.GetByUserName("shafieka.samuels@westerncape.gov.za");
             try
             { 
                 var action = string.Empty;

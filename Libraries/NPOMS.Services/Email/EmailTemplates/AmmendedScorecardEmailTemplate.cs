@@ -5,6 +5,7 @@ using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
+using NPOMS.Repository.Interfaces.Evaluation;
 using NPOMS.Services.Infrastructure.Implementation;
 using NPOMS.Services.Interfaces;
 using System;
@@ -17,8 +18,8 @@ namespace NPOMS.Services.Email.EmailTemplates
 {
     public class AmmendedScorecardEmailTemplate : IEmailTemplate
     {
-        private Domain.Evaluation.CapturedResponse _response;
-        public AmmendedScorecardEmailTemplate Init(Domain.Evaluation.CapturedResponse response)
+        private Domain.Evaluation.Response _response;
+        public AmmendedScorecardEmailTemplate Init(Domain.Evaluation.Response response)
         {
             this._response = response;
             return this;
@@ -32,14 +33,13 @@ namespace NPOMS.Services.Email.EmailTemplates
             var applicationRepository = EngineContext.Current.Resolve<IApplicationRepository>();
             var httpContextAccessor = EngineContext.Current.Resolve<IHttpContextAccessor>();
             var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.AmendedScorecard);
-            var application = await applicationRepository.GetById(this._response.Id);
+            var application = await applicationRepository.GetById(this._response.FundingApplicationId);
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
-
             var npoRepository = EngineContext.Current.Resolve<INpoRepository>();
             var npo = await npoRepository.GetById(application.NpoId);
 
-            var user = await userRepository.GetById(this._response.ReviewerUserId);
+            var user = await userRepository.GetById(this._response.RejectedByUserId);
 
             try
             {
