@@ -756,13 +756,6 @@ export class ScorecardComponent implements OnInit {
 
         this._responses.forEach(item => {
 
-          // if(item.rejectionComment !== null)
-          // {
-          //   this.hasScorecardSubmitted = false;
-          //   this.hascapturedImprovementArea = false;
-          //   this.hasCapturedRequiredAction = false;
-          // }
-
           if (Number(item.responseOption.name) >= 0) {
 
             overallTotalScore += Number(item.responseOption.name);

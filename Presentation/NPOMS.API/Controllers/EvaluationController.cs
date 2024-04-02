@@ -11,6 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using NPOMS.Services.Implementation;
 using NPOMS.Repository.Interfaces.Evaluation;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using NPOMS.Repository.Interfaces.Core;
 
 namespace NPOMS.API.Controllers
 {
@@ -27,7 +29,8 @@ namespace NPOMS.API.Controllers
 		private IEmailService _emailService;
 		private IDropdownService _dropdownService;
 		private ICapturedResponseRepository _capturedResponseRepository;
-        private IResponseRepository _responseRepository;
+		private IResponseRepository _responseRepository;
+        private IUserRepository _userRepository;
 
         #endregion
 
@@ -41,7 +44,8 @@ namespace NPOMS.API.Controllers
 			IEmailService emailService,
 			IDropdownService dropdownService,
             ICapturedResponseRepository capturedResponseRepository,
-            IResponseRepository responseRepository)
+            IResponseRepository responseRepository,
+            IUserRepository userRepository)
 		{
 			_logger = logger;
 			_evaluationService = evaluationService;
@@ -51,6 +55,7 @@ namespace NPOMS.API.Controllers
 			_dropdownService = dropdownService;
 			_capturedResponseRepository = capturedResponseRepository;	
 			_responseRepository = responseRepository;
+			_userRepository = userRepository;
 
         }
 
@@ -226,17 +231,19 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut("scorecardRejectResponse", Name = "UpdateScorecardRejectResponse")]
-        public async Task<IActionResult> UpdateScorecardRejectResponse([FromBody] Response model)
+        [HttpPut("scorecardRejectResponse/param/{param}", Name = "UpdateScorecardRejectResponse")]
+        public async Task<IActionResult> UpdateScorecardRejectResponse([FromBody] Response model, int param)
         {
             try
             {
                 Response response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId);
                 
-				var results = await this._evaluationService.UpdateScorecardRejectionResponse(model, base.GetUserIdentifier());
+				var results = await this._evaluationService.UpdateScorecardRejectionResponse(model, base.GetUserIdentifier(), param);
 				
-				await RejectedScorecardEmail(response);
-
+				//if(param == 1)
+				//{
+				//	await RejectedScorecardEmail(response);
+				//}
 
                 return Ok(results);
             }
@@ -246,6 +253,29 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPost("amendment-notification/fundingApplicationId/{fundingApplicationId}", Name = "AmendmentNotification")]
+        public async Task<IActionResult> AmendmentNotification(int fundingApplicationId)
+        {
+            try
+            {
+                var responses =  await _evaluationService.GetResponse(fundingApplicationId);
+
+				foreach(var response in responses)
+				{
+					if(response.RejectionFlag == 1)
+                    await RejectedScorecardEmail(response);
+                }
+                    
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateScorecardRejectionResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
         [HttpGet("captured-response/fundingApplicationId/{fundingApplicationId}", Name = "GetCapturedResponses")]
 		public async Task<IActionResult> GetCapturedResponses(int fundingApplicationId)
@@ -269,13 +299,19 @@ namespace NPOMS.API.Controllers
             {
                 await this._evaluationService.CreateCapturedResponse(model, base.GetUserIdentifier());
                 var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
-                if(model.StatusId == 0)
+                var responses = await _evaluationService.GetResponse(model.FundingApplicationId);
+                var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(base.GetUserIdentifier());
+                if (model.StatusId == 0)
 				{
 					await UpdateFundedApplicationScorecardCount(model);
                 }
 				if(model.disableFlag == 0)
 				{
-					await ScorecardAmmendmentEmail(model);
+					foreach(var response in responses)
+					{
+                        if (response.RejectionFlag == 1 && response.CreatedUserId == currentUser.Id)
+                            await ScorecardAmmendmentEmail(response);
+                    }					
                 }
 				else
 				{
@@ -411,7 +447,7 @@ namespace NPOMS.API.Controllers
 			await ConfigureEmail(fundingApplication);
 		}
 
-        private async Task ScorecardAmmendmentEmail(CapturedResponse fundingApplication)
+        private async Task ScorecardAmmendmentEmail(Response response)
         {
             try
             {
@@ -419,7 +455,7 @@ namespace NPOMS.API.Controllers
                 var ammendedScorecard = EmailTemplateFactory
                             .Create(EmailTemplateTypeEnum.AmendedScorecard)
                             .Get<AmmendedScorecardEmailTemplate>()
-                            .Init(fundingApplication);
+                            .Init(response);
 
                 await ammendedScorecard.SubmitToQueue();
 

@@ -80,8 +80,8 @@ export class EvaluationService {
     return this._http.put<IQuestionResponseViewModel>(url, response, httpOptions);
   }
 
-  public updateRejectionComment(response: IResponse) {
-    const url = `${this._envUrl.urlAddress}/api/evaluation/scorecardRejectResponse`;
+  public updateRejectionComment(response: IResponse, param: number) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/scorecardRejectResponse/param/${param}`;
     return this._http.put<IQuestionResponseViewModel>(url, response, httpOptions);
   }
 
@@ -104,4 +104,10 @@ export class EvaluationService {
     const url = `${this._envUrl.urlAddress}/api/evaluation/captured-reviewerComment`;
     return this._http.post<ICapturedResponse>(url, caputerdResponse, httpOptions);
   }
+
+  public sendAmendmentNotification(fundingApplicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/amendment-notification/fundingApplicationId/${fundingApplicationId}`;
+    return this._http.post(url, httpOptions);
+  }
+
 }

@@ -5,10 +5,11 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ActionSequence } from 'protractor';
 import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationPeriod, ICapturedResponse, INpo, IStatus, IUser } from 'src/app/models/interfaces';
+import { IApplication, IApplicationPeriod, ICapturedResponse, INpo, IResponseOptions, IStatus, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
@@ -50,6 +51,8 @@ export class ApplicationListComponent implements OnInit {
 
   buttonItems: MenuItem[];
   optionItems: MenuItem[];
+  _responses: IResponseOptions[];
+  response: number;
 
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
@@ -65,7 +68,8 @@ export class ApplicationListComponent implements OnInit {
     private _npoRepo: NpoService,
     private _loggerService: LoggerService,
     private _confirmationService: ConfirmationService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _evaluationService: EvaluationService
   ) { }
 
   ngOnInit(): void {
@@ -167,6 +171,19 @@ export class ApplicationListComponent implements OnInit {
       }
     }   
   }
+
+  public selectedResponses(fid: number) {
+    this._evaluationService.getResponse(Number(fid)).subscribe(
+      (results) => {
+        this._responses = results.filter(x => x.createdUserId === this.profile.id && x.rejectionFlag === 1);
+        this.response = this._responses.length;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      }
+    );
+  }
+
 
   private buildButtonItems() {
     this.buttonItems = [];
@@ -435,6 +452,8 @@ export class ApplicationListComponent implements OnInit {
       option.visible = true;
     });
 
+    this.selectedResponses(this.selectedApplication.id);
+
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11)
     {
       this.optionItemExists('Manage Indicators');  
@@ -456,20 +475,33 @@ export class ApplicationListComponent implements OnInit {
     {
       this.optionItemExists('Initiate Score Card');      
     } 
-    
+     
     if(this.selectedApplication.closeScorecard === 0)
     {
       this.optionItemExists('Conclude Scorecard');
     }  
-
+    
+    // if(this.response !== 0)
+    // { 
+    //   this.optionItemExists('Capture Scorecard');
+    // }
+   
     if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount > 0)
-    {
-      this.optionItemExists('Capture Scorecard');
+    { 
+      if(this.response !== 0)
+      {
+        this.optionItemExists('Capture Scorecard');
+        return false;
+      }
     }
 
     if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount === 0)
     {
-      this.optionItemExists('Capture Scorecard');
+      if(this.response !== 0)
+      {
+        this.optionItemExists('Capture Scorecard');
+        return false;
+      }
     }
 
     if(this.selectedApplication.scorecardCount === 0)
