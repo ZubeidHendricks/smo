@@ -39,7 +39,7 @@ namespace NPOMS.Services.Email.EmailTemplates
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
             //var user = await userRepository.GetByUserName("brent.lewin@westerncape.gov.za");
             //var user1 = await userRepository.GetByUserName("sebastian.gelderbloem@westerncape.gov.za");
-            var user = await userRepository.GetByUserName("sharief.hendricks@westerncape.gov.za");
+            var user = await userRepository.GetByUserName("shanti.bhushan@westerncape.gov.za");
             var user1 = await userRepository.GetByUserName("shafieka.samuels@westerncape.gov.za");
             try
             { 
@@ -68,7 +68,7 @@ namespace NPOMS.Services.Email.EmailTemplates
                     FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
                     Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, contactPersonFullName, application.Id),
                     Subject = emailTemplate.Subject, 
-                    RecipientEmail = "shafieka.samuels@westerncape.gov.za", //user.Email,
+                    RecipientEmail = user.Email,
                     RecipientName = contactPersonFullName
                 };
 
@@ -80,7 +80,7 @@ namespace NPOMS.Services.Email.EmailTemplates
                     FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
                     Message = ReplacePlaceholders1(emailTemplate.Body, application, requestOrigin, contactPersonFullName1, application.Id),
                     Subject = emailTemplate.Subject, 
-                    RecipientEmail = "shafieka.samuels@westerncape.gov.za", //user1.Email,
+                    RecipientEmail = user1.Email,
                     RecipientName = contactPersonFullName1
                 };
 

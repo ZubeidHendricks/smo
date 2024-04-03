@@ -41,7 +41,7 @@
                     <th style="width: 8%; text-align: center;">Scorer<b> 9</b></th>
                     <th style="width: 8%; text-align: center;">Scorer<b> 10</b></th>
                     <th style="width: 10%; text-align: center; text-wrap:break-word;">Average Category Score</th>
-                    <th style="width: 10%; text-align: center;">View Comment</th>
+                    <th style="width: 10%; text-align: center;">Action</th>
                     <th style="width: 8%; text-align: center;" >Total score</th>
                 </tr>
             </ng-template>
@@ -52,44 +52,24 @@
                     </td>
                     <td class="p-text-bold p-ml-2">{{question.questionName}}</td>                        
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[0])}}">{{question.responsesO[0]}}
-                        <!-- <br><button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View Changes" 
-                        (click)="onSelectViewHistory(question)">Change</button> -->
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[1])}}">{{question.responsesO[1]}}
-                        <!-- <button *ngIf="question.responsesO[1]" tooltipPosition="left" pTooltip="View Changes" 
-                        (click)="onSelectViewHistory(question)">Change</button> -->
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[2])}}">{{question.responsesO[2]}}
-                        <!-- <button *ngIf="question.responsesO[2]" tooltipPosition="left" pTooltip="View Changes" 
-                        (click)="onSelectViewHistory(question)">Change</button> -->
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[3])}}">{{question.responsesO[3]}}
-                        <!-- <button *ngIf="question.responsesO[3]" tooltipPosition="left" pTooltip="View Changes" 
-                        (click)="onSelectViewHistory(question)">Change</button> -->
                     </td> 
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[4])}}">{{question.responsesO[4]}}
-                        <!-- <button *ngIf="question.responsesO[4]" tooltipPosition="left" pTooltip="View Changes" 
-                        (click)="onSelectViewHistory(question)">Change</button> -->
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[5])}}">{{question.responsesO[5]}}
-                        <!-- <button *ngIf="question.responsesO[5]" tooltipPosition="left" pTooltip="View Changes" 
-                        (click)="onSelectViewHistory(question)">Change</button> -->
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[6])}}">{{question.responsesO[6]}}
-                        <!-- <button *ngIf="question.responsesO[6]" tooltipPosition="left" pTooltip="View Changes" 
-                        (click)="onSelectViewHistory(question)">Change</button> -->
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[7])}}">{{question.responsesO[7]}}
-                        <!-- <button *ngIf="question.responsesO[7]" tooltipPosition="left" pTooltip="View Changes" 
-                        (click)="onSelectViewHistory(question)">Change</button> -->
                     </td>  
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[8])}}">{{question.responsesO[8]}}
-                        <!-- <button *ngIf="question.responsesO[8]" tooltipPosition="left" pTooltip="View Changes" 
-                        (click)="onSelectViewHistory(question)">Change</button> -->
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[9])}}">{{question.responsesO[9]}}
-                        <!-- <button *ngIf="question.responsesO[9]" tooltipPosition="left" pTooltip="View Changes" 
-                        (click)="onSelectViewHistory(question)">Change</button> -->
                     </td>                        
                     <td style="text-align: center;" class="{{getRagColour1((question.sumOfResponse/question.responsesO.length).toFixed(2))}}" *ngIf="question.sumOfResponse > 0 && question.responsesO.length > 0">
                         {{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
@@ -98,9 +78,11 @@
                         <button *ngIf="question.hasComment"  pButton pRipple type="button"
                         class="p-button-text action-button" icon="fa fa-comments-o"
                         pTooltip="Comments" tooltipPosition="top" (click)="onSelectViewComment(question)"></button>&nbsp;
-                        <button *ngIf="question.hasComment"  pButton pRipple type="button"
-                        class="p-button-text action-button" icon="fa fa-pencil-square-o"
-                        pTooltip="Ammendment" tooltipPosition="top" (click)="onSelectAmmendmentComment(question)"></button>                        
+                       <div *ngIf = "hideComment() === false">
+                            <button *ngIf="question.hasComment"  pButton pRipple type="button"
+                            class="p-button-text action-button" icon="fa fa-pencil-square-o"
+                            pTooltip="Amendment" tooltipPosition="top" (click)="onSelectAmendmentComment(question)"></button>   
+                       </div>                                            
                     </td>
                     <td style="text-align: center;"><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span></td>
                     <td style="text-align: center;" *ngIf="question.sumOfResponse === 0 && question.responsesO.length === 0">
@@ -140,8 +122,8 @@
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer10OverallAvgScore)}}"><b>{{scorer10OverallAvgScore}}</b></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " colspan="2">
                         <div *ngIf = "disableAmendementSubmit() === false">
-                            <button pButton type="button" label="Ammendment Request" icon="fa fa-floppy-o" 
-                            (click)="submitAmmendment()" [disabled]="disableButton"></button>
+                            <button pButton type="button" label="Amendment Request" icon="fa fa-floppy-o" 
+                            (click)="submitAmendment()" [disabled]="disableButton"></button>
                         </div>
                     </td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
@@ -157,52 +139,52 @@
         <tr>
             <td style="width: 25%; text-align: center; border: 1px solid #CCCCCC;" colspan="3"> <span class="p-text-bold p-ml-2"><b>Main Reviewer Comments</b></span></td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button" *ngIf = "hideComment() === false"
+                <button  pButton pRipple type="button"
                 class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Scorecard 1" tooltipPosition="top" [disabled] = "disableMainReviewerCommentIcon" (click)="scoreCardMainReviewerComment(1)"></button>
+                pTooltip="Scorecard 1" tooltipPosition="top" (click)="scoreCardMainReviewerComment(1)"></button>
             </td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button" *ngIf = "hideComment() === false"
+                <button  pButton pRipple type="button"
                 class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Scorecard 2" tooltipPosition="top" [disabled] = "disableMainReviewerCommentIcon" (click)="scoreCardMainReviewerComment(2)"></button>
+                pTooltip="Scorecard 2" tooltipPosition="top" (click)="scoreCardMainReviewerComment(2)"></button>
             </td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button" *ngIf = "hideComment() === false"
+                <button  pButton pRipple type="button"
                 class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Scorecard 3" tooltipPosition="top" [disabled] = "disableMainReviewerCommentIcon" (click)="scoreCardMainReviewerComment(3)"></button>
+                pTooltip="Scorecard 3" tooltipPosition="top" (click)="scoreCardMainReviewerComment(3)"></button>
             </td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button" *ngIf = "hideComment() === false"
+                <button  pButton pRipple type="button"
                 class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Scorecard 4" tooltipPosition="top" [disabled] = "disableMainReviewerCommentIcon" (click)="scoreCardMainReviewerComment(4)"></button>
+                pTooltip="Scorecard 4" tooltipPosition="top" (click)="scoreCardMainReviewerComment(4)"></button>
             </td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button" *ngIf = "hideComment() === false"
+                <button  pButton pRipple type="button"
                 class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Scorecard 5" tooltipPosition="top" [disabled] = "disableMainReviewerCommentIcon" (click)="scoreCardMainReviewerComment(5)"></button>
+                pTooltip="Scorecard 5" tooltipPosition="top" (click)="scoreCardMainReviewerComment(5)"></button>
             </td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button" *ngIf = "hideComment() === false"
+                <button  pButton pRipple type="button"
                 class="p-button-text action-button" icon="fa fa-comments-o"
-                pTooltip="Scorecard 6" tooltipPosition="top" [disabled] = "disableMainReviewerCommentIcon" (click)="scoreCardMainReviewerComment(6)"></button>
+                pTooltip="Scorecard 6" tooltipPosition="top" (click)="scoreCardMainReviewerComment(6)"></button>
             </td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button" *ngIf = "hideComment() === false"
+                <button  pButton pRipple type="button"
                 class="p-button-text action-button" icon="fa fa-comments-o"
                 pTooltip="Scorecard 7" tooltipPosition="top" [disabled] = "disableMainReviewerCommentIcon" (click)="scoreCardMainReviewerComment(7)"></button>
             </td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button" *ngIf = "hideComment() === false"
+                <button  pButton pRipple type="button"
                 class="p-button-text action-button" icon="fa fa-comments-o"
                 pTooltip="Scorecard 8" tooltipPosition="top" [disabled] = "disableMainReviewerCommentIcon" (click)="scoreCardMainReviewerComment(8)"></button>
             </td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button" *ngIf = "hideComment() === false"
+                <button  pButton pRipple type="button"
                 class="p-button-text action-button" icon="fa fa-comments-o"
                 pTooltip="Scorecard 9" tooltipPosition="top" [disabled] = "disableMainReviewerCommentIcon" (click)="scoreCardMainReviewerComment(9)"></button>
             </td>
             <td style="width: 6%; text-align: center; border: 1px solid #CCCCCC;">
-                <button  pButton pRipple type="button" *ngIf = "hideComment() === false"
+                <button  pButton pRipple type="button"
                 class="p-button-text action-button" icon="fa fa-comments-o"
                 pTooltip="Scorecard 10" tooltipPosition="top" [disabled] = "disableMainReviewerCommentIcon" (click)="scoreCardMainReviewerComment(10)"></button>
             </td>
@@ -391,12 +373,12 @@
                     Commented By
                 </th>
                 <th>
-                    <div *ngIf = "hideComment() === false">
+                    <div>
                         Main Reviewer Comments
                     </div>                   
                 </th>
                 <th>
-                    <div *ngIf = "hideComment() === false">
+                    <div>
                         Commented By
                     </div> 
                 </th>
@@ -409,12 +391,12 @@
                 <td>{{rowData.comment}}</td>
                 <td>{{rowData.createdUser.fullName}}</td>
                 <td>
-                    <div *ngIf = "hideComment() === false">
+                    <div>
                         {{rowData.rejectionComment}}
                     </div>
                 </td>
                 <td>
-                    <div *ngIf = "hideComment() === false">
+                    <div>
                         <span>{{rowData.rejectedByUser}}</span><br>
                         <span>{{ReviewerUpdatedDateTime | date: 'yyyy-MM-dd'}}</span>
                     </div>
@@ -430,7 +412,7 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Ammendment Comments" [(visible)]="displayAmmendmentCommentDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+<p-dialog header="Amendment Comments" [(visible)]="displayAmendmentCommentDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
     showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
     <p-table [rowHover]="true" [style]="{'border':'none'}"
         [value]="_responseUsers" styleClass="p-datatable-sm" [showCurrentPageReport]="true">
