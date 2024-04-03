@@ -76,9 +76,9 @@ export class ReviewScorecardComponent implements OnInit {
   _responseUsers: IGetResponseOption[];
   responseHistory: IResponseHistory[];
   displayCommentDialog: boolean;
-  displayAmmendmentCommentDialog: boolean;
+  displayAmendmentCommentDialog: boolean;
   addAmendCommentDialog: boolean;
-  isAmmendmentComment: boolean;
+  isAmendmentComment: boolean;
   displayReviewerCommentDialog: boolean;
   displayDialog: boolean;
   displayMainReviewerCommentDialog: boolean;
@@ -1048,7 +1048,7 @@ export class ReviewScorecardComponent implements OnInit {
     );
   }
 
-  public submitAmmendment()
+  public submitAmendment()
   {
     this._evaluationService.sendAmendmentNotification(Number(this.id)).subscribe(
       (results) => {
@@ -1068,14 +1068,14 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   public hideComment() {
-    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
+    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.Reviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
     return false;
 
     return true;
   }
 
   public disableAmendementSubmit() {
-    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
+    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.Reviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
     return false;
 
     return true;
@@ -1141,9 +1141,9 @@ export class ReviewScorecardComponent implements OnInit {
           this.setReviewerName(data);
         });
 
-        results.forEach(data => {
-          this.displayAmmendmentComment(data);
-        });
+        // results.forEach(data => {
+        //   this.displayAmendmentComment(data);
+        // });
 
         this._responseUsers = results;
         this.displayCommentDialog = true;
@@ -1156,7 +1156,7 @@ export class ReviewScorecardComponent implements OnInit {
     );
   }
 
-  public onSelectAmmendmentComment(question: IQuestionResponseViewModel) {
+  public onSelectAmendmentComment(question: IQuestionResponseViewModel) {
     this._spinner.show();
     this._responseUsers = [];
     this._evaluationService.getReviewerResponse(Number(this.id), question.questionId).subscribe(
@@ -1166,12 +1166,12 @@ export class ReviewScorecardComponent implements OnInit {
           this.setReviewerName(data);
         });
 
-        results.forEach(data => {
-          this.displayComment(data);
-        });
+        // results.forEach(data => {
+        //   this.displayComment(data);
+        // });
 
         this._responseUsers = results;
-        this.displayAmmendmentCommentDialog = true;
+        this.displayAmendmentCommentDialog = true;
         this._spinner.hide();
       },
       (err) => {
@@ -1203,7 +1203,7 @@ export class ReviewScorecardComponent implements OnInit {
     }
   }
 
-  private displayAmmendmentComment(data: IGetResponseOption) {
+  private displayAmendmentComment(data: IGetResponseOption) {
     let requiredAction = data.rejectionComment.slice(data.rejectionComment.indexOf('-') - 1);
     if(requiredAction === '00')
     {
@@ -1305,10 +1305,10 @@ export class ReviewScorecardComponent implements OnInit {
     this.responseOptionId = responseOptionId;
     if(param === 1)
     {
-      this.isAmmendmentComment = true;
+      this.isAmendmentComment = true;
     }
     else{
-      this.isAmmendmentComment = false;
+      this.isAmendmentComment = false;
     }   
   }
 
@@ -1349,25 +1349,25 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   saveAmendComment(changesRequired: boolean, origin: string) {
-    let ammendmentComment: number;
-    if(this.isAmmendmentComment === true)
+    let amendmentComment: number;
+    if(this.isAmendmentComment === true)
     {
-      ammendmentComment = 1;
+      amendmentComment = 1;
     }
     else{
-      ammendmentComment = 0;
+      amendmentComment = 0;
     }
     let response = {} as IResponse;
       response.fundingApplicationId = this.fundingApplicationId;
       response.questionId = this.questionId;
       response.responseOptionId = this.responseOptionId;
       response.comment = this.RejectComment;      
-     this._evaluationService.updateRejectionComment(response, ammendmentComment).subscribe(
+     this._evaluationService.updateRejectionComment(response, amendmentComment).subscribe(
        (results) => {
         let returnValue = results as IQuestionResponseViewModel;
         this.addAmendCommentDialog = false;  
         this.displayCommentDialog = false;   
-        this.displayAmmendmentCommentDialog = false;   
+        this.displayAmendmentCommentDialog = false;   
         this.getRejectedFlag();
      }
    );

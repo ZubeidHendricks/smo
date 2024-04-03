@@ -108,7 +108,7 @@ export class ScorecardComponent implements OnInit {
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
   hasScorecardSubmitted: boolean = false;
-  isAmmended: boolean;
+  isAmended: boolean;
 
   signedByUser: string;
   submittedDate: Date;
@@ -789,7 +789,7 @@ export class ScorecardComponent implements OnInit {
 
   private createCapturedResponse() {
     let isDisable: number;
-    if(this.isAmmended === true)
+    if(this.isAmended === true)
     {
       isDisable = 0;
     }
@@ -841,14 +841,14 @@ export class ScorecardComponent implements OnInit {
             this.hascapturedImprovementArea = false;
             this.hasCapturedRequiredAction = false;
             this.hasScorecardSubmitted = false;
-            this.isAmmended = true;
+            this.isAmended = true;
           }
           else
           {
             this.hascapturedImprovementArea = true;
             this.hasCapturedRequiredAction = true;
             this.hasScorecardSubmitted = true;
-            this.isAmmended = false;
+            this.isAmended = false;
           }
           
         }

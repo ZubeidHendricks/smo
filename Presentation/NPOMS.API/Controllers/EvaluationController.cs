@@ -297,6 +297,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+				var isNewEntry = model.disableFlag;
                 await this._evaluationService.CreateCapturedResponse(model, base.GetUserIdentifier());
                 var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
                 var responses = await _evaluationService.GetResponse(model.FundingApplicationId);
@@ -305,7 +306,7 @@ namespace NPOMS.API.Controllers
 				{
 					await UpdateFundedApplicationScorecardCount(model);
                 }
-				if(model.disableFlag == 0)
+				if(isNewEntry == 0)
 				{
 					foreach(var response in responses)
 					{
@@ -471,7 +472,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                // Send email to Capturer
+                // Send email to Main Reviewer
                 var scorecardSummary = EmailTemplateFactory
                             .Create(EmailTemplateTypeEnum.ScorecardSummary)
                             .Get<ScorecardSummaryEmailTemplates>()
