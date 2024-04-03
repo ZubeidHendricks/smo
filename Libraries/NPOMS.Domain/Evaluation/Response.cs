@@ -23,6 +23,12 @@ namespace NPOMS.Domain.Evaluation
 
         public int RejectedByUserId { get; set; }
 
+        [Column(TypeName = "nvarchar(MAX)")]
+        public string ReviewerCategoryComment { get; set; }
+
+        [Column(TypeName = "nvarchar(MAX)")]
+        public string MainReviewerCategoryComment { get; set; }
+
         public int CreatedUserId { get; set; }
 
 		public DateTime CreatedDateTime { get; set; }

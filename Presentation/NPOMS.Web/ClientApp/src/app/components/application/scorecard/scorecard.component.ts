@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import {
   ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
-  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum
+  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum, QuestionCategoryEnum
 } from 'src/app/models/enums';
 import {
   IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory,
@@ -108,6 +108,13 @@ export class ScorecardComponent implements OnInit {
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
   hasScorecardSubmitted: boolean = false;
+  hasEngagementDisable: boolean = false;
+  hasTimeWorkPlanDisable: boolean = false;
+  hasImpactDisable: boolean = false;
+  hasRiskMitigationDisable: boolean = false;
+  hasAppropriationOfResourcesDisable: boolean = false;
+ 
+ 
   isAmended: boolean;
 
   signedByUser: string;
@@ -121,6 +128,10 @@ export class ScorecardComponent implements OnInit {
   workFlowCount: IWorkflowAssessment[];
   displayReviewerCommentDialog: boolean;
   reviewerComment: string;
+  categoryComment: string;
+  addCategoryCommentDialog: boolean = false;
+  responses: IQuestionResponseViewModel;
+  reviewerCategoryComment: string;
 
   constructor(
 
@@ -159,16 +170,91 @@ export class ScorecardComponent implements OnInit {
     this.loadApplications();
   }
 
+  private setEngagementStatus(response: boolean) {
+    if(response == true)
+    {
+      this.hasEngagementDisable = false;
+
+    }
+    else{
+      this.hasEngagementDisable = true;
+
+    }
+  }
+
+  private setTimeWorkPlanStatus(response: boolean) {
+    if(response == true)
+    {
+      this.hasTimeWorkPlanDisable = false;
+    }
+    else{
+      this.hasTimeWorkPlanDisable = true;
+    }
+  }
+
+  private setImpactStatus(response: boolean) {
+    if(response == true)
+    {
+      this.hasImpactDisable = false;
+    }
+    else{
+      this.hasImpactDisable = true;
+    }
+  }
+
+  private setRiskMitigationStatus(response: boolean) {
+    if(response == true)
+    {
+      this.hasRiskMitigationDisable = false;
+    }
+    else{
+      this.hasRiskMitigationDisable = true;
+    }
+  }
+
+  private setAppropriationOfResourcesStatus(response: boolean) {
+    if(response == true)
+    {
+      this.hasAppropriationOfResourcesDisable = false;
+      this.hasScorecardSubmitted = false;
+    }
+    else{
+      this.hasAppropriationOfResourcesDisable = true;
+     this.hasScorecardSubmitted = false;
+    }
+  }
+
   private loadQuestionnaire() {
-   
     this._evaluationService.getAddScoreQuestionnaire(Number(this.id)).subscribe(
       (results) => {
+
         this.allQuestionnaires = results;
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
+        
+        this.engagementQuestionnaire.forEach(response => {
+          this.setEngagementStatus(response.rejectionFlag);
+        });
+
+        this.timeWorkPlanQuestionnaire.forEach(response => {
+          this.setTimeWorkPlanStatus(response.rejectionFlag);
+        });
+
+        this.impactQuestionnaire.forEach(response => {
+          this.setImpactStatus(response.rejectionFlag);
+        });
+
+        this.riskMitigationQuestionnaire.forEach(response => {
+          this.setRiskMitigationStatus(response.rejectionFlag);
+        });
+
+        this.appropriationOfResourcesQuestionnaire.forEach(response => {
+          this.setAppropriationOfResourcesStatus(response.rejectionFlag);
+        });
+        
         this.loadResponseOptions();
         this.getWorkflowCount();
        
@@ -422,6 +508,17 @@ export class ScorecardComponent implements OnInit {
     return this.responseOptions && this.responseOptions.length > 0 ? this.responseOptions.filter(x => x.responseTypeId === responseTypeId && x.isActive) : [];
   }
 
+  public onSaveCategoryComment(question: IQuestionResponseViewModel) {
+    this.addCategoryCommentDialog = true;
+    this.responses = question;
+  }
+
+  public saveCategoryComment(question: IQuestionResponseViewModel, reviewerCategoryComment: string)  
+  {
+    this.onSaveReviewerComment(question, reviewerCategoryComment);
+    this.addCategoryCommentDialog = false;
+  }
+
   public onSaveComment(event, question: IQuestionResponseViewModel) {
     question.isSaved = false;
     this.onSave(question);
@@ -448,6 +545,34 @@ export class ScorecardComponent implements OnInit {
     return totalAverageScore;
   }
 
+  public onSaveReviewerComment(question: IQuestionResponseViewModel, reviewerCategoryComment: string) {
+    if (question.responseOptionId != 0) {
+
+      let response = {} as IResponse;
+      response.fundingApplicationId = Number(this.id);
+      response.questionId = question.questionId;
+      response.responseOptionId = question.responseOptionId;
+      response.comment = question.comment == null ? "" : question.comment;
+      response.reviewerCategoryComment = reviewerCategoryComment == null? "" : reviewerCategoryComment
+
+      this._evaluationService.updateScorecardResponse(response).subscribe(
+        (results) => {
+        
+          let returnValue = results as IQuestionResponseViewModel;
+          question.responseId = returnValue.responseId;
+          question.isSaved = returnValue.isSaved;
+          this.selectedResponses();
+         
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+
+      );
+
+    }
+  }
 
   public onSave(question: IQuestionResponseViewModel) {
     if (question.responseOptionId != 0) {

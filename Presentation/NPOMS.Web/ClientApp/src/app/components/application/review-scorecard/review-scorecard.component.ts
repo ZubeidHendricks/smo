@@ -1141,10 +1141,6 @@ export class ReviewScorecardComponent implements OnInit {
           this.setReviewerName(data);
         });
 
-        // results.forEach(data => {
-        //   this.displayAmendmentComment(data);
-        // });
-
         this._responseUsers = results;
         this.displayCommentDialog = true;
         this._spinner.hide();
@@ -1165,10 +1161,6 @@ export class ReviewScorecardComponent implements OnInit {
         results.forEach(data => {
           this.setReviewerName(data);
         });
-
-        // results.forEach(data => {
-        //   this.displayComment(data);
-        // });
 
         this._responseUsers = results;
         this.displayAmendmentCommentDialog = true;
@@ -1193,22 +1185,6 @@ export class ReviewScorecardComponent implements OnInit {
       }
     );
 
-  }
-
-  private displayComment(data: IGetResponseOption) {
-    let requiredAction = data.rejectionComment.slice(data.rejectionComment.indexOf('-') + 1);
-    if(requiredAction !== '00')
-    {
-      data.rejectionComment = requiredAction;
-    }
-  }
-
-  private displayAmendmentComment(data: IGetResponseOption) {
-    let requiredAction = data.rejectionComment.slice(data.rejectionComment.indexOf('-') - 1);
-    if(requiredAction === '00')
-    {
-      data.rejectionComment;
-    }
   }
 
   public performanceComment(v: number) {

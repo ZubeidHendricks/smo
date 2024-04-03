@@ -367,20 +367,16 @@
                     #
                 </th>
                 <th>
-                    Comments
+                    Main Reviewer Category Comments
                 </th>
                 <th>
                     Commented By
                 </th>
                 <th>
-                    <div>
-                        Main Reviewer Comments
-                    </div>                   
+                    Reviewer Category Comments                  
                 </th>
                 <th>
-                    <div>
-                        Commented By
-                    </div> 
+                    Commented By
                 </th>
                 <th></th>
             </tr>
@@ -388,18 +384,14 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
-                <td>{{rowData.comment}}</td>
-                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.mainReviewerCategoryComment}}</td>
+                <td>{{rowData.rejectedByUser}}</td>
                 <td>
-                    <div>
-                        {{rowData.rejectionComment}}
-                    </div>
+                    {{rowData.reviewerCategoryComment}}
                 </td>
                 <td>
-                    <div>
-                        <span>{{rowData.rejectedByUser}}</span><br>
-                        <span>{{ReviewerUpdatedDateTime | date: 'yyyy-MM-dd'}}</span>
-                    </div>
+                    {{rowData.createdUser.fullName}}
+                    <!-- <br><span>{{ReviewerUpdatedDateTime | date: 'yyyy-MM-dd'}}</span> -->
                 </td>
                 <td>
                     <button type="button" [disabled] = mainReviewerComment()
@@ -422,7 +414,7 @@
                     #
                 </th>
                 <th>
-                    Comments
+                    Reviewer Comments
                 </th>
                 <th>
                     Commented By
@@ -584,7 +576,7 @@
         </div>
         <div class="p-col-9">
             <button pButton pRipple type="button" label="Add/Update Main Reviewer Comment" class="p-button-text" 
-            icon="fa fa-floppy-o" (click)="click1(capturedResponseId)"></button>
+            icon="fa fa-floppy-o" (click)="click1(capturedResponseId)"  [disabled] = mainReviewerComment()></button>
         </div>
     </div>
    

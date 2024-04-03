@@ -43,13 +43,13 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="systemName" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)" [disabled]="hasEngagementDisable"></p-dropdown>
                         </td>
 
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(engagementQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment"  pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)"
-                             (keydown)="onInputCommentChange(question)" [disabled]="hasScorecardSubmitted"
+                             (keydown)="onInputCommentChange(question)" [disabled]="hasEngagementDisable"
                             [autoResize]="true"></textarea>
                         </td>
                         
@@ -57,12 +57,17 @@
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(engagementQuestionnaire)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;" colspan="3">
-                            <span *ngIf="hasAmendedComment(engagementQuestionnaire)" style="font-weight: bold;" class="{{getRagColour(engagementQuestionnaire)}}">
-                                <button type="button"
-                                (click)="click(question.rejectionComment)"> 
-                                Main Reviewer Comment
+                            <span *ngIf="hasAmendedComment(engagementQuestionnaire)">
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o"
+                                pTooltip=" Main Reviewer Amendment Comment" tooltipPosition="top"
+                                (click)="click(question.rejectionComment)">                                
                                 </button>
                             </span>
+                            <span>
+                                <button pButton pRipple type="button"
+                                class="p-button-text action-button" icon="fa fa-pencil-square-o"
+                                pTooltip="Add Category Comment" tooltipPosition="top" (click)="onSaveCategoryComment(question)"></button>   
+                           </span> 
                         </td>
                     </tr>
                 </ng-template>
@@ -117,24 +122,29 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)" [disabled]="hasTimeWorkPlanDisable"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(timeWorkPlanQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
+                            [autoResize]="true" [disabled]="hasTimeWorkPlanDisable"></textarea>
                         </td>
                         
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(timeWorkPlanQuestionnaire)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;" colspan="3">
-                            <span *ngIf="hasAmendedComment(timeWorkPlanQuestionnaire)" style="font-weight: bold;" class="{{getRagColour(timeWorkPlanQuestionnaire)}}">
-                                <button type="button"
-                                (click)="click(question.rejectionComment)"> 
-                                Main Reviewer Comment
+                            <span *ngIf="hasAmendedComment(timeWorkPlanQuestionnaire)">
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o"
+                                pTooltip=" Main Reviewer Amendment Comment" tooltipPosition="top"
+                                (click)="click(question.rejectionComment)">                                
                                 </button>
                             </span>
+                            <span>
+                                <button pButton pRipple type="button"
+                                class="p-button-text action-button" icon="fa fa-pencil-square-o"
+                                pTooltip="Add Category Comment" tooltipPosition="top" (click)="onSaveCategoryComment(question)"></button>   
+                           </span> 
                         </td>
                     </tr>
                 </ng-template>
@@ -189,23 +199,28 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)" [disabled]="hasImpactDisable"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(impactQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
+                            [autoResize]="true" [disabled]="hasImpactDisable"></textarea>
                         </td>
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(impactQuestionnaire)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;" colspan="3">
-                            <span *ngIf="hasAmendedComment(impactQuestionnaire)" style="font-weight: bold;" class="{{getRagColour(impactQuestionnaire)}}">
-                                <button type="button"
-                                (click)="click(question.rejectionComment)"> 
-                                Main Reviewer Comment
+                            <span *ngIf="hasAmendedComment(impactQuestionnaire)">
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o"
+                                pTooltip=" Main Reviewer Amendment Comment" tooltipPosition="top"
+                                (click)="click(question.rejectionComment)">                                
                                 </button>
                             </span>
+                            <span>
+                                <button pButton pRipple type="button"
+                                class="p-button-text action-button" icon="fa fa-pencil-square-o"
+                                pTooltip="Add Category Comment" tooltipPosition="top" (click)="onSaveCategoryComment(question)"></button>   
+                           </span> 
                         </td>
                     </tr>
                 </ng-template>
@@ -260,23 +275,28 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)" [disabled]="hasRiskMitigationDisable"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(riskMitigationQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
+                            [autoResize]="true" [disabled]="hasRiskMitigationDisable"></textarea>
                         </td>
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(riskMitigationQuestionnaire)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;" colspan="3">
-                            <span *ngIf="hasAmendedComment(riskMitigationQuestionnaire)" style="font-weight: bold;" class="{{getRagColour(riskMitigationQuestionnaire)}}">
-                                <button type="button"
-                                (click)="click(question.rejectionComment)"> 
-                                Main Reviewer Comment
+                            <span *ngIf="hasAmendedComment(riskMitigationQuestionnaire)">
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o"
+                                pTooltip=" Main Reviewer Amendment Comment" tooltipPosition="top"
+                                (click)="click(question.rejectionComment)">                                
                                 </button>
                             </span>
+                            <span>
+                                <button pButton pRipple type="button"
+                                class="p-button-text action-button" icon="fa fa-pencil-square-o"
+                                pTooltip="Add Category Comment" tooltipPosition="top" (click)="onSaveCategoryComment(question)"></button>   
+                           </span> 
                         </td>
                     </tr>
                 </ng-template>
@@ -331,23 +351,28 @@
                             <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
                                 optionLabel="name" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
                                 placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
-                                (onChange)="onSaveResponse($event, question)" [disabled]="hasScorecardSubmitted"></p-dropdown>
+                                (onChange)="onSaveResponse($event, question)" [disabled]="hasAppropriationOfResourcesDisable"></p-dropdown>
                         </td>
                         <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(appropriationOfResourcesQuestionnaire)">
                             <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
                             [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
-                            [autoResize]="true" [disabled]="hasScorecardSubmitted"></textarea>
+                            [autoResize]="true" [disabled]="hasAppropriationOfResourcesDisable"></textarea>
                         </td>
                         <td style="text-align: center;">
                             <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(appropriationOfResourcesQuestionnaire)}}" style="font-size: 1rem"></i>
                         </td>
                         <td style="text-align: center;" colspan="3">
-                            <span *ngIf="hasAmendedComment(appropriationOfResourcesQuestionnaire)" style="font-weight: bold;" class="{{getRagColour(appropriationOfResourcesQuestionnaire)}}">
-                                <button type="button"
-                                (click)="click(question.rejectionComment)"> 
-                                Main Reviewer Comment
+                            <span *ngIf="hasAmendedComment(appropriationOfResourcesQuestionnaire)">
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o"
+                                pTooltip=" Main Reviewer Amendment Comment" tooltipPosition="top"
+                                (click)="click(question.rejectionComment)">                                
                                 </button>
                             </span>
+                            <span>
+                                <button pButton pRipple type="button"
+                                class="p-button-text action-button" icon="fa fa-pencil-square-o"
+                                pTooltip="Add Category Comment" tooltipPosition="top" (click)="onSaveCategoryComment(question)"></button>   
+                           </span>  
                         </td>
                     </tr>
                 </ng-template>
@@ -514,6 +539,29 @@
             <textarea class="form-text" disabled = "true" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="reviewerComment" [ngModelOptions]="{standalone: true}"></textarea>
         </div>
     </div>        
+</p-dialog>
+
+<p-dialog header="Add Category Comment" 
+          [(visible)]="addCategoryCommentDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [value]="responses"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Comment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="reviewerCategoryComment" [ngModelOptions]="{standalone: true}"></textarea>
+        </div>
+    </div>        
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" (click)="saveCategoryComment(responses, reviewerCategoryComment)"></button>
+    </ng-template>
 </p-dialog>
 
 

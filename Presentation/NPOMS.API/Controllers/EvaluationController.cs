@@ -240,11 +240,6 @@ namespace NPOMS.API.Controllers
                 
 				var results = await this._evaluationService.UpdateScorecardRejectionResponse(model, base.GetUserIdentifier(), param);
 				
-				//if(param == 1)
-				//{
-				//	await RejectedScorecardEmail(response);
-				//}
-
                 return Ok(results);
             }
             catch (Exception ex)
@@ -308,13 +303,26 @@ namespace NPOMS.API.Controllers
                 }
 				if(isNewEntry == 0)
 				{
+					bool boolMailSent = false;
 					foreach(var response in responses)
 					{
                         if (response.RejectionFlag == 1 && response.CreatedUserId == currentUser.Id)
-                            await ScorecardAmmendmentEmail(response);
-                    }					
+						{
+							response.RejectionFlag = 0;
+							await _responseRepository.UpdateAsync(response);
+                           
+							if(boolMailSent == false)
+							{
+                                await ScorecardAmmendmentEmail(response);
+                                boolMailSent = true;
+                            }
+							
+                        }					
+                    }
+
+                    
                 }
-				else
+                else
 				{
                     await ScorecardSummaryEmail(fundingApplication);
                 }
