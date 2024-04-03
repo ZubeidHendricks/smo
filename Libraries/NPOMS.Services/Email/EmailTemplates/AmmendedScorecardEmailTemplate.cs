@@ -81,6 +81,7 @@ namespace NPOMS.Services.Email.EmailTemplates
             var returnResult = value.Replace("{ToUserFullName}", contactPerson)
                                     .Replace("{ApplicationRefNo}", application.RefNo)
                                     .Replace("{url}", origin)
+                                    .Replace("{ApplicationId}", application.Id.ToString())
                                     .Replace("{npoId}", id.ToString())
                                     .Replace("{organisationName}", npo.Name)
                                     .Replace("{financialYear}", application.ApplicationPeriod.FinancialYear.Name);

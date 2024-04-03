@@ -30,7 +30,7 @@ namespace NPOMS.Services.Email.EmailTemplates
         {
             var emailQueueService = EngineContext.Current.Resolve<IEmailQueueService>();
             var emailTemplateService = EngineContext.Current.Resolve<IEmailTemplateService>();
-            var logger = EngineContext.Current.Resolve<ILogger<ScorecardSummaryEmailTemplates>>();
+            var logger = EngineContext.Current.Resolve<ILogger<RejectedScorecardEmailTemplate>>();
             var applicationRepository = EngineContext.Current.Resolve<IApplicationRepository>();
             var httpContextAccessor = EngineContext.Current.Resolve<IHttpContextAccessor>();
             var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.RejectedScorecard);
@@ -83,6 +83,7 @@ namespace NPOMS.Services.Email.EmailTemplates
             var returnResult = value.Replace("{ToUserFullName}", contactPerson)
                                     .Replace("{ApplicationRefNo}", application.RefNo)
                                     .Replace("{url}", origin)
+                                    .Replace("{ApplicationId}", application.Id.ToString())
                                     .Replace("{npoId}", id.ToString())
                                     .Replace("{organisationName}", npo.Name)
                                     .Replace("{financialYear}", application.ApplicationPeriod.FinancialYear.Name);
