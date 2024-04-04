@@ -178,6 +178,8 @@ export class ReviewScorecardComponent implements OnInit {
   disableScorerCommentIcon: boolean;
   disableMainReviewerCommentIcon:boolean;
   disableButton: boolean;
+  questionCategory: string;
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -1131,15 +1133,20 @@ export class ReviewScorecardComponent implements OnInit {
       })
   }
 
-  public onSelectViewComment(question: IQuestionResponseViewModel) {
+  public onSelectViewComment(question: IQuestionResponseViewModel, questionCategoryName: string) {
     this._spinner.show();
     this._responseUsers = [];
+    this.questionCategory = questionCategoryName;
     this._evaluationService.getReviewerResponse(Number(this.id), question.questionId).subscribe(
       (results) => {
 
         results.forEach(data => {
           this.setReviewerName(data);
         });
+
+        results.forEach(data => {
+          this.setOptionName(data);
+        }); 
 
         this._responseUsers = results;
         this.displayCommentDialog = true;
@@ -1152,15 +1159,20 @@ export class ReviewScorecardComponent implements OnInit {
     );
   }
 
-  public onSelectAmendmentComment(question: IQuestionResponseViewModel) {
+  public onSelectAmendmentComment(question: IQuestionResponseViewModel, questionCategoryName: string) {
     this._spinner.show();
     this._responseUsers = [];
+    this.questionCategory = questionCategoryName;
     this._evaluationService.getReviewerResponse(Number(this.id), question.questionId).subscribe(
       (results) => {
 
         results.forEach(data => {
           this.setReviewerName(data);
         });
+
+        results.forEach(data => {
+          this.setOptionName(data);
+        }); 
 
         this._responseUsers = results;
         this.displayAmendmentCommentDialog = true;
@@ -1184,7 +1196,20 @@ export class ReviewScorecardComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
 
+    private setOptionName(data: IGetResponseOption) {
+     // alert(data.r)
+      this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption,true).subscribe(
+        (results) => {
+          this.responseOptions = results
+          data.responseOptionName = Number(this.responseOptions.filter(x=> x.id === data.responseOptionId)[0].name);
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
   }
 
   public performanceComment(v: number) {
