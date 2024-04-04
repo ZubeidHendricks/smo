@@ -13,6 +13,10 @@ using NPOMS.Services.Implementation;
 using NPOMS.Repository.Interfaces.Evaluation;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using NPOMS.Repository.Interfaces.Core;
+using Microsoft.Graph;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Collections.Generic;
+using Application = NPOMS.Domain.Entities.Application;
 
 namespace NPOMS.API.Controllers
 {
@@ -254,12 +258,20 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var responses =  await _evaluationService.GetResponse(fundingApplicationId);
+				List<Response> res = new List<Response>();
 
+                var responses =  await _evaluationService.GetResponse(fundingApplicationId);
+				
 				foreach(var response in responses)
-				{
+				{					
 					if(response.RejectionFlag == 1)
-                    await RejectedScorecardEmail(response);
+					{  
+						if(res.Find(x => x.CreatedUserId == response.CreatedUserId) == null)
+						{
+                            await RejectedScorecardEmail(response);
+                        }                        
+                        res.Add(response);
+                    }						
                 }
                     
                 return Ok();
@@ -318,9 +330,7 @@ namespace NPOMS.API.Controllers
                             }
 							
                         }					
-                    }
-
-                    
+                    }                    
                 }
                 else
 				{

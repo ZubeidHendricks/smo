@@ -77,11 +77,11 @@
                     <td style="text-align: center;">
                         <button *ngIf="question.hasComment"  pButton pRipple type="button"
                         class="p-button-text action-button" icon="fa fa-comments-o"
-                        pTooltip="Comments" tooltipPosition="top" (click)="onSelectViewComment(question)"></button>&nbsp;
+                        pTooltip="Comments" tooltipPosition="top" (click)="onSelectViewComment(question, question.questionCategoryName)"></button>&nbsp;
                        <div *ngIf = "hideComment() === false">
                             <button *ngIf="question.hasComment"  pButton pRipple type="button"
                             class="p-button-text action-button" icon="fa fa-pencil-square-o"
-                            pTooltip="Amendment" tooltipPosition="top" (click)="onSelectAmendmentComment(question)"></button>   
+                            pTooltip="Amendment" tooltipPosition="top" (click)="onSelectAmendmentComment(question, question.questionCategoryName)"></button>   
                        </div>                                            
                     </td>
                     <td style="text-align: center;"><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span></td>
@@ -357,42 +357,46 @@
     </div>
 </p-panel>
 
-<p-dialog header="Comments" [(visible)]="displayCommentDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+<p-dialog header="Comments" [(visible)]="displayCommentDialog" [style]="{width: '75vw'}" [focusOnShow]="false"
     showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
     <p-table [rowHover]="true" [style]="{'border':'none'}"
         [value]="_responseUsers" styleClass="p-datatable-sm" [showCurrentPageReport]="true">
         <ng-template pTemplate="header" let-columns>
             <tr>
-                <th>
+                <th colspan="5">{{questionCategory}}</th>
+            </tr>
+            <tr>
+                <th style="text-align: center;">
                     #
                 </th>
-                <th>
+                <th style="text-align: center;">Score</th>
+                <th style="text-align: center;">
                     Main Reviewer Category Comments
                 </th>
-                <th>
+                <th style="text-align: center;">
                     Commented By
                 </th>
-                <th>
+                <!-- <th>
                     Reviewer Category Comments                  
                 </th>
                 <th>
                     Commented By
-                </th>
+                </th> -->
                 <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td style="text-align: center;">{{rowData.responseOptionName}}</td>
                 <td>{{rowData.mainReviewerCategoryComment}}</td>
                 <td>{{rowData.rejectedByUser}}</td>
-                <td>
+                <!-- <td>
                     {{rowData.reviewerCategoryComment}}
                 </td>
                 <td>
                     {{rowData.createdUser.fullName}}
-                    <!-- <br><span>{{ReviewerUpdatedDateTime | date: 'yyyy-MM-dd'}}</span> -->
-                </td>
+                </td> -->
                 <td>
                     <button type="button" [disabled] = mainReviewerComment()
                     (click)="click(rowData.fundingApplicationId, rowData.questionId, rowData.createdUser.id, rowData.responseOptionId, 0)"> 
@@ -404,27 +408,31 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Amendment Comments" [(visible)]="displayAmendmentCommentDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+<p-dialog header="Amendment Comments" [(visible)]="displayAmendmentCommentDialog" [style]="{width: '75vw'}" [focusOnShow]="false"
     showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
     <p-table [rowHover]="true" [style]="{'border':'none'}"
         [value]="_responseUsers" styleClass="p-datatable-sm" [showCurrentPageReport]="true">
         <ng-template pTemplate="header" let-columns>
             <tr>
-                <th>
+                <th colspan="7">{{questionCategory}}</th>
+            </tr>
+            <tr>
+                <th style="text-align: center; width: 5%;">
                     #
                 </th>
-                <th>
+                <th style="text-align: center; width: 10%;">Score</th>
+                <th style="text-align: center; width: 30%;">
                     Reviewer Comments
                 </th>
-                <th>
+                <th style="text-align: center;">
                     Commented By
                 </th>
-                <th>
+                <th style="text-align: center; width: 30%;"> 
                     <div *ngIf = "hideComment() === false">
                         Main Reviewer Comments
                     </div>
                 </th>
-                <th>
+                <th style="text-align: center;">
                     <div *ngIf = "hideComment() === false">
                         Requested By
                     </div>
@@ -434,10 +442,11 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
-                <td style="text-align: center;">{{rowIndex + 1}}</td>
-                <td>{{rowData.comment}}</td>
+                <td style="text-align: center; width: 5%;">{{rowIndex + 1}}</td>
+                <td style="text-align: center; width: 10%;">{{rowData.responseOptionName}}</td>
+                <td style="text-align: left; width: 30%;">{{rowData.comment}}</td>
                 <td>{{rowData.createdUser.fullName}}</td>
-                <td>
+                <td style="text-align: left; width: 30%;">
                     <div *ngIf = "hideComment() === false">
                         {{rowData.rejectionComment}}
                     </div>

@@ -1415,6 +1415,7 @@ export interface IGetResponseOption {
     fundingApplicationId: number;
     questionId: number;
     responseOptionId: number;
+    responseOptionName:number;
     comment: string;
     rejectionComment: string;
     createdUserId: number;
