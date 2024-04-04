@@ -155,6 +155,7 @@ namespace NPOMS.Services.Implementation
             {
                 response.ResponseOptionId = model.ResponseOptionId;
                 response.Comment = model.Comment;
+                response.ReviewerCategoryComment = model.ReviewerCategoryComment;
                 response.UpdatedUserId = currentUser.Id;
                 response.UpdatedDateTime = DateTime.Now;
                 await _responseRepository.UpdateAsync(response);
@@ -193,9 +194,9 @@ namespace NPOMS.Services.Implementation
             {
                 response.ResponseOptionId = model.ResponseOptionId;
                 if(param == 1)
-                    response.RejectionComment = "Ammend - " + model.Comment;
-                else
                     response.RejectionComment = model.Comment;
+                else
+                response.MainReviewerCategoryComment = model.Comment;
                 response.RejectedByUserId = currentUser.Id;
                 response.UpdatedUserId = currentUser.Id;
                 response.UpdatedDateTime = DateTime.Now;
@@ -260,7 +261,6 @@ namespace NPOMS.Services.Implementation
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, model.QuestionCategoryId, currentUser.Id);
-           
             if (capturedResponse == null)
             {
                 model.CreatedUser = null;

@@ -1349,6 +1349,7 @@ export interface IResponse {
     questionId: number;
     responseOptionId: number;
     comment: string;
+    reviewerCategoryComment: string;
 }
 
 export interface IQuestionResponseViewModel {
@@ -1374,6 +1375,7 @@ export interface IQuestionResponseViewModel {
     comment: string;
     rejectionComment: string;
     rejectionFlag: boolean;
+    reviewerCategoryComment: string;
     isSaved: boolean;
     createdUserId: number;
     responseOption: IResponseOption;
@@ -1418,6 +1420,8 @@ export interface IGetResponseOption {
     createdUserId: number;
     rejectedByUserId: number;
     rejectedByUser: string;
+    mainReviewerCategoryComment: string;
+    reviewerCategoryComment: string;
     responseOption: IResponseOption;
     createdUser: IUser;
 }

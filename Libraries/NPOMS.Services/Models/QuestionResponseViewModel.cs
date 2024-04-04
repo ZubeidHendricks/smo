@@ -41,6 +41,8 @@ namespace NPOMS.Services.Models
 
         public string RejectionComment => Response == null ? string.Empty : Response.RejectionComment;
 
+        public string ReviewerCategoryComment => Response == null ? string.Empty : Response.ReviewerCategoryComment;
+
         public int RejectionFlag => Response == null ? 0 : Response.RejectionFlag;
 
         public bool IsSaved => Response != null && Response.Id > 0;
