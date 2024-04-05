@@ -1078,9 +1078,18 @@ export class ReviewScorecardComponent implements OnInit {
 
   public disableAmendementSubmit() {
     if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.Reviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
-    return false;
-
-    return true;
+    { 
+      if (this.capturedResponses.length > 0) {
+      return true;
+      }
+      else
+      {
+        return false;
+      }      
+    }
+    else{
+      return true;
+    }
   }
  
   public submit() {
@@ -1118,7 +1127,8 @@ export class ReviewScorecardComponent implements OnInit {
   private loadCapturedResponses() {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
       (results) => {
-        this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.userId);
+      //  this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.userId);
+      this.capturedResponses = results.filter(x => x.questionCategoryId === 100);
         if (this.capturedResponses.length > 0) {
           let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
           let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
@@ -1344,9 +1354,18 @@ export class ReviewScorecardComponent implements OnInit {
   mainReviewerComment()
   {
     if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
-      return false;
-
-    return true;
+    {
+      if (this.capturedResponses.length > 0) {
+        return true;
+      }
+      else
+      {
+        return false;
+      }      
+    }
+    else{
+      return true;
+    }
   }
 
   saveAmendComment(changesRequired: boolean, origin: string) {

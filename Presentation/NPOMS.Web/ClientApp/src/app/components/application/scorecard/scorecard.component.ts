@@ -268,27 +268,31 @@ export class ScorecardComponent implements OnInit {
   }
 
   private getWorkflowCount() {
-    if (this.engagementQuestionnaire && this.engagementQuestionnaire[0]) {
-      this._evaluationService.workflowAssessmentCount(Number(this.engagementQuestionnaire[0].questionCategoryId)).subscribe(
-        (res) => {
 
-          if (this.capturedResponsesCount && this.capturedResponsesCount.length === 10) {
-            alert('Add new score card limit reached. Can not add new score card');
-            this._router.navigateByUrl('applications');
-          }
-
-          if (this.capturedResponseCount && this.capturedResponseCount.length > 0) {
-            alert('Scorecard review completed for this application. Can not add new score card');
-            this._router.navigateByUrl('applications');
-          }
-
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
-        }
-      );
+    if (this.capturedResponsesCount && this.capturedResponsesCount.length >= 10) {
+      alert('Add new score card limit reached. Can not add new score card');
+      this._router.navigateByUrl('applications');
     }
+
+    if (this.capturedResponseCount && this.capturedResponseCount.length > 0) {
+      alert('Scorecard review completed for this application. Can not add new score card');
+      this._router.navigateByUrl('applications');
+    }
+
+
+    // if (this.engagementQuestionnaire && this.engagementQuestionnaire[0]) {
+    //   this._evaluationService.workflowAssessmentCount(Number(this.engagementQuestionnaire[0].questionCategoryId)).subscribe(
+    //     (res) => {
+
+         
+
+    //     },
+    //     (err) => {
+    //       this._loggerService.logException(err);
+    //       this._spinner.hide();
+    //     }
+    //   );
+    // }
   }
 
   private loadResponseOptions() {
