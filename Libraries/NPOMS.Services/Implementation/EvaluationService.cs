@@ -182,7 +182,7 @@ namespace NPOMS.Services.Implementation
             capturedResponse.disableFlag = param;
             response.RejectionFlag = param;
 
-             CapturedResponse cr = new CapturedResponse();
+            // CapturedResponse cr = new CapturedResponse();
             
             if (response == null)
             {
@@ -203,7 +203,7 @@ namespace NPOMS.Services.Implementation
                 await _responseRepository.UpdateAsync(response);
             }
 
-            await _capturedResponseRepository.UpdateAsync(capturedResponse);
+           // await _capturedResponseRepository.UpdateAsync(capturedResponse);
 
             var newResponse = response == null ? true : false;
             var modelToReturn = response == null ? model : response;
