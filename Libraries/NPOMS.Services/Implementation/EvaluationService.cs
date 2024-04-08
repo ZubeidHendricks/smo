@@ -241,9 +241,8 @@ namespace NPOMS.Services.Implementation
             return await _capturedResponseRepository.GetByFundingApplicationId(fundingApplicationId);
         }
 
-        public async Task UpdateReviewerComment(CapturedResponse model, string userIdentifier)
+        public async Task UpdateReviewerComment(CapturedResponse model, int createdUserId)
         {
-            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             CapturedResponse capturedResponse = await _capturedResponseRepository.GetById(model.Id);
 
             if (capturedResponse != null)
@@ -251,20 +250,19 @@ namespace NPOMS.Services.Implementation
                 capturedResponse.ReviewerComment = model.Comments;
                 capturedResponse.ReviewerUpdatedDateTime = DateTime.Now;
                 capturedResponse.UpdatedDateTime = DateTime.Now;
-                capturedResponse.UpdatedUserId = currentUser.Id;
+                capturedResponse.UpdatedUserId = createdUserId;
 
                 await _capturedResponseRepository.UpdateAsync(capturedResponse);
 
             }
         }
-        public async Task CreateCapturedResponse(CapturedResponse model, string userIdentifier)
+        public async Task CreateCapturedResponse(CapturedResponse model, int createdUserId)
         {
-            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
-            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, model.QuestionCategoryId, currentUser.Id);
+            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, model.QuestionCategoryId, createdUserId);
             if (capturedResponse == null)
             {
                 model.CreatedUser = null;
-                model.CreatedUserId = currentUser.Id;
+                model.CreatedUserId = createdUserId;
                 model.CreatedDateTime = DateTime.Now;
                 model.disableFlag = 0;
 
@@ -274,8 +272,8 @@ namespace NPOMS.Services.Implementation
             {
                 capturedResponse.Comments = model.Comments;
                 capturedResponse.UpdatedDateTime = DateTime.Now;
-                capturedResponse.UpdatedUserId = currentUser.Id;
-                capturedResponse.disableFlag = 0;
+                capturedResponse.UpdatedUserId = createdUserId;
+                capturedResponse.disableFlag = model.disableFlag;
 
                 await _capturedResponseRepository.UpdateAsync(capturedResponse);
             }          

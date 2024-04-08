@@ -31,8 +31,8 @@ namespace NPOMS.Services.Interfaces
 
 		Task<IEnumerable<CapturedResponse>> GetCapturedResponses(int fundingApplicationId);
 
-		Task CreateCapturedResponse(CapturedResponse model, string userIdentifier);
-        Task UpdateReviewerComment(CapturedResponse model, string userIdentifier);        
+		Task CreateCapturedResponse(CapturedResponse model, int createdUserId);
+        Task UpdateReviewerComment(CapturedResponse model, int createdUserId);        
 
         Task<WorkflowAssessment> GetWorkflowAssessmentByQuestionCategoryId(int questionCategoryId);
 	}
