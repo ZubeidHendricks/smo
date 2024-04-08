@@ -177,12 +177,11 @@ namespace NPOMS.Services.Implementation
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             var response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId);
-            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, response.CreatedUserId);
+            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, currentUser.Id);
 
             capturedResponse.disableFlag = param;
             response.RejectionFlag = param;
 
-            // CapturedResponse cr = new CapturedResponse();
             
             if (response == null)
             {
