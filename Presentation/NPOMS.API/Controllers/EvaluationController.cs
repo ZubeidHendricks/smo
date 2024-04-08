@@ -240,9 +240,10 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(base.GetUserIdentifier());
                 Response response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId);
                 
-				CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, model.CreatedUserId);
+				CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, currentUser.Id);
 				capturedResponse.disableFlag = 1;
                 await this._capturedResponseRepository.UpdateAsync(capturedResponse);
 
