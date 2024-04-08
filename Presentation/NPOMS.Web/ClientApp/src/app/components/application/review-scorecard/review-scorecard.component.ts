@@ -1361,7 +1361,7 @@ export class ReviewScorecardComponent implements OnInit {
   {
     if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
     {
-      if (this.capturedResponses.length > 0) {
+      if (this.capturedResponse.length > 0) {
         return true;
       }
       else
