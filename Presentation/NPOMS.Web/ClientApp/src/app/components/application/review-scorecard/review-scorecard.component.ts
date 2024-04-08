@@ -156,7 +156,7 @@ export class ReviewScorecardComponent implements OnInit {
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
   hasScorecardSubmitted: boolean = false;
- 
+  hasScorecardPending: boolean = false;
   signedByUser: string;
   submittedDate: Date;
   signedByUserScorecardUser: string;
@@ -165,6 +165,7 @@ export class ReviewScorecardComponent implements OnInit {
   npo: INpo;
   organisation: string;
   capturedResponses: ICapturedResponse[];
+  capturedResponse: ICapturedResponse[];
   name: IResp[] = [];
   _name: IResp[] = [];
 
@@ -1094,6 +1095,12 @@ export class ReviewScorecardComponent implements OnInit {
  
   public submit() {
 
+    if(this.hasScorecardPending === true)
+    {
+      alert('Some of the amendments request was not resubmitted');
+      return false;
+    }
+
     this.createCapturedResponse();
   }
 
@@ -1127,19 +1134,24 @@ export class ReviewScorecardComponent implements OnInit {
   private loadCapturedResponses() {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
       (results) => {
-      //  this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.userId);
-      this.capturedResponses = results.filter(x => x.questionCategoryId === 100);
-        if (this.capturedResponses.length > 0) {
-          let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
-          let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
+      this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.disableFlag === 1);
+
+      this.capturedResponse = results.filter(x => x.questionCategoryId === 100);
+        if (this.capturedResponse.length > 0) {
+          let requiredAction = this.capturedResponse[0].comments.slice(this.capturedResponse[0].comments.indexOf('/') + 1);
+          let improvementArea = this.capturedResponse[0].comments.substring(0, this.capturedResponse[0].comments.indexOf("/"));
           this.captureImprovementArea = improvementArea;
           this.captureRequiredAction = requiredAction;
-          this.signedByUser = this.capturedResponses[0].createdUser.fullName;
-          this.submittedDate = this.capturedResponses[0].createdDateTime;
+          this.signedByUser = this.capturedResponse[0].createdUser.fullName;
+          this.submittedDate = this.capturedResponse[0].createdDateTime;         
           this.hascapturedImprovementArea = true;
           this.hasCapturedRequiredAction = true;
           this.hasScorecardSubmitted = true;
         }
+        if (this.capturedResponses.length > 0) {
+          this.hasScorecardPending = true;
+        }
+
       })
   }
 
@@ -1209,7 +1221,6 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
     private setOptionName(data: IGetResponseOption) {
-     // alert(data.r)
       this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption,true).subscribe(
         (results) => {
           this.responseOptions = results
@@ -1288,11 +1299,6 @@ export class ReviewScorecardComponent implements OnInit {
 
         if (this.capturedResponses.length > 0) {
           this.displayMainReviewerCommentDialog = true;
-          // let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
-          // let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
-          // this.captureImprovementAreaComment = improvementArea;
-          // this.captureRequiredActionComment = requiredAction;
-          
           this.ReviewerComment = this.capturedResponses[0].reviewerComment;
           this.signedByUserScorecardUser = this.capturedResponses[0].createdUser.fullName;
           this.submittedDateByScorecardUser = this.capturedResponses[0].createdDateTime;
@@ -1381,7 +1387,8 @@ export class ReviewScorecardComponent implements OnInit {
       response.fundingApplicationId = this.fundingApplicationId;
       response.questionId = this.questionId;
       response.responseOptionId = this.responseOptionId;
-      response.comment = this.RejectComment;      
+      response.comment = this.RejectComment;   
+      response.createdUserId = this.profile.id; 
      this._evaluationService.updateRejectionComment(response, amendmentComment).subscribe(
        (results) => {
         let returnValue = results as IQuestionResponseViewModel;

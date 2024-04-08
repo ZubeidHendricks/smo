@@ -242,7 +242,11 @@ namespace NPOMS.API.Controllers
             {
                 Response response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId);
                 
-				var results = await this._evaluationService.UpdateScorecardRejectionResponse(model, base.GetUserIdentifier(), param);
+				CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, model.CreatedUserId);
+				capturedResponse.disableFlag = 1;
+                await this._capturedResponseRepository.UpdateAsync(capturedResponse);
+
+                var results = await this._evaluationService.UpdateScorecardRejectionResponse(model, base.GetUserIdentifier(), param);
 				
                 return Ok(results);
             }
@@ -304,11 +308,12 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-				var isNewEntry = model.disableFlag;
-                await this._evaluationService.CreateCapturedResponse(model, base.GetUserIdentifier());
+                var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(base.GetUserIdentifier());
+                var isNewEntry = model.disableFlag;
+                await this._evaluationService.CreateCapturedResponse(model, currentUser.Id);
                 var fundingApplication = await _applicationService.GetById(model.FundingApplicationId);
                 var responses = await _evaluationService.GetResponse(model.FundingApplicationId);
-                var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(base.GetUserIdentifier());
+
                 if (model.StatusId == 0)
 				{
 					await UpdateFundedApplicationScorecardCount(model);
@@ -351,7 +356,8 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                await this._evaluationService.UpdateReviewerComment(model, base.GetUserIdentifier());
+                var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(base.GetUserIdentifier());
+                await this._evaluationService.UpdateReviewerComment(model, currentUser.Id);
                
                 return Ok(model);
             }
@@ -367,7 +373,8 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
-				await this._evaluationService.CreateCapturedResponse(model, base.GetUserIdentifier());
+                var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(base.GetUserIdentifier());
+                await this._evaluationService.CreateCapturedResponse(model, currentUser.Id);
 				await UpdateFundingApplicationStatus(model);
 				return Ok(model);
 			}

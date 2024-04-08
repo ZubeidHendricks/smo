@@ -158,20 +158,21 @@ export class ScorecardComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-
-        this.userId = this.profile.id;
         this.loadCapturedResponses();
+      //  this.userId = this.profile.id;
+       
       }
     });
     
     this.getQuestionCategory();
     this.loadQuestionnaire();
     this.getResponseType();      
-    this.loadApplications();
+    this.loadApplications(); 
+   
   }
 
-  private setEngagementStatus(response: boolean) {
-    if(response == true)
+  private setEngagementStatus(response: number) {
+    if(response == 1)
     {
       this.hasEngagementDisable = false;
 
@@ -182,8 +183,8 @@ export class ScorecardComponent implements OnInit {
     }
   }
 
-  private setTimeWorkPlanStatus(response: boolean) {
-    if(response == true)
+  private setTimeWorkPlanStatus(response: number) {
+    if(response == 1)
     {
       this.hasTimeWorkPlanDisable = false;
     }
@@ -192,8 +193,8 @@ export class ScorecardComponent implements OnInit {
     }
   }
 
-  private setImpactStatus(response: boolean) {
-    if(response == true)
+  private setImpactStatus(response: number) {
+    if(response == 1)
     {
       this.hasImpactDisable = false;
     }
@@ -202,25 +203,26 @@ export class ScorecardComponent implements OnInit {
     }
   }
 
-  private setRiskMitigationStatus(response: boolean) {
-    if(response == true)
+  private setRiskMitigationStatus(response: number) {
+    if(response == 1)
     {
       this.hasRiskMitigationDisable = false;
     }
     else{
       this.hasRiskMitigationDisable = true;
+     // this.hasScorecardSubmitted = true;
     }
   }
 
-  private setAppropriationOfResourcesStatus(response: boolean) {
-    if(response == true)
+  private setAppropriationOfResourcesStatus(response: number) {
+    if(response == 1)
     {
       this.hasAppropriationOfResourcesDisable = false;
-      this.hasScorecardSubmitted = false;
+     // this.hasScorecardSubmitted = false;
     }
     else{
       this.hasAppropriationOfResourcesDisable = true;
-     this.hasScorecardSubmitted = false;
+    // this.hasScorecardSubmitted = true;
     }
   }
 
@@ -236,26 +238,58 @@ export class ScorecardComponent implements OnInit {
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         
         this.engagementQuestionnaire.forEach(response => {
-          this.setEngagementStatus(response.rejectionFlag);
+          if(response.createdUserId === this.profile.id)
+          {
+            this.setEngagementStatus(response.rejectionFlag);
+          }
+          else{
+            this.setEngagementStatus(1);
+          }
+            
         });
 
         this.timeWorkPlanQuestionnaire.forEach(response => {
-          this.setTimeWorkPlanStatus(response.rejectionFlag);
+          if(response.createdUserId === this.profile.id)
+          {
+            this.setTimeWorkPlanStatus(response.rejectionFlag);
+          }
+          else{
+            this.setTimeWorkPlanStatus(1);
+          }            
         });
 
         this.impactQuestionnaire.forEach(response => {
-          this.setImpactStatus(response.rejectionFlag);
+          if(response.createdUserId === this.profile.id)
+          {
+            this.setImpactStatus(response.rejectionFlag);
+          }
+          else{
+            this.setImpactStatus(1);
+          } 
         });
 
         this.riskMitigationQuestionnaire.forEach(response => {
-          this.setRiskMitigationStatus(response.rejectionFlag);
+          if(response.createdUserId === this.profile.id)
+          {
+            this.setRiskMitigationStatus(response.rejectionFlag);
+          }
+          else{
+            this.setRiskMitigationStatus(1);
+          } 
         });
 
         this.appropriationOfResourcesQuestionnaire.forEach(response => {
-          this.setAppropriationOfResourcesStatus(response.rejectionFlag);
+          if(response.createdUserId === this.profile.id)
+          {
+            this.setAppropriationOfResourcesStatus(response.rejectionFlag);
+          }
+          else{
+            this.setAppropriationOfResourcesStatus(1);
+          } 
         });
         
         this.loadResponseOptions();
+       
         this.getWorkflowCount();
        
          this._spinner.hide();
@@ -879,7 +913,7 @@ export class ScorecardComponent implements OnInit {
   public selectedResponses() {
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
-        this._responses = results.filter(x => x.createdUserId === this.userId);
+        this._responses = results.filter(x => x.createdUserId === this.profile.id);
         let overallTotalScore = 0;
         let length = this._responses.length;
 
@@ -912,7 +946,6 @@ export class ScorecardComponent implements OnInit {
   }
 
   public submit() {
-
     this.createCapturedResponse();
   }
 
@@ -956,7 +989,7 @@ export class ScorecardComponent implements OnInit {
         this.capturedResponsesCount = results.filter(x => x.questionCategoryId === 0);
         this.capturedResponseCount = results.filter(x => x.questionCategoryId === 100);
 
-        this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.userId);
+        this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.profile.id);
 
         if (this.capturedResponses.length > 0) {
           let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);

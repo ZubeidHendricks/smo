@@ -349,9 +349,9 @@
             <span>{{submittedDate | date: 'yyyy-MM-dd'}}</span>
         </div>
     </div>
-    <div class="p-grid p-nogutter p-justify-end">
+    <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasScorecardSubmitted">
        
-        <button pButton type="button" label="Submit Scorecard" icon="fa fa-floppy-o" [disabled] = "disableSubmit()"
+        <button pButton type="button" label="Submit Scorecard" icon="fa fa-floppy-o"
         (click)="submit()" [disabled]="disableElement()"></button>
            
     </div>
