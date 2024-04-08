@@ -1388,7 +1388,6 @@ export class ReviewScorecardComponent implements OnInit {
       response.questionId = this.questionId;
       response.responseOptionId = this.responseOptionId;
       response.comment = this.RejectComment;   
-      response.createdUserId = this.profile.id; 
      this._evaluationService.updateRejectionComment(response, amendmentComment).subscribe(
        (results) => {
         let returnValue = results as IQuestionResponseViewModel;
