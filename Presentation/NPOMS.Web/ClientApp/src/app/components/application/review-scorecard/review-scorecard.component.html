@@ -376,12 +376,12 @@
                 <th style="text-align: center;">
                     Commented By
                 </th>
-                <!-- <th>
+                <th>
                     Reviewer Category Comments                  
                 </th>
                 <th>
                     Commented By
-                </th> -->
+                </th>
                 <th></th>
             </tr>
         </ng-template>
@@ -391,12 +391,12 @@
                 <td style="text-align: center;">{{rowData.responseOptionName}}</td>
                 <td>{{rowData.mainReviewerCategoryComment}}</td>
                 <td>{{rowData.rejectedByUser}}</td>
-                <!-- <td>
+                <td>
                     {{rowData.reviewerCategoryComment}}
                 </td>
                 <td>
                     {{rowData.createdUser.fullName}}
-                </td> -->
+                </td>
                 <td>
                     <button type="button" [disabled] = mainReviewerComment()
                     (click)="click(rowData.fundingApplicationId, rowData.questionId, rowData.createdUser.id, rowData.responseOptionId, 0)"> 
