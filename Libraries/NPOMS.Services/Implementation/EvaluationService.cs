@@ -202,7 +202,7 @@ namespace NPOMS.Services.Implementation
                 await _responseRepository.UpdateAsync(response);
             }
 
-           // await _capturedResponseRepository.UpdateAsync(capturedResponse);
+            await _capturedResponseRepository.UpdateAsync(capturedResponse);
 
             var newResponse = response == null ? true : false;
             var modelToReturn = response == null ? model : response;

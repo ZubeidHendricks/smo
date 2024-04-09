@@ -1318,7 +1318,7 @@ export class ReviewScorecardComponent implements OnInit {
     this.addAmendCommentDialog = true; 
     this.fundingApplicationId = fundingApplicationId;
     this.questionId = questionId;
-    this.rejectedByUserId = this.userId;
+    this.rejectedByUserId = this.profile.id;
     this.responseOptionId = responseOptionId;
     if(param === 1)
     {
