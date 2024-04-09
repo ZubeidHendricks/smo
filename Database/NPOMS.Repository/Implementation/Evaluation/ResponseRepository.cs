@@ -63,11 +63,29 @@ namespace NPOMS.Repository.Implementation.Evaluation
 							.AsNoTracking().FirstOrDefaultAsync();
 		}
 
+        public async Task<Response> GetResponseByIds(int fundingApplicationId, int questionId, int responseOptionId, int createdUserId)
+        {
+            return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
+                                              x.QuestionId.Equals(questionId) &&
+                                              x.ResponseOptionId.Equals(responseOptionId) &&
+                                              x.CreatedUserId.Equals(createdUserId))
+                            .AsNoTracking().FirstOrDefaultAsync();
+        }
+
         public async Task<Response> GetResponses(int fundingApplicationId, int questionId, int responseOptionId)
         {
             return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
                                               x.QuestionId.Equals(questionId) &&
                                               x.ResponseOptionId.Equals(responseOptionId))
+                            .AsNoTracking().FirstOrDefaultAsync();
+        }
+
+        public async Task<Response> GetResponses(int fundingApplicationId, int questionId, int responseOptionId, int createdUserId)
+        {
+            return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
+                                              x.QuestionId.Equals(questionId) &&
+                                              x.ResponseOptionId.Equals(responseOptionId)&&
+                                              x.CreatedUserId.Equals(createdUserId))
                             .AsNoTracking().FirstOrDefaultAsync();
         }
 

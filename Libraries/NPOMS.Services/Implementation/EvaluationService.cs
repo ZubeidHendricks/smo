@@ -176,8 +176,8 @@ namespace NPOMS.Services.Implementation
         public async Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier, int param)
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
-            var response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId);
-            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, currentUser.Id);
+            var response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId, model.CreatedUserId);
+            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, model.CreatedUserId);
 
             capturedResponse.disableFlag = param;
             response.RejectionFlag = param;

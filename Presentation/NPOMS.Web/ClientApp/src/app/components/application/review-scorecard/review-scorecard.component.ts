@@ -152,6 +152,7 @@ export class ReviewScorecardComponent implements OnInit {
   captureRequiredAction: string;
   captureImprovementAreaComment: string;
   captureRequiredActionComment: string;
+  createdUserId:number;
 
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
@@ -1318,7 +1319,7 @@ export class ReviewScorecardComponent implements OnInit {
     this.addAmendCommentDialog = true; 
     this.fundingApplicationId = fundingApplicationId;
     this.questionId = questionId;
-    this.rejectedByUserId = this.profile.id;
+    this.createdUserId = userId;
     this.responseOptionId = responseOptionId;
     if(param === 1)
     {
@@ -1388,6 +1389,7 @@ export class ReviewScorecardComponent implements OnInit {
       response.questionId = this.questionId;
       response.responseOptionId = this.responseOptionId;
       response.comment = this.RejectComment;   
+      response.createdUserId = this.createdUserId;
      this._evaluationService.updateRejectionComment(response, amendmentComment).subscribe(
        (results) => {
         let returnValue = results as IQuestionResponseViewModel;
