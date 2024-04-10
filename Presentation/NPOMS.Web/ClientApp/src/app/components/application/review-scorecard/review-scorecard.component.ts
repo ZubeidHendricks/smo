@@ -1079,9 +1079,9 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   public disableAmendementSubmit() {
-    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.Reviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
+    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
     { 
-      if (this.capturedResponses.length > 0) {
+      if (this.capturedResponse.length > 0) {
       return true;
       }
       else

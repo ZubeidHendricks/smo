@@ -485,7 +485,7 @@ export class ApplicationListComponent implements OnInit {
     // { 
     //   this.optionItemExists('Capture Scorecard');
     // }
-   
+   //
     if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount > 0)
     { 
       if(this.response !== 0)
