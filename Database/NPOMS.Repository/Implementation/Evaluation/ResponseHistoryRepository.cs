@@ -34,7 +34,8 @@ namespace NPOMS.Repository.Implementation.Evaluation
         {
             return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
                                               x.QuestionId.Equals(questionId) &&
-                                              x.CreatedUserId.Equals(currentUserId))
+                                              x.CreatedUserId.Equals(currentUserId)
+											  && x.Comment != "")
                             .Include(x => x.ResponseOption).Include(x => x.CreatedUser)
                             .OrderBy(x => x.CreatedDateTime).FirstOrDefaultAsync();
         }
