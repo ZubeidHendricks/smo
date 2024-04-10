@@ -1419,6 +1419,7 @@ export interface IGetResponseOption {
     responseOptionId: number;
     responseOptionName:number;
     comment: string;
+    initialComment: string;
     rejectionComment: string;
     createdUserId: number;
     rejectedByUserId: number;
@@ -1435,6 +1436,7 @@ export interface IResponseHistory {
     questionId: number;
     responseOptionId: number;
     comment: string;
+    createdUserId: number;
 }
 
 //export interface IBudget {

@@ -30,6 +30,15 @@ namespace NPOMS.Repository.Implementation.Evaluation
 							.OrderByDescending(x => x.CreatedDateTime).AsNoTracking().ToListAsync();
 		}
 
+        public async Task<ResponseHistory> GetSingleValueByIds(int fundingApplicationId, int questionId, int currentUserId)
+        {
+            return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
+                                              x.QuestionId.Equals(questionId) &&
+                                              x.CreatedUserId.Equals(currentUserId))
+                            .Include(x => x.ResponseOption).Include(x => x.CreatedUser)
+                            .OrderBy(x => x.CreatedDateTime).FirstOrDefaultAsync();
+        }
+
         public async Task<ResponseHistory> DeleteById(int id)
         {
             var model = await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();

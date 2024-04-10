@@ -15,6 +15,9 @@ namespace NPOMS.Services.Interfaces
         Task<IEnumerable<QuestionResponseViewModel>> GetCompletedQuestionnaires(int fundingApplicationId, int questionCategoryId, int createdUserId);
 
 		Task<IEnumerable<ResponseHistory>> GetResponseHistory(int fundingApplicationId, int questionId, string userIdentifier);
+
+        Task<ResponseHistory> GetSingleResponseHistory(int fundingApplicationId, int questionId, int userId);
+
         Task<IEnumerable<Response>> GetResponses(int fundingApplicationId, int questionId, string userIdentifier);
 
         Task<IEnumerable<Response>> GetResponse(int fundingApplicationId);

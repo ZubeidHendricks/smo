@@ -143,7 +143,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("fundingAppId/{fundingAppId}/questionId/{questionId}", Name = "getResponses")]
+        [HttpGet("fundAppId/{fundAppId}/questionId/{questionId}/userId/{userId}", Name = "getSingleResponseHistory")]
+        public async Task<IActionResult> getSingleResponseHistory(int fundAppId, int questionId, int userId)
+        {
+            try
+            {
+                var results = await _evaluationService.GetSingleResponseHistory(fundAppId, questionId, userId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetResponseHistory action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("fundingAppId/{fundingAppId}/questionId/{questionId}", Name = "getResponses")]
 		public async Task<IActionResult> GetResponses(int fundingAppId, int questionId)
 		{
 			try

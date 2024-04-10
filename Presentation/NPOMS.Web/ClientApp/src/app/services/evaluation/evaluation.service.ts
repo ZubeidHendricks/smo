@@ -54,6 +54,11 @@ export class EvaluationService {
     const url = `${this._envUrl.urlAddress}/api/evaluation/fundingApplicationId/${fundingApplicationId}/questionId/${questionId}`;
     return this._http.get<IResponseHistory[]>(url, httpOptions);
   }
+
+  public getSingleResponseHistory(fundAppId: number, questionId: number, userId: number) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/fundAppId/${fundAppId}/questionId/${questionId}/userId/${userId}`;
+    return this._http.get<IResponseHistory>(url, httpOptions);
+  }
   
   public getResponse(id: number) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/Id/${id}`;

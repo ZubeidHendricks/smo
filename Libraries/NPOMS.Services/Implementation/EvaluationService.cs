@@ -93,6 +93,11 @@ namespace NPOMS.Services.Implementation
             return await _responseHistoryRepository.GetByIds(fundingApplicationId, questionId, currentUser.Id);
         }
 
+        public async Task<ResponseHistory> GetSingleResponseHistory(int fundingApplicationId, int questionId, int userId)
+        {
+            return await _responseHistoryRepository.GetSingleValueByIds(fundingApplicationId, questionId, userId);
+        }
+
         public async Task<IEnumerable<Response>> GetResponses(int fundingApplicationId, int questionId, string userIdentifier)
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);

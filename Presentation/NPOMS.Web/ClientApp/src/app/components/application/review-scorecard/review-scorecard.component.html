@@ -77,11 +77,11 @@
                     <td style="text-align: center;">
                         <button *ngIf="question.hasComment"  pButton pRipple type="button"
                         class="p-button-text action-button" icon="fa fa-comments-o"
-                        pTooltip="Comments" tooltipPosition="top" (click)="onSelectViewComment(question, question.questionCategoryName)"></button>&nbsp;
+                        pTooltip="Comments" tooltipPosition="top" (click)="onSelectViewComment(question, question.questionCategoryName, 0)"></button>&nbsp;
                        <div *ngIf = "hideComment() === false">
                             <button *ngIf="question.hasComment"  pButton pRipple type="button"
                             class="p-button-text action-button" icon="fa fa-pencil-square-o"
-                            pTooltip="Amendment" tooltipPosition="top" (click)="onSelectAmendmentComment(question, question.questionCategoryName)"></button>   
+                            pTooltip="Amendment" tooltipPosition="top" (click)="onSelectAmendmentComment(question, question.questionCategoryName, 1)"></button>   
                        </div>                                            
                     </td>
                     <td style="text-align: center;"><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span></td>
@@ -306,7 +306,7 @@
     <div class="p-grid">
         <div class="p-col-3 form-label">
             <div class="box">
-                <span class="non-mandatory-content">Improvement Areas
+                <span class="mandatory-content">Improvement Areas
                 </span>
             </div>
         </div>
@@ -317,13 +317,26 @@
         </div>
         <div class="p-col-3 form-label">
             <div class="box">
-                <span class="non-mandatory-content">Required Actions
+                <span class="mandatory-content">Required Actions
                 </span>
             </div>
         </div>
         <div class="p-col-9">
             <textarea class="form-text" [rows]="3" pInputTextarea 
             [(ngModel)]="captureRequiredAction" [ngModelOptions]="{standalone: true}" 
+            [autoResize]="true" [disabled]="hasCapturedRequiredAction"></textarea>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    <div class="p-grid">
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="non-mandatory-content" style="text-align: center;"><b>General Review Comment for Socrecard</b></span>
+            </div>
+        </div>
+        <div class="p-col-9">
+            <textarea class="form-text" [rows]="3" pInputTextarea 
+            [(ngModel)]="generalReviewComment" [ngModelOptions]="{standalone: true}" 
             [autoResize]="true" [disabled]="hasCapturedRequiredAction"></textarea>
         </div>
     </div>

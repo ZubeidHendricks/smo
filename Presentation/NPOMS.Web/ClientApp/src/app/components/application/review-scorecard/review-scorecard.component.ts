@@ -75,6 +75,7 @@ export class ReviewScorecardComponent implements OnInit {
   _responses: IResponseOptions[];
   _responseUsers: IGetResponseOption[];
   responseHistory: IResponseHistory[];
+  singleResponseHistory: IResponseHistory;
   displayCommentDialog: boolean;
   displayAmendmentCommentDialog: boolean;
   addAmendCommentDialog: boolean;
@@ -150,6 +151,7 @@ export class ReviewScorecardComponent implements OnInit {
 
   captureImprovementArea: string;
   captureRequiredAction: string;
+  generalReviewComment: string;
   captureImprovementAreaComment: string;
   captureRequiredActionComment: string;
   createdUserId:number;
@@ -181,6 +183,7 @@ export class ReviewScorecardComponent implements OnInit {
   disableMainReviewerCommentIcon:boolean;
   disableButton: boolean;
   questionCategory: string;
+  initialComment: string;
 
   constructor(
     private _router: Router,
@@ -1096,11 +1099,11 @@ export class ReviewScorecardComponent implements OnInit {
  
   public submit() {
 
-    if(this.hasScorecardPending === true)
-    {
-      alert('Some of the amendments request was not resubmitted');
-      return false;
-    }
+    // if(this.hasScorecardPending === true)
+    // {
+    //   alert('Some of the amendments request was not resubmitted');
+    //   return true;
+    // }
 
     this.createCapturedResponse();
   }
@@ -1111,7 +1114,7 @@ export class ReviewScorecardComponent implements OnInit {
       fundingApplicationId: this.application.id,
       statusId: 0,
       questionCategoryId: 100,
-      comments: this.captureImprovementArea + '/' + this.captureRequiredAction,
+      comments: this.captureImprovementArea + '/' + this.captureRequiredAction + '//' + this.generalReviewComment,
       isActive: true,
       isSignedOff: true,
       isDeclarationAccepted: true,
@@ -1139,10 +1142,12 @@ export class ReviewScorecardComponent implements OnInit {
 
       this.capturedResponse = results.filter(x => x.questionCategoryId === 100);
         if (this.capturedResponse.length > 0) {
-          let requiredAction = this.capturedResponse[0].comments.slice(this.capturedResponse[0].comments.indexOf('/') + 1);
+          let requiredAction = this.capturedResponse[0].comments.substring(this.capturedResponse[0].comments.indexOf("/") + 1, this.capturedResponse[0].comments.indexOf('//'));
           let improvementArea = this.capturedResponse[0].comments.substring(0, this.capturedResponse[0].comments.indexOf("/"));
+          let generalComment = this.capturedResponse[0].comments.slice(this.capturedResponse[0].comments.indexOf('//') + 2);
           this.captureImprovementArea = improvementArea;
           this.captureRequiredAction = requiredAction;
+          this.generalReviewComment = generalComment;
           this.signedByUser = this.capturedResponse[0].createdUser.fullName;
           this.submittedDate = this.capturedResponse[0].createdDateTime;         
           this.hascapturedImprovementArea = true;
@@ -1156,7 +1161,7 @@ export class ReviewScorecardComponent implements OnInit {
       })
   }
 
-  public onSelectViewComment(question: IQuestionResponseViewModel, questionCategoryName: string) {
+  public onSelectViewComment(question: IQuestionResponseViewModel, questionCategoryName: string, param: number) {
     this._spinner.show();
     this._responseUsers = [];
     this.questionCategory = questionCategoryName;
@@ -1171,6 +1176,13 @@ export class ReviewScorecardComponent implements OnInit {
           this.setOptionName(data);
         }); 
 
+        if(param === 0)
+        {
+          results.forEach(data => {
+            this.setInitialComment(data);
+          }); 
+        }
+       
         this._responseUsers = results;
         this.displayCommentDialog = true;
         this._spinner.hide();
@@ -1182,7 +1194,7 @@ export class ReviewScorecardComponent implements OnInit {
     );
   }
 
-  public onSelectAmendmentComment(question: IQuestionResponseViewModel, questionCategoryName: string) {
+  public onSelectAmendmentComment(question: IQuestionResponseViewModel, questionCategoryName: string, param: number) {
     this._spinner.show();
     this._responseUsers = [];
     this.questionCategory = questionCategoryName;
@@ -1195,8 +1207,15 @@ export class ReviewScorecardComponent implements OnInit {
 
         results.forEach(data => {
           this.setOptionName(data);
-        }); 
+        });
 
+        if(param === 0)
+        {
+          results.forEach(data => {
+            this.setInitialComment(data);
+          }); 
+        }       
+        
         this._responseUsers = results;
         this.displayAmendmentCommentDialog = true;
         this._spinner.hide();
@@ -1233,6 +1252,20 @@ export class ReviewScorecardComponent implements OnInit {
         }
       );
   }
+
+  private setInitialComment(data: IGetResponseOption) {
+    this._evaluationService.getSingleResponseHistory(Number(this.id), data.questionId, data.createdUserId).subscribe(
+      (results) => {
+        this.singleResponseHistory = results
+       // if(this.singleResponseHistory.comment !== null || '')
+        data.comment = this.singleResponseHistory.comment;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+}
 
   public performanceComment(v: number) {
 
@@ -1393,9 +1426,45 @@ export class ReviewScorecardComponent implements OnInit {
      this._evaluationService.updateRejectionComment(response, amendmentComment).subscribe(
        (results) => {
         let returnValue = results as IQuestionResponseViewModel;
-        this.addAmendCommentDialog = false;  
-        this.displayCommentDialog = false;   
-        this.displayAmendmentCommentDialog = false;   
+        this.addAmendCommentDialog = false; 
+
+        this._evaluationService.getReviewerResponse(Number(this.id), this.questionId).subscribe(
+          (results) => {
+    
+            results.forEach(data => {
+              this.setReviewerName(data);
+            });
+    
+            results.forEach(data => {
+              this.setOptionName(data);
+            }); 
+
+            if(amendmentComment === 0)
+            {
+              results.forEach(data => {
+                this.setInitialComment(data);
+              });
+            }
+    
+            this._responseUsers = results;
+            this._spinner.hide();
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+
+        if(amendmentComment === 1)
+        {
+          this.displayAmendmentCommentDialog = true; 
+          this.displayCommentDialog = false; 
+        }
+        else{
+          this.displayCommentDialog = true; 
+          this.displayAmendmentCommentDialog = false; 
+        } 
+         
         this.getRejectedFlag();
      }
    );
