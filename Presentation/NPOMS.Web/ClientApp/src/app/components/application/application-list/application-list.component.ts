@@ -133,6 +133,13 @@ export class ApplicationListComponent implements OnInit {
            this.updateStatus(application.status, application.statusId, application.applicationPeriod.applicationType.name);     
           }
         )
+
+        results.forEach(
+          application => {
+           this.getRejectedInformation(application, application.id);     
+          }
+        )
+
         this.allApplications = results;       
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
         this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
@@ -170,6 +177,18 @@ export class ApplicationListComponent implements OnInit {
         status.name = 'In Progress';
       }
     }   
+  }
+
+  private getRejectedInformation(application: IApplication, applicationId: number) {
+    this._evaluationService.getResponse(applicationId).subscribe(
+      (results) => {
+        this._responses = results.filter(x => x.createdUserId === this.profile.id && x.rejectionFlag === 1);
+        application.rejectedScorecard = this._responses.length;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      }
+    );
   }
 
   public selectedResponses(fid: number) {
@@ -452,8 +471,6 @@ export class ApplicationListComponent implements OnInit {
       option.visible = true;
     });
 
-    this.selectedResponses(this.selectedApplication.id);
-
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11)
     {
       this.optionItemExists('Manage Indicators');  
@@ -481,26 +498,19 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('Conclude Scorecard');
     }  
     
-    // if(this.response !== 0)
-    // { 
-    //   this.optionItemExists('Capture Scorecard');
-    // }
-   //
     if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount > 0)
     { 
-      if(this.response !== 0)
+      if(this.selectedApplication.rejectedScorecard === 0)
       {
         this.optionItemExists('Capture Scorecard');
-        return false;
       }
     }
 
     if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount === 0)
     {
-      if(this.response !== 0)
+      if(this.selectedApplication.rejectedScorecard === 0)
       {
         this.optionItemExists('Capture Scorecard');
-        return false;
       }
     }
 

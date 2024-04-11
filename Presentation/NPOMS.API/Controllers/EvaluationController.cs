@@ -255,13 +255,6 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-              //  var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(base.GetUserIdentifier());
-            //    Response response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId, model.CreatedUserId);
-                
-				//CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, currentUser.Id);
-				//capturedResponse.disableFlag = 1;
-				//await this._capturedResponseRepository.UpdateAsync(capturedResponse);
-
                 var results = await this._evaluationService.UpdateScorecardRejectionResponse(model, base.GetUserIdentifier(), param);
 				
                 return Ok(results);
@@ -614,7 +607,7 @@ namespace NPOMS.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside EvaluationController-ScorecardSummary Email: {ex.Message} Inner Exception: {ex.InnerException}");
+                _logger.LogError($"Something went wrong inside EvaluationController-RejectedScorecardEmail Email: {ex.Message} Inner Exception: {ex.InnerException}");
             }
         }
 

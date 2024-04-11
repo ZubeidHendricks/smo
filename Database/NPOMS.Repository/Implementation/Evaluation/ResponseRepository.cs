@@ -3,6 +3,7 @@ using NPOMS.Repository.Interfaces.Evaluation;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace NPOMS.Repository.Implementation.Evaluation
 {
@@ -51,7 +52,7 @@ namespace NPOMS.Repository.Implementation.Evaluation
 			return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
 											  x.QuestionId.Equals(questionId))
                                              // &&  x.CreatedUserId.Equals(currentUserId))
-                .Include(x => x.CreatedUser)
+                .Include(x => x.CreatedUser).OrderByDescending(x => x.CreatedDateTime)
                             .AsNoTracking().ToListAsync();
 		}
 
