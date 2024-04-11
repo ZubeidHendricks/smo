@@ -52,7 +52,7 @@ namespace NPOMS.Repository.Implementation.Evaluation
 			return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
 											  x.QuestionId.Equals(questionId))
                                              // &&  x.CreatedUserId.Equals(currentUserId))
-                .Include(x => x.CreatedUser).OrderByDescending(x => x.CreatedDateTime)
+                .Include(x => x.CreatedUser).OrderBy(x => x.CreatedDateTime)
                             .AsNoTracking().ToListAsync();
 		}
 
