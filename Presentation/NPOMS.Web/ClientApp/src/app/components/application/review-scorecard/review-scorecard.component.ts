@@ -1102,7 +1102,7 @@ export class ReviewScorecardComponent implements OnInit {
     if(this.hasScorecardPending === true)
     {
       alert('Some of the amendments request was not resubmitted');
-      return true;
+      return false;
     }
 
     this.createCapturedResponse();
