@@ -1105,7 +1105,17 @@ export class ReviewScorecardComponent implements OnInit {
       return false;
     }
 
-    this.createCapturedResponse();
+    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
+    {
+      this.createCapturedResponse();
+      return true;
+    }
+    else{
+      alert('You are not authorized to perform this action');
+      return false;
+    }
+
+    
   }
 
   private createCapturedResponse() {
@@ -1142,9 +1152,25 @@ export class ReviewScorecardComponent implements OnInit {
 
       this.capturedResponse = results.filter(x => x.questionCategoryId === 100);
         if (this.capturedResponse.length > 0) {
-          let requiredAction = this.capturedResponse[0].comments.substring(this.capturedResponse[0].comments.indexOf("/") + 1, this.capturedResponse[0].comments.indexOf('//'));
-          let improvementArea = this.capturedResponse[0].comments.substring(0, this.capturedResponse[0].comments.indexOf("/"));
-          let generalComment = this.capturedResponse[0].comments.slice(this.capturedResponse[0].comments.indexOf('//') + 2);
+          let requiredAction = '';
+          let improvementArea = '';
+          let generalComment = '';
+          let generalCommentLength = this.capturedResponse[0].comments.indexOf('//');
+          if(generalCommentLength !== -1)
+          {
+            requiredAction = this.capturedResponse[0].comments.substring(this.capturedResponse[0].comments.indexOf("/") + 1, this.capturedResponse[0].comments.indexOf('//'));
+          }
+          else{
+            requiredAction = this.capturedResponse[0].comments.substring(this.capturedResponse[0].comments.indexOf("/") + 1);
+          }
+          
+          improvementArea = this.capturedResponse[0].comments.substring(0, this.capturedResponse[0].comments.indexOf("/"));
+          
+          if(generalCommentLength !== -1)
+          {
+            generalComment = this.capturedResponse[0].comments.slice(this.capturedResponse[0].comments.indexOf('//') + 2);
+          }
+        
           this.captureImprovementArea = improvementArea;
           this.captureRequiredAction = requiredAction;
           this.generalReviewComment = generalComment;
