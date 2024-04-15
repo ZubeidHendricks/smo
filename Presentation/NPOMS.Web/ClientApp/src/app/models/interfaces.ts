@@ -366,6 +366,7 @@ export interface IApplication {
     initiateScorecard: number;  
     scorecardCount: number;
     rejectedScorecard: number;
+    submittedScorecard: number;
     applicationPeriod: IApplicationPeriod;
     status: IStatus;     
     createdUser: IUser;

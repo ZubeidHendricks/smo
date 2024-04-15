@@ -140,6 +140,12 @@ export class ApplicationListComponent implements OnInit {
           }
         )
 
+        results.forEach(
+          application => {
+           this.getSummarySubmissionStatus(application, application.id);     
+          }
+        )
+        
         this.allApplications = results;       
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
         this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
@@ -189,6 +195,19 @@ export class ApplicationListComponent implements OnInit {
         this._loggerService.logException(err);
       }
     );
+  }
+
+  private getSummarySubmissionStatus(application: IApplication, applicationId: number) {
+    this._evaluationService.getCapturedResponses(Number(applicationId)).subscribe(
+      (results) => {
+        this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.isActive === true);
+        if (this.capturedResponses.length > 0) {
+          application.submittedScorecard = this.capturedResponses.length
+        }
+        else{
+          application.submittedScorecard = 0;
+        }
+      })
   }
 
   public selectedResponses(fid: number) {
@@ -516,7 +535,10 @@ export class ApplicationListComponent implements OnInit {
 
     if(this.selectedApplication.scorecardCount === 0)
     {
-      this.optionItemExists('Review Score Card');
+      if(this.selectedApplication.submittedScorecard === 0)
+      {
+        this.optionItemExists('Review Score Card');
+      }
     }
 
   }
