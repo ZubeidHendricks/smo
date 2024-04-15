@@ -36,7 +36,8 @@ namespace NPOMS.Domain.Evaluation
 		public int? UpdatedUserId { get; set; }
 
 		public DateTime? UpdatedDateTime { get; set; }
+        public DateTime? ReviewerUpdatedDateTime { get; set; }
 
-		public User CreatedUser { get; set; }
+        public User CreatedUser { get; set; }
 	}
 }

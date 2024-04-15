@@ -93,6 +93,11 @@ namespace NPOMS.Services.Implementation
             return await _responseHistoryRepository.GetByIds(fundingApplicationId, questionId, currentUser.Id);
         }
 
+        public async Task<ResponseHistory> GetSingleResponseHistory(int fundingApplicationId, int questionId, int userId)
+        {
+            return await _responseHistoryRepository.GetSingleValueByIds(fundingApplicationId, questionId, userId);
+        }
+
         public async Task<IEnumerable<Response>> GetResponses(int fundingApplicationId, int questionId, string userIdentifier)
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
@@ -155,6 +160,7 @@ namespace NPOMS.Services.Implementation
             {
                 response.ResponseOptionId = model.ResponseOptionId;
                 response.Comment = model.Comment;
+                response.ReviewerCategoryComment = model.ReviewerCategoryComment;
                 response.UpdatedUserId = currentUser.Id;
                 response.UpdatedDateTime = DateTime.Now;
                 await _responseRepository.UpdateAsync(response);
@@ -172,15 +178,15 @@ namespace NPOMS.Services.Implementation
             return new QuestionResponseViewModel(question, modelToReturn);
         }
 
-        public async Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier)
+        public async Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier, int param)
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
-            var response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId);
-            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, response.CreatedUserId);
+            var response = await _responseRepository.GetResponses(model.FundingApplicationId, model.QuestionId, model.ResponseOptionId, model.CreatedUserId);
+            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, 0, model.CreatedUserId);
 
-            capturedResponse.disableFlag = 1;
+            capturedResponse.disableFlag = param;
+            response.RejectionFlag = param;
 
-             CapturedResponse cr = new CapturedResponse();
             
             if (response == null)
             {
@@ -191,7 +197,10 @@ namespace NPOMS.Services.Implementation
             else
             {
                 response.ResponseOptionId = model.ResponseOptionId;
-                response.RejectionComment = model.Comment;
+                if(param == 1)
+                    response.RejectionComment = model.Comment;
+                else
+                response.MainReviewerCategoryComment = model.Comment;
                 response.RejectedByUserId = currentUser.Id;
                 response.UpdatedUserId = currentUser.Id;
                 response.UpdatedDateTime = DateTime.Now;
@@ -236,30 +245,28 @@ namespace NPOMS.Services.Implementation
             return await _capturedResponseRepository.GetByFundingApplicationId(fundingApplicationId);
         }
 
-        public async Task UpdateReviewerComment(CapturedResponse model, string userIdentifier)
+        public async Task UpdateReviewerComment(CapturedResponse model, int createdUserId)
         {
-            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             CapturedResponse capturedResponse = await _capturedResponseRepository.GetById(model.Id);
 
             if (capturedResponse != null)
             {
                 capturedResponse.ReviewerComment = model.Comments;
+                capturedResponse.ReviewerUpdatedDateTime = DateTime.Now;
                 capturedResponse.UpdatedDateTime = DateTime.Now;
-                capturedResponse.UpdatedUserId = currentUser.Id;
+                capturedResponse.UpdatedUserId = createdUserId;
 
                 await _capturedResponseRepository.UpdateAsync(capturedResponse);
 
             }
         }
-        public async Task CreateCapturedResponse(CapturedResponse model, string userIdentifier)
+        public async Task CreateCapturedResponse(CapturedResponse model, int createdUserId)
         {
-            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
-            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, model.QuestionCategoryId, currentUser.Id);
-           
+            CapturedResponse capturedResponse = await _capturedResponseRepository.GetByIds(model.FundingApplicationId, model.QuestionCategoryId, createdUserId);
             if (capturedResponse == null)
             {
                 model.CreatedUser = null;
-                model.CreatedUserId = currentUser.Id;
+                model.CreatedUserId = createdUserId;
                 model.CreatedDateTime = DateTime.Now;
                 model.disableFlag = 0;
 
@@ -269,8 +276,8 @@ namespace NPOMS.Services.Implementation
             {
                 capturedResponse.Comments = model.Comments;
                 capturedResponse.UpdatedDateTime = DateTime.Now;
-                capturedResponse.UpdatedUserId = currentUser.Id;
-                capturedResponse.disableFlag = 0;
+                capturedResponse.UpdatedUserId = createdUserId;
+                capturedResponse.disableFlag = model.disableFlag;
 
                 await _capturedResponseRepository.UpdateAsync(capturedResponse);
             }          

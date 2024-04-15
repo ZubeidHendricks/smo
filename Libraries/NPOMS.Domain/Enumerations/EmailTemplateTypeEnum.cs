@@ -33,6 +33,7 @@
 		StatusChangedPendingReviewerSatisfaction = 29,
 		ScorecardSummary = 30,
         InitiateScorecard = 31,
-        RejectedScorecard = 32
+        RejectedScorecard = 32,
+        AmendedScorecard = 33
     }
 }

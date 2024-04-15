@@ -85,6 +85,9 @@ namespace NPOMS.Services.Email
                 case EmailTemplateTypeEnum.RejectedScorecard:
                     _template = new RejectedScorecardEmailTemplate();
                     break;
+                case EmailTemplateTypeEnum.AmendedScorecard:
+                    _template = new AmmendedScorecardEmailTemplate();
+                    break;
                 default:
 					_template = null;
 					break;

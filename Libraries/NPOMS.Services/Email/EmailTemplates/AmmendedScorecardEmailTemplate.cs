@@ -1,26 +1,25 @@
-﻿using NPOMS.Domain.Core;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using NPOMS.Domain.Core;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
+using NPOMS.Repository.Interfaces.Evaluation;
 using NPOMS.Services.Infrastructure.Implementation;
 using NPOMS.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System.Linq;
 using System.Collections.Generic;
-using NPOMS.Repository.Interfaces.Evaluation;
-using Azure;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NPOMS.Services.Email.EmailTemplates
 {
-    public class RejectedScorecardEmailTemplate : IEmailTemplate
+    public class AmmendedScorecardEmailTemplate : IEmailTemplate
     {
         private Domain.Evaluation.Response _response;
-        public RejectedScorecardEmailTemplate Init(Domain.Evaluation.Response response)
+        public AmmendedScorecardEmailTemplate Init(Domain.Evaluation.Response response)
         {
             this._response = response;
             return this;
@@ -30,19 +29,18 @@ namespace NPOMS.Services.Email.EmailTemplates
         {
             var emailQueueService = EngineContext.Current.Resolve<IEmailQueueService>();
             var emailTemplateService = EngineContext.Current.Resolve<IEmailTemplateService>();
-            var logger = EngineContext.Current.Resolve<ILogger<RejectedScorecardEmailTemplate>>();
+            var logger = EngineContext.Current.Resolve<ILogger<AmmendedScorecardEmailTemplate>>();
             var applicationRepository = EngineContext.Current.Resolve<IApplicationRepository>();
             var httpContextAccessor = EngineContext.Current.Resolve<IHttpContextAccessor>();
-            var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.RejectedScorecard);
+            var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.AmendedScorecard);
             var application = await applicationRepository.GetById(this._response.FundingApplicationId);
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
-
             var npoRepository = EngineContext.Current.Resolve<INpoRepository>();
             var npo = await npoRepository.GetById(application.NpoId);
 
-            var user = await userRepository.GetById(this._response.CreatedUserId);
-            
+            var user = await userRepository.GetById(this._response.RejectedByUserId);
+
             try
             {
                 var action = string.Empty;
@@ -71,7 +69,7 @@ namespace NPOMS.Services.Email.EmailTemplates
             }
             catch (Exception ex)
             {
-                logger.LogError($"Something went wrong inside RejectedScorecardEmailTemplate action: {ex.Message} Inner Exception: {ex.InnerException}");
+                logger.LogError($"Something went wrong inside AmmendedScorecardEmailTemplate action: {ex.Message} Inner Exception: {ex.InnerException}");
                 throw;
             }
 

@@ -15,6 +15,9 @@ namespace NPOMS.Services.Interfaces
         Task<IEnumerable<QuestionResponseViewModel>> GetCompletedQuestionnaires(int fundingApplicationId, int questionCategoryId, int createdUserId);
 
 		Task<IEnumerable<ResponseHistory>> GetResponseHistory(int fundingApplicationId, int questionId, string userIdentifier);
+
+        Task<ResponseHistory> GetSingleResponseHistory(int fundingApplicationId, int questionId, int userId);
+
         Task<IEnumerable<Response>> GetResponses(int fundingApplicationId, int questionId, string userIdentifier);
 
         Task<IEnumerable<Response>> GetResponse(int fundingApplicationId);
@@ -25,14 +28,14 @@ namespace NPOMS.Services.Interfaces
 		Task<QuestionResponseViewModel> UpdateResponse(Response model, string userIdentifier);
         Task<QuestionResponseViewModel> UpdateScorecardResponse(Response model, string userIdentifier);
 
-        Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier);
+        Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier, int param);
 
         Task<IEnumerable<CapturedResponse>> GetCapturedResponsesByIds(int fundingApplicationId, int questionCategoryId);
 
 		Task<IEnumerable<CapturedResponse>> GetCapturedResponses(int fundingApplicationId);
 
-		Task CreateCapturedResponse(CapturedResponse model, string userIdentifier);
-        Task UpdateReviewerComment(CapturedResponse model, string userIdentifier);        
+		Task CreateCapturedResponse(CapturedResponse model, int createdUserId);
+        Task UpdateReviewerComment(CapturedResponse model, int createdUserId);        
 
         Task<WorkflowAssessment> GetWorkflowAssessmentByQuestionCategoryId(int questionCategoryId);
 	}

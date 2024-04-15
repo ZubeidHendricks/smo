@@ -6,7 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import {
   ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
-  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum
+  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum, QuestionCategoryEnum
 } from 'src/app/models/enums';
 import {
   IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory,
@@ -108,6 +108,14 @@ export class ScorecardComponent implements OnInit {
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
   hasScorecardSubmitted: boolean = false;
+  hasEngagementDisable: boolean = false;
+  hasTimeWorkPlanDisable: boolean = false;
+  hasImpactDisable: boolean = false;
+  hasRiskMitigationDisable: boolean = false;
+  hasAppropriationOfResourcesDisable: boolean = false;
+ 
+ 
+  isAmended: boolean;
 
   signedByUser: string;
   submittedDate: Date;
@@ -118,6 +126,12 @@ export class ScorecardComponent implements OnInit {
   capturedResponseCount: ICapturedResponse[];
   userId: number;
   workFlowCount: IWorkflowAssessment[];
+  displayReviewerCommentDialog: boolean;
+  reviewerComment: string;
+  categoryComment: string;
+  addCategoryCommentDialog: boolean = false;
+  responses: IQuestionResponseViewModel;
+  reviewerCategoryComment: string;
 
   constructor(
 
@@ -144,29 +158,138 @@ export class ScorecardComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-
-        this.userId = this.profile.id;
         this.loadCapturedResponses();
+      //  this.userId = this.profile.id;
+       
       }
     });
     
     this.getQuestionCategory();
     this.loadQuestionnaire();
     this.getResponseType();      
-    this.loadApplications();
+    this.loadApplications(); 
+   
+  }
+
+  private setEngagementStatus(response: number) {
+    if(response == 1)
+    {
+      this.hasEngagementDisable = false;
+
+    }
+    else{
+      this.hasEngagementDisable = true;
+
+    }
+  }
+
+  private setTimeWorkPlanStatus(response: number) {
+    if(response == 1)
+    {
+      this.hasTimeWorkPlanDisable = false;
+    }
+    else{
+      this.hasTimeWorkPlanDisable = true;
+    }
+  }
+
+  private setImpactStatus(response: number) {
+    if(response == 1)
+    {
+      this.hasImpactDisable = false;
+    }
+    else{
+      this.hasImpactDisable = true;
+    }
+  }
+
+  private setRiskMitigationStatus(response: number) {
+    if(response == 1)
+    {
+      this.hasRiskMitigationDisable = false;
+    }
+    else{
+      this.hasRiskMitigationDisable = true;
+     // this.hasScorecardSubmitted = true;
+    }
+  }
+
+  private setAppropriationOfResourcesStatus(response: number) {
+    if(response == 1)
+    {
+      this.hasAppropriationOfResourcesDisable = false;
+     // this.hasScorecardSubmitted = false;
+    }
+    else{
+      this.hasAppropriationOfResourcesDisable = true;
+    // this.hasScorecardSubmitted = true;
+    }
   }
 
   private loadQuestionnaire() {
-   
     this._evaluationService.getAddScoreQuestionnaire(Number(this.id)).subscribe(
       (results) => {
+
         this.allQuestionnaires = results;
         this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
+        
+        this.engagementQuestionnaire.forEach(response => {
+          if(response.createdUserId === this.profile.id)
+          {
+            this.setEngagementStatus(response.rejectionFlag);
+          }
+          else{
+            this.setEngagementStatus(1);
+          }
+            
+        });
+
+        this.timeWorkPlanQuestionnaire.forEach(response => {
+          if(response.createdUserId === this.profile.id)
+          {
+            this.setTimeWorkPlanStatus(response.rejectionFlag);
+          }
+          else{
+            this.setTimeWorkPlanStatus(1);
+          }            
+        });
+
+        this.impactQuestionnaire.forEach(response => {
+          if(response.createdUserId === this.profile.id)
+          {
+            this.setImpactStatus(response.rejectionFlag);
+          }
+          else{
+            this.setImpactStatus(1);
+          } 
+        });
+
+        this.riskMitigationQuestionnaire.forEach(response => {
+          if(response.createdUserId === this.profile.id)
+          {
+            this.setRiskMitigationStatus(response.rejectionFlag);
+          }
+          else{
+            this.setRiskMitigationStatus(1);
+          } 
+        });
+
+        this.appropriationOfResourcesQuestionnaire.forEach(response => {
+          if(response.createdUserId === this.profile.id)
+          {
+            this.setAppropriationOfResourcesStatus(response.rejectionFlag);
+          }
+          else{
+            this.setAppropriationOfResourcesStatus(1);
+          } 
+        });
+        
         this.loadResponseOptions();
+       
         this.getWorkflowCount();
        
          this._spinner.hide();
@@ -179,27 +302,31 @@ export class ScorecardComponent implements OnInit {
   }
 
   private getWorkflowCount() {
-    if (this.engagementQuestionnaire && this.engagementQuestionnaire[0]) {
-      this._evaluationService.workflowAssessmentCount(Number(this.engagementQuestionnaire[0].questionCategoryId)).subscribe(
-        (res) => {
 
-          if (this.capturedResponsesCount && this.capturedResponsesCount.length === 10) {
-            alert('Add new score card limit reached. Can not add new score card');
-            this._router.navigateByUrl('applications');
-          }
-
-          if (this.capturedResponseCount && this.capturedResponseCount.length > 0) {
-            alert('Scorecard review completed for this application. Can not add new score card');
-            this._router.navigateByUrl('applications');
-          }
-
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
-        }
-      );
+    if (this.capturedResponsesCount && this.capturedResponsesCount.length >= 10) {
+      alert('Add new score card limit reached. Can not add new score card');
+      this._router.navigateByUrl('applications');
     }
+
+    if (this.capturedResponseCount && this.capturedResponseCount.length > 0) {
+      alert('Scorecard review completed for this application. Can not add new score card');
+      this._router.navigateByUrl('applications');
+    }
+
+
+    // if (this.engagementQuestionnaire && this.engagementQuestionnaire[0]) {
+    //   this._evaluationService.workflowAssessmentCount(Number(this.engagementQuestionnaire[0].questionCategoryId)).subscribe(
+    //     (res) => {
+
+         
+
+    //     },
+    //     (err) => {
+    //       this._loggerService.logException(err);
+    //       this._spinner.hide();
+    //     }
+    //   );
+    // }
   }
 
   private loadResponseOptions() {
@@ -251,7 +378,6 @@ export class ScorecardComponent implements OnInit {
         }
       }
     }
-
     return rowGroupMetadata;
   }
 
@@ -259,8 +385,18 @@ export class ScorecardComponent implements OnInit {
     return questionnaire.some(function (item) { return item.hasComment === true });
   }
 
+  public hasAmendedComment(questionnaire: IQuestionResponseViewModel[]) {
+    return questionnaire.some(function (item) { return item.rejectionComment !== null? true: false });
+  }
+
   public hasDocument(questionnaire: IQuestionResponseViewModel[]) {
     return questionnaire.some(function (item) { return item.hasDocument === true });
+  }
+
+  public click(rejectionComment: string)
+  {
+    this.displayReviewerCommentDialog = true; 
+    this.reviewerComment = rejectionComment
   }
 
   public getColspan(questionnaire: IQuestionResponseViewModel[], defaultColspan: number) {
@@ -410,6 +546,17 @@ export class ScorecardComponent implements OnInit {
     return this.responseOptions && this.responseOptions.length > 0 ? this.responseOptions.filter(x => x.responseTypeId === responseTypeId && x.isActive) : [];
   }
 
+  public onSaveCategoryComment(question: IQuestionResponseViewModel) {
+    this.addCategoryCommentDialog = true;
+    this.responses = question;
+  }
+
+  public saveCategoryComment(question: IQuestionResponseViewModel, reviewerCategoryComment: string)  
+  {
+    this.onSaveReviewerComment(question, reviewerCategoryComment);
+    this.addCategoryCommentDialog = false;
+  }
+
   public onSaveComment(event, question: IQuestionResponseViewModel) {
     question.isSaved = false;
     this.onSave(question);
@@ -436,6 +583,34 @@ export class ScorecardComponent implements OnInit {
     return totalAverageScore;
   }
 
+  public onSaveReviewerComment(question: IQuestionResponseViewModel, reviewerCategoryComment: string) {
+    if (question.responseOptionId != 0) {
+
+      let response = {} as IResponse;
+      response.fundingApplicationId = Number(this.id);
+      response.questionId = question.questionId;
+      response.responseOptionId = question.responseOptionId;
+      response.comment = question.comment == null ? "" : question.comment;
+      response.reviewerCategoryComment = reviewerCategoryComment == null? "" : reviewerCategoryComment
+
+      this._evaluationService.updateScorecardResponse(response).subscribe(
+        (results) => {
+        
+          let returnValue = results as IQuestionResponseViewModel;
+          question.responseId = returnValue.responseId;
+          question.isSaved = returnValue.isSaved;
+          this.selectedResponses();
+         
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+
+      );
+
+    }
+  }
 
   public onSave(question: IQuestionResponseViewModel) {
     if (question.responseOptionId != 0) {
@@ -487,11 +662,8 @@ export class ScorecardComponent implements OnInit {
 
   public onSaveResponse(event, question: IQuestionResponseViewModel) {
     question.responseOptionId = event.value.id;
-    this.onSave(question);
-    
+    this.onSave(question);    
   }
-
- 
 
   private loadApplications() {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
@@ -741,18 +913,11 @@ export class ScorecardComponent implements OnInit {
   public selectedResponses() {
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
-        this._responses = results.filter(x => x.createdUserId === this.userId);
+        this._responses = results.filter(x => x.createdUserId === this.profile.id);
         let overallTotalScore = 0;
         let length = this._responses.length;
 
         this._responses.forEach(item => {
-
-          // if(item.rejectionComment !== null)
-          // {
-          //   this.hasScorecardSubmitted = false;
-          //   this.hascapturedImprovementArea = false;
-          //   this.hasCapturedRequiredAction = false;
-          // }
 
           if (Number(item.responseOption.name) >= 0) {
 
@@ -781,12 +946,18 @@ export class ScorecardComponent implements OnInit {
   }
 
   public submit() {
-
     this.createCapturedResponse();
   }
 
   private createCapturedResponse() {
-
+    let isDisable: number;
+    if(this.isAmended === true)
+    {
+      isDisable = 0;
+    }
+    else{
+      isDisable = 1;
+    }
     let capturedResponse = {
       fundingApplicationId: Number(this.id),
       statusId: 0,
@@ -795,7 +966,8 @@ export class ScorecardComponent implements OnInit {
       isActive: true,
       isSignedOff: true,
       isDeclarationAccepted: true,
-      selectedStatus: 0
+      selectedStatus: 0,
+      disableFlag: isDisable
     } as ICapturedResponse;
 
     this._evaluationService.createScorecardResponse(capturedResponse).subscribe(
@@ -817,7 +989,7 @@ export class ScorecardComponent implements OnInit {
         this.capturedResponsesCount = results.filter(x => x.questionCategoryId === 0);
         this.capturedResponseCount = results.filter(x => x.questionCategoryId === 100);
 
-        this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.userId);
+        this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.profile.id);
 
         if (this.capturedResponses.length > 0) {
           let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
@@ -831,12 +1003,14 @@ export class ScorecardComponent implements OnInit {
             this.hascapturedImprovementArea = false;
             this.hasCapturedRequiredAction = false;
             this.hasScorecardSubmitted = false;
+            this.isAmended = true;
           }
           else
           {
             this.hascapturedImprovementArea = true;
             this.hasCapturedRequiredAction = true;
             this.hasScorecardSubmitted = true;
+            this.isAmended = false;
           }
           
         }

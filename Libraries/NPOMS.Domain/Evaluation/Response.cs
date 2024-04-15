@@ -19,8 +19,15 @@ namespace NPOMS.Domain.Evaluation
 
         [Column(TypeName = "nvarchar(MAX)")]
         public string RejectionComment { get; set; }
+        public int RejectionFlag { get; set; }
 
         public int RejectedByUserId { get; set; }
+
+        [Column(TypeName = "nvarchar(MAX)")]
+        public string ReviewerCategoryComment { get; set; }
+
+        [Column(TypeName = "nvarchar(MAX)")]
+        public string MainReviewerCategoryComment { get; set; }
 
         public int CreatedUserId { get; set; }
 
@@ -35,7 +42,7 @@ namespace NPOMS.Domain.Evaluation
 		public ResponseOption ResponseOption { get; set; }
         public User CreatedUser { get; set; }
 
-        public static implicit operator Response(List<Response> v)
+		public static implicit operator Response(List<Response> v)
 		{
 			throw new NotImplementedException();
 		}
