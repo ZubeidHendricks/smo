@@ -533,14 +533,13 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    if(this.selectedApplication.scorecardCount === 0)
+    if((this.profile.roles[0].id !== Number(RoleEnum.SystemAdmin)) || (this.profile.roles[0].id !== Number(RoleEnum.SystemAdmin)))
     {
       if(this.selectedApplication.submittedScorecard === 0)
       {
         this.optionItemExists('Review Score Card');
       }
     }
-
   }
 
   public updateButtonItems() {
@@ -567,7 +566,6 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
-      // this.buttonItemExists('Score Card', 'Service Provision');
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
