@@ -20,6 +20,7 @@ builder.Services.ConfigureRepositoryWrapper(builder);
 builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAdB2C");
 
 var blobConfig = builder.Configuration.GetSection("BlobStorageSettings").Get<BlobStorageSettings>();
+//var msGraphConfig = builder.Configuration.GetSection("MicrosoftGraph").Get<dtoMicrosoftGrap>
 
 #if !DEBUG
 	blobConfig.StorageAccount = Environment.GetEnvironmentVariable("APPSETTING_Storage01");
