@@ -16,11 +16,18 @@ namespace NPOMS.Domain.Evaluation
 		[Column(TypeName = "nvarchar(MAX)")]
 		public string Comments { get; set; }
 
-		public bool IsActive { get; set; }
+        [Column(TypeName = "nvarchar(MAX)")]
+        public string ReviewerComment { get; set; }
+
+        public int ReviewerUserId { get; set; }
+
+        public bool IsActive { get; set; }
 		public bool IsSignedOff { get; set; }
 		public bool isDeclarationAccepted { get; set; }
 
         public int? selectedStatus { get; set; } = 0;
+
+        public int? disableFlag { get; set; } = 0;
 
         public int CreatedUserId { get; set; }
 
@@ -29,7 +36,8 @@ namespace NPOMS.Domain.Evaluation
 		public int? UpdatedUserId { get; set; }
 
 		public DateTime? UpdatedDateTime { get; set; }
+        public DateTime? ReviewerUpdatedDateTime { get; set; }
 
-		public User CreatedUser { get; set; }
+        public User CreatedUser { get; set; }
 	}
 }

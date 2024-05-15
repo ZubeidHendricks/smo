@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentUrlService } from '../environment-url/environment-url.service';
-import { ICapturedResponse, IQuestionResponseViewModel, IResponse, IResponseHistory, IResponseOptions, IWorkflowAssessment, IGetResponseOptions } from 'src/app/models/interfaces';
+import { ICapturedResponse, IQuestionResponseViewModel, IResponse, IResponseHistory, IResponseOptions, IWorkflowAssessment, IGetResponseOptions, IGetResponseOption } from 'src/app/models/interfaces';
 import { IResponses } from 'src/app/models/enums';
 
 const httpOptions = {
@@ -45,9 +45,19 @@ export class EvaluationService {
     return this._http.get<IGetResponseOptions[]>(url, httpOptions);
   }
 
+  public getReviewerResponse(fundingAppId: number, questionId: number) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/fundingAppId/${fundingAppId}/questionId/${questionId}`;
+    return this._http.get<IGetResponseOption[]>(url, httpOptions);
+  }
+
   public getResponseHistory(fundingApplicationId: number, questionId: number) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/fundingApplicationId/${fundingApplicationId}/questionId/${questionId}`;
     return this._http.get<IResponseHistory[]>(url, httpOptions);
+  }
+
+  public getSingleResponseHistory(fundAppId: number, questionId: number, userId: number) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/fundAppId/${fundAppId}/questionId/${questionId}/userId/${userId}`;
+    return this._http.get<IResponseHistory>(url, httpOptions);
   }
   
   public getResponse(id: number) {
@@ -74,6 +84,12 @@ export class EvaluationService {
     const url = `${this._envUrl.urlAddress}/api/evaluation/scorecardResponse`;
     return this._http.put<IQuestionResponseViewModel>(url, response, httpOptions);
   }
+
+  public updateRejectionComment(response: IResponse, param: number) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/scorecardRejectResponse/param/${param}`;
+    return this._http.put<IQuestionResponseViewModel>(url, response, httpOptions);
+  }
+
   public getCapturedResponses(fundingApplicationId: number) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/captured-response/fundingApplicationId/${fundingApplicationId}`;
     return this._http.get<ICapturedResponse[]>(url, httpOptions);
@@ -88,4 +104,15 @@ export class EvaluationService {
     const url = `${this._envUrl.urlAddress}/api/evaluation/captured-scorecardResponse`;
     return this._http.post<ICapturedResponse>(url, caputerdResponse, httpOptions);
   }
+
+  public addReviewerComment(caputerdResponse: ICapturedResponse) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/captured-reviewerComment`;
+    return this._http.post<ICapturedResponse>(url, caputerdResponse, httpOptions);
+  }
+
+  public sendAmendmentNotification(fundingApplicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/amendment-notification/fundingApplicationId/${fundingApplicationId}`;
+    return this._http.post(url, httpOptions);
+  }
+
 }

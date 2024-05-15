@@ -6,9 +6,9 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import {
   ApplicationTypeEnum, DropdownTypeEnum, FacilityTypeEnum, IQuestionResponseViewModel, IResponseHistory,
-  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum
+  ResponseTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, IResponseType, FrequencyEnum, FrequencyPeriodEnum, StatusEnum, RoleEnum
 } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator, IWorkplanIndicatorSummary } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationAudit, ICapturedResponse, IFinancialYear, INpo, IObjective, IQuestionCategory, IResponse, IResponseOption, IResponseOptions, IGetResponseOptions, IStatus, IUser, IWorkplanIndicator, IWorkplanIndicatorSummary, IGetResponseOption } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -19,6 +19,7 @@ import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { EvaluationService } from 'src/app/services/evaluation/evaluation.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { QuestionCategoryComponent } from '../../admin/utilities/question-category/question-category.component';
+import { UserService } from 'src/app/services/api-services/user/user.service';
 
 export interface IResp {
   name: string
@@ -35,6 +36,7 @@ export class ReviewScorecardComponent implements OnInit {
   isAdmin: boolean;
   hasAdminRole: boolean;
   profile: IUser;
+  user: IUser;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -71,10 +73,16 @@ export class ReviewScorecardComponent implements OnInit {
   _recommendation: boolean = false;
   responseOptions: IResponseOption[];
   _responses: IResponseOptions[];
-  _responseUsers: IGetResponseOptions[];
+  _responseUsers: IGetResponseOption[];
   responseHistory: IResponseHistory[];
+  singleResponseHistory: IResponseHistory;
   displayCommentDialog: boolean;
+  displayAmendmentCommentDialog: boolean;
+  addAmendCommentDialog: boolean;
+  isAmendmentComment: boolean;
+  displayReviewerCommentDialog: boolean;
   displayDialog: boolean;
+  displayMainReviewerCommentDialog: boolean;
   historyCols: any[];
   displayHistory: boolean;
   paramSubcriptions: Subscription;
@@ -99,6 +107,9 @@ export class ReviewScorecardComponent implements OnInit {
   objectives: IObjective[] = [];
   activities: IActivity[];
   applications: IApplication;
+  comment: string;
+  RejectComment: string;
+  ReviewerComment: string;
   //npoId: string;
   statuses: IStatus[];
   rowGroupMetadataActivities: any[];
@@ -112,17 +123,17 @@ export class ReviewScorecardComponent implements OnInit {
   scorer8: number;
   scorer9: number;
   scorer10: number;
-  socrer1OverallTotalScore: number;
-  socrer2OverallTotalScore: number;
-  socrer3OverallTotalScore: number;
-  socrer4OverallTotalScore: number;
-  socrer5OverallTotalScore: number;
-  socrer6OverallTotalScore: number;
-  socrer7OverallTotalScore: number;
-  socrer8OverallTotalScore: number;
-  socrer9OverallTotalScore: number;
-  socrer10OverallTotalScore: number;
-  allSocrerOverallTotalScore: number;
+  scorer1OverallTotalScore: number;
+  scorer2OverallTotalScore: number;
+  scorer3OverallTotalScore: number;
+  scorer4OverallTotalScore: number;
+  scorer5OverallTotalScore: number;
+  scorer6OverallTotalScore: number;
+  scorer7OverallTotalScore: number;
+  scorer8OverallTotalScore: number;
+  scorer9OverallTotalScore: number;
+  scorer10OverallTotalScore: number;
+  allScorerOverallTotalScore: number;
   scorer1OverallAvgScore: number;
   scorer2OverallAvgScore: number;
   scorer3OverallAvgScore: number;
@@ -140,30 +151,47 @@ export class ReviewScorecardComponent implements OnInit {
 
   captureImprovementArea: string;
   captureRequiredAction: string;
+  generalReviewComment: string;
   captureImprovementAreaComment: string;
   captureRequiredActionComment: string;
+  createdUserId:number;
 
   hascapturedImprovementArea: boolean = false;
   hasCapturedRequiredAction: boolean = false;
   hasScorecardSubmitted: boolean = false;
-
+  hasScorecardPending: boolean = false;
   signedByUser: string;
   submittedDate: Date;
   signedByUserScorecardUser: string;
+  capturedResponseId: number;
   submittedDateByScorecardUser: Date;
   npo: INpo;
   organisation: string;
   capturedResponses: ICapturedResponse[];
+  capturedResponse: ICapturedResponse[];
   name: IResp[] = [];
   _name: IResp[] = [];
+
   userId: number;
+  rejectedByUserId: number
+  fundingApplicationId: number;
+  questionId: number;
+  responseOptionId: number;
+  displayHistoryDialog: boolean;
+  reviewerName: string;
+  disableScorerCommentIcon: boolean;
+  disableMainReviewerCommentIcon:boolean;
+  disableButton: boolean;
+  questionCategory: string;
+  initialComment: string;
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
     private _spinner: NgxSpinnerService,
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
-    private _dropdownRepo: DropdownService,
+    private _userRepo: UserService,
     private _applicationPeriodRepo: ApplicationPeriodService,
     private _evaluationService: EvaluationService,
     private _documentStore: DocumentStoreService,
@@ -189,7 +217,7 @@ export class ReviewScorecardComponent implements OnInit {
         this.profile = profile;
 
         this.userId = this.profile.id;
-        this.loadCapturedResponses();
+        this.loadCapturedResponses();        
       }
     });
 
@@ -206,6 +234,13 @@ export class ReviewScorecardComponent implements OnInit {
       { header: 'Status', width: '55%' },
       { header: 'Created User', width: '20%' },
       { header: 'Created Date', width: '20%' }
+    ];
+
+    this.historyCols = [
+      { field: 'responseOption.name', header: 'Response', width: '10%' },
+      { field: 'comment', header: 'Comment', width: '50%' },
+      { field: 'createdUser.fullName', header: 'Created By', width: '20%' },
+      { field: 'createdDateTime', header: 'Created Date', width: '20%' }
     ];
 
   }
@@ -231,6 +266,7 @@ export class ReviewScorecardComponent implements OnInit {
         this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
         this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
         this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
+        this.getRejectedFlag();
         this.loadResponseOptions();
       },
       (err) => {
@@ -241,11 +277,14 @@ export class ReviewScorecardComponent implements OnInit {
   }
 
   private loadResponseOptions() {
+   
     this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption, true).subscribe(
       (results) => {
         this.responseOptions = results;
+      
         this.selectedResponses();
         this.loadStatuses();
+       
       },
       (err) => {
         this._loggerService.logException(err);
@@ -806,14 +845,31 @@ export class ReviewScorecardComponent implements OnInit {
       this._spinner.hide();
     }
   }
-
-  public selectedResponses() {
+  private getRejectedFlag()
+  {
+    let rejectedFlag: any;
+    this._evaluationService.getResponse(Number(this.id)).subscribe(
+      (results) => {
+        this._responses = results;
+        rejectedFlag = results.filter(x => x.rejectionFlag === 1);
+        if(rejectedFlag.length === 0)
+        {
+          this.disableButton = true;
+        }
+        else{
+          this.disableButton = false;;
+        }
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      }
+    );
+  }
+  public selectedResponses() {    
     this._evaluationService.getResponse(Number(this.id)).subscribe(
       (results) => {
         this._responses = results;
         var user = this._responses.filter((item, i, arr) => arr.findIndex((t) => t.createdUserId === item.createdUserId) === i);
-
-
         let scorer1OverallTotalScores = 0;
         let scorer2OverallTotalScores = 0;
         let scorer3OverallTotalScores = 0;
@@ -967,17 +1023,17 @@ export class ReviewScorecardComponent implements OnInit {
           }
         });
 
-        this.socrer1OverallTotalScore = scorer1OverallTotalScores;
-        this.socrer2OverallTotalScore = scorer2OverallTotalScores;
-        this.socrer3OverallTotalScore = scorer3OverallTotalScores;
-        this.socrer4OverallTotalScore = scorer4OverallTotalScores;
-        this.socrer5OverallTotalScore = scorer5OverallTotalScores;
-        this.socrer6OverallTotalScore = scorer6OverallTotalScores;
-        this.socrer7OverallTotalScore = scorer7OverallTotalScores;
-        this.socrer8OverallTotalScore = scorer8OverallTotalScores;
-        this.socrer9OverallTotalScore = scorer9OverallTotalScores;
-        this.socrer10OverallTotalScore = scorer10OverallTotalScores;
-        this.allSocrerOverallTotalScore = allScorerOverallTotalScores;
+        this.scorer1OverallTotalScore = scorer1OverallTotalScores;
+        this.scorer2OverallTotalScore = scorer2OverallTotalScores;
+        this.scorer3OverallTotalScore = scorer3OverallTotalScores;
+        this.scorer4OverallTotalScore = scorer4OverallTotalScores;
+        this.scorer5OverallTotalScore = scorer5OverallTotalScores;
+        this.scorer6OverallTotalScore = scorer6OverallTotalScores;
+        this.scorer7OverallTotalScore = scorer7OverallTotalScores;
+        this.scorer8OverallTotalScore = scorer8OverallTotalScores;
+        this.scorer9OverallTotalScore = scorer9OverallTotalScores;
+        this.scorer10OverallTotalScore = scorer10OverallTotalScores;
+        this.allScorerOverallTotalScore = allScorerOverallTotalScores;
         this.scorer1OverallAvgScore = Number((scorer1OverallTotalScores / 5).toFixed(2));
         this.scorer2OverallAvgScore = Number((scorer2OverallTotalScores / 5).toFixed(2));
         this.scorer3OverallAvgScore = Number((scorer3OverallTotalScores / 5).toFixed(2));
@@ -999,13 +1055,67 @@ export class ReviewScorecardComponent implements OnInit {
     );
   }
 
+  public submitAmendment()
+  {
+    this._evaluationService.sendAmendmentNotification(Number(this.id)).subscribe(
+      (results) => {
+        this._spinner.hide();
+        this._router.navigateByUrl('applications');
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+
+  }
+
   public disableSubmit() {
     return false;
   }
 
+  public hideComment() {
+    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.Reviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
+    return false;
+
+    return true;
+  }
+
+  public disableAmendementSubmit() {
+    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
+    { 
+      if (this.capturedResponse.length > 0) {
+      return true;
+      }
+      else
+      {
+        return false;
+      }      
+    }
+    else{
+      return true;
+    }
+  }
+ 
   public submit() {
 
-    this.createCapturedResponse();
+    if(this.hasScorecardPending === true)
+    {
+      alert('Some of the amendments request was not resubmitted');
+      return false;
+    }
+
+    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
+    {
+      this.createCapturedResponse();
+      return true;
+    }
+    else{
+      alert('You are not authorized to perform this action');
+      return false;
+    }
+
+    
   }
 
   private createCapturedResponse() {
@@ -1014,7 +1124,7 @@ export class ReviewScorecardComponent implements OnInit {
       fundingApplicationId: this.application.id,
       statusId: 0,
       questionCategoryId: 100,
-      comments: this.captureImprovementArea + '/' + this.captureRequiredAction,
+      comments: this.captureImprovementArea + '/' + this.captureRequiredAction + '//' + this.generalReviewComment,
       isActive: true,
       isSignedOff: true,
       isDeclarationAccepted: true,
@@ -1033,29 +1143,72 @@ export class ReviewScorecardComponent implements OnInit {
     );
   }
 
+
+
   private loadCapturedResponses() {
     this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
       (results) => {
-        this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.createdUser.id === this.userId);
-        if (this.capturedResponses.length > 0) {
-          let requiredAction = this.capturedResponses[0].comments.slice(this.capturedResponses[0].comments.indexOf('/') + 1);
-          let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
+      this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.disableFlag === 1);
+
+      this.capturedResponse = results.filter(x => x.questionCategoryId === 100);
+        if (this.capturedResponse.length > 0) {
+          let requiredAction = '';
+          let improvementArea = '';
+          let generalComment = '';
+          let generalCommentLength = this.capturedResponse[0].comments.indexOf('//');
+          if(generalCommentLength !== -1)
+          {
+            requiredAction = this.capturedResponse[0].comments.substring(this.capturedResponse[0].comments.indexOf("/") + 1, this.capturedResponse[0].comments.indexOf('//'));
+          }
+          else{
+            requiredAction = this.capturedResponse[0].comments.substring(this.capturedResponse[0].comments.indexOf("/") + 1);
+          }
+          
+          improvementArea = this.capturedResponse[0].comments.substring(0, this.capturedResponse[0].comments.indexOf("/"));
+          
+          if(generalCommentLength !== -1)
+          {
+            generalComment = this.capturedResponse[0].comments.slice(this.capturedResponse[0].comments.indexOf('//') + 2);
+          }
+        
           this.captureImprovementArea = improvementArea;
           this.captureRequiredAction = requiredAction;
-          this.signedByUser = this.capturedResponses[0].createdUser.fullName;
-          this.submittedDate = this.capturedResponses[0].createdDateTime;
+          this.generalReviewComment = generalComment;
+          this.signedByUser = this.capturedResponse[0].createdUser.fullName;
+          this.submittedDate = this.capturedResponse[0].createdDateTime;         
           this.hascapturedImprovementArea = true;
           this.hasCapturedRequiredAction = true;
           this.hasScorecardSubmitted = true;
         }
+        if (this.capturedResponses.length > 0) {
+          this.hasScorecardPending = true;
+        }
+
       })
   }
 
-  public onSelectViewComment(question: IQuestionResponseViewModel) {
+  public onSelectViewComment(question: IQuestionResponseViewModel, questionCategoryName: string, param: number) {
     this._spinner.show();
     this._responseUsers = [];
-    this._evaluationService.getResponses(Number(this.id), question.questionId).subscribe(
+    this.questionCategory = questionCategoryName;
+    this._evaluationService.getReviewerResponse(Number(this.id), question.questionId).subscribe(
       (results) => {
+
+        results.forEach(data => {
+          this.setReviewerName(data);
+        });
+
+        results.forEach(data => {
+          this.setOptionName(data);
+        }); 
+
+        if(param === 0)
+        {
+          results.forEach(data => {
+            this.setInitialComment(data);
+          }); 
+        }
+       
         this._responseUsers = results;
         this.displayCommentDialog = true;
         this._spinner.hide();
@@ -1066,6 +1219,79 @@ export class ReviewScorecardComponent implements OnInit {
       }
     );
   }
+
+  public onSelectAmendmentComment(question: IQuestionResponseViewModel, questionCategoryName: string, param: number) {
+    this._spinner.show();
+    this._responseUsers = [];
+    this.questionCategory = questionCategoryName;
+    this._evaluationService.getReviewerResponse(Number(this.id), question.questionId).subscribe(
+      (results) => {
+
+        results.forEach(data => {
+          this.setReviewerName(data);
+        });
+
+        results.forEach(data => {
+          this.setOptionName(data);
+        });
+
+        if(param === 0)
+        {
+          results.forEach(data => {
+            this.setInitialComment(data);
+          }); 
+        }       
+        
+        this._responseUsers = results;
+        this.displayAmendmentCommentDialog = true;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private setReviewerName(data: IGetResponseOption) {
+    this._userRepo.getUserById(data.rejectedByUserId).subscribe(
+      (results) => {
+        this.user = results
+        data.rejectedByUser = this.user.fullName;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+    private setOptionName(data: IGetResponseOption) {
+      this._dropdownService.getEntities(DropdownTypeEnum.ResponseOption,true).subscribe(
+        (results) => {
+          this.responseOptions = results
+          data.responseOptionName = Number(this.responseOptions.filter(x=> x.id === data.responseOptionId)[0].name);
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+  }
+
+  private setInitialComment(data: IGetResponseOption) {
+    this._evaluationService.getSingleResponseHistory(Number(this.id), data.questionId, data.createdUserId).subscribe(
+      (results) => {
+        this.singleResponseHistory = results
+       // if(this.singleResponseHistory.comment !== null || '')
+        data.comment = this.singleResponseHistory.comment;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+}
 
   public performanceComment(v: number) {
 
@@ -1098,11 +1324,234 @@ export class ReviewScorecardComponent implements OnInit {
           let improvementArea = this.capturedResponses[0].comments.substring(0, this.capturedResponses[0].comments.indexOf("/"));
           this.captureImprovementAreaComment = improvementArea;
           this.captureRequiredActionComment = requiredAction;
+          this.ReviewerComment = this.capturedResponses[0].reviewerComment;
           this.signedByUserScorecardUser = this.capturedResponses[0].createdUser.fullName;
           this.submittedDateByScorecardUser = this.capturedResponses[0].createdDateTime;
+          this.capturedResponseId = this.capturedResponses[0].id;
+        }
+      })
+  }
+
+  public scoreCardMainReviewerComment(v: number) {
+
+    this._evaluationService.getCapturedResponses(Number(this.id)).subscribe(
+      (results) => {
+        if (v === 1)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer1);
+        if (v === 2)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer2);
+        if (v === 3)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer3);
+        if (v === 4)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer4);
+        if (v === 5)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer5);
+        if (v === 6)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer6);
+        if (v === 7)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer7);
+        if (v === 8)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer8);
+        if (v === 9)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer9);
+        if (v === 10)
+          this.capturedResponses = results.filter(x => x.questionCategoryId === 0 && x.createdUser.id === this.scorer10);
+
+        if (this.capturedResponses.length > 0) {
+          this.displayMainReviewerCommentDialog = true;
+          this.ReviewerComment = this.capturedResponses[0].reviewerComment;
+          this.signedByUserScorecardUser = this.capturedResponses[0].createdUser.fullName;
+          this.submittedDateByScorecardUser = this.capturedResponses[0].createdDateTime;
+          this.capturedResponseId = this.capturedResponses[0].id;
+        }
+        else
+        {
+
         }
       })
 
+  }
+
+  public click(fundingApplicationId: number, questionId: number, userId: number, responseOptionId: number, param: number )
+  {
+    this.RejectComment = null;
+    this.addAmendCommentDialog = true; 
+    this.fundingApplicationId = fundingApplicationId;
+    this.questionId = questionId;
+    this.createdUserId = userId;
+    this.responseOptionId = responseOptionId;
+    if(param === 1)
+    {
+      this.isAmendmentComment = true;
+    }
+    else{
+      this.isAmendmentComment = false;
+    }   
+  }
+
+  public click1(id: number)
+  {
+    this.ReviewerComment = null;
+    this.displayReviewerCommentDialog = true; 
+    this.capturedResponseId = id;
+  }
+  
+  addComment() {
+    
+    this.RejectComment = null;
+    this.addAmendCommentDialog = true;    
+  }
+
+  disableSaveComment() {
+    if (!this.RejectComment)
+      return true;
+
+    return false;
+  }
+
+  disableReviewerSaveComment()
+  {
+    if (!this.ReviewerComment)
+      return true;
+
+    return false;
+  }
+
+  mainReviewerComment()
+  {
+    if ((this.profile.roles[0].id === RoleEnum.MainReviewer) || (this.profile.roles[0].id === RoleEnum.SystemAdmin))
+    {
+      if (this.capturedResponse.length > 0) {
+        return true;
+      }
+      else
+      {
+        return false;
+      }      
+    }
+    else{
+      return true;
+    }
+  }
+
+  saveAmendComment(changesRequired: boolean, origin: string) {
+    let amendmentComment: number;
+    if(this.isAmendmentComment === true)
+    {
+      amendmentComment = 1;
+    }
+    else{
+      amendmentComment = 0;
+    }
+    let response = {} as IResponse;
+      response.fundingApplicationId = this.fundingApplicationId;
+      response.questionId = this.questionId;
+      response.responseOptionId = this.responseOptionId;
+      response.comment = this.RejectComment;   
+      response.createdUserId = this.createdUserId;
+     this._evaluationService.updateRejectionComment(response, amendmentComment).subscribe(
+       (results) => {
+        let returnValue = results as IQuestionResponseViewModel;
+        this.addAmendCommentDialog = false; 
+
+        this._evaluationService.getReviewerResponse(Number(this.id), this.questionId).subscribe(
+          (results) => {
+    
+            results.forEach(data => {
+              this.setReviewerName(data);
+            });
+    
+            results.forEach(data => {
+              this.setOptionName(data);
+            }); 
+
+            if(amendmentComment === 0)
+            {
+              results.forEach(data => {
+                this.setInitialComment(data);
+              });
+            }
+    
+            this._responseUsers = results;
+            this._spinner.hide();
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+
+        if(amendmentComment === 1)
+        {
+          this.displayAmendmentCommentDialog = true; 
+          this.displayCommentDialog = false; 
+        }
+        else{
+          this.displayCommentDialog = true; 
+          this.displayAmendmentCommentDialog = false; 
+        } 
+         
+        this.getRejectedFlag();
+     }
+   );
+  }
+
+  saveReviewerComment(changesRequired: boolean, origin: string)
+  {
+    let capturedResponse = {
+      id: this.capturedResponseId,
+      fundingApplicationId: Number(this.id),
+      statusId: 0,
+      questionCategoryId: 0,
+      comments: this.ReviewerComment,
+      isActive: true,
+      isSignedOff: true,
+      isDeclarationAccepted: true,
+      selectedStatus: 0
+    } as ICapturedResponse;
+
+    this._evaluationService.addReviewerComment(capturedResponse).subscribe(
+      (results) => {
+        //this._router.navigateByUrl('applications');
+        this.displayReviewerCommentDialog = false;
+        this.displayMainReviewerCommentDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public onSelectViewHistory(question: IQuestionResponseViewModel) {
+    this._spinner.show();
+    this.responseHistory = [];
+
+    this._evaluationService.getResponseHistory(this.application.id, question.questionId).subscribe(
+      (results) => {
+        this.responseHistory = results;
+        this.displayHistoryDialog = true;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public getCellData(row: any, col: any): any {
+    const nestedProperties: string[] = col.field.split('.');
+    let value: any = row;
+
+    for (const prop of nestedProperties) {
+      value = value[prop];
+    }
+
+    if (col.field == 'createdDateTime')
+      value = this._datepipe.transform(value, 'yyyy-MM-dd HH:mm:ss');
+
+    return value;
   }
 
   public disableElement() {

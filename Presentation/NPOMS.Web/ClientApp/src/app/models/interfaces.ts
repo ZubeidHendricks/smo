@@ -365,6 +365,8 @@ export interface IApplication {
     closeScorecard: number;
     initiateScorecard: number;  
     scorecardCount: number;
+    rejectedScorecard: number;
+    submittedScorecard: number;
     applicationPeriod: IApplicationPeriod;
     status: IStatus;     
     createdUser: IUser;
@@ -1311,6 +1313,7 @@ export interface IResponseOption {
     name: string;
     systemName: string;
     isActive: boolean;
+    rejectionComment: boolean;
     responseType: IResponseType;
     createdUserId: number;
 }
@@ -1330,8 +1333,11 @@ export interface ICapturedResponse {
     questionCategoryId: number;
     statusId: number;
     comments: string;
+    reviewerComment: string;
+    reviewerUserId: number;
     isActive: boolean;
     isSignedOff: boolean;
+    disableFlag: number;
     isDeclarationAccepted: boolean;
     createdDateTime: Date;
     selectedStatus: number;
@@ -1345,6 +1351,8 @@ export interface IResponse {
     questionId: number;
     responseOptionId: number;
     comment: string;
+    reviewerCategoryComment: string;
+    createdUserId: number;
 }
 
 export interface IQuestionResponseViewModel {
@@ -1368,6 +1376,9 @@ export interface IQuestionResponseViewModel {
     fundingApplicationId: number;
     responseOptionId: number;
     comment: string;
+    rejectionComment: string;
+    rejectionFlag: number;
+    reviewerCategoryComment: string;
     isSaved: boolean;
     createdUserId: number;
     responseOption: IResponseOption;
@@ -1381,6 +1392,9 @@ export interface IResponseOptions {
     questionId: number;
     responseOptionId: number;
     comment: string;
+    rejectionComment: string;
+    rejectedByUserId: number;
+    rejectionFlag: number;
     createdUserId: number;
     responseOption: IResponseOption;
 }
@@ -1391,7 +1405,28 @@ export interface IGetResponseOptions {
     questionId: number;
     responseOptionId: number;
     comment: string;
+    rejectionComment: string;
     createdUserId: number;
+    rejectedByUserId: number;
+    reviewerUpdatedDateTime: string;    
+    responseOption: IResponseOption;
+    createdUser: IUser;
+}
+
+export interface IGetResponseOption {
+    id: number;
+    fundingApplicationId: number;
+    questionId: number;
+    responseOptionId: number;
+    responseOptionName:number;
+    comment: string;
+    initialComment: string;
+    rejectionComment: string;
+    createdUserId: number;
+    rejectedByUserId: number;
+    rejectedByUser: string;
+    mainReviewerCategoryComment: string;
+    reviewerCategoryComment: string;
     responseOption: IResponseOption;
     createdUser: IUser;
 }
@@ -1402,6 +1437,7 @@ export interface IResponseHistory {
     questionId: number;
     responseOptionId: number;
     comment: string;
+    createdUserId: number;
 }
 
 //export interface IBudget {
