@@ -204,7 +204,7 @@ export class ApplicationListComponent implements OnInit {
         if (this.capturedResponses.length > 0) {
           application.submittedScorecard = this.capturedResponses.length
         }
-        else{
+        else{          
           application.submittedScorecard = 0;
         }
       })
@@ -490,6 +490,8 @@ export class ApplicationListComponent implements OnInit {
       option.visible = true;
     });
 
+    let roleIDs = this.profile.roles.map(x => x.id);
+
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11)
     {
       this.optionItemExists('Manage Indicators');  
@@ -533,13 +535,17 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    if((this.profile.roles[0].id !== Number(RoleEnum.SystemAdmin)) || (this.profile.roles[0].id !== Number(RoleEnum.SystemAdmin)))
-    {
-      if(this.selectedApplication.submittedScorecard === 0)
-      {
+    if (roleIDs.includes(RoleEnum.SystemAdmin) || roleIDs.includes(RoleEnum.MainReviewer)) {
+      if(this.selectedApplication.closeScorecard === 0) {
         this.optionItemExists('Review Score Card');
       }
     }
+    else {
+      if (this.selectedApplication.submittedScorecard === 0) {
+        this.optionItemExists('Review Score Card');
+      }
+    }
+    
   }
 
   public updateButtonItems() {
