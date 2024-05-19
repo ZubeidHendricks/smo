@@ -154,14 +154,6 @@ namespace NPOMS.Services.Implementation
 
 				return results;
 			}
-			//else if (loggedInUser.Roles.Any(x => x.IsActive && x.RoleId.Equals((int)RoleEnum.Applicant)))
-   //         {
-   //             if (!loggedInUser.Departments[0].DepartmentId.Equals((int)DepartmentEnum.DoH))
-   //                 results = results.Where(x => x.ApplicationPeriod.DepartmentId.Equals(loggedInUser.Departments[0].DepartmentId));
-
-   //             return results;
-
-   //         }
 			else
 			{
 				// Get assigned organisations
