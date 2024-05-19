@@ -27,9 +27,10 @@ namespace NPOMS.Services.Mappings
 				.ForMember(d => d.UpdatedUserId, op => op.MapFrom(s => s.UpdatedUserId))
 				.ForMember(d => d.UpdatedDateTime, op => op.MapFrom(s => s.UpdatedDateTime))
 				.ForMember(d => d.Roles, op => op.Ignore())
-				.ForMember(d => d.Departments, op => op.Ignore());
+				.ForMember(d => d.Departments, op => op.Ignore())
+                .ForMember(d => d.UserPrograms, op => op.Ignore());
 
-			CreateMap<UserViewModel, User>()
+            CreateMap<UserViewModel, User>()
 				.ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
 				.ForMember(d => d.Email, op => op.MapFrom(s => s.Email))
 				.ForMember(d => d.UserName, op => op.MapFrom(s => s.UserName))
@@ -39,9 +40,10 @@ namespace NPOMS.Services.Mappings
 				.ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive))
 				.ForMember(d => d.IsB2C, op => op.MapFrom(s => s.IsB2C))
 				.ForMember(d => d.Roles, op => op.Ignore())
-				.ForMember(d => d.Departments, op => op.Ignore());
+				.ForMember(d => d.Departments, op => op.Ignore())
+                .ForMember(d => d.UserPrograms, op => op.Ignore());
 
-			CreateMap<Role, RoleViewModel>()
+            CreateMap<Role, RoleViewModel>()
 				.ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
 				.ForMember(d => d.Name, op => op.MapFrom(s => s.Name))
 				.ForMember(d => d.SystemName, op => op.MapFrom(s => s.SystemName))
@@ -65,7 +67,19 @@ namespace NPOMS.Services.Mappings
 				.ForMember(d => d.Abbreviation, op => op.MapFrom(s => s.Abbreviation))
 				.ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
 
-			CreateMap<Permission, PermissionViewModel>()
+            CreateMap<UserProgram, UserProgramViewModel>()
+                .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
+                .ForMember(d => d.Name, op => op.MapFrom(s => s.Name))
+                .ForMember(d => d.DepartmentId, op => op.MapFrom(s => s.DepartmentId))
+                .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
+
+            CreateMap<UserProgramViewModel, UserProgram>()
+                .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
+                .ForMember(d => d.Name, op => op.MapFrom(s => s.Name))
+                .ForMember(d => d.DepartmentId, op => op.MapFrom(s => s.DepartmentId))
+                .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
+
+            CreateMap<Permission, PermissionViewModel>()
 				.ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
 				.ForMember(d => d.CategoryName, op => op.MapFrom(s => s.CategoryName))
 				.ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive))

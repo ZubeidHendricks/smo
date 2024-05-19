@@ -1,4 +1,4 @@
-import { ILanguage, IStaffCategory } from '../../models/interfaces';
+import { ILanguage, IProgrammes, IStaffCategory } from '../../models/interfaces';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -39,6 +39,9 @@ export class DropdownService {
         break;
       case DropdownTypeEnum.Departments:
         data = this._http.get<IDepartment[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Programmes:
+        data = this._http.get<IProgrammes[]>(url, httpOptions);
         break;
       case DropdownTypeEnum.OrganisationTypes:
         data = this._http.get<IOrganisationType[]>(url, httpOptions);

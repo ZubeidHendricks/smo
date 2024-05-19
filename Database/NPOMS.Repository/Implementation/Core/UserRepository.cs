@@ -95,6 +95,8 @@ namespace NPOMS.Repository.Implementation.Core
                                         .ThenInclude(x => x.Permission)
                             .Include(x => x.Departments)
                                 .ThenInclude(x => x.Department)
+                                    .Include(x => x.UserPrograms)
+                                        .ThenInclude(x => x.UserProgram)
                             .FirstOrDefaultAsync();
         }
 
@@ -109,6 +111,8 @@ namespace NPOMS.Repository.Implementation.Core
                                     .ThenInclude(x => x.Permission)
                         .Include(x => x.Departments)
                             .ThenInclude(x => x.Department)
+                        .Include(x => x.UserPrograms)
+                            .ThenInclude(x => x.UserProgram)
                         .FirstOrDefaultAsync();
             }
             catch(Exception ex)

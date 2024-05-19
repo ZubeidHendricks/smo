@@ -27,6 +27,7 @@ using NPOMS.Services.Interfaces;
 using NPOMS.Services.Mappings;
 using NPOMS.Services.PowerBI;
 using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
+using NPOMS.Domain.Enumerations;
 
 namespace NPOMS.Services.Extensions
 {
@@ -61,6 +62,7 @@ namespace NPOMS.Services.Extensions
 
             /* Core */
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IUserProgramRepository, UserProgramRepository>();
             services.AddScoped<IDocumentStoreRepository, DocumentStoreRepository>();
             services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
             services.AddScoped<IEmailAccountRepository, EmailAccountRepository>();
@@ -189,6 +191,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
             services.AddScoped<IUserNpoRepository, UserNpoRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IUserProgramMappingRepository, UserProgramMappingRepository>();
             services.AddScoped<IActivityFacilityListRepository, ActivityFacilityListRepository>();
             services.AddScoped<IActivityRecipientRepository, ActivityRecipientRepository>();
 

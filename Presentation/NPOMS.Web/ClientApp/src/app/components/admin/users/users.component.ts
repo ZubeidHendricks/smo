@@ -5,7 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
-import { IDepartment, IRole, IUser } from 'src/app/models/interfaces';
+import { IDepartment, IProgramme, IProgrammes, IRole, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -42,10 +42,12 @@ export class UsersComponent implements OnInit {
   users: IUser[];
   roles: IRole[];
   departments: IDepartment[];
+  userPrograms: IProgramme[];
 
   selectedUser: IUser;
   selectedDepartment: IDepartment;
   selectedRoles: IRole[] = [];
+  selectedPrograms: IProgramme[] = [];
   searchResult: any[] = [];
   inActive: boolean;
 
@@ -78,7 +80,8 @@ export class UsersComponent implements OnInit {
 
         this.loadRoles();
         this.loadDepartments();
-        this.loadUsers();
+        this.loadPrograms();
+        this.loadUsers();        
       }
     });
 
@@ -137,6 +140,20 @@ export class UsersComponent implements OnInit {
     );
   }
 
+  private loadPrograms() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
+      (results) => {
+        this.userPrograms = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   add() {
     this.openNewDialog();
   }
@@ -157,6 +174,10 @@ export class UsersComponent implements OnInit {
 
     user.roles.forEach(role => {
       this.selectedRoles.push(this.roles.find(x => x.id === role.id));
+    });
+
+    user.userPrograms.forEach(program => {
+      this.selectedPrograms.push(this.userPrograms.find(x => x.id === program.id));
     });
 
     this.displayEditDialog = true;
@@ -192,7 +213,9 @@ export class UsersComponent implements OnInit {
     newUser.userName = this.selectedUser.userName;
     newUser.isActive = !this.inActive;
     newUser.roles = this.selectedRoles;
+    newUser.userPrograms = this.selectedPrograms;
     newUser.departments = [];
+    //newUser.programs = [];
 
     if (this.isSystemAdmin)
       newUser.departments.push(this.departments.filter(x => x.id === this.selectedDepartment.id)[0]);
@@ -227,8 +250,8 @@ export class UsersComponent implements OnInit {
     editUser.userName = this.selectedUser.userName;
     editUser.isActive = !this.inActive;
     editUser.roles = this.selectedRoles;
+    editUser.userPrograms = this.selectedPrograms;
     editUser.departments = [];
-
     if (this.isSystemAdmin)
       editUser.departments.push(this.departments.filter(x => x.id === this.selectedDepartment.id)[0]);
     else
@@ -261,6 +284,7 @@ export class UsersComponent implements OnInit {
     this.selectedUser = null;
     this.selectedDepartment = null;
     this.selectedRoles = [];
+    this.selectedPrograms = [];
     this.inActive = null;
   }
 

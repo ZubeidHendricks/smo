@@ -84,6 +84,7 @@ export interface IUser {
     departments: IDepartment[];
     permissions: IPermission[];
     userNpos: IUserNpo[];
+    userPrograms: IProgramme[];
 }
 
 export interface IUtility {
@@ -183,6 +184,13 @@ export interface IGender {
 export interface ILanguage {
     id: number;
     name: string;
+    isActive: boolean;
+}
+
+export interface IProgrammes {
+    id: number;
+    name: string;
+    departmentId: number;
     isActive: boolean;
 }
 
