@@ -62,7 +62,7 @@ namespace NPOMS.Services.Extensions
 
             /* Core */
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IUserProgramRepository, UserProgramRepository>();
+          //  services.AddScoped<IUserProgramRepository, UserProgramRepository>();
             services.AddScoped<IDocumentStoreRepository, DocumentStoreRepository>();
             services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
             services.AddScoped<IEmailAccountRepository, EmailAccountRepository>();

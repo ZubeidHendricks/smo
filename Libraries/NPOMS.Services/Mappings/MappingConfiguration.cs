@@ -67,16 +67,16 @@ namespace NPOMS.Services.Mappings
 				.ForMember(d => d.Abbreviation, op => op.MapFrom(s => s.Abbreviation))
 				.ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
 
-            CreateMap<UserProgram, UserProgramViewModel>()
+            CreateMap<Programme, UserProgramViewModel>()
                 .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
                 .ForMember(d => d.Name, op => op.MapFrom(s => s.Name))
-                .ForMember(d => d.DepartmentId, op => op.MapFrom(s => s.DepartmentId))
+              //  .ForMember(d => d.ProgramId, op => op.MapFrom(s => s.p))
                 .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
 
-            CreateMap<UserProgramViewModel, UserProgram>()
+            CreateMap<UserProgramViewModel, Programme>()
                 .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
                 .ForMember(d => d.Name, op => op.MapFrom(s => s.Name))
-                .ForMember(d => d.DepartmentId, op => op.MapFrom(s => s.DepartmentId))
+               // .ForMember(d => d.Id, op => op.MapFrom(s => s.ProgramId))
                 .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
 
             CreateMap<Permission, PermissionViewModel>()

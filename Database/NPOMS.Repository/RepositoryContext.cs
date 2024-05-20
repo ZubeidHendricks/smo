@@ -70,7 +70,7 @@ namespace NPOMS.Repository
 
         /* Core */
         public DbSet<Department> Departments { get; set; }
-        public DbSet<UserProgram> UserProgram { get; set; }
+       // public DbSet<UserProgram> UserProgram { get; set; }
         public DbSet<DocumentStore> DocumentStores { get; set; }
         public DbSet<FundAppDocuments> FundAppDocuments { get; set; }
 
@@ -238,7 +238,7 @@ namespace NPOMS.Repository
 
             /* Core */
             modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
-            modelBuilder.ApplyConfiguration(new UserProgramConfiguration());
+          //  modelBuilder.ApplyConfiguration(new UserProgramConfiguration());
             modelBuilder.ApplyConfiguration(new DocumentTypeConfiguration());
             modelBuilder.ApplyConfiguration(new EmailAccountConfiguration());
             modelBuilder.ApplyConfiguration(new EmailTemplateConfiguration());

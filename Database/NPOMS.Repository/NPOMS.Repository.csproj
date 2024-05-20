@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Compile Remove="Configurations\Core\UserProgramConfiguration.cs" />
+    <Compile Remove="Implementation\Core\UserProgramRepository.cs" />
     <Compile Remove="Implementation\Entities\FinancialDetailRepository.cs" />
+    <Compile Remove="Interfaces\Core\IUserProgramRepository.cs" />
     <Compile Remove="Interfaces\Entities\IFinancialDetailRepository.cs" />
   </ItemGroup>
 

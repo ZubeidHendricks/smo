@@ -19,6 +19,7 @@ using NPOMS.Repository;
 using Azure.Storage.Blobs.Models;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Repository.Implementation.Mapping;
+using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
 
 namespace NPOMS.Services.Implementation
 {
@@ -33,8 +34,8 @@ namespace NPOMS.Services.Implementation
 		private IUserRoleRepository _userRoleRepository;
 		private IRoleRepository _roleRepository;
 		private IDepartmentRepository _departmentRepository;
-		private IUserProgramRepository _userProgramRepository;
-		//private IProgrammeRepository _programmeRepository;
+		//private IUserProgramRepository _userProgramRepository;
+		private IProgrammeRepository _programmeRepository;
 		private IUserProgramMappingRepository _userProgramMappingRepository;
 		private IUserNpoRepository _userNpoRepository;
 		private INpoRepository _npoRepository;
@@ -53,8 +54,8 @@ namespace NPOMS.Services.Implementation
 			IUserRoleRepository userRoleRepository,
 			IRoleRepository roleRepository,
 			IDepartmentRepository departmentRepository,
-			IUserProgramRepository userProgramRepository,
-			//IProgrammeRepository programmeRepository,
+		//	IUserProgramRepository userProgramRepository,
+			IProgrammeRepository programmeRepository,
 			IUserProgramMappingRepository userProgramMappingRepository,
 			IUserNpoRepository userNpoRepository,
 			INpoRepository npoRepository,
@@ -68,8 +69,8 @@ namespace NPOMS.Services.Implementation
 			_userRoleRepository = userRoleRepository;
 			_roleRepository = roleRepository;
 			_departmentRepository = departmentRepository;
-			_userProgramRepository = userProgramRepository;
-			//_programmeRepository = programmeRepository;
+			//_userProgramRepository = userProgramRepository;
+			_programmeRepository = programmeRepository;
             _userProgramMappingRepository = userProgramMappingRepository;
             _userNpoRepository = userNpoRepository;
 			_npoRepository = npoRepository;
@@ -96,7 +97,11 @@ namespace NPOMS.Services.Implementation
 					_mapper.Map<List<DepartmentViewModel>>(
 						user.Departments.Select(x => x.Department)));
 
-				viewModel.Add(userViewModel);
+                userViewModel.UserPrograms.AddRange(
+                    _mapper.Map<List<UserProgramViewModel>>(
+                        user.UserPrograms.Select(x => x.Program)));
+
+                viewModel.Add(userViewModel);
 			}
 
 			return viewModel;
@@ -126,7 +131,7 @@ namespace NPOMS.Services.Implementation
 				var departments = user.Departments.Select(r => r.Department);
 				viewModel.Departments = _mapper.Map<List<DepartmentViewModel>>(departments);
 
-				var programs = user.UserPrograms.Select(r => r.UserProgram);
+				var programs = user.UserPrograms.Select(r => r.Program);
 				viewModel.UserPrograms = _mapper.Map<List<UserProgramViewModel>>(programs);
 
 				var mappings = await _userNpoRepository.GetApprovedEntities(user.Id);
@@ -187,11 +192,13 @@ namespace NPOMS.Services.Implementation
 
 		public async Task<UserViewModel> Create(UserViewModel user, string userIdentifier)
 		{
-			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+			bool returnInactive;
+
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var newUser = await _userRepository.GetByUserNameWithDetails(user.UserName);
 			var roles = await _roleRepository.GetEntities(false);
 			var departments = await _departmentRepository.GetEntities(false);
-			var userPrograms = await _userProgramRepository.GetEntities(false);
+			var userPrograms = await _programmeRepository.GetEntities(false);// await _programmeRepository.GetEntities(false);
 
 
             if (newUser != null)
@@ -322,7 +329,7 @@ namespace NPOMS.Services.Implementation
                 else
                     userProgram.IsActive = false;
 
-                userProgram.UserProgram = null;
+                userProgram.Program = null;
 
                 if (userProgram.Id == 0)
                 {
@@ -352,7 +359,7 @@ namespace NPOMS.Services.Implementation
 			//todo: changed the default role for B2C user
 			var role = _roleRepository.FindByCondition(x => x.SystemName == "Applicant").First();
 			var department = _departmentRepository.FindByCondition(x => x.Abbreviation == "NONE").First();
-			var userProgram = _userProgramRepository.FindByCondition(x => x.IsActive == true).First();
+			//var userProgram = _userProgramRepository.FindByCondition(x => x.IsActive == true).First();
 
 			if (role == null || department == null)
 				throw new Exception("The role and/or department doesn't exists");
@@ -380,9 +387,9 @@ namespace NPOMS.Services.Implementation
 			userDepartments.Add(new UserDepartment() { DepartmentId = department.Id });
 			newUser.Departments = userDepartments;
 
-			List<UserProgramMapping> userProgramMappings = new List<UserProgramMapping>();
-			userProgramMappings.Add(new UserProgramMapping() { ProgramId = userProgram.Id });
-			newUser.UserPrograms = userProgramMappings;
+			//List<UserProgramMapping> userProgramMappings = new List<UserProgramMapping>();
+			//userProgramMappings.Add(new UserProgramMapping() { ProgramId = user });
+			//newUser.UserPrograms = userProgramMappings;
 
             await _userRepository.CreateEntity(newUser);
 

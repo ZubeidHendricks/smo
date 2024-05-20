@@ -12,7 +12,7 @@ namespace NPOMS.Services.Models
 
         public string Name { get; set; }
 
-        public int DepartmentId { get; set; }
+        public int ProgramId { get; set; }
 
         public bool IsActive { get; set; }
     }

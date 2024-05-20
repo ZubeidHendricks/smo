@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Core;
+using NPOMS.Domain.Dropdown;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,6 +18,6 @@ namespace NPOMS.Domain.Mapping
 
         public bool IsActive { get; set; }
 
-        public UserProgram UserProgram { get; set; }
+        public Programme Program { get; set; }
     }
 }
