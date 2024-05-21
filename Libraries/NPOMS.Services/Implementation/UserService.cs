@@ -17,6 +17,9 @@ using NPOMS.Domain.Mapping;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Repository;
 using Azure.Storage.Blobs.Models;
+using NPOMS.Domain.Dropdown;
+using NPOMS.Repository.Implementation.Mapping;
+using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
 
 namespace NPOMS.Services.Implementation
 {
@@ -31,6 +34,9 @@ namespace NPOMS.Services.Implementation
 		private IUserRoleRepository _userRoleRepository;
 		private IRoleRepository _roleRepository;
 		private IDepartmentRepository _departmentRepository;
+		//private IUserProgramRepository _userProgramRepository;
+		private IProgrammeRepository _programmeRepository;
+		private IUserProgramMappingRepository _userProgramMappingRepository;
 		private IUserNpoRepository _userNpoRepository;
 		private INpoRepository _npoRepository;
 
@@ -48,6 +54,9 @@ namespace NPOMS.Services.Implementation
 			IUserRoleRepository userRoleRepository,
 			IRoleRepository roleRepository,
 			IDepartmentRepository departmentRepository,
+		//	IUserProgramRepository userProgramRepository,
+			IProgrammeRepository programmeRepository,
+			IUserProgramMappingRepository userProgramMappingRepository,
 			IUserNpoRepository userNpoRepository,
 			INpoRepository npoRepository,
 			RepositoryContext repositoryContext
@@ -60,7 +69,10 @@ namespace NPOMS.Services.Implementation
 			_userRoleRepository = userRoleRepository;
 			_roleRepository = roleRepository;
 			_departmentRepository = departmentRepository;
-			_userNpoRepository = userNpoRepository;
+			//_userProgramRepository = userProgramRepository;
+			_programmeRepository = programmeRepository;
+            _userProgramMappingRepository = userProgramMappingRepository;
+            _userNpoRepository = userNpoRepository;
 			_npoRepository = npoRepository;
 			_repositoryContext = repositoryContext;
 		}
@@ -85,7 +97,11 @@ namespace NPOMS.Services.Implementation
 					_mapper.Map<List<DepartmentViewModel>>(
 						user.Departments.Select(x => x.Department)));
 
-				viewModel.Add(userViewModel);
+                userViewModel.UserPrograms.AddRange(
+                    _mapper.Map<List<UserProgramViewModel>>(
+                        user.UserPrograms.Select(x => x.Program)));
+
+                viewModel.Add(userViewModel);
 			}
 
 			return viewModel;
@@ -114,6 +130,9 @@ namespace NPOMS.Services.Implementation
 
 				var departments = user.Departments.Select(r => r.Department);
 				viewModel.Departments = _mapper.Map<List<DepartmentViewModel>>(departments);
+
+				var programs = user.UserPrograms.Select(r => r.Program);
+				viewModel.UserPrograms = _mapper.Map<List<UserProgramViewModel>>(programs);
 
 				var mappings = await _userNpoRepository.GetApprovedEntities(user.Id);
 				viewModel.UserNpos = _mapper.Map<List<UserNpoViewModel>>(mappings);
@@ -173,12 +192,16 @@ namespace NPOMS.Services.Implementation
 
 		public async Task<UserViewModel> Create(UserViewModel user, string userIdentifier)
 		{
-			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+			bool returnInactive;
+
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var newUser = await _userRepository.GetByUserNameWithDetails(user.UserName);
 			var roles = await _roleRepository.GetEntities(false);
 			var departments = await _departmentRepository.GetEntities(false);
+			var userPrograms = await _programmeRepository.GetEntities(false);// await _programmeRepository.GetEntities(false);
 
-			if (newUser != null)
+
+            if (newUser != null)
 			{
 				throw new Exception($"{user.UserName} already exists");
 			}
@@ -193,6 +216,7 @@ namespace NPOMS.Services.Implementation
 			newUser.UpdatedDateTime = null;
 			newUser.Roles = new List<UserRole>();
 			newUser.Departments = new List<UserDepartment>();
+			newUser.UserPrograms = new List<UserProgramMapping>();
 
 			foreach (var role in user.Roles)
 			{
@@ -207,6 +231,14 @@ namespace NPOMS.Services.Implementation
 				if (departments.Any(d => d.Id == department.Id))
 				{
 					newUser.Departments.Add(new UserDepartment() { DepartmentId = department.Id });
+				}
+			}
+
+			foreach (var userProgram in user.UserPrograms)
+			{
+				if(departments.Any(p => p.Id == userProgram.Id))
+				{
+					newUser.UserPrograms.Add(new UserProgramMapping() { ProgramId = userProgram.Id });
 				}
 			}
 
@@ -236,8 +268,12 @@ namespace NPOMS.Services.Implementation
 			_repositoryContext.UserDepartments.Update(existingUser.Departments.FirstOrDefault());
 
 			await UpdateUserRoles(user, existingUser, loggedInUser.Id);
-			var oldEntity = await this._repositoryContext.Users.FindAsync(existingUser.Id);
+
+            await UpdateUserPrograms(user, existingUser, loggedInUser.Id);
+
+            var oldEntity = await this._repositoryContext.Users.FindAsync(existingUser.Id);
 			await _userRepository.UpdateAsync(oldEntity, existingUser, true, loggedInUser.Id);
+			            
 			return _mapper.Map<UserViewModel>(existingUser);
 		}
 
@@ -274,7 +310,40 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
-		public async Task Delete(UserViewModel user, string userIdentifier)
+        private async Task UpdateUserPrograms(UserViewModel user, User existingUser, int currentUserId)
+        {
+            foreach (var userProgram in user.UserPrograms)
+            {
+                var selectedUserProgram = await _userProgramMappingRepository.GetByUserIdAndProgramId(existingUser.Id, userProgram.Id);
+
+                if (selectedUserProgram == null)
+                    existingUser.UserPrograms.Add(new UserProgramMapping { UserId = existingUser.Id,ProgramId = userProgram.Id, IsActive = true });
+            }
+
+            var newProgramIds = user.UserPrograms.Select(x => x.Id);
+
+            foreach (var userProgram in existingUser.UserPrograms)
+            {
+                if (newProgramIds.Contains(userProgram.ProgramId))
+                    userProgram.IsActive = true;
+                else
+                    userProgram.IsActive = false;
+
+                userProgram.Program = null;
+
+                if (userProgram.Id == 0)
+                {
+                    await _userProgramMappingRepository.CreateAsync(userProgram);
+                }
+                else
+                {
+                    var oldEntity = await this._repositoryContext.UserProgramMappings.FindAsync(userProgram.Id);
+                    await _userProgramMappingRepository.UpdateAsync(oldEntity, userProgram, true, currentUserId);
+                }
+            }
+        }
+
+        public async Task Delete(UserViewModel user, string userIdentifier)
 		{
 			throw new NotImplementedException();
 		}
@@ -290,6 +359,7 @@ namespace NPOMS.Services.Implementation
 			//todo: changed the default role for B2C user
 			var role = _roleRepository.FindByCondition(x => x.SystemName == "Applicant").First();
 			var department = _departmentRepository.FindByCondition(x => x.Abbreviation == "NONE").First();
+			//var userProgram = _userProgramRepository.FindByCondition(x => x.IsActive == true).First();
 
 			if (role == null || department == null)
 				throw new Exception("The role and/or department doesn't exists");
@@ -308,15 +378,20 @@ namespace NPOMS.Services.Implementation
 				CreatedUserId = systemUser.Id
 			};
 
+
 			List<UserRole> userRoles = new List<UserRole>();
 			userRoles.Add(new UserRole() { RoleId = role.Id, IsActive = true });
 			newUser.Roles = userRoles;
 
 			List<UserDepartment> userDepartments = new List<UserDepartment>();
-			userDepartments.Add(new UserDepartment() { DepartmentId = department.Id }); ;
+			userDepartments.Add(new UserDepartment() { DepartmentId = department.Id });
 			newUser.Departments = userDepartments;
 
-			await _userRepository.CreateEntity(newUser);
+			//List<UserProgramMapping> userProgramMappings = new List<UserProgramMapping>();
+			//userProgramMappings.Add(new UserProgramMapping() { ProgramId = user });
+			//newUser.UserPrograms = userProgramMappings;
+
+            await _userRepository.CreateEntity(newUser);
 
 			return newUser;
 		}

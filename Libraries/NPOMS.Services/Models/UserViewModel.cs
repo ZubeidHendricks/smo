@@ -9,6 +9,7 @@ namespace NPOMS.Services.Models
         {
             this.Roles = this.Roles ?? new List<RoleViewModel>();
             this.Departments = this.Departments ?? new List<DepartmentViewModel>();
+            this.UserPrograms = this.UserPrograms ?? new List<UserProgramViewModel>();
             this.Permissions = this.Permissions ?? new List<PermissionViewModel>();
             this.UserNpos = this.UserNpos ?? new List<UserNpoViewModel>();
         }
@@ -40,8 +41,9 @@ namespace NPOMS.Services.Models
 		public List<RoleViewModel> Roles { get; set; }
 
 		public List<DepartmentViewModel> Departments { get; set; }
+        public List<UserProgramViewModel> UserPrograms { get; set; }
 
-		public List<PermissionViewModel> Permissions { get; set; }
+        public List<PermissionViewModel> Permissions { get; set; }
 
 		public List<UserNpoViewModel> UserNpos { get; set; }
 	}

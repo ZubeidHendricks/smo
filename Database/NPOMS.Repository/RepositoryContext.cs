@@ -70,6 +70,7 @@ namespace NPOMS.Repository
 
         /* Core */
         public DbSet<Department> Departments { get; set; }
+       // public DbSet<UserProgram> UserProgram { get; set; }
         public DbSet<DocumentStore> DocumentStores { get; set; }
         public DbSet<FundAppDocuments> FundAppDocuments { get; set; }
 
@@ -87,6 +88,7 @@ namespace NPOMS.Repository
         public DbSet<EmbeddedReport> EmbeddedReports { get; set; }
 
         /* Dropdown */
+        public DbSet<Programme> programmes { get; set; }
         public DbSet<ActivityType> ActivityTypes { get; set; }
         public DbSet<ApplicationType> AllocationTypes { get; set; }
         public DbSet<ApplicationType> ApplicationTypes { get; set; }
@@ -191,6 +193,7 @@ namespace NPOMS.Repository
         public DbSet<UserDepartment> UserDepartments { get; set; }
         public DbSet<UserNpo> UserNpos { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<UserProgramMapping> UserProgramMappings { get; set; }
         public DbSet<ActivityFacilityList> ActivityFacilityLists { get; set; }
         public DbSet<ActivityRecipient> ActivityRecipients { get; set; }
 
@@ -235,6 +238,7 @@ namespace NPOMS.Repository
 
             /* Core */
             modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
+          //  modelBuilder.ApplyConfiguration(new UserProgramConfiguration());
             modelBuilder.ApplyConfiguration(new DocumentTypeConfiguration());
             modelBuilder.ApplyConfiguration(new EmailAccountConfiguration());
             modelBuilder.ApplyConfiguration(new EmailTemplateConfiguration());
@@ -302,6 +306,7 @@ namespace NPOMS.Repository
             modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
             modelBuilder.ApplyConfiguration(new UserDepartmentConfiguration());
             modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new UserProgramMppingConfiguration());
 
         }
 
