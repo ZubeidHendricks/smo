@@ -188,6 +188,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IActivitySubProgrammeRepository, ActivitySubProgrammeRepository>();
             services.AddScoped<INpoProfileFacilityListRepository, NpoProfileFacilityListRepository>();
             services.AddScoped<IObjectiveProgrammeRepository, ObjectiveProgrammeRepository>();
+            services.AddScoped<IDepartmentRoleRepository, DepartmentRoleRepository>();
             services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
             services.AddScoped<IUserNpoRepository, UserNpoRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();

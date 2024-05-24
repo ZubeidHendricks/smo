@@ -181,8 +181,16 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Description = "ECD Conditional Grant",
 					DepartmentId = 7,
 					DirectorateId = 3
-				}
-			);
+				},
+                 new Programme
+                 {
+                     Id = 24,
+                     Name = "All Programmes",
+                     Description = "All Programmes",
+                     DepartmentId = 11
+                 }
+
+            );
 		}
 	}
 }

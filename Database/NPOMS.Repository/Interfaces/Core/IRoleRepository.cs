@@ -9,5 +9,6 @@ namespace NPOMS.Repository.Interfaces.Core
 		Task<IEnumerable<Role>> GetEntities(bool returnInactive);
 
 		IEnumerable<Role> GetRoles();
-	}
+        Task<IEnumerable<Role>> GetRolesByDepartment(string name, List<int> roleIds);
+    }
 }

@@ -221,6 +221,38 @@ export class DropdownService {
     return data;
   }
 
+  
+  public GetProgramsByDepartment(dropdownType: DropdownTypeEnum, id:number) {
+    const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}/id/${id}/programmes`;
+    var data;
+
+    switch (dropdownType) {
+
+      case DropdownTypeEnum.FilteredProgrammesByDepartment:
+        data = this._http.get<IProgrammes[]>(url, httpOptions);
+        break;
+
+    }
+
+    return data;
+  }
+
+
+  public GetRolesByDepartment(filteredRolesByDepartment: DropdownTypeEnum, id:number) {
+    const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${filteredRolesByDepartment}/id/${id}/roles`;
+    var data;
+
+    switch (filteredRolesByDepartment) {
+
+      case DropdownTypeEnum.FilteredRolesByDepartment:
+        data = this._http.get<IRole[]>(url, httpOptions);
+        break;
+    }
+
+    return data;
+  }
+
+
   public createEntity(data: any, dropdownType: DropdownTypeEnum) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}`;
     var entity;
