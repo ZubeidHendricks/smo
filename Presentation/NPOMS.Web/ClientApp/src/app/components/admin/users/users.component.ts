@@ -146,7 +146,7 @@ export class UsersComponent implements OnInit {
     );
   }
 
-    loadPrograms(id: number = 0) {
+  loadPrograms(id: number = 0) {
       this._spinner.show();
       if(!this.isSystemAdmin)
       {
@@ -159,7 +159,6 @@ export class UsersComponent implements OnInit {
           next: ([programs, roles]) => {
             this.userPrograms = programs as IProgramme[];
             this.roles = roles as IRole[];
-
             if (this.isSystemAdmin) {                 
               this.department = this.departments.find(department => department.id === id);
               if (this.department) {
@@ -199,21 +198,35 @@ export class UsersComponent implements OnInit {
     this.clearInputs();
     this.selectedUser = user;
 
-    if (user.departments.length > 0)
-      this.selectedDepartment = this.departments.find(x => x.id === user.departments[0].id);
+    if (user.departments.length > 0) {
+        this.selectedDepartment = this.departments.find(x => x.id === user.departments[0].id);
+
+        if (this.selectedDepartment) {
+          const programs$ = this._dropdownRepo.GetProgramsByDepartment(DropdownTypeEnum.FilteredProgrammesByDepartment, this.selectedDepartment.id);
+          const roles$ = this._dropdownRepo.GetRolesByDepartment(DropdownTypeEnum.FilteredRolesByDepartment, this.selectedDepartment.id);
+    
+          forkJoin([programs$, roles$]).subscribe({
+              next: ([programs, roles]) => {
+                this.userPrograms = programs as IProgramme[];
+                this.roles = roles as IRole[];
+                this.selectedRoles = user.roles.map(role => this.roles.find(x => x.id === role.id)).filter(role => role);
+                this.selectedPrograms = user.userPrograms.map(program => this.userPrograms.find(x => x.id === program.id)).filter(program => program);    
+              },
+              error: (err) => {
+                  this._loggerService.logException(err);
+              },
+              complete: () => {
+                  this._spinner.hide();
+              }
+          });   
+        }
+    }
 
     this.inActive = !this.selectedUser.isActive;
 
-    user.roles.forEach(role => {
-      this.selectedRoles.push(this.roles.find(x => x.id === role.id));
-    });
-
-    user.userPrograms.forEach(program => {
-      this.selectedPrograms.push(this.userPrograms.find(x => x.id === program.id));
-    });
-
     this.displayEditDialog = true;
   }
+
 
   searchUser(event) {
     let searchTerm = event.query;
