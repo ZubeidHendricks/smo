@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NPOMS.Repository.Migrations
 {
-    public partial class AddedProgramme : Migration
+    public partial class AddNewValueInProgrammeConfiguration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,7 @@ namespace NPOMS.Repository.Migrations
                 schema: "dropdown",
                 table: "Programmes",
                 columns: new[] { "Id", "DepartmentId", "Description", "DirectorateId", "Name", "UpdatedDateTime", "UpdatedUserId" },
-                values: new object[] { 24, 11, "All Programmes", null, "All Programmes", null, null });
+                values: new object[] { 25, 11, "All Programmes", null, "All Programmes", null, null });
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -21,7 +21,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7931));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7713));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -29,7 +29,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 2,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7933));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7715));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -37,7 +37,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 3,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7934));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7717));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -45,7 +45,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 4,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7935));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7719));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -53,7 +53,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 5,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7936));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7720));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -61,7 +61,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 6,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7937));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7722));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -69,7 +69,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 7,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7938));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7723));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -77,7 +77,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 8,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7939));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7729));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -85,7 +85,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 9,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7940));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7730));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -93,7 +93,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 10,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7941));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7731));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -101,7 +101,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 11,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7942));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7733));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -109,7 +109,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 12,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7943));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7734));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -117,7 +117,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 13,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7944));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7736));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -125,7 +125,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 14,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7945));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7737));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -133,7 +133,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 15,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7946));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7739));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -141,7 +141,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 16,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7947));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7740));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -149,7 +149,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 17,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7948));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7741));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -157,7 +157,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 18,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7949));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7743));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -165,7 +165,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 19,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7950));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7744));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -173,7 +173,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 20,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7951));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7746));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -181,7 +181,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 21,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7952));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7747));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -189,7 +189,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 22,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7953));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7749));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -197,7 +197,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 23,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7954));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7750));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -205,7 +205,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 24,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7955));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7751));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -213,7 +213,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 25,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7956));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7753));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -221,7 +221,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 26,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7957));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7754));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -229,7 +229,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 27,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7958));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7756));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -237,7 +237,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 28,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7959));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7772));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -245,7 +245,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 29,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7959));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7775));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -253,7 +253,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 30,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7960));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7776));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -261,7 +261,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 31,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7961));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7777));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -269,7 +269,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 32,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7962));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7779));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -277,7 +277,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7851));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7568));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -285,7 +285,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 2,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7855));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7580));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -293,7 +293,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 3,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7856));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7582));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -301,7 +301,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 4,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7858));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7584));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -309,7 +309,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 6,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7859));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7585));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -317,7 +317,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 7,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7860));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7587));
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -325,7 +325,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 8,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 5, 24, 14, 23, 52, 153, DateTimeKind.Local).AddTicks(7862));
+                value: new DateTime(2024, 5, 28, 12, 14, 46, 991, DateTimeKind.Local).AddTicks(7589));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -334,7 +334,7 @@ namespace NPOMS.Repository.Migrations
                 schema: "dropdown",
                 table: "Programmes",
                 keyColumn: "Id",
-                keyValue: 24);
+                keyValue: 25);
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
