@@ -82,10 +82,19 @@
                     <label for="selectedDepartment" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
                         style="font-size: 13px; font-weight: bold;">Department</label>
                     <div class="p-col-12 p-md-10">
-                        <p-dropdown [style]="{'width':'100%'}" [options]="departments" optionLabel="name"
-                            placeholder="Select a Department" [(ngModel)]="selectedDepartment"
-                            [ngModelOptions]="{standalone: true}" appendTo="body" [filter]="true" filterBy="name">
-                        </p-dropdown>
+                        <p-dropdown 
+                        [style]="{'width':'100%'}" 
+                        [options]="departments" 
+                        optionLabel="name"
+                        placeholder="Select a Department" 
+                        [(ngModel)]="selectedDepartment"
+                        [ngModelOptions]="{standalone: true}" 
+                        appendTo="body" 
+                        [filter]="true" 
+                        filterBy="name"
+                        (onChange)="loadPrograms($event.value.id)">
+                    </p-dropdown>
+                    
                     </div>
                 </div>
                 <div class="p-field p-grid">
@@ -136,7 +145,7 @@
                             [disabled]="true" [(ngModel)]="selectedUser.fullName" pInputText />
                     </div>
                 </div>
-                <div class="p-field p-grid" *ngIf="isSystemAdmin">
+                <!-- <div class="p-field p-grid" *ngIf="isSystemAdmin">
                     <label for="selectedDepartment" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
                         style="font-size: 13px; font-weight: bold;">Department</label>
                     <div class="p-col-12 p-md-10">
@@ -144,6 +153,24 @@
                             placeholder="Select a Department" [(ngModel)]="selectedDepartment"
                             [ngModelOptions]="{standalone: true}" appendTo="body" [filter]="true" filterBy="name">
                         </p-dropdown>
+                    </div>
+                </div> -->
+                <div class="p-field p-grid" *ngIf="isSystemAdmin">
+                    <label for="selectedDepartment" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+                        style="font-size: 13px; font-weight: bold;">Department</label>
+                    <div class="p-col-12 p-md-10">
+                        <p-dropdown 
+                        [style]="{'width':'100%'}" 
+                        [options]="departments" 
+                        optionLabel="name"
+                        placeholder="Select a Department" 
+                        [(ngModel)]="selectedDepartment"
+                        [ngModelOptions]="{standalone: true}" 
+                        appendTo="body" 
+                        [filter]="true" 
+                        filterBy="name"
+                        (onChange)="loadPrograms($event.value.id)">
+                    </p-dropdown>
                     </div>
                 </div>
                 <div class="p-field p-grid">

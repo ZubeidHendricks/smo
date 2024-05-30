@@ -7,6 +7,7 @@ using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository;
+using NPOMS.Repository.Implementation.Dropdown;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
@@ -21,9 +22,11 @@ namespace NPOMS.Services.Implementation
 {
 	public class ApplicationService : IApplicationService
 	{
-		#region Fields
+        #region Fields
 
-		private IApplicationRepository _applicationRepository;
+        private IDepartmentRepository _departmentRepository;
+        private Repository.Interfaces.Dropdown.IProgrammeRepository _programmeRepository;
+        private IApplicationRepository _applicationRepository;
 		private IUserRepository _userRepository;
 		private IObjectiveRepository _objectiveRepository;
 		private IActivityRepository _activityRepository;
@@ -64,7 +67,7 @@ namespace NPOMS.Services.Implementation
 		#region Constructorrs
 
 		public ApplicationService(
-			IApplicationRepository applicationRepository,
+            IApplicationRepository applicationRepository,
 			IUserRepository userRepository,
 			IObjectiveRepository objectiveRepository,
 			IActivityRepository activityRepository,
@@ -97,9 +100,12 @@ namespace NPOMS.Services.Implementation
 			IApplicationPeriodRepository applicationPeriodRepository,
 			ISubRecipientRepository subRecipientRepository,
 			ISubSubRecipientRepository subSubRecipientRepository,
-			IActivityRecipientRepository activityRecipientRepository)
+			IActivityRecipientRepository activityRecipientRepository,
+            IDepartmentRepository departmentRepository,
+            Repository.Interfaces.Dropdown.IProgrammeRepository programmeRepository
+            )
 		{
-			_applicationRepository = applicationRepository;
+            _applicationRepository = applicationRepository;
 			_userRepository = userRepository;
 			_objectiveRepository = objectiveRepository;
 			_activityRepository = activityRepository;
@@ -133,7 +139,9 @@ namespace NPOMS.Services.Implementation
 			_subRecipientRepository = subRecipientRepository;
 			_subSubRecipientRepository = subSubRecipientRepository;
 			_activityRecipientRepository = activityRecipientRepository;
-		}
+            _departmentRepository = departmentRepository;
+            _programmeRepository = programmeRepository;
+        }
 
 		#endregion
 
@@ -145,23 +153,32 @@ namespace NPOMS.Services.Implementation
 			var applications = await _applicationRepository.GetEntities();
 			var results = applications.Where(x => !x.StatusId.Equals((int)StatusEnum.New));
 
-			if (loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))
-			{
-				// Filter applications by department.
-				//not supporting multiple departments
-				if (!loggedInUser.Departments[0].DepartmentId.Equals((int)DepartmentEnum.ALL))
-					results = results.Where(x => x.ApplicationPeriod.DepartmentId.Equals(loggedInUser.Departments[0].DepartmentId));
+            var departmentIds = await _departmentRepository.GetDepartmentIdOfLogggedInUserAsync(loggedInUser.Id);
+            var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
 
-				return results;
-			}
+
+            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin))))
+            {
+                return results;
+            }
+			else if(loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))
+            {
+                results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId)
+                          && programmesIds.Contains(x.ApplicationPeriod.ProgrammeId));
+
+                return results;
+            }
 			else
 			{
-				// Get assigned organisations
-				var mappings = await _userNpoRepository.GetApprovedEntities(loggedInUser.Id);
-				var NpoIds = mappings.Select(x => x.NpoId);
-				var assignedOrganisations = results.Where(x => NpoIds.Contains(x.NpoId));
-				return assignedOrganisations;
-			}
+                results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId)
+                         && programmesIds.Contains(x.ApplicationPeriod.ProgrammeId));
+
+                var mappings = await _userNpoRepository.GetApprovedEntities(loggedInUser.Id);
+                var NpoIds = mappings.Select(x => x.NpoId);
+                var assignedOrganisations = results.Where(x => NpoIds.Contains(x.NpoId));
+
+                return assignedOrganisations;
+            }
 		}
 
 		public async Task<Application> GetApplicationById(int id)

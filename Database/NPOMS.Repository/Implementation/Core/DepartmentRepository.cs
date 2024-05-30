@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Core;
+using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Interfaces.Core;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +11,28 @@ namespace NPOMS.Repository.Implementation.Core
 	public class DepartmentRepository : BaseRepository<Department>, IDepartmentRepository
 	{
 		#region Constructors
+		private readonly RepositoryContext _context;
 
-		public DepartmentRepository(RepositoryContext repositoryContext)
+		public DepartmentRepository(RepositoryContext repositoryContext,RepositoryContext context)
 			: base(repositoryContext)
 		{
+			_context = context;
 
-		}
+        }
 
-		#endregion
+        public async Task<List<int>> GetDepartmentIdOfLogggedInUserAsync(int userId)
+        {
+            return await _context.UserDepartments
+                           .Where(x => x.UserId == userId)
+                           .Select(x => x.DepartmentId)
+                           .ToListAsync();
+        }
 
-		#region Methods
+        #endregion
 
-		public async Task<IEnumerable<Department>> GetEntities(bool returnInactive)
+        #region Methods
+
+        public async Task<IEnumerable<Department>> GetEntities(bool returnInactive)
 		{
 			if (returnInactive)
 			{

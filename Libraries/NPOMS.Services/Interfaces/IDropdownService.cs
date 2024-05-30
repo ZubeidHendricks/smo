@@ -317,5 +317,7 @@ namespace NPOMS.Services.Interfaces
         Task DeleteQuestion(int id, string userIdentifier);
         Task DeleteQuestionCategory(int id, string userIdentifier);
         Task DeleteQuestionSection(int id, string userIdentifier);
+        Task<IEnumerable<Programme>> GetProgramsByDepartment(int id);
+        Task<IEnumerable<Role>> GetRolesByDepartment(int id);
     }
 }

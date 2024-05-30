@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Core;
+using NPOMS.Domain.Dropdown;
 using NPOMS.Repository.Interfaces.Core;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,26 @@ namespace NPOMS.Repository.Implementation.Core
 			 .OrderBy(ow => ow.Id).ToList();
 		}
 
-		#endregion
-	}
+        public async Task<IEnumerable<Role>> GetRolesByDepartment(string name, List<int> roleIds)
+        {
+            switch (name.ToLower())
+            {
+                default:
+                    var query = FindAll()
+                                .AsNoTracking();
+
+                    if (roleIds != null && roleIds.Any())
+                    {
+                        query = query.Where(x => roleIds.Contains(x.Id));
+                    }
+					else
+					{
+                        return Enumerable.Empty<Role>();
+                    }
+
+                    return await query.OrderBy(x => x.Name).ToListAsync();
+            }
+        }
+        #endregion
+    }
 }

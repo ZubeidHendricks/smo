@@ -244,6 +244,51 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("dropdownTypeEnum/{dropdownType}/id/{id}/programmes", Name = "GetProgramsByDepartment")]
+        public async Task<IActionResult> GetProgramsByDepartment(DropdownTypeEnum dropdownType, int id )
+        {
+            try
+            {
+                switch (dropdownType)
+                {
+                    case DropdownTypeEnum.FilteredProgrammesByDepartment:
+
+                        var filteredProgrammes = await _dropdownService.GetProgramsByDepartment(id);
+               
+                        return Ok(filteredProgrammes);
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetProgramsByDepartment-{dropdownType} action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("dropdownTypeEnum/{dropdownType}/id/{id}/roles", Name = "GetRolesByDepartment")]
+        public async Task<IActionResult> GetRolesByDepartment(DropdownTypeEnum dropdownType, int id)
+        {
+            try
+            {
+                switch (dropdownType)
+                {
+                    case DropdownTypeEnum.FilteredRolesByDepartment:
+
+                        var filteredRoles = await _dropdownService.GetRolesByDepartment(id);
+
+                        return Ok(filteredRoles);
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetProgramsByDepartment-{dropdownType} action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpGet("dropdownTypeEnum/{dropdownType}/id/{id}/returnInactive/{returnInactive}", Name = "GetEntitiesForDoc")]
         public async Task<IActionResult> GetEntitiesForDoc(DropdownTypeEnum dropdownType, int id, bool returnInactive)

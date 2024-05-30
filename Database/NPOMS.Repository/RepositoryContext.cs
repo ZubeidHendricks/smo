@@ -193,6 +193,7 @@ namespace NPOMS.Repository
         public DbSet<UserDepartment> UserDepartments { get; set; }
         public DbSet<UserNpo> UserNpos { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<DepartmentRoleMapping> DepartmentRoleMappings { get; set; }
         public DbSet<UserProgramMapping> UserProgramMappings { get; set; }
         public DbSet<ActivityFacilityList> ActivityFacilityLists { get; set; }
         public DbSet<ActivityRecipient> ActivityRecipients { get; set; }
@@ -304,6 +305,7 @@ namespace NPOMS.Repository
 
             /* Mapping */
             modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
+            modelBuilder.ApplyConfiguration(new DepartmentRoleConfiguration());  
             modelBuilder.ApplyConfiguration(new UserDepartmentConfiguration());
             modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserProgramMppingConfiguration());

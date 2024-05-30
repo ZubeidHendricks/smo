@@ -181,8 +181,31 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Description = "ECD Conditional Grant",
 					DepartmentId = 7,
 					DirectorateId = 3
-				}
-			);
+				},
+				//new Programme
+				//{
+				//	Id = 23,
+				//	Name = "Youth Development",
+				//	Description = "Integrated Youth Developmental Intervention Services",
+				//	DepartmentId = 17,
+				//	DirectorateId = 2
+				//},
+				//            new Programme
+				//            {
+				//                Id = 24,
+				//                Name = "Communicable Diseases",
+				//                Description = "Communicable Diseases",
+				//                DepartmentId = 11,
+				//                DirectorateId = 9
+				//            },
+				new Programme
+                {
+                    Id = 25,
+                    Name = "All Programmes",
+                    Description = "All Programmes",
+                    DepartmentId = 11
+                }
+            );
 		}
 	}
 }

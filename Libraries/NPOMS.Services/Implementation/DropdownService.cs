@@ -15,6 +15,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
 using NPOMS.Repository.Interfaces.Evaluation;
+using Microsoft.EntityFrameworkCore;
+using NPOMS.Repository.Implementation.Core;
+using NPOMS.Repository.Interfaces.Mapping;
 
 namespace NPOMS.Services.Implementation
 {
@@ -80,12 +83,14 @@ namespace NPOMS.Services.Implementation
         private IWorkflowAssessmentRepository _workflowAssessmentRepository;
         private IFundingTemplateTypeRepository _fundingTemplateTypeRepository;
         private IQuarterlyPeriodRepository _quarterlyPeriodRepository;
+        private IDepartmentRoleRepository _departmentRoleRepository;
         #endregion
 
         #region Constructors
 
         public DropdownService(
             IMapper mapper,
+            IDepartmentRoleRepository departmentRoleRepository,
             IRoleRepository roleRepository,
             IDepartmentRepository departmentRepository,
             IOrganisationTypeRepository organisationTypeRepository,
@@ -202,6 +207,7 @@ namespace NPOMS.Services.Implementation
             _workflowAssessmentRepository = workflowAssessmentRepository;
             _fundingTemplateTypeRepository = fundingTemplateTypeRepository;
             _quarterlyPeriodRepository = quarterlyPeriodRepository;
+            _departmentRoleRepository = departmentRoleRepository;
         }
 
         #endregion
@@ -1677,11 +1683,27 @@ namespace NPOMS.Services.Implementation
         {
             await _questionCategoryRepository.DeleteById(id);
         }
+
         public async Task DeleteQuestionSection(int id, string userIdentifier)
         {
             await _questionSectionRepository.DeleteById(id);
         }
 
+        public async Task<IEnumerable<Programme>> GetProgramsByDepartment(int id)
+        {
+            var department = await _departmentRepository.FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
+         
+            return await _programmeRepository.GetProgramsByDepartment(department.Name,id);
+        }
+
+        public async Task<IEnumerable<Role>> GetRolesByDepartment(int id)
+        {
+            var department = await _departmentRepository.FindByCondition(x => x.Id == id).FirstOrDefaultAsync();
+
+            List<int> rolesIds = await _departmentRoleRepository.ReturnRoleIds(id);
+
+            return await _roleRepository.GetRolesByDepartment(department.Name, rolesIds);
+        }
 
         #endregion
 

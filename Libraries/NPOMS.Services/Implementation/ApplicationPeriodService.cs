@@ -1,5 +1,7 @@
 ﻿using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
+using NPOMS.Repository.Implementation.Core;
+using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Interfaces;
@@ -16,19 +18,26 @@ namespace NPOMS.Services.Implementation
 
 		private IApplicationPeriodRepository _applicationPeriodRepository;
 		private IUserRepository _userRepository;
+        private IDepartmentRepository _departmentRepository;
+        private Repository.Interfaces.Dropdown.IProgrammeRepository _programmeRepository;
 
-		#endregion
+        #endregion
 
-		#region Constructorrs
+        #region Constructorrs
 
-		public ApplicationPeriodService(
+        public ApplicationPeriodService(
 			IApplicationPeriodRepository applicationPeriodRepository,
-			IUserRepository userRepository
+			IUserRepository userRepository,
+            IDepartmentRepository departmentRepository,
+            Repository.Interfaces.Dropdown.IProgrammeRepository programmeRepository
 			)
 		{
 			_applicationPeriodRepository = applicationPeriodRepository;
 			_userRepository = userRepository;
-		}
+            _departmentRepository = departmentRepository;
+			_programmeRepository = programmeRepository;
+
+        }
 
 		#endregion
 
@@ -36,18 +45,25 @@ namespace NPOMS.Services.Implementation
 
 		public async Task<IEnumerable<ApplicationPeriod>> Get(string userIdentifier)
 		{
-			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-			var results = await _applicationPeriodRepository.GetEntities();
 
-			//not supporting multiple departments
-			if (!loggedInUser.Departments[0].DepartmentId.Equals((int)DepartmentEnum.ALL))
-			{
-				if (loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))
-					results = results.Where(x => x.DepartmentId.Equals(loggedInUser.Departments[0].DepartmentId));
-			}
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var results = await _applicationPeriodRepository.GetEntities();
 
-			return results;
-		}
+            var departmentIds = await _departmentRepository.GetDepartmentIdOfLogggedInUserAsync(loggedInUser.Id);
+            var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
+            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin))))
+            {
+                return results;
+            }
+            else
+            {
+               
+                results = results.Where(x => departmentIds.Contains(x.DepartmentId)
+                         || programmesIds.Contains(x.ProgrammeId));
+
+                return results;
+            }
+        }
 
 		public async Task<ApplicationPeriod> GetById(int id)
 		{
