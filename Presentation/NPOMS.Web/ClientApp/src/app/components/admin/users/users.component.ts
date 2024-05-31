@@ -295,7 +295,9 @@ export class UsersComponent implements OnInit {
     editUser.userName = this.selectedUser.userName;
     editUser.isActive = !this.inActive;
     editUser.roles = this.selectedRoles;
+    editUser.roles = editUser.roles.filter(role => this.roles.some(deptRole => deptRole.id === role.id));
     editUser.userPrograms = this.selectedPrograms;
+    editUser.userPrograms = editUser.userPrograms.filter(deProg => this.userPrograms.some(userPrograms => userPrograms.id === deProg.id));
     editUser.departments = [];
     if (this.isSystemAdmin)
       editUser.departments.push(this.departments.filter(x => x.id === this.selectedDepartment.id)[0]);
