@@ -10,5 +10,6 @@ namespace NPOMS.Repository.Interfaces.Core
 
 		IEnumerable<Role> GetRoles();
         Task<IEnumerable<Role>> GetRolesByDepartment(string name, List<int> roleIds);
+        Task<IEnumerable<Role>> GetRoleIdsByDepartmentIdsAsync(List<int> departmentIds);
     }
 }
