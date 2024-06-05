@@ -1,4 +1,3 @@
-import { PropertySubType } from './PropertySubType';
 export enum AccessStatusEnum {
     AllStatuses = 0,
     Pending = 1,
@@ -308,6 +307,7 @@ export enum PermissionsEnum {
     AddProgrammeBudget = "Bud.APB",
     EditProgrammeBudget = "Bud.EPB",
     ViewProgrammeBudget = "Bud.VPB",
+    ViewBudgetSummary = "Bud.VBS",
 
     /* Side Navigation */
     ViewSecurityMenu = "SN.Security",
@@ -323,6 +323,7 @@ export enum PermissionsEnum {
     ViewDepartmentBudgetSubMenu = "SN.DeptBudget",
     ViewDirectorateBudgetSubMenu = "SN.DirectorateBudget",
     ViewProgrammeBudgetSubMenu = "SN.ProgBudget",
+    ViewBudgetSummarySubMenu = "SN.BudgetSummary",
 
     /* Funding */
     AddNpoFunding = "Fund.ANF",
@@ -422,16 +423,16 @@ export enum FrequencyPeriodEnum {
 export enum DepartmentEnum {
     ALL = 1,
     DEDAT = 2,
-    DTPW = 3,
+    WCMD = 3,
     WCED = 4,
-    DotP = 5,
+    DOTP = 5,
     PT = 6,
     DSD = 7,
-    DoA = 8,
-    DCS = 9,
+    DOA = 8,
+    DOCS = 9,
     DCAS = 10,
-    DoH = 11,
-    DHS = 12,
+    DOH = 11,
+    DOI = 12,
     DLG = 13,
     WCPP = 14,
     DEADP = 15,

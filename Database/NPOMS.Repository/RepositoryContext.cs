@@ -17,11 +17,9 @@ using NPOMS.Repository.Configurations.Entities;
 using NPOMS.Repository.Configurations.Lookup;
 using NPOMS.Repository.Configurations.Mapping;
 using NPOMS.Repository.DTO;
-using NPOMS.Repository.Implementation.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace NPOMS.Repository

@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Table } from 'primeng/table';
-import { DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
-import { IDepartment, IDirectorate, IDirectorateBudget, IFinancialYear, IProgramme, IProgrammeBudget, IUser } from 'src/app/models/interfaces';
+import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
+import { IDenodoBudget, IDepartment, IFinancialYear, IProgrammeBudget, IUser } from 'src/app/models/interfaces';
 import { BudgetService } from 'src/app/services/api-services/budget/budget.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -31,45 +30,24 @@ export class ProgrammeBudgetComponent implements OnInit {
 
   profile: IUser;
   budgetCols: any[];
+  denodoBudgets: IDenodoBudget[];
 
   financialYears: IFinancialYear[];
   selectedFinancialYearSummary: IFinancialYear;
-  selectedFinancialYear: IFinancialYear;
 
-  directorates: IDirectorate[];
-  filteredDirectorates: IDirectorate[];
-  selectedDirectorate: IDirectorate;
-
-  programmes: IProgramme[];
-  filteredProgrammes: IProgramme[];
-  selectedProgramme: IProgramme;
-
-  displayNewDialog: boolean;
   displayEditDialog: boolean;
-
-  newProgrammeBudget: boolean;
   editProgrammeBudget: boolean;
 
   departments: IDepartment[];
   selectedDepartmentSummary: IDepartment;
-  selectedDepartment: IDepartment;
 
   isSystemAdmin: boolean;
-
-  directorateBudgets: IDirectorateBudget[];
-  directorateBudget: IDirectorateBudget = {} as IDirectorateBudget;
-
-  programmeBudgets: IProgrammeBudget[];
-  programmeBudget: IProgrammeBudget = {} as IProgrammeBudget;
 
   // Details displayed in summary
   totalBudget: number;
   totalAllocated: number;
   totalPaid: number;
   totalBalance: number;
-
-  // Used for table filtering
-  @ViewChild('dt') dt: Table | undefined;
 
   constructor(
     private _router: Router,
@@ -82,7 +60,6 @@ export class ProgrammeBudgetComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this._spinner.show();
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -92,17 +69,16 @@ export class ProgrammeBudgetComponent implements OnInit {
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.loadFinancialYears();
-        this.loadDepartments();
-        this.loadDirectorates();
-        this.loadProgrammes();
       }
     });
 
     this.budgetCols = [
-      { header: 'Financial Year', width: '15%' },
-      { header: 'Directorate', width: '25%' },
-      { header: 'Programme', width: '25%' },
-      { header: 'Amount (R)', width: '25%' }
+      { header: 'Directorate', width: '15%' },
+      { header: 'Programme', width: '15%' },
+      { header: 'Subsidy Group', width: '15%' },
+      { header: 'Subsidy Type', width: '15%' },
+      { header: 'Original Approved Budget', width: '15%' },
+      { header: 'Adjusted Budget', width: '15%' }
     ];
   }
 
@@ -114,7 +90,7 @@ export class ProgrammeBudgetComponent implements OnInit {
         let currentDate = new Date();
         let currentFinancialYear = results.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
         this.financialYears = results.filter(x => x.id <= currentFinancialYear.id);
-        this._spinner.hide();
+        this.loadDepartments();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -124,10 +100,9 @@ export class ProgrammeBudgetComponent implements OnInit {
   }
 
   private loadDepartments() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
       (results) => {
-        this.departments = results;
+        this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
 
         // In Programme Budget Summary...
         // If user is system admin, show department dropdown
@@ -143,223 +118,26 @@ export class ProgrammeBudgetComponent implements OnInit {
     );
   }
 
-  private loadDirectorates() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Directorates, false).subscribe(
-      (results) => {
-        this.directorates = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
-      (results) => {
-        // Filter programmes based on departmentId assigned to user in user department table
-        //this.programmes = results.filter(x => x.departmentId === this.profile.departments[0].id);
-        this.programmes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  add() {
-    this.newProgrammeBudget = true;
-    this.editProgrammeBudget = false;
-    this.programmeBudget = {} as IProgrammeBudget;
-    this.selectedFinancialYear = null;
-    this.selectedDepartment = this.isSystemAdmin ? null : this.departments.find(x => x.id === this.profile.departments[0].id);
-    this.selectedDirectorate = null;
-    this.selectedProgramme = null;
-    this.departmentChange();
-    this.displayNewDialog = true;
-  }
-
-  disableSave() {
-    if (!this.selectedFinancialYear || !this.selectedDirectorate || !this.selectedProgramme || !this.programmeBudget.amount)
-      return true;
-
-    if (this.isSystemAdmin && !this.selectedDepartment)
-      return true;
-
-    return false;
-  }
-
-  saveNewBudget() {
-    this.programmeBudget.departmentId = this.selectedDepartment.id;
-    this.programmeBudget.financialYearId = this.selectedFinancialYear.id;
-    this.programmeBudget.programmeId = this.selectedProgramme.id;
-    this.saveProgrammeBudget('new');
-  }
-
-  // The budgetType with either be new or updating an existing programme budget
-  private saveProgrammeBudget(budgetType: string) {
-
-    // Get the Directorate Budgets by departmentID and financialYearId
-    this._budgetRepo.getDirectorateBudgetsByIds(this.programmeBudget.departmentId, this.programmeBudget.financialYearId).subscribe(
-      (directorateBudgets) => {
-        if (directorateBudgets != null && directorateBudgets.length > 0) {
-
-          let directorateBudget = directorateBudgets.find(x => x.directorateId === this.selectedDirectorate.id);
-
-          // Get the Programme Budget by departmentId and financialYearId
-          this._budgetRepo.getProgrammeBudgetsByIds(this.programmeBudget.departmentId, this.programmeBudget.financialYearId).subscribe(
-            (programmeBudgets) => {
-              let totalProgrammeBudget: number = 0;
-
-              if (budgetType === 'new') {
-                // Add programme budget to array
-                programmeBudgets.push({ amount: this.programmeBudget.amount } as IProgrammeBudget);
-              }
-
-              if (budgetType === 'existing') {
-                // Update the array with the updated programme budget amount
-                programmeBudgets.find(x => x.id === this.programmeBudget.id).amount = this.programmeBudget.amount;
-              }
-
-              // Calculate total amount of programme budgets
-              if (programmeBudgets != null && programmeBudgets.length > 0) {
-                totalProgrammeBudget = programmeBudgets.map(x => x.amount).reduce(function (a, b) {
-                  return a + b;
-                });
-              }
-
-              // Create programme budget if total of programme budget does not exceed the amount for directorate budget
-              if (directorateBudget.amount >= totalProgrammeBudget) {
-                this.programmeBudget.directorateBudgetId = directorateBudget.id;
-                this.programmeBudget.isActive = true;
-
-                if (budgetType === 'new') {
-                  if (!this.programmeBudgetExists(programmeBudgets, this.programmeBudget)) {
-                    this._budgetRepo.createProgrammeBudget(this.programmeBudget).subscribe(
-                      (resp) => {
-                        this.loadDirectorateBudgets();
-                        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Programme Budget successfully created.' });
-                        this.displayNewDialog = false;
-                      },
-                      (err) => {
-                        this._loggerService.logException(err);
-                        this._spinner.hide();
-                      }
-                    );
-                  }
-                  else {
-                    this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Programme Budget already exists.' });
-                  }
-                }
-
-                if (budgetType === 'existing') {
-                  this._budgetRepo.updateProgrammeBudget(this.programmeBudget).subscribe(
-                    (resp) => {
-                      this.loadDirectorateBudgets();
-                      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Programme Budget successfully updated.' });
-                      this.displayEditDialog = false;
-                    },
-                    (err) => {
-                      this._loggerService.logException(err);
-                      this._spinner.hide();
-                    }
-                  );
-                }
-              }
-              else {
-                this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Sum of Programme Budgets is greater than Directorate Budget.' });
-              }
-            },
-            (err) => {
-              this._loggerService.logException(err);
-              this._spinner.hide();
-            }
-          );
-        }
-        else {
-          this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Directorate Budget for the selected financial year does not exist.' });
-        }
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private programmeBudgetExists(programmeBudgets: IProgrammeBudget[], programmeBudget: IProgrammeBudget) {
-    // Checks whether a programme budget already exists.
-    // Found at https://www.codegrepper.com/code-examples/javascript/angular+check+if+value+exists+in+array+of+objects
-    return programmeBudgets.some(function (budget) {
-      return budget.programmeId === programmeBudget.programmeId;
-    });
-  }
-
-  edit(data: IProgrammeBudget) {
-    this.newProgrammeBudget = false;
-    this.editProgrammeBudget = true;
-    this.programmeBudget = this.cloneProgrammeBudget(data);
-    this.displayEditDialog = true;
-  }
-
-  private cloneProgrammeBudget(data: IProgrammeBudget): IProgrammeBudget {
-    let programmeBudget = {} as IProgrammeBudget;
-
-    for (let prop in data)
-      programmeBudget[prop] = data[prop];
-
-    this.selectedDepartment = this.departments.find(x => x.id === data.departmentId);
-    this.selectedFinancialYear = data.financialYear;
-    this.selectedDirectorate = data.directorate;
-    this.selectedProgramme = data.programme;
-    this.departmentChange();
-
-    return programmeBudget;
-  }
-
-  saveEditBudget() {
-    this.programmeBudget.financialYear = null;
-    this.programmeBudget.directorate = null;
-    this.programmeBudget.programme = null;
-    this.saveProgrammeBudget('existing');
-  }
-
-  delete() {
-
-  }
-
   departmentSummaryChange() {
-    // this.loadDepartmentBudgets();
-    this.loadDirectorateBudgets();
+    this.loadBudgets();
   }
 
   financialYearSummaryChange() {
-    // this.loadDepartmentBudgets();
-    this.loadDirectorateBudgets();
+    this.loadBudgets();
   }
 
-  /*private loadDepartmentBudgets() {
+  private loadBudgets() {
     if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
+      this._spinner.show();
 
       this.totalBudget = 0;
+      this.totalAllocated = 0;
+      this.totalPaid = 0;
+      this.totalBalance = 0;
 
-      this._spinner.show();
-      this._budgetRepo.getDepartmentBudgetsByIds(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.id).subscribe(
+      this._budgetRepo.getBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
-          if (results != null && results.length > 0) {
-
-            // Calculate total budget, found at https://expertcodeblog.wordpress.com/2018/10/31/typescript-sum-of-object-properties/
-            this.totalBudget = results.map(x => x.amount).reduce(function (a, b) {
-              return a + b;
-            });
-          }
-
+          this.denodoBudgets = results ? results.elements : [];
           this._spinner.hide();
         },
         (err) => {
@@ -368,9 +146,14 @@ export class ProgrammeBudgetComponent implements OnInit {
         }
       );
     }
-  }*/
+  }
 
-  private loadDirectorateBudgets() {
+  edit(data: IProgrammeBudget) {
+    this.editProgrammeBudget = true;
+    this.displayEditDialog = true;
+  }
+
+  /*private loadDirectorateBudgets() {
     if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
 
       this.totalBudget = 0;
@@ -466,5 +249,5 @@ export class ProgrammeBudgetComponent implements OnInit {
 
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
-  }
+  }*/
 }

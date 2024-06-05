@@ -21,15 +21,22 @@ builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration,
 
 var blobConfig = builder.Configuration.GetSection("BlobStorageSettings").Get<BlobStorageSettings>();
 //var msGraphConfig = builder.Configuration.GetSection("MicrosoftGraph").Get<dtoMicrosoftGrap>
+var denodoAPIConfig = builder.Configuration.GetSection("DenodoAPIConfiguration").Get<DenodoAPIConfig>();
 
 #if !DEBUG
 	blobConfig.StorageAccount = Environment.GetEnvironmentVariable("APPSETTING_Storage01");
 	blobConfig.SubFolderPath = Environment.GetEnvironmentVariable("APPSETTING_FolderPath01");
+
+	denodoAPIConfig.BaseUri = Environment.GetEnvironmentVariable("APPSETTING_DENODO_BASEURI");
+	denodoAPIConfig.Username = Environment.GetEnvironmentVariable("APPSETTING_DENODO_USERNAME");
+	denodoAPIConfig.Pwd = Environment.GetEnvironmentVariable("APPSETTING_DENODO_PASSWORD");
+	denodoAPIConfig.FacilityView = Environment.GetEnvironmentVariable("APPSETTING_DENODO_FACILITY_VIEW");
+	denodoAPIConfig.BudgetView = Environment.GetEnvironmentVariable("APPSETTING_DENODO_BUDGET_VIEW");
 #endif
 
 builder.Services.AddSingleton(blobConfig);
+builder.Services.AddSingleton(denodoAPIConfig);
 
-builder.Services.AddConfiguration<DenodoAPIConfig>(builder.Configuration, "DenodoAPIConfiguration");
 builder.Services.AddConfiguration<MSGraphConfiguration>(builder.Configuration, "MicrosoftGraph");
 builder.Services.AddConfiguration<GeneralConfiguration>(builder.Configuration, "GeneralConfiguration");
 
