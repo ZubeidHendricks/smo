@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NPOMS.Domain.Core;
+using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Mapping;
 using NPOMS.Domain.ResourceParameters;
+using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Services.Helpers.Paging;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,14 +26,17 @@ namespace NPOMS.Services.Implementation
 		private IMapper _mapper;
 		private ILogger<RolePermissionService> _logger;
 		private IUserRepository _userRepository;
+		private IDepartmentRepository _departmentRepository;
 
-		public RolePermissionService(
+
+        public RolePermissionService(
 			IMapper mapper,
 			ILogger<RolePermissionService> logger,
 			IPermissionRepository permissionRepository,
 			IRoleRepository roleRepository,
 			IRolePermissionRepository rolePermissionRepository,
-			IUserRepository userRepository)
+			IUserRepository userRepository,
+            IDepartmentRepository departmentRepository)
 		{
 			this._mapper = mapper;
 			this._logger = logger;
@@ -37,24 +44,70 @@ namespace NPOMS.Services.Implementation
 			this._roleRepository = roleRepository;
 			this._rolePermissionRepository = rolePermissionRepository;
 			this._userRepository = userRepository;
-		}
+			this._departmentRepository = departmentRepository;
 
-		public RolePermissionsMatrix GetMatrix()
-		{
-			var permissions = this._permissionRepository.GetEntities()
-										.OrderBy(o => o.CategoryName)
-										.ThenBy(o => o.Name)
-										.ToList();
+        }
 
-			var roles = this._roleRepository.GetRoles();
+        public async Task<RolePermissionsMatrix> GetMatrix(string userIdentifier)
+        {
+            try
+            {
+                // Retrieve the logged-in user details
+                var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			var matrix = new RolePermissionsMatrix(this._mapper);
-			matrix.Init(permissions, roles.ToList());
+                if (loggedInUser == null)
+                {
+                    // Log and handle the case where the user is not found
+                    _logger.LogWarning($"User with identifier {userIdentifier} not found.");
+                    return null; // Handle appropriately based on your application's requirements
+                }
 
-			return matrix;
-		}
+                // Retrieve department IDs for the logged-in user
+                var departmentIds = await _departmentRepository.GetDepartmentIdOfLogggedInUserAsync(loggedInUser.Id);
 
-		public async Task CreateMapping(int permissionId, int roleId)
+                if (departmentIds == null || !departmentIds.Any())
+                {
+                    // Log a warning if no departments are found for the user
+                    _logger.LogWarning($"No departments found for user {loggedInUser.Id}.");
+                    return null; // Handle appropriately based on your application's requirements
+                }
+
+                // Retrieve role IDs by department IDs
+                var rolesByDepartment = await _roleRepository.GetRoleIdsByDepartmentIdsAsync(departmentIds);
+
+                // Retrieve all roles (consider making this asynchronous if it's a database call)
+                var roles = _roleRepository.GetRoles();
+
+                // Initialize the role permissions matrix
+                var matrix = new RolePermissionsMatrix(this._mapper);
+
+                // Retrieve and order permissions asynchronously
+                var permissions = await this._permissionRepository.GetEntities()
+                                                                  .OrderBy(o => o.CategoryName)
+                                                                  .ThenBy(o => o.Name)
+                                                                  .ToListAsync();
+
+                // Check if the logged-in user has the SystemAdmin role
+                if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin))))
+                {
+                    matrix.Init(permissions, roles.ToList());
+                }
+                else
+                {
+                    matrix.Init(permissions, rolesByDepartment.ToList());
+                }
+
+                return matrix;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception with detailed information
+                _logger.LogError(ex, "Error occurred in GetMatrix method.");
+                throw; // Re-throw the exception to be handled by the caller or middleware
+            }
+        }
+
+        public async Task CreateMapping(int permissionId, int roleId)
 		{
 			var mapping = await this._rolePermissionRepository.GetByIds(permissionId, roleId);
 
@@ -188,5 +241,6 @@ namespace NPOMS.Services.Implementation
 				throw;
 			}
 		}
-	}
+        
+    }
 }
