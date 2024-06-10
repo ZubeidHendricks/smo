@@ -10,9 +10,11 @@ namespace NPOMS.Domain.Mapping
 
         public int DepartmentId { get; set; }
 
+        public bool IsActive { get; set; }
+
         public Role Role { get; set; }
 
         public Department department { get; set; }
-        public bool IsActive { get; set; }
+        
     }
 }
