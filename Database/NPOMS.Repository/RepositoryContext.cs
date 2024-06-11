@@ -209,6 +209,11 @@ namespace NPOMS.Repository
         public DbSet<DirectorateBudget> DirectorateBudgets { get; set; }
         public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }
 
+        /* Program */
+
+        public DbSet<ProgramBankDetails> ProgramBankDetails { get; set; }
+        public DbSet<ProgramContactInformation> ProgramContactInformation { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
