@@ -378,8 +378,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     DownloadQuickCaptureDohComponent,
     ScorecardActionComponent,
     AdjudicateNpoComponent,
-    ReviewAdjudicatedNpoComponent
-   // ScorecardComponent
+    ReviewAdjudicatedNpoComponent,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

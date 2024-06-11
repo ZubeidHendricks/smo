@@ -238,7 +238,7 @@ const routes: Routes = [
   { path: 'admin/compliant-cycle', component: CompliantCyclesComponent },
 
   // Payment Schedule
-  { path: 'admin/payment-schedule', component: PaymentSchedulesComponent }
+  { path: 'admin/payment-schedule', component: PaymentSchedulesComponent },
 ];
 
 @NgModule({

@@ -12,6 +12,41 @@ export interface IDepartment {
     isActive: boolean;
 }
 
+export interface IProgramBankDetails {
+    id: number;
+    programId: number;
+    bankId: number;
+    branchId: number;
+    accountTypeId: number;
+    accountNumber: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number;
+    updatedDateTime?: Date;
+    branchCode: string;
+
+    bank: IBank;
+    branch: IBranch;
+    accountType: IAccountType;
+  }
+
+  export interface IProgramContactInformation {
+    programmeId: number;
+    emailAddress: string;
+    telephone: string;
+    cellphone: string;
+    comments: string;
+    isPrimaryContact?: boolean;
+    isDisabled?: boolean;
+    addressInformation: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number;
+    updatedDateTime?: Date;
+  }
+  
 export interface IDocumentStore {
     id: number,
     documentTypeId: number;

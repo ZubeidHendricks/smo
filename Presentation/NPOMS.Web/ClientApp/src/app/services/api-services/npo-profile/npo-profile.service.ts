@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IAuditorOrAffiliation, IBankDetail, INpoProfile, INpoProfileFacilityList, IProjectImplementation, IServicesRendered, IStaffMemberProfile } from 'src/app/models/interfaces';
+import { IAuditorOrAffiliation, IBankDetail, INpoProfile, INpoProfileFacilityList, IProgramBankDetails, IProgramContactInformation, IProjectImplementation, IServicesRendered, IStaffMemberProfile } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { IPreviousFinancialYear, ISourceOfInformation, IAffiliatedOrganisation } from 'src/app/models/FinancialMatters';
 import { IFinancialMattersExpenditure, IFinancialMattersIncome, IFinancialMattersOthers } from 'src/app/models/FinancialMatters';
@@ -30,6 +30,39 @@ export class NpoProfileService {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/npoProfileId/${npoProfileId}`;
     return this._http.get<INpoProfile>(url, httpOptions);
   }
+
+
+  public getProgrammeContactsById(progId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/contact/programmeId/${progId}`;
+    return this._http.get<IProgramContactInformation[]>(url, httpOptions);
+  }
+
+  public getProgrammeBankDetailsById(progId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/bank/programmeId/${progId}`;
+    return this._http.get<IProgramBankDetails[]>(url, httpOptions);
+  }
+
+  public createProgrammeContact(programContactInformation: IProgramContactInformation) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-contact`;
+    return this._http.post<IProgramContactInformation>(url, programContactInformation, httpOptions);
+  }
+
+  public createProgrammeBankDetails(programBankDetails: IProgramBankDetails) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-bank`;
+    return this._http.post<IProgramBankDetails>(url,programBankDetails, httpOptions);
+  }
+
+
+  public updateProgrammeContact(programContactInformation: IProgramContactInformation) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-contact`;
+    return this._http.put<IProgramContactInformation>(url,programContactInformation, httpOptions);
+  }
+
+  public updateProgrammeBankDetails(programBankDetails: IProgramBankDetails) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-bank`;
+    return this._http.put<IProgramBankDetails>(url,programBankDetails, httpOptions);
+  }
+
 
   public getNpoProfileByNpoId(npoId: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/npoId/${npoId}`;

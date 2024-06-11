@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDenodoFacility, IDepartment, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, INpo, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
+import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IGender, ILanguage, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IRace, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -130,6 +130,12 @@ export class EditProfileComponent implements OnInit {
   accountTypes: IAccountType[];
   selectedAccountType: IAccountType;
 
+  
+  programBankDetails : IProgramBankDetails [];
+  programContactInformation: IProgramContactInformation[];
+  programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
+  selectedProgramBankBankDetail: IProgramBankDetails;
+
   npoProfileFacilityLists: INpoProfileFacilityList[];
   servicesRendered: IServicesRendered[];
   bankDetails: IBankDetail[];
@@ -146,6 +152,32 @@ export class EditProfileComponent implements OnInit {
 
   organisationCols: any[];
   organisations: INpo[] = [];
+
+  contactDetails: any[] = [];
+  bankingDetails: any[] = [];
+  displayBankingDetailsPanel: boolean = false;
+  selectedProgram: any;
+  // contactInformation: IContactInformation = {} as IContactInformation;
+
+  contactInformation: IProgramContactInformation = {} as IProgramContactInformation;
+  selectedContactInformation: IProgramContactInformation;
+  primaryContactInformation: IProgramContactInformation;
+
+  titles: ITitle[];
+  selectedTitle: ITitle;
+  positions: IPosition[];
+  selectedPosition: IPosition;
+  races: IRace[];
+  selectedRace: IRace;
+  languages: ILanguage[];
+  selectedLanguage: ILanguage;
+  gender: IGender[];
+  selectedGender: IGender;
+  displayContactDialog: boolean;
+	isContactInformationEdit: boolean;
+  newContactInformation: boolean;
+  minDate: Date;
+  maxDate: Date;
 
   constructor(
     private _router: Router,
@@ -249,6 +281,205 @@ export class EditProfileComponent implements OnInit {
       { header: 'Year Registered', width: '15%' }
     ];
   }
+
+  addContactInformation() {
+    this.isContactInformationEdit = false;
+    this.newContactInformation = true;
+
+    this.contactInformation = {
+      isPrimaryContact: false,
+      isActive: true,
+      createdUserId: this.profile.id,
+      createdDateTime: new Date()
+    } as IProgramContactInformation;
+
+    this.selectedTitle = null;
+    this.selectedPosition = null;
+    this.selectedRace = null;
+    this.selectedGender = null;
+    this.selectedLanguage = null;
+    this.displayContactDialog = true;
+  }
+
+  clearIdPassportNumber(event) {
+    if (event.value === true)
+      this.contactInformation[0].passportNumber = "";
+
+    if (event.value === false)
+      this.contactInformation[0].idNumber = "";
+  }
+  
+  saveContactInformation() {
+    // this.contactInformation
+    //save to database
+    this.displayContactDialog = false;
+  }
+
+
+  disableSaveContactInfo() {
+    const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (!this.contactInformation.emailAddress || !regularExpression.test(String(this.contactInformation.emailAddress)) || !this.contactInformation.cellphone || this.contactInformation.cellphone.length != 10)
+      return true;
+
+    return false;
+  }
+
+  editContactInformation(data: IProgramContactInformation) {
+    this.selectedContactInformation = data;
+    this.isContactInformationEdit = true;
+    this.newContactInformation = false;
+    this.contactInformation = this.cloneContactInformation(data);
+    this.displayContactDialog = true;
+  }
+
+  private cloneContactInformation(data: IProgramContactInformation): IProgramContactInformation {
+    let contactInfo = {} as IProgramContactInformation;
+
+    for (let prop in data)
+      contactInfo[prop] = data[prop];
+    return contactInfo;
+  }
+
+  deleteContactInformation(data: IContactInformation) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.npo.contactInformation.forEach(function (item, index, object) {
+          if (data === item)
+            object.splice(index, 1);
+        });
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  
+  toggleBankingDetailsPanel(program: any) {
+    if (this.selectedProgram && this.selectedProgram.id === program.id) {
+      this.displayBankingDetailsPanel = !this.displayBankingDetailsPanel;
+    } else {
+      this.selectedProgram = program;
+      this.loadProgrammeDetails(program.id);
+      // this.bankingDetails = this.getBankingDetailsByProgram(program.id);
+      // this.contactDetails = this.getContactDetailsByProgram(program.id);
+      this.displayBankingDetailsPanel = true;
+    }
+  }
+
+  loadProgrammeDetails(progId: number): void {
+    forkJoin({
+      contacts: this._npoProfileRepo.getProgrammeContactsById(progId),
+      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId)
+    }).subscribe({
+      next: (result) => {
+        this.programContactInformation = result.contacts;
+        this.programBankDetails = result.bankDetails;
+        this.updateProgramBankDetailObjects();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  loadProgrammeContactInformation(progId: number): void {
+    this._npoProfileRepo.getProgrammeContactsById(progId).subscribe({
+      next: (data) => {
+        this.programContactInformation = data;
+        this.updateProgramBankDetailObjects();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+  
+  loadProgrammeBankDetails(progId: number): void {
+    this._npoProfileRepo.getProgrammeBankDetailsById(progId).subscribe({
+      next: (data) => {
+        this.programBankDetails = data;
+        this.updateProgramBankDetailObjects();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  editBankingDetail(detail: any) {
+    //this.openBankDetailDialog(detail);
+    this.displayFacilityInformationDialog = true;
+  }
+
+
+  getBankingDetailsByProgram(programId: number): any[] {
+    // Replace this with actual logic to fetch banking details
+    // For now, returning a dummy list for demonstration
+    return [
+      { 
+        id: 1,
+        npoProfileId: 1,
+        bankId: 1,
+        branchId: 1,
+        accountTypeId: 1,
+        accountNumber: '123456',
+        isActive: true,
+        branchCode: '001',
+        bank: { id: 1, name: 'Bank A' },
+        branch: { id: 1, name: 'Branch A', code: '001' },
+        accountType: { id: 1, name: 'Checking' }
+      },
+      { 
+        id: 2,
+        npoProfileId: 1,
+        bankId: 2,
+        branchId: 2,
+        accountTypeId: 2,
+        accountNumber: '789012',
+        isActive: true,
+        branchCode: '002',
+        bank: { id: 2, name: 'Bank B' },
+        branch: { id: 2, name: 'Branch B', code: '002' },
+        accountType: { id: 2, name: 'Savings' }
+      }
+    ];
+  }
+
+  getContactDetailsByProgram(programId: number): any[] {
+    return [
+      { firstName: 'John', lastName: 'Doe', email: 'john.doe@example.com', phone: '123-456-7890' },
+    ];
+  }
+
+
+
+  deleteBankingDetail(detail: any) {
+    // Implement the logic to delete the banking detail
+    console.log('Delete banking detail:', detail);
+    // Example: remove the detail from the array
+    this.bankingDetails = this.bankingDetails.filter(item => item !== detail);
+  }
+
+  editContactDetail(contact: any) {
+    // Implement the logic to edit the contact detail
+    console.log('Edit contact detail:', contact);
+  }
+
+  deleteContactDetail(contact: any) {
+    // Implement the logic to delete the contact detail
+    console.log('Delete contact detail:', contact);
+    // Example: remove the contact from the array
+    this.contactDetails = this.contactDetails.filter(item => item !== contact);
+  }
+
+
+
+
+
 
   private loadFacilityDistricts() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.FacilityDistricts, false).subscribe(
@@ -666,6 +897,28 @@ export class EditProfileComponent implements OnInit {
         item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
       });
     }
+  }
+  private updateProgramBankDetailObjects() {
+    if (this.banks && this.accountTypes && this.programBankDetails) {
+      this.programBankDetails.forEach(item => {
+        item.bank = this.banks.find(x => x.id === item.bankId);
+        this.loadProgrammeBranch(item);
+        item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
+      });
+    }
+  }
+
+  private loadProgrammeBranch(bankDetail: IProgramBankDetails) {
+    this._dropdownRepo.getBranchById(bankDetail.branchId).subscribe(
+      (results) => {
+        bankDetail.branch = results;
+        bankDetail.branchCode = bankDetail.branch.branchCode != null ? bankDetail.branch.branchCode : bankDetail.bank.code;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private loadBranch(bankDetail: IBankDetail) {
@@ -1377,10 +1630,10 @@ export class EditProfileComponent implements OnInit {
     return true;
   }
 
-  addBankDetail() {
+  addProgrammeBankDetail() {
     this.isBankDetailEdit = false;
     this.newBankDetail = true;
-    this.bankDetail = {} as IBankDetail;
+    this.programBankDetail = {} as IProgramBankDetails;
     this.selectedBank = null;
     this.branches = [];
     this.selectedBranch = null;
@@ -1388,17 +1641,17 @@ export class EditProfileComponent implements OnInit {
     this.displayBankDetailDialog = true;
   }
 
-  editBankDetail(data: IBankDetail) {
-    this.selectedBankDetail = data;
+  editProgrammeBankDetail(data: IProgramBankDetails) {
+    this.selectedProgramBankBankDetail = data;
     this.isBankDetailEdit = true;
     this.newBankDetail = false;
-    this.bankDetail = this.cloneBankDetail(data);
+    this.programBankDetail = this.cloneProgrammeBankDetail(data);
     this.branchChange();
     this.displayBankDetailDialog = true;
   }
 
-  private cloneBankDetail(data: IBankDetail): IBankDetail {
-    let bankDetail = {} as IBankDetail;
+  private cloneProgrammeBankDetail(data: IProgramBankDetails): IProgramBankDetails {
+    let bankDetail = {} as IProgramBankDetails;
 
     for (let prop in data)
       bankDetail[prop] = data[prop];
@@ -1411,6 +1664,53 @@ export class EditProfileComponent implements OnInit {
     return bankDetail;
   }
 
+  // addBankDetail() {
+  //   this.isBankDetailEdit = false;
+  //   this.newBankDetail = true;
+  //   this.bankDetail = {} as IBankDetail;
+  //   this.selectedBank = null;
+  //   this.branches = [];
+  //   this.selectedBranch = null;
+  //   this.selectedAccountType = null;
+  //   this.displayBankDetailDialog = true;
+  // }
+
+  // editBankDetail(data: IBankDetail) {
+  //   this.selectedBankDetail = data;
+  //   this.isBankDetailEdit = true;
+  //   this.newBankDetail = false;
+  //   this.bankDetail = this.cloneBankDetail(data);
+  //   this.branchChange();
+  //   this.displayBankDetailDialog = true;
+  // }
+
+  // private cloneBankDetail(data: IBankDetail): IBankDetail {
+  //   let bankDetail = {} as IBankDetail;
+
+  //   for (let prop in data)
+  //     bankDetail[prop] = data[prop];
+
+  //   this.selectedBank = data.bank;
+  //   this.bankChange();
+  //   this.selectedBranch = data.branch;
+  //   this.selectedAccountType = data.accountType;
+
+  //   return bankDetail;
+  // }
+
+  deleteProgrammeBankDetail(data: IProgramBankDetails) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        data.isActive = false;
+        // this.updateBankDetail(data);
+      },
+      reject: () => {
+      }
+    });
+  }
   deleteBankDetail(data: IBankDetail) {
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
@@ -1425,6 +1725,17 @@ export class EditProfileComponent implements OnInit {
     });
   }
 
+  saveProgrammeBankDetail() {
+    this.programBankDetail.programId = Number(this.selectedProgram.id);
+    this.programBankDetail.bankId = this.selectedBank.id;
+    this.programBankDetail.branchId = this.selectedBranch.id;
+    this.programBankDetail.accountTypeId = this.selectedAccountType.id;
+    this.programBankDetail.isActive = true;
+
+    this.newBankDetail ? this.createProgrameBankDetail(this.programBankDetail) : this.updateProgrameBankDetail(this.programBankDetail);
+    this.displayBankDetailDialog = false;
+  }
+
   saveBankDetail() {
     this.bankDetail.npoProfileId = Number(this.npoProfileId);
     this.bankDetail.bankId = this.selectedBank.id;
@@ -1435,6 +1746,32 @@ export class EditProfileComponent implements OnInit {
     this.newBankDetail ? this.createBankDetail(this.bankDetail) : this.updateBankDetail(this.bankDetail);
     this.displayBankDetailDialog = false;
   }
+
+
+  private createProgrameBankDetail(bankDetail: IProgramBankDetails) {
+    this._npoProfileRepo.createProgrammeBankDetails(bankDetail).subscribe(
+      (resp) => {
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateProgrameBankDetail(bankDetail: IProgramBankDetails) {
+    this._npoProfileRepo.updateProgrammeBankDetails(bankDetail).subscribe(
+      (resp) => {
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
 
   private createBankDetail(bankDetail: IBankDetail) {
     this._npoProfileRepo.createBankDetail(bankDetail).subscribe(
@@ -1467,6 +1804,13 @@ export class EditProfileComponent implements OnInit {
     return false;
   }
 
+  disableSaveProgramBankDetail() {
+    if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.programBankDetail.accountNumber)
+      return true;
+
+    return false;
+  }
+
   bankChange() {
     if (this.selectedBank) {
       this.branches = [];
@@ -1489,6 +1833,12 @@ export class EditProfileComponent implements OnInit {
   branchChange() {
     if (this.selectedBranch) {
       this.bankDetail.branchCode = this.selectedBranch.branchCode != null ? this.selectedBranch.branchCode : this.selectedBank.code;
+    }
+  }
+
+  branchProgrammeChange() {
+    if (this.selectedBranch) {
+      this.programBankDetail.branchCode = this.selectedBranch.branchCode != null ? this.selectedBranch.branchCode : this.selectedBank.code;
     }
   }
 
