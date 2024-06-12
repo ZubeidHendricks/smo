@@ -14,11 +14,11 @@ namespace NPOMS.Domain.Entities
     {
         public int ProgramId { get; set; }
         public int? RegionId { get; set; }
-        public int DistrictCouncilId { get; set; }
-        public int LocalMunicipalityId { get; set; }
+        public int? DistrictCouncilId { get; set; }
+        public int? LocalMunicipalityId { get; set; }
 
-        public virtual Region Region { get; set; }
-        public virtual DistrictCouncil DistrictCouncil { get; set; }
-        public virtual LocalMunicipality LocalMunicipality { get; set; }
+        public  Region Region { get; set; }
+        public  DistrictCouncil DistrictCouncil { get; set; }
+        public  LocalMunicipality LocalMunicipality { get; set; }
     }
 }
