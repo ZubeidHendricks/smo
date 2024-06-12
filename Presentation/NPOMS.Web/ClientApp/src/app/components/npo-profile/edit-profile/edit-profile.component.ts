@@ -378,10 +378,10 @@ private loadTitles() {
 
   clearIdPassportNumber(event) {
     if (event.value === true)
-      this.contactInformation[0].passportNumber = "";
+      this.contactInformation.passportNumber = "";
 
     if (event.value === false)
-      this.contactInformation[0].idNumber = "";
+      this.contactInformation.idNumber = "";
   }
 
   saveProgrammeContactInformation() {
@@ -412,7 +412,7 @@ private loadTitles() {
   }
 
   private updateProgrameContactDetail(contact: IProgramContactInformation) {
-    this._npoProfileRepo.createProgrammeContact(contact).subscribe(
+    this._npoProfileRepo.updateProgrammeContact(contact).subscribe(
       (resp) => {
         this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
       },
@@ -563,7 +563,6 @@ private loadTitles() {
   }
 
 
-
   deleteBankingDetail(detail: any) {
     // Implement the logic to delete the banking detail
     console.log('Delete banking detail:', detail);
@@ -583,6 +582,37 @@ private loadTitles() {
     this.contactDetails = this.contactDetails.filter(item => item !== contact);
   }
 
+  editProgramContactInformation(data: IProgramContactInformation) {
+    this.selectedContactInformation = data;
+    this.isContactInformationEdit = true;
+    this.newContactInformation = false;
+    this.contactInformation = this.cloneProgramContactInformation(data);
+    this.displayContactDialog = true;
+  }
+
+  private cloneProgramContactInformation(data: IProgramContactInformation): IProgramContactInformation {
+    let contactInfo = {} as IProgramContactInformation;
+
+    for (let prop in data)
+      contactInfo[prop] = data[prop];
+    return contactInfo;
+  }
+
+  deleteProgramContactInformation(data: IProgramContactInformation) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        // this.npo.contactInformation.forEach(function (item, index, object) {
+        //   if (data === item)
+        //     object.splice(index, 1);
+        // });
+      },
+      reject: () => {
+      }
+    });
+  }
 
 
 
@@ -1818,6 +1848,7 @@ private loadTitles() {
       }
     });
   }
+
   deleteBankDetail(data: IBankDetail) {
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',

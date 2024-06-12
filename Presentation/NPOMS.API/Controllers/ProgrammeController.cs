@@ -80,6 +80,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                ClearObjects(model);
                 await _programmeService.CreateContact(model, base.GetUserIdentifier());
                 return Ok(model);
             }
@@ -133,6 +134,20 @@ namespace NPOMS.API.Controllers
                 _logger.LogError($"Something went wrong inside UpdateProgramBankDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+        private static void ClearObjects(ProgramContactInformation model)
+        {
+                model.TitleId = model.Title.Id;
+                model.PositionId = model.Position.Id;
+                model.RaceId = model.Race.Id;
+                model.GenderId = model.Gender.Id;
+                model.LanguageId = model.Language.Id;
+
+                model.Position = null;
+                model.Race = null;
+                model.Gender = null;
+                model.Language = null;
+                model.Title = null;
         }
     }
 }

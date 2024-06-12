@@ -358,11 +358,11 @@
                   <tr>
                     <td>{{contact.firstName}}</td>
                     <td>{{contact.lastName}}</td>
-                    <td>{{contact.email}}</td>
-                    <td>{{contact.phone}}</td>
+                    <td>{{contact.emailAddress}}</td>
+                    <td>{{contact.cellphone}}</td>
                     <td style="text-align: center;">
-                      <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editContactDetail(contact)" pTooltip="Edit" tooltipPosition="top"></button>
-                      <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteContactDetail(contact)" pTooltip="Delete" tooltipPosition="top"></button>
+                      <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgramContactInformation(contact)" pTooltip="Edit" tooltipPosition="top"></button>
+                      <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgramContactInformation(contact)" pTooltip="Delete" tooltipPosition="top"></button>
                     </td>
                   </tr>
                 </ng-template>
