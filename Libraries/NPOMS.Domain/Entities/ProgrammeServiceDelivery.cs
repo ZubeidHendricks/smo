@@ -13,10 +13,14 @@ namespace NPOMS.Domain.Entities
     public class ProgrammeServiceDelivery : BaseEntity
     {
         public int ProgramId { get; set; }
+        public bool IsActive { get; set; }
+        public int CreatedUserId { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public int? UpdatedUserId { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }
         public int? RegionId { get; set; }
         public int? DistrictCouncilId { get; set; }
         public int? LocalMunicipalityId { get; set; }
-
         public  Region Region { get; set; }
         public  DistrictCouncil DistrictCouncil { get; set; }
         public  LocalMunicipality LocalMunicipality { get; set; }
