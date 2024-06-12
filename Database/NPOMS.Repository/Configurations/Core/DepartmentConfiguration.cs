@@ -50,7 +50,7 @@ namespace NPOMS.Repository.Configurations.Core
 				{
 					Id = 5,
 					Name = "Premier",
-					Abbreviation = "DotP",
+					Abbreviation = "DOTP",
                     DenodoDepartmentName = "Western Cape Premier",
                     IsActive = false
 				},
@@ -74,7 +74,7 @@ namespace NPOMS.Repository.Configurations.Core
 				{
 					Id = 8,
 					Name = "Agriculture",
-					Abbreviation = "DoA",
+					Abbreviation = "DOA",
                     DenodoDepartmentName = "Western Cape Agriculture",
                     IsActive = false
 				},
@@ -98,7 +98,7 @@ namespace NPOMS.Repository.Configurations.Core
 				{
 					Id = 11,
 					Name = "Health and Wellness",
-					Abbreviation = "DoH",
+					Abbreviation = "DOH",
                     DenodoDepartmentName = "Western Cape Government: Health and Wellness",
                     IsActive = true
 				},

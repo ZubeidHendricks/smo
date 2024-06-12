@@ -63,6 +63,7 @@ export class ProgrammeBudgetComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
+        console.log('profile', profile);
 
         if (!this.IsAuthorized(PermissionsEnum.ViewProgrammeBudget))
           this._router.navigate(['401']);
@@ -137,7 +138,7 @@ export class ProgrammeBudgetComponent implements OnInit {
 
       this._budgetRepo.getBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
-          this.denodoBudgets = results ? results.elements : [];
+          this.denodoBudgets = results ? results.elements.filter(x => Number(x.originalbudget) > 0) : [];
           this._spinner.hide();
         },
         (err) => {

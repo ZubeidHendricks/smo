@@ -80,10 +80,10 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
-                        <td>{{rowData.responsibilitylevel4}}</td>
-                        <td>{{rowData.itemlowestlevel}}</td>
-                        <td></td>
-                        <td></td>
+                        <td>{{rowData.programmelevel5}}</td>
+                        <td>{{rowData.responsibilitylowestlevel}}</td>
+                        <td>{{rowData.objectivelevel7}}</td>
+                        <td>{{rowData.objectivelowestlevel}}</td>
                         <td>R {{rowData.originalbudget | number : '1.2-2'}}</td>
                         <td></td>
                         <td style="text-align: center;">
@@ -119,6 +119,6 @@
         </div>
     </div> -->
     <ng-template pTemplate="footer">
-        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSave() (click)="saveEditBudget()"></button>
+        <!-- <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSave() (click)="saveEditBudget()"></button> -->
     </ng-template>
 </p-dialog>

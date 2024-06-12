@@ -97,12 +97,9 @@ namespace NPOMS.Services.Implementation
 					_mapper.Map<List<DepartmentViewModel>>(
 						user.Departments.Select(x => x.Department)));
 
-                var activePrograms = user.UserPrograms
-									.Where(x => x.IsActive)
-									.Select(x => x.Program);
-
                 userViewModel.UserPrograms.AddRange(
-                    _mapper.Map<List<UserProgramViewModel>>(activePrograms));
+                    _mapper.Map<List<UserProgramViewModel>>(
+						user.UserPrograms.Select(x => x.Program)));
 
                 viewModel.Add(userViewModel);
 			}
