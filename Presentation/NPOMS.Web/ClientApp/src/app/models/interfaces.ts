@@ -32,19 +32,41 @@ export interface IProgramBankDetails {
   }
 
   export interface IProgramContactInformation {
+    id: number;
     programmeId: number;
+    titleId: number;
+    raceId: number;
+    languageId: number;
+    genderId: number;
+    firstName: string;
+    lastName: string;
+    rsaIdNumber: boolean;
+    idNumber: string;
+    passportNumber: string;
     emailAddress: string;
     telephone: string;
     cellphone: string;
+    positionId: number;
     comments: string;
-    isPrimaryContact?: boolean;
-    isDisabled?: boolean;
+    qualifications: string;
     addressInformation: string;
+    isPrimaryContact: boolean;
+    isDisabled: boolean;
+    isSignatory: boolean;
+    isWrittenAgreementSignatory: boolean;
+    isBoardMember: boolean;
+    yearsOfExperience: number;
     isActive: boolean;
     createdUserId: number;
     createdDateTime: Date;
-    updatedUserId?: number;
-    updatedDateTime?: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
+    dateOfEmployment: Date;
+    title: ITitle;
+    position: IPosition;
+    gender: IGender;
+    race: IRace;
+    language: ILanguage;
   }
   
 export interface IDocumentStore {

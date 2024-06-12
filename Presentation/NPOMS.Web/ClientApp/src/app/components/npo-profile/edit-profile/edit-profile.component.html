@@ -983,7 +983,7 @@
             <p-dropdown [options]="titles" placeholder="Select a Title" optionLabel="name" [(ngModel)]="selectedTitle" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
         </div>
     </div>
-    <!-- <div class="p-grid">
+    <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="mandatory-content">First Name</span>
@@ -992,8 +992,8 @@
         <div class="p-col">
             <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.firstName" [ngModelOptions]="{standalone: true}">
         </div>
-    </div> -->
-    <!-- <div class="p-grid">
+    </div>
+    <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="mandatory-content">Last Name</span>
@@ -1002,8 +1002,8 @@
         <div class="p-col">
             <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.lastName" [ngModelOptions]="{standalone: true}">
         </div>
-    </div> -->
-    <!-- <div class="p-grid">
+    </div>
+    <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">RSA ID No.</span>
@@ -1012,8 +1012,8 @@
         <div class="p-col">
             <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="contactInformation.rsaIdNumber" [ngModelOptions]="{standalone: true}" (onChange)="clearIdPassportNumber($event)"></p-selectButton>
         </div>
-    </div> -->
-    <!-- <div class="p-grid" *ngIf="contactInformation.rsaIdNumber === true">
+    </div>
+    <div class="p-grid" *ngIf="contactInformation.rsaIdNumber === true">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">RSA ID Number</span>
@@ -1032,7 +1032,7 @@
         <div class="p-col">
             <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.passportNumber" [ngModelOptions]="{standalone: true}">
         </div>
-    </div> -->
+    </div>
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -1106,7 +1106,7 @@
             <p-dropdown [options]="gender" placeholder="Select a Gender" optionLabel="name" [(ngModel)]="selectedGender" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body"></p-dropdown>
         </div>
     </div>  
-    <!-- <div class="p-grid">
+    <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Qualifications</span>
@@ -1115,7 +1115,7 @@
         <div class="p-col">
             <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.qualifications" [ngModelOptions]="{standalone: true}">
         </div>
-    </div>   -->
+    </div>  
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -1126,7 +1126,7 @@
             <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.addressInformation" [ngModelOptions]="{standalone: true}">
         </div>
     </div>    
-    <!-- <div class="p-grid">
+    <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Years of Experience</span>
@@ -1135,8 +1135,8 @@
         <div class="p-col">
             <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.yearsOfExperience" [ngModelOptions]="{standalone: true}" [minlength]="10" [maxlength]="10" (keypress)="numberOnly($event)">
         </div>
-    </div>   -->
-    <!-- <div class="p-grid">
+    </div>  
+    <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Date of Employment</span>
@@ -1145,7 +1145,7 @@
         <div class="p-col">
             <p-calendar [minDate]="minDate" [maxDate]="maxDate"  [(ngModel)]="contactInformation.dateOfEmployment" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [style]="{'width': '50%'}" inputId="time" appendTo="body"></p-calendar>
         </div>
-    </div>  -->
+    </div> 
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -1166,7 +1166,7 @@
             <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="contactInformation.isPrimaryContact" [ngModelOptions]="{standalone: true}"></p-selectButton>
         </div>
     </div>
-    <!-- <div class="p-grid">
+    <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Is Disabled</span>
@@ -1191,8 +1191,8 @@
         <div class="p-col">
             <p-checkbox [(ngModel)]="contactInformation.isWrittenAgreementSignatory" binary="true" inputId="binary"></p-checkbox>
         </div>        
-    </div> -->
-    <!-- <div class="p-grid">
+    </div>
+    <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
                 <span class="non-mandatory-content">Is Board Member</span>
@@ -1201,10 +1201,10 @@
         <div class="p-col">
             <p-checkbox [(ngModel)]="contactInformation.isBoardMember" binary="true" inputId="binary"></p-checkbox>
         </div>
-    </div>          -->
+    </div>         
 
     <ng-template pTemplate="footer">
-        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveContactInfo() (click)="saveContactInformation()"></button>
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableProgrammeSaveContactInfo() (click)="saveProgrammeContactInformation()"></button>
     </ng-template>
 </p-dialog>
 

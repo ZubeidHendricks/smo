@@ -157,7 +157,7 @@ export class EditProfileComponent implements OnInit {
   bankingDetails: any[] = [];
   displayBankingDetailsPanel: boolean = false;
   selectedProgram: any;
-  // contactInformation: IContactInformation = {} as IContactInformation;
+  //contactInformation: IContactInformation = {} as IContactInformation;
 
   contactInformation: IProgramContactInformation = {} as IProgramContactInformation;
   selectedContactInformation: IProgramContactInformation;
@@ -207,6 +207,12 @@ export class EditProfileComponent implements OnInit {
 
         if (!this.IsAuthorized(PermissionsEnum.EditNpoProfile))
           this._router.navigate(['401']);
+
+        this.loadTitles();
+        this.loadPositions();
+        this.loadGender();
+        this.loadRaces();
+        this.loadLanguages();
 
         this.loadFacilityDistricts();
         this.loadFacilitySubDistricts();
@@ -281,6 +287,75 @@ export class EditProfileComponent implements OnInit {
       { header: 'Year Registered', width: '15%' }
     ];
   }
+private loadTitles() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Titles, false).subscribe(
+      (results) => {
+        this.titles = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadPositions() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Positions, false).subscribe(
+      (results) => {
+        this.positions = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadRaces() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Race, false).subscribe(
+      (results) => {
+        this.races = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadLanguages() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Languages, false).subscribe(
+      (results) => {
+        this.languages = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadGender() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Gender, false).subscribe(
+      (results) => {
+        this.gender = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
   addContactInformation() {
     this.isContactInformationEdit = false;
@@ -308,15 +383,47 @@ export class EditProfileComponent implements OnInit {
     if (event.value === false)
       this.contactInformation[0].idNumber = "";
   }
-  
-  saveContactInformation() {
-    // this.contactInformation
-    //save to database
+
+  saveProgrammeContactInformation() {
+    this.contactInformation.programmeId = Number(this.selectedProgram.id);
+    this.contactInformation.title = this.selectedTitle;
+    this.contactInformation.position = this.selectedPosition;
+    this.contactInformation.race = this.selectedRace;
+    this.contactInformation.gender = this.selectedGender;
+    this.contactInformation.language = this.selectedLanguage;
+
+    if (this.newContactInformation)
+      this.createProgrameContactDetail(this.contactInformation)
+    else
+    this.updateProgrameContactDetail(this.contactInformation)
     this.displayContactDialog = false;
   }
 
+  private createProgrameContactDetail(contact: IProgramContactInformation) {
+    this._npoProfileRepo.createProgrammeContact(contact).subscribe(
+      (resp) => {
+        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
-  disableSaveContactInfo() {
+  private updateProgrameContactDetail(contact: IProgramContactInformation) {
+    this._npoProfileRepo.createProgrammeContact(contact).subscribe(
+      (resp) => {
+        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  disableProgrammeSaveContactInfo() {
     const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     if (!this.contactInformation.emailAddress || !regularExpression.test(String(this.contactInformation.emailAddress)) || !this.contactInformation.cellphone || this.contactInformation.cellphone.length != 10)
