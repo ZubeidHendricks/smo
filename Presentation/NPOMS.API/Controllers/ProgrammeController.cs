@@ -22,6 +22,7 @@ namespace NPOMS.API.Controllers
         private IBankService _bankService;
         private IContactService _contactService;
         private IProgrammeService _programmeService;
+        private IProgrameDeliveryService _programeDeliveryService;
 
         #endregion
 
@@ -33,7 +34,8 @@ namespace NPOMS.API.Controllers
             IEmailService emailService,
             IBankService bankService,
             IContactService contactService,
-            IProgrammeService programmeService
+            IProgrammeService programmeService,
+            IProgrameDeliveryService programeDeliveryService
             )
         {
             _logger = logger;
@@ -42,6 +44,7 @@ namespace NPOMS.API.Controllers
             _bankService = bankService;
             _contactService = contactService;
             _programmeService = programmeService;
+            _programeDeliveryService = programeDeliveryService;
         }
         #endregion
 
@@ -96,6 +99,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                ClearObjects(model);
                 await _programmeService.UpdateContact(model, base.GetUserIdentifier());
                 return Ok(model);
             }
@@ -135,6 +139,69 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+
+
+
+
+        [HttpGet("delivery/programmeId/{programmeId}", Name = "GetDeliveryDetailsByProgramId")]
+        public async Task<IActionResult> GetDeliveryDetailsByProgramId(int programmeId)
+        {
+            try
+            {
+                var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDeliveryDetailsByProgramId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("create-delivery", Name = "CreateProgrameDelivery")]
+        public async Task<IActionResult> CreateProgrameDelivery([FromBody] ProgrammeServiceDelivery model)
+        {
+            try
+            {
+                ClearDeliveryObjects(model);
+                await _programmeService.CreateDelivery(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateProgrameDelivery action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("update-delivery", Name = "UpdateProgrameDelivery")]
+        public async Task<IActionResult> UpdateProgrameDelivery([FromBody] ProgrammeServiceDelivery model)
+        {
+            try
+            {
+                ClearDeliveryObjects(model);
+                await _programmeService.UpdateDelivery(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateProgrameDelivery action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        private static void ClearDeliveryObjects(ProgrammeServiceDelivery model)
+        {
+            model.DistrictCouncilId = model.DistrictCouncil.Id;
+            model.LocalMunicipalityId = model.LocalMunicipality.Id;
+            model.RegionId = model.Region.Id;
+
+            model.DistrictCouncil = null;
+            model.LocalMunicipality = null;
+            model.Region = null;
+        }
+
         private static void ClearObjects(ProgramContactInformation model)
         {
                 model.TitleId = model.Title.Id;

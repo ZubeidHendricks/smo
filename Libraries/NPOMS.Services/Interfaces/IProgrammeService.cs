@@ -9,5 +9,7 @@ namespace NPOMS.Services.Interfaces
         Task UpdateContact(ProgramContactInformation model, string userId);
         Task CreateBankDetails(ProgramBankDetails model, string userId);
         Task UpdateBankDetails(ProgramBankDetails model, string userId);
+        Task CreateDelivery(ProgrammeServiceDelivery model, string userId);
+        Task UpdateDelivery(ProgrammeServiceDelivery model, string userId);
     }
 }
