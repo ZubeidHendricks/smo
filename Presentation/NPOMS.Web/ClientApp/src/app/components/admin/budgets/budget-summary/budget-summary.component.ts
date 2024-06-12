@@ -55,8 +55,8 @@ export class BudgetSummaryComponent implements OnInit {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
-        /*if (!this.IsAuthorized(PermissionsEnum.ViewBudgetSummary))
-          this._router.navigate(['401']);*/
+        if (!this.IsAuthorized(PermissionsEnum.ViewBudgetSummary))
+          this._router.navigate(['401']);
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.loadFinancialYears();

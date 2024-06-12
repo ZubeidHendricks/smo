@@ -306,17 +306,17 @@ export class NavigationComponent implements OnInit {
           items: []
         });
 
-        // if (this.IsAuthorized(PermissionsEnum.ViewBudgetSummarySubMenu)) {
+        if (this.IsAuthorized(PermissionsEnum.ViewBudgetSummarySubMenu)) {
           this.sideMenu[2].items.push({
             label: 'Budget Summary',
             icon: 'fa fa-bar-chart',
-            // disabled: !this.IsAuthorized(PermissionsEnum.ViewBudgetSummary),
+            disabled: !this.IsAuthorized(PermissionsEnum.ViewBudgetSummary),
             command: () => {
               this._router.navigateByUrl('admin/budget-summary');
               this.displaySideMenu = false;
             }
           });
-        // }
+        }
 
         if (this.IsAuthorized(PermissionsEnum.ViewDepartmentBudgetSubMenu)) {
           this.sideMenu[2].items.push({
