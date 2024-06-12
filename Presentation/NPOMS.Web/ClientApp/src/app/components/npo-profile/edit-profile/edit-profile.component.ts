@@ -1437,7 +1437,7 @@ private loadTitles() {
     let query = event.query;
     this._dropdownRepo.getFacilityByName(query).subscribe(
       (results) => {
-        this.denodoFacilities = results.elements;
+        this.denodoFacilities = results ? results.elements : [];
       },
       (err) => {
         this._loggerService.logException(err);

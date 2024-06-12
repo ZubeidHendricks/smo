@@ -4,22 +4,4 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="FundingApplication\**" />
-    <EmbeddedResource Remove="FundingApplication\**" />
-    <None Remove="FundingApplication\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Core\UserProgram.cs" />
-    <Compile Remove="Entities\FinancialDetail.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
 </Project>

@@ -378,7 +378,7 @@ export class SummaryComponent implements OnInit {
           totalActuals: actualTotal
         } as IWorkplanIndicator);
       });
-console.log('this.filteredWorkplanIndicators',this.filteredWorkplanIndicators);
+// console.log('this.filteredWorkplanIndicators',this.filteredWorkplanIndicators);
       this.makeRowsSameHeight();
     }
   }

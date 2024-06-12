@@ -498,8 +498,8 @@ namespace NPOMS.Services.Implementation
 
             var programme = await _programmeRepository.GetById(model.ProgrammeId);
 
-            // If Department is DoH, create sub-programme type with same details as sub-programme
-            if (programme.DepartmentId == (int)DepartmentEnum.DoH)
+            // If Department is DOH, create sub-programme type with same details as sub-programme
+            if (programme.DepartmentId == (int)DepartmentEnum.DOH)
             {
                 await _subProgrammeTypeRepository.CreateAsync(new SubProgrammeType
                 {

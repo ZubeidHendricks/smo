@@ -17,11 +17,9 @@ using NPOMS.Repository.Configurations.Entities;
 using NPOMS.Repository.Configurations.Lookup;
 using NPOMS.Repository.Configurations.Mapping;
 using NPOMS.Repository.DTO;
-using NPOMS.Repository.Implementation.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace NPOMS.Repository
@@ -213,6 +211,8 @@ namespace NPOMS.Repository
 
         public DbSet<ProgramBankDetails> ProgramBankDetails { get; set; }
         public DbSet<ProgramContactInformation> ProgramContactInformation { get; set; }
+        public DbSet<ProgrammeServiceDelivery> ProgrammeServiceDelivery { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

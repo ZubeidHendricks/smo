@@ -9,6 +9,7 @@ export interface IDepartment {
     id: number;
     name: string;
     abbreviation: string;
+    denodoDepartmentName: string;
     isActive: boolean;
 }
 
@@ -428,12 +429,12 @@ export interface IApplication {
     createdUserId: number;
     updatedUserId: number;
     closeScorecard: number;
-    initiateScorecard: number;  
+    initiateScorecard: number;
     scorecardCount: number;
     rejectedScorecard: number;
     submittedScorecard: number;
     applicationPeriod: IApplicationPeriod;
-    status: IStatus;     
+    status: IStatus;
     createdUser: IUser;
     updatedUser: IUser;
 }
@@ -1074,6 +1075,135 @@ export interface IDenodoFacility {
     open_time: string;
 }
 
+export interface IDenodoBudgetWrapper {
+    name: string;
+    elements: IDenodoBudget[];
+}
+
+export interface IDenodoBudget {
+    source: string;
+    nationalprovincial: string;
+    financialyear: string;
+    departmentname: string;
+    assetslowestlevelcode: string;
+    assetslowestlevel: string;
+    assetslevel1: string;
+    assetslevel2: string;
+    assetslevel3: string;
+    assetslevel4: string;
+    assetslevel5: string;
+    assetslevel6: string;
+    assetslevel7: string;
+    assetslevel8: string;
+    assetslevel9: string;
+    assetslevel10: string;
+    econclass: string;
+    inconsistenteconclass: string;
+    funcclasslevel1: string;
+    funcclasslevel2: string;
+    funcclasslowestlevel: string;
+    fundlowestlevelcode: string;
+    fundlowestlevel: string;
+    fundlevel1: string;
+    fundlevel2: string;
+    fundlevel3: string;
+    fundlevel4: string;
+    fundlevel5: string;
+    fundlevel6: string;
+    fundlevel7: string;
+    fundlevel8: string;
+    fundlevel9: string;
+    ictitem: string;
+    ictresp: string;
+    infrastructurelowestlevelcode: string;
+    infrastructurelowestlevel: string;
+    infrastructurelevel1: string;
+    infrastructurelevel2: string;
+    infrastructurelevel3: string;
+    infrastructurelevel4: string;
+    infrastructurelevel5: string;
+    infrastructurelevel6: string;
+    itemlowestlevelcode: string;
+    itemlowestlevel: string;
+    itemlevel1: string;
+    itemlevel2: string;
+    itemlevel3: string;
+    itemlevel4: string;
+    itemlevel5: string;
+    itemlevel6: string;
+    itemlevel7: string;
+    itemlevel8: string;
+    itemlevel9: string;
+    itemlevel10: string;
+    itemlevel11: string;
+    programmelevel5: string;
+    subprogrammelevel6: string;
+    objectivelowestlevelcode: string;
+    objectivelowestlevel: string;
+    objectivelevel1: string;
+    objectivelevel2: string;
+    objectivelevel3: string;
+    objectivelevel4: string;
+    objectivelevel5: string;
+    objectivelevel6: string;
+    objectivelevel7: string;
+    objectivelevel8: string;
+    objectivelevel9: string;
+    objectivelevel10: string;
+    projectlowestlevelcode: string;
+    projectlowestlevel: string;
+    projectlevel1: string;
+    projectlevel2: string;
+    projectlevel3: string;
+    projectlevel4: string;
+    projectlevel5: string;
+    projectlevel6: string;
+    projectlevel7: string;
+    projectlevel8: string;
+    projectlevel9: string;
+    projectlevel10: string;
+    projectlevel11: string;
+    regionalidlowestlevelcode: string;
+    regionalidlowestlevel: string;
+    regionalidlevel1: string;
+    regionalidlevel2: string;
+    regionalidlevel3: string;
+    regionalidlevel4: string;
+    regionalidlevel5: string;
+    regionalidlevel6: string;
+    regionalidlevel7: string;
+    regionalidlevel8: string;
+    researchanddevcode: string;
+    researchanddevclassification: string;
+    responsibilitylowestlevelcode: string;
+    responsibilitylowestlevel: string;
+    responsibilitylevel1: string;
+    responsibilitylevel2: string;
+    responsibilitylevel3: string;
+    responsibilitylevel4: string;
+    responsibilitylevel5: string;
+    responsibilitylevel6: string;
+    responsibilitylevel7: string;
+    responsibilitylevel8: string;
+    responsibilitylevel9: string;
+    responsibilitylevel10: string;
+    responsibilitylevel11: string;
+    responsibilitylevel12: string;
+    responsibilitylevel13: string;
+    responsibilitylevel14: string;
+    responsibilitylevel15: string;
+    sonoprogramnumber: string;
+    sonosubprogrevcode: string;
+    originalbudget: string;
+    availablebudget: string;
+    currentbudget: string;
+    commitment: string;
+    virement: string;
+    finalvirementshifts: string;
+    fundshift: string;
+    rollover: string;
+}
+
 /* Indicator */
 export interface IWorkplanTarget {
     id: number;
@@ -1473,7 +1603,7 @@ export interface IGetResponseOptions {
     rejectionComment: string;
     createdUserId: number;
     rejectedByUserId: number;
-    reviewerUpdatedDateTime: string;    
+    reviewerUpdatedDateTime: string;
     responseOption: IResponseOption;
     createdUser: IUser;
 }
@@ -1483,7 +1613,7 @@ export interface IGetResponseOption {
     fundingApplicationId: number;
     questionId: number;
     responseOptionId: number;
-    responseOptionName:number;
+    responseOptionName: number;
     comment: string;
     initialComment: string;
     rejectionComment: string;

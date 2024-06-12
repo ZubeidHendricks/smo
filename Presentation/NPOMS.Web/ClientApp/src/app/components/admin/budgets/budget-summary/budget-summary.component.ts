@@ -1,21 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
 import { IDenodoBudget, IDepartment, IFinancialYear, IUser } from 'src/app/models/interfaces';
 import { BudgetService } from 'src/app/services/api-services/budget/budget.service';
-import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-department-budget',
-  templateUrl: './department-budget.component.html',
-  styleUrls: ['./department-budget.component.css'],
-  providers: [MessageService, ConfirmationService]
+  selector: 'app-budget-summary',
+  templateUrl: './budget-summary.component.html',
+  styleUrls: ['./budget-summary.component.css']
 })
-export class DepartmentBudgetComponent implements OnInit {
+export class BudgetSummaryComponent implements OnInit {
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -40,11 +38,8 @@ export class DepartmentBudgetComponent implements OnInit {
 
   isSystemAdmin: boolean;
 
-  // Details displayed in summary
-  totalBudget: number;
-  totalAllocated: number;
-  totalPaid: number;
-  totalBalance: number;
+  list: any[] = [];
+  item: any;
 
   constructor(
     private _router: Router,
@@ -60,7 +55,7 @@ export class DepartmentBudgetComponent implements OnInit {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewDepartmentBudget))
+        if (!this.IsAuthorized(PermissionsEnum.ViewBudgetSummary))
           this._router.navigate(['401']);
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
@@ -69,9 +64,15 @@ export class DepartmentBudgetComponent implements OnInit {
     });
 
     this.budgetCols = [
-      { header: 'Budget', width: '33%' },
-      { header: 'Allocated Amount', width: '33%' },
-      { header: 'Balance Amount', width: '33%' }
+      { header: 'Directorate', width: '15%' },
+      { header: 'Programme', width: '15%' },
+      { header: 'Subsidy Group', width: '15%' },
+      { header: 'Subsidy Type', width: '15%' },
+      { header: 'Original Budget', width: '8%' },
+      { header: 'Adjusted Budget', width: '8%' },
+      { header: 'Allocated', width: '8%' },
+      { header: 'Balance', width: '8%' },
+      { header: 'Paid', width: '8%' }
     ];
   }
 
@@ -83,7 +84,6 @@ export class DepartmentBudgetComponent implements OnInit {
         let currentDate = new Date();
         let currentFinancialYear = results.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
         this.financialYears = results.filter(x => x.id <= currentFinancialYear.id);
-
         this.loadDepartments();
       },
       (err) => {
@@ -98,7 +98,7 @@ export class DepartmentBudgetComponent implements OnInit {
       (results) => {
         this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
 
-        // In Department Budget Summary...
+        // In Programme Budget Summary...
         // If user is system admin, show department dropdown
         // If user is not system admin, default department to assigned department in user department table
         this.selectedDepartmentSummary = this.isSystemAdmin ? null : this.departments.find(x => x.id === this.profile.departments[0].id);
@@ -123,11 +123,6 @@ export class DepartmentBudgetComponent implements OnInit {
   private loadBudgets() {
     if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
       this._spinner.show();
-
-      this.totalBudget = 0;
-      this.totalAllocated = 0;
-      this.totalPaid = 0;
-      this.totalBalance = 0;
 
       this._budgetRepo.getBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {

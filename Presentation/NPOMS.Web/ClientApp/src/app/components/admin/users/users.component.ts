@@ -138,7 +138,6 @@ export class UsersComponent implements OnInit {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
       (results) => {
-        console.log('results',results);
         this.departments = results;
         this._spinner.hide();
       },
