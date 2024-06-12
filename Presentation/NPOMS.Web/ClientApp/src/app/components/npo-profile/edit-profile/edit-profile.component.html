@@ -294,8 +294,8 @@
                     <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</td>
                     <td *ngIf="rowData.subProgrammeType">{{rowData.subProgrammeType.name}}</td>
                     <td style="text-align: center;">
-                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editServicesRendered(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
-                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteServicesRendered(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                        <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editServicesRendered(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                        <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteServicesRendered(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
                     </td>
                 </tr>
             </ng-template>
@@ -331,14 +331,14 @@
               <td>{{detail?.accountNumber}}</td>
               <td>{{detail?.branch?.name}}</td>
               <td style="text-align: center;">
-                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgrammeBankDetail(detail)" pTooltip="Edit" tooltipPosition="top"></button>
-                <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgrammeBankDetail(detail)" pTooltip="Delete" tooltipPosition="top"></button>
+                <button *ngIf="canEdit()"  pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgrammeBankDetail(detail)" pTooltip="Edit" tooltipPosition="top"></button>
+                <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgrammeBankDetail(detail)" pTooltip="Delete" tooltipPosition="top"></button>
               </td>
             </tr>
           </ng-template>
           <ng-template pTemplate="summary" let-rowData>
             <div style="text-align:left">
-                <button pButton pRipple type="button" label="Add Banking Details" class="p-button-text" icon="fa fa-plus" (click)="addProgrammeBankDetail()"></button>
+                <button *ngIf="canEdit()" pButton pRipple type="button" label="Add Banking Details" class="p-button-text" icon="fa fa-plus" (click)="addProgrammeBankDetail()"></button>
             </div>
         </ng-template>
         </p-table>
@@ -361,14 +361,14 @@
                     <td>{{contact.emailAddress}}</td>
                     <td>{{contact.cellphone}}</td>
                     <td style="text-align: center;">
-                      <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgramContactInformation(contact)" pTooltip="Edit" tooltipPosition="top"></button>
-                      <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgramContactInformation(contact)" pTooltip="Delete" tooltipPosition="top"></button>
+                      <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgramContactInformation(contact)" pTooltip="Edit" tooltipPosition="top"></button>
+                      <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgramContactInformation(contact)" pTooltip="Delete" tooltipPosition="top"></button>
                     </td>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="summary" let-rowData>
                     <div style="text-align:left">
-                        <button pButton pRipple type="button" label="Add Contact Details" class="p-button-text" icon="fa fa-plus" (click)="addContactInformation()"></button>
+                        <button *ngIf="canEdit()" pButton pRipple type="button" label="Add Contact Details" class="p-button-text" icon="fa fa-plus" (click)="addContactInformation()"></button>
                     </div>
                 </ng-template>
               </p-table> 

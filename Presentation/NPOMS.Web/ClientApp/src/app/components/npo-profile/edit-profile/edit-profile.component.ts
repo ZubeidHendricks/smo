@@ -204,7 +204,7 @@ export class EditProfileComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-
+        console.log('this.profile',this.profile);
         if (!this.IsAuthorized(PermissionsEnum.EditNpoProfile))
           this._router.navigate(['401']);
 
@@ -287,6 +287,7 @@ export class EditProfileComponent implements OnInit {
       { header: 'Year Registered', width: '15%' }
     ];
   }
+  
 private loadTitles() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Titles, false).subscribe(
@@ -355,6 +356,17 @@ private loadTitles() {
         this._spinner.hide();
       }
     );
+  }
+
+  canEditServicesRendered(programme: IProgramme): boolean {
+    return programme &&
+           this.profile.userPrograms.some(userProgram => userProgram.id === programme.id);
+  }
+  
+  canEdit()
+  {
+    return this.selectedProgram &&
+    this.profile.userPrograms.some(userProgram => userProgram.id === Number(this.selectedProgram.id));
   }
 
   addContactInformation() {
