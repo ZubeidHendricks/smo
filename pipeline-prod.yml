@@ -138,4 +138,4 @@ stages:
               appType: 'webAppLinux'
               appName: 'wa-wcg-npoms-prod-zan'
               package: '$(Pipeline.Workspace)/WebAPI/WebAPI1.zip'
-              runtimeStack: 'DOTNETCORE|6.0'
+              runtimeStack: 'DOTNETCORE|8.0'

@@ -10,7 +10,7 @@ namespace NPOMS.API.Controllers
 	[Route("api/denodo")]
 	[ApiController]
 	public class DenodoController : ExternalBaseController
-	{
+    {
 		#region Fields
 
 		private ILogger<DenodoController> _logger;
@@ -48,6 +48,21 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		#endregion
-	}
+        [HttpGet("budgets/department/{department}/year/{year}", Name = "GetDenodoBudgets")]
+        public async Task<IActionResult> GetDenodoBudgets(string department, int year)
+        {
+            try
+            {
+                var results = await this._denodoService.GetBudgets(department, $"{year}/{year + 1}");
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDenodoBudgets action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        #endregion
+    }
 }

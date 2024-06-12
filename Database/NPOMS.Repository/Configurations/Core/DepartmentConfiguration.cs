@@ -11,13 +11,15 @@ namespace NPOMS.Repository.Configurations.Core
 			builder.Property("IsActive").HasDefaultValueSql("1");
 			builder.Property("CreatedUserId").HasDefaultValueSql("1");
 			builder.Property("CreatedDateTime").HasDefaultValueSql("GetDate()");
+            builder.Property("DenodoDepartmentName").HasDefaultValue("Not Applicable");
 
-			builder.HasData(
+            builder.HasData(
 				new Department
 				{
 					Id = 1,
 					Name = "All Departments",
 					Abbreviation = "ALL",
+					DenodoDepartmentName = "Not Applicable",
 					IsActive = true
 				},
 				new Department
@@ -25,105 +27,120 @@ namespace NPOMS.Repository.Configurations.Core
 					Id = 2,
 					Name = "Economic Development and Tourism",
 					Abbreviation = "DEDAT",
-					IsActive = false
+                    DenodoDepartmentName = "Western Cape Economic Development And Tourism",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 3,
-					Name = "Transport and Public Works",
-					Abbreviation = "DTPW",
-					IsActive = false
+					Name = "Mobility",
+					Abbreviation = "WCMD",
+                    DenodoDepartmentName = "Western Cape Mobility",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 4,
 					Name = "Education",
 					Abbreviation = "WCED",
-					IsActive = false
+                    DenodoDepartmentName = "Western Cape Education",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 5,
 					Name = "Premier",
-					Abbreviation = "DotP",
-					IsActive = false
+					Abbreviation = "DOTP",
+                    DenodoDepartmentName = "Western Cape Premier",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 6,
 					Name = "Provincial Treasury",
 					Abbreviation = "PT",
-					IsActive = false
+                    DenodoDepartmentName = "Western Cape Treasury",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 7,
 					Name = "Social Development",
 					Abbreviation = "DSD",
-					IsActive = false
+                    DenodoDepartmentName = "Western Cape Social Development",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 8,
 					Name = "Agriculture",
-					Abbreviation = "DoA",
-					IsActive = false
+					Abbreviation = "DOA",
+                    DenodoDepartmentName = "Western Cape Agriculture",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 9,
-					Name = "Community Safety",
-					Abbreviation = "DCS",
-					IsActive = false
+					Name = "Police Oversight and Community Safety",
+					Abbreviation = "DOCS",
+                    DenodoDepartmentName = "Western Cape Police Oversight and Community Safety",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 10,
 					Name = "Cultural Affairs and Sport",
 					Abbreviation = "DCAS",
-					IsActive = false
+                    DenodoDepartmentName = "Western Cape Cultural Affairs And Sport",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 11,
-					Name = "Health",
-					Abbreviation = "DoH",
-					IsActive = true
+					Name = "Health and Wellness",
+					Abbreviation = "DOH",
+                    DenodoDepartmentName = "Western Cape Government: Health and Wellness",
+                    IsActive = true
 				},
 				new Department
 				{
 					Id = 12,
-					Name = "Human Settlements",
-					Abbreviation = "DHS",
-					IsActive = false
+					Name = "Infrastructure",
+					Abbreviation = "DOI",
+                    DenodoDepartmentName = "Western Cape Infrastructure",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 13,
 					Name = "Local Government",
 					Abbreviation = "DLG",
-					IsActive = false
+                    DenodoDepartmentName = "Western Cape Local Government",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 14,
 					Name = "Provincial Parliament",
 					Abbreviation = "WCPP",
-					IsActive = false
+                    DenodoDepartmentName = "Not Applicable",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 15,
 					Name = "Environmental Affairs and Development Planning",
 					Abbreviation = "DEA&DP",
-					IsActive = false
+                    DenodoDepartmentName = "Western Cape Environmental Affairs Development Planning",
+                    IsActive = false
 				},
 				new Department
 				{
 					Id = 16,
 					Name = "None",
 					Abbreviation = "NONE",
-					IsActive = true
+                    DenodoDepartmentName = "Not Applicable",
+                    IsActive = true
 				}
 			);
 		}

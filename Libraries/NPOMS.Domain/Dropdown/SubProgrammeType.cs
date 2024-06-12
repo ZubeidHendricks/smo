@@ -20,7 +20,9 @@ namespace NPOMS.Domain.Dropdown
 
 		public bool IsActive { get; set; }
 
-		public int CreatedUserId { get; set; }
+        //public string Code { get; set; }
+
+        public int CreatedUserId { get; set; }
 
 		public DateTime CreatedDateTime { get; set; }
 

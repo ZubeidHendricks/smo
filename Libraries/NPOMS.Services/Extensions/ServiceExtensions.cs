@@ -247,8 +247,6 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IBidService, BidService>();
             services.AddScoped<IEvaluationService, EvaluationService>();
 
-            services.AddConfiguration<dtoBlobConfig>(builder.Configuration, "BlobStorageSettings");
-
 
             //PowerBI
             services.AddScoped(typeof(AadService))

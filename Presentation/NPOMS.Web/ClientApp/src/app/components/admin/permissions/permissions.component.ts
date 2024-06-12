@@ -48,8 +48,8 @@ export class PermissionsComponent implements OnInit {
 
   originalMappings: any[]; // used for checking the original permissions in the matrix list
 
-  headerRows: string[] = [];
   profile: IUser;
+  rowGroupMetadata: any;
 
   constructor(
     private _repo: PermissionService,
@@ -79,6 +79,7 @@ export class PermissionsComponent implements OnInit {
       (x) => {
         this.originalMappings = [...x.mappings];
         this.featurePermissionRoleSubject$.next(x);
+        this.updateRowGroupMetaData(x);
         this._spinner.hide();
       },
       (err) => {
@@ -153,20 +154,36 @@ export class PermissionsComponent implements OnInit {
     }
   }
 
-  headerRowAdded(categoryName): boolean {
-    ///not working now. Idea is to make feature name the heading of the group
-    let isNew: boolean = false;
-    let row = this.headerRows.length === 0 ? [] : this.headerRows.filter(x => x === categoryName);
+  private updateRowGroupMetaData(matrix) {
+    this.rowGroupMetadata = {};
 
-    if (row.length === 0) {
-      this.headerRows.push(categoryName);
-      isNew = true;
+    if (matrix) {
+      for (let i = 0; i < matrix.availableFeaturePermissions.length; i++) {
+        let rowData = matrix.availableFeaturePermissions[i];
+        let categoryName = rowData.categoryName;
+
+        if (i == 0) {
+          this.rowGroupMetadata[categoryName] = { index: 0, size: 1 };
+        }
+        else {
+          let previousRowData = matrix.availableFeaturePermissions[i - 1];
+          let previousRowGroup = previousRowData.categoryName;
+          if (categoryName === previousRowGroup)
+            this.rowGroupMetadata[categoryName].size++;
+          else
+            this.rowGroupMetadata[categoryName] = { index: i, size: 1 };
+        }
+      }
     }
-
-    return isNew;
   }
 
-  canEdit() {
-    return !this.IsAuthorized(PermissionsEnum.EditPermissions);
+  public getColspan() {
+    let numberOfRoles: number;
+
+    this.featurePermissionRole$.subscribe(x => {
+      numberOfRoles = x.availableRoles.length;
+    });
+
+    return 2 + numberOfRoles;
   }
 }

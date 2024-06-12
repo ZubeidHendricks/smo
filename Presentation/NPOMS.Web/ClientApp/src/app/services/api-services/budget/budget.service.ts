@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IDepartmentBudget, IDirectorateBudget, IProgrammeBudget } from 'src/app/models/interfaces';
+import { IDenodoBudgetWrapper, IDepartmentBudget, IDirectorateBudget, IProgrammeBudget } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -67,5 +67,10 @@ export class BudgetService {
   public updateProgrammeBudget(programmeBudget: IProgrammeBudget) {
     const url = `${this._envUrl.urlAddress}/api/budgets/programme-budgets`;
     return this._http.put<IProgrammeBudget>(url, programmeBudget, httpOptions);
+  }
+
+  public getBudgets(department: string, year: number) {
+    const url = `${this._envUrl.urlAddress}/api/denodo/budgets/department/${department}/year/${year}`;
+    return this._http.get<IDenodoBudgetWrapper>(url, httpOptions);
   }
 }

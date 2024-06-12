@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,16 +12,17 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20240605134336_UpdateDepartmentDetails")]
+    partial class UpdateDepartmentDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("NPOMS.Domain.Budget.DepartmentBudget", b =>
                 {
@@ -28,7 +30,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -65,7 +67,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -111,7 +113,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -157,7 +159,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Abbreviation")
                         .IsRequired()
@@ -367,7 +369,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -426,7 +428,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -707,7 +709,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -777,7 +779,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -825,7 +827,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Body")
                         .IsRequired()
@@ -1101,7 +1103,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("CategoryName")
                         .HasColumnType("varchar(255)");
@@ -1165,7 +1167,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -1228,7 +1230,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -1365,7 +1367,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
@@ -2593,7 +2595,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Abbreviation")
                         .IsRequired()
@@ -2673,7 +2675,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -2807,7 +2809,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -2888,7 +2890,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AngularRedirectUrl")
                         .IsRequired()
@@ -3258,7 +3260,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -3341,7 +3343,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -3403,7 +3405,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -3465,7 +3467,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -3545,7 +3547,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(255)");
@@ -3676,7 +3678,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("BankId")
                         .HasColumnType("int");
@@ -7752,7 +7754,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -7867,7 +7869,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -7955,7 +7957,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -8475,7 +8477,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -8563,7 +8565,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -8896,7 +8898,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -8952,7 +8954,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -9032,7 +9034,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -9249,7 +9251,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -9319,7 +9321,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -9383,7 +9385,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -9447,7 +9449,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -9720,7 +9722,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -9880,7 +9882,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -10004,7 +10006,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -10228,7 +10230,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -10523,7 +10525,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -10568,7 +10570,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5178),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(317),
                             CreatedUserID = 3,
                             Frequency = 12,
                             HaveComment = false,
@@ -10581,7 +10583,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5180),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(324),
                             CreatedUserID = 3,
                             Frequency = 1,
                             HaveComment = false,
@@ -10594,7 +10596,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5182),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(327),
                             CreatedUserID = 3,
                             Frequency = 264,
                             HaveComment = false,
@@ -10607,7 +10609,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5183),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(330),
                             CreatedUserID = 3,
                             Frequency = 240,
                             HaveComment = false,
@@ -10620,7 +10622,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5184),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(332),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = false,
@@ -10632,7 +10634,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5186),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(335),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10644,7 +10646,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5187),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(338),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10656,7 +10658,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5188),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(340),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10668,7 +10670,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5190),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(343),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10680,7 +10682,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5191),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(345),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10692,7 +10694,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5192),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(350),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10704,7 +10706,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5194),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(352),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10716,7 +10718,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5196),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(355),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10728,7 +10730,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 14,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5197),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(357),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10740,7 +10742,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 15,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5198),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(408),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10752,7 +10754,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 16,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5200),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(410),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10764,7 +10766,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 17,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5201),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(413),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10776,7 +10778,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 18,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5203),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(416),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10788,7 +10790,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 19,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5204),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(419),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10800,7 +10802,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 20,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5205),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(421),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10812,7 +10814,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 21,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5206),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(424),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = false,
@@ -10824,7 +10826,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 22,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5208),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(426),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10836,7 +10838,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 23,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5213),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(442),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10848,7 +10850,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 24,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5225),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(487),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10860,7 +10862,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 25,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5227),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(490),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10872,7 +10874,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 26,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5228),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(492),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10884,7 +10886,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 27,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5229),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(495),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10896,7 +10898,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 28,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5231),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(498),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10908,7 +10910,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 29,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5253),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(500),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10920,7 +10922,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 30,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5254),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(503),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10932,7 +10934,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 31,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5255),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(506),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10944,7 +10946,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 32,
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5257),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 164, DateTimeKind.Local).AddTicks(508),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10961,7 +10963,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<bool>("CanDefineName")
                         .HasColumnType("bit");
@@ -11024,7 +11026,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 1,
                             CanDefineName = false,
                             Code = "AdministrationFee",
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5056),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 163, DateTimeKind.Local).AddTicks(9893),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -11043,7 +11045,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 2,
                             CanDefineName = false,
                             Code = "PostItem",
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5064),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 163, DateTimeKind.Local).AddTicks(9961),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = false,
@@ -11062,7 +11064,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 3,
                             CanDefineName = true,
                             Code = "UnitItem",
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5066),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 163, DateTimeKind.Local).AddTicks(9966),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = true,
@@ -11081,7 +11083,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 4,
                             CanDefineName = false,
                             Code = "OperationalItem",
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5068),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 163, DateTimeKind.Local).AddTicks(9969),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = false,
@@ -11100,7 +11102,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 6,
                             CanDefineName = false,
                             Code = "RuleForSocialWorkers",
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5070),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 163, DateTimeKind.Local).AddTicks(9973),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -11119,7 +11121,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 7,
                             CanDefineName = false,
                             Code = "UIFFee",
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5072),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 163, DateTimeKind.Local).AddTicks(9976),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -11138,7 +11140,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 8,
                             CanDefineName = false,
                             Code = "COIDAFee",
-                            CreatedDateTime = new DateTime(2024, 6, 12, 10, 31, 10, 188, DateTimeKind.Local).AddTicks(5074),
+                            CreatedDateTime = new DateTime(2024, 6, 5, 15, 43, 28, 163, DateTimeKind.Local).AddTicks(9980),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -11160,7 +11162,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -11222,7 +11224,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -11302,7 +11304,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -11373,7 +11375,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -11448,7 +11450,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -11519,7 +11521,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -11581,7 +11583,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -11821,7 +11823,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -11883,7 +11885,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -11980,7 +11982,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -12164,7 +12166,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -12861,7 +12863,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -13618,7 +13620,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -13714,7 +13716,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -13794,7 +13796,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ActivityListId")
                         .HasColumnType("int");
@@ -13864,7 +13866,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("NpoProfileId")
                         .HasColumnType("int");
@@ -13892,7 +13894,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ContactPerson")
                         .HasColumnType("nvarchar(max)");
@@ -13935,7 +13937,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApplicationPeriodId")
                         .HasColumnType("int");
@@ -13999,7 +14001,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
@@ -14032,7 +14034,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
@@ -14061,7 +14063,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
@@ -14095,7 +14097,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("AmountApplyingFor")
                         .HasColumnType("decimal(18,2)");
@@ -14116,7 +14118,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApplicationTypeId")
                         .HasColumnType("int");
@@ -14181,7 +14183,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
@@ -14214,7 +14216,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AffectedColumns")
                         .HasColumnType("nvarchar(MAX)");
@@ -14251,7 +14253,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(1000)");
@@ -14310,7 +14312,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AccountNumber")
                         .HasColumnType("nvarchar(255)");
@@ -14353,7 +14355,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("CompliantCycleRuleId")
                         .HasColumnType("int");
@@ -14405,7 +14407,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -14476,7 +14478,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AddressInformation")
                         .HasColumnType("nvarchar(max)");
@@ -14588,7 +14590,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("AmountOne")
                         .HasColumnType("numeric(18,6)");
@@ -14642,7 +14644,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("AmountOneE")
                         .HasColumnType("numeric(18,6)");
@@ -14696,7 +14698,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("AmountOneI")
                         .HasColumnType("numeric(18,6)");
@@ -14750,7 +14752,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("AmountOneO")
                         .HasColumnType("numeric(18,6)");
@@ -14804,7 +14806,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
@@ -14869,7 +14871,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("DistrictCouncilId")
                         .HasColumnType("int");
@@ -14897,7 +14899,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApplicationDetailId")
                         .HasColumnType("int");
@@ -14933,7 +14935,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
@@ -14970,7 +14972,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
@@ -15010,7 +15012,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime?>("ApprovalDateTime")
                         .HasColumnType("datetime2");
@@ -15090,7 +15092,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -15126,7 +15128,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
@@ -15192,7 +15194,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("CompliantCycleId")
                         .HasColumnType("int");
@@ -15234,7 +15236,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -15271,166 +15273,13 @@ namespace NPOMS.Repository.Migrations
                     b.ToTable("PreviousYearFinance", "dbo");
                 });
 
-            modelBuilder.Entity("NPOMS.Domain.Entities.ProgramBankDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("AccountTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BankId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BranchId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProgramId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProgramBankDetails", "dbo");
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Entities.ProgramContactInformation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AddressInformation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Cellphone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Comments")
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DateOfEmployment")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int?>("GenderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdNumber")
-                        .HasColumnType("nvarchar(13)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsBoardMember")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsDisabled")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsPrimaryContact")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsSignatory")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsWrittenAgreementSignatory")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("LanguageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("PassportNumber")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("PositionId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProgrammeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Qualifications")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("RSAIdNumber")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("RaceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Telephone")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("TitleId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("YearsOfExperience")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GenderId");
-
-                    b.HasIndex("LanguageId");
-
-                    b.HasIndex("PositionId");
-
-                    b.HasIndex("RaceId");
-
-                    b.HasIndex("TitleId");
-
-                    b.ToTable("ProgramContactInformation", "dbo");
-                });
-
             modelBuilder.Entity("NPOMS.Domain.Entities.ProjectImplementation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("Beneficiaries")
                         .HasColumnType("int");
@@ -15475,7 +15324,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("purposeQuestion")
                         .HasColumnType("nvarchar(max)");
@@ -15491,7 +15340,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
@@ -15564,7 +15413,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -15604,7 +15453,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AdditionalSourceInformation")
                         .HasColumnType("nvarchar(max)");
@@ -15638,7 +15487,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("AfricanFemale")
                         .HasColumnType("int");
@@ -15708,7 +15557,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -15959,7 +15808,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Budget")
                         .HasColumnType("numeric(18,6)");
@@ -16007,7 +15856,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Budget")
                         .HasColumnType("numeric(18,6)");
@@ -16055,7 +15904,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
@@ -16106,7 +15955,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -16286,7 +16135,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Comments")
                         .HasColumnType("nvarchar(MAX)");
@@ -16349,7 +16198,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -16394,7 +16243,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -16429,7 +16278,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<bool>("CommentRequired")
                         .HasColumnType("bit");
@@ -16463,7 +16312,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -16503,7 +16352,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(MAX)");
@@ -16561,7 +16410,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(MAX)");
@@ -16596,7 +16445,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -16634,7 +16483,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -16669,7 +16518,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -16703,7 +16552,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Action")
                         .HasColumnType("nvarchar(max)");
@@ -16757,7 +16606,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -16784,7 +16633,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Comment")
                         .IsRequired()
@@ -16812,7 +16661,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
@@ -16901,7 +16750,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -19068,7 +18917,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(255)");
@@ -19127,7 +18976,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -19398,7 +19247,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
@@ -19446,7 +19295,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
@@ -19472,7 +19321,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
@@ -19480,7 +19329,7 @@ namespace NPOMS.Repository.Migrations
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasDefaultValueSql("1");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
@@ -19570,20 +19419,6 @@ namespace NPOMS.Repository.Migrations
                             DepartmentId = 16,
                             IsActive = false,
                             RoleId = 3
-                        },
-                        new
-                        {
-                            Id = 12,
-                            DepartmentId = 11,
-                            IsActive = false,
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            Id = 13,
-                            DepartmentId = 7,
-                            IsActive = false,
-                            RoleId = 3
                         });
                 });
 
@@ -19593,7 +19428,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("FundAppSDADetailId")
                         .HasColumnType("int");
@@ -19619,7 +19454,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("FundAppSDADetailId")
                         .HasColumnType("int");
@@ -19645,7 +19480,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("FacilityListId")
                         .HasColumnType("int");
@@ -19689,7 +19524,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ImplementationId")
                         .HasColumnType("int");
@@ -19715,7 +19550,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ImplementationId")
                         .HasColumnType("int");
@@ -20223,7 +20058,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
@@ -20260,7 +20095,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("AccessStatusId")
                         .HasColumnType("int");
@@ -20304,7 +20139,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -20346,7 +20181,7 @@ namespace NPOMS.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -20877,43 +20712,6 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("CompliantCycle");
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Entities.ProgramContactInformation", b =>
-                {
-                    b.HasOne("NPOMS.Domain.Dropdown.Gender", "Gender")
-                        .WithMany()
-                        .HasForeignKey("GenderId");
-
-                    b.HasOne("NPOMS.Domain.Dropdown.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId");
-
-                    b.HasOne("NPOMS.Domain.Dropdown.Position", "Position")
-                        .WithMany()
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NPOMS.Domain.Dropdown.Race", "Race")
-                        .WithMany()
-                        .HasForeignKey("RaceId");
-
-                    b.HasOne("NPOMS.Domain.Dropdown.Title", "Title")
-                        .WithMany()
-                        .HasForeignKey("TitleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Gender");
-
-                    b.Navigation("Language");
-
-                    b.Navigation("Position");
-
-                    b.Navigation("Race");
-
-                    b.Navigation("Title");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.ProjectImplementation", b =>
