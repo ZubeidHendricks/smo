@@ -28,6 +28,6 @@ namespace NPOMS.Domain.Entities
 		public DateTime? UpdatedDateTime { get; set; }
 
         public List<ServiceSubProgramme> ServiceSubProgramme { get; set; } = new List<ServiceSubProgramme>();
-        public List<SubProgrammeType> SubProgrammeType { get; set; } = new List<SubProgrammeType>();
+        public List<ServiceProgrammeType> SubProgrammeType { get; set; } = new List<ServiceProgrammeType>();
     }
 }
