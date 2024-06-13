@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Entities;
+using NPOMS.Domain.Enumerations;
 using NPOMS.Repository.Extensions;
 using NPOMS.Repository.Interfaces.Entities;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace NPOMS.Repository.Implementation.Entities
 		{
 			return await FindAll().Include(x => x.Npo).ThenInclude(x => x.OrganisationType)
 								  .Include(x => x.Npo).ThenInclude(x => x.ApprovalStatus)
+								  .Include(x => x.AccessStatus)
 								  .Where(x => x.Npo.IsActive && x.IsActive).AsNoTracking().ToListAsync();
 		}
 
@@ -39,7 +41,9 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task CreateEntity(NpoProfile model)
 		{
-			model.RefNo = StringExtensions.GenerateNewCode("PRO");
+            model.AccessStatusId = (int)AccessStatusEnum.New;
+
+            model.RefNo = StringExtensions.GenerateNewCode("PRO");
 			await CreateAsync(model);
 		}
 
@@ -47,7 +51,8 @@ namespace NPOMS.Repository.Implementation.Entities
 		{
 			this.RepositoryContext.AddressInformation.Update(model.AddressInformation);
 			var oldEntity = await this.RepositoryContext.NpoProfiles.FindAsync(model.Id);
-			await UpdateAsync(oldEntity, model, true, currentUserId);
+            model.AccessStatusId = (int)AccessStatusEnum.Pending;
+            await UpdateAsync(oldEntity, model, true, currentUserId);
 		}
 
 		public async Task<NpoProfile> GetByNpoId(int NpoId)

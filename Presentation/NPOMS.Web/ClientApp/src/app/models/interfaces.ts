@@ -639,8 +639,9 @@ export interface INpoProfile {
     refNo: string;
     createdUserId: number;
     updatedUserId: number;
-
+    approvalStatusId: number;
     addressInformation: IAddressInformation;
+    accessStatus: IAccessStatus;
     /*npoProfileFacilityLists: INpoProfileFacilityList[];
     servicesRendered: IServicesRendered[];
     bankDetails: IBankDetail[];*/

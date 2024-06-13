@@ -541,6 +541,43 @@ namespace NPOMS.Services.Implementation
 			await _staffMemberProfileRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
-		#endregion
-	}
+        public async Task ApproveNpoProfile(int npoProfileId, string userIdentifier)
+        {
+            var model = await _npoProfileRepository.GetById(npoProfileId);
+
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+			model.AccessStatusId = (int)(AccessStatusEnum.Approved);
+			await _npoProfileRepository.UpdateAsync(model);
+
+        }
+
+        public async Task RejectNpoProfile(int npoProfileId, string userIdentifier)
+        {
+            var model = await _npoProfileRepository.GetById(npoProfileId);
+
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+            model.AccessStatusId = (int)(AccessStatusEnum.Rejected);
+            await _npoProfileRepository.UpdateAsync(model);
+        }
+
+        public async Task SubmitProfileNpoProfile(int npoProfileId, string userIdentifier)
+        {
+            var model = await _npoProfileRepository.GetById(npoProfileId);
+
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+            model.AccessStatusId = (int)(AccessStatusEnum.Pending);
+            await _npoProfileRepository.UpdateAsync(model);
+        }
+
+        #endregion
+    }
 }

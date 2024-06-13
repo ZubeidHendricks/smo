@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Entities;
+using NPOMS.Domain.Enumerations;
 using NPOMS.Repository;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
@@ -42,7 +43,8 @@ namespace NPOMS.Services.Implementation
             await _programeBankDetailRepository.CreateAsync(model);
 
             var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
-            //npoProfile = 
+            npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
         public async Task CreateContact(ProgramContactInformation model, string userId, int npoProfileId)
@@ -53,6 +55,10 @@ namespace NPOMS.Services.Implementation
             model.CreatedDateTime = DateTime.Now;
 
             await _programeContactDetailRepository.CreateAsync(model);
+
+            var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
+            npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
         public async Task CreateDelivery(ProgrammeServiceDelivery model, string userId)
@@ -74,6 +80,10 @@ namespace NPOMS.Services.Implementation
 
             var oldEntity = await _repositoryContext.ProgramBankDetails.FindAsync(model.Id);
             await _programeBankDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+
+            var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
+            npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
         public async Task UpdateContact(ProgramContactInformation model, string userId, int npoProfileId)
@@ -85,6 +95,10 @@ namespace NPOMS.Services.Implementation
 
             var oldEntity = await this._repositoryContext.ProgramContactInformation.FindAsync(model.Id);
             await _programeContactDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+
+            var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
+            npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
         public async Task UpdateDelivery(ProgrammeServiceDelivery model, string userId)

@@ -42,23 +42,23 @@ export class NpoProfileService {
     return this._http.get<IProgramBankDetails[]>(url, httpOptions);
   }
 
-  public createProgrammeContact(programContactInformation: IProgramContactInformation, npoProfileId: number) {
+  public createProgrammeContact(npoProfileId: number,programContactInformation: IProgramContactInformation) {
     const url = `${this._envUrl.urlAddress}/api/programme/create-contact/${npoProfileId}`;
     return this._http.post<IProgramContactInformation>(url, programContactInformation, httpOptions);
   }
 
-  public createProgrammeBankDetails(programBankDetails: IProgramBankDetails, npoProfileId: number) {
+  public createProgrammeBankDetails(npoProfileId: number,programBankDetails: IProgramBankDetails) {
     const url = `${this._envUrl.urlAddress}/api/programme/create-bank/${npoProfileId}`;
     return this._http.post<IProgramBankDetails>(url,programBankDetails, httpOptions);
   }
 
 
-  public updateProgrammeContact(programContactInformation: IProgramContactInformation, npoProfileId: number) {
+  public updateProgrammeContact(npoProfileId: number,programContactInformation: IProgramContactInformation) {
     const url = `${this._envUrl.urlAddress}/api/programme/update-contact/${npoProfileId}`;
     return this._http.put<IProgramContactInformation>(url,programContactInformation, httpOptions);
   }
 
-  public updateProgrammeBankDetails(programBankDetails: IProgramBankDetails, npoProfileId: number) {
+  public updateProgrammeBankDetails(npoProfileId: number,programBankDetails: IProgramBankDetails) {
     const url = `${this._envUrl.urlAddress}/api/programme/update-bank/${npoProfileId}`;
     return this._http.put<IProgramBankDetails>(url,programBankDetails, httpOptions);
   }
@@ -94,6 +94,22 @@ export class NpoProfileService {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles`;
     return this._http.put<INpoProfile>(url, npoProfile, httpOptions);
   }
+
+  public approveProfile(npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/approve/${npoProfileId}`;
+    return this._http.post<INpoProfile>(url, npoProfileId, httpOptions);
+  }
+
+  public rejectProfile(npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/reject/${npoProfileId}`;
+    return this._http.post<INpoProfile>(url, npoProfileId, httpOptions);
+  }
+
+  public submitProfile(npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/submit/${npoProfileId}`;
+    return this._http.post<INpoProfile>(url, npoProfileId, httpOptions);
+  }
+
 
   public getFacilitiesByNpoProfileId(npoProfileId: number) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/facilities/npoProfileId/${npoProfileId}`;

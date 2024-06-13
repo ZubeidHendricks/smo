@@ -1294,27 +1294,39 @@ private loadTitles() {
     if (this.profile) {
       this.menuActions = [
         {
-          label: 'Validate',
+          label: 'Approve',
           icon: 'fa fa-check',
           command: () => {
-            this.formValidate();
+            //api call to change status to approved
+            this.Approve();
           },
-          visible: false
+          visible: true
         },
         {
-          label: 'Clear Messages',
+          label: 'Reject',
           icon: 'fa fa-undo',
           command: () => {
-            this.clearMessages();
+            //api call to change status to pending
+            this.Reject();
           },
-          visible: false
+          visible: true
         },
+
         {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
             this.saveItems();
           }
+        },
+        {
+          label: 'Submit',
+          icon: 'fa fa-undo',
+          command: () => {
+            //api call to change status to pending
+            this.Submit();
+          },
+          visible: true
         },
         {
           label: 'Go Back',
@@ -1326,6 +1338,64 @@ private loadTitles() {
       ];
     }
   }
+  
+
+  private Reject() {
+    if (this.canContinue()) {
+      this._spinner.show();
+      let data = this.npoProfile;
+
+      this._npoProfileRepo.rejectProfile(data.id).subscribe(
+        (resp) => {
+          this._spinner.hide();
+          this._router.navigateByUrl('npo-profiles');
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+  }
+
+
+  private Approve() {
+    if (this.canContinue()) {
+      this._spinner.show();
+      let data = this.npoProfile;
+
+      this._npoProfileRepo.approveProfile(data.id).subscribe(
+        (resp) => {
+          this._spinner.hide();
+          this._router.navigateByUrl('npo-profiles');
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+  }
+
+
+  private Submit() {
+    if (this.canContinue()) {
+      this._spinner.show();
+      let data = this.npoProfile;
+
+      this._npoProfileRepo.submitProfile(data.id).subscribe(
+        (resp) => {
+          this._spinner.hide();
+          this._router.navigateByUrl('npo-profiles');
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+  }
+
 
   private getDocuments() {
     this._documentStore.get(Number(this.npoProfileId), EntityTypeEnum.SupportingDocuments).subscribe(
