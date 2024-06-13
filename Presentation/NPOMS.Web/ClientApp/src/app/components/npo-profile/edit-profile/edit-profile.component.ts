@@ -6,7 +6,7 @@ import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/
 import { FileUpload } from 'primeng/fileupload';
 import { Subscription, forkJoin } from 'rxjs';
 import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDistrictCouncil, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IRace, IRegion, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ITitle, IUser } from 'src/app/models/interfaces';
+import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDistrictCouncil, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IRace, IRegion, ISDA, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -144,6 +144,12 @@ export class EditProfileComponent implements OnInit {
   isNewDelivery: boolean;
   displayDeliveryDialog: boolean;
 
+  sdasAll: ISDA[];
+  sdas: ISDA[] = [];
+  selectedSdas: ISDA[];
+  selected: ISDA[] = [];
+
+
   npoProfileFacilityLists: INpoProfileFacilityList[];
   servicesRendered: IServicesRendered[];
   bankDetails: IBankDetail[];
@@ -266,6 +272,8 @@ export class EditProfileComponent implements OnInit {
          this.loadMunicipalities();
          //Get all regions
          this.regionDropdown();
+           //Get all service delivery areas
+          this.loadServiceDeliveryAreas();
       }
     });
 
@@ -325,7 +333,35 @@ export class EditProfileComponent implements OnInit {
       { header: 'Year Registered', width: '15%' }
     ];
   }
-  
+
+  private loadServiceDeliveryAreas() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.ServiceDeliveryArea, false).subscribe(
+      (results) => {
+        this.sdasAll = results;
+        this.allDropdownsLoaded();
+
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  onSdaChange(sdas: ISDA[]) {
+    // this.places = [];
+    // this.subPlacesAll = [];
+    this.selectedSdas = [];
+    // this.sdas =[];
+
+    // this.setPlaces(sdas); // populate specific locations where the service will be delivered to
+    sdas.forEach(item => {
+      this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
+    });
+     //map selected service delivery areas 
+    // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
+  }
+
   private loadDistrictCouncils() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DistrictCouncil, false).subscribe(
       (results) => {
@@ -381,12 +417,12 @@ export class EditProfileComponent implements OnInit {
   OnDistrictCouncilChange(districtCouncil: IDistrictCouncil) {
     this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === districtCouncil.id);
     this.localMunicipalities = [];
-    // this.sdas = null;
+    this.sdas = null;
     this.selectedRegions = null;
-    // this.selectedSdas = null;
-    // this.selected = null;
+    this.selectedSdas = null;
+    this.selected = null;
     this.regions = null;
-    // this.sdas = null;
+    this.sdas = null;
     //Map the selected district council
     //districtCouncil
 
@@ -398,13 +434,22 @@ export class EditProfileComponent implements OnInit {
 
   onRegionChange(regions: IRegion[]) {
     this.selectedRegions = [];
-    // this.selectedSdas = [];
-    // this.selected = [];
-    // this.sdas = [];
+    this.selectedSdas = [];
+    this.selected = [];
+    this.sdas = [];
 
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
+
+    // filter items matching the selected regions
+    if (regions != null && regions.length != 0) {
+      for (var i = 0; i < this.sdasAll.length; i++) {
+        if (regions.filter(r => r.id === this.sdasAll[i].regionId).length != 0) {
+          this.sdas.push(this.sdasAll[i]);
+        }
+      }
+    }
   //map selected regions
   }
 
@@ -535,44 +580,6 @@ private loadTitles() {
       this.contactInformation.idNumber = "";
   }
 
-  saveProgrammeContactInformation() {
-    this.contactInformation.programmeId = Number(this.selectedProgram.id);
-    this.contactInformation.title = this.selectedTitle;
-    this.contactInformation.position = this.selectedPosition;
-    this.contactInformation.race = this.selectedRace;
-    this.contactInformation.gender = this.selectedGender;
-    this.contactInformation.language = this.selectedLanguage;
-
-    if (this.newContactInformation)
-      this.createProgrameContactDetail(this.contactInformation)
-    else
-    this.updateProgrameContactDetail(this.contactInformation)
-    this.displayContactDialog = false;
-  }
-
-  private createProgrameContactDetail(contact: IProgramContactInformation) {
-    this._npoProfileRepo.createProgrammeContact(contact).subscribe(
-      (resp) => {
-        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private updateProgrameContactDetail(contact: IProgramContactInformation) {
-    this._npoProfileRepo.updateProgrammeContact(contact).subscribe(
-      (resp) => {
-        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
 
   disableProgrammeSaveContactInfo() {
     const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -2086,20 +2093,9 @@ private loadTitles() {
     this.displayBankDetailDialog = false;
   }
 
-  saveBankDetail() {
-    this.bankDetail.npoProfileId = Number(this.npoProfileId);
-    this.bankDetail.bankId = this.selectedBank.id;
-    this.bankDetail.branchId = this.selectedBranch.id;
-    this.bankDetail.accountTypeId = this.selectedAccountType.id;
-    this.bankDetail.isActive = true;
-
-    this.newBankDetail ? this.createBankDetail(this.bankDetail) : this.updateBankDetail(this.bankDetail);
-    this.displayBankDetailDialog = false;
-  }
-
 
   private createProgrameBankDetail(bankDetail: IProgramBankDetails) {
-    this._npoProfileRepo.createProgrammeBankDetails(bankDetail).subscribe(
+    this._npoProfileRepo.createProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
       (resp) => {
         this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
       },
@@ -2111,7 +2107,7 @@ private loadTitles() {
   }
 
   private updateProgrameBankDetail(bankDetail: IProgramBankDetails) {
-    this._npoProfileRepo.updateProgrammeBankDetails(bankDetail).subscribe(
+    this._npoProfileRepo.updateProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
       (resp) => {
         this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
       },
@@ -2120,6 +2116,57 @@ private loadTitles() {
         this._spinner.hide();
       }
     );
+  }
+
+  saveProgrammeContactInformation() {
+    this.contactInformation.programmeId = Number(this.selectedProgram.id);
+    this.contactInformation.title = this.selectedTitle;
+    this.contactInformation.position = this.selectedPosition;
+    this.contactInformation.race = this.selectedRace;
+    this.contactInformation.gender = this.selectedGender;
+    this.contactInformation.language = this.selectedLanguage;
+
+    if (this.newContactInformation)
+      this.createProgrameContactDetail(this.contactInformation)
+    else
+    this.updateProgrameContactDetail(this.contactInformation)
+    this.displayContactDialog = false;
+  }
+
+  private createProgrameContactDetail(contact: IProgramContactInformation) {
+    this._npoProfileRepo.createProgrammeContact(Number(this.npoProfile.id),contact).subscribe(
+      (resp) => {
+        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateProgrameContactDetail(contact: IProgramContactInformation) {
+    this._npoProfileRepo.updateProgrammeContact(Number(this.npoProfile.id),contact).subscribe(
+      (resp) => {
+        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
+  saveBankDetail() {
+    this.bankDetail.npoProfileId = Number(this.npoProfileId);
+    this.bankDetail.bankId = this.selectedBank.id;
+    this.bankDetail.branchId = this.selectedBranch.id;
+    this.bankDetail.accountTypeId = this.selectedAccountType.id;
+    this.bankDetail.isActive = true;
+
+    this.newBankDetail ? this.createBankDetail(this.bankDetail) : this.updateBankDetail(this.bankDetail);
+    this.displayBankDetailDialog = false;
   }
 
 

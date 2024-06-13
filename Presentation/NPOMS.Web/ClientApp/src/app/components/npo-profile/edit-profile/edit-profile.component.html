@@ -1339,8 +1339,22 @@
                 (onChange)="onRegionChange($event.value)" [style]="{'width':'100%'}"
                 ></p-multiSelect>
             </div>
+
         </div>
 
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Region</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
+                [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="onSdaChange($event.value)"
+                [style]="{'width':'100%'}"></p-multiSelect>
+            </div>
+        </div>
+        
     <ng-template pTemplate="footer">
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" (click)="saveProgrammeServiceDelivery()" [disabled]="disableProgrammeerviceDeliverySave()"></button>
     </ng-template>

@@ -45,6 +45,7 @@ export interface IProgramBankDetails {
     region?: IRegion;
     districtCouncil?: IDistrictCouncil;
     localMunicipality?: ILocalMunicipality;
+    serviceDeliveryArea?: ISDA;
 }
 
   export interface IProgramContactInformation {

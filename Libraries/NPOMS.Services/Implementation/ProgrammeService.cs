@@ -15,11 +15,13 @@ namespace NPOMS.Services.Implementation
         private IUserRepository _userRepository;
         private RepositoryContext _repositoryContext;
         private IProgrameDeliveryRepository _programeDeliveryRepository;
+        private INpoProfileRepository _npoProfileRepository;
         public ProgrammeService(
             IProgrameBankDetailRepository programeBankDetailRepository,
             IProgrameContactDetailRepository programeContactDetailRepository,
             IUserRepository userRepository,
             IProgrameDeliveryRepository programeDeliveryRepository,
+            INpoProfileRepository npoProfileRepository,
             RepositoryContext repositoryContext)
         {
             _programeBankDetailRepository = programeBankDetailRepository;
@@ -27,9 +29,10 @@ namespace NPOMS.Services.Implementation
             _userRepository = userRepository;
             _repositoryContext = repositoryContext;
             _programeDeliveryRepository = programeDeliveryRepository;
+            _npoProfileRepository = npoProfileRepository;
         }
 
-        public async Task CreateBankDetails(ProgramBankDetails model, string userId)
+        public async Task CreateBankDetails(ProgramBankDetails model, string userId, int npoProfileId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
 
@@ -37,9 +40,12 @@ namespace NPOMS.Services.Implementation
             model.CreatedDateTime = DateTime.Now;
 
             await _programeBankDetailRepository.CreateAsync(model);
+
+            var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
+            //npoProfile = 
         }
 
-        public async Task CreateContact(ProgramContactInformation model, string userId)
+        public async Task CreateContact(ProgramContactInformation model, string userId, int npoProfileId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
 
@@ -59,7 +65,7 @@ namespace NPOMS.Services.Implementation
             await _programeDeliveryRepository.CreateAsync(model);
         }
 
-        public async Task UpdateBankDetails(ProgramBankDetails model, string userId)
+        public async Task UpdateBankDetails(ProgramBankDetails model, string userId, int npoProfileId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
 
@@ -70,7 +76,7 @@ namespace NPOMS.Services.Implementation
             await _programeBankDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
         }
 
-        public async Task UpdateContact(ProgramContactInformation model, string userId)
+        public async Task UpdateContact(ProgramContactInformation model, string userId, int npoProfileId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
 

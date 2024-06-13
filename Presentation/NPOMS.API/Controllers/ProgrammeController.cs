@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System;
 using NPOMS.Domain.Budget;
 using NPOMS.Domain.Entities;
+using NPOMS.Domain.Dropdown;
 
 namespace NPOMS.API.Controllers
 {
@@ -78,13 +79,13 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPost("create-contact", Name = "CreateProgrameContact")]
-        public async Task<IActionResult> CreateProgrameContact([FromBody] ProgramContactInformation model)
+        [HttpPost("create-contact/{npoProfileId}", Name = "CreateProgrameContact")]
+        public async Task<IActionResult> CreateProgrameContact([FromBody] ProgramContactInformation model,int npoProfileId)
         {
             try
             {
                 ClearObjects(model);
-                await _programmeService.CreateContact(model, base.GetUserIdentifier());
+                await _programmeService.CreateContact(model, base.GetUserIdentifier(), npoProfileId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -94,13 +95,13 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut("update-contact", Name = "UpdateProgrameContact")]
-        public async Task<IActionResult> UpdateProgrameContact([FromBody] ProgramContactInformation model)
+        [HttpPut("update-contact/{npoProfileId}", Name = "UpdateProgrameContact")]
+        public async Task<IActionResult> UpdateProgrameContact([FromBody] ProgramContactInformation model, int npoProfileId)
         {
             try
             {
                 ClearObjects(model);
-                await _programmeService.UpdateContact(model, base.GetUserIdentifier());
+                await _programmeService.UpdateContact(model, base.GetUserIdentifier(), npoProfileId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -110,12 +111,12 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPost("create-bank", Name = "CreateProgramBankDetails")]
-        public async Task<IActionResult> CreateProgramBankDetails([FromBody] ProgramBankDetails model)
+        [HttpPost("create-bank/{npoProfileId}", Name = "CreateProgramBankDetails")]
+        public async Task<IActionResult> CreateProgramBankDetails([FromBody] ProgramBankDetails model, int npoProfileId)
         {
             try
             {
-                await _programmeService.CreateBankDetails(model, base.GetUserIdentifier());
+                await _programmeService.CreateBankDetails(model, base.GetUserIdentifier(), npoProfileId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -125,12 +126,12 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut("update-bank", Name = "UpdateProgramBankDetails")]
-        public async Task<IActionResult> UpdateProgramBankDetails([FromBody] ProgramBankDetails model)
+        [HttpPut("update-bank/{npoProfileId}", Name = "UpdateProgramBankDetails")]
+        public async Task<IActionResult> UpdateProgramBankDetails([FromBody] ProgramBankDetails model, int npoProfileId)
         {
             try
             {
-                await _programmeService.UpdateBankDetails(model, base.GetUserIdentifier());
+                await _programmeService.UpdateBankDetails(model, base.GetUserIdentifier(), npoProfileId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -139,8 +140,6 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-
 
 
 
@@ -196,10 +195,12 @@ namespace NPOMS.API.Controllers
             model.DistrictCouncilId = model.DistrictCouncil.Id;
             model.LocalMunicipalityId = model.LocalMunicipality.Id;
             model.RegionId = model.Region.Id;
+            model.ServiceDeliveryAreaId = model.ServiceDeliveryArea.Id;
 
             model.DistrictCouncil = null;
             model.LocalMunicipality = null;
             model.Region = null;
+            model.ServiceDeliveryArea = null;
         }
 
         private static void ClearObjects(ProgramContactInformation model)

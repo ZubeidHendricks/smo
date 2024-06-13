@@ -42,27 +42,26 @@ export class NpoProfileService {
     return this._http.get<IProgramBankDetails[]>(url, httpOptions);
   }
 
-  public createProgrammeContact(programContactInformation: IProgramContactInformation) {
-    const url = `${this._envUrl.urlAddress}/api/programme/create-contact`;
+  public createProgrammeContact(programContactInformation: IProgramContactInformation, npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-contact/${npoProfileId}`;
     return this._http.post<IProgramContactInformation>(url, programContactInformation, httpOptions);
   }
 
-  public createProgrammeBankDetails(programBankDetails: IProgramBankDetails) {
-    const url = `${this._envUrl.urlAddress}/api/programme/create-bank`;
+  public createProgrammeBankDetails(programBankDetails: IProgramBankDetails, npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-bank/${npoProfileId}`;
     return this._http.post<IProgramBankDetails>(url,programBankDetails, httpOptions);
   }
 
 
-  public updateProgrammeContact(programContactInformation: IProgramContactInformation) {
-    const url = `${this._envUrl.urlAddress}/api/programme/update-contact`;
+  public updateProgrammeContact(programContactInformation: IProgramContactInformation, npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-contact/${npoProfileId}`;
     return this._http.put<IProgramContactInformation>(url,programContactInformation, httpOptions);
   }
 
-  public updateProgrammeBankDetails(programBankDetails: IProgramBankDetails) {
-    const url = `${this._envUrl.urlAddress}/api/programme/update-bank`;
+  public updateProgrammeBankDetails(programBankDetails: IProgramBankDetails, npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-bank/${npoProfileId}`;
     return this._http.put<IProgramBankDetails>(url,programBankDetails, httpOptions);
   }
-
   
   public getProgrammeDeliveryDetailsById(progId: number) {
     const url = `${this._envUrl.urlAddress}/api/programme/delivery/programmeId/${progId}`;
