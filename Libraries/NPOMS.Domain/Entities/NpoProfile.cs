@@ -23,12 +23,15 @@ namespace NPOMS.Domain.Entities
 
 		public DateTime? UpdatedDateTime { get; set; }
 
-		public Npo Npo { get; set; }
+        public int? AccessStatusId { get; set; }
+        public AccessStatus AccessStatus { get; set; }
+        public Npo Npo { get; set; }
 
 		public AddressInformation AddressInformation { get; set; }
 
-		/*public List<NpoProfileFacilityList> NpoProfileFacilityLists { get; set; } = new List<NpoProfileFacilityList>();
+
+        /*public List<NpoProfileFacilityList> NpoProfileFacilityLists { get; set; } = new List<NpoProfileFacilityList>();
 
 		public List<ServicesRendered> ServicesRendered { get; set; } = new List<ServicesRendered>();*/
-	}
+    }
 }
