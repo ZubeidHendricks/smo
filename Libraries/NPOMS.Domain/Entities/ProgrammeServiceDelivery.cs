@@ -19,10 +19,13 @@ namespace NPOMS.Domain.Entities
         public int? UpdatedUserId { get; set; }
         public DateTime? UpdatedDateTime { get; set; }
         public int? RegionId { get; set; }
+        public int? ServiceDeliveryAreaId { get; set; }
+
         public int? DistrictCouncilId { get; set; }
         public int? LocalMunicipalityId { get; set; }
         public  Region Region { get; set; }
         public  DistrictCouncil DistrictCouncil { get; set; }
         public  LocalMunicipality LocalMunicipality { get; set; }
+        public  ServiceDeliveryArea ServiceDeliveryArea { get; set; }
     }
 }
