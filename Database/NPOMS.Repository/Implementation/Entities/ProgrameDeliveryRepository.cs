@@ -20,7 +20,7 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByProgramId(int progId)
         {
-            return await FindByCondition(x => x.ProgramId.Equals(progId))
+            return await FindByCondition(x => x.ProgramId.Equals(progId) && x.IsActive)
                            .AsNoTracking().ToListAsync();
         }
     }

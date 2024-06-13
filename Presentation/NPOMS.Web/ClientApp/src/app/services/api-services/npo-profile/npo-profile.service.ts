@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IAuditorOrAffiliation, IBankDetail, INpoProfile, INpoProfileFacilityList, IProgramBankDetails, IProgramContactInformation, IProjectImplementation, IServicesRendered, IStaffMemberProfile } from 'src/app/models/interfaces';
+import { IAuditorOrAffiliation, IBankDetail, INpoProfile, INpoProfileFacilityList, IProgramBankDetails, IProgramContactInformation, IProgrammeServiceDelivery, IProjectImplementation, IServicesRendered, IStaffMemberProfile } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { IPreviousFinancialYear, ISourceOfInformation, IAffiliatedOrganisation } from 'src/app/models/FinancialMatters';
 import { IFinancialMattersExpenditure, IFinancialMattersIncome, IFinancialMattersOthers } from 'src/app/models/FinancialMatters';
@@ -62,6 +62,23 @@ export class NpoProfileService {
     const url = `${this._envUrl.urlAddress}/api/programme/update-bank`;
     return this._http.put<IProgramBankDetails>(url,programBankDetails, httpOptions);
   }
+
+  
+  public getProgrammeDeliveryDetailsById(progId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/delivery/programmeId/${progId}`;
+    return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);
+  }
+
+  public updateProgrammeDeliveryDetails(programBankDetails: IProgrammeServiceDelivery) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-delivery`;
+    return this._http.put<IProgrammeServiceDelivery>(url,programBankDetails, httpOptions);
+  }
+
+  public createProgrammeDeliveryDetails(programBankDetails: IProgrammeServiceDelivery) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-delivery`;
+    return this._http.post<IProgrammeServiceDelivery>(url,programBankDetails, httpOptions);
+  }
+
 
 
   public getNpoProfileByNpoId(npoId: number) {

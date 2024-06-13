@@ -32,6 +32,21 @@ export interface IProgramBankDetails {
     accountType: IAccountType;
   }
 
+  export interface IProgrammeServiceDelivery {
+    programId: number;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number;
+    updatedDateTime?: Date;
+    regionId?: number;
+    districtCouncilId?: number;
+    localMunicipalityId?: number;
+    region?: IRegion;
+    districtCouncil?: IDistrictCouncil;
+    localMunicipality?: ILocalMunicipality;
+}
+
   export interface IProgramContactInformation {
     id: number;
     programmeId: number;

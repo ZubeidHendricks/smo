@@ -52,9 +52,9 @@ namespace NPOMS.Services.Implementation
         public async Task CreateDelivery(ProgrammeServiceDelivery model, string userId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
-
-            //model.CreatedUserId = loggedInUser.Id;
-            //model.CreatedDateTime = DateTime.Now;
+            model.IsActive = true;
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
 
             await _programeDeliveryRepository.CreateAsync(model);
         }
@@ -85,8 +85,8 @@ namespace NPOMS.Services.Implementation
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
 
-            //model.UpdatedUserId = loggedInUser.Id;
-            //model.UpdatedDateTime = DateTime.Now;
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
 
             var oldEntity = await this._repositoryContext.ProgrammeServiceDelivery.FindAsync(model.Id);
             await _programeDeliveryRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);

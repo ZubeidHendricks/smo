@@ -6,7 +6,7 @@ import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/
 import { FileUpload } from 'primeng/fileupload';
 import { Subscription, forkJoin } from 'rxjs';
 import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IGender, ILanguage, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IRace, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ITitle, IUser } from 'src/app/models/interfaces';
+import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDistrictCouncil, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IRace, IRegion, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -15,6 +15,7 @@ import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-profile',
@@ -23,7 +24,7 @@ import { UserService } from 'src/app/services/api-services/user/user.service';
   providers: [MessageService, ConfirmationService]
 })
 export class EditProfileComponent implements OnInit {
-
+  isDeliveryInformationEdit: boolean;
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -136,6 +137,13 @@ export class EditProfileComponent implements OnInit {
   programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
   selectedProgramBankBankDetail: IProgramBankDetails;
 
+  programDeliveryDetails : IProgrammeServiceDelivery [];
+  programDeliveryDetail: IProgrammeServiceDelivery = {} as IProgrammeServiceDelivery;
+  selectedProgramDeliveryBankDetail: IProgrammeServiceDelivery;
+  selectedDelivery: IProgrammeServiceDelivery;
+  isNewDelivery: boolean;
+  displayDeliveryDialog: boolean;
+
   npoProfileFacilityLists: INpoProfileFacilityList[];
   servicesRendered: IServicesRendered[];
   bankDetails: IBankDetail[];
@@ -178,6 +186,29 @@ export class EditProfileComponent implements OnInit {
   newContactInformation: boolean;
   minDate: Date;
   maxDate: Date;
+
+  allDistrictCouncils: IDistrictCouncil[];
+  selectedDistrictCouncil: IDistrictCouncil;
+
+  localMunicipalitiesAll: ILocalMunicipality[];
+  localMunicipalities: ILocalMunicipality[] = [];
+  selectedLocalMunicipality: ILocalMunicipality;
+
+  regionsAll: IRegion[];
+  regions: IRegion[] = [];
+  selectedRegions: IRegion[];
+  selectedRegs: IRegion[] = [];
+  selectedLocalMunicipalitiesText: string;
+  selectedRegionsText: string;
+  selectedSDAsText: string;
+  selectedDropdownValue: string;
+  // sdasAll: ISDA[];
+  // sdas: ISDA[] = [];
+  // selectedSdas: ISDA[];
+  // selected: ISDA[] = [];
+
+  // places: IPlace[] = [];
+  // subPlacesAll: ISubPlace[];
 
   constructor(
     private _router: Router,
@@ -228,6 +259,13 @@ export class EditProfileComponent implements OnInit {
         this.loadStaffCategories();
         this.loadNpoProfile();
         this.buildMenu();
+
+         //Get all district councils
+         this.loadDistrictCouncils();
+         //Gel all local municipalities
+         this.loadMunicipalities();
+         //Get all regions
+         this.regionDropdown();
       }
     });
 
@@ -286,6 +324,107 @@ export class EditProfileComponent implements OnInit {
       { header: 'Registration Status', width: '15%' },
       { header: 'Year Registered', width: '15%' }
     ];
+  }
+  
+  private loadDistrictCouncils() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DistrictCouncil, false).subscribe(
+      (results) => {
+        this.allDistrictCouncils = results;
+        console.log('allDistrictCouncils',results);
+        //this.allDropdownsLoaded();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadMunicipalities() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.LocalMunicipality, false).subscribe(
+      (results) => {
+        console.log('localMunicipalitiesAll',results);
+        this.localMunicipalitiesAll = results;
+        //this.allDropdownsLoaded();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+  private regionDropdown() {
+
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Region, false).subscribe(
+      (results) => {
+        console.log('regionsAll',results);
+        this.regionsAll = results;
+        //this.allDropdownsLoaded();
+      },
+      (err) => err
+    );
+  }
+
+  onLocalMunicipalityChange(localMunicipality: ILocalMunicipality) {
+    this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === localMunicipality.id);
+    if (this.selectedLocalMunicipality == null) {
+      this.regions = null;
+      // this.sdas = null;
+    }
+      //map selected local municipality  
+    if (localMunicipality.id != undefined) {
+      this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
+    }
+  }
+
+
+  OnDistrictCouncilChange(districtCouncil: IDistrictCouncil) {
+    this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === districtCouncil.id);
+    this.localMunicipalities = [];
+    // this.sdas = null;
+    this.selectedRegions = null;
+    // this.selectedSdas = null;
+    // this.selected = null;
+    this.regions = null;
+    // this.sdas = null;
+    //Map the selected district council
+    //districtCouncil
+
+    if (districtCouncil.id != undefined) {
+      this.localMunicipalities = this.localMunicipalitiesAll?.filter(x => x.districtCouncilId == districtCouncil.id);
+    }
+  }
+
+
+  onRegionChange(regions: IRegion[]) {
+    this.selectedRegions = [];
+    // this.selectedSdas = [];
+    // this.selected = [];
+    // this.sdas = [];
+
+    regions.forEach(item => {
+      this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
+    });
+  //map selected regions
+  }
+
+  private allDropdownsLoaded() {
+    // if (this.allDistrictCouncils?.length > 0 &&
+    //   this.localMunicipalitiesAll?.length > 0 &&
+    //   this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
+
+    //   if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil.id != undefined)
+    //     this.OnDistrictCouncilChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil);
+
+    //   if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality.id != undefined)
+    //     this.onLocalMunicipalityChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality);
+
+    //   if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions?.length > 0)
+    //     this.onRegionChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions);
+
+    //   if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas?.length > 0)
+    //     this.onSdaChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
+    // }
   }
   
 private loadTitles() {
@@ -492,11 +631,13 @@ private loadTitles() {
   loadProgrammeDetails(progId: number): void {
     forkJoin({
       contacts: this._npoProfileRepo.getProgrammeContactsById(progId),
-      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId)
+      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId),
+      deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId)
     }).subscribe({
       next: (result) => {
         this.programContactInformation = result.contacts;
         this.programBankDetails = result.bankDetails;
+        this.programDeliveryDetails = result.deliveryDetails;
         this.updateProgramBankDetailObjects();
       },
       error: (err) => {
@@ -568,31 +709,6 @@ private loadTitles() {
     ];
   }
 
-  getContactDetailsByProgram(programId: number): any[] {
-    return [
-      { firstName: 'John', lastName: 'Doe', email: 'john.doe@example.com', phone: '123-456-7890' },
-    ];
-  }
-
-
-  deleteBankingDetail(detail: any) {
-    // Implement the logic to delete the banking detail
-    console.log('Delete banking detail:', detail);
-    // Example: remove the detail from the array
-    this.bankingDetails = this.bankingDetails.filter(item => item !== detail);
-  }
-
-  editContactDetail(contact: any) {
-    // Implement the logic to edit the contact detail
-    console.log('Edit contact detail:', contact);
-  }
-
-  deleteContactDetail(contact: any) {
-    // Implement the logic to delete the contact detail
-    console.log('Delete contact detail:', contact);
-    // Example: remove the contact from the array
-    this.contactDetails = this.contactDetails.filter(item => item !== contact);
-  }
 
   editProgramContactInformation(data: IProgramContactInformation) {
     this.selectedContactInformation = data;
@@ -607,6 +723,14 @@ private loadTitles() {
 
     for (let prop in data)
       contactInfo[prop] = data[prop];
+    
+    this.selectedTitle = data.title;
+    this.selectedPosition = data.position;
+
+    this.selectedGender = data.gender ? data.gender : null;
+    this.selectedRace = data.race ? data.race : null;
+    this.selectedLanguage = data.language ? data.language : null;
+
     return contactInfo;
   }
 
@@ -627,7 +751,83 @@ private loadTitles() {
   }
 
 
+  editProgrammeServiceDelivery(delivery: IProgrammeServiceDelivery) {
+    this.selectedDelivery = delivery;
+    this.programDeliveryDetail = this.cloneProgrammeServiceDelivery(delivery);
+    this.isNewDelivery = false;
+    this.isDeliveryInformationEdit = true;
+    this.displayDeliveryDialog = true;
+  }
+  
+  private cloneProgrammeServiceDelivery(delivery: IProgrammeServiceDelivery): IProgrammeServiceDelivery {
+    let clonedDelivery = {} as IProgrammeServiceDelivery;
+    clonedDelivery.programId = delivery.programId;
+    clonedDelivery.isActive = delivery.isActive;
+    clonedDelivery.createdUserId = delivery.createdUserId;
+    clonedDelivery.createdDateTime = delivery.createdDateTime;
+    clonedDelivery.updatedUserId = delivery.updatedUserId;
+    clonedDelivery.updatedDateTime = delivery.updatedDateTime;
+    clonedDelivery.regionId = delivery.regionId;
+    clonedDelivery.districtCouncilId = delivery.districtCouncilId;
+    clonedDelivery.localMunicipalityId = delivery.localMunicipalityId;
+    clonedDelivery.region = delivery.region ? { ...delivery.region } : null;
+    clonedDelivery.districtCouncil = delivery.districtCouncil ? { ...delivery.districtCouncil } : null;
+    clonedDelivery.localMunicipality = delivery.localMunicipality ? { ...delivery.localMunicipality } : null;
 
+    return clonedDelivery;
+  }
+
+  addProgrammeServiceDelivery() {
+    this.isDeliveryInformationEdit = false;
+    this.isNewDelivery = true;
+
+    this.selectedDelivery = {
+      isActive: true,
+      createdUserId: this.profile.id,
+      createdDateTime: new Date(),
+    } as IProgrammeServiceDelivery;
+  
+    this.selectedRegions = null;
+    this.selectedDistrictCouncil = null;
+    this.selectedLocalMunicipality = null;
+    this.displayDeliveryDialog = true;
+  }
+  
+  saveProgrammeServiceDelivery() {
+    if (this.isNewDelivery) {
+      // Logic to save new delivery
+      // Example:
+      // this.programmeServiceDeliveries.push(this.selectedDelivery);
+    } else {
+      // Logic to update existing delivery
+      // Example:
+      // const index = this.programmeServiceDeliveries.findIndex(d => d.id === this.selectedDelivery.id);
+      // if (index !== -1) {
+      //   this.programmeServiceDeliveries[index] = this.selectedDelivery;
+      // }
+    }
+    this.displayDeliveryDialog = false;  // Close the dialog after saving
+  }
+
+  deleteProgrammeServiceDelivery(data: IProgramContactInformation) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        // this.npo.contactInformation.forEach(function (item, index, object) {
+        //   if (data === item)
+        //     object.splice(index, 1);
+        // });
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  disableProgrammeerviceDeliverySave(): boolean {
+    return !(this.selectedDelivery.region && this.selectedDelivery.districtCouncil);
+  }
 
 
   private loadFacilityDistricts() {

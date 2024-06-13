@@ -21,7 +21,13 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByProgramId(int progId)
         {
             return await FindByCondition(x => x.ProgrammeId.Equals(progId) && x.IsActive)
-                            .AsNoTracking().ToListAsync();
+                           .Include(x => x.Title)
+                           .Include(x => x.Position)
+                           .Include(x => x.Gender)
+                           .Include(x => x.Race)
+                           .Include(x => x.Language)
+                           .AsNoTracking()
+                           .ToListAsync();
         }
     }
 }
