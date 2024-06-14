@@ -7,12 +7,16 @@ namespace NPOMS.Domain.Mapping
     [Table("Service_ProgrammeType", Schema = "mapping")]
     public class ServiceProgrammeType : BaseEntity
     {
-        public int ServicesRenderedId { get; set; }
+        //public int ServicesRenderedId { get; set; }
 
         public int SubProgrammeTypeId { get; set; }
 
         public bool IsActive { get; set; }
 
         public SubProgrammeType SubProgrammeType { get; set; }
+        public int ServiceSubProgrammeId { get; set; }
+
+        [ForeignKey("ServiceSubProgrammeId")]
+        public ServiceSubProgramme ServiceSubProgramme { get; set; }
     }
 }

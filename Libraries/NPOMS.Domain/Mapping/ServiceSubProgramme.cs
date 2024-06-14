@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Dropdown;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NPOMS.Domain.Mapping
@@ -13,5 +14,7 @@ namespace NPOMS.Domain.Mapping
         public bool IsActive { get; set; }
 
         public SubProgramme SubProgramme { get; set; }
+
+        public ICollection<ServiceProgrammeType> ServiceProgrammeTypes { get; set; }
     }
 }
