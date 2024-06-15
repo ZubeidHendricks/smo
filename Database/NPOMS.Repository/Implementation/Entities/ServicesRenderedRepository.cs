@@ -16,22 +16,31 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		}
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public async Task<IEnumerable<ServicesRendered>> GetByNpoProfileId(int npoProfileId)
-		{
-			return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
-				//.Include(y => y.SubProgrammeType)
-				//   .ThenInclude(y => y.SubProgrammeType)
-    //            .Include(x => x.ServiceSubProgramme)
-    //               .ThenInclude(y => y.SubProgramme)
-                            .AsNoTracking()
-							.ToListAsync();
+        //public async Task<IEnumerable<ServicesRendered>> GetByNpoProfileId(int npoProfileId)
+        //{
+        //	return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
+        //		.Include(x => x.ServiceSubProgramme)
+        //		   .ThenInclude(y => y.SubProgramme)
+        //					.AsNoTracking()
+        //					.ToListAsync();
+        //}
+
+        public async Task<IEnumerable<ServicesRendered>> GetByNpoProfileId(int npoProfileId)
+        {
+            return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
+                .Include(x => x.ServiceSubProgramme)
+                    .ThenInclude(y => y.SubProgramme)
+                .Include(x => x.ServiceSubProgramme)
+                    .ThenInclude(y => y.ServiceProgrammeTypes) 
+                .AsNoTracking()
+                .ToListAsync();
         }
 
-		public async Task DeleteEntity(int id, int currentUserId)
+        public async Task DeleteEntity(int id, int currentUserId)
 		{
 			var model = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
 			model.IsActive = false;

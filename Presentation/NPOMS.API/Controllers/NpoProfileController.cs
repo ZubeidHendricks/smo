@@ -9,6 +9,7 @@ using NPOMS.Services.Email;
 using NPOMS.Services.Email.EmailTemplates;
 using NPOMS.Services.Implementation;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -217,7 +218,7 @@ namespace NPOMS.API.Controllers
 		}
 
 		[HttpPost("services-rendered", Name = "CreateServicesRendered")]
-		public async Task<IActionResult> CreateServicesRendered([FromBody] ServicesRendered model)
+		public async Task<IActionResult> CreateServicesRendered([FromBody] ServicesRenderedVM model)
 		{
 			try
 			{
@@ -232,7 +233,7 @@ namespace NPOMS.API.Controllers
 		}
 
 		[HttpPut("services-rendered", Name = "UpdateServicesRendered")]
-		public async Task<IActionResult> UpdateServicesRendered([FromBody] ServicesRendered model)
+		public async Task<IActionResult> UpdateServicesRendered([FromBody] ServicesRenderedVM model)
 		{
 			try
 			{

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Mapping;
@@ -10,6 +11,7 @@ using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.Lookup;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -169,32 +171,214 @@ namespace NPOMS.Services.Implementation
 			await _npoProfileFacilityListRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
-		public async Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(int npoProfileId)
+		public async Task<IEnumerable<ServicesRenderedVM>> GetServicesRenderedByNpoProfileId(int npoProfileId)
 		{
-			return await _servicesRenderedRepository.GetByNpoProfileId(npoProfileId);
-		}
+            var servicesRenderedList = await _servicesRenderedRepository.GetByNpoProfileId(npoProfileId);
+            var servicesRenderedVM = MapToViewModelList(servicesRenderedList.ToList());
 
-		public async Task Create(ServicesRendered model, string userIdentifier)
-		{
-			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            return servicesRenderedVM;
+        }
+        public List<ServicesRenderedVM> MapToViewModelList(List<ServicesRendered> entities)
+        {
+            return entities.Select(entity => new ServicesRenderedVM
+            {
+                NpoProfileId = entity.NpoProfileId,
+                ProgrammeId = entity.ProgrammeId,
+                SubProgrammeId = entity.SubProgrammeId,
+                SubProgrammeTypeId = entity.SubProgrammeTypeId,
+                IsActive = entity.IsActive,
+                CreatedUserId = entity.CreatedUserId,
+                CreatedDateTime = entity.CreatedDateTime,
+                UpdatedUserId = entity.UpdatedUserId,
+                UpdatedDateTime = entity.UpdatedDateTime,
+                SubProgramme = entity.ServiceSubProgramme.Select(sp => new SubProgrammeVM
+                {
+                    Id = sp.SubProgramme.Id,
+                    Name = sp.SubProgramme.Name,
+                    Description = sp.SubProgramme.Description,
+                    ProgrammeId = sp.SubProgramme.ProgrammeId,
+                    IsActive = sp.SubProgramme.IsActive,
+                    CreatedUserId = sp.SubProgramme.CreatedUserId,
+                    CreatedDateTime = sp.SubProgramme.CreatedDateTime,
+                    UpdatedUserId = sp.SubProgramme.UpdatedUserId,
+                    UpdatedDateTime = sp.SubProgramme.UpdatedDateTime,
+                    SubProgrammeType = sp.ServiceProgrammeTypes.Select(spt => new SubProgrammeTypeVM
+                    {
+                        Id = spt.SubProgrammeType.Id,
+                        Name = spt.SubProgrammeType.Name,
+                        Description = spt.SubProgrammeType.Description,
+                        IsActive = spt.SubProgrammeType.IsActive,
+                        CreatedUserId = spt.SubProgrammeType.CreatedUserId,
+                        CreatedDateTime = spt.SubProgrammeType.CreatedDateTime,
+                        UpdatedUserId = spt.SubProgrammeType.UpdatedUserId,
+                        UpdatedDateTime = spt.SubProgrammeType.UpdatedDateTime
+                    }).ToList()
+                }).ToList()
+            }).ToList();
+        }
 
-			model.CreatedUserId = loggedInUser.Id;
-			model.CreatedDateTime = DateTime.Now;
+        //public List<ServicesRenderedVM> MapToViewModelList(List<ServicesRendered> entities)
+        //{
+        //    return entities.Select(entity => new ServicesRenderedVM
+        //    {
+        //        NpoProfileId = entity.NpoProfileId,
+        //        ProgrammeId = entity.ProgrammeId,
+        //        SubProgrammeId = entity.SubProgrammeId,
+        //        SubProgrammeTypeId = entity.SubProgrammeTypeId,
+        //        IsActive = entity.IsActive,
+        //        CreatedUserId = entity.CreatedUserId,
+        //        CreatedDateTime = entity.CreatedDateTime,
+        //        UpdatedUserId = entity.UpdatedUserId,
+        //        UpdatedDateTime = entity.UpdatedDateTime,
+        //        SubProgramme = entity.ServiceSubProgramme.Select(sp => new SubProgrammeVM
+        //        {
+        //            Id = sp.SubProgramme.Id,
+        //            Name = sp.SubProgramme.Name,
+        //            Description = sp.SubProgramme.Description,
+        //            ProgrammeId = sp.SubProgramme.ProgrammeId,
+        //            IsActive = sp.SubProgramme.IsActive,
+        //            CreatedUserId = sp.SubProgramme.CreatedUserId,
+        //            CreatedDateTime = sp.SubProgramme.CreatedDateTime,
+        //            UpdatedUserId = sp.SubProgramme.UpdatedUserId,
+        //            UpdatedDateTime = sp.SubProgramme.UpdatedDateTime
+        //        }).ToList(),
+        //        SubProgrammeType = entity.SubProgrammeType.Select(spt => new SubProgrammeType
+        //        {
+        //            Id = spt.SubProgrammeType.Id,
+        //            Name = spt.SubProgrammeType.Name,
+        //            Description = spt.SubProgrammeType.Description,
+        //            SubProgrammeId = spt.SubProgrammeType.SubProgrammeId,
+        //            IsActive = spt.SubProgrammeType.IsActive,
+        //            CreatedUserId = spt.SubProgrammeType.CreatedUserId,
+        //            CreatedDateTime = spt.SubProgrammeType.CreatedDateTime,
+        //            UpdatedUserId = spt.SubProgrammeType.UpdatedUserId,
+        //            UpdatedDateTime = spt.SubProgrammeType.UpdatedDateTime
+        //        }).ToList()
+        //    }).ToList();
+        //}
 
-			await _servicesRenderedRepository.CreateAsync(model);
-		}
+        //      public async Task Create(ServicesRenderedVM model, string userIdentifier)
+        //{
+        //	var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-		public async Task Update(ServicesRendered model, string userIdentifier)
-		{
-			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+        //	model.CreatedUserId = loggedInUser.Id;
+        //	model.CreatedDateTime = DateTime.Now;
+        //          model.IsActive =true;
 
-			model.UpdatedUserId = loggedInUser.Id;
-			model.UpdatedDateTime = DateTime.Now;
+        //          var entity = new ServicesRendered
+        //          {
+        //              NpoProfileId = model.NpoProfileId,
+        //              ProgrammeId = model.ProgrammeId,
+        //              SubProgrammeId = model.SubProgrammeId,
+        //              SubProgrammeTypeId = model.SubProgrammeTypeId,
+        //              ServiceSubProgramme = MapServiceSubProgrammes(model.SubProgramme),
+        //              SubProgrammeType = MapServiceProgrammeTypes(model.SubProgrammeType)
+        //          };
+        //          await _servicesRenderedRepository.CreateAsync(entity);
+        //}
 
-			await _servicesRenderedRepository.UpdateAsync(null, model, false, loggedInUser.Id);
-		}
+        public async Task Create(ServicesRenderedVM model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-		public async Task<IEnumerable<BankDetail>> GetBankDetailsByNpoProfileId(int npoProfileId)
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+            model.IsActive = true;
+
+            var entity = new ServicesRendered
+            {
+                NpoProfileId = model.NpoProfileId,
+                ProgrammeId = model.ProgrammeId,
+                SubProgrammeId = model.SubProgrammeId,
+                SubProgrammeTypeId = model.SubProgrammeTypeId,
+                ServiceSubProgramme = MapServiceSubProgrammes(model.SubProgramme)
+            };
+            await _servicesRenderedRepository.CreateAsync(entity);
+        }
+
+        private List<ServiceSubProgramme> MapServiceSubProgrammes(List<SubProgrammeVM> selectedSubProgrammes)
+        {
+            return selectedSubProgrammes.Select(sp => new ServiceSubProgramme
+            {
+                SubProgrammeId = sp.Id,
+                IsActive = true,
+                ServiceProgrammeTypes = sp.SubProgrammeType.Select(spt => new ServiceProgrammeType
+                {
+                    SubProgrammeTypeId = spt.Id,
+                    IsActive = true
+                }).ToList()
+            }).ToList();
+        }
+
+
+        public async Task Update(ServicesRenderedVM model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			var existingEntity = await _servicesRenderedRepository.GetById(model.Id);
+
+            if (existingEntity == null)
+            {
+                throw new ApplicationException($"ServicesRendered with id {model.Id} not found.");
+            }
+
+            existingEntity.NpoProfileId = model.NpoProfileId;
+            existingEntity.ProgrammeId = model.ProgrammeId;
+            existingEntity.SubProgrammeId = model.SubProgrammeId;
+            existingEntity.SubProgrammeTypeId = model.SubProgrammeTypeId;
+
+            //existingEntity.ServiceSubProgramme.Clear();
+            //var updatedServiceSubProgrammes = MapServiceSubProgrammes(model.SelectedServiceSubProgrammes);
+            //foreach (var serviceSubProgramme in updatedServiceSubProgrammes)
+            //{
+            //    existingEntity.ServiceSubProgramme.Add(serviceSubProgramme);
+            //}
+
+            //existingEntity.SubProgrammeType.Clear();
+            //var updatedSubProgrammeTypes = MapServiceProgrammeTypes(model.SelectedServiceSubProgrammeTypes);
+            //foreach (var subProgrammeType in updatedSubProgrammeTypes)
+            //{
+            //    existingEntity.SubProgrammeType.Add(subProgrammeType);
+            //}
+
+            existingEntity.IsActive = model.IsActive;
+            existingEntity.UpdatedUserId = loggedInUser.Id;
+            existingEntity.UpdatedDateTime = DateTime.Now;
+
+            await _servicesRenderedRepository.UpdateAsync(existingEntity);
+        }
+
+
+
+        //public async Task Update(ServicesRenderedVM model, string userIdentifier)
+        //{
+        //	var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+        //	model.UpdatedUserId = loggedInUser.Id;
+        //	model.UpdatedDateTime = DateTime.Now;
+
+        //	await _servicesRenderedRepository.UpdateAsync(null, model, false, loggedInUser.Id);
+        //}
+
+
+        private List<ServiceSubProgramme> MapServiceSubProgrammes(List<SubProgramme> selectedSubProgrammes)
+        {
+            return selectedSubProgrammes.Select(sp => new ServiceSubProgramme
+            {
+                SubProgrammeId = sp.Id,
+                IsActive = true,
+            }).ToList();
+        }
+
+        private List<ServiceProgrammeType> MapServiceProgrammeTypes(List<SubProgrammeType> selectedSubProgrammeTypes)
+        {
+            return selectedSubProgrammeTypes.Select(spt => new ServiceProgrammeType
+            {
+                SubProgrammeTypeId = spt.Id,
+                IsActive = true,
+            }).ToList();
+        }
+        public async Task<IEnumerable<BankDetail>> GetBankDetailsByNpoProfileId(int npoProfileId)
 		{
 			return await _bankDetailRepository.GetByNpoProfileId(npoProfileId);
 		}

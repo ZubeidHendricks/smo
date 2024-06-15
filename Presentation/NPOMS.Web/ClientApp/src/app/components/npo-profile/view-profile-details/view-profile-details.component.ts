@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpo, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
+import { IAccountType, IAddressInformation, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpo, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ISubProgrammeTypeVM, ISubProgrammeVM, IUser } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
@@ -29,6 +29,11 @@ export class ViewProfileDetailsComponent implements OnInit {
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
   }
+  selectedProgramme: IProgramme;
+  //new 
+selectedServiceSubProgrammeTypes: ISubProgrammeType[];			  
+selectedServiceSubProgrammes: ISubProgramme[];
+filteredSubProgrammeTypes: ISubProgrammeType[] = [];
 
   profile: IUser;
 
@@ -380,18 +385,96 @@ export class ViewProfileDetailsComponent implements OnInit {
     );
   }
 
-  private updateServicesRenderedObjects() {
-    if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
-      this.servicesRendered.forEach(item => {
-        item.programme = this.programmes.find(x => x.id === item.programmeId);
-        item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
-        item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
-      });
+  // private updateServicesRenderedObjects() {
+  //   if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
+  //     this.servicesRendered.forEach(item => {
+  //       item.programme = this.programmes.find(x => x.id === item.programmeId);
+  //       item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
+  //       item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
+  //     });
 
-      this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
+  //     this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
+  //   }
+  // }
+
+  // private updateServicesRenderedObjects() {
+  //   if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
+  //     this.servicesRendered.forEach(item => {
+  //       item.programme = this.programmes.find(x => x.id === item.programmeId);
+
+  //       // Assuming item.selectedServiceSubProgrammes contains actual IServiceSubProgramme objects
+  //       const subProgrammeIds = item.subProgramme.map(sp => sp.id);
+  //       item.subProgramme = this.subProgrammes.filter(subProgramme => subProgrammeIds.includes(subProgramme.id));
+
+  //       // Assuming item.selectedServiceSubProgrammeTypes contains actual IServiceProgrammeType objects
+  //       const subProgrammeTypeIds = item.subProgrammeType.map(spt => spt.id);
+  //       item.subProgrammeType = this.subProgrammeTypes.filter(subProgrammeType => subProgrammeTypeIds.includes(subProgrammeType.id));
+  //     });
+
+  //     this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
+  //   }
+  // }
+
+//   private updateServicesRenderedObjects() {
+//     console.log('servicesRendered1', this.servicesRendered);
+//     if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
+//         this.servicesRendered.forEach(item => {
+//             item.programme = this.programmes.find(x => x.id === item.programmeId);
+
+//             // Update subProgrammes for the item
+//             const subProgrammeIds = item.subProgramme.map(sp => sp.id);
+//             item.subProgramme = this.subProgrammes.filter(subProgramme => subProgrammeIds.includes(subProgramme.id));
+
+//             // For each subProgramme, update its nested subProgrammeTypes
+//             item.subProgramme.forEach(sp => {
+//                 const subProgrammeTypeIds = sp.subProgrammeType.map(spt => spt.id);
+//                 sp.subProgrammeType = this.subProgrammeTypes.filter(subProgrammeType => subProgrammeTypeIds.includes(subProgrammeType.id));
+//             });
+//         });
+
+//         this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
+//     }
+//     console.log('servicesRendered2', this.servicesRendered);
+// }
+  private updateServicesRenderedObjects() {
+    console.log('servicesRendered1', this.servicesRendered);
+    if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
+        this.servicesRendered.forEach(item => {
+            item.programme = this.programmes.find(x => x.id === item.programmeId);
+
+            // Update subProgrammes for the item with proper mapping to ISubProgrammeVM
+            const subProgrammeIds = item.subProgramme.map(sp => sp.id);
+            item.subProgramme = this.subProgrammes
+                .filter(subProgramme => subProgrammeIds.includes(subProgramme.id))
+                .map(sp => this.mapToSubProgrammeVM(sp));
+        });
+
+        this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
     }
+    console.log('servicesRendered2', this.servicesRendered);
   }
 
+  private mapToSubProgrammeVM(sp: ISubProgramme): ISubProgrammeVM {
+    return {
+        id: sp.id,
+        name: sp.name,
+        description: sp.description,
+        programmeId: sp.programmeId,
+        isActive: sp.isActive,
+        subProgrammeType: this.subProgrammeTypes
+            .filter(spt => spt.subProgrammeId === sp.id)
+            .map(spt => this.mapToSubProgrammeTypeVM(spt))
+    };
+  }
+
+  private mapToSubProgrammeTypeVM(spt: ISubProgrammeType): ISubProgrammeTypeVM {
+    return {
+        id: spt.id,
+        name: spt.name,
+        description: spt.description,
+        isActive: spt.isActive,
+    };
+  }
   private updateBankDetailObjects() {
     if (this.npoProfile && this.banks && this.accountTypes && this.bankDetails) {
       this.bankDetails.forEach(item => {

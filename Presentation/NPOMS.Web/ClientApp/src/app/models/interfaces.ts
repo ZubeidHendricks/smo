@@ -346,6 +346,21 @@ export interface ISubProgrammeType {
     subProgramme: ISubProgramme;
 }
 
+export interface IServiceSubProgramme {
+    id: number;
+    servicesRenderedId: number;
+    subProgrammeId: number;
+    isActive: boolean;
+    subProgramme: ISubProgramme;
+}
+export interface IServiceProgrammeType {
+    id: number;
+    servicesRenderedId: number;
+    subProgrammeTypeId: number;
+    isActive: boolean;
+    subProgrammeType: ISubProgrammeType;
+}
+
 export interface IStaffCategory {
     id: number;
     name: string;
@@ -771,6 +786,21 @@ export interface ITrainingMaterial {
     updatedDateTime: Date;
 }
 
+// export interface IServicesRendered {
+//     id: number;
+//     npoProfileId: number;
+//     programmeId: number;
+//     subProgrammeId: number;
+//     subProgrammeTypeId: number;
+//     isActive: boolean;
+
+//     programme: IProgramme;
+//     // selectedServiceSubProgrammeTypes: ISubProgrammeType[];			  
+//     // selectedServiceSubProgrammes: ISubProgramme[];
+//     subProgramme: ISubProgramme[];
+//     subProgrammeType: ISubProgrammeType[];
+// }
+
 export interface IServicesRendered {
     id: number;
     npoProfileId: number;
@@ -780,9 +810,37 @@ export interface IServicesRendered {
     isActive: boolean;
 
     programme: IProgramme;
-    subProgramme: ISubProgramme;
-    subProgrammeType: ISubProgrammeType;
+    subProgramme: ISubProgrammeVM[];
 }
+
+export interface ISubProgrammeVM {
+    id: number;
+    name: string;
+    description: string;
+    programmeId: number;
+    isActive: boolean;
+    subProgrammeType: ISubProgrammeTypeVM[];
+}
+
+export interface ISubProgrammeTypeVM {
+    id: number;
+    name: string;
+    description: string;
+    isActive: boolean;
+}
+
+export interface IFlattenedServiceRendered {
+    id: number;
+    npoProfileId: number;
+    programmeId: number;
+    programmeName: string;
+    subProgrammeId: number;
+    subProgrammeName: string;
+    subProgrammeTypeId?: number;
+    subProgrammeTypeName?: string;
+    isActive: boolean;
+}
+
 
 export interface IBankDetail {
     id: number;

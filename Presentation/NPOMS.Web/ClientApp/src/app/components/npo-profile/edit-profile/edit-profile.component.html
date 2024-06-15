@@ -290,9 +290,21 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr class="default-font">
                     <td *ngIf="rowData.programme" (click)="toggleBankingDetailsPanel(rowData.programme)">{{rowData.programme.name}}</td>
-                    <!-- <td *ngIf="rowData.programme">{{rowData.programme.name}}</td> -->
-                    <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</td>
-                    <td *ngIf="rowData.subProgrammeType">{{rowData.subProgrammeType.name}}</td>
+
+                    <td *ngIf="rowData.subProgramme">
+                        <ng-container *ngFor="let subProgramme of rowData.subProgramme; let i = index">
+                            {{subProgramme.description}}{{i < rowData.subProgramme.length - 1 ? ', ' : ''}}
+                        </ng-container>
+                    </td>
+                    
+                    <!-- Display names for subProgrammeType array -->
+                    <td *ngIf="rowData.subProgrammeType">
+                        <ng-container *ngFor="let subProgrammeType of rowData.subProgrammeType; let i = index">
+                            {{subProgrammeType.description}}{{i < rowData.subProgrammeType.length - 1 ? ', ' : ''}}
+                        </ng-container>
+                    </td>
+                    <!-- <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</td>
+                    <td *ngIf="rowData.subProgrammeType">{{rowData.subProgrammeType.name}}</td> -->
                     <td style="text-align: center;">
                         <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editServicesRendered(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
                         <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteServicesRendered(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -818,9 +830,25 @@
                     <span class="mandatory-content">Sub-Programme</span>
                 </div>
             </div>
+       
+
             <div class="p-col">
-                <p-dropdown [options]="filteredSubProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="subProgrammeChange($event.value)" [disabled]="disableSubProgramme()"></p-dropdown>
+                <p-multiSelect 
+                    [options]="filteredSubProgrammes"
+                    placeholder="Select a Sub-Programme"
+                    optionLabel="name"
+                    [(ngModel)]="selectedServiceSubProgrammes"
+                    [ngModelOptions]="{standalone: true}"
+                    [style]="{'width':'100%'}"
+                    appendTo="body"
+                    (onChange)="subProgrammeChange1($event)"
+                    [disabled]="disableSubProgramme()"
+                    defaultLabel="Select Sub-Programme(s)"
+                    selectedItemsLabel="{0} items selected">
+                </p-multiSelect>
             </div>
+            
+            
         </div>
         <div class="p-grid">
             <div class="p-col-fixed form-label">
@@ -828,9 +856,24 @@
                     <span class="mandatory-content">Sub-Programme Type</span>
                 </div>
             </div>
-            <div class="p-col">
+            <!-- <div class="p-col">
                 <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
+            </div> -->
+            <div class="p-col">
+                <p-multiSelect 
+                    [options]="filteredSubProgrammeTypes"
+                    placeholder="Select a Sub-Programme Type"
+                    optionLabel="name"
+                    [(ngModel)]="selectedServiceSubProgrammeTypes"
+                    [ngModelOptions]="{standalone: true}"
+                    [style]="{'width':'100%'}"
+                    appendTo="body"
+                    [disabled]="disableSubProgrammeType()"
+                    defaultLabel="Select Sub-Programme Type(s)"
+                    selectedItemsLabel="{0} items selected">
+                </p-multiSelect>
             </div>
+            
         </div>
         <ng-template pTemplate="footer">
             <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveServicesRendered() (click)="saveServicesRendered()"></button>
