@@ -23,10 +23,6 @@ namespace NPOMS.Repository.Implementation.Entities
 		public async Task<IEnumerable<ServicesRendered>> GetByNpoProfileId(int npoProfileId)
 		{
 			return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
-				//.Include(y => y.SubProgrammeType)
-				//   .ThenInclude(y => y.SubProgrammeType)
-    //            .Include(x => x.ServiceSubProgramme)
-    //               .ThenInclude(y => y.SubProgramme)
                             .AsNoTracking()
 							.ToListAsync();
         }
@@ -47,11 +43,6 @@ namespace NPOMS.Repository.Implementation.Entities
 											  x.SubProgrammeTypeId.Equals(model.SubProgrammeTypeId))
 								.AsNoTracking().FirstOrDefaultAsync();
 		}
-
-        public async Task<ServicesRendered> GetById(int id)
-        {
-            return await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
-        }
 
         #endregion
     }
