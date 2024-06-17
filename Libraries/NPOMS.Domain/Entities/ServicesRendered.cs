@@ -23,5 +23,9 @@ namespace NPOMS.Domain.Entities
         public int? UpdatedUserId { get; set; }
 
         public DateTime? UpdatedDateTime { get; set; }
+
+        public int EntityTypeNumber { get; set; }
+
+        public int EntitySystemNumber { get; set; }
     }
 }

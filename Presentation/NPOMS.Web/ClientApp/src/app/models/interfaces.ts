@@ -781,6 +781,8 @@ export interface IServicesRendered {
     subProgrammeId: number;
     subProgrammeTypeId: number;
     isActive: boolean;
+    entityTypeNumber: number;
+    entitySystemNumber: number;
 
     programme: IProgramme;
     subProgramme: ISubProgramme;

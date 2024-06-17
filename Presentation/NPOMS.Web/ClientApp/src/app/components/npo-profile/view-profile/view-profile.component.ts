@@ -137,9 +137,11 @@ export class ViewProfileComponent implements OnInit {
     ];
 
     this.serviceRenderedCols = [
-      { header: 'Programme', width: '34%' },
-      { header: 'Sub-Programme', width: '33%' },
-      { header: 'Sub-Programme Type', width: '33%' }
+      { header: 'Programme', width: '15%' },
+      { header: 'Sub-Programme', width: '15%' },
+      { header: 'Sub-Programme Type', width: '15%' },
+      { header: 'Entity System Number', width: '20%' },
+      { header: 'Entity Type Number', width: '20%' }
     ];
 
     this.bankDetailCols = [
