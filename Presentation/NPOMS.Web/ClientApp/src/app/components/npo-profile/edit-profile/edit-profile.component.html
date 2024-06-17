@@ -312,10 +312,8 @@
         </p-table>
     </p-panel>
     <div style="height: 10px;"></div>
-
-
     <div style="height: 10px;"></div>
-    <p-panel [header]="'Banking Details and Contact Information - ' + (selectedProgram ? selectedProgram.name : '')" [(visible)]="displayBankingDetailsPanel" [style]="{'font-size':'12px'}" *ngIf="selectedProgram">
+    <p-panel [header]="'Banking Details, Service delivery and Contact Information - ' + (selectedProgram ? selectedProgram.name : '')" [(visible)]="displayBankingDetailsPanel" [style]="{'font-size':'12px'}" *ngIf="selectedProgram">
         <p-table [value]="programBankDetails" styleClass="p-datatable-sm">
           <ng-template pTemplate="header">
             <tr>
@@ -382,14 +380,16 @@
                   <th>Region</th>
                   <th>District Council</th>
                   <th>Local Municipality</th>
+                  <th>Servive delivery address</th>
                   <th style="width: 7%;">Actions</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-delivery>
                 <tr>
-                  <td>{{delivery.region?.name}}</td>
+                  <td>{{getNames(delivery?.regions)}}</td>
                   <td>{{delivery.districtCouncil?.name}}</td>
                   <td>{{delivery.localMunicipality?.name}}</td>
+                  <td>{{getNames(delivery?.serviceDeliveryAreas)}}</td>
                   <td style="text-align: center;">
                     <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgrammeServiceDelivery(delivery)" pTooltip="Edit" tooltipPosition="top"></button>
                     <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgrammeServiceDelivery(delivery)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -825,7 +825,7 @@
         <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
-                    <span class="mandatory-content">Sub-Programme Type</span>
+                    <span class="mandatory-content">Sub-Programme Type2</span>
                 </div>
             </div>
             <div class="p-col">
@@ -1345,7 +1345,7 @@
         <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
-                    <span class="mandatory-content">Region</span>
+                    <span class="mandatory-content">Servive delivery address</span>
                 </div>
             </div>
             <div class="p-col">

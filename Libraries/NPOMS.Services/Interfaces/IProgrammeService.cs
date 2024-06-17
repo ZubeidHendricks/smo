@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Entities;
+using NPOMS.Services.Models;
 using System.Threading.Tasks;
 
 namespace NPOMS.Services.Interfaces
@@ -9,7 +10,7 @@ namespace NPOMS.Services.Interfaces
         Task UpdateContact(ProgramContactInformation model, string userId, int npoProfileId);
         Task CreateBankDetails(ProgramBankDetails model, string userId, int npoProfileId);
         Task UpdateBankDetails(ProgramBankDetails model, string userId, int npoProfileId);
-        Task CreateDelivery(ProgrammeServiceDelivery model, string userId);
-        Task UpdateDelivery(ProgrammeServiceDelivery model, string userId);
+        Task CreateDelivery(ProgrammeServiceDeliveryVM model, string userId);
+        Task UpdateDelivery(ProgrammeServiceDeliveryVM model, string userId);
     }
 }

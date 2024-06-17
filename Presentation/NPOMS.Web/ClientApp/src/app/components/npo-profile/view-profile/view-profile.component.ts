@@ -2,11 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, StaffCategoryEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType } from 'src/app/models/interfaces';
+import { IAccountType, IAddressInformation, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-view-profile',
@@ -69,6 +70,18 @@ export class ViewProfileComponent implements OnInit {
 
   staffCategories: IStaffCategory[];
   staffMemberProfiles: IStaffMemberProfile[];
+
+  selectedProgram: any;
+  displayBankingDetailsPanel: boolean = false;
+
+  contactInformation: IProgramContactInformation = {} as IProgramContactInformation;
+  selectedContactInformation: IProgramContactInformation;
+  primaryContactInformation: IProgramContactInformation;
+
+  programBankDetails : IProgramBankDetails [];
+  programContactInformation: IProgramContactInformation[];
+  programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
+  programDeliveryDetails : IProgrammeServiceDelivery [];
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -145,6 +158,65 @@ export class ViewProfileComponent implements OnInit {
       { header: 'Email Address', width: '25%' },
       { header: 'Actions', width: '5%' }
     ];
+  }
+
+  toggleBankingDetailsPanel(program: any) {
+    if (this.selectedProgram && this.selectedProgram.id === program.id) {
+      this.displayBankingDetailsPanel = !this.displayBankingDetailsPanel;
+    } else {
+      this.selectedProgram = program;
+      this.loadProgrammeDetails(program.id);
+      this.displayBankingDetailsPanel = true;
+    }
+  }
+
+  getNames(array: any[]): string {
+    const names = array.map(item => item.name) // Access 'name' directly
+                       .filter(name => name !== undefined && name.trim() !== '') // Filter out undefined or empty strings
+                       .join(', '); // Join the names with a comma
+  
+    return names; // Return the joined names as a string
+  }
+
+  loadProgrammeDetails(progId: number): void {
+    forkJoin({
+      contacts: this._npoProfileRepo.getProgrammeContactsById(progId),
+      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId),
+      deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId)
+    }).subscribe({
+      next: (result) => {
+        this.programContactInformation = result.contacts;
+        this.programBankDetails = result.bankDetails;
+        this.programDeliveryDetails = result.deliveryDetails;
+        this.updateProgramBankDetailObjects();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  private updateProgramBankDetailObjects() {
+    if (this.banks && this.accountTypes && this.programBankDetails) {
+      this.programBankDetails.forEach(item => {
+        item.bank = this.banks.find(x => x.id === item.bankId);
+        this.loadProgrammeBranch(item);
+        item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
+      });
+    }
+  }
+
+  private loadProgrammeBranch(bankDetail: IProgramBankDetails) {
+    this._dropdownRepo.getBranchById(bankDetail.branchId).subscribe(
+      (results) => {
+        bankDetail.branch = results;
+        bankDetail.branchCode = bankDetail.branch.branchCode != null ? bankDetail.branch.branchCode : bankDetail.bank.code;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private loadStaffCategories() {

@@ -42,24 +42,23 @@ export class NpoProfileService {
     return this._http.get<IProgramBankDetails[]>(url, httpOptions);
   }
 
-  public createProgrammeContact(npoProfileId: number,programContactInformation: IProgramContactInformation) {
-    const url = `${this._envUrl.urlAddress}/api/programme/create-contact/${npoProfileId}`;
+  public createProgrammeContact(progId: number,programContactInformation: IProgramContactInformation) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-contact/${progId}`;
     return this._http.post<IProgramContactInformation>(url, programContactInformation, httpOptions);
   }
 
-  public createProgrammeBankDetails(npoProfileId: number,programBankDetails: IProgramBankDetails) {
-    const url = `${this._envUrl.urlAddress}/api/programme/create-bank/${npoProfileId}`;
+  public createProgrammeBankDetails(progId: number,programBankDetails: IProgramBankDetails) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-bank/${progId}`;
     return this._http.post<IProgramBankDetails>(url,programBankDetails, httpOptions);
   }
 
-
-  public updateProgrammeContact(npoProfileId: number,programContactInformation: IProgramContactInformation) {
-    const url = `${this._envUrl.urlAddress}/api/programme/update-contact/${npoProfileId}`;
+  public updateProgrammeContact(progId: number,programContactInformation: IProgramContactInformation) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-contact/${progId}`;
     return this._http.put<IProgramContactInformation>(url,programContactInformation, httpOptions);
   }
 
-  public updateProgrammeBankDetails(npoProfileId: number,programBankDetails: IProgramBankDetails) {
-    const url = `${this._envUrl.urlAddress}/api/programme/update-bank/${npoProfileId}`;
+  public updateProgrammeBankDetails(progId: number,programBankDetails: IProgramBankDetails) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-bank/${progId}`;
     return this._http.put<IProgramBankDetails>(url,programBankDetails, httpOptions);
   }
   

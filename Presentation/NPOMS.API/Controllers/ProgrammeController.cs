@@ -8,6 +8,7 @@ using System;
 using NPOMS.Domain.Budget;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Dropdown;
+using NPOMS.Services.Models;
 
 namespace NPOMS.API.Controllers
 {
@@ -79,13 +80,13 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPost("create-contact/{npoProfileId}", Name = "CreateProgrameContact")]
-        public async Task<IActionResult> CreateProgrameContact([FromBody] ProgramContactInformation model,int npoProfileId)
+        [HttpPost("create-contact/{progId}", Name = "CreateProgrameContact")]
+        public async Task<IActionResult> CreateProgrameContact([FromBody] ProgramContactInformation model,int progId)
         {
             try
             {
                 ClearObjects(model);
-                await _programmeService.CreateContact(model, base.GetUserIdentifier(), npoProfileId);
+                await _programmeService.CreateContact(model, base.GetUserIdentifier(), progId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -95,13 +96,13 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut("update-contact/{npoProfileId}", Name = "UpdateProgrameContact")]
-        public async Task<IActionResult> UpdateProgrameContact([FromBody] ProgramContactInformation model, int npoProfileId)
+        [HttpPut("update-contact/{progId}", Name = "UpdateProgrameContact")]
+        public async Task<IActionResult> UpdateProgrameContact([FromBody] ProgramContactInformation model, int progId)
         {
             try
             {
                 ClearObjects(model);
-                await _programmeService.UpdateContact(model, base.GetUserIdentifier(), npoProfileId);
+                await _programmeService.UpdateContact(model, base.GetUserIdentifier(), progId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -111,12 +112,12 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPost("create-bank/{npoProfileId}", Name = "CreateProgramBankDetails")]
-        public async Task<IActionResult> CreateProgramBankDetails([FromBody] ProgramBankDetails model, int npoProfileId)
+        [HttpPost("create-bank/{progId}", Name = "CreateProgramBankDetails")]
+        public async Task<IActionResult> CreateProgramBankDetails([FromBody] ProgramBankDetails model, int progId)
         {
             try
             {
-                await _programmeService.CreateBankDetails(model, base.GetUserIdentifier(), npoProfileId);
+                await _programmeService.CreateBankDetails(model, base.GetUserIdentifier(), progId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -126,12 +127,12 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut("update-bank/{npoProfileId}", Name = "UpdateProgramBankDetails")]
-        public async Task<IActionResult> UpdateProgramBankDetails([FromBody] ProgramBankDetails model, int npoProfileId)
+        [HttpPut("update-bank/{progId}", Name = "UpdateProgramBankDetails")]
+        public async Task<IActionResult> UpdateProgramBankDetails([FromBody] ProgramBankDetails model, int progId)
         {
             try
             {
-                await _programmeService.UpdateBankDetails(model, base.GetUserIdentifier(), npoProfileId);
+                await _programmeService.UpdateBankDetails(model, base.GetUserIdentifier(), progId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -158,12 +159,13 @@ namespace NPOMS.API.Controllers
             }
         }
 
+
         [HttpPost("create-delivery", Name = "CreateProgrameDelivery")]
-        public async Task<IActionResult> CreateProgrameDelivery([FromBody] ProgrammeServiceDelivery model)
+        public async Task<IActionResult> CreateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model)
         {
             try
             {
-                ClearDeliveryObjects(model);
+                //ClearDeliveryObjects(model);
                 await _programmeService.CreateDelivery(model, base.GetUserIdentifier());
                 return Ok(model);
             }
@@ -175,11 +177,11 @@ namespace NPOMS.API.Controllers
         }
 
         [HttpPut("update-delivery", Name = "UpdateProgrameDelivery")]
-        public async Task<IActionResult> UpdateProgrameDelivery([FromBody] ProgrammeServiceDelivery model)
+        public async Task<IActionResult> UpdateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model)
         {
             try
             {
-                ClearDeliveryObjects(model);
+                //ClearDeliveryObjects(model);
                 await _programmeService.UpdateDelivery(model, base.GetUserIdentifier());
                 return Ok(model);
             }
@@ -190,17 +192,17 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        private static void ClearDeliveryObjects(ProgrammeServiceDelivery model)
+        private static void ClearDeliveryObjects(ProgrammeServiceDeliveryVM model)
         {
             model.DistrictCouncilId = model.DistrictCouncil.Id;
-            model.LocalMunicipalityId = model.LocalMunicipality.Id;
-            model.RegionId = model.Region.Id;
-            model.ServiceDeliveryAreaId = model.ServiceDeliveryArea.Id;
+            model.LocalMunicipalityId = model.LocalMunicipality.ID;
+            //model.RegionId = model.Region.Id;
+            //model.ServiceDeliveryAreaId = model.ServiceDeliveryArea.Id;
 
             model.DistrictCouncil = null;
             model.LocalMunicipality = null;
-            model.Region = null;
-            model.ServiceDeliveryArea = null;
+            //model.Region = null;
+            //model.ServiceDeliveryArea = null;
         }
 
         private static void ClearObjects(ProgramContactInformation model)

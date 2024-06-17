@@ -5,7 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { Subscription, forkJoin } from 'rxjs';
-import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
+import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RoleEnum, StaffCategoryEnum } from 'src/app/models/enums';
 import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDistrictCouncil, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IRace, IRegion, ISDA, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -25,11 +25,13 @@ import { map } from 'rxjs/operators';
 })
 export class EditProfileComponent implements OnInit {
   isDeliveryInformationEdit: boolean;
+  isSystemAdmin: boolean;
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
+    this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
   }
 
   public get PermissionsEnum(): typeof PermissionsEnum {
@@ -141,6 +143,7 @@ export class EditProfileComponent implements OnInit {
   programDeliveryDetail: IProgrammeServiceDelivery = {} as IProgrammeServiceDelivery;
   selectedProgramDeliveryBankDetail: IProgrammeServiceDelivery;
   selectedDelivery: IProgrammeServiceDelivery;
+
   isNewDelivery: boolean;
   displayDeliveryDialog: boolean;
 
@@ -241,7 +244,6 @@ export class EditProfileComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-        console.log('this.profile',this.profile);
         if (!this.IsAuthorized(PermissionsEnum.EditNpoProfile))
           this._router.navigate(['401']);
 
@@ -273,7 +275,7 @@ export class EditProfileComponent implements OnInit {
          //Get all regions
          this.regionDropdown();
            //Get all service delivery areas
-          this.loadServiceDeliveryAreas();
+        this.loadServiceDeliveryAreas();
       }
     });
 
@@ -338,7 +340,7 @@ export class EditProfileComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.ServiceDeliveryArea, false).subscribe(
       (results) => {
         this.sdasAll = results;
-        this.allDropdownsLoaded();
+        //this.allDropdownsLoaded();
 
       },
       (err) => {
@@ -348,25 +350,11 @@ export class EditProfileComponent implements OnInit {
     );
   }
 
-  onSdaChange(sdas: ISDA[]) {
-    // this.places = [];
-    // this.subPlacesAll = [];
-    this.selectedSdas = [];
-    // this.sdas =[];
-
-    // this.setPlaces(sdas); // populate specific locations where the service will be delivered to
-    sdas.forEach(item => {
-      this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
-    });
-     //map selected service delivery areas 
-    // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-  }
 
   private loadDistrictCouncils() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DistrictCouncil, false).subscribe(
       (results) => {
         this.allDistrictCouncils = results;
-        console.log('allDistrictCouncils',results);
         //this.allDropdownsLoaded();
       },
       (err) => {
@@ -379,7 +367,6 @@ export class EditProfileComponent implements OnInit {
   private loadMunicipalities() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.LocalMunicipality, false).subscribe(
       (results) => {
-        console.log('localMunicipalitiesAll',results);
         this.localMunicipalitiesAll = results;
         //this.allDropdownsLoaded();
       },
@@ -393,7 +380,6 @@ export class EditProfileComponent implements OnInit {
 
     this._dropdownRepo.getEntities(DropdownTypeEnum.Region, false).subscribe(
       (results) => {
-        console.log('regionsAll',results);
         this.regionsAll = results;
         //this.allDropdownsLoaded();
       },
@@ -405,14 +391,14 @@ export class EditProfileComponent implements OnInit {
     this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === localMunicipality.id);
     if (this.selectedLocalMunicipality == null) {
       this.regions = null;
-      // this.sdas = null;
+      this.sdas = null;
     }
       //map selected local municipality  
+      this.selectedDelivery.localMunicipality = this.selectedLocalMunicipality;
     if (localMunicipality.id != undefined) {
       this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
     }
   }
-
 
   OnDistrictCouncilChange(districtCouncil: IDistrictCouncil) {
     this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === districtCouncil.id);
@@ -423,16 +409,13 @@ export class EditProfileComponent implements OnInit {
     this.selected = null;
     this.regions = null;
     this.sdas = null;
-    //Map the selected district council
-    //districtCouncil
-
+    this.selectedDelivery.districtCouncil = this.selectedDistrictCouncil;
     if (districtCouncil.id != undefined) {
       this.localMunicipalities = this.localMunicipalitiesAll?.filter(x => x.districtCouncilId == districtCouncil.id);
     }
   }
 
-
-  onRegionChange(regions: IRegion[]) {
+  onRegionChange(regions: IRegion[]) { 
     this.selectedRegions = [];
     this.selectedSdas = [];
     this.selected = [];
@@ -441,6 +424,8 @@ export class EditProfileComponent implements OnInit {
     regions.forEach(item => {
       this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
     });
+    if (this.selectedDelivery != null)
+        this.selectedDelivery.regions = this.selectedRegions;
 
     // filter items matching the selected regions
     if (regions != null && regions.length != 0) {
@@ -450,26 +435,78 @@ export class EditProfileComponent implements OnInit {
         }
       }
     }
-  //map selected regions
+
+    // this.selected = [];
+    // for (var i = 0; i < regions?.length; i++) {
+    //   for (var j = 0; j < this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length; j++) {
+    //     if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[j].regionId == regions[i].id) {
+    //       this.selected.push(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[j]);
+    //     }
+    //   }
+    // }
+    // // make sure the selected is not redundant!!
+    // const ids = this.selected.map(o => o.id) // remove duplicate
+    // const filtered = this.selected.filter(({ id }, index) => !ids.includes(id, index + 1))
+    // // end  make sure the selected is not redundant!!
+    // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
+    // this.selectedSdas = filtered;
   }
 
+  
+ onSdaChange(sdas: ISDA[]) {
+    // this.places = [];
+    // this.subPlacesAll = [];
+    this.selectedSdas = [];
+    // this.sdas =[];
+
+    // this.setPlaces(sdas); // populate specific locations where the service will be delivered to
+    sdas.forEach(item => {
+      this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
+    });
+
+    this.selectedDelivery.serviceDeliveryAreas = this.selectedSdas;
+     //map selected service delivery areas 
+    // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
+  }
+
+  // onRegionChange(regions: IRegion[]) {
+  //   this.selectedRegions = [];
+  //   this.selectedSdas = [];
+  //   this.selected = [];
+  //   this.sdas = [];
+
+  //   regions.forEach(item => {
+  //     this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
+  //   });
+
+  //   // filter items matching the selected regions
+  //   if (regions != null && regions.length != 0) {
+  //     for (var i = 0; i < this.sdasAll.length; i++) {
+  //       if (regions.filter(r => r.id === this.sdasAll[i].regionId).length != 0) {
+  //         this.sdas.push(this.sdasAll[i]);
+  //       }
+  //     }
+  //   }
+  // //map selected regions
+  // }
+
   private allDropdownsLoaded() {
-    // if (this.allDistrictCouncils?.length > 0 &&
-    //   this.localMunicipalitiesAll?.length > 0 &&
-    //   this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
+    if (this.allDistrictCouncils?.length > 0 &&
+      this.localMunicipalitiesAll?.length > 0 &&
+      this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
 
-    //   if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil.id != undefined)
-    //     this.OnDistrictCouncilChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil);
+      if (this.selectedDelivery.districtCouncil.id != undefined)
+        this.OnDistrictCouncilChange(this.selectedDelivery.districtCouncil);
 
-    //   if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality.id != undefined)
-    //     this.onLocalMunicipalityChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality);
+      if (this.selectedDelivery.localMunicipality.id != undefined)
+        this.onLocalMunicipalityChange(this.selectedDelivery.localMunicipality);
 
-    //   if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions?.length > 0)
-    //     this.onRegionChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions);
+      if (this.selectedDelivery.regions?.length > 0)
+        this.onRegionChange(this.selectedDelivery.regions);
 
-    //   if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas?.length > 0)
-    //     this.onSdaChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
-    // }
+      if (this.selectedDelivery.serviceDeliveryAreas?.length > 0)
+        this.onSdaChange(this.selectedDelivery.serviceDeliveryAreas);
+    }
   }
   
 private loadTitles() {
@@ -543,14 +580,13 @@ private loadTitles() {
   }
 
   canEditServicesRendered(programme: IProgramme): boolean {
-    return programme &&
-           this.profile.userPrograms.some(userProgram => userProgram.id === programme.id);
+    return this.isSystemAdmin || (programme &&
+           this.profile.userPrograms.some(userProgram => userProgram.id === programme.id));
   }
   
-  canEdit()
-  {
-    return this.selectedProgram &&
-    this.profile.userPrograms.some(userProgram => userProgram.id === Number(this.selectedProgram.id));
+  canEdit(): boolean {
+    return this.isSystemAdmin || (this.selectedProgram &&
+      this.profile.userPrograms.some(userProgram => userProgram.id === Number(this.selectedProgram.id)));
   }
 
   addContactInformation() {
@@ -629,12 +665,18 @@ private loadTitles() {
     } else {
       this.selectedProgram = program;
       this.loadProgrammeDetails(program.id);
-      // this.bankingDetails = this.getBankingDetailsByProgram(program.id);
-      // this.contactDetails = this.getContactDetailsByProgram(program.id);
       this.displayBankingDetailsPanel = true;
     }
   }
 
+  getNames(array: any[]): string {
+    const names = array.map(item => item.name) // Access 'name' directly
+                       .filter(name => name !== undefined && name.trim() !== '') // Filter out undefined or empty strings
+                       .join(', '); // Join the names with a comma
+  
+    return names; // Return the joined names as a string
+  }
+  
   loadProgrammeDetails(progId: number): void {
     forkJoin({
       contacts: this._npoProfileRepo.getProgrammeContactsById(progId),
@@ -678,7 +720,6 @@ private loadTitles() {
   }
 
   editBankingDetail(detail: any) {
-    //this.openBankDetailDialog(detail);
     this.displayFacilityInformationDialog = true;
   }
 
@@ -741,47 +782,26 @@ private loadTitles() {
     return contactInfo;
   }
 
-  deleteProgramContactInformation(data: IProgramContactInformation) {
-    this._confirmationService.confirm({
-      message: 'Are you sure that you want to delete this item?',
-      header: 'Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-        // this.npo.contactInformation.forEach(function (item, index, object) {
-        //   if (data === item)
-        //     object.splice(index, 1);
-        // });
-      },
-      reject: () => {
-      }
-    });
-  }
-
-
   editProgrammeServiceDelivery(delivery: IProgrammeServiceDelivery) {
     this.selectedDelivery = delivery;
+    this.allDropdownsLoaded();
     this.programDeliveryDetail = this.cloneProgrammeServiceDelivery(delivery);
     this.isNewDelivery = false;
     this.isDeliveryInformationEdit = true;
     this.displayDeliveryDialog = true;
+    this.allDropdownsLoaded();
   }
   
   private cloneProgrammeServiceDelivery(delivery: IProgrammeServiceDelivery): IProgrammeServiceDelivery {
-    let clonedDelivery = {} as IProgrammeServiceDelivery;
-    clonedDelivery.programId = delivery.programId;
-    clonedDelivery.isActive = delivery.isActive;
-    clonedDelivery.createdUserId = delivery.createdUserId;
-    clonedDelivery.createdDateTime = delivery.createdDateTime;
-    clonedDelivery.updatedUserId = delivery.updatedUserId;
-    clonedDelivery.updatedDateTime = delivery.updatedDateTime;
-    clonedDelivery.regionId = delivery.regionId;
-    clonedDelivery.districtCouncilId = delivery.districtCouncilId;
-    clonedDelivery.localMunicipalityId = delivery.localMunicipalityId;
-    clonedDelivery.region = delivery.region ? { ...delivery.region } : null;
-    clonedDelivery.districtCouncil = delivery.districtCouncil ? { ...delivery.districtCouncil } : null;
-    clonedDelivery.localMunicipality = delivery.localMunicipality ? { ...delivery.localMunicipality } : null;
+    this.selectedLocalMunicipality = delivery.localMunicipality;
 
-    return clonedDelivery;
+    this.selectedDistrictCouncil = delivery.districtCouncil;
+
+    this.selectedRegions = delivery.regions;
+
+    this.selectedSdas = delivery.serviceDeliveryAreas;
+
+    return;
   }
 
   addProgrammeServiceDelivery() {
@@ -790,8 +810,6 @@ private loadTitles() {
 
     this.selectedDelivery = {
       isActive: true,
-      createdUserId: this.profile.id,
-      createdDateTime: new Date(),
     } as IProgrammeServiceDelivery;
   
     this.selectedRegions = null;
@@ -801,39 +819,44 @@ private loadTitles() {
   }
   
   saveProgrammeServiceDelivery() {
-    if (this.isNewDelivery) {
-      // Logic to save new delivery
-      // Example:
-      // this.programmeServiceDeliveries.push(this.selectedDelivery);
-    } else {
-      // Logic to update existing delivery
-      // Example:
-      // const index = this.programmeServiceDeliveries.findIndex(d => d.id === this.selectedDelivery.id);
-      // if (index !== -1) {
-      //   this.programmeServiceDeliveries[index] = this.selectedDelivery;
-      // }
-    }
-    this.displayDeliveryDialog = false;  // Close the dialog after saving
+  this.selectedDelivery.programId =  Number(this.selectedProgram.id);
+  this.selectedDelivery.isActive = true;
+
+  if (this.isNewDelivery) {
+      this.createProgrammeServiceDelivery(this.selectedDelivery);
+   } else {
+    this.updateProgrammeServiceDelivery(this.selectedDelivery);
+   }
+    this.displayDeliveryDialog = false; 
   }
 
-  deleteProgrammeServiceDelivery(data: IProgramContactInformation) {
-    this._confirmationService.confirm({
-      message: 'Are you sure that you want to delete this item?',
-      header: 'Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-        // this.npo.contactInformation.forEach(function (item, index, object) {
-        //   if (data === item)
-        //     object.splice(index, 1);
-        // });
+  private createProgrammeServiceDelivery(serviceDelivery: IProgrammeServiceDelivery) {
+    this._npoProfileRepo.createProgrammeDeliveryDetails(serviceDelivery).subscribe(
+      (resp) => {
+        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id));
       },
-      reject: () => {
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
-    });
+    );
   }
 
-  disableProgrammeerviceDeliverySave(): boolean {
-    return !(this.selectedDelivery.region && this.selectedDelivery.districtCouncil);
+  private updateProgrammeServiceDelivery(serviceDelivery: IProgrammeServiceDelivery) {
+    this._npoProfileRepo.updateProgrammeDeliveryDetails(serviceDelivery).subscribe(
+      (resp) => {
+        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
+  disableProgrammeerviceDeliverySave() {
+    return !(this.selectedDelivery.regions && this.selectedDelivery.districtCouncil);
   }
 
 
@@ -1219,6 +1242,20 @@ private loadTitles() {
       }
     );
   }
+
+  private getProgrammeDeliveryDetailsById(selectedProgramme: number) {
+    this._npoProfileRepo.getProgrammeDeliveryDetailsById(selectedProgramme).subscribe(
+      (results) => {
+        this.programDeliveryDetails = results;
+        this.updateServicesRenderedObjects();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
 
   private loadBankDetails(npoProfileId: number) {
     this._npoProfileRepo.getBankDetailByNpoProfileId(npoProfileId).subscribe(
@@ -2131,7 +2168,35 @@ private loadTitles() {
       icon: 'pi pi-info-circle',
       accept: () => {
         data.isActive = false;
-        // this.updateBankDetail(data);
+        this.updateProgrammeBankDetail(data);
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  deleteProgrammeServiceDelivery(data: IProgrammeServiceDelivery) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        data.isActive = false;
+        this.updateProgrammeServiceDelivery(data);
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  deleteProgramContactInformation(data: IProgramContactInformation) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        data.isActive = false;
+        this.updateProgrameContactDetail(data);
       },
       reject: () => {
       }
@@ -2256,6 +2321,18 @@ private loadTitles() {
     this._npoProfileRepo.updateBankDetail(bankDetail).subscribe(
       (resp) => {
         this.loadBankDetails(Number(this.npoProfileId));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateProgrammeBankDetail(bankDetail: IProgramBankDetails) {
+    this._npoProfileRepo.updateProgrammeBankDetails(Number(this.selectedProgram.id),bankDetail).subscribe(
+      (resp) => {
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
       },
       (err) => {
         this._loggerService.logException(err);

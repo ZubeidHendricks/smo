@@ -33,6 +33,7 @@ export interface IProgramBankDetails {
   }
 
   export interface IProgrammeServiceDelivery {
+    id: number;
     programId: number;
     isActive: boolean;
     createdUserId: number;
@@ -42,10 +43,10 @@ export interface IProgramBankDetails {
     regionId?: number;
     districtCouncilId?: number;
     localMunicipalityId?: number;
-    region?: IRegion;
+    regions?: IRegion[];
     districtCouncil?: IDistrictCouncil;
     localMunicipality?: ILocalMunicipality;
-    serviceDeliveryArea?: ISDA;
+    serviceDeliveryAreas?: ISDA[];
 }
 
   export interface IProgramContactInformation {
