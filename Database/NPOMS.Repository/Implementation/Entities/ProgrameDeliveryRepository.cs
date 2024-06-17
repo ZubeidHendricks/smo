@@ -22,6 +22,7 @@ namespace NPOMS.Repository.Implementation.Entities
         {
             var result =  await FindByCondition(x => x.ProgramId.Equals(progId) && x.IsActive)
                             .Include(x => x.DistrictCouncil)
+                            .Include(x => x.ApprovalStatus)
                             .Include(x => x.LocalMunicipality)                             
                             .Include(x => x.ServiceDeliveryAreas).
                                 ThenInclude(x => x.ServiceDeliveryArea)

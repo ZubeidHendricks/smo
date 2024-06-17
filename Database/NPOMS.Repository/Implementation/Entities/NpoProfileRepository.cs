@@ -41,7 +41,7 @@ namespace NPOMS.Repository.Implementation.Entities
 
 		public async Task CreateEntity(NpoProfile model)
 		{
-            model.AccessStatusId = (int)AccessStatusEnum.New;
+            model.AccessStatusId = (int)AccessStatusEnum.Approved;
 
             model.RefNo = StringExtensions.GenerateNewCode("PRO");
 			await CreateAsync(model);
@@ -51,7 +51,7 @@ namespace NPOMS.Repository.Implementation.Entities
 		{
 			this.RepositoryContext.AddressInformation.Update(model.AddressInformation);
 			var oldEntity = await this.RepositoryContext.NpoProfiles.FindAsync(model.Id);
-            model.AccessStatusId = (int)AccessStatusEnum.Pending;
+            //model.AccessStatusId = (int)AccessStatusEnum.Pending;
             await UpdateAsync(oldEntity, model, true, currentUserId);
 		}
 

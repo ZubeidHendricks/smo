@@ -67,13 +67,13 @@ export class NpoProfileService {
     return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);
   }
 
-  public updateProgrammeDeliveryDetails(programBankDetails: IProgrammeServiceDelivery) {
-    const url = `${this._envUrl.urlAddress}/api/programme/update-delivery`;
+  public updateProgrammeDeliveryDetails(progId: number,programBankDetails: IProgrammeServiceDelivery) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-delivery/${progId}`;
     return this._http.put<IProgrammeServiceDelivery>(url,programBankDetails, httpOptions);
   }
 
-  public createProgrammeDeliveryDetails(programBankDetails: IProgrammeServiceDelivery) {
-    const url = `${this._envUrl.urlAddress}/api/programme/create-delivery`;
+  public createProgrammeDeliveryDetails(progId: number,programBankDetails: IProgrammeServiceDelivery) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-delivery/${progId}`;
     return this._http.post<IProgrammeServiceDelivery>(url,programBankDetails, httpOptions);
   }
 

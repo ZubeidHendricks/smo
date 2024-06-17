@@ -21,6 +21,7 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByProgramId(int progId)
         {
             return await FindByCondition(x => x.ProgramId.Equals(progId) && x.IsActive)
+                             .Include(x => x.ApprovalStatus)
                              .AsNoTracking().ToListAsync();
         }
     }

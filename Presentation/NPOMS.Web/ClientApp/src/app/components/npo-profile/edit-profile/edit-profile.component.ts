@@ -26,13 +26,35 @@ import { map } from 'rxjs/operators';
 export class EditProfileComponent implements OnInit {
   isDeliveryInformationEdit: boolean;
   isSystemAdmin: boolean;
+  isApplicant: boolean;
+  canReviewOrApprove: boolean = false;
   /* Permission logic */
+  // public IsAuthorized(permission: PermissionsEnum): boolean {
+  //   this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+  //   this.isApplicant = this.profile.roles.some(function (role) { return role.id === RoleEnum.Applicant });
+  //   this.canReviewOrApprove = this.profile.roles.some(function (role) { return role.id === RoleEnum.Approver || role.id === RoleEnum.SystemAdmin });
+  //   console.log(this.isSystemAdmin);
+  //   console.log(this.canReviewOrApprove);
+  //   if (this.profile != null && this.profile.permissions.length > 0) {
+  //     return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+  //   }
+  // }
+
   public IsAuthorized(permission: PermissionsEnum): boolean {
-    if (this.profile != null && this.profile.permissions.length > 0) {
-      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    if (!this.profile) {
+        return false;
     }
-    this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
-  }
+
+    const roles = this.profile.roles || [];
+    const permissions = this.profile.permissions || [];
+
+    this.isSystemAdmin = roles.some(role => role.id === RoleEnum.SystemAdmin);
+    this.isApplicant = roles.some(role => role.id === RoleEnum.Applicant);
+    this.canReviewOrApprove = roles.some(role => role.id === RoleEnum.Approver || role.id === RoleEnum.SystemAdmin);
+
+    return permissions.some(x => x.systemName === permission);
+}
+
 
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
@@ -59,7 +81,6 @@ export class EditProfileComponent implements OnInit {
   paramSubcriptions: Subscription;
 
   isDataAvailable: boolean = false;
-
   newAddress: IAddressLookup[];
   physicalAddressLookup: IAddressLookup;
   postalAddressLookup: IAddressLookup;
@@ -580,12 +601,12 @@ private loadTitles() {
   }
 
   canEditServicesRendered(programme: IProgramme): boolean {
-    return this.isSystemAdmin || (programme &&
+    return this.isSystemAdmin || this.isApplicant || (programme &&
            this.profile.userPrograms.some(userProgram => userProgram.id === programme.id));
   }
   
   canEdit(): boolean {
-    return this.isSystemAdmin || (this.selectedProgram &&
+    return this.isSystemAdmin || this.isApplicant || (this.selectedProgram &&
       this.profile.userPrograms.some(userProgram => userProgram.id === Number(this.selectedProgram.id)));
   }
 
@@ -620,10 +641,17 @@ private loadTitles() {
   disableProgrammeSaveContactInfo() {
     const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    if (!this.contactInformation.emailAddress || !regularExpression.test(String(this.contactInformation.emailAddress)) || !this.contactInformation.cellphone || this.contactInformation.cellphone.length != 10)
-      return true;
+    // if (!this.contactInformation.emailAddress || !regularExpression.test(String(this.contactInformation.emailAddress)) || !this.contactInformation.cellphone || this.contactInformation.cellphone.length != 10)
+    //   return true;
 
-    return false;
+    // return false;
+      if (!this.selectedTitle ||
+        !this.contactInformation.emailAddress || 
+        !regularExpression.test(String(this.contactInformation.emailAddress)) || 
+        !this.contactInformation.cellphone || 
+        this.contactInformation.cellphone.length != 10) {
+      return true;
+    }
   }
 
   editContactInformation(data: IProgramContactInformation) {
@@ -831,7 +859,7 @@ private loadTitles() {
   }
 
   private createProgrammeServiceDelivery(serviceDelivery: IProgrammeServiceDelivery) {
-    this._npoProfileRepo.createProgrammeDeliveryDetails(serviceDelivery).subscribe(
+    this._npoProfileRepo.createProgrammeDeliveryDetails(Number(this.npoProfile.id),serviceDelivery).subscribe(
       (resp) => {
         this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id));
       },
@@ -843,7 +871,7 @@ private loadTitles() {
   }
 
   private updateProgrammeServiceDelivery(serviceDelivery: IProgrammeServiceDelivery) {
-    this._npoProfileRepo.updateProgrammeDeliveryDetails(serviceDelivery).subscribe(
+    this._npoProfileRepo.updateProgrammeDeliveryDetails(Number(this.npoProfile.id),serviceDelivery).subscribe(
       (resp) => {
         this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id));
       },
@@ -1334,19 +1362,19 @@ private loadTitles() {
           label: 'Approve',
           icon: 'fa fa-check',
           command: () => {
-            //api call to change status to approved
             this.Approve();
           },
-          visible: true
+          visible: true,
+          disabled: !this.canReviewOrApprove,
         },
         {
           label: 'Reject',
           icon: 'fa fa-undo',
           command: () => {
-            //api call to change status to pending
             this.Reject();
           },
-          visible: true
+          visible: true,
+          disabled: !this.canReviewOrApprove,
         },
 
         {
@@ -1356,15 +1384,14 @@ private loadTitles() {
             this.saveItems();
           }
         },
-        {
-          label: 'Submit',
-          icon: 'fa fa-undo',
-          command: () => {
-            //api call to change status to pending
-            this.Submit();
-          },
-          visible: true
-        },
+        // {
+        //   label: 'Submit',
+        //   icon: 'fa fa-undo',
+        //   command: () => {
+        //     this.Submit();
+        //   },
+        //   visible: true
+        // },
         {
           label: 'Go Back',
           icon: 'fa fa-step-backward',
@@ -1400,7 +1427,6 @@ private loadTitles() {
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.npoProfile;
-
       this._npoProfileRepo.approveProfile(data.id).subscribe(
         (resp) => {
           this._spinner.hide();

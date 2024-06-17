@@ -1705,6 +1705,16 @@ namespace NPOMS.Services.Implementation
             return await _roleRepository.GetRolesByDepartment(department.Name, rolesIds);
         }
 
+        public async Task<Programme> GetProgramme(int id)
+        {
+            return await _programmeRepository.GetById(id);
+        }
+
+        public async Task<Department> GetDepartment(int depId)
+        {
+            return await _departmentRepository.GetDepartmentById(depId);
+        }
+
         #endregion
 
         #endregion

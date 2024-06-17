@@ -26,5 +26,7 @@ namespace NPOMS.Domain.Entities
         public int? UpdatedUserId { get; set; }
 
         public DateTime? UpdatedDateTime { get; set; }
+        public int ApprovalStatusId { get; set; }
+        public AccessStatus ApprovalStatus { get; set; }
     }
 }

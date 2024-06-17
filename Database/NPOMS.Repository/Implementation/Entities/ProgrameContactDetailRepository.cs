@@ -26,6 +26,7 @@ namespace NPOMS.Repository.Implementation.Entities
                            .Include(x => x.Gender)
                            .Include(x => x.Race)
                            .Include(x => x.Language)
+                           .Include(x => x.ApprovalStatus)
                            .AsNoTracking()
                            .ToListAsync();
         }

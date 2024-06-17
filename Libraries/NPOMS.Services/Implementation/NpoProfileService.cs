@@ -42,12 +42,15 @@ namespace NPOMS.Services.Implementation
 		private IStaffMemberProfileRepository _staffMemberProfileRepository;
 		private IProjectImplementationRepository _projectImplementationRepository;
 		private readonly IMapper _mapper;
+        private IProgrameBankDetailRepository _programeBankDetailRepository;
+        private IProgrameContactDetailRepository _programeContactDetailRepository;
+        private IProgrameDeliveryRepository _programeDeliveryService;
 
-		#endregion
+        #endregion
 
-		#region Constructorrs
+        #region Constructorrs
 
-		public NpoProfileService(
+        public NpoProfileService(
 			INpoProfileRepository npoProfileRepository,
 			IUserRepository userRepository,
 			INpoRepository npoRepository,
@@ -65,7 +68,10 @@ namespace NPOMS.Services.Implementation
 			IAffiliatedOrganisationInformationRepository affiliatedOrganisationInformationRepository,
 			ISourceOfInformationRepository sourceOfInformationRepository,
 			IProjectImplementationRepository projectImplementationRepository,
-			IMapper mapper)
+            IProgrameBankDetailRepository programeBankDetailRepository,
+            IProgrameContactDetailRepository programeContactDetailRepository,
+            IProgrameDeliveryRepository programeDeliveryService,
+            IMapper mapper)
 		{
 			_npoProfileRepository = npoProfileRepository;
 			_userRepository = userRepository;
@@ -84,6 +90,9 @@ namespace NPOMS.Services.Implementation
 			_affiliatedOrganisationInformationRepository = affiliatedOrganisationInformationRepository;
 			_sourceOfInformationRepository = sourceOfInformationRepository;
 			_projectImplementationRepository = projectImplementationRepository;
+			_programeBankDetailRepository = programeBankDetailRepository;
+            _programeContactDetailRepository = programeContactDetailRepository;
+            _programeDeliveryService = programeDeliveryService;
 			this._mapper = mapper;
 		}
 
@@ -541,30 +550,218 @@ namespace NPOMS.Services.Implementation
 			await _staffMemberProfileRepository.UpdateEntity(model, loggedInUser.Id);
 		}
 
+        //     public async Task ApproveNpoProfile(int npoProfileId, string userIdentifier)
+        //     {
+        //         var model = await _npoProfileRepository.GetById(npoProfileId);
+
+        //         var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+        //         model.UpdatedUserId = loggedInUser.Id;
+        //         model.UpdatedDateTime = DateTime.Now;
+        //model.AccessStatusId = (int)(AccessStatusEnum.Approved);
+        //await _npoProfileRepository.UpdateAsync(model);
+
+        //         // get service renderd -
+        //         // get programId
+        //         // pull active Banking details and update status
+        //         // pull active Contact information and update status 
+        //         // pull active Delivery information and update status 
+        //     }
+
         public async Task ApproveNpoProfile(int npoProfileId, string userIdentifier)
         {
+            // Fetch the NPO profile by ID
             var model = await _npoProfileRepository.GetById(npoProfileId);
+            if (model == null)
+            {
+                throw new Exception("NPO profile not found");
+            }
 
+            // Get the logged-in user details
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            if (loggedInUser == null)
+            {
+                throw new Exception("User not found");
+            }
 
+            // Update NPO profile details
             model.UpdatedUserId = loggedInUser.Id;
             model.UpdatedDateTime = DateTime.Now;
-			model.AccessStatusId = (int)(AccessStatusEnum.Approved);
-			await _npoProfileRepository.UpdateAsync(model);
+            model.AccessStatusId = (int)AccessStatusEnum.Approved;
+            await _npoProfileRepository.UpdateAsync(model);
 
+            // Assuming that you have a method to fetch the service rendered and the program ID
+            var servicesRendered = await GetServiceRenderedByNpoProfileId(npoProfileId);
+            if (!servicesRendered.Any())
+            {
+                throw new Exception("No services rendered found for the given NPO profile");
+            }
+
+            foreach (var serviceRendered in servicesRendered)
+            {
+                var programId = serviceRendered.ProgrammeId;
+
+                var activeBankingDetails = await _programeBankDetailRepository.GetBankDetailsByProgramId(programId);
+                foreach (var bankingDetail in activeBankingDetails)
+                {
+                    bankingDetail.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+					bankingDetail.ApprovalStatus = null;
+                    await _programeBankDetailRepository.UpdateAsync(bankingDetail);
+                }
+
+                var activeContactInfo = await _programeContactDetailRepository.GetContactDetailsByProgramId(programId);
+                foreach (var contact in activeContactInfo)
+                {
+                    contact.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+					contact.ApprovalStatus = null;
+                    await _programeContactDetailRepository.UpdateAsync(contact);
+                }
+
+                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programId);
+                foreach (var delivery in activeDeliveryInfo)
+                {
+                    delivery.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+					delivery.ApprovalStatus = null;
+                    await _programeDeliveryService.UpdateAsync(delivery);
+                }
+            }
         }
-
         public async Task RejectNpoProfile(int npoProfileId, string userIdentifier)
         {
+            // Fetch the NPO profile by ID
             var model = await _npoProfileRepository.GetById(npoProfileId);
+            if (model == null)
+            {
+                throw new Exception("NPO profile not found");
+            }
 
+            // Get the logged-in user details
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            if (loggedInUser == null)
+            {
+                throw new Exception("User not found");
+            }
 
+            // Update NPO profile details
             model.UpdatedUserId = loggedInUser.Id;
             model.UpdatedDateTime = DateTime.Now;
-            model.AccessStatusId = (int)(AccessStatusEnum.Rejected);
+            model.AccessStatusId = (int)AccessStatusEnum.Rejected;
             await _npoProfileRepository.UpdateAsync(model);
+
+            // Fetch the services rendered for the given NPO profile
+            var servicesRendered = await GetServiceRenderedByNpoProfileId(npoProfileId);
+            if (!servicesRendered.Any())
+            {
+                throw new Exception("No services rendered found for the given NPO profile");
+            }
+
+            foreach (var serviceRendered in servicesRendered)
+            {
+                var programId = serviceRendered.ProgrammeId;
+
+                // Fetch and update active banking details if pending
+                var activeBankingDetails = await _programeBankDetailRepository.GetBankDetailsByProgramId(programId);
+                foreach (var bankingDetail in activeBankingDetails)
+                {
+                    if (bankingDetail.ApprovalStatusId == (int)AccessStatusEnum.Pending)
+                    {
+                        bankingDetail.ApprovalStatusId = (int)AccessStatusEnum.Rejected;
+                        await _programeBankDetailRepository.UpdateAsync(bankingDetail);
+                    }
+                }
+
+                // Fetch and update active contact information if pending
+                var activeContactInfo = await _programeContactDetailRepository.GetContactDetailsByProgramId(programId);
+                foreach (var contact in activeContactInfo)
+                {
+                    if (contact.ApprovalStatusId == (int)AccessStatusEnum.Pending)
+                    {
+                        contact.ApprovalStatusId = (int)AccessStatusEnum.Rejected;
+                        await _programeContactDetailRepository.UpdateAsync(contact);
+                    }
+                }
+
+                // Fetch and update active delivery information if pending
+                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programId);
+                foreach (var delivery in activeDeliveryInfo)
+                {
+                    if (delivery.ApprovalStatusId == (int)AccessStatusEnum.Pending)
+                    {
+                        delivery.ApprovalStatusId = (int)AccessStatusEnum.Rejected;
+                        await _programeDeliveryService.UpdateAsync(delivery);
+                    }
+                }
+            }
         }
+
+        //public async Task RejectNpoProfile(int npoProfileId, string userIdentifier)
+        //{
+        //    // Fetch the NPO profile by ID
+        //    var model = await _npoProfileRepository.GetById(npoProfileId);
+        //    if (model == null)
+        //    {
+        //        throw new Exception("NPO profile not found");
+        //    }
+
+        //    // Get the logged-in user details
+        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+        //    if (loggedInUser == null)
+        //    {
+        //        throw new Exception("User not found");
+        //    }
+
+        //    // Update NPO profile details
+        //    model.UpdatedUserId = loggedInUser.Id;
+        //    model.UpdatedDateTime = DateTime.Now;
+        //    model.AccessStatusId = (int)AccessStatusEnum.Rejected;
+        //    await _npoProfileRepository.UpdateAsync(model);
+
+        //    // Assuming that you have a method to fetch the service rendered and the program ID
+        //    var servicesRendered = await GetServiceRenderedByNpoProfileId(npoProfileId);
+        //    if (!servicesRendered.Any())
+        //    {
+        //        throw new Exception("No services rendered found for the given NPO profile");
+        //    }
+
+        //    foreach (var serviceRendered in servicesRendered)
+        //    {
+        //        var programId = serviceRendered.ProgrammeId;
+
+        //        var activeBankingDetails = await _programeBankDetailRepository.GetBankDetailsByProgramId(programId);
+        //        foreach (var bankingDetail in activeBankingDetails)
+        //        {
+        //            bankingDetail.ApprovalStatusId = (int)AccessStatusEnum.Rejected;
+        //            await _programeBankDetailRepository.UpdateAsync(bankingDetail);
+        //        }
+
+        //        var activeContactInfo = await _programeContactDetailRepository.GetContactDetailsByProgramId(programId);
+        //        foreach (var contact in activeContactInfo)
+        //        {
+        //            contact.ApprovalStatusId = (int)AccessStatusEnum.Rejected;
+        //            await _programeContactDetailRepository.UpdateAsync(contact);
+        //        }
+
+        //        var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programId);
+        //        foreach (var delivery in activeDeliveryInfo)
+        //        {
+        //            delivery.ApprovalStatusId = (int)AccessStatusEnum.Rejected;
+        //            await _programeDeliveryService.UpdateAsync(delivery);
+        //        }
+        //    }
+        //}
+
+
+        //public async Task RejectNpoProfile(int npoProfileId, string userIdentifier)
+        //{
+        //    var model = await _npoProfileRepository.GetById(npoProfileId);
+
+        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+        //    model.UpdatedUserId = loggedInUser.Id;
+        //    model.UpdatedDateTime = DateTime.Now;
+        //    model.AccessStatusId = (int)(AccessStatusEnum.Rejected);
+        //    await _npoProfileRepository.UpdateAsync(model);
+        //}
 
         public async Task SubmitProfileNpoProfile(int npoProfileId, string userIdentifier)
         {
@@ -577,6 +774,13 @@ namespace NPOMS.Services.Implementation
             model.AccessStatusId = (int)(AccessStatusEnum.Pending);
             await _npoProfileRepository.UpdateAsync(model);
         }
+
+        private async Task<IEnumerable<ServicesRendered>> GetServiceRenderedByNpoProfileId(int npoProfileId)
+        {
+            var results = await _servicesRenderedRepository.GetByNpoProfileId(npoProfileId);
+            return results;
+        }
+
 
         #endregion
     }

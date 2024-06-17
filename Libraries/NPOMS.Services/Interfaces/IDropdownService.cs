@@ -18,6 +18,8 @@ namespace NPOMS.Services.Interfaces
 
         Task<IEnumerable<Department>> GetDepartments(bool returnInactive);
 
+        Task<Department> GetDepartment(int depId);
+
         Task CreateDepartment(Department model, string userIdentifier);
 
         Task UpdateDepartment(Department model, string userIdentifier);
@@ -61,6 +63,8 @@ namespace NPOMS.Services.Interfaces
         Task UpdateAccessStatus(AccessStatus model, string userIdentifier);
 
         Task<IEnumerable<Programme>> GetProgrammes(bool returnInactive);
+
+        Task<Programme> GetProgramme(int id);
 
         Task CreateProgramme(Programme model, string userIdentifier);
 

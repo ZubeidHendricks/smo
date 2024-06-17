@@ -87,6 +87,7 @@ namespace NPOMS.Services.Implementation
             }));
 
             viewModel.Id = entity.Id;
+            viewModel.ApprovalStatus = entity.ApprovalStatus;
 
             return viewModel;
         }

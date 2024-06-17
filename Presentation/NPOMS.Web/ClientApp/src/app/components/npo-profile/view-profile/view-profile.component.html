@@ -165,6 +165,7 @@
               <th>Bank Name</th>
               <th>Account Number</th>
               <th>Branch</th>
+              <th>Status</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-detail>
@@ -172,6 +173,7 @@
               <td>{{detail?.bank?.name}}</td>
               <td>{{detail?.accountNumber}}</td>
               <td>{{detail?.branch?.name}}</td>
+              <td>{{detail?.approvalStatus?.name}}</td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
@@ -189,6 +191,7 @@
                     <th>Last Name</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Status</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-contact>
@@ -197,6 +200,7 @@
                     <td>{{contact.lastName}}</td>
                     <td>{{contact.emailAddress}}</td>
                     <td>{{contact.cellphone}}</td>
+                    <td>{{contact?.approvalStatus?.name}}</td>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -216,6 +220,7 @@
                   <th>District Council</th>
                   <th>Local Municipality</th>
                   <th>Servive delivery address</th>
+                  <th>Status</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-delivery>
@@ -224,6 +229,7 @@
                   <td>{{delivery.districtCouncil?.name}}</td>
                   <td>{{delivery.localMunicipality?.name}}</td>
                   <td>{{getNames(delivery?.serviceDeliveryAreas)}}</td>
+                  <td>{{delivery?.approvalStatus?.name}}</td>
                 </tr>
               </ng-template>
               <ng-template pTemplate="emptymessage">

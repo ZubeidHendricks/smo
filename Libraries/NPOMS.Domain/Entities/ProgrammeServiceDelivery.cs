@@ -15,6 +15,8 @@ namespace NPOMS.Domain.Entities
         private ICollection<ProgrameServiceDeliveryArea> _ServiceDeliveryAreas;
         private ICollection<ProgrammeSDADetail_Region> _Regions;
 
+        public int ApprovalStatusId { get; set; }
+        public AccessStatus ApprovalStatus { get; set; }
         public int ProgramId { get; set; }
         public bool IsActive { get; set; }
         public int CreatedUserId { get; set; }

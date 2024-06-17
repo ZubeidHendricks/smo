@@ -11,6 +11,7 @@ using NPOMS.Services.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
 
 namespace NPOMS.Services.Implementation
 {
@@ -24,6 +25,9 @@ namespace NPOMS.Services.Implementation
         private INpoProfileRepository _npoProfileRepository;
         private readonly IDistrictCouncilRepository _districtRepository;
         private readonly ILocalMunicipalityRepository _localMunicipalityRepository;
+        private IProgrammeRepository _programme;
+        private IDepartmentRepository _department;
+        
         public ProgrammeService(
             IProgrameBankDetailRepository programeBankDetailRepository,
             IProgrameContactDetailRepository programeContactDetailRepository,
@@ -32,6 +36,8 @@ namespace NPOMS.Services.Implementation
             INpoProfileRepository npoProfileRepository,
             IDistrictCouncilRepository districtRepository,
             ILocalMunicipalityRepository localMunicipalityRepository,
+            IProgrammeRepository programme,
+            IDepartmentRepository department,
             RepositoryContext repositoryContext)
         {
             _programeBankDetailRepository = programeBankDetailRepository;
@@ -42,6 +48,8 @@ namespace NPOMS.Services.Implementation
             _npoProfileRepository = npoProfileRepository;
             _districtRepository = districtRepository;
             _localMunicipalityRepository = localMunicipalityRepository;
+            _programme = programme;
+            _department = department;
         }
 
         public async Task CreateBankDetails(ProgramBankDetails model, string userId, int npoProfileId)
@@ -51,10 +59,28 @@ namespace NPOMS.Services.Implementation
             model.CreatedUserId = loggedInUser.Id;
             model.CreatedDateTime = DateTime.Now;
 
+            bool isDSD = await IsDepartmentAbbreviationDSD(model.ProgramId);
+
+            if (isDSD)
+            {
+                model.ApprovalStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                model.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+            }
+
             await _programeBankDetailRepository.CreateAsync(model);
 
             var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
-            npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            if (isDSD)
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
+            }
             await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
@@ -65,10 +91,30 @@ namespace NPOMS.Services.Implementation
             model.CreatedUserId = loggedInUser.Id;
             model.CreatedDateTime = DateTime.Now;
 
+            bool isDSD = await IsDepartmentAbbreviationDSD(model.ProgrammeId);
+
+            if (isDSD)
+            {
+                model.ApprovalStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                model.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+            }
+
             await _programeContactDetailRepository.CreateAsync(model);
 
             var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
-            npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+
+            if (isDSD)
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
+            }
+
             await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
@@ -79,11 +125,30 @@ namespace NPOMS.Services.Implementation
             model.UpdatedUserId = loggedInUser.Id;
             model.UpdatedDateTime = DateTime.Now;
 
+            bool isDSD = await IsDepartmentAbbreviationDSD(model.ProgramId);
+
+            if (isDSD)
+            {
+                model.ApprovalStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                model.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+            }
+
             var oldEntity = await _repositoryContext.ProgramBankDetails.FindAsync(model.Id);
             await _programeBankDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 
             var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
-            npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+
+            if (isDSD)
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
+            }
             await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
@@ -94,14 +159,33 @@ namespace NPOMS.Services.Implementation
             model.UpdatedUserId = loggedInUser.Id;
             model.UpdatedDateTime = DateTime.Now;
 
+            bool isDSD = await IsDepartmentAbbreviationDSD(model.ProgrammeId);
+
+            if (isDSD)
+            {
+                model.ApprovalStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                model.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+            }
+
             var oldEntity = await this._repositoryContext.ProgramContactInformation.FindAsync(model.Id);
             await _programeContactDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 
             var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
-            npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            if (isDSD)
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
+            }
+
             await _npoProfileRepository.UpdateAsync(npoProfile);
         }
-        public async Task UpdateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId)
+        public async Task UpdateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId, int npoProfileId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
 
@@ -122,6 +206,17 @@ namespace NPOMS.Services.Implementation
             existingEntity.UpdatedUserId = loggedInUser.Id;
             existingEntity.UpdatedDateTime = DateTime.Now;
             existingEntity.IsActive = programmeServiceDeliveryVM.IsActive;
+
+            bool isDSD = await IsDepartmentAbbreviationDSD(programmeServiceDeliveryVM.ProgramId);
+
+            if (isDSD)
+            {
+                existingEntity.ApprovalStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                existingEntity.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+            }
 
             // Set existing related entities to inactive if they are not in the new list
             var newRegionIds = programmeServiceDeliveryVM.Regions.Select(r => r.ID).ToList();
@@ -192,314 +287,25 @@ namespace NPOMS.Services.Implementation
             try
             {
                 await _repositoryContext.SaveChangesAsync();
+
+                var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
+                if (isDSD)
+                {
+                    npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+                }
+                else
+                {
+                    npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
+                }
+
+                await _npoProfileRepository.UpdateAsync(npoProfile);
             }
             catch (Exception ex)
             {
                 throw new Exception("An error occurred while saving changes", ex);
             }
         }
-
-
-        //public async Task UpdateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId)
-        //{
-        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
-
-        //    // Fetch the existing entity
-        //    var existingEntity = await _repositoryContext.ProgrammeServiceDelivery
-        //        .Include(psd => psd.Regions)
-        //        .Include(psd => psd.ServiceDeliveryAreas)
-        //        .Include(psd => psd.DistrictCouncil)
-        //        .Include(psd => psd.LocalMunicipality)
-        //        .FirstOrDefaultAsync(psd => psd.Id == programmeServiceDeliveryVM.Id);
-
-        //    if (existingEntity == null)
-        //    {
-        //        throw new Exception("Entity not found");
-        //    }
-
-        //    // Set existing entity properties
-        //    existingEntity.UpdatedUserId = loggedInUser.Id;
-        //    existingEntity.UpdatedDateTime = DateTime.Now;
-        //    existingEntity.IsActive = programmeServiceDeliveryVM.IsActive;
-
-        //    // Set existing related entities to inactive if they are not in the new list
-        //    var newRegionIds = programmeServiceDeliveryVM.Regions.Select(r => r.ID).ToList();
-        //    foreach (var region in existingEntity.Regions)
-        //    {
-        //        if (!newRegionIds.Contains(region.RegionId))
-        //        {
-        //            region.IsActive = false;
-        //        }
-        //    }
-
-        //    var newSdaIds = programmeServiceDeliveryVM.ServiceDeliveryAreas.Select(sda => sda.ID).ToList();
-        //    foreach (var sda in existingEntity.ServiceDeliveryAreas)
-        //    {
-        //        if (!newSdaIds.Contains(sda.ServiceDeliveryAreaId))
-        //        {
-        //            sda.IsActive = false;
-        //        }
-        //    }
-
-        //    // Update the old entity
-        //    await _repositoryContext.SaveChangesAsync();
-
-        //    // Reactivate existing regions or add new ones
-        //    foreach (var newRegion in programmeServiceDeliveryVM.Regions)
-        //    {
-        //        var existingRegion = existingEntity.Regions.FirstOrDefault(r => r.RegionId == newRegion.ID);
-        //        if (existingRegion != null)
-        //        {
-        //            existingRegion.IsActive = true;
-        //        }
-        //        else
-        //        {
-        //            existingEntity.Regions.Add(new ProgrammeSDADetail_Region
-        //            {
-        //                ProgrameServiceDeliveryId = existingEntity.Id, // Set the foreign key
-        //                RegionId = newRegion.ID,
-        //                IsActive = true
-        //            });
-        //        }
-        //    }
-
-        //    // Reactivate existing service delivery areas or add new ones
-        //    foreach (var newSda in programmeServiceDeliveryVM.ServiceDeliveryAreas)
-        //    {
-        //        var existingSda = existingEntity.ServiceDeliveryAreas.FirstOrDefault(sda => sda.ServiceDeliveryAreaId == newSda.ID);
-        //        if (existingSda != null)
-        //        {
-        //            existingSda.IsActive = true;
-        //        }
-        //        else
-        //        {
-        //            existingEntity.ServiceDeliveryAreas.Add(new ProgrameServiceDeliveryArea
-        //            {
-        //                ProgrameServiceDeliveryId = existingEntity.Id, // Set the foreign key
-        //                ServiceDeliveryAreaId = newSda.ID,
-        //                IsActive = true
-        //            });
-        //        }
-        //    }
-
-        //    // Set the new values for other properties
-
-        //    existingEntity.ProgramId = programmeServiceDeliveryVM.ProgramId;
-        //    existingEntity.DistrictCouncilId = programmeServiceDeliveryVM.DistrictCouncil.Id;
-        //    existingEntity.LocalMunicipalityId = programmeServiceDeliveryVM.LocalMunicipality.ID;
-
-        //    // Save the updated entity
-        //    try
-        //    {
-        //        await _repositoryContext.SaveChangesAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("An error occurred while saving changes", ex);
-        //    }
-        //}
-
-
-        //public async Task UpdateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId)
-        //{
-        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
-
-        //    // Fetch the existing entity
-        //    var existingEntity = await _repositoryContext.ProgrammeServiceDelivery
-        //        .Include(psd => psd.Regions)
-        //        .Include(psd => psd.ServiceDeliveryAreas)
-        //        .Include(psd => psd.DistrictCouncil)
-        //        .Include(psd => psd.LocalMunicipality)
-        //        .FirstOrDefaultAsync(psd => psd.Id == programmeServiceDeliveryVM.Id);
-
-        //    if (existingEntity == null)
-        //    {
-        //        throw new Exception("Entity not found");
-        //    }
-
-        //    // Set existing entity properties
-        //    existingEntity.UpdatedUserId = loggedInUser.Id;
-        //    existingEntity.UpdatedDateTime = DateTime.Now;
-        //    existingEntity.IsActive = programmeServiceDeliveryVM.IsActive;
-
-        //    // Set existing related entities to inactive if they are not in the new list
-        //    var newRegionIds = programmeServiceDeliveryVM.Regions.Select(r => r.ID).ToList();
-        //    foreach (var region in existingEntity.Regions)
-        //    {
-        //        if (!newRegionIds.Contains(region.RegionId))
-        //        {
-        //            region.IsActive = false;
-        //        }
-        //    }
-
-        //    var newSdaIds = programmeServiceDeliveryVM.ServiceDeliveryAreas.Select(sda => sda.ID).ToList();
-        //    foreach (var sda in existingEntity.ServiceDeliveryAreas)
-        //    {
-        //        if (!newSdaIds.Contains(sda.ServiceDeliveryAreaId))
-        //        {
-        //            sda.IsActive = false;
-        //        }
-        //    }
-
-        //    // Update the old entity
-        //    await _repositoryContext.SaveChangesAsync();
-
-        //    // Reactivate existing regions or add new ones
-        //    foreach (var newRegion in programmeServiceDeliveryVM.Regions)
-        //    {
-        //        var existingRegion = existingEntity.Regions.FirstOrDefault(r => r.RegionId == newRegion.ID);
-        //        if (existingRegion != null)
-        //        {
-        //            existingRegion.IsActive = true;
-        //        }
-        //        else
-        //        {
-        //            existingEntity.Regions.Add(new ProgrammeSDADetail_Region
-        //            {
-        //                RegionId = newRegion.ID,
-        //                IsActive = true
-        //            });
-        //        }
-        //    }
-
-        //    // Reactivate existing service delivery areas or add new ones
-        //    foreach (var newSda in programmeServiceDeliveryVM.ServiceDeliveryAreas)
-        //    {
-        //        var existingSda = existingEntity.ServiceDeliveryAreas.FirstOrDefault(sda => sda.ServiceDeliveryAreaId == newSda.ID);
-        //        if (existingSda != null)
-        //        {
-        //            existingSda.IsActive = true;
-        //        }
-        //        else
-        //        {
-        //            existingEntity.ServiceDeliveryAreas.Add(new ProgrameServiceDeliveryArea
-        //            {
-        //                ServiceDeliveryAreaId = newSda.ID,
-        //                IsActive = true
-        //            });
-        //        }
-        //    }
-
-        //    // Set the new values for other properties
-        //    existingEntity.ProgramId = programmeServiceDeliveryVM.ProgramId;
-        //    existingEntity.DistrictCouncilId = programmeServiceDeliveryVM.DistrictCouncil.Id;
-        //    existingEntity.LocalMunicipalityId = programmeServiceDeliveryVM.LocalMunicipality.ID;
-
-        //    // Save the updated entity
-        //    try
-        //    {
-        //        await _repositoryContext.SaveChangesAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("An error occurred while saving changes", ex);
-        //    }
-        //}
-
-
-        //public async Task UpdateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId)
-        //{
-        //    var model = await ProgrammeServiceDeliveryDetails(programmeServiceDeliveryVM);
-        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
-
-        //    model.UpdatedUserId = loggedInUser.Id;
-        //    model.UpdatedDateTime = DateTime.Now;
-        //    model.IsActive = programmeServiceDeliveryVM.IsActive;
-        //    model.Id = programmeServiceDeliveryVM.Id;
-        //    var oldEntity = await _repositoryContext.ProgrammeServiceDelivery
-        //                    .Include(psd => psd.Regions)
-        //                    .Include(psd => psd.ServiceDeliveryAreas)
-        //                    .Include(psd => psd.DistrictCouncil)
-        //                    .Include(psd => psd.LocalMunicipality)
-        //                    .FirstOrDefaultAsync(psd => psd.Id == programmeServiceDeliveryVM.Id);
-        //    await _programeDeliveryRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
-        //}
-
-        //public async Task UpdateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId)
-        //{
-        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
-
-        //    // Fetch the existing entity
-        //    var existingEntity = await _repositoryContext.ProgrammeServiceDelivery
-        //        .Include(psd => psd.Regions)
-        //        .Include(psd => psd.ServiceDeliveryAreas)
-        //        .Include(psd => psd.DistrictCouncil)
-        //        .Include(psd => psd.LocalMunicipality)
-        //        .FirstOrDefaultAsync(psd => psd.Id == programmeServiceDeliveryVM.Id);
-
-        //    if (existingEntity == null)
-        //    {
-        //        throw new Exception("Entity not found");
-        //    }
-
-        //    // Set existing entity to inactive
-        //    existingEntity.IsActive = programmeServiceDeliveryVM.IsActive;
-        //    existingEntity.UpdatedUserId = loggedInUser.Id;
-        //    existingEntity.UpdatedDateTime = DateTime.Now;
-
-        //    // Set existing related entities to inactive if they are not in the new list
-        //    var newRegionIds = programmeServiceDeliveryVM.Regions.Select(r => r.ID).ToList();
-        //    foreach (var region in existingEntity.Regions)
-        //    {
-        //        if (!newRegionIds.Contains(region.RegionId))
-        //        {
-        //            region.IsActive = false;
-        //        }
-        //    }
-
-        //    var newSdaIds = programmeServiceDeliveryVM.ServiceDeliveryAreas.Select(sda => sda.ID).ToList();
-        //    foreach (var sda in existingEntity.ServiceDeliveryAreas)
-        //    {
-        //        if (!newSdaIds.Contains(sda.ServiceDeliveryAreaId))
-        //        {
-        //            sda.IsActive = false;
-        //        }
-        //    }
-
-        //    // Update the old entity
-        //    await _repositoryContext.SaveChangesAsync();
-
-        //    // Add new regions
-        //    foreach (var newRegion in programmeServiceDeliveryVM.Regions)
-        //    {
-        //        if (!existingEntity.Regions.Any(r => r.RegionId == newRegion.ID))
-        //        {
-        //            existingEntity.Regions.Add(new ProgrammeSDADetail_Region
-        //            {
-        //                RegionId = newRegion.ID,
-        //                IsActive = true
-        //            });
-        //        }
-        //    }
-
-        //    // Add new service delivery areas
-        //    foreach (var newSda in programmeServiceDeliveryVM.ServiceDeliveryAreas)
-        //    {
-        //        if (!existingEntity.ServiceDeliveryAreas.Any(sda => sda.ServiceDeliveryAreaId == newSda.ID))
-        //        {
-        //            existingEntity.ServiceDeliveryAreas.Add(new ProgrameServiceDeliveryArea
-        //            {
-        //                ServiceDeliveryAreaId = newSda.ID,
-        //                IsActive = true
-        //            });
-        //        }
-        //    }
-
-        //    // Set the new values for other properties
-        //    existingEntity.ProgramId = programmeServiceDeliveryVM.ProgramId;
-        //    existingEntity.DistrictCouncilId = programmeServiceDeliveryVM.DistrictCouncil.Id;
-        //    existingEntity.LocalMunicipalityId = programmeServiceDeliveryVM.LocalMunicipality.ID;
-
-        //    // Save the updated entity
-        //    try {
-        //        await _repositoryContext.SaveChangesAsync();
-        //    } 
-        //    catch(Exception ex) {
-        //        throw new Exception();
-        //    }
-        //}
-
-        public async Task CreateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId)
+        public async Task CreateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId, int npoProfileId)
         {
             var model = await ProgrammeServiceDeliveryDetails(programmeServiceDeliveryVM);
 
@@ -507,8 +313,31 @@ namespace NPOMS.Services.Implementation
             model.IsActive = true;
             model.CreatedUserId = loggedInUser.Id;
             model.CreatedDateTime = DateTime.Now;
+            bool isDSD = await IsDepartmentAbbreviationDSD(programmeServiceDeliveryVM.ProgramId);
 
+            if (isDSD)
+            {
+
+                model.ApprovalStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+
+                model.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+            }
             await _programeDeliveryRepository.CreateAsync(model);
+
+            var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
+            if (isDSD)
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
+            }
+
+            await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
         private async Task<ProgrammeServiceDelivery> ProgrammeServiceDeliveryDetails1(ProgrammeServiceDeliveryVM model)
@@ -545,8 +374,6 @@ namespace NPOMS.Services.Implementation
 
             return programmeServiceDeliveryDetails;
         }
-
-
         private async Task<ProgrammeServiceDelivery> ProgrammeServiceDeliveryDetails(ProgrammeServiceDeliveryVM model)
         {
             var programmeServiceDeliveryDetails = new ProgrammeServiceDelivery();
@@ -590,6 +417,13 @@ namespace NPOMS.Services.Implementation
             }
 
             return programmeServiceDeliveryDetails;
+        }
+
+        private async Task<bool> IsDepartmentAbbreviationDSD(int programId)
+        {
+            var prog = await _programme.GetById(programId);
+            var depart = await _department.GetDepartmentById(prog.DepartmentId);
+            return depart.Abbreviation.ToLower() == "dsd";
         }
 
     }

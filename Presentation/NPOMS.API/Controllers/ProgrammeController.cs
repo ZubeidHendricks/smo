@@ -142,8 +142,6 @@ namespace NPOMS.API.Controllers
             }
         }
 
-
-
         [HttpGet("delivery/programmeId/{programmeId}", Name = "GetDeliveryDetailsByProgramId")]
         public async Task<IActionResult> GetDeliveryDetailsByProgramId(int programmeId)
         {
@@ -160,13 +158,13 @@ namespace NPOMS.API.Controllers
         }
 
 
-        [HttpPost("create-delivery", Name = "CreateProgrameDelivery")]
-        public async Task<IActionResult> CreateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model)
+        [HttpPost("create-delivery/{progId}", Name = "CreateProgrameDelivery")]
+        public async Task<IActionResult> CreateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model, int progId)
         {
             try
             {
                 //ClearDeliveryObjects(model);
-                await _programmeService.CreateDelivery(model, base.GetUserIdentifier());
+                await _programmeService.CreateDelivery(model, base.GetUserIdentifier(), progId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -176,13 +174,13 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut("update-delivery", Name = "UpdateProgrameDelivery")]
-        public async Task<IActionResult> UpdateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model)
+        [HttpPut("update-delivery/{progId}", Name = "UpdateProgrameDelivery")]
+        public async Task<IActionResult> UpdateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model,int progId)
         {
             try
             {
                 //ClearDeliveryObjects(model);
-                await _programmeService.UpdateDelivery(model, base.GetUserIdentifier());
+                await _programmeService.UpdateDelivery(model, base.GetUserIdentifier(), progId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -207,13 +205,13 @@ namespace NPOMS.API.Controllers
 
         private static void ClearObjects(ProgramContactInformation model)
         {
-                model.TitleId = model.Title.Id;
-                model.PositionId = model.Position.Id;
-                model.RaceId = model.Race.Id;
-                model.GenderId = model.Gender.Id;
-                model.LanguageId = model.Language.Id;
+            model.TitleId = model.Title?.Id ?? model.TitleId;
+            model.PositionId = model.Position?.Id ?? model.PositionId;
+            model.RaceId = model.Race?.Id ?? model.RaceId;
+            model.GenderId = model.Gender?.Id ?? model.GenderId;
+            model.LanguageId = model.Language?.Id ?? model.LanguageId;
 
-                model.Position = null;
+            model.Position = null;
                 model.Race = null;
                 model.Gender = null;
                 model.Language = null;

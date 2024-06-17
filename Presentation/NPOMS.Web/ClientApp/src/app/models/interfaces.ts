@@ -26,7 +26,7 @@ export interface IProgramBankDetails {
     updatedUserId?: number;
     updatedDateTime?: Date;
     branchCode: string;
-
+    approvalStatus: IAccessStatus;
     bank: IBank;
     branch: IBranch;
     accountType: IAccountType;
@@ -47,6 +47,7 @@ export interface IProgramBankDetails {
     districtCouncil?: IDistrictCouncil;
     localMunicipality?: ILocalMunicipality;
     serviceDeliveryAreas?: ISDA[];
+    approvalStatus: IAccessStatus;
 }
 
   export interface IProgramContactInformation {
@@ -85,6 +86,7 @@ export interface IProgramBankDetails {
     gender: IGender;
     race: IRace;
     language: ILanguage;
+    approvalStatus: IAccessStatus;
   }
   
 export interface IDocumentStore {
