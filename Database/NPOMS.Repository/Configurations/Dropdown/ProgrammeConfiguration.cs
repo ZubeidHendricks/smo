@@ -25,48 +25,42 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Id = 2,
 					Name = "Chronic Diseases and Non-Communicable Diseases",
 					Description = "Chronic Diseases and Non-Communicable Diseases",
-					DepartmentId = 11,
-                    Code = ""
+					DepartmentId = 11
                 },
 				new Programme
 				{
 					Id = 3,
 					Name = "HIV/AIDS, TB, STI",
 					Description = "HIV/AIDS, TB, STI",
-					DepartmentId = 11,
-                    Code = ""
+					DepartmentId = 11
                 },
 				new Programme
 				{
 					Id = 4,
 					Name = "Maternal, Women and Child Health",
 					Description = "Maternal, Women and Child Health",
-					DepartmentId = 11,
-                    Code = ""
+					DepartmentId = 11
                 },
 				new Programme
 				{
 					Id = 5,
 					Name = "Theatre, Surgery and Aneasthetics",
 					Description = "Theatre, Surgery and Aneasthetics",
-					DepartmentId = 11,
-                    Code = ""
+					DepartmentId = 11
                 },
 				new Programme
 				{
 					Id = 6,
 					Name = "Mental Health",
 					Description = "Mental Health",
-					DepartmentId = 11,
-                    Code = ""
+					DepartmentId = 11
                 },
 				new Programme
 				{
 					Id = 7,
 					Name = "Emergency Centre Presures",
 					Description = "Emergency Centre Presures",
-					DepartmentId = 11,
-                    Code = ""
+					DepartmentId = 11
                 },
 				new Programme
 				{
@@ -74,8 +68,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Care and Support to Families",
 					Description = "Care and Support to Families",
 					DepartmentId = 7,
-					DirectorateId = 1,
-                    Code = ""
+					DirectorateId = 1
                 },
 				new Programme
 				{
@@ -83,8 +76,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Child Care and Protection Services",
 					Description = "Child Care and Protection Services",
 					DepartmentId = 7,
-					DirectorateId = 1,
-                    Code = ""
+					DirectorateId = 1
                 },
 				new Programme
 				{
@@ -92,8 +84,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Crime Prevention",
 					Description = "Crime Prevention",
 					DepartmentId = 7,
-					DirectorateId = 7,
-                    Code = ""
+					DirectorateId = 7
                 },
 				new Programme
 				{
@@ -101,8 +92,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "ECD & Partial Care",
 					Description = "ECD & Partial Care",
 					DepartmentId = 7,
-					DirectorateId = 3,
-                    Code = ""
+					DirectorateId = 3
                 },
 				new Programme
 				{
@@ -110,8 +100,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "EPWP",
 					Description = "EPWP",
 					DepartmentId = 7,
-					DirectorateId = 2,
-                    Code = ""
+					DirectorateId = 2
                 },
 				new Programme
 				{
@@ -119,8 +108,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Facility Managment",
 					Description = "Facility Managment",
 					DepartmentId = 7,
-					DirectorateId = 4,
-                    Code = ""
+					DirectorateId = 4
                 },
 				new Programme
 				{
@@ -128,8 +116,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Institutional Capacity Building",
 					Description = "Institutional Capacity Building",
 					DepartmentId = 7,
-					DirectorateId = 5,
-                    Code = ""
+					DirectorateId = 5
                 },
 				new Programme
 				{
@@ -137,8 +124,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Care and Services to Older Persons",
 					Description = "Care and Services to Older Persons",
 					DepartmentId = 7,
-					DirectorateId = 8,
-                    Code = ""
+					DirectorateId = 8
                 },
 				new Programme
 				{
@@ -146,8 +132,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Services to persons with Disabilities",
 					Description = "Services to persons with Disabilities",
 					DepartmentId = 7,
-					DirectorateId = 8,
-                    Code = ""
+					DirectorateId = 8
                 },
 				new Programme
 				{
@@ -155,8 +140,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Substance Abuse",
 					Description = "Substance Abuse",
 					DepartmentId = 7,
-					DirectorateId = 8,
-                    Code = ""
+					DirectorateId = 8
                 },
 				new Programme
 				{
@@ -164,8 +148,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Sustainable Livelihood",
 					Description = "Sustainable Livelihood",
 					DepartmentId = 7,
-					DirectorateId = 2,
-                    Code = ""
+					DirectorateId = 2
                 },
 				new Programme
 				{
@@ -173,8 +156,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Victim Empowerment",
 					Description = "Victim Empowerment",
 					DepartmentId = 7,
-					DirectorateId = 7,
-                    Code = ""
+					DirectorateId = 7
                 },
 				new Programme
 				{
@@ -182,8 +164,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Youth Development",
 					Description = "Youth Development",
 					DepartmentId = 7,
-					DirectorateId = 2,
-                    Code = ""
+					DirectorateId = 2
                 },
 				new Programme
 				{
@@ -191,8 +172,7 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "Child and Youth Care Centres",
 					Description = "Child and Youth Care Centres",
 					DepartmentId = 7,
-					DirectorateId = 4,
-                    Code = ""
+					DirectorateId = 4
                 },
 				new Programme
 				{
@@ -200,25 +180,8 @@ namespace NPOMS.Repository.Configurations.Dropdown
 					Name = "ECD Conditional Grant",
 					Description = "ECD Conditional Grant",
 					DepartmentId = 7,
-					DirectorateId = 3,
-                    Code = ""
-                },
-				//new Programme
-				//{
-				//	Id = 23,
-				//	Name = "Youth Development",
-				//	Description = "Integrated Youth Developmental Intervention Services",
-				//	DepartmentId = 17,
-				//	DirectorateId = 2
-				//},
-				//            new Programme
-				//            {
-				//                Id = 24,
-				//                Name = "Communicable Diseases",
-				//                Description = "Communicable Diseases",
-				//                DepartmentId = 11,
-				//                DirectorateId = 9
-				//            },
+					DirectorateId = 3
+                },				
 				new Programme
                 {
                     Id = 25,

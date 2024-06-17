@@ -74,10 +74,10 @@ export class ProgrammeBudgetComponent implements OnInit {
     });
 
     this.budgetCols = [
-      { header: 'Directorate', width: '15%' },
+      // { header: 'Directorate', width: '15%' },
       { header: 'Programme', width: '15%' },
-      { header: 'Subsidy Group', width: '15%' },
-      { header: 'Subsidy Type', width: '15%' },
+      { header: 'Sub Program', width: '15%' },
+      { header: 'Sub Program Type', width: '15%' },
       { header: 'Original Approved Budget', width: '15%' },
       { header: 'Adjusted Budget', width: '15%' }
     ];
@@ -136,9 +136,14 @@ export class ProgrammeBudgetComponent implements OnInit {
       this.totalPaid = 0;
       this.totalBalance = 0;
 
-      this._budgetRepo.getBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
+      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year, '30075059', '30024059').subscribe(
         (results) => {
-          this.denodoBudgets = results ? results.elements.filter(x => Number(x.originalbudget) > 0) : [];
+
+          // results.forEach(application => {
+            // this.getColumnSum(application.originalbudget);
+          // });
+
+          this.denodoBudgets = results ? results.elements.filter(x => Number(x.originalbudget) > 0 && x.responsibilitylowestlevelcode === '30075059' && x.objectivelowestlevelcode === '30024059') : [];
           this._spinner.hide();
         },
         (err) => {
@@ -148,6 +153,15 @@ export class ProgrammeBudgetComponent implements OnInit {
       );
     }
   }
+
+  getColumnSum(columnIndex: number): number {
+    let sum = 0;
+     
+        sum += columnIndex;
+    
+    return sum;
+}
+
 
   edit(data: IProgrammeBudget) {
     this.editProgrammeBudget = true;

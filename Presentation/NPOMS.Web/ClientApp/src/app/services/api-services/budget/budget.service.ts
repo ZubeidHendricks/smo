@@ -73,4 +73,10 @@ export class BudgetService {
     const url = `${this._envUrl.urlAddress}/api/denodo/budgets/department/${department}/year/${year}`;
     return this._http.get<IDenodoBudgetWrapper>(url, httpOptions);
   }
+
+  public getFilteredBudgets(department: string, year: number, responsibilitylowestlevelcode:string, objectivelowestlevelcode: string) {
+    const url = `${this._envUrl.urlAddress}/api/denodo/budgets/department/${department}/year/${year}/responsibilitylowestlevelcode/${responsibilitylowestlevelcode}/objectivelowestlevelcode/${objectivelowestlevelcode}`;
+    return this._http.get<IDenodoBudgetWrapper>(url, httpOptions);
+  }
 }
+

@@ -9,5 +9,6 @@ namespace NPOMS.Services.DenodoAPI.Interfaces
 		Task<FacilityAPIWrapperModel> Get(DenodoFacilityResourceParameters denodoFacilityResourceParameters);
 
         Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear);
+        Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear, string responsibilitylowestlevelcode, string objectivelowestlevelcode);
     }
 }

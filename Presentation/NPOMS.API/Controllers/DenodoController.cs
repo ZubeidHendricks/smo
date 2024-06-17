@@ -63,6 +63,21 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("budgets/department/{department}/year/{year}/responsibilitylowestlevelcode/{responsibilitylowestlevelcode}/objectivelowestlevelcode/{objectivelowestlevelcode}", Name = "GetDenodoFilteredBudgets")]
+        public async Task<IActionResult> GetDenodoFilteredBudgets(string department, int year, string responsibilitylowestlevelcode, string objectivelowestlevelcode)
+        {
+            try
+            {
+                var results = await this._denodoService.GetBudgets(department, $"{year}/{year + 1}", responsibilitylowestlevelcode, objectivelowestlevelcode);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDenodoBudgets action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         #endregion
     }
 }
