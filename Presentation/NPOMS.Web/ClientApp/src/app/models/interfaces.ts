@@ -1098,6 +1098,7 @@ export interface IDenodoFacility {
 }
 
 export interface IDenodoBudgetWrapper {
+    forEach(arg0: (application: any) => void): unknown;
     name: string;
     elements: IDenodoBudget[];
 }
@@ -1224,6 +1225,9 @@ export interface IDenodoBudget {
     finalvirementshifts: string;
     fundshift: string;
     rollover: string;
+    programme: string;
+    subProgramme: string;
+    subProgrammeType: string;
 }
 
 export interface ISegmentCode

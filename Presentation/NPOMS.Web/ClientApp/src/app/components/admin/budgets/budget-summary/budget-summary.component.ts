@@ -82,17 +82,13 @@ export class BudgetSummaryComponent implements OnInit {
     });
 
     this.budgetCols = [
-      { header: 'Directorate', width: '15%' },
       { header: 'Programme', width: '15%' },
-      { header: 'SubProgramme', width: '15%' },
-      { header: 'SubProgramme Type', width: '15%' },
-      { header: 'Original Budget', width: '8%' },
-      { header: 'Adjusted Budget', width: '8%' },
-      { header: 'Allocated', width: '8%' },
-      { header: 'Responsibility Code', width: '8%' },
-      { header: 'Objective Code', width: '8%' }
-      // { header: 'Balance', width: '8%' },
-      // { header: 'Paid', width: '8%' }
+      { header: 'Sub Programme', width: '15%' },
+      { header: 'Sub Programme Type', width: '15%' },
+      { header: 'Original Budget', width: '15%' },
+      { header: 'Adjusted Budget', width: '15%' },
+      { header: 'Allocated', width: '15%' },
+      { header: 'Balance', width: '10%' }
     ];
   }
 
@@ -195,8 +191,7 @@ export class BudgetSummaryComponent implements OnInit {
 
   loadPrograms(id: number) {
    
-    this.filteredProgrammes = this.programmes.filter(x => x.departmentId === id); // this._dropdownRepo.GetProgramsByDepartment(DropdownTypeEnum.FilteredProgrammesByDepartment, id);
-    
+    this.filteredProgrammes = this.programmes.filter(x => x.departmentId === id); 
 }
 
   programmeChange(id: number)
@@ -221,8 +216,14 @@ export class BudgetSummaryComponent implements OnInit {
 
       this._budgetRepo.getBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
+
+          
+
           this.denodoBudgets = results ? results.elements : [];
-          // this.filteredDenodoBudgets = this.denodoBudgets.filter(x => x.responsibilitylowestlevelcode === this.filteredSegmentCode[0].responsibilityCode && x.objectivelowestlevelcode === this.filteredSegmentCode[0].objectiveCode)
+
+          this.denodoBudgets.forEach(application => {
+            this.setProgrammeName(application);
+          });
 
           //found at: https://stackoverflow.com/questions/31005396/filter-array-of-objects-with-another-array-of-objects
           this.filteredDenodoBudgets = this.denodoBudgets.filter((el) => {
@@ -231,10 +232,6 @@ export class BudgetSummaryComponent implements OnInit {
             });
           });
 
-          console.log(this.filteredDenodoBudgets.reduce((n, {originalbudget}) => n + Number(originalbudget), 0));
-          console.log('filteredDenodoBudgets', this.filteredDenodoBudgets);
-
-          // console.log('myArrayFiltered',myArrayFiltered);
           this._spinner.hide();
         },
         (err) => {
@@ -243,5 +240,24 @@ export class BudgetSummaryComponent implements OnInit {
         }
       );
     }
+  }
+
+  private setProgrammeName(data: IDenodoBudget) {
+    let responsibilityCode = data.responsibilitylowestlevelcode;
+    let objectiveCode = data.objectivelowestlevelcode;
+    let id =  this.segmentCode.filter(x=> x.responsibilityCode === responsibilityCode && x.objectiveCode === objectiveCode);
+    if(id.length > 0)
+    {     
+      let programmeName = this.filteredProgrammes.filter(x=> x.id === id[0].programmeId);
+      let subProgrammeName = this.subProgrammes.filter(x=> x.programmeId === programmeName[0].id);
+      let subProgrammeTypeName = this.subProgrammeType.filter(x=> x.subProgrammeId === subProgrammeName[0].id)
+      data.programme = programmeName[0].name;
+      
+      if(subProgrammeName.length > 0)
+        data.subProgramme = subProgrammeName[0].name;
+      
+      if(subProgrammeTypeName.length > 0)
+        data.subProgrammeType = subProgrammeTypeName[0].name;
+    }    
   }
 }

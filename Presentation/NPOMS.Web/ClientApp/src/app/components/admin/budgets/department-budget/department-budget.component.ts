@@ -131,7 +131,8 @@ export class DepartmentBudgetComponent implements OnInit {
 
       this._budgetRepo.getBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
-          this.denodoBudgets = results ? results.elements : [];
+          this.denodoBudgets = results ? results.elements.filter(x => Number(x.originalbudget) > 0) : [];
+          this.totalBudget = this.denodoBudgets.reduce((n, {originalbudget}) => n + Number(originalbudget), 0);
           this._spinner.hide();
         },
         (err) => {
