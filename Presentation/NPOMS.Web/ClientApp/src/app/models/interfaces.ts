@@ -1147,6 +1147,15 @@ export interface IDenodoBudget {
     rollover: string;
 }
 
+export interface ISegmentCode
+{
+    id: number;
+    programmeId: number;
+    responsibilityCode: string;
+    subProgrammeTypeId: number;
+    objectiveCode: string;
+}
+
 /* Indicator */
 export interface IWorkplanTarget {
     id: number;

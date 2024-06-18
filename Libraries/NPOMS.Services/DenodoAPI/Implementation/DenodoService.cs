@@ -126,8 +126,8 @@ namespace NPOMS.Services.DenodoAPI.Implementation
             {
                 data = await response.Content.ReadAsAsync<BudgetAPIWrapperModel>();
             }
-
-            return data;
+			var d = data;
+            return d;
         }
     }
 }

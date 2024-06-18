@@ -11,9 +11,63 @@
                             </div>
                         </div>
                         <div class="p-col">
-                            <p-dropdown [options]="departments" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedDepartmentSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="departmentSummaryChange()"></p-dropdown>
+                            <p-dropdown [options]="departments" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedDepartmentSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
+                            (onChange)="loadPrograms($event.value.id)"></p-dropdown>
                         </div>
                     </div>
+                  
+                    <!-- <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Directorate</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-multiSelect [options]="list" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="item" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
+                        </div>
+                    </div> -->
+                            <!-- <p-multiSelect [options]="programmes" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedProgrammes" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)" selectedItemsLabel="{0} items selected"></p-multiSelect> -->
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Programme</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-dropdown [options]="filteredProgrammes" placeholder="Select programme"
+                            optionLabel="name"
+                             [(ngModel)]="selectedProgrammes" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
+                             appendTo="body" selectedItemsLabel="{0} items selected" 
+                             (onChange)="programmeChange($event.value.id)"></p-dropdown>
+                        </div>
+                    </div>
+                    
+                    <!-- <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">SubProgram</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-dropdown [options]="filteredSubProgrammes" placeholder="Select SubProgramme" 
+                            optionLabel="name" [(ngModel)]="selectedSubProgrammes" [ngModelOptions]="{standalone: true}" 
+                            [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"
+                            (onChange)="subProgrammeChange($event.value.id)"></p-dropdown>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Sub Program Type</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-multiSelect [options]="filteredSubProgrammeType" defaultLabel="Select option(s)" 
+                            optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
+                        </div>
+                    </div> -->
+
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
@@ -24,60 +78,50 @@
                             <p-dropdown [options]="financialYears" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedFinancialYearSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearSummaryChange()"></p-dropdown>
                         </div>
                     </div>
-                    <div class="p-grid">
-                        <div class="p-col-fixed form-label">
-                            <div class="box">
-                                <span class="non-mandatory-content">Directorate</span>
-                            </div>
-                        </div>
-                        <div class="p-col">
-                            <!-- <p-multiSelect [options]="programmes" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedProgrammes" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)" selectedItemsLabel="{0} items selected"></p-multiSelect> -->
-                            <p-multiSelect [options]="list" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="item" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
-                        </div>
-                    </div>
-                    <div class="p-grid">
-                        <div class="p-col-fixed form-label">
-                            <div class="box">
-                                <span class="non-mandatory-content">Programme</span>
-                            </div>
-                        </div>
-                        <div class="p-col">
-                            <p-multiSelect [options]="list" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="item" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
-                        </div>
-                    </div>
-                    <div class="p-grid">
-                        <div class="p-col-fixed form-label">
-                            <div class="box">
-                                <span class="non-mandatory-content">Subsidy Group</span>
-                            </div>
-                        </div>
-                        <div class="p-col">
-                            <p-multiSelect [options]="list" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="item" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
-                        </div>
-                    </div>
+
                 </div>
             </p-card>
         </div>
         <div class="p-col-10">
-            <p-table [rowHover]="true" [columns]="budgetCols" [value]="denodoBudgets" styleClass="p-datatable-sm">
+            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="filteredDenodoBudgets" styleClass="p-datatable-sm"
+            [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['programmelevel5','responsibilitylowestlevel',
+        'objectivelevel7']"
+            >
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                             {{col.header}}
+                            <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
+                            ariaLabelDesc="Activate to sort in descending order" 
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
+                    </tr>
+                    <tr>
+                        <th><p-columnFilter type="text" field="programmelevel5"></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="responsibilitylowestlevel"></p-columnFilter></th>
+                        <th></th>
+                        <th><p-columnFilter type="text" field="objectivelevel7"></p-columnFilter></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
+                        <td>{{rowData.programmelevel5}}</td>
+                        <td>{{rowData.responsibilitylowestlevel}}</td>
                         <td></td>
+                        <td>{{rowData.objectivelevel7}}</td>
+                        
+                        <td>{{rowData.originalbudget}}</td>
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{rowData.currentbudget}}</td>
+                        <td>{{rowData.responsibilitylowestlevelcode}}</td>
+                        <td>{{rowData.objectivelowestlevelcode}}</td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
