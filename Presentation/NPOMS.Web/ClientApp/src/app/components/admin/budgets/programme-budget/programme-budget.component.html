@@ -69,22 +69,37 @@
             </p-card>
         </div>
         <div class="p-col-10">
-            <p-table [rowHover]="true" [columns]="budgetCols" [value]="denodoBudgets" styleClass="p-datatable-sm">
+            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="denodoBudgets" styleClass="p-datatable-sm"
+            [paginator]="true" [rows]="10" [showCurrentPageReport]="true"  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['programme','subProgramme',
+            'subProgrammeType']">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                             {{col.header}}
+                            <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
+                            ariaLabelDesc="Activate to sort in descending order" 
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
                         <th style="width: 5%; text-align: center;"></th>
+                    </tr>
+                    <tr>
+                        <th><p-columnFilter type="text" field="programme"></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="subProgramme"></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="subProgrammeType"></p-columnFilter></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
-                        <td>{{rowData.programmelevel5}}</td>
-                        <td>{{rowData.responsibilitylowestlevel}}</td>
-                        <td>{{rowData.objectivelevel7}}</td>
-                        <td>{{rowData.objectivelowestlevel}}</td>
+                        <td>{{rowData.programme}}</td>
+                        <td>{{rowData.subProgramme}}</td>
+                        <td>{{rowData.subProgrammeType}}</td>
                         <td>R {{rowData.originalbudget | number : '1.2-2'}}</td>
+                        <td></td>
                         <td></td>
                         <td style="text-align: center;">
                             <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
