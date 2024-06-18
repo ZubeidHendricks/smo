@@ -87,5 +87,8 @@ namespace NPOMS.Services.Interfaces
 		Task CreateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
 
 		Task UpdateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
+        Task ApproveNpoProfile(int npoProfileId, string userIdentifier);
+        Task RejectNpoProfile(int npoProfileId, string userIdentifier);
+        Task SubmitProfileNpoProfile(int npoProfileId, string userIdentifier);
     }
 }

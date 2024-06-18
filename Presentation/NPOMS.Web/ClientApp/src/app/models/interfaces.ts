@@ -13,6 +13,82 @@ export interface IDepartment {
     isActive: boolean;
 }
 
+export interface IProgramBankDetails {
+    id: number;
+    programId: number;
+    bankId: number;
+    branchId: number;
+    accountTypeId: number;
+    accountNumber: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number;
+    updatedDateTime?: Date;
+    branchCode: string;
+    approvalStatus: IAccessStatus;
+    bank: IBank;
+    branch: IBranch;
+    accountType: IAccountType;
+  }
+
+  export interface IProgrammeServiceDelivery {
+    id: number;
+    programId: number;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number;
+    updatedDateTime?: Date;
+    regionId?: number;
+    districtCouncilId?: number;
+    localMunicipalityId?: number;
+    regions?: IRegion[];
+    districtCouncil?: IDistrictCouncil;
+    localMunicipality?: ILocalMunicipality;
+    serviceDeliveryAreas?: ISDA[];
+    approvalStatus: IAccessStatus;
+}
+
+  export interface IProgramContactInformation {
+    id: number;
+    programmeId: number;
+    titleId: number;
+    raceId: number;
+    languageId: number;
+    genderId: number;
+    firstName: string;
+    lastName: string;
+    rsaIdNumber: boolean;
+    idNumber: string;
+    passportNumber: string;
+    emailAddress: string;
+    telephone: string;
+    cellphone: string;
+    positionId: number;
+    comments: string;
+    qualifications: string;
+    addressInformation: string;
+    isPrimaryContact: boolean;
+    isDisabled: boolean;
+    isSignatory: boolean;
+    isWrittenAgreementSignatory: boolean;
+    isBoardMember: boolean;
+    yearsOfExperience: number;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId: number;
+    updatedDateTime: Date;
+    dateOfEmployment: Date;
+    title: ITitle;
+    position: IPosition;
+    gender: IGender;
+    race: IRace;
+    language: ILanguage;
+    approvalStatus: IAccessStatus;
+  }
+  
 export interface IDocumentStore {
     id: number,
     documentTypeId: number;
@@ -566,8 +642,9 @@ export interface INpoProfile {
     refNo: string;
     createdUserId: number;
     updatedUserId: number;
-
+    approvalStatusId: number;
     addressInformation: IAddressInformation;
+    accessStatus: IAccessStatus;
     /*npoProfileFacilityLists: INpoProfileFacilityList[];
     servicesRendered: IServicesRendered[];
     bankDetails: IBankDetail[];*/
@@ -704,6 +781,8 @@ export interface IServicesRendered {
     subProgrammeId: number;
     subProgrammeTypeId: number;
     isActive: boolean;
+    entityTypeNumber: number;
+    entitySystemNumber: number;
 
     programme: IProgramme;
     subProgramme: ISubProgramme;

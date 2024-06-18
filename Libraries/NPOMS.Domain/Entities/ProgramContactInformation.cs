@@ -34,7 +34,7 @@ namespace NPOMS.Domain.Entities
         [Column(TypeName = "nvarchar(50)")]
         public string Cellphone { get; set; }
 
-        public int PositionId { get; set; }
+        public int? PositionId { get; set; }
 
         [Column(TypeName = "nvarchar(1000)")]
         public string Comments { get; set; }
@@ -72,5 +72,7 @@ namespace NPOMS.Domain.Entities
         public Gender Gender { get; set; }
 
         public Language Language { get; set; }
+        public int ApprovalStatusId { get; set; }
+        public AccessStatus ApprovalStatus { get; set; }
     }
 }

@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { Subscription } from 'rxjs';
-import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDenodoFacility, IDepartment, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, INpo, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
+import { Subscription, forkJoin } from 'rxjs';
+import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RoleEnum, StaffCategoryEnum } from 'src/app/models/enums';
+import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDistrictCouncil, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IRace, IRegion, ISDA, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -15,6 +15,7 @@ import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-profile',
@@ -23,13 +24,37 @@ import { UserService } from 'src/app/services/api-services/user/user.service';
   providers: [MessageService, ConfirmationService]
 })
 export class EditProfileComponent implements OnInit {
-
+  isDeliveryInformationEdit: boolean;
+  isSystemAdmin: boolean;
+  isApplicant: boolean;
+  canReviewOrApprove: boolean = false;
   /* Permission logic */
+  // public IsAuthorized(permission: PermissionsEnum): boolean {
+  //   this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+  //   this.isApplicant = this.profile.roles.some(function (role) { return role.id === RoleEnum.Applicant });
+  //   this.canReviewOrApprove = this.profile.roles.some(function (role) { return role.id === RoleEnum.Approver || role.id === RoleEnum.SystemAdmin });
+  //   console.log(this.isSystemAdmin);
+  //   console.log(this.canReviewOrApprove);
+  //   if (this.profile != null && this.profile.permissions.length > 0) {
+  //     return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+  //   }
+  // }
+
   public IsAuthorized(permission: PermissionsEnum): boolean {
-    if (this.profile != null && this.profile.permissions.length > 0) {
-      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    if (!this.profile) {
+        return false;
     }
-  }
+
+    const roles = this.profile.roles || [];
+    const permissions = this.profile.permissions || [];
+
+    this.isSystemAdmin = roles.some(role => role.id === RoleEnum.SystemAdmin);
+    this.isApplicant = roles.some(role => role.id === RoleEnum.Applicant);
+    this.canReviewOrApprove = roles.some(role => role.id === RoleEnum.Approver || role.id === RoleEnum.SystemAdmin);
+
+    return permissions.some(x => x.systemName === permission);
+}
+
 
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
@@ -56,7 +81,6 @@ export class EditProfileComponent implements OnInit {
   paramSubcriptions: Subscription;
 
   isDataAvailable: boolean = false;
-
   newAddress: IAddressLookup[];
   physicalAddressLookup: IAddressLookup;
   postalAddressLookup: IAddressLookup;
@@ -130,6 +154,26 @@ export class EditProfileComponent implements OnInit {
   accountTypes: IAccountType[];
   selectedAccountType: IAccountType;
 
+  
+  programBankDetails : IProgramBankDetails [];
+  programContactInformation: IProgramContactInformation[];
+  programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
+  selectedProgramBankBankDetail: IProgramBankDetails;
+
+  programDeliveryDetails : IProgrammeServiceDelivery [];
+  programDeliveryDetail: IProgrammeServiceDelivery = {} as IProgrammeServiceDelivery;
+  selectedProgramDeliveryBankDetail: IProgrammeServiceDelivery;
+  selectedDelivery: IProgrammeServiceDelivery;
+
+  isNewDelivery: boolean;
+  displayDeliveryDialog: boolean;
+
+  sdasAll: ISDA[];
+  sdas: ISDA[] = [];
+  selectedSdas: ISDA[];
+  selected: ISDA[] = [];
+
+
   npoProfileFacilityLists: INpoProfileFacilityList[];
   servicesRendered: IServicesRendered[];
   bankDetails: IBankDetail[];
@@ -146,6 +190,55 @@ export class EditProfileComponent implements OnInit {
 
   organisationCols: any[];
   organisations: INpo[] = [];
+
+  contactDetails: any[] = [];
+  bankingDetails: any[] = [];
+  displayBankingDetailsPanel: boolean = false;
+  selectedProgram: any;
+  //contactInformation: IContactInformation = {} as IContactInformation;
+
+  contactInformation: IProgramContactInformation = {} as IProgramContactInformation;
+  selectedContactInformation: IProgramContactInformation;
+  primaryContactInformation: IProgramContactInformation;
+
+  titles: ITitle[];
+  selectedTitle: ITitle;
+  positions: IPosition[];
+  selectedPosition: IPosition;
+  races: IRace[];
+  selectedRace: IRace;
+  languages: ILanguage[];
+  selectedLanguage: ILanguage;
+  gender: IGender[];
+  selectedGender: IGender;
+  displayContactDialog: boolean;
+	isContactInformationEdit: boolean;
+  newContactInformation: boolean;
+  minDate: Date;
+  maxDate: Date;
+
+  allDistrictCouncils: IDistrictCouncil[];
+  selectedDistrictCouncil: IDistrictCouncil;
+
+  localMunicipalitiesAll: ILocalMunicipality[];
+  localMunicipalities: ILocalMunicipality[] = [];
+  selectedLocalMunicipality: ILocalMunicipality;
+
+  regionsAll: IRegion[];
+  regions: IRegion[] = [];
+  selectedRegions: IRegion[];
+  selectedRegs: IRegion[] = [];
+  selectedLocalMunicipalitiesText: string;
+  selectedRegionsText: string;
+  selectedSDAsText: string;
+  selectedDropdownValue: string;
+  // sdasAll: ISDA[];
+  // sdas: ISDA[] = [];
+  // selectedSdas: ISDA[];
+  // selected: ISDA[] = [];
+
+  // places: IPlace[] = [];
+  // subPlacesAll: ISubPlace[];
 
   constructor(
     private _router: Router,
@@ -172,9 +265,14 @@ export class EditProfileComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-
         if (!this.IsAuthorized(PermissionsEnum.EditNpoProfile))
           this._router.navigate(['401']);
+
+        this.loadTitles();
+        this.loadPositions();
+        this.loadGender();
+        this.loadRaces();
+        this.loadLanguages();
 
         this.loadFacilityDistricts();
         this.loadFacilitySubDistricts();
@@ -190,6 +288,15 @@ export class EditProfileComponent implements OnInit {
         this.loadStaffCategories();
         this.loadNpoProfile();
         this.buildMenu();
+
+         //Get all district councils
+         this.loadDistrictCouncils();
+         //Gel all local municipalities
+         this.loadMunicipalities();
+         //Get all regions
+         this.regionDropdown();
+           //Get all service delivery areas
+        this.loadServiceDeliveryAreas();
       }
     });
 
@@ -221,9 +328,11 @@ export class EditProfileComponent implements OnInit {
     ];
 
     this.serviceRenderedCols = [
-      { header: 'Programme', width: '31%' },
-      { header: 'Sub-Programme', width: '31%' },
-      { header: 'Sub-Programme Type', width: '31%' }
+      { header: 'Programme', width: '15%' },
+      { header: 'Sub-Programme', width: '15%' },
+      { header: 'Sub-Programme Type', width: '15%' },
+      { header: 'Entity System Number', width: '20%' },
+      { header: 'Entity Type Number', width: '20%' }
     ];
 
     this.bankDetailCols = [
@@ -249,6 +358,537 @@ export class EditProfileComponent implements OnInit {
       { header: 'Year Registered', width: '15%' }
     ];
   }
+
+  private loadServiceDeliveryAreas() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.ServiceDeliveryArea, false).subscribe(
+      (results) => {
+        this.sdasAll = results;
+        //this.allDropdownsLoaded();
+
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
+  private loadDistrictCouncils() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DistrictCouncil, false).subscribe(
+      (results) => {
+        this.allDistrictCouncils = results;
+        //this.allDropdownsLoaded();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadMunicipalities() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.LocalMunicipality, false).subscribe(
+      (results) => {
+        this.localMunicipalitiesAll = results;
+        //this.allDropdownsLoaded();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+  private regionDropdown() {
+
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Region, false).subscribe(
+      (results) => {
+        this.regionsAll = results;
+        //this.allDropdownsLoaded();
+      },
+      (err) => err
+    );
+  }
+
+  onLocalMunicipalityChange(localMunicipality: ILocalMunicipality) {
+    this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === localMunicipality.id);
+    if (this.selectedLocalMunicipality == null) {
+      this.regions = null;
+      this.sdas = null;
+    }
+      //map selected local municipality  
+      this.selectedDelivery.localMunicipality = this.selectedLocalMunicipality;
+    if (localMunicipality.id != undefined) {
+      this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
+    }
+  }
+
+  OnDistrictCouncilChange(districtCouncil: IDistrictCouncil) {
+    this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === districtCouncil.id);
+    this.localMunicipalities = [];
+    this.sdas = null;
+    this.selectedRegions = null;
+    this.selectedSdas = null;
+    this.selected = null;
+    this.regions = null;
+    this.sdas = null;
+    this.selectedDelivery.districtCouncil = this.selectedDistrictCouncil;
+    if (districtCouncil.id != undefined) {
+      this.localMunicipalities = this.localMunicipalitiesAll?.filter(x => x.districtCouncilId == districtCouncil.id);
+    }
+  }
+
+  onRegionChange(regions: IRegion[]) { 
+    this.selectedRegions = [];
+    this.selectedSdas = [];
+    this.selected = [];
+    this.sdas = [];
+
+    regions.forEach(item => {
+      this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
+    });
+    if (this.selectedDelivery != null)
+        this.selectedDelivery.regions = this.selectedRegions;
+
+    // filter items matching the selected regions
+    if (regions != null && regions.length != 0) {
+      for (var i = 0; i < this.sdasAll.length; i++) {
+        if (regions.filter(r => r.id === this.sdasAll[i].regionId).length != 0) {
+          this.sdas.push(this.sdasAll[i]);
+        }
+      }
+    }
+
+    // this.selected = [];
+    // for (var i = 0; i < regions?.length; i++) {
+    //   for (var j = 0; j < this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length; j++) {
+    //     if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[j].regionId == regions[i].id) {
+    //       this.selected.push(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas[j]);
+    //     }
+    //   }
+    // }
+    // // make sure the selected is not redundant!!
+    // const ids = this.selected.map(o => o.id) // remove duplicate
+    // const filtered = this.selected.filter(({ id }, index) => !ids.includes(id, index + 1))
+    // // end  make sure the selected is not redundant!!
+    // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = filtered;
+    // this.selectedSdas = filtered;
+  }
+
+  
+ onSdaChange(sdas: ISDA[]) {
+    // this.places = [];
+    // this.subPlacesAll = [];
+    this.selectedSdas = [];
+    // this.sdas =[];
+
+    // this.setPlaces(sdas); // populate specific locations where the service will be delivered to
+    sdas.forEach(item => {
+      this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
+    });
+
+    this.selectedDelivery.serviceDeliveryAreas = this.selectedSdas;
+     //map selected service delivery areas 
+    // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
+  }
+
+  // onRegionChange(regions: IRegion[]) {
+  //   this.selectedRegions = [];
+  //   this.selectedSdas = [];
+  //   this.selected = [];
+  //   this.sdas = [];
+
+  //   regions.forEach(item => {
+  //     this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
+  //   });
+
+  //   // filter items matching the selected regions
+  //   if (regions != null && regions.length != 0) {
+  //     for (var i = 0; i < this.sdasAll.length; i++) {
+  //       if (regions.filter(r => r.id === this.sdasAll[i].regionId).length != 0) {
+  //         this.sdas.push(this.sdasAll[i]);
+  //       }
+  //     }
+  //   }
+  // //map selected regions
+  // }
+
+  private allDropdownsLoaded() {
+    if (this.allDistrictCouncils?.length > 0 &&
+      this.localMunicipalitiesAll?.length > 0 &&
+      this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
+
+      if (this.selectedDelivery.districtCouncil.id != undefined)
+        this.OnDistrictCouncilChange(this.selectedDelivery.districtCouncil);
+
+      if (this.selectedDelivery.localMunicipality.id != undefined)
+        this.onLocalMunicipalityChange(this.selectedDelivery.localMunicipality);
+
+      if (this.selectedDelivery.regions?.length > 0)
+        this.onRegionChange(this.selectedDelivery.regions);
+
+      if (this.selectedDelivery.serviceDeliveryAreas?.length > 0)
+        this.onSdaChange(this.selectedDelivery.serviceDeliveryAreas);
+    }
+  }
+  
+private loadTitles() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Titles, false).subscribe(
+      (results) => {
+        this.titles = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadPositions() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Positions, false).subscribe(
+      (results) => {
+        this.positions = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadRaces() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Race, false).subscribe(
+      (results) => {
+        this.races = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadLanguages() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Languages, false).subscribe(
+      (results) => {
+        this.languages = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadGender() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Gender, false).subscribe(
+      (results) => {
+        this.gender = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  canEditServicesRendered(programme: IProgramme): boolean {
+    return this.isSystemAdmin || this.isApplicant || (programme &&
+           this.profile.userPrograms.some(userProgram => userProgram.id === programme.id));
+  }
+  
+  canEdit(): boolean {
+    return this.isSystemAdmin || this.isApplicant || (this.selectedProgram &&
+      this.profile.userPrograms.some(userProgram => userProgram.id === Number(this.selectedProgram.id)));
+  }
+
+  addContactInformation() {
+    this.isContactInformationEdit = false;
+    this.newContactInformation = true;
+
+    this.contactInformation = {
+      isPrimaryContact: false,
+      isActive: true,
+      createdUserId: this.profile.id,
+      createdDateTime: new Date()
+    } as IProgramContactInformation;
+
+    this.selectedTitle = null;
+    this.selectedPosition = null;
+    this.selectedRace = null;
+    this.selectedGender = null;
+    this.selectedLanguage = null;
+    this.displayContactDialog = true;
+  }
+
+  clearIdPassportNumber(event) {
+    if (event.value === true)
+      this.contactInformation.passportNumber = "";
+
+    if (event.value === false)
+      this.contactInformation.idNumber = "";
+  }
+
+
+  disableProgrammeSaveContactInfo() {
+    const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    // if (!this.contactInformation.emailAddress || !regularExpression.test(String(this.contactInformation.emailAddress)) || !this.contactInformation.cellphone || this.contactInformation.cellphone.length != 10)
+    //   return true;
+
+    // return false;
+      if (!this.selectedTitle ||
+        !this.contactInformation.emailAddress || 
+        !regularExpression.test(String(this.contactInformation.emailAddress)) || 
+        !this.contactInformation.cellphone || 
+        this.contactInformation.cellphone.length != 10) {
+      return true;
+    }
+  }
+
+  editContactInformation(data: IProgramContactInformation) {
+    this.selectedContactInformation = data;
+    this.isContactInformationEdit = true;
+    this.newContactInformation = false;
+    this.contactInformation = this.cloneContactInformation(data);
+    this.displayContactDialog = true;
+  }
+
+  private cloneContactInformation(data: IProgramContactInformation): IProgramContactInformation {
+    let contactInfo = {} as IProgramContactInformation;
+
+    for (let prop in data)
+      contactInfo[prop] = data[prop];
+    return contactInfo;
+  }
+
+  deleteContactInformation(data: IContactInformation) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.npo.contactInformation.forEach(function (item, index, object) {
+          if (data === item)
+            object.splice(index, 1);
+        });
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  
+  toggleBankingDetailsPanel(program: any) {
+    if (this.selectedProgram && this.selectedProgram.id === program.id) {
+      this.displayBankingDetailsPanel = !this.displayBankingDetailsPanel;
+    } else {
+      this.selectedProgram = program;
+      this.loadProgrammeDetails(program.id);
+      this.displayBankingDetailsPanel = true;
+    }
+  }
+
+  getNames(array: any[]): string {
+    const names = array.map(item => item.name) // Access 'name' directly
+                       .filter(name => name !== undefined && name.trim() !== '') // Filter out undefined or empty strings
+                       .join(', '); // Join the names with a comma
+  
+    return names; // Return the joined names as a string
+  }
+  
+  loadProgrammeDetails(progId: number): void {
+    forkJoin({
+      contacts: this._npoProfileRepo.getProgrammeContactsById(progId),
+      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId),
+      deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId)
+    }).subscribe({
+      next: (result) => {
+        this.programContactInformation = result.contacts;
+        this.programBankDetails = result.bankDetails;
+        this.programDeliveryDetails = result.deliveryDetails;
+        this.updateProgramBankDetailObjects();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  loadProgrammeContactInformation(progId: number): void {
+    this._npoProfileRepo.getProgrammeContactsById(progId).subscribe({
+      next: (data) => {
+        this.programContactInformation = data;
+        this.updateProgramBankDetailObjects();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+  
+  loadProgrammeBankDetails(progId: number): void {
+    this._npoProfileRepo.getProgrammeBankDetailsById(progId).subscribe({
+      next: (data) => {
+        this.programBankDetails = data;
+        this.updateProgramBankDetailObjects();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  editBankingDetail(detail: any) {
+    this.displayFacilityInformationDialog = true;
+  }
+
+
+  getBankingDetailsByProgram(programId: number): any[] {
+    // Replace this with actual logic to fetch banking details
+    // For now, returning a dummy list for demonstration
+    return [
+      { 
+        id: 1,
+        npoProfileId: 1,
+        bankId: 1,
+        branchId: 1,
+        accountTypeId: 1,
+        accountNumber: '123456',
+        isActive: true,
+        branchCode: '001',
+        bank: { id: 1, name: 'Bank A' },
+        branch: { id: 1, name: 'Branch A', code: '001' },
+        accountType: { id: 1, name: 'Checking' }
+      },
+      { 
+        id: 2,
+        npoProfileId: 1,
+        bankId: 2,
+        branchId: 2,
+        accountTypeId: 2,
+        accountNumber: '789012',
+        isActive: true,
+        branchCode: '002',
+        bank: { id: 2, name: 'Bank B' },
+        branch: { id: 2, name: 'Branch B', code: '002' },
+        accountType: { id: 2, name: 'Savings' }
+      }
+    ];
+  }
+
+
+  editProgramContactInformation(data: IProgramContactInformation) {
+    this.selectedContactInformation = data;
+    this.isContactInformationEdit = true;
+    this.newContactInformation = false;
+    this.contactInformation = this.cloneProgramContactInformation(data);
+    this.displayContactDialog = true;
+  }
+
+  private cloneProgramContactInformation(data: IProgramContactInformation): IProgramContactInformation {
+    let contactInfo = {} as IProgramContactInformation;
+
+    for (let prop in data)
+      contactInfo[prop] = data[prop];
+    
+    this.selectedTitle = data.title;
+    this.selectedPosition = data.position;
+
+    this.selectedGender = data.gender ? data.gender : null;
+    this.selectedRace = data.race ? data.race : null;
+    this.selectedLanguage = data.language ? data.language : null;
+
+    return contactInfo;
+  }
+
+  editProgrammeServiceDelivery(delivery: IProgrammeServiceDelivery) {
+    this.selectedDelivery = delivery;
+    this.allDropdownsLoaded();
+    this.programDeliveryDetail = this.cloneProgrammeServiceDelivery(delivery);
+    this.isNewDelivery = false;
+    this.isDeliveryInformationEdit = true;
+    this.displayDeliveryDialog = true;
+    this.allDropdownsLoaded();
+  }
+  
+  private cloneProgrammeServiceDelivery(delivery: IProgrammeServiceDelivery): IProgrammeServiceDelivery {
+    this.selectedLocalMunicipality = delivery.localMunicipality;
+
+    this.selectedDistrictCouncil = delivery.districtCouncil;
+
+    this.selectedRegions = delivery.regions;
+
+    this.selectedSdas = delivery.serviceDeliveryAreas;
+
+    return;
+  }
+
+  addProgrammeServiceDelivery() {
+    this.isDeliveryInformationEdit = false;
+    this.isNewDelivery = true;
+
+    this.selectedDelivery = {
+      isActive: true,
+    } as IProgrammeServiceDelivery;
+  
+    this.selectedRegions = null;
+    this.selectedDistrictCouncil = null;
+    this.selectedLocalMunicipality = null;
+    this.displayDeliveryDialog = true;
+  }
+  
+  saveProgrammeServiceDelivery() {
+  this.selectedDelivery.programId =  Number(this.selectedProgram.id);
+  this.selectedDelivery.isActive = true;
+
+  if (this.isNewDelivery) {
+      this.createProgrammeServiceDelivery(this.selectedDelivery);
+   } else {
+    this.updateProgrammeServiceDelivery(this.selectedDelivery);
+   }
+    this.displayDeliveryDialog = false; 
+  }
+
+  private createProgrammeServiceDelivery(serviceDelivery: IProgrammeServiceDelivery) {
+    this._npoProfileRepo.createProgrammeDeliveryDetails(Number(this.npoProfile.id),serviceDelivery).subscribe(
+      (resp) => {
+        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateProgrammeServiceDelivery(serviceDelivery: IProgrammeServiceDelivery) {
+    this._npoProfileRepo.updateProgrammeDeliveryDetails(Number(this.npoProfile.id),serviceDelivery).subscribe(
+      (resp) => {
+        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
+  disableProgrammeerviceDeliverySave() {
+    return !(this.selectedDelivery.regions && this.selectedDelivery.districtCouncil);
+  }
+
 
   private loadFacilityDistricts() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.FacilityDistricts, false).subscribe(
@@ -633,6 +1273,20 @@ export class EditProfileComponent implements OnInit {
     );
   }
 
+  private getProgrammeDeliveryDetailsById(selectedProgramme: number) {
+    this._npoProfileRepo.getProgrammeDeliveryDetailsById(selectedProgramme).subscribe(
+      (results) => {
+        this.programDeliveryDetails = results;
+        this.updateServicesRenderedObjects();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
   private loadBankDetails(npoProfileId: number) {
     this._npoProfileRepo.getBankDetailByNpoProfileId(npoProfileId).subscribe(
       (results) => {
@@ -667,6 +1321,28 @@ export class EditProfileComponent implements OnInit {
       });
     }
   }
+  private updateProgramBankDetailObjects() {
+    if (this.banks && this.accountTypes && this.programBankDetails) {
+      this.programBankDetails.forEach(item => {
+        item.bank = this.banks.find(x => x.id === item.bankId);
+        this.loadProgrammeBranch(item);
+        item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
+      });
+    }
+  }
+
+  private loadProgrammeBranch(bankDetail: IProgramBankDetails) {
+    this._dropdownRepo.getBranchById(bankDetail.branchId).subscribe(
+      (results) => {
+        bankDetail.branch = results;
+        bankDetail.branchCode = bankDetail.branch.branchCode != null ? bankDetail.branch.branchCode : bankDetail.bank.code;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
   private loadBranch(bankDetail: IBankDetail) {
     this._dropdownRepo.getBranchById(bankDetail.branchId).subscribe(
@@ -685,21 +1361,24 @@ export class EditProfileComponent implements OnInit {
     if (this.profile) {
       this.menuActions = [
         {
-          label: 'Validate',
+          label: 'Approve',
           icon: 'fa fa-check',
           command: () => {
-            this.formValidate();
+            this.Approve();
           },
-          visible: false
+          visible: true,
+          disabled: !this.canReviewOrApprove,
         },
         {
-          label: 'Clear Messages',
+          label: 'Reject',
           icon: 'fa fa-undo',
           command: () => {
-            this.clearMessages();
+            this.Reject();
           },
-          visible: false
+          visible: true,
+          disabled: !this.canReviewOrApprove,
         },
+
         {
           label: 'Save',
           icon: 'fa fa-floppy-o',
@@ -707,6 +1386,14 @@ export class EditProfileComponent implements OnInit {
             this.saveItems();
           }
         },
+        // {
+        //   label: 'Submit',
+        //   icon: 'fa fa-undo',
+        //   command: () => {
+        //     this.Submit();
+        //   },
+        //   visible: true
+        // },
         {
           label: 'Go Back',
           icon: 'fa fa-step-backward',
@@ -717,6 +1404,63 @@ export class EditProfileComponent implements OnInit {
       ];
     }
   }
+  
+
+  private Reject() {
+    if (this.canContinue()) {
+      this._spinner.show();
+      let data = this.npoProfile;
+
+      this._npoProfileRepo.rejectProfile(data.id).subscribe(
+        (resp) => {
+          this._spinner.hide();
+          this._router.navigateByUrl('npo-profiles');
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+  }
+
+
+  private Approve() {
+    if (this.canContinue()) {
+      this._spinner.show();
+      let data = this.npoProfile;
+      this._npoProfileRepo.approveProfile(data.id).subscribe(
+        (resp) => {
+          this._spinner.hide();
+          this._router.navigateByUrl('npo-profiles');
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+  }
+
+
+  private Submit() {
+    if (this.canContinue()) {
+      this._spinner.show();
+      let data = this.npoProfile;
+
+      this._npoProfileRepo.submitProfile(data.id).subscribe(
+        (resp) => {
+          this._spinner.hide();
+          this._router.navigateByUrl('npo-profiles');
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+  }
+
 
   private getDocuments() {
     this._documentStore.get(Number(this.npoProfileId), EntityTypeEnum.SupportingDocuments).subscribe(
@@ -1377,10 +2121,10 @@ export class EditProfileComponent implements OnInit {
     return true;
   }
 
-  addBankDetail() {
+  addProgrammeBankDetail() {
     this.isBankDetailEdit = false;
     this.newBankDetail = true;
-    this.bankDetail = {} as IBankDetail;
+    this.programBankDetail = {} as IProgramBankDetails;
     this.selectedBank = null;
     this.branches = [];
     this.selectedBranch = null;
@@ -1388,17 +2132,17 @@ export class EditProfileComponent implements OnInit {
     this.displayBankDetailDialog = true;
   }
 
-  editBankDetail(data: IBankDetail) {
-    this.selectedBankDetail = data;
+  editProgrammeBankDetail(data: IProgramBankDetails) {
+    this.selectedProgramBankBankDetail = data;
     this.isBankDetailEdit = true;
     this.newBankDetail = false;
-    this.bankDetail = this.cloneBankDetail(data);
+    this.programBankDetail = this.cloneProgrammeBankDetail(data);
     this.branchChange();
     this.displayBankDetailDialog = true;
   }
 
-  private cloneBankDetail(data: IBankDetail): IBankDetail {
-    let bankDetail = {} as IBankDetail;
+  private cloneProgrammeBankDetail(data: IProgramBankDetails): IProgramBankDetails {
+    let bankDetail = {} as IProgramBankDetails;
 
     for (let prop in data)
       bankDetail[prop] = data[prop];
@@ -1409,6 +2153,82 @@ export class EditProfileComponent implements OnInit {
     this.selectedAccountType = data.accountType;
 
     return bankDetail;
+  }
+
+  // addBankDetail() {
+  //   this.isBankDetailEdit = false;
+  //   this.newBankDetail = true;
+  //   this.bankDetail = {} as IBankDetail;
+  //   this.selectedBank = null;
+  //   this.branches = [];
+  //   this.selectedBranch = null;
+  //   this.selectedAccountType = null;
+  //   this.displayBankDetailDialog = true;
+  // }
+
+  // editBankDetail(data: IBankDetail) {
+  //   this.selectedBankDetail = data;
+  //   this.isBankDetailEdit = true;
+  //   this.newBankDetail = false;
+  //   this.bankDetail = this.cloneBankDetail(data);
+  //   this.branchChange();
+  //   this.displayBankDetailDialog = true;
+  // }
+
+  // private cloneBankDetail(data: IBankDetail): IBankDetail {
+  //   let bankDetail = {} as IBankDetail;
+
+  //   for (let prop in data)
+  //     bankDetail[prop] = data[prop];
+
+  //   this.selectedBank = data.bank;
+  //   this.bankChange();
+  //   this.selectedBranch = data.branch;
+  //   this.selectedAccountType = data.accountType;
+
+  //   return bankDetail;
+  // }
+
+  deleteProgrammeBankDetail(data: IProgramBankDetails) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        data.isActive = false;
+        this.updateProgrammeBankDetail(data);
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  deleteProgrammeServiceDelivery(data: IProgrammeServiceDelivery) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        data.isActive = false;
+        this.updateProgrammeServiceDelivery(data);
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  deleteProgramContactInformation(data: IProgramContactInformation) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        data.isActive = false;
+        this.updateProgrameContactDetail(data);
+      },
+      reject: () => {
+      }
+    });
   }
 
   deleteBankDetail(data: IBankDetail) {
@@ -1425,6 +2245,82 @@ export class EditProfileComponent implements OnInit {
     });
   }
 
+  saveProgrammeBankDetail() {
+    this.programBankDetail.programId = Number(this.selectedProgram.id);
+    this.programBankDetail.bankId = this.selectedBank.id;
+    this.programBankDetail.branchId = this.selectedBranch.id;
+    this.programBankDetail.accountTypeId = this.selectedAccountType.id;
+    this.programBankDetail.isActive = true;
+
+    this.newBankDetail ? this.createProgrameBankDetail(this.programBankDetail) : this.updateProgrameBankDetail(this.programBankDetail);
+    this.displayBankDetailDialog = false;
+  }
+
+
+  private createProgrameBankDetail(bankDetail: IProgramBankDetails) {
+    this._npoProfileRepo.createProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
+      (resp) => {
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateProgrameBankDetail(bankDetail: IProgramBankDetails) {
+    this._npoProfileRepo.updateProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
+      (resp) => {
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  saveProgrammeContactInformation() {
+    this.contactInformation.programmeId = Number(this.selectedProgram.id);
+    this.contactInformation.title = this.selectedTitle;
+    this.contactInformation.position = this.selectedPosition;
+    this.contactInformation.race = this.selectedRace;
+    this.contactInformation.gender = this.selectedGender;
+    this.contactInformation.language = this.selectedLanguage;
+
+    if (this.newContactInformation)
+      this.createProgrameContactDetail(this.contactInformation)
+    else
+    this.updateProgrameContactDetail(this.contactInformation)
+    this.displayContactDialog = false;
+  }
+
+  private createProgrameContactDetail(contact: IProgramContactInformation) {
+    this._npoProfileRepo.createProgrammeContact(Number(this.npoProfile.id),contact).subscribe(
+      (resp) => {
+        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private updateProgrameContactDetail(contact: IProgramContactInformation) {
+    this._npoProfileRepo.updateProgrammeContact(Number(this.npoProfile.id),contact).subscribe(
+      (resp) => {
+        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
   saveBankDetail() {
     this.bankDetail.npoProfileId = Number(this.npoProfileId);
     this.bankDetail.bankId = this.selectedBank.id;
@@ -1435,6 +2331,7 @@ export class EditProfileComponent implements OnInit {
     this.newBankDetail ? this.createBankDetail(this.bankDetail) : this.updateBankDetail(this.bankDetail);
     this.displayBankDetailDialog = false;
   }
+
 
   private createBankDetail(bankDetail: IBankDetail) {
     this._npoProfileRepo.createBankDetail(bankDetail).subscribe(
@@ -1460,8 +2357,27 @@ export class EditProfileComponent implements OnInit {
     );
   }
 
+  private updateProgrammeBankDetail(bankDetail: IProgramBankDetails) {
+    this._npoProfileRepo.updateProgrammeBankDetails(Number(this.selectedProgram.id),bankDetail).subscribe(
+      (resp) => {
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   disableSaveBankDetail() {
     if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.bankDetail.accountNumber)
+      return true;
+
+    return false;
+  }
+
+  disableSaveProgramBankDetail() {
+    if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.programBankDetail.accountNumber)
       return true;
 
     return false;
@@ -1489,6 +2405,12 @@ export class EditProfileComponent implements OnInit {
   branchChange() {
     if (this.selectedBranch) {
       this.bankDetail.branchCode = this.selectedBranch.branchCode != null ? this.selectedBranch.branchCode : this.selectedBank.code;
+    }
+  }
+
+  branchProgrammeChange() {
+    if (this.selectedBranch) {
+      this.programBankDetail.branchCode = this.selectedBranch.branchCode != null ? this.selectedBranch.branchCode : this.selectedBank.code;
     }
   }
 

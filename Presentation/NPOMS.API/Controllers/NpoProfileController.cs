@@ -702,6 +702,27 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		#endregion
-	}
+        [HttpPost("approve/{npoProfileId}", Name = "ApproveNpoProfile")]
+        public async Task<IActionResult> ApproveNpoProfile(int npoProfileId)
+        {
+            await _npoProfileService.ApproveNpoProfile(npoProfileId, base.GetUserIdentifier());
+            return Ok(npoProfileId);
+        }
+
+        [HttpPost("reject/{npoProfileId}", Name = "RejectNpoProfile")]
+        public async Task<IActionResult> RejectNpoProfile(int npoProfileId)
+        {
+            await _npoProfileService.RejectNpoProfile(npoProfileId, base.GetUserIdentifier());
+            return Ok(npoProfileId);
+        }
+
+        [HttpPost("submitProfile/{npoProfileId}", Name = "SubmitProfileNpoProfile")]
+        public async Task<IActionResult> SubmitProfileNpoProfile(int npoProfileId)
+        {
+            await _npoProfileService.SubmitProfileNpoProfile(npoProfileId, base.GetUserIdentifier());
+            return Ok(npoProfileId);
+        }
+
+        #endregion
+    }
 }

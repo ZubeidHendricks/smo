@@ -223,6 +223,10 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IResponseHistoryRepository, ResponseHistoryRepository>();
             services.AddScoped<ICapturedResponseRepository, CapturedResponseRepository>();
 
+            services.AddScoped<IProgrameBankDetailRepository, ProgrameBankDetailRepository>();
+            services.AddScoped<IProgrameContactDetailRepository, ProgrameContactDetailRepository>();
+            services.AddScoped<IProgrameDeliveryRepository, ProgrameDeliveryRepository>();
+
 
             #endregion
 
@@ -247,6 +251,13 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBidService, BidService>();
             services.AddScoped<IEvaluationService, EvaluationService>();
+
+            services.AddScoped<IBankService, BankService>();
+            services.AddScoped<IContactService, ContactService>();
+            services.AddScoped<IProgrammeService, ProgrammeService>();
+            services.AddScoped<IProgrameDeliveryService, ProgrameDeliveryService>();
+
+            services.AddConfiguration<dtoBlobConfig>(builder.Configuration, "BlobStorageSettings");
 
 
             //PowerBI

@@ -21,6 +21,11 @@ namespace NPOMS.Repository.Implementation.Core
 
         }
 
+        public async Task<Department> GetDepartmentById(int id)
+        {
+           return  await _context.Departments.Where(x => x.Id == id && x.IsActive).FirstOrDefaultAsync();
+        }
+
         public async Task<List<int>> GetDepartmentIdOfLogggedInUserAsync(int userId)
         {
             try
