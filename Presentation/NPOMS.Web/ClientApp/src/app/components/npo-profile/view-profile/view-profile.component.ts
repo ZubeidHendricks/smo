@@ -18,6 +18,7 @@ import { forkJoin } from 'rxjs';
 export class ViewProfileComponent implements OnInit {
 
   @Input() npoId: number;
+  @Input() source: string;
   @Output() retrievedNpoProfile = new EventEmitter<INpoProfile>();
 
   npoProfile: INpoProfile;
@@ -82,6 +83,7 @@ export class ViewProfileComponent implements OnInit {
   programContactInformation: IProgramContactInformation[];
   programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
   programDeliveryDetails : IProgrammeServiceDelivery [];
+  selectedRowIndex: number | null = null;
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -137,11 +139,9 @@ export class ViewProfileComponent implements OnInit {
     ];
 
     this.serviceRenderedCols = [
-      { header: 'Programme', width: '15%' },
-      { header: 'Sub-Programme', width: '15%' },
-      { header: 'Sub-Programme Type', width: '15%' },
-      { header: 'Entity System Number', width: '20%' },
-      { header: 'Entity Type Number', width: '20%' }
+      { header: 'Programme', width: '30%' },
+      { header: 'Sub-Programme', width: '30%' },
+      { header: 'Sub-Programme Type', width: '30%' },
     ];
 
     this.bankDetailCols = [
@@ -161,7 +161,9 @@ export class ViewProfileComponent implements OnInit {
       { header: 'Actions', width: '5%' }
     ];
   }
-
+  onFirstTdClick(rowIndex: number) {
+    this.selectedRowIndex = rowIndex;
+  }
   toggleBankingDetailsPanel(program: any) {
     if (this.selectedProgram && this.selectedProgram.id === program.id) {
       this.displayBankingDetailsPanel = !this.displayBankingDetailsPanel;
@@ -389,7 +391,7 @@ export class ViewProfileComponent implements OnInit {
   }
 
   private loadServicesRendered(npoProfileId: number) {
-    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId).subscribe(
+    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId, this.source).subscribe(
       (results) => {
         this.servicesRendered = results;
         this.updateServicesRenderedObjects();

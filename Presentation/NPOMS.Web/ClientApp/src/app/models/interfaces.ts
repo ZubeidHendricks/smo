@@ -777,6 +777,7 @@ export interface ITrainingMaterial {
 export interface IServicesRendered {
     id: number;
     npoProfileId: number;
+    departmentId: number;
     programmeId: number;
     subProgrammeId: number;
     subProgrammeTypeId: number;
@@ -784,6 +785,7 @@ export interface IServicesRendered {
     entityTypeNumber: number;
     entitySystemNumber: number;
 
+    department: IDepartment;
     programme: IProgramme;
     subProgramme: ISubProgramme;
     subProgrammeType: ISubProgrammeType;

@@ -34,3 +34,9 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 11px !important;
 }
+
+.selected-row {
+    background-color: grey !important;
+    color: white;
+  }
+  

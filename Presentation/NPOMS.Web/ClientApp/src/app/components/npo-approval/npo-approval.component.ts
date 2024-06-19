@@ -47,6 +47,7 @@ export class NpoApprovalComponent implements OnInit {
   npoName: string;
   npo: INpo;
   npoProfile: INpoProfile;
+  source: string = 'workflow';
 
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;

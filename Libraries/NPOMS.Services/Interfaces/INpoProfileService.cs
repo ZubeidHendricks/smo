@@ -23,7 +23,7 @@ namespace NPOMS.Services.Interfaces
 
 		Task Update(NpoProfileFacilityList model, string userIdentifier);
 
-		Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(int npoProfileId);
+		Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(string source, int npoProfileId);
 
 		Task Create(ServicesRendered model, string userIdentifier);
 

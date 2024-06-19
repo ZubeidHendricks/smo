@@ -130,8 +130,8 @@ export class NpoProfileService {
     return this._http.put<INpoProfileFacilityList>(url, mapping, httpOptions);
   }
 
-  public getServicesRenderedByNpoProfileId(npoProfileId: number) {
-    const url = `${this._envUrl.urlAddress}/api/npo-profiles/services-rendered/npoProfileId/${npoProfileId}`;
+  public getServicesRenderedByNpoProfileId(npoProfileId: number,source: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/services-rendered/${source}/npoProfileId/${npoProfileId}`;
     return this._http.get<IServicesRendered[]>(url, httpOptions);
   }
 
