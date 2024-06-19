@@ -287,19 +287,17 @@
                     <th style="width: 7%;">Actions</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr class="default-font">
-                    <td *ngIf="rowData.programme" (click)="toggleBankingDetailsPanel(rowData.programme)">{{rowData.programme.name}}</td>
-                    <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</td>
-                    <td *ngIf="rowData.subProgrammeType">{{rowData.subProgrammeType.name}}</td>
-                    <td>{{ rowData.entitySystemNumber === 0? '' : rowData.entitySystemNumber }}</td>
-                    <td>{{ rowData.entityTypeNumber === 0? '' : rowData.entityTypeNumber }}</td>
-                    <td style="text-align: center;">
-                        <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editServicesRendered(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
-                        <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteServicesRendered(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
-                    </td>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="default-font" [ngClass]="{'selected-row': selectedRowIndex === rowIndex}">
+                  <td (click)="onFirstTdClick(rowIndex); toggleBankingDetailsPanel(rowData.programme)">{{rowData.programme.name}}</td>
+                  <td>{{rowData.subProgramme.name}}</td>
+                  <td>{{rowData.subProgrammeType.name}}</td>
+                  <td style="text-align: center;">
+                    <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editServicesRendered(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                    <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteServicesRendered(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                  </td>
                 </tr>
-            </ng-template>
+              </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr class="default-font">
                     <td colspan="6" style="text-align: center;">No results found</td>
@@ -809,16 +807,40 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
+
+        <div *ngIf="isApplicant" class="p-grid">
+                <div class="p-col-fixed form-label">
+                    <div class="box">
+                        <span class="mandatory-content">Department</span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <p-dropdown [options]="departments1" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"  (onChange)="loadDepartmentPrograms($event.value.id)" [filter]="true" filterBy="name"></p-dropdown>
+                </div>
+        </div>
+        
         <div class="p-grid">
             <div class="p-col-fixed form-label">
-                <div class="box">
-                    <span class="mandatory-content">Programme</span>
-                </div>
+              <div class="box">
+                <span class="mandatory-content">Programme</span>
+              </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="filteredProgrammes" placeholder="Select a Programme" optionLabel="name" [(ngModel)]="selectedProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)" [filter]="true" filterBy="name"></p-dropdown>
+              <p-dropdown 
+                [options]="filteredProgrammes" 
+                placeholder="Select a Programme" 
+                optionLabel="name" 
+                [(ngModel)]="selectedProgramme" 
+                [ngModelOptions]="{standalone: true}" 
+                [style]="{'width':'100%'}" 
+                appendTo="body" 
+                (onChange)="programmeChange($event.value)" 
+                [filter]="true" 
+                filterBy="name">
+              </p-dropdown>
             </div>
         </div>
+
         <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
@@ -839,31 +861,6 @@
                 <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
             </div>
         </div>
-
-        <div class="p-grid">
-            <div class="p-col-fixed form-label">
-                <div class="box">
-                    <span class="non-mandatory-content">Entity System Number</span>
-                </div>
-            </div>
-            <div class="p-col">
-                <input type="text" class="form-text" pInputText [(ngModel)]="serviceRendered.entitySystemNumber" [ngModelOptions]="{standalone: true}" [minlength]="1" [maxlength]="10" (keypress)="numberOnly($event)">
-            </div>
-        </div>
-
-
-        <div class="p-grid">
-            <div class="p-col-fixed form-label">
-                <div class="box">
-                    <span class="non-mandatory-content">Entity Type Number</span>
-                </div>
-            </div>
-            <div class="p-col">
-                <input type="text" class="form-text" pInputText [(ngModel)]="serviceRendered.entityTypeNumber" [ngModelOptions]="{standalone: true}" [minlength]="1" [maxlength]="10" (keypress)="numberOnly($event)">
-            </div>
-        </div>
-
-
         <ng-template pTemplate="footer">
             <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveServicesRendered() (click)="saveServicesRendered()"></button>
         </ng-template>

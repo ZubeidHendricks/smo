@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { Subscription, forkJoin } from 'rxjs';
+import { Observable, Subscription, forkJoin, of, throwError } from 'rxjs';
 import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RoleEnum, StaffCategoryEnum } from 'src/app/models/enums';
 import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDistrictCouncil, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IRace, IRegion, ISDA, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
@@ -15,7 +15,7 @@ import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
-import { map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-profile',
@@ -28,6 +28,9 @@ export class EditProfileComponent implements OnInit {
   isSystemAdmin: boolean;
   isApplicant: boolean;
   canReviewOrApprove: boolean = false;
+  ProgrammeApprover: boolean;
+  ProgrammeViewOnly: boolean;
+  ProgrammeCapturer: boolean;
   /* Permission logic */
   // public IsAuthorized(permission: PermissionsEnum): boolean {
   //   this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
@@ -50,8 +53,12 @@ export class EditProfileComponent implements OnInit {
 
     this.isSystemAdmin = roles.some(role => role.id === RoleEnum.SystemAdmin);
     this.isApplicant = roles.some(role => role.id === RoleEnum.Applicant);
-    this.canReviewOrApprove = roles.some(role => role.id === RoleEnum.Approver || role.id === RoleEnum.SystemAdmin);
 
+    this.ProgrammeApprover = roles.some(role => role.id === RoleEnum.ProgrammeApprover || role.id === RoleEnum.SystemAdmin);
+
+    this.ProgrammeCapturer = roles.some(role => role.id === RoleEnum.ProgrammeCapturer || role.id === RoleEnum.SystemAdmin);
+
+    this.ProgrammeViewOnly = roles.some(role => role.id === RoleEnum.ProgrammeViewOnly || role.id === RoleEnum.SystemAdmin);
     return permissions.some(x => x.systemName === permission);
 }
 
@@ -130,6 +137,7 @@ export class EditProfileComponent implements OnInit {
 
   programmes: IProgramme[];
   filteredProgrammes: IProgramme[] = [];
+  applicantfilteredProgrammes: IProgramme[] = [];
   selectedProgramme: IProgramme;
   subProgrammes: ISubProgramme[];
   filteredSubProgrammes: ISubProgramme[] = [];
@@ -139,6 +147,9 @@ export class EditProfileComponent implements OnInit {
   selectedSubProgrammeType: ISubProgrammeType;
 
   departments: IDepartment[];
+  selectedDepartment: IDepartment;
+
+  departments1: IDepartment[];
 
   bankDetailCols: any[];
   displayBankDetailDialog: boolean;
@@ -239,6 +250,9 @@ export class EditProfileComponent implements OnInit {
 
   // places: IPlace[] = [];
   // subPlacesAll: ISubPlace[];
+  source: string = 'editprofile';
+
+  selectedRowIndex: number | null = null;
 
   constructor(
     private _router: Router,
@@ -297,6 +311,7 @@ export class EditProfileComponent implements OnInit {
          this.regionDropdown();
            //Get all service delivery areas
         this.loadServiceDeliveryAreas();
+        this.loadDepartments1();
       }
     });
 
@@ -331,8 +346,8 @@ export class EditProfileComponent implements OnInit {
       { header: 'Programme', width: '15%' },
       { header: 'Sub-Programme', width: '15%' },
       { header: 'Sub-Programme Type', width: '15%' },
-      { header: 'Entity System Number', width: '20%' },
-      { header: 'Entity Type Number', width: '20%' }
+      // { header: 'Entity System Number', width: '20%' },
+      // { header: 'Entity Type Number', width: '20%' }
     ];
 
     this.bankDetailCols = [
@@ -357,6 +372,28 @@ export class EditProfileComponent implements OnInit {
       { header: 'Registration Status', width: '15%' },
       { header: 'Year Registered', width: '15%' }
     ];
+  }
+
+  private loadDepartments1() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
+      (results) => {
+        this.departments1 = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
+  loadDepartmentPrograms(id: number = 0) {
+    this.applicantfilteredProgrammes = this.programmes.filter(x => x.department.isActive == true);
+    this.filteredProgrammes =  this.applicantfilteredProgrammes.filter(x => x.department.id === id);
+  }
+
+  onFirstTdClick(rowIndex: number) {
+    this.selectedRowIndex = rowIndex;
   }
 
   private loadServiceDeliveryAreas() {
@@ -609,7 +646,7 @@ private loadTitles() {
   
   canEdit(): boolean {
     return this.isSystemAdmin || this.isApplicant || (this.selectedProgram &&
-      this.profile.userPrograms.some(userProgram => userProgram.id === Number(this.selectedProgram.id)));
+      this.profile.userPrograms.some(userProgram => userProgram.id === Number(this.selectedProgram.id)) && this.ProgrammeCapturer);
   }
 
   addContactInformation() {
@@ -1261,7 +1298,8 @@ private loadTitles() {
   }
 
   private loadServicesRendered(npoProfileId: number) {
-    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId).subscribe(
+
+    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId,this.source).subscribe(
       (results) => {
         this.servicesRendered = results;
         this.updateServicesRenderedObjects();
@@ -1304,10 +1342,10 @@ private loadTitles() {
     if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
       this.servicesRendered.forEach(item => {
         item.programme = this.programmes.find(x => x.id === item.programmeId);
+        item.department = this.departments.find(x => x.id === item.programme.departmentId);
         item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
         item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
       });
-
       this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
     }
   }
@@ -1367,7 +1405,7 @@ private loadTitles() {
             this.Approve();
           },
           visible: true,
-          disabled: !this.canReviewOrApprove,
+          disabled: !this.ProgrammeApprover,
         },
         {
           label: 'Reject',
@@ -1376,7 +1414,7 @@ private loadTitles() {
             this.Reject();
           },
           visible: true,
-          disabled: !this.canReviewOrApprove,
+          disabled: !this.ProgrammeApprover,
         },
 
         {
@@ -1996,6 +2034,7 @@ private loadTitles() {
     this.serviceRendered = {} as IServicesRendered;
 
     this.selectedProgramme = null;
+    this.selectedDepartment = null;
     this.selectedSubProgramme = null;
     this.selectedSubProgrammeType = null;
 
@@ -2061,6 +2100,9 @@ private loadTitles() {
     for (let prop in data)
       serviceRendered[prop] = data[prop];
 
+    this.selectedDepartment = data.department;
+    this.loadDepartmentPrograms(this.selectedDepartment.id);
+
     this.selectedProgramme = data.programme;
     this.programmeChange(this.selectedProgramme);
 
@@ -2071,6 +2113,7 @@ private loadTitles() {
 
     return serviceRendered;
   }
+
 
   deleteServicesRendered(data: IServicesRendered) {
     this._confirmationService.confirm({

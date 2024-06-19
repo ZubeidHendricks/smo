@@ -137,7 +137,10 @@ export enum RoleEnum {
     Evaluator = 7,
     Adjudicator = 8,
     Approver = 9,
-    ViewOnly = 10
+    ViewOnly = 10,
+    ProgrammeCapturer = 11,
+    ProgrammeApprover = 12,
+    ProgrammeViewOnly = 13
 }
 
 export enum ServiceProvisionStepsEnum {
@@ -308,6 +311,11 @@ export enum PermissionsEnum {
     EditProgrammeBudget = "Bud.EPB",
     ViewProgrammeBudget = "Bud.VPB",
     ViewBudgetSummary = "Bud.VBS",
+
+    //Program
+    ApproveProgram = "Programme.Edit",
+    EditProgram = "Programme.Approve",
+    ViewProgram = "Programme.Viewer",
 
     /* Side Navigation */
     ViewSecurityMenu = "SN.Security",

@@ -52,6 +52,7 @@ export class FundingDetailComponent implements OnInit {
   variableFunding: boolean;
   claims: boolean;
   amountAwarded: number;
+  source: string = 'FundingDetail';
 
   constructor(
     private _npoRepo: NpoService,
@@ -176,7 +177,7 @@ export class FundingDetailComponent implements OnInit {
         (profile) => {
           this.retrievedNpoProfile.emit(profile);
 
-          this._npoProfileRepo.getServicesRenderedByNpoProfileId(profile.id).subscribe(
+          this._npoProfileRepo.getServicesRenderedByNpoProfileId(profile.id,this.source).subscribe(
             (services) => {
               // Populate filtered programmes based on npo profile services rendered programmes
               this.filteredProgrammes = this.programmes.filter(programme => {

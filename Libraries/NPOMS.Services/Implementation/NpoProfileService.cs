@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using NPOMS.Domain.Entities;
@@ -45,6 +46,7 @@ namespace NPOMS.Services.Implementation
         private IProgrameBankDetailRepository _programeBankDetailRepository;
         private IProgrameContactDetailRepository _programeContactDetailRepository;
         private IProgrameDeliveryRepository _programeDeliveryService;
+        private IApplicationRepository _applicationRepository;
 
         #endregion
 
@@ -71,6 +73,7 @@ namespace NPOMS.Services.Implementation
             IProgrameBankDetailRepository programeBankDetailRepository,
             IProgrameContactDetailRepository programeContactDetailRepository,
             IProgrameDeliveryRepository programeDeliveryService,
+            IApplicationRepository applicationRepository,
             IMapper mapper)
 		{
 			_npoProfileRepository = npoProfileRepository;
@@ -93,7 +96,9 @@ namespace NPOMS.Services.Implementation
 			_programeBankDetailRepository = programeBankDetailRepository;
             _programeContactDetailRepository = programeContactDetailRepository;
             _programeDeliveryService = programeDeliveryService;
-			this._mapper = mapper;
+            _applicationRepository = applicationRepository;
+
+            this._mapper = mapper;
 		}
 
 		#endregion
@@ -178,12 +183,31 @@ namespace NPOMS.Services.Implementation
 			await _npoProfileFacilityListRepository.UpdateAsync(null, model, false, loggedInUser.Id);
 		}
 
-		public async Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(int npoProfileId)
-		{
-			return await _servicesRenderedRepository.GetByNpoProfileId(npoProfileId);
-		}
+        public async Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(string source, int npoProfileId)
+        {
+            // Fetch all services by NPO profile ID
+            var services = await _servicesRenderedRepository.GetByNpoProfileId(npoProfileId);
 
-		public async Task Create(ServicesRendered model, string userIdentifier)
+            // Check if source is not empty
+            if (!string.IsNullOrEmpty(source) && (source == "workflow" || source == "viewapplication"))
+            {
+                // Fetch the application associated with the NPO profile ID
+                var app = await _applicationRepository.FindByCondition(x => x.NpoId == npoProfileId)
+                                                      .Include(x => x.ApplicationPeriod)
+                                                      .FirstOrDefaultAsync();
+
+                // Extract the programme ID from the application period
+                var progid = app.ApplicationPeriod.ProgrammeId;
+
+                // Filter services to only include those that contain the progid
+                services = services.Where(service => service.ProgrammeId == progid);
+            }
+
+            return services;
+        }
+
+
+        public async Task Create(ServicesRendered model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 

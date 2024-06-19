@@ -201,12 +201,12 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("services-rendered/npoProfileId/{npoProfileId}", Name = "GetServicesRenderedByNpoProfileId")]
-		public async Task<IActionResult> GetServicesRenderedByNpoProfileId(int npoProfileId)
+		[HttpGet("services-rendered/{source}/npoProfileId/{npoProfileId}", Name = "GetServicesRenderedByNpoProfileId")]
+		public async Task<IActionResult> GetServicesRenderedByNpoProfileId(string source,int npoProfileId)
 		{
 			try
 			{
-				var results = await _npoProfileService.GetServicesRenderedByNpoProfileId(npoProfileId);
+				var results = await _npoProfileService.GetServicesRenderedByNpoProfileId(source,npoProfileId);
 				return Ok(results);
 			}
 			catch (Exception ex)

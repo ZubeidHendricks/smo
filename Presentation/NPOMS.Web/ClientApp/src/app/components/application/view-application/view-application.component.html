@@ -18,7 +18,7 @@
         <p-panel [style]="{'font-size':'12px'}" header="Organisation Details">
             <app-view-npo [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)"></app-view-npo>
             <div style="height: 10px;"></div>
-            <app-view-profile [npoId]="application.npoId" (retrievedNpoProfile)="updateNpoProfile($event)" *ngIf="!application.isQuickCapture"></app-view-profile>
+            <app-view-profile [npoId]="application.npoId" [source]="source"   (retrievedNpoProfile)="updateNpoProfile($event)" *ngIf="!application.isQuickCapture"></app-view-profile>
         </p-panel>
     </div>
     <br>
