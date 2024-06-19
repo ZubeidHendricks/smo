@@ -78,7 +78,7 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 			return facilities;
 		}
 
-        public async Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear)
+        public async Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear, string responsibilitylowestlevelcode, string objectivelowestlevelcode)
 		{
             StringBuilder sbFullQuery = new StringBuilder();
             StringBuilder sbFilter = new StringBuilder();
@@ -102,6 +102,34 @@ namespace NPOMS.Services.DenodoAPI.Implementation
             }
 
             return data;
+        }
+
+        public async Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear)
+        {
+            StringBuilder sbFullQuery = new StringBuilder();
+            StringBuilder sbFilter = new StringBuilder();
+
+            //Append view to Denodo URL
+            sbFullQuery.AppendFormat($"{_denodoAPIConfig.BudgetView}");
+            _denodoAPIConfig.BaseUri = "https://ldw.westerncape.gov.za/server/dev_ldw/";
+
+            //Filter by 
+            sbFilter.AppendFormat($"?DepartmentName={department}&FinancialYear={financialYear}");
+
+            //Append filter to query
+            sbFullQuery.AppendFormat($"{sbFilter}");
+
+            BudgetAPIWrapperModel data = null;
+
+            HttpResponseMessage response = await PrepareClient(_denodoAPIConfig).GetAsync(sbFullQuery.ToString());
+            if (response.IsSuccessStatusCode)
+            {
+                data = await response.Content.ReadAsAsync<BudgetAPIWrapperModel>();
+            }
+			var d = data;
+            
+			
+			return d;
         }
     }
 }

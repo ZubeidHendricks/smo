@@ -199,6 +199,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IProjectImplementationPlaceRepository, ProjectImplementationPlaceRepository>();
             services.AddScoped<IProjectImplementationSubPlaceRepository, ProjectImplementationSubPlaceRepository>();
             services.AddScoped<IFundAppDocumentRepository, FundAppDocumentsRepository>();
+            services.AddScoped<ISegmentCodeRepository, SegmentCodeRepository>();
 
             /* Indicator */
             services.AddScoped<IWorkplanTargetRepository, WorkplanTargetRepository>();
