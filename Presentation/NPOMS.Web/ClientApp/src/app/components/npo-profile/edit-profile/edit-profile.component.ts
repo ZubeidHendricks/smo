@@ -2100,8 +2100,11 @@ private loadTitles() {
     for (let prop in data)
       serviceRendered[prop] = data[prop];
 
-    this.selectedDepartment = data.department;
-    this.loadDepartmentPrograms(this.selectedDepartment.id);
+    if(this.isApplicant)
+      {
+        this.selectedDepartment = data.department;
+        this.loadDepartmentPrograms(this.selectedDepartment.id);
+      }
 
     this.selectedProgramme = data.programme;
     this.programmeChange(this.selectedProgramme);
