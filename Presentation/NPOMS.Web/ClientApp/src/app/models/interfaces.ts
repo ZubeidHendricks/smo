@@ -1239,6 +1239,16 @@ export interface ISegmentCode
     objectiveCode: string;
 }
 
+export interface IBudgetAdjustment
+{
+    id: number;
+    programmeId: number;
+    responsibilityCode: string;
+    subProgrammeTypeId: number;
+    objectiveCode: string;
+    amount: string;
+}
+
 /* Indicator */
 export interface IWorkplanTarget {
     id: number;

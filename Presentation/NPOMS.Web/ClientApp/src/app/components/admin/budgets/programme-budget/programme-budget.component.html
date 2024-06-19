@@ -100,7 +100,7 @@
                         <td>{{rowData.subProgrammeType}}</td>
                         <td>R {{rowData.originalbudget | number : '1.2-2'}}</td>
                         <td></td>
-                        <td></td>
+                        <!-- <td></td> -->
                         <td style="text-align: center;">
                             <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
                         </td>
@@ -116,13 +116,18 @@
     </div>
 </p-panel>
 
-<p-dialog header="Edit Programme Budget" 
+<p-dialog header="Add Budget Adjustment Amount" 
           [(visible)]="displayEditDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
+
+          <div class="p-col">
+            <input type="text" class="form-text" pInputText [ngModelOptions]="{standalone: true}">
+        </div>
+
     <!-- <div class="p-grid" *ngIf="isSystemAdmin">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -134,6 +139,6 @@
         </div>
     </div> -->
     <ng-template pTemplate="footer">
-        <!-- <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSave() (click)="saveEditBudget()"></button> -->
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o"></button>
     </ng-template>
 </p-dialog>

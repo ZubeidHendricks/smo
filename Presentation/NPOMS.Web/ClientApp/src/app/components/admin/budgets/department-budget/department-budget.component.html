@@ -89,7 +89,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
-                        <td>{{rowData.originalbudget}}</td>
+                        <td>{{rowData.originalbudget | number : '1.2-2'}}</td>
                         <td></td>
                         <td></td>
                     </tr>

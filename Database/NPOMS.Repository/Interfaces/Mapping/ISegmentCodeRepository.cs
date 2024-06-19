@@ -10,5 +10,6 @@ namespace NPOMS.Repository.Interfaces.Mapping
     public interface ISegmentCodeRepository : IBaseRepository<SegmentCode>
     {
         Task<IEnumerable<SegmentCode>> GetEntities(bool returnInactive);
+        Task<List<SegmentCode>> GetByValue(string responsibilityCode, string objectiveCode);
     }
 }

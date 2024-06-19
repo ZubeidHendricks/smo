@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IDenodoBudgetWrapper, IDepartmentBudget, IDirectorateBudget, IProgrammeBudget } from 'src/app/models/interfaces';
+import { IBudgetAdjustment, IDenodoBudgetWrapper, IDepartmentBudget, IDirectorateBudget, IProgrammeBudget } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 
 const httpOptions = {
@@ -77,6 +77,12 @@ export class BudgetService {
   public getFilteredBudgets(department: string, year: number, responsibilitylowestlevelcode:string, objectivelowestlevelcode: string) {
     const url = `${this._envUrl.urlAddress}/api/denodo/budgets/department/${department}/year/${year}/responsibilitylowestlevelcode/${responsibilitylowestlevelcode}/objectivelowestlevelcode/${objectivelowestlevelcode}`;
     return this._http.get<IDenodoBudgetWrapper>(url, httpOptions);
+  }
+
+  public createBudgetAdjustment(responsibilityCode: string, objectiveCode: string, amount: number)
+  {
+    const url = `${this._envUrl.urlAddress}/api/denodo/add-budgetAdjustment/responsibilityCode/${responsibilityCode}/objectiveCode/${objectiveCode}/amount/${amount}`;
+    return this._http.put<IBudgetAdjustment>(url, httpOptions);
   }
 }
 

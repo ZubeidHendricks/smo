@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NPOMS.Domain.Entities;
 using NPOMS.Domain.ResourceParameters;
+using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Services.DenodoAPI.Interfaces;
 using System;
 using System.Threading.Tasks;
@@ -14,20 +16,20 @@ namespace NPOMS.API.Controllers
 		#region Fields
 
 		private ILogger<DenodoController> _logger;
-		private IDenodoService _denodoService;
+		private IDenodoService _denodoService;      
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		public DenodoController(
+        public DenodoController(
 			ILogger<DenodoController> logger,
 			IDenodoService denodoService
-			)
+            )
 		{
 			_logger = logger;
-			_denodoService = denodoService;
-		}
+			_denodoService = denodoService;            
+        }
 
 		#endregion
 
@@ -38,7 +40,7 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
-				var results = await this._denodoService.Get(denodoFacilityResourceParameters);
+				var results = await this._denodoService.Get(denodoFacilityResourceParameters, base.GetUserIdentifier());
 				return Ok(results);
 			}
 			catch (Exception ex)
@@ -53,7 +55,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var results = await this._denodoService.GetBudgets(department, $"{year}/{year + 1}");
+                var results = await this._denodoService.GetBudgets(department, $"{year}/{year + 1}", base.GetUserIdentifier());
                 return Ok(results);
             }
             catch (Exception ex)
@@ -68,7 +70,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var results = await this._denodoService.GetBudgets(department, $"{year}/{year + 1}", responsibilitylowestlevelcode, objectivelowestlevelcode);
+                var results = await this._denodoService.GetBudgets(department, $"{year}/{year + 1}", responsibilitylowestlevelcode, objectivelowestlevelcode, base.GetUserIdentifier());
                 return Ok(results);
             }
             catch (Exception ex)
@@ -78,6 +80,13 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        #endregion
-    }
+        [HttpPost("add-budgetAdjustment/responsibilityCode/{responsibilityCode}/objectiveCode/{objectiveCode}/amount/{amount}", Name = "AddBudgetAdjustmentAmount")]
+        public async Task<IActionResult> AddBudgetAdjustmentAmount( string responsibilityCode, string objectiveCode, decimal amount)
+        {
+            var result = await this._denodoService.Create(responsibilityCode, objectiveCode, amount);
+            return Ok(result);
+        }
+
+            #endregion
+        }
 }
