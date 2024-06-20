@@ -32,7 +32,7 @@ var denodoAPIConfig = builder.Configuration.GetSection("DenodoAPIConfiguration")
 	msGraphConfig.TenantId = Environment.GetEnvironmentVariable("APPSETTING_B2B_TenantId");
 	msGraphConfig.Secret = Environment.GetEnvironmentVariable("APPSETTING_B2B_Client_Secret");
 
-	denodoAPIConfig.BaseUri = Environment.GetEnvironmentVariable("APPSETTING_DENODO_BASEURI");
+    denodoAPIConfig.BaseUri = Environment.GetEnvironmentVariable("APPSETTING_DENODO_BASEURI");
 	denodoAPIConfig.Username = Environment.GetEnvironmentVariable("APPSETTING_DENODO_USERNAME");
 	denodoAPIConfig.Pwd = Environment.GetEnvironmentVariable("APPSETTING_DENODO_PASSWORD");
 	denodoAPIConfig.FacilityView = Environment.GetEnvironmentVariable("APPSETTING_DENODO_FACILITY_VIEW");
