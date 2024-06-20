@@ -2,7 +2,7 @@
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Department Budget Management">
     <div style="height: 10px;"></div>
     <div class="p-grid">
-        <div class="p-col-3">
+        <div class="p-col-2">
             <p-card subheader="Department Budget Summary" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
                 <div class="p-fluid">
                     <div class="p-grid" *ngIf="isSystemAdmin">
@@ -12,7 +12,7 @@
                             </div>
                         </div>
                         <div class="p-col">
-                            <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartmentSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="departmentSummaryChange()"></p-dropdown>
+                            <p-dropdown [options]="departments" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedDepartmentSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="departmentSummaryChange()"></p-dropdown>
                         </div>
                     </div>
                     <div class="p-grid">
@@ -22,7 +22,7 @@
                             </div>
                         </div>
                         <div class="p-col">
-                            <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYearSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearSummaryChange()"></p-dropdown>
+                            <p-dropdown [options]="financialYears" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedFinancialYearSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearSummaryChange()"></p-dropdown>
                         </div>
                     </div>
                     <div class="p-grid">
@@ -68,130 +68,38 @@
                 </div>
             </p-card>
         </div>
-        <div class="p-col-9">
-            <div class="p-grid" *ngIf="selectedDepartmentSummary && selectedFinancialYearSummary">
-                <div class="p-col-fixed">
-                    <button pButton pRipple type="button" label="Add Department Budget" class="p-button-text" icon="fa fa-plus" (click)="add()" *ngIf="IsAuthorized(PermissionsEnum.AddDepartmentBudget)"></button>
-                </div>
-                <div class="p-col">
-                    <div class="p-d-flex">
-                        
-                    </div>
-                </div>
-            </div>
-            <p-table [rowHover]="true" [columns]="budgetCols" [value]="departmentBudgets" styleClass="p-datatable-sm" [paginator]="true" [rows]="10" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
+        <div class="p-col-10">
+            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="denodoBudgets" styleClass="p-datatable-sm"
+            [paginator]="true" [rows]="10" [showCurrentPageReport]="true"  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['originalbudget']">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                             {{col.header}}
+                            <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
+                            ariaLabelDesc="Activate to sort in descending order" 
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
-                        <th style="width: 10%;">Actions</th>
+                    </tr>
+                    <tr>
+                        <th><p-columnFilter type="text" field="originalbudget"></p-columnFilter></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
-                        <td>
-                            <span *ngIf="rowData.financialYear">{{rowData.financialYear.name}}</span>
-                        </td>
-                        <td>{{rowData.amount | number : '1.2-2'}}</td>
-                        <td>{{totalAllocated | number : '1.2-2'}}</td>
-                        <td>{{totalBalance | number : '1.2-2'}}</td>
-                        <td style="text-align: center;">
-                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
-                            <!-- <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteContactInformation(rowData)" pTooltip="Delete" tooltipPosition="top"></button> -->
-                        </td>
+                        <td>{{rowData.originalbudget}}</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr class="default-font">
-                        <td colspan="5" style="text-align: center;">No results found</td>
+                        <td colspan="3" style="text-align: center;">No results found</td>
                     </tr>
                 </ng-template>
             </p-table>
         </div>
     </div>
 </p-panel>
-
-<p-dialog header="Add Department Budget" 
-          [(visible)]="displayNewDialog" 
-          [style]="{width: '50vw'}" 
-          [focusOnShow]="false"
-          showEffect="fade"
-          [transitionOptions]="'0ms'"
-          [modal]="true">
-    <div class="p-grid" *ngIf="isSystemAdmin">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Department</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Financial Year</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Budget (R)</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-inputNumber [(ngModel)]="departmentBudget.amount" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}"></p-inputNumber>
-        </div>
-    </div>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSave() (click)="saveNewBudget()"></button>
-    </ng-template>
-</p-dialog>
-
-<p-dialog header="Edit Department Budget" 
-          [(visible)]="displayEditDialog" 
-          [style]="{width: '50vw'}" 
-          [focusOnShow]="false"
-          showEffect="fade"
-          [transitionOptions]="'0ms'"
-          [modal]="true">
-    <div class="p-grid"  *ngIf="isSystemAdmin">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Department</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Financial Year</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Budget (R)</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-inputNumber [(ngModel)]="departmentBudget.amount" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}"></p-inputNumber>
-        </div>
-    </div>
-    <ng-template pTemplate="footer">
-        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSave() (click)="saveEditBudget()"></button>
-    </ng-template>
-</p-dialog>

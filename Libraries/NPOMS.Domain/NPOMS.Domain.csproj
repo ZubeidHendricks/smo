@@ -1,18 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="FundingApplication\**" />
-    <EmbeddedResource Remove="FundingApplication\**" />
-    <None Remove="FundingApplication\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Core\UserProgram.cs" />
-    <Compile Remove="Entities\FinancialDetail.cs" />
-  </ItemGroup>
 
 </Project>

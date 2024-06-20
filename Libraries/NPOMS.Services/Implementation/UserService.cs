@@ -85,8 +85,9 @@ namespace NPOMS.Services.Implementation
 		{
 			List<UserViewModel> viewModel = new List<UserViewModel>();
 			var users = await _userRepository.GetEntities();
+			//users = users.Where(x => x.Id == 1059);
 
-			foreach (var user in users)
+            foreach (var user in users)
 			{
 				var userViewModel = _mapper.Map<UserViewModel>(user);
 				userViewModel.Roles.AddRange(
@@ -99,7 +100,10 @@ namespace NPOMS.Services.Implementation
 
                 userViewModel.UserPrograms.AddRange(
                     _mapper.Map<List<UserProgramViewModel>>(
-                        user.UserPrograms.Select(x => x.Program)));
+						user.UserPrograms.Select(x => x.Program)));
+
+                //userViewModel.UserPrograms.AddRange(
+                //    _mapper.Map<List<UserProgramViewModel>>(user.UserPrograms.Select(x => x.Program)));
 
                 viewModel.Add(userViewModel);
 			}

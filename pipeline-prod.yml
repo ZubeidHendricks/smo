@@ -4,7 +4,7 @@ trigger:
 
 variables:
   buildConfiguration: 'Release'
-  dotnetSdkVersion: '6.x'
+  dotnetSdkVersion: '8.x'
   
 stages:
 - stage: 'Build'
@@ -138,4 +138,4 @@ stages:
               appType: 'webAppLinux'
               appName: 'wa-wcg-npoms-prod-zan'
               package: '$(Pipeline.Workspace)/WebAPI/WebAPI1.zip'
-              runtimeStack: 'DOTNETCORE|6.0'
+              runtimeStack: 'DOTNETCORE|8.0'

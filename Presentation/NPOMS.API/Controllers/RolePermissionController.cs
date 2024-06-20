@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using NPOMS.Domain.ResourceParameters;
+using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NPOMS.API.Controllers
@@ -16,6 +19,7 @@ namespace NPOMS.API.Controllers
 
         private ILogger<RolePermissionController> _logger;
         private IRolePermissionService _rolePermissionService;
+        private IUserRepository _userRepository;
 
         #endregion
 
@@ -24,10 +28,12 @@ namespace NPOMS.API.Controllers
         public RolePermissionController(
             ILogger<RolePermissionController> logger,
             IRolePermissionService rolePermissionService
+         
             )
         {
             _logger = logger;
             this._rolePermissionService = rolePermissionService;
+           
         }
 
         #endregion
@@ -53,11 +59,11 @@ namespace NPOMS.API.Controllers
         }
 
         [HttpGet("matrix", Name = "GetFeaturePermissionRoleMappings")]
-        public IActionResult GetFeaturePermissionRoleMappings()
+        public async Task<IActionResult> GetFeaturePermissionRoleMappings()
         {
             try
             {
-                var featurePermissions = this._rolePermissionService.GetMatrix();
+                var featurePermissions = await this._rolePermissionService.GetMatrix(base.GetUserIdentifier());
                 return Ok(featurePermissions);
             }
             catch (Exception ex)
@@ -65,6 +71,7 @@ namespace NPOMS.API.Controllers
                 _logger.LogError($"Something went wrong inside GetFeaturePermissionRoleMappings action: {ex.Message} Inner Exception: { ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+            
         }
 
         [HttpDelete("matrix/permissions/{permissionId}/roles/{roleId}", Name = "DeleteFeaturePermissionRoleMapping")]

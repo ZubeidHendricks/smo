@@ -8,7 +8,7 @@ namespace NPOMS.Repository.Configurations.Mapping
     {
         public void Configure(EntityTypeBuilder<DepartmentRoleMapping> builder)
         {
-            builder.Property("IsActive").HasDefaultValueSql("1");
+            builder.Property("IsActive").HasDefaultValue(1);
 
             builder.HasData(
                 new DepartmentRoleMapping { Id = 1, DepartmentId = 11, RoleId = 2 },
@@ -21,7 +21,9 @@ namespace NPOMS.Repository.Configurations.Mapping
                 new DepartmentRoleMapping { Id = 8, DepartmentId = 7, RoleId = 8 },
                 new DepartmentRoleMapping { Id = 9, DepartmentId = 7, RoleId = 9 },
                 new DepartmentRoleMapping { Id = 10, DepartmentId = 1, RoleId = 1 },
-                new DepartmentRoleMapping { Id = 11, DepartmentId = 16, RoleId = 3 }
+                new DepartmentRoleMapping { Id = 11, DepartmentId = 16, RoleId = 3 },
+                new DepartmentRoleMapping { Id = 12, DepartmentId = 11, RoleId = 3 },
+                new DepartmentRoleMapping { Id = 13, DepartmentId = 7, RoleId = 3 }
             );
         }
     }

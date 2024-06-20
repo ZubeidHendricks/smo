@@ -108,6 +108,7 @@ import { QcApplicationDetailViewComponent } from './components/application/appli
 import { QcApplicationPeriodsViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-periods-view/qc-application-periods-view.component';
 import { QcFundedDocumentUploadViewComponent } from './components/application/application-steps/quick-capture-view/qc-funded-document-upload-view/qc-funded-document-upload-view.component';
 import { QcObjectivesViewComponent } from './components/application/application-steps/quick-capture-view/qc-objectives-view/qc-objectives-view.component';
+import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -228,6 +229,7 @@ const routes: Routes = [
   { path: 'admin/department-budget', component: DepartmentBudgetComponent },
   { path: 'admin/directorate-budget', component: DirectorateBudgetComponent },
   { path: 'admin/programme-budget', component: ProgrammeBudgetComponent },
+  { path: 'admin/budget-summary', component: BudgetSummaryComponent },
 
   // Funding
   { path: 'npo-funding', component: FundingListComponent },
@@ -238,7 +240,7 @@ const routes: Routes = [
   { path: 'admin/compliant-cycle', component: CompliantCyclesComponent },
 
   // Payment Schedule
-  { path: 'admin/payment-schedule', component: PaymentSchedulesComponent }
+  { path: 'admin/payment-schedule', component: PaymentSchedulesComponent },
 ];
 
 @NgModule({

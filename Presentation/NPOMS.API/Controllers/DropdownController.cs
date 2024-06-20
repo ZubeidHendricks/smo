@@ -233,6 +233,9 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.QuarterlyPeriod:
                         var quarterlyPeriod = await _dropdownService.GetQuarterlyPeriod(returnInactive);
                         return Ok(quarterlyPeriod);
+                    case DropdownTypeEnum.SegmentCode:
+                        var segmentCode = await _dropdownService.GetSegmentCode(returnInactive);
+                        return Ok(segmentCode);
                 }
 
                 return Ok();

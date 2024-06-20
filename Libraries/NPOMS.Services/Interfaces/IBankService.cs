@@ -9,7 +9,9 @@ namespace NPOMS.Services.Interfaces
 	{
 		Task<IEnumerable<BankDetail>> GetBankDetailsById(int banDetailId);
 
-		Task Create(BankDetail model, string userIdentifier);
+        Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByProgramId(int progId);
+
+        Task Create(BankDetail model, string userIdentifier);
 
 		Task Update(BankDetail model, string userIdentifier);
 

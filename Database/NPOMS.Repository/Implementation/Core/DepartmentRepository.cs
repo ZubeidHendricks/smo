@@ -2,6 +2,7 @@
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Interfaces.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,12 +21,25 @@ namespace NPOMS.Repository.Implementation.Core
 
         }
 
+        public async Task<Department> GetDepartmentById(int id)
+        {
+           return  await _context.Departments.Where(x => x.Id == id && x.IsActive).FirstOrDefaultAsync();
+        }
+
         public async Task<List<int>> GetDepartmentIdOfLogggedInUserAsync(int userId)
         {
-            return await _context.UserDepartments
-                           .Where(x => x.UserId == userId)
-                           .Select(x => x.DepartmentId)
-                           .ToListAsync();
+            try
+            {
+                var dep = await _context.UserDepartments
+                                        .Where(x => x.UserId == userId)
+                                        .Select(x => x.DepartmentId)
+                                        .ToListAsync();
+                return dep;
+            }
+            catch (Exception ex)
+            {
+                throw; // Re-throw the exception to be handled by the calling method
+            }
         }
 
         #endregion

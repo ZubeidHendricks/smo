@@ -23,9 +23,9 @@ namespace NPOMS.Repository.Implementation.Entities
 		public async Task<IEnumerable<ServicesRendered>> GetByNpoProfileId(int npoProfileId)
 		{
 			return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
-							.AsNoTracking()
+                            .AsNoTracking()
 							.ToListAsync();
-		}
+        }
 
 		public async Task DeleteEntity(int id, int currentUserId)
 		{
@@ -44,6 +44,6 @@ namespace NPOMS.Repository.Implementation.Entities
 								.AsNoTracking().FirstOrDefaultAsync();
 		}
 
-		#endregion
-	}
+        #endregion
+    }
 }

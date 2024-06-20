@@ -54,7 +54,7 @@ export class ViewApplicationComponent implements OnInit {
 
   npo: INpo;
   npoProfile: INpoProfile;
-
+  source: string = 'viewapplication';
   applicationDetailView: IApplicationDetails;
   projInfoView: IProjectInformation;
   projImplView: IProjectImplementation;

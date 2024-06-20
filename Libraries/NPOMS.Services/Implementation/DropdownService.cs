@@ -18,6 +18,7 @@ using NPOMS.Repository.Interfaces.Evaluation;
 using Microsoft.EntityFrameworkCore;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Interfaces.Mapping;
+using NPOMS.Domain.Mapping;
 
 namespace NPOMS.Services.Implementation
 {
@@ -84,6 +85,7 @@ namespace NPOMS.Services.Implementation
         private IFundingTemplateTypeRepository _fundingTemplateTypeRepository;
         private IQuarterlyPeriodRepository _quarterlyPeriodRepository;
         private IDepartmentRoleRepository _departmentRoleRepository;
+        private ISegmentCodeRepository _segmentCodeRepository;
         #endregion
 
         #region Constructors
@@ -147,7 +149,8 @@ namespace NPOMS.Services.Implementation
             IResponseTypeRepository responseTypeRepository,
             IWorkflowAssessmentRepository workflowAssessmentRepository,
             IFundingTemplateTypeRepository fundingTemplateTypeRepository,
-            IQuarterlyPeriodRepository quarterlyPeriodRepository)
+            IQuarterlyPeriodRepository quarterlyPeriodRepository,
+            ISegmentCodeRepository segmentCodeRepository)
         {
             _mapper = mapper;
             _roleRepository = roleRepository;
@@ -208,6 +211,7 @@ namespace NPOMS.Services.Implementation
             _fundingTemplateTypeRepository = fundingTemplateTypeRepository;
             _quarterlyPeriodRepository = quarterlyPeriodRepository;
             _departmentRoleRepository = departmentRoleRepository;
+            _segmentCodeRepository = segmentCodeRepository;
         }
 
         #endregion
@@ -498,8 +502,8 @@ namespace NPOMS.Services.Implementation
 
             var programme = await _programmeRepository.GetById(model.ProgrammeId);
 
-            // If Department is DoH, create sub-programme type with same details as sub-programme
-            if (programme.DepartmentId == (int)DepartmentEnum.DoH)
+            // If Department is DOH, create sub-programme type with same details as sub-programme
+            if (programme.DepartmentId == (int)DepartmentEnum.DOH)
             {
                 await _subProgrammeTypeRepository.CreateAsync(new SubProgrammeType
                 {
@@ -540,6 +544,11 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<QuarterlyPeriod>> GetQuarterlyPeriod(bool returnInactive)
         {
             return await _quarterlyPeriodRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<SegmentCode>> GetSegmentCode(bool returnInactive)
+        {
+            return await _segmentCodeRepository.GetEntities(returnInactive);
         }
 
         public async Task<IEnumerable<FinancialYear>> GetFromCurrentFinancialYear()
@@ -1703,6 +1712,16 @@ namespace NPOMS.Services.Implementation
             List<int> rolesIds = await _departmentRoleRepository.ReturnRoleIds(id);
 
             return await _roleRepository.GetRolesByDepartment(department.Name, rolesIds);
+        }
+
+        public async Task<Programme> GetProgramme(int id)
+        {
+            return await _programmeRepository.GetById(id);
+        }
+
+        public async Task<Department> GetDepartment(int depId)
+        {
+            return await _departmentRepository.GetDepartmentById(depId);
         }
 
         #endregion

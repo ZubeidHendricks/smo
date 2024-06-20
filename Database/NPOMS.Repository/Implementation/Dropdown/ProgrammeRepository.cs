@@ -45,7 +45,7 @@ namespace NPOMS.Repository.Implementation.Dropdown
 
 		public async Task<Programme> GetById(int id)
 		{
-			return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+			return await FindByCondition(x => x.Id.Equals(id) && x.IsActive).AsNoTracking().FirstOrDefaultAsync();
 		}
 
         public async Task<IEnumerable<Programme>> GetProgramsByDepartment(string name, int id)

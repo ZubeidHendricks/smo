@@ -17,11 +17,9 @@ using NPOMS.Repository.Configurations.Entities;
 using NPOMS.Repository.Configurations.Lookup;
 using NPOMS.Repository.Configurations.Mapping;
 using NPOMS.Repository.DTO;
-using NPOMS.Repository.Implementation.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace NPOMS.Repository
@@ -197,6 +195,7 @@ namespace NPOMS.Repository
         public DbSet<UserProgramMapping> UserProgramMappings { get; set; }
         public DbSet<ActivityFacilityList> ActivityFacilityLists { get; set; }
         public DbSet<ActivityRecipient> ActivityRecipients { get; set; }
+        public DbSet<SegmentCode> SegmentCodes { get; set; }
 
         /* Indicator */
         public DbSet<WorkplanTarget> WorkplanTargets { get; set; }
@@ -207,7 +206,14 @@ namespace NPOMS.Repository
         /* Budget */
         public DbSet<DepartmentBudget> DepartmentBudgets { get; set; }
         public DbSet<DirectorateBudget> DirectorateBudgets { get; set; }
-        public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }
+        public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }       
+
+        /* Program */
+
+        public DbSet<ProgramBankDetails> ProgramBankDetails { get; set; }
+        public DbSet<ProgramContactInformation> ProgramContactInformation { get; set; }
+        public DbSet<ProgrammeServiceDelivery> ProgrammeServiceDelivery { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -309,6 +315,7 @@ namespace NPOMS.Repository
             modelBuilder.ApplyConfiguration(new UserDepartmentConfiguration());
             modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserProgramMppingConfiguration());
+            modelBuilder.ApplyConfiguration(new SegmentCodeConfiguration());
 
         }
 

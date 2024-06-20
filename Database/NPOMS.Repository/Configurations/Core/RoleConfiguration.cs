@@ -72,7 +72,25 @@ namespace NPOMS.Repository.Configurations.Core
 					Id = 10,
 					Name = "View Only",
 					SystemName = "ViewOnly"
-				}
+				},
+                new Role
+                {
+                    Id = 11,
+                    Name = "Programme Capturer",
+                    SystemName = "ProgrammeCapturer"
+                },
+                new Role
+                {
+                    Id = 12,
+                    Name = "Programme Approver",
+                    SystemName = "ProgrammeApprover"
+                },
+                new Role
+                {
+                    Id = 13,
+                    Name = "Programme viewer",
+                    SystemName = "ProgrammeViewOnly"
+                }
             );
 		}
 	}

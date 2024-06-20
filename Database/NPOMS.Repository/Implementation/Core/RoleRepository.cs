@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Repository.Interfaces.Core;
@@ -10,13 +11,19 @@ namespace NPOMS.Repository.Implementation.Core
 {
 	public class RoleRepository : BaseRepository<Role>, IRoleRepository
 	{
-		#region Constructors
+        private IUserRepository _userRepository;
+        private IDepartmentRepository _departmentRepository;
+        #region Constructors
 
-		public RoleRepository(RepositoryContext repositoryContext)
+        public RoleRepository(RepositoryContext repositoryContext,
+            IUserRepository userRepository,
+            IDepartmentRepository departmentRepository)
 			: base(repositoryContext)
 		{
+			_userRepository = userRepository;
+			_departmentRepository = departmentRepository;
 
-		}
+        }
 
 		#endregion
 
@@ -64,9 +71,36 @@ namespace NPOMS.Repository.Implementation.Core
                         return Enumerable.Empty<Role>();
                     }
 
-                    return await query.OrderBy(x => x.Name).ToListAsync();
+                 
+					return await query.OrderBy(x => x.Name).ToListAsync();
+
             }
         }
+
+        public async Task<IEnumerable<Role>> GetRoleIdsByDepartmentIdsAsync(List<int> departmentIds)
+        {
+            // Retrieve distinct role IDs associated with the specified department IDs
+            var roleIds = await RepositoryContext.DepartmentRoleMappings
+                .Where(drm => departmentIds.Contains(drm.DepartmentId))
+                .Select(drm => drm.RoleId)
+                .Distinct()
+                .ToListAsync();
+
+            // Fetch role entities based on the retrieved role IDs
+            var roles = await RepositoryContext.Roles
+                .Where(role => roleIds.Contains(role.Id))
+                .ToListAsync();
+
+            // Convert List<Role> to IEnumerable<Role>
+            return roles.AsEnumerable();
+        }
+
+
+
+
+
+
+
         #endregion
     }
 }
