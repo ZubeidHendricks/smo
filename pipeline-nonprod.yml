@@ -24,7 +24,7 @@ stages:
       displayName: 'Restore project dependencies'
       inputs:
         command: 'restore'
-        projects: '/Presentation/NPOMS.API/NPOMS.API.csproj'
+        projects: '**/NPOMS.API/NPOMS.API.csproj'
         feedsToUse: 'select'
 
     - task: DotNetCoreCLI@2
