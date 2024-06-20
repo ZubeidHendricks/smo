@@ -15,8 +15,8 @@ namespace NPOMS.Domain.Budget
         public string SubProgrammeName { get; set; }
         public int SubProgrammeTypeId { get; set; }
         public string SubProgrammeTypeName { get; set; }
-        public decimal OriginalBudgetAmount { get; set; }
-        public decimal AdjustedBudgetAmount { get; set; }
+        public string OriginalBudgetAmount { get; set; }
+        public string AdjustedBudgetAmount { get; set; }
         public string ResponsibilityCode { get; set; }
         public string ObjectiveCode { get; set; }        
 		public bool IsActive { get; set; }

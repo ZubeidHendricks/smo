@@ -12,5 +12,6 @@ namespace NPOMS.Services.DenodoAPI.Interfaces
         Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear, string userIdentifier);
         Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear, string responsibilitylowestlevelcode, string objectivelowestlevelcode, string userIdentifier);
         Task<BudgetAdjustment> Create(string responsibilityCode, string objectiveCode, decimal amount);
+        Task<BudgetAdjustment> ImportBudget(string responsibilityCode, string objectiveCode, string userIdentifier);
     }
 }

@@ -87,6 +87,13 @@ namespace NPOMS.API.Controllers
             return Ok(result);
         }
 
-            #endregion
+        [HttpPost("import-budget/department/{department}/year/{year}", Name = "ImportBudget")]
+        public async Task<IActionResult> ImportBudget(string department, int year)
+        {
+            var result = await this._denodoService.ImportBudget(department, $"{year}/{year + 1}", base.GetUserIdentifier());
+            return Ok(result);
         }
+
+        #endregion
+    }
 }

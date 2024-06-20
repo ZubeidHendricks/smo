@@ -208,7 +208,7 @@ export class ProgrammeBudgetComponent implements OnInit {
       this.totalPaid = 0;
       this.totalBalance = 0;
 
-      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year, '30075059', '30024059').subscribe(
+      this._budgetRepo.importBudget(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
 
           this.budgets = results ? results.elements : [];
