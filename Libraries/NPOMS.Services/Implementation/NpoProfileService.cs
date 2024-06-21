@@ -191,16 +191,20 @@ namespace NPOMS.Services.Implementation
             // Check if source is not empty
             if (!string.IsNullOrEmpty(source) && (source == "workflow" || source == "viewapplication"))
             {
+                //var app1 =  _applicationRepository.FindByCondition(x => x.NpoId == npoProfileId);
                 // Fetch the application associated with the NPO profile ID
                 var app = await _applicationRepository.FindByCondition(x => x.NpoId == npoProfileId)
                                                       .Include(x => x.ApplicationPeriod)
                                                       .FirstOrDefaultAsync();
 
-                // Extract the programme ID from the application period
-                var progid = app.ApplicationPeriod.ProgrammeId;
+                if (app != null && app.ApplicationPeriod != null && app.ApplicationPeriod.ProgrammeId != null)
+                {
+                    // Extract the programme ID from the application period
+                    var progid = app.ApplicationPeriod.ProgrammeId;
 
-                // Filter services to only include those that contain the progid
-                services = services.Where(service => service.ProgrammeId == progid);
+                    // Filter services to only include those that contain the progid
+                    services = services.Where(service => service.ProgrammeId == progid);
+                }
             }
 
             return services;
