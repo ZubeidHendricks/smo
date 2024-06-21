@@ -26,8 +26,17 @@ namespace NPOMS.Repository.Configurations.Mapping
                 new SegmentCode { Id = 10, ProgrammeId = 16, ResponsibilityCode = "30077059", SubProgrammeTypeId = 40, ObjectiveCode = "30015059" },
                 new SegmentCode { Id = 11, ProgrammeId = 16, ResponsibilityCode = "30077059", SubProgrammeTypeId = 41, ObjectiveCode = "30017059" },
                 new SegmentCode { Id = 12, ProgrammeId = 16, ResponsibilityCode = "30077059", SubProgrammeTypeId = 43, ObjectiveCode = "30018059" },
-                new SegmentCode { Id = 13, ProgrammeId = 16, ResponsibilityCode = "30077059", SubProgrammeTypeId = 45, ObjectiveCode = "30016059" }
-            
+                new SegmentCode { Id = 13, ProgrammeId = 16, ResponsibilityCode = "30077059", SubProgrammeTypeId = 45, ObjectiveCode = "30016059" },
+                new SegmentCode { Id = 14, ProgrammeId = 17, ResponsibilityCode = "30079059", SubProgrammeTypeId = 48, ObjectiveCode = "30049059" },
+                new SegmentCode { Id = 15, ProgrammeId = 17, ResponsibilityCode = "30079059", SubProgrammeTypeId = 49, ObjectiveCode = "30047059" },
+                new SegmentCode { Id = 16, ProgrammeId = 17, ResponsibilityCode = "30079059", SubProgrammeTypeId = 50, ObjectiveCode = "30048059" },
+                new SegmentCode { Id = 17, ProgrammeId = 17, ResponsibilityCode = "30079059", SubProgrammeTypeId = 51, ObjectiveCode = "30053059" },
+                new SegmentCode { Id = 18, ProgrammeId = 17, ResponsibilityCode = "30079059", SubProgrammeTypeId = 52, ObjectiveCode = "30046059" },
+                new SegmentCode { Id = 19, ProgrammeId = 17, ResponsibilityCode = "30079059", SubProgrammeTypeId = 56, ObjectiveCode = "30050059" },
+                new SegmentCode { Id = 20, ProgrammeId = 18, ResponsibilityCode = "30064059", SubProgrammeTypeId = 62, ObjectiveCode = "30059059" },
+                new SegmentCode { Id = 21, ProgrammeId = 19, ResponsibilityCode = "30069059", SubProgrammeTypeId = 64, ObjectiveCode = "30044059" },
+                new SegmentCode { Id = 22, ProgrammeId = 20, ResponsibilityCode = "30062059", SubProgrammeTypeId = 70, ObjectiveCode = "30062059" },
+                new SegmentCode { Id = 23, ProgrammeId = 21, ResponsibilityCode = "30074059", SubProgrammeTypeId = 71, ObjectiveCode = "30037059" }
             );
         }
     }

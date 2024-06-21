@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
-import { IDenodoBudget, IDepartment, IFinancialYear, IProgramme, IProgrammeBudget, ISegmentCode, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
+import { IDenodoBudget, IDepartment, IFinancialYear, IProgramme, IProgrammeBudget, IProgrammeBudgets, ISegmentCode, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { BudgetService } from 'src/app/services/api-services/budget/budget.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -32,7 +32,7 @@ export class ProgrammeBudgetComponent implements OnInit {
   budgetCols: any[];
   denodoBudgets: IDenodoBudget[];
   budgets: IDenodoBudget[];
-
+  programmeBudgets: IProgrammeBudgets[];
   financialYears: IFinancialYear[];
   selectedFinancialYearSummary: IFinancialYear;
 
@@ -49,6 +49,7 @@ export class ProgrammeBudgetComponent implements OnInit {
   totalAllocated: number;
   totalPaid: number;
   totalBalance: number;
+  totalAdjustedBudget: number;
 
   programmes: IProgramme[];
   filteredProgrammes: IProgramme[];
@@ -61,6 +62,8 @@ export class ProgrammeBudgetComponent implements OnInit {
   selectedSubProgrammeType: ISubProgrammeType;
   segmentCode: ISegmentCode[] = [];
   filteredSegmentCode: ISegmentCode[] = [];
+  AdjustmentAmount: string;
+  budgetId: number;
 
   constructor(
     private _router: Router,
@@ -208,18 +211,19 @@ export class ProgrammeBudgetComponent implements OnInit {
       this.totalPaid = 0;
       this.totalBalance = 0;
 
-      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year, '30075059', '30024059').subscribe(
+      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
 
-          this.budgets = results ? results.elements : [];
+          this.programmeBudgets = results ? results : [];
 
-          this.budgets.forEach(application => {
-            this.setProgrammeName(application);
-          });
+          // this.programmeBudgets.forEach(application => {
+          //   this.setSubProgrammeTypeName(application);
+          // });
 
-          this.denodoBudgets = this.budgets ? this.budgets.filter(x => Number(x.originalbudget) > 0) : [];
-          this.totalBudget = this.denodoBudgets.reduce((n, {originalbudget}) => n + Number(originalbudget), 0);
-
+          this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
+          this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
+          this.totalAdjustedBudget = this.programmeBudgets.reduce((n, {adjustedBudgetAmount}) => n + Number(adjustedBudgetAmount), 0);
+          
           this._spinner.hide();
         },
         (err) => {
@@ -230,24 +234,9 @@ export class ProgrammeBudgetComponent implements OnInit {
     }
   }
 
-  private setProgrammeName(data: IDenodoBudget) {
-    let responsibilityCode = data.responsibilitylowestlevelcode;
-    let objectiveCode = data.objectivelowestlevelcode;
-    let id =  this.segmentCode.filter(x=> x.responsibilityCode === responsibilityCode && x.objectiveCode === objectiveCode);
-   // alert(id.length);
-    if(id.length > 0)
-    {     
-      let programmeName = this.programmes.filter(x=> x.id === id[0].programmeId);
-      let subProgrammeName = this.subProgrammes.filter(x=> x.programmeId === programmeName[0].id);
-      let subProgrammeTypeName = this.subProgrammeType.filter(x=> x.subProgrammeId === subProgrammeName[0].id)
-      data.programme = programmeName[0].name;
-      
-      if(subProgrammeName.length > 0)
-        data.subProgramme = subProgrammeName[0].name;
-      
-      if(subProgrammeTypeName.length > 0)
-        data.subProgrammeType = subProgrammeTypeName[0].name;
-    }    
+  private setSubProgrammeTypeName(data: IProgrammeBudgets) {
+    var subProgTypeName = this.subProgrammeType.filter(x=> x.id = data.subProgrammeTypeId);
+    data.subProgrammeTypeName = subProgTypeName[0].name;
   }
 
   getColumnSum(columnIndex: number): number {
@@ -260,8 +249,34 @@ export class ProgrammeBudgetComponent implements OnInit {
 
 
   edit(data: IProgrammeBudget) {
+    this.budgetId = data.id;
     this.editProgrammeBudget = true;
     this.displayEditDialog = true;
+  }
+
+  SaveData(changesRequired: boolean, origin: string) {
+
+    this._budgetRepo.addAdjustmentAmount(this.AdjustmentAmount, this.budgetId).subscribe(
+      (results) => {
+
+       // this.programmeBudgets = results ? results : [];
+
+        // this.programmeBudgets.forEach(application => {
+        //   this.setSubProgrammeTypeName(application);
+        // });
+
+       // this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
+       // this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
+       this.displayEditDialog = false;
+       this._router.navigateByUrl('admin/programme-budget');
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+
   }
 
 }
