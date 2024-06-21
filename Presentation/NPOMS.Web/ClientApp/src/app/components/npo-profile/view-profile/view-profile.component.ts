@@ -19,6 +19,7 @@ export class ViewProfileComponent implements OnInit {
 
   @Input() npoId: number;
   @Input() source: string;
+  @Input() programId: number;
   @Output() retrievedNpoProfile = new EventEmitter<INpoProfile>();
 
   npoProfile: INpoProfile;
@@ -394,6 +395,10 @@ export class ViewProfileComponent implements OnInit {
     this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId, this.source).subscribe(
       (results) => {
         this.servicesRendered = results;
+        if(this.programId != null && this.programId > 0)
+        {
+            this.servicesRendered = results.filter(service => service.programmeId === this.programId);
+        }
         this.updateServicesRenderedObjects();
       },
       (err) => {
