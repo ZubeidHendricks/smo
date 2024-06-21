@@ -19,6 +19,9 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Linq;
 using NPOMS.Repository;
+using System.Globalization;
+using Microsoft.EntityFrameworkCore;
+using NPOMS.Repository.Implementation.Budget;
 
 namespace NPOMS.Services.DenodoAPI.Implementation
 {
@@ -32,7 +35,9 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 		private IDepartmentRepository _departmentRepository;
 		private ISubProgrammeRepository _subProgrammeRepository;
 		private IProgrammeRepository _programmeRepository;
+		private IProgrammeBudgetRepository _programmeBudgetRepository;
         private RepositoryContext _repositoryContext;
+		ISubProgrammeTypeRepository _subProgrammeTypeRepository;
 
         public DenodoService(DenodoAPIConfig denodoAPIConfig,
 			IBudgetAdjustmentRepository budgetAdjustmentRepository,
@@ -41,7 +46,9 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 			IDepartmentRepository departmentRepository,
 			ISubProgrammeRepository subProgrammeRepository,
 			IProgrammeRepository programmeRepository,
-            RepositoryContext repositoryContext)
+            RepositoryContext repositoryContext,
+			IProgrammeBudgetRepository programmeBudgetRepository,
+			ISubProgrammeTypeRepository subProgrammeTypeRepository)
 		{
 			_denodoAPIConfig = denodoAPIConfig;
 			_budgetAdjustmentRepository = budgetAdjustmentRepository;
@@ -51,6 +58,8 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 			_subProgrammeRepository = subProgrammeRepository;
 			_programmeRepository = programmeRepository;
 			_repositoryContext = repositoryContext;
+			_programmeBudgetRepository = programmeBudgetRepository;
+			_subProgrammeTypeRepository = subProgrammeTypeRepository;
         }
 
 		private static HttpClient PrepareClient(DenodoAPIConfig denodoAPIConfig)
@@ -111,29 +120,9 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 			return facilities;
 		}
 
-		public async Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear, string responsibilitylowestlevelcode, string objectivelowestlevelcode, string userIdentifier)
+		public async Task<IEnumerable<ProgrammeBudget>> GetFilteredBudgets(int department, string financialYear)
 		{
-            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-            StringBuilder sbFullQuery = new StringBuilder();
-			StringBuilder sbFilter = new StringBuilder();
-
-			//Append view to Denodo URL
-			sbFullQuery.AppendFormat($"{_denodoAPIConfig.BudgetView}");
-			_denodoAPIConfig.BaseUri = "https://ldw.westerncape.gov.za/server/dev_ldw/";
-
-			//Filter by 
-			sbFilter.AppendFormat($"?DepartmentName={department}&FinancialYear={financialYear}");
-
-			//Append filter to query
-			sbFullQuery.AppendFormat($"{sbFilter}");
-
-			BudgetAPIWrapperModel data = null;
-            HttpResponseMessage response = await PrepareClient(_denodoAPIConfig).GetAsync(sbFullQuery.ToString());
-			
-			if (response.IsSuccessStatusCode)
-			{
-				data = await response.Content.ReadAsAsync<BudgetAPIWrapperModel>();
-            }
+			var data = await _programmeBudgetRepository.GetProgrammeBudgetsByIds(department, financialYear);
 
             return data;
 		}
@@ -170,9 +159,8 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 			return await _budgetAdjustmentRepository.AddBudgetAdjustmentAmount(responsibilityCode, objectiveCode, amount);
         }
 
-        public async Task<BudgetAdjustment> ImportBudget(string department, string financialYear, string userIdentifier)
+        public async Task<IEnumerable<ImportBudget>> ImportBudget(string department, string financialYear, string userIdentifier)
         {
-			var bu = new BudgetAdjustment();
 
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
             StringBuilder sbFullQuery = new StringBuilder();
@@ -197,61 +185,91 @@ namespace NPOMS.Services.DenodoAPI.Implementation
             }
 
             List<BudgetAPIModel> data1 = new List<BudgetAPIModel>();
-            try
-            {
-                for (int row = 0; row < data.elements.Count; row++)
-                {
-                    data1.Add(data.elements[row]);
 
-                }
-            }
-            catch (Exception ex)
+            for (int row = 0; row < data.elements.Count; row++)
             {
+                data1.Add(data.elements[row]);
 
             }
+           
+            var budgetData = new List<ImportBudget>();
 
-            var budgetData = new List<ProgrammeBudget>();
             foreach (var r in data1)
             {
-                var dtoRow = new ProgrammeBudget();
-                var prog = await _segmentCodeRepository.GetByValue(r.responsibilitylowestlevelcode, r.objectivelowestlevelcode);
-				if (prog.Count > 0)
+                var dtoRow = new ImportBudget();
+				if(!string.IsNullOrEmpty(r.originalbudget))
 				{
-					var programme = await _programmeRepository.GetById(prog[0].ProgrammeId);
-                    var subProg = await _subProgrammeRepository.GetByProgId(prog[0].ProgrammeId);
-					if (subProg.Count > 0)
+					if (r.originalbudget != "0.00")
 					{
-						dtoRow.SubProgrammeId = subProg[0].Id;
-						dtoRow.SubProgrammeName = subProg[0].Name;
+						try
+						{
+                            var prog = await _segmentCodeRepository.GetByValue(r.responsibilitylowestlevelcode, r.objectivelowestlevelcode);
+                            if (prog.Count > 0)
+                            {
+                                var programme = await _programmeRepository.GetById(prog[0].ProgrammeId);
+                                var subProg = await _subProgrammeRepository.GetByProgId(prog[0].ProgrammeId);
+                                var subProgType = await _subProgrammeTypeRepository.GetById(prog[0].SubProgrammeTypeId);
+
+                                if (subProg.Count > 0)
+                                {
+                                    dtoRow.SubProgrammeId = subProg[0].Id;
+                                    dtoRow.SubProgrammeName = subProg[0].Name;
+                                }
+                                else
+                                {
+                                    dtoRow.SubProgrammeId = 0;
+                                }
+                                if (programme != null)
+                                {
+                                    dtoRow.DepartmentId = programme.DepartmentId;
+                                    dtoRow.ProgrammeName = programme.Name;
+                                }
+                                dtoRow.FinancialYearId = r.financialyear;
+                                dtoRow.DepartmentName = "";
+                                dtoRow.ProgrammeId = prog[0].ProgrammeId;
+
+                                dtoRow.SubProgrammeTypeId = prog[0].SubProgrammeTypeId;
+                                dtoRow.SubProgrammeTypeName = subProgType[0].Name;
+                                dtoRow.OriginalBudgetAmount = decimal.Parse(r.originalbudget, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+                                dtoRow.AdjustedBudgetAmount = decimal.Parse("0.00", NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+                                dtoRow.ResponsibilityCode = int.Parse(r.responsibilitylowestlevelcode, CultureInfo.InvariantCulture);
+                                dtoRow.ObjectiveCode = int.Parse(r.objectivelowestlevelcode, CultureInfo.InvariantCulture);
+								dtoRow.IsActive = true;
+								dtoRow.CreatedUserId = loggedInUser.Id;
+                                dtoRow.CreatedDateTime = DateTime.Now;
+                            }
+                            budgetData.Add(dtoRow);
+                        }
+						catch(Exception ex) 
+						{
+
+						}
+						
 					}
-					else
-					{
-                        dtoRow.SubProgrammeId = 0;
-                    }
-					if (programme != null)
-					{
-						dtoRow.DepartmentId = programme.DepartmentId;
-                        dtoRow.ProgrammeName = programme.Name;
-                    }
-					dtoRow.FinancialYearId = r.financialyear;
-					dtoRow.DepartmentName = "";
-					dtoRow.ProgrammeId = prog[0].ProgrammeId;				
-					
-					dtoRow.SubProgrammeTypeId = prog[0].SubProgrammeTypeId;
-					dtoRow.SubProgrammeTypeName = "";
-					dtoRow.OriginalBudgetAmount = r.originalbudget;
-					dtoRow.AdjustedBudgetAmount = "0.00";
-					dtoRow.ResponsibilityCode = r.responsibilitylowestlevelcode;
-					dtoRow.ObjectiveCode = r.objectivelowestlevelcode;
-					dtoRow.CreatedUserId = loggedInUser.Id;
-					dtoRow.CreatedDateTime = DateTime.Now;
-				}
-                budgetData.Add(dtoRow);
-            }
-            this._repositoryContext.ProgrammeBudgets.AddRange(budgetData);
+                }
+            }		
+            
+            this._repositoryContext.ImportBudget.AddRange(budgetData);
             await this._repositoryContext.SaveChangesAsync();
 
-            return bu;
+            var sql = @"exec dbo.ImportBudget_Summary";
+            await this._repositoryContext.Database.ExecuteSqlRawAsync(sql);
+
+            return budgetData;
+        }
+
+        public async Task<ProgrammeBudget> Update(string amount, int id, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var model = await _programmeBudgetRepository.GetProgrammeBudgetById(id);           
+
+			model.AdjustedBudgetAmount = decimal.Parse(amount, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture); ;
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            var oldEntity = await this._repositoryContext.ProgrammeBudgets.FindAsync(model.Id);
+            await _programmeBudgetRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+			return model;
         }
     }
 }

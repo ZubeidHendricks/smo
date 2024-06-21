@@ -10,12 +10,12 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-department-budget',
-  templateUrl: './department-budget.component.html',
-  styleUrls: ['./department-budget.component.css'],
+  selector: 'app-upload-budget',
+  templateUrl: './upload-budget.component.html',
+  styleUrls: ['./upload-budget.component.css'],
   providers: [MessageService, ConfirmationService]
 })
-export class DepartmentBudgetComponent implements OnInit {
+export class UploadBudgetComponent implements OnInit {
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -32,7 +32,6 @@ export class DepartmentBudgetComponent implements OnInit {
   budgetCols: any[];
   denodoBudgets: IDenodoBudget[];
   programmeBudgets: IProgrammeBudgets[];
-
   financialYears: IFinancialYear[];
   selectedFinancialYearSummary: IFinancialYear;
 
@@ -114,30 +113,24 @@ export class DepartmentBudgetComponent implements OnInit {
   }
 
   departmentSummaryChange() {
-    this.loadBudgets();
+    this.ImportBudgets();
   }
 
   financialYearSummaryChange() {
-    this.loadBudgets();
+    this.ImportBudgets();
   }
 
-  private loadBudgets() {
+  private ImportBudgets() {
     if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
       this._spinner.show();
 
-      this.totalBudget = 0;
-      this.totalAllocated = 0;
-      this.totalPaid = 0;
-      this.totalBalance = 0;
-
-      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
+      this._budgetRepo.importBudget(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
-
           this.programmeBudgets = results ? results : [];
-          
-          this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
-          this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
 
+          this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
+
+          this._spinner.hide();
           this._spinner.hide();
         },
         (err) => {
@@ -145,6 +138,6 @@ export class DepartmentBudgetComponent implements OnInit {
           this._spinner.hide();
         }
       );
-    }    
+    }
   }
 }

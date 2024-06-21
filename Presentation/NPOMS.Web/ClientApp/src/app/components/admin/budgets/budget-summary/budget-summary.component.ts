@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
-import { IDenodoBudget, IDepartment, IFinancialYear, IProgramme, ISubProgramme, ISubProgrammeType, IUser, ISegmentCode } from 'src/app/models/interfaces';
+import { IDenodoBudget, IDepartment, IFinancialYear, IProgramme, ISubProgramme, ISubProgrammeType, IUser, ISegmentCode, IProgrammeBudgets } from 'src/app/models/interfaces';
 import { BudgetService } from 'src/app/services/api-services/budget/budget.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -30,6 +30,7 @@ export class BudgetSummaryComponent implements OnInit {
   budgetCols: any[];
   denodoBudgets: IDenodoBudget[];
   filteredDenodoBudgets: IDenodoBudget[];
+  programmeBudgets: IProgrammeBudgets[];
 
   financialYears: IFinancialYear[];
   selectedFinancialYearSummary: IFinancialYear;
@@ -51,6 +52,7 @@ export class BudgetSummaryComponent implements OnInit {
   selectedSubProgrammeType: ISubProgrammeType;
   segmentCode: ISegmentCode[] = [];
   filteredSegmentCode: ISegmentCode[] = [];
+  totalBudget: number;
 
   list: any[] = [];
   item: any;
@@ -84,11 +86,11 @@ export class BudgetSummaryComponent implements OnInit {
     this.budgetCols = [
       { header: 'Programme', width: '15%' },
       { header: 'Sub Programme', width: '15%' },
-      { header: 'Sub Programme Type', width: '15%' },
+      { header: 'Sub Programme Type', width: '18%' },
       { header: 'Original Budget', width: '15%' },
-      { header: 'Adjusted Budget', width: '15%' },
-      { header: 'Allocated', width: '15%' },
-      { header: 'Balance', width: '10%' }
+      { header: 'Adjusted Budget', width: '13%' },
+      { header: 'Allocated', width: '12%' },
+      { header: 'Balance', width: '12%' }
     ];
   }
 
@@ -213,24 +215,17 @@ export class BudgetSummaryComponent implements OnInit {
   private loadBudgets() {
     if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
       this._spinner.show();
-
-      this._budgetRepo.getBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
+      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
-
           
+          // results.forEach(application => {
+          //   this.setSubProgrammeTypeName(application);
+          // });
 
-          this.denodoBudgets = results ? results.elements : [];
-
-          this.denodoBudgets.forEach(application => {
-            this.setProgrammeName(application);
-          });
-
-          //found at: https://stackoverflow.com/questions/31005396/filter-array-of-objects-with-another-array-of-objects
-          this.filteredDenodoBudgets = this.denodoBudgets.filter((el) => {
-            return this.filteredSegmentCode.some((f) => {
-              return f.responsibilityCode === el.responsibilitylowestlevelcode && f.objectiveCode === el.objectivelowestlevelcode && Number(el.originalbudget) > 0;
-            });
-          });
+          this.programmeBudgets = results ? results : [];
+          
+          this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
+          this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
 
           this._spinner.hide();
         },
@@ -239,25 +234,12 @@ export class BudgetSummaryComponent implements OnInit {
           this._spinner.hide();
         }
       );
+    
     }
   }
 
-  private setProgrammeName(data: IDenodoBudget) {
-    let responsibilityCode = data.responsibilitylowestlevelcode;
-    let objectiveCode = data.objectivelowestlevelcode;
-    let id =  this.segmentCode.filter(x=> x.responsibilityCode === responsibilityCode && x.objectiveCode === objectiveCode);
-    if(id.length > 0)
-    {     
-      let programmeName = this.filteredProgrammes.filter(x=> x.id === id[0].programmeId);
-      let subProgrammeName = this.subProgrammes.filter(x=> x.programmeId === programmeName[0].id);
-      let subProgrammeTypeName = this.subProgrammeType.filter(x=> x.subProgrammeId === subProgrammeName[0].id)
-      data.programme = programmeName[0].name;
-      
-      if(subProgrammeName.length > 0)
-        data.subProgramme = subProgrammeName[0].name;
-      
-      if(subProgrammeTypeName.length > 0)
-        data.subProgrammeType = subProgrammeTypeName[0].name;
-    }    
+  private setSubProgrammeTypeName(data: IProgrammeBudgets) {
+    var subProgTypeName = this.subProgrammeType.filter(x=> x.id = data.subProgrammeTypeId);
+    data.subProgrammeTypeName = subProgTypeName[0].name;
   }
 }

@@ -309,6 +309,7 @@ export enum PermissionsEnum {
     EditProgrammeBudget = "Bud.EPB",
     ViewProgrammeBudget = "Bud.VPB",
     ViewBudgetSummary = "Bud.VBS",
+    UploadBudget = "Bud.UB",
 
     /* Side Navigation */
     ViewSecurityMenu = "SN.Security",

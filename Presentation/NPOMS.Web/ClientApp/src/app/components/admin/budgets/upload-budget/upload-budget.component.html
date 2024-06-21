@@ -1,9 +1,9 @@
 <p-toast></p-toast>
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Department Budget Management">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Upload Budget">
     <div style="height: 10px;"></div>
     <div class="p-grid">
         <div class="p-col-2">
-            <p-card subheader="Department Budget Summary" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+            <p-card subheader="Upload Budget" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
                 <div class="p-fluid">
                     <div class="p-grid" *ngIf="isSystemAdmin">
                         <div class="p-col-fixed form-label">
@@ -26,50 +26,50 @@
                         </div>
                     </div>
                     <div class="p-grid">
-                        <div class="p-col-fixed form-label">
+                        <!-- <div class="p-col-fixed form-label">
                             <div class="box">
                                 <span class="non-mandatory-content">Budget</span>
                             </div>
                         </div>
                         <div class="p-col summary-value">
                             R {{totalBudget | number : '1.2-2'}}
-                        </div>
+                        </div> -->
                     </div>
                     <div class="p-grid">
-                        <div class="p-col-fixed form-label">
+                        <!-- <div class="p-col-fixed form-label">
                             <div class="box">
                                 <span class="non-mandatory-content">Allocated</span>
                             </div>
                         </div>
                         <div class="p-col summary-value">
                             R {{totalAllocated | number : '1.2-2'}}
-                        </div>
+                        </div> -->
                     </div>
                     <div class="p-grid">
-                        <div class="p-col-fixed form-label">
+                        <!-- <div class="p-col-fixed form-label">
                             <div class="box">
                                 <span class="non-mandatory-content">Paid</span>
                             </div>
                         </div>
                         <div class="p-col summary-value">
                             R {{totalPaid | number : '1.2-2'}}
-                        </div>
+                        </div> -->
                     </div>
                     <div class="p-grid">
-                        <div class="p-col-fixed form-label">
+                        <!-- <div class="p-col-fixed form-label">
                             <div class="box">
                                 <span class="non-mandatory-content">Balance</span>
                             </div>
                         </div>
                         <div class="p-col summary-value">
                             R {{totalBalance | number : '1.2-2'}}
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </p-card>
         </div>
         <div class="p-col-10">
-            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="programmeBudgets" styleClass="p-datatable-sm"
+            <!-- <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="denodoBudgets" styleClass="p-datatable-sm"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true"  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['originalbudget']">
                 <ng-template pTemplate="header" let-columns>
@@ -89,9 +89,9 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
-                        <td style="text-align: right;">{{rowData.originalBudgetAmount | number : '1.2-2'}}</td>
-                        <td style="text-align: right;"></td>
-                        <td style="text-align: right;"></td>
+                        <td>{{rowData.originalbudget | number : '1.2-2'}}</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -99,7 +99,7 @@
                         <td colspan="3" style="text-align: center;">No results found</td>
                     </tr>
                 </ng-template>
-            </p-table>
+            </p-table> -->
         </div>
     </div>
 </p-panel>

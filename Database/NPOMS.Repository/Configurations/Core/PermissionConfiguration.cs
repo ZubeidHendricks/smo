@@ -855,6 +855,13 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "View Budget Summary",
                     SystemName = "Bud.VBS",
                     CategoryName = "Budgets"
+                },
+                new Permission
+                {
+                    Id = 122,
+                    Name = "Upload Budget",
+                    SystemName = "Bud.UB",
+                    CategoryName = "Budgets"
                 }
             );
 		}

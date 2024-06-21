@@ -69,10 +69,10 @@
             </p-card>
         </div>
         <div class="p-col-10">
-            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="denodoBudgets" styleClass="p-datatable-sm"
+            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="programmeBudgets" styleClass="p-datatable-sm"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true"  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-            [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['programme','subProgramme',
-            'subProgrammeType']">
+            [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['programmeName','subProgrammeName',
+            'subProgrammeTypeName']">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -95,11 +95,11 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
-                        <td>{{rowData.programme}}</td>
-                        <td>{{rowData.subProgramme}}</td>
-                        <td>{{rowData.subProgrammeType}}</td>
-                        <td>R {{rowData.originalbudget | number : '1.2-2'}}</td>
-                        <td></td>
+                        <td>{{rowData.programmeName}}</td>
+                        <td>{{rowData.subProgrammeName}}</td>
+                        <td>{{rowData.subProgrammeTypeName}}</td>
+                        <td style="text-align: right;">R {{rowData.originalBudgetAmount | number : '1.2-2'}}</td>
+                        <td style="text-align: right;">R {{rowData.adjustedBudgetAmount | number : '1.2-2'}}</td>
                         <!-- <td></td> -->
                         <td style="text-align: center;">
                             <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
@@ -125,7 +125,7 @@
           [modal]="true">
 
           <div class="p-col">
-            <input type="text" class="form-text" pInputText [ngModelOptions]="{standalone: true}">
+            <input type="text" class="form-text" [(ngModel)]="AdjustmentAmount" pInputText [ngModelOptions]="{standalone: true}">
         </div>
 
     <!-- <div class="p-grid" *ngIf="isSystemAdmin">
@@ -139,6 +139,6 @@
         </div>
     </div> -->
     <ng-template pTemplate="footer">
-        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o"></button>
+        <button pButton pRipple type="button" label="Save" (click)="SaveData(true, 'singleComment')" class="p-button-text" icon="fa fa-floppy-o"></button>
     </ng-template>
 </p-dialog>

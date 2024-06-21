@@ -1,7 +1,7 @@
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Budget Summary">
     <div style="height: 10px;"></div>
     <div class="p-grid">
-        <div class="p-col-2">
+        <div class="p-col-3">
             <p-card subheader="Budget Summary" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
                 <div class="p-fluid">
                     <div class="p-grid" *ngIf="isSystemAdmin">
@@ -45,8 +45,8 @@
                 </div>
             </p-card>
         </div>
-        <div class="p-col-10">
-            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="filteredDenodoBudgets" 
+        <div class="p-col-9">
+            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="programmeBudgets" 
             styleClass="p-datatable-sm"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -73,13 +73,13 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
-                        <td>{{rowData.programme}}</td>
-                        <td>{{rowData.subProgramme}}</td>
-                        <td>{{rowData.subProgrammeType}}</td>
-                        <td>{{rowData.originalbudget | number : '1.2-2'}}</td>                        
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{rowData.programmeName}}</td>
+                        <td>{{rowData.subProgrammeName}}</td>
+                        <td>{{rowData.subProgrammeTypeName}}</td>
+                        <td style="text-align: right;">{{rowData.originalBudgetAmount | number : '1.2-2'}}</td>                        
+                        <td style="text-align: right;"></td>
+                        <td style="text-align: right;"></td>
+                        <td style="text-align: right;"></td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
