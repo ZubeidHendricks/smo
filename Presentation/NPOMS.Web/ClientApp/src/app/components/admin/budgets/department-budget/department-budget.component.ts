@@ -103,6 +103,7 @@ export class DepartmentBudgetComponent implements OnInit {
         // If user is system admin, show department dropdown
         // If user is not system admin, default department to assigned department in user department table
         this.selectedDepartmentSummary = this.isSystemAdmin ? null : this.departments.find(x => x.id === this.profile.departments[0].id);
+       
 
         this._spinner.hide();
       },

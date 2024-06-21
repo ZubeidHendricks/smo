@@ -49,6 +49,7 @@ export class ProgrammeBudgetComponent implements OnInit {
   totalAllocated: number;
   totalPaid: number;
   totalBalance: number;
+  totalAdjustedBudget: number;
 
   programmes: IProgramme[];
   filteredProgrammes: IProgramme[];
@@ -221,7 +222,8 @@ export class ProgrammeBudgetComponent implements OnInit {
 
           this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
           this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
-
+          this.totalAdjustedBudget = this.programmeBudgets.reduce((n, {adjustedBudgetAmount}) => n + Number(adjustedBudgetAmount), 0);
+          
           this._spinner.hide();
         },
         (err) => {

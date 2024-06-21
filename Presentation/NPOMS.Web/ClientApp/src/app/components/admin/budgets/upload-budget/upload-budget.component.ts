@@ -37,6 +37,7 @@ export class UploadBudgetComponent implements OnInit {
 
   departments: IDepartment[];
   selectedDepartmentSummary: IDepartment;
+  displayMessage: string;
 
   isSystemAdmin: boolean;
 
@@ -123,21 +124,43 @@ export class UploadBudgetComponent implements OnInit {
   private ImportBudgets() {
     if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
       this._spinner.show();
-
-      this._budgetRepo.importBudget(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
+      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
           this.programmeBudgets = results ? results : [];
-
           this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
-
-          this._spinner.hide();
+          if(this.programmeBudgets.length > 0)
+          {
+              this.displayMessage = 'Budget for the selected department and selected year is already imported';
+              this._spinner.hide();
+          }
+          else{
+            this._spinner.show();
+            this._budgetRepo.importBudget(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
+              (results) => {
+                this.programmeBudgets = results ? results : [];
+                this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
+      
+                if(this.programmeBudgets.length > 0)
+                {
+                  this.displayMessage = 'Budget Imported Successfully';
+                }
+                
+                this._spinner.hide();
+              },
+              (err) => {
+                this._loggerService.logException(err);
+                this.displayMessage = 'Error In Budget Import -' + err;
+                this._spinner.hide();
+              }
+            );
+          }
           this._spinner.hide();
         },
         (err) => {
           this._loggerService.logException(err);
           this._spinner.hide();
         }
-      );
+      );      
     }
   }
 }

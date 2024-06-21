@@ -53,6 +53,7 @@ export class BudgetSummaryComponent implements OnInit {
   segmentCode: ISegmentCode[] = [];
   filteredSegmentCode: ISegmentCode[] = [];
   totalBudget: number;
+  totalAdjustedBudget: number;
 
   list: any[] = [];
   item: any;
@@ -226,7 +227,7 @@ export class BudgetSummaryComponent implements OnInit {
           
           this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
           this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
-
+          this.totalAdjustedBudget = this.programmeBudgets.reduce((n, {adjustedBudgetAmount}) => n + Number(adjustedBudgetAmount), 0);
           this._spinner.hide();
         },
         (err) => {

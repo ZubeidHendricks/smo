@@ -94,6 +94,13 @@
                         <td style="text-align: right;"></td>
                     </tr>
                 </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr class="default-font">
+                        <td style="text-align: right;">{{totalBudget | number : '1.2-2'}}</td>                        
+                        <td></td> 
+                        <td></td>
+                    </tr>
+                </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr class="default-font">
                         <td colspan="3" style="text-align: center;">No results found</td>
