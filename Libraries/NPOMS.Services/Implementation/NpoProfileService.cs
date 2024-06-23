@@ -645,7 +645,7 @@ namespace NPOMS.Services.Implementation
                     await _programeContactDetailRepository.UpdateAsync(contact);
                 }
 
-                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programId);
+                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryyProgramId(programId);
                 foreach (var delivery in activeDeliveryInfo)
                 {
                     delivery.ApprovalStatusId = (int)AccessStatusEnum.Approved;
