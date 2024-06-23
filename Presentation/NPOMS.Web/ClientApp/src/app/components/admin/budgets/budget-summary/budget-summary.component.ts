@@ -54,7 +54,13 @@ export class BudgetSummaryComponent implements OnInit {
   filteredSegmentCode: ISegmentCode[] = [];
   totalBudget: number;
   totalAdjustedBudget: number;
-
+  selectedProgram: any;
+  selectedSubProgram: any;
+  selectedSubProgramType: any;
+  filterProgramIds: string;
+  filterSubProgramIds: string;
+  filterSubProgramTypeIds: string;
+  filteredSubProgramTypeIds: number[];
   list: any[] = [];
   item: any;
 
@@ -195,18 +201,64 @@ export class BudgetSummaryComponent implements OnInit {
   loadPrograms(id: number) {
    
     this.filteredProgrammes = this.programmes.filter(x => x.departmentId === id); 
-}
-
-  programmeChange(id: number)
-  {
-    this.filteredSubProgrammes = this.subProgrammes.filter(x => x.programmeId === id);
-    this.loadSegmentCode(id);
-
   }
 
-  subProgrammeChange(id: number)
+  
+  programmeChange(programs: any[])
   {
-    this.filteredSubProgrammeType = this.subProgrammeType.filter(x => x.subProgrammeId === id);
+    let selectedOnes = [];
+    selectedOnes.push(programs); 
+
+    if (selectedOnes.length > 0)
+    {
+      this.selectedProgram = selectedOnes.join(",");
+     
+      this.filterProgramIds = this.selectedProgram;
+      const filterIds = this.filterProgramIds.split(',').map(Number);
+      this.filteredSubProgrammes = this.subProgrammes.filter(item =>
+        filterIds.includes(item.id)
+      );
+    }  
+    else
+    this.selectedProgram = "0";
+  }
+
+  subProgrammeChange(subProgram: any[])
+  {
+    let selectedOnes = [];
+    selectedOnes.push(subProgram); 
+
+    if (selectedOnes.length > 0)
+    {
+      this.selectedSubProgram = selectedOnes.join(",");
+     
+      this.filterSubProgramIds = this.selectedSubProgram;
+      const filterIds = this.filterSubProgramIds.split(',').map(Number);
+      this.filteredSubProgrammeType = this.subProgrammeType.filter(item =>
+        filterIds.includes(item.id)
+      );
+    }  
+    else
+    this.selectedProgram = "0";
+  }
+
+  subProgrammeTypeChange(subProgramType: any[])
+  {
+    let selectedOnes = [];
+    selectedOnes.push(subProgramType); 
+
+    if (selectedOnes.length > 0)
+    {
+      this.selectedSubProgramType = selectedOnes.join(",");
+     
+      this.filterSubProgramTypeIds = this.selectedSubProgramType;
+      const filterIds = this.filterSubProgramIds.split(',').map(Number);
+      this.filteredSubProgramTypeIds = filterIds;
+
+      this.loadBudgets();
+    }  
+    else
+    this.selectedProgram = "0";
   }
 
   financialYearSummaryChange() {
@@ -219,11 +271,11 @@ export class BudgetSummaryComponent implements OnInit {
       this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
           
-          // results.forEach(application => {
-          //   this.setSubProgrammeTypeName(application);
-          // });
-
           this.programmeBudgets = results ? results : [];
+
+          this.programmeBudgets = this.programmeBudgets.filter(item =>
+            this.filteredSubProgramTypeIds.includes(item.id)
+          );
           
           this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
           this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
