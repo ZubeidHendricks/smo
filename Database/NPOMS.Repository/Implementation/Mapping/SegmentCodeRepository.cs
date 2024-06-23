@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NPOMS.Domain.Budget;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Interfaces.Mapping;
 using System;
@@ -28,7 +29,14 @@ namespace NPOMS.Repository.Implementation.Mapping
             return await FindAll().AsNoTracking()
                .OrderBy(ow => ow.Id).ToListAsync();
         }
-         
+
+        public async Task<List<SegmentCode>> GetByValue(string responsibilityCode, string objectiveCode)
+        {
+            return await FindByCondition(x => x.ResponsibilityCode.Equals(responsibilityCode) && x.ObjectiveCode.Equals(objectiveCode))
+                .AsNoTracking().ToListAsync();
+
+        }
+
 
         #endregion
 

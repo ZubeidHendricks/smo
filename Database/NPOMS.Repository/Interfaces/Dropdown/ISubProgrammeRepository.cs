@@ -9,5 +9,6 @@ namespace NPOMS.Repository.Interfaces.Dropdown
 		Task<IEnumerable<SubProgramme>> GetEntities(bool returnInactive);
 
 		Task<IEnumerable<SubProgramme>> GetByProgrammeId(int programmeId);
-	}
+        Task<List<SubProgramme>> GetByProgId(int programmeId);
+    }
 }

@@ -38,5 +38,13 @@ namespace NPOMS.Repository.Implementation.Entities
 
             return result;
         }
+
+        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryyProgramId(int progId)
+        {
+            var result = await FindByCondition(x => x.ProgramId.Equals(progId) && x.IsActive)
+                           .AsNoTracking().ToListAsync();
+
+            return result;
+        }
     }
 }

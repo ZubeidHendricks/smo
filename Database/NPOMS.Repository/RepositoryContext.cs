@@ -206,7 +206,9 @@ namespace NPOMS.Repository
         /* Budget */
         public DbSet<DepartmentBudget> DepartmentBudgets { get; set; }
         public DbSet<DirectorateBudget> DirectorateBudgets { get; set; }
-        public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }       
+        public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }   
+        public DbSet<BudgetAdjustment> BudgetAdjustment { get; set; }
+        public DbSet<ImportBudget> ImportBudget { get; set; }
 
         /* Program */
 

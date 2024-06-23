@@ -1,7 +1,7 @@
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Budget Summary">
     <div style="height: 10px;"></div>
     <div class="p-grid">
-        <div class="p-col-2">
+        <div class="p-col-3">
             <p-card subheader="Budget Summary" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
                 <div class="p-fluid">
                     <div class="p-grid" *ngIf="isSystemAdmin">
@@ -45,8 +45,8 @@
                 </div>
             </p-card>
         </div>
-        <div class="p-col-10">
-            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="filteredDenodoBudgets" 
+        <div class="p-col-9">
+            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="programmeBudgets" 
             styleClass="p-datatable-sm"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -62,9 +62,9 @@
                         </th>
                     </tr>
                     <tr>
-                        <th><p-columnFilter type="text" field="programme"></p-columnFilter></th>
-                        <th><p-columnFilter type="text" field="subProgramme"></p-columnFilter></th>
-                        <th><p-columnFilter type="text" field="subProgrammeType"></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="programmeName"></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="subProgrammeName"></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="subProgrammeTypeName"></p-columnFilter></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -73,15 +73,36 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
-                        <td>{{rowData.programme}}</td>
-                        <td>{{rowData.subProgramme}}</td>
-                        <td>{{rowData.subProgrammeType}}</td>
-                        <td>{{rowData.originalbudget}}</td>                        
+                        <td>{{rowData.programmeName}}</td>
+                        <td>{{rowData.subProgrammeName}}</td>
+                        <td>{{rowData.subProgrammeTypeName}}</td>
+                        <td style="text-align: right;">{{rowData.originalBudgetAmount | number : '1.2-2'}}</td>                        
+                        <td style="text-align: right;">{{rowData.adjustedBudgetAmount | number : '1.2-2'}}</td>
+                        <td style="text-align: right;"></td>
+                        <td style="text-align: right;"></td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr class="default-font">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right;">{{totalBudget | number : '1.2-2'}}</td>                        
+                        <td style="text-align: right;">{{totalAdjustedBudget | number : '1.2-2'}}</td> 
+                        <td></td>
+                        <td></td> </tr>
+                </ng-template>
+                <!-- <ng-template  pTemplate="footer">
+                    <tr class="default-font">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right;">{{rowData.totalBudget | number : '1.2-2'}}</td>                        
                         <td></td>
                         <td></td>
                         <td></td>
                     </tr>
-                </ng-template>
+                </ng-template> -->
                 <ng-template pTemplate="emptymessage">
                     <tr class="default-font">
                         <td colspan="9" style="text-align: center;">No results found</td>
