@@ -54,7 +54,13 @@ export class BudgetSummaryComponent implements OnInit {
   filteredSegmentCode: ISegmentCode[] = [];
   totalBudget: number;
   totalAdjustedBudget: number;
-
+  selectedProgram: any;
+  selectedSubProgram: any;
+  selectedSubProgramType: any;
+  filterProgramIds: string;
+  filterSubProgramIds: string;
+  filterSubProgramTypeIds: string;
+  filteredSubProgramTypeIds: number[];
   list: any[] = [];
   item: any;
 
@@ -80,7 +86,6 @@ export class BudgetSummaryComponent implements OnInit {
         this.loadSubProgrammes();
         this.loadProgrammeTypes();
         this.loadFinancialYears();
-        
       }
     });
 
@@ -177,7 +182,6 @@ export class BudgetSummaryComponent implements OnInit {
       (results) => {       
         this.segmentCode = results;
          this.filteredSegmentCode = this.segmentCode.filter(x=> x.programmeId === id);
-         console.log('this.filteredSegmentCode', this.filteredSegmentCode);
        
         this._spinner.hide();
       }, 
@@ -188,25 +192,72 @@ export class BudgetSummaryComponent implements OnInit {
     );
   }
 
-  departmentSummaryChange() {
-    //this.loadBudgets();
+    departmentSummaryChange() {
+    this.loadBudgets();
   }
 
   loadPrograms(id: number) {
    
     this.filteredProgrammes = this.programmes.filter(x => x.departmentId === id); 
-}
-
-  programmeChange(id: number)
+  }
+  
+  programmeChange(programs: any[])
   {
-    this.filteredSubProgrammes = this.subProgrammes.filter(x => x.programmeId === id);
-    this.loadSegmentCode(id);
+    let selectedProgrammes = [];
+    selectedProgrammes.push(programs); 
 
+    if (selectedProgrammes.length > 0)
+    {
+      this.selectedProgram = selectedProgrammes.join(",");
+     
+      this.filterProgramIds = this.selectedProgram;
+      const programIds = this.filterProgramIds.split(',').map(Number);
+      
+      this.filteredSubProgrammes = this.subProgrammes.filter(item =>
+        programIds.includes(item.programmeId)
+      );
+    }  
+    else
+    this.selectedProgram = "0";
   }
 
-  subProgrammeChange(id: number)
+  subProgrammeChange(subProgram: any[])
   {
-    this.filteredSubProgrammeType = this.subProgrammeType.filter(x => x.subProgrammeId === id);
+    let selectedSubProgrammes = [];
+    selectedSubProgrammes.push(subProgram); 
+    if (selectedSubProgrammes.length > 0)
+    {
+      this.selectedSubProgram = selectedSubProgrammes.join(",");
+     
+      this.filterSubProgramIds = this.selectedSubProgram;
+      const subProgrammeIds = this.filterSubProgramIds.split(',').map(Number);
+      
+      this.filteredSubProgrammeType = this.subProgrammeType.filter(item =>
+        subProgrammeIds.includes(item.subProgrammeId)
+      );     
+    }  
+    else
+    this.selectedProgram = "0";
+  }
+
+  subProgrammeTypeChange(subProgramType: any[])
+  {
+    let selectedSubProgrammesType = [];
+    selectedSubProgrammesType.push(subProgramType); 
+
+    if (selectedSubProgrammesType.length > 0)
+    {
+      this.selectedSubProgramType = selectedSubProgrammesType.join(",");
+     
+      this.filterSubProgramTypeIds = this.selectedSubProgramType;
+      const subProgrammeTypeIds = this.filterSubProgramTypeIds.split(',').map(Number);
+      
+      this.filteredSubProgramTypeIds = subProgrammeTypeIds;
+
+      this.loadBudgets();
+    }  
+    else
+    this.selectedProgram = "0";
   }
 
   financialYearSummaryChange() {
@@ -219,12 +270,14 @@ export class BudgetSummaryComponent implements OnInit {
       this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
           
-          // results.forEach(application => {
-          //   this.setSubProgrammeTypeName(application);
-          // });
-
           this.programmeBudgets = results ? results : [];
-          
+
+          if( this.filteredSubProgramTypeIds != undefined){
+            this.programmeBudgets = this.programmeBudgets.filter(item =>
+              this.filteredSubProgramTypeIds.includes(item.subProgrammeTypeId)
+            );
+          }
+
           this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
           this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
           this.totalAdjustedBudget = this.programmeBudgets.reduce((n, {adjustedBudgetAmount}) => n + Number(adjustedBudgetAmount), 0);

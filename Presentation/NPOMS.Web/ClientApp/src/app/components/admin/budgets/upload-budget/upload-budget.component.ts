@@ -131,7 +131,7 @@ export class UploadBudgetComponent implements OnInit {
           if(this.programmeBudgets.length > 0)
           {
               this.displayMessage = 'Budget for the selected department and selected year is already imported';
-              this._spinner.hide();
+             
           }
           else{
             this._spinner.show();
