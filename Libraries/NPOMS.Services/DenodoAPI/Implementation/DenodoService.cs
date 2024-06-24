@@ -207,25 +207,25 @@ namespace NPOMS.Services.DenodoAPI.Implementation
                             if (prog.Count > 0)
                             {
                                 var programme = await _programmeRepository.GetById(prog[0].ProgrammeId);
-                                var subProg = await _subProgrammeRepository.GetByProgId(prog[0].ProgrammeId);
+                                var subProg = await _subProgrammeRepository.GetById(prog[0].SubProgramId);
                                 var subProgType = await _subProgrammeTypeRepository.GetById(prog[0].SubProgrammeTypeId);
 
-                                if (subProg.Count > 0)
-                                {
-                                    dtoRow.SubProgrammeId = subProg[0].Id;
-                                    dtoRow.SubProgrammeName = subProg[0].Name;
-                                }
-                                else
-                                {
+								if (subProg != null)
+								{
+									dtoRow.SubProgrammeId = subProg.Id;
+									dtoRow.SubProgrammeName = subProg.Name;
+								}
+								else
+								{
                                     dtoRow.SubProgrammeId = 0;
-                                }
-                                if (programme != null)
-                                {
-                                    dtoRow.DepartmentId = programme.DepartmentId;
-                                    dtoRow.ProgrammeName = programme.Name;
-                                }
+                                }							
+                               
+                                dtoRow.DepartmentId = programme.DepartmentId;
+                                dtoRow.ProgrammeName = programme.Name;
+
                                 dtoRow.FinancialYearId = r.financialyear;
                                 dtoRow.DepartmentName = "";
+
                                 dtoRow.ProgrammeId = prog[0].ProgrammeId;
 
                                 dtoRow.SubProgrammeTypeId = prog[0].SubProgrammeTypeId;

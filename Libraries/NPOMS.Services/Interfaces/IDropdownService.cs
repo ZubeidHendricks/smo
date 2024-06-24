@@ -219,7 +219,6 @@ namespace NPOMS.Services.Interfaces
         Task UpdateDirectorate(Directorate model, string userIdentifier);
 
         Task<IEnumerable<SubProgramme>> GetSubProgrammesByProgrammeId(int programmeId);
-
         Task<IEnumerable<SubProgrammeType>> GetSubProgrammeTypesBySubProgrammeId(int subProgrammeId);
 
         Task<IEnumerable<Bank>> GetBanks(bool returnInactive);

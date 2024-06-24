@@ -10,7 +10,7 @@
                                 <span class="non-mandatory-content">Department</span>
                             </div>
                         </div>
-                        <div class="p-col">
+                        <div class="p-col-12 p-md-10">
                             <p-dropdown [options]="departments" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedDepartmentSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
                             (onChange)="loadPrograms($event.value.id)"></p-dropdown>
                         </div>
@@ -21,7 +21,7 @@
                                 <span class="non-mandatory-content">Programme</span>
                             </div>
                         </div>
-                        <div class="p-col">
+                        <div class="p-col-12 p-md-10">
                             <p-multiSelect [options]="filteredProgrammes" 
                             defaultLabel="Select Programme(s)" 
                             optionLabel="name" 
@@ -39,7 +39,7 @@
                             <span class="non-mandatory-content">SubProgram</span>
                         </div>
                     </div>
-                        <div class="p-col">
+                        <div class="p-col-12 p-md-10">
                             <p-multiSelect [options]="filteredSubProgrammes" 
                             defaultLabel="Select SubProgramme(s)" optionLabel="name" optionValue="id" [(ngModel)]="selectedSubProgrammes" 
                             [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
@@ -49,10 +49,10 @@
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
-                                <span class="non-mandatory-content">Sub Program Type</span>
+                                <span class="non-mandatory-content">Sub ProgramType</span>
                             </div>
                         </div>
-                        <div class="p-col">
+                        <div class="p-col-12 p-md-10">
                             <p-multiSelect [options]="filteredSubProgrammeType" defaultLabel="Select SubProgramType(s)" 
                             optionLabel="name" optionValue="id" [(ngModel)]="selectedSubProgrammeType" 
                             [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
@@ -66,7 +66,7 @@
                                 <span class="non-mandatory-content">Financial Year</span>
                             </div>
                         </div>
-                        <div class="p-col">
+                        <div class="p-col-12 p-md-10">
                             <p-dropdown [options]="financialYears" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedFinancialYearSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearSummaryChange()"></p-dropdown>
                         </div>
                     </div>
