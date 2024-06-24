@@ -34,7 +34,7 @@ namespace NPOMS.Repository.Configurations.Mapping
                 new SegmentCode { Id = 18, ProgrammeId = 17, ResponsibilityCode = "30079059", SubProgrammeTypeId = 52, ObjectiveCode = "30046059", SubProgramId = 56 },
                 new SegmentCode { Id = 19, ProgrammeId = 17, ResponsibilityCode = "30079059", SubProgrammeTypeId = 56, ObjectiveCode = "30050059", SubProgramId = 57 },
                 new SegmentCode { Id = 20, ProgrammeId = 18, ResponsibilityCode = "30064059", SubProgrammeTypeId = 62, ObjectiveCode = "30059059", SubProgramId = 58 },
-                new SegmentCode { Id = 21, ProgrammeId = 19, ResponsibilityCode = "30069059", SubProgrammeTypeId = 64, ObjectiveCode = "30044059", SubProgramId = 0 },
+                new SegmentCode { Id = 21, ProgrammeId = 19, ResponsibilityCode = "30069059", SubProgrammeTypeId = 64, ObjectiveCode = "30044059", SubProgramId = 60 },
                 new SegmentCode { Id = 22, ProgrammeId = 20, ResponsibilityCode = "30062059", SubProgrammeTypeId = 70, ObjectiveCode = "30062059", SubProgramId = 63 },
                 new SegmentCode { Id = 23, ProgrammeId = 21, ResponsibilityCode = "30074059", SubProgrammeTypeId = 71, ObjectiveCode = "30037059", SubProgramId = 65 },
                 new SegmentCode { Id = 24, ProgrammeId = 17, ResponsibilityCode = "3059", SubProgrammeTypeId = 48, ObjectiveCode = "30049059", SubProgramId = 55 }
