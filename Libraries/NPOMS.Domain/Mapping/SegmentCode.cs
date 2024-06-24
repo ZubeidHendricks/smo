@@ -15,6 +15,7 @@ namespace NPOMS.Domain.Mapping
         public string ResponsibilityCode {get; set;}
         public int SubProgrammeTypeId {get; set;}
         public string ObjectiveCode { get; set; }
+        public int SubProgramId { get; set;}
         public Programme Programme { get; set; }
         public SubProgrammeType SubProgrammeType { get; set; }
     }
