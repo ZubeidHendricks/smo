@@ -1,10 +1,10 @@
 
 trigger:
-- Training
+- 3-Training
 
 variables:
   buildConfiguration: 'Release'
-  dotnetSdkVersion: '8.x'
+  dotnetSdkVersion: '6.x'
   
 stages:
 - stage: 'Build'
@@ -13,7 +13,7 @@ stages:
   - job: 'Build'
     displayName: 'Build job'
     pool:
-      vmImage: windows-latest
+      vmImage: windows-2019
 
     steps:
     - task: UseDotNet@2
@@ -121,7 +121,7 @@ stages:
   jobs:
   - deployment: Deploy
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'windows-2019'
     environment: TapsNonProd
     #variables:
     #- group: Release
@@ -138,4 +138,4 @@ stages:
               appType: 'webAppLinux'
               appName: 'wa-wcg-npoms-training-zan'
               package: '$(Pipeline.Workspace)/WebAPI/WebAPI1.zip'
-              runtimeStack: 'DOTNETCORE|8.0'
+              runtimeStack: 'DOTNETCORE|6.0'
