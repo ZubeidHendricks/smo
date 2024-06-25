@@ -34,8 +34,9 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task UpdateEntity(FinancialDetail model, int currentUserId)
         {
 
-            var oldEntity = await this.RepositoryContext.FinancialDetails.FindAsync(model.Id);
-            await UpdateAsync(oldEntity, model, true, currentUserId);
+            //var oldEntity = await this.RepositoryContext.FinancialDetails.FindAsync(model.Id);
+            //await UpdateAsync(oldEntity, model, true, currentUserId);
+            throw new NotImplementedException();
         }
     }
 }

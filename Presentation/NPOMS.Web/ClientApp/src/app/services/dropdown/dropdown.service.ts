@@ -1,4 +1,4 @@
-import { ILanguage, IStaffCategory } from '../../models/interfaces';
+import { ILanguage, IProgrammes, ISegmentCode, IStaffCategory } from '../../models/interfaces';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -39,6 +39,9 @@ export class DropdownService {
         break;
       case DropdownTypeEnum.Departments:
         data = this._http.get<IDepartment[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Programmes:
+        data = this._http.get<IProgrammes[]>(url, httpOptions);
         break;
       case DropdownTypeEnum.OrganisationTypes:
         data = this._http.get<IOrganisationType[]>(url, httpOptions);
@@ -198,6 +201,9 @@ export class DropdownService {
       case DropdownTypeEnum.QuarterlyPeriod:
         data = this._http.get<IWorkflowAssessment[]>(url, httpOptions);
         break;
+      case DropdownTypeEnum.SegmentCode:
+        data = this._http.get<ISegmentCode[]>(url, httpOptions);
+        break;
     }
 
     return data;
@@ -217,6 +223,38 @@ export class DropdownService {
 
     return data;
   }
+
+  
+  public GetProgramsByDepartment(dropdownType: DropdownTypeEnum, id:number) {
+    const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}/id/${id}/programmes`;
+    var data;
+
+    switch (dropdownType) {
+
+      case DropdownTypeEnum.FilteredProgrammesByDepartment:
+        data = this._http.get<IProgrammes[]>(url, httpOptions);
+        break;
+
+    }
+
+    return data;
+  }
+
+
+  public GetRolesByDepartment(filteredRolesByDepartment: DropdownTypeEnum, id:number) {
+    const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${filteredRolesByDepartment}/id/${id}/roles`;
+    var data;
+
+    switch (filteredRolesByDepartment) {
+
+      case DropdownTypeEnum.FilteredRolesByDepartment:
+        data = this._http.get<IRole[]>(url, httpOptions);
+        break;
+    }
+
+    return data;
+  }
+
 
   public createEntity(data: any, dropdownType: DropdownTypeEnum) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}`;

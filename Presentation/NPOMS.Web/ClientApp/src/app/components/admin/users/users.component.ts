@@ -5,11 +5,12 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
-import { IDepartment, IRole, IUser } from 'src/app/models/interfaces';
+import { IDepartment, IProgramme, IProgrammes, IRole, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-users',
@@ -42,13 +43,15 @@ export class UsersComponent implements OnInit {
   users: IUser[];
   roles: IRole[];
   departments: IDepartment[];
+  department: IDepartment;
+  userPrograms: IProgramme[];
 
   selectedUser: IUser;
   selectedDepartment: IDepartment;
   selectedRoles: IRole[] = [];
+  selectedPrograms: IProgramme[] = [];
   searchResult: any[] = [];
   inActive: boolean;
-
   profile: IUser;
 
   // Used for table filtering
@@ -76,9 +79,17 @@ export class UsersComponent implements OnInit {
         this.userDepartmentId = profile.departments.length > 0 ? profile.departments[0].id : null;
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
 
-        this.loadRoles();
-        this.loadDepartments();
-        this.loadUsers();
+        if (!this.isSystemAdmin)
+        {
+          //  this.loadRoles();
+          this.loadDepartments();
+          this.loadPrograms();
+        }
+        else{
+          this.loadDepartments();
+        }
+        
+        this.loadUsers();        
       }
     });
 
@@ -123,7 +134,7 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  private loadDepartments() {
+ loadDepartments() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
       (results) => {
@@ -136,6 +147,45 @@ export class UsersComponent implements OnInit {
       }
     );
   }
+
+  loadPrograms(id: number = 0) {
+      this._spinner.show();
+      if(!this.isSystemAdmin)
+      {
+        id = this.userDepartmentId;
+      }
+      const programs$ = this._dropdownRepo.GetProgramsByDepartment(DropdownTypeEnum.FilteredProgrammesByDepartment, id);
+      const roles$ = this._dropdownRepo.GetRolesByDepartment(DropdownTypeEnum.FilteredRolesByDepartment, id);
+
+      forkJoin([programs$, roles$]).subscribe({
+          next: ([programs, roles]) => {
+            this.userPrograms = programs as IProgramme[];
+            this.roles = roles as IRole[];
+            if (this.isSystemAdmin) {                 
+              this.department = this.departments.find(department => department.id === id);
+              if (this.department) {
+                  if(this.department.name.toLocaleLowerCase() === 'health')
+                  {
+                      const preselectedProgram = this.userPrograms.find(program => program.name.toLocaleLowerCase() === 'all programmes');
+                      if (preselectedProgram) {
+                          this.selectedPrograms = [preselectedProgram];
+                      }
+                  }
+                  else{
+                    this.selectedPrograms=[];
+                  }
+              }
+          }
+          },
+          error: (err) => {
+              this._loggerService.logException(err);
+          },
+          complete: () => {
+              this._spinner.hide();
+          }
+      });
+  }
+
 
   add() {
     this.openNewDialog();
@@ -150,17 +200,35 @@ export class UsersComponent implements OnInit {
     this.clearInputs();
     this.selectedUser = user;
 
-    if (user.departments.length > 0)
-      this.selectedDepartment = this.departments.find(x => x.id === user.departments[0].id);
+    if (user.departments.length > 0) {
+        this.selectedDepartment = this.departments.find(x => x.id === user.departments[0].id);
+
+        if (this.selectedDepartment) {
+          const programs$ = this._dropdownRepo.GetProgramsByDepartment(DropdownTypeEnum.FilteredProgrammesByDepartment, this.selectedDepartment.id);
+          const roles$ = this._dropdownRepo.GetRolesByDepartment(DropdownTypeEnum.FilteredRolesByDepartment, this.selectedDepartment.id);
+    
+          forkJoin([programs$, roles$]).subscribe({
+              next: ([programs, roles]) => {
+                this.userPrograms = programs as IProgramme[];
+                this.roles = roles as IRole[];
+                this.selectedRoles = user.roles.map(role => this.roles.find(x => x.id === role.id)).filter(role => role);
+                this.selectedPrograms = user.userPrograms.map(program => this.userPrograms.find(x => x.id === program.id)).filter(program => program);    
+              },
+              error: (err) => {
+                  this._loggerService.logException(err);
+              },
+              complete: () => {
+                  this._spinner.hide();
+              }
+          });   
+        }
+    }
 
     this.inActive = !this.selectedUser.isActive;
 
-    user.roles.forEach(role => {
-      this.selectedRoles.push(this.roles.find(x => x.id === role.id));
-    });
-
     this.displayEditDialog = true;
   }
+
 
   searchUser(event) {
     let searchTerm = event.query;
@@ -192,7 +260,9 @@ export class UsersComponent implements OnInit {
     newUser.userName = this.selectedUser.userName;
     newUser.isActive = !this.inActive;
     newUser.roles = this.selectedRoles;
+    newUser.userPrograms = this.selectedPrograms;
     newUser.departments = [];
+    //newUser.programs = [];
 
     if (this.isSystemAdmin)
       newUser.departments.push(this.departments.filter(x => x.id === this.selectedDepartment.id)[0]);
@@ -227,8 +297,10 @@ export class UsersComponent implements OnInit {
     editUser.userName = this.selectedUser.userName;
     editUser.isActive = !this.inActive;
     editUser.roles = this.selectedRoles;
+    editUser.roles = editUser.roles.filter(role => this.roles.some(deptRole => deptRole.id === role.id));
+    editUser.userPrograms = this.selectedPrograms;
+    editUser.userPrograms = editUser.userPrograms.filter(deProg => this.userPrograms.some(userPrograms => userPrograms.id === deProg.id));
     editUser.departments = [];
-
     if (this.isSystemAdmin)
       editUser.departments.push(this.departments.filter(x => x.id === this.selectedDepartment.id)[0]);
     else
@@ -261,6 +333,7 @@ export class UsersComponent implements OnInit {
     this.selectedUser = null;
     this.selectedDepartment = null;
     this.selectedRoles = [];
+    this.selectedPrograms = [];
     this.inActive = null;
   }
 

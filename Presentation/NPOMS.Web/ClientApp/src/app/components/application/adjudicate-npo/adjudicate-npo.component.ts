@@ -165,7 +165,7 @@ export class AdjudicateNpoComponent implements OnInit {
       (results) => {
         this.allQuestionnaires = results;
         this.npoAdjudication = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication2");
-        console.log('npoAdjudication', this.npoAdjudication);
+        // console.log('npoAdjudication', this.npoAdjudication);
         // this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
         // this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
         // this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
@@ -173,7 +173,7 @@ export class AdjudicateNpoComponent implements OnInit {
         // this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
         this.updateRowGroupMetaDataAct();
-        console.log('this.npoAdjudication',this.npoAdjudication);
+        // console.log('this.npoAdjudication',this.npoAdjudication);
       },
       (err) => {
         this._loggerService.logException(err);

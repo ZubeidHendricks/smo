@@ -23,7 +23,7 @@ namespace NPOMS.Services.Interfaces
 
 		Task Update(NpoProfileFacilityList model, string userIdentifier);
 
-		Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(int npoProfileId);
+		Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(string source, int npoProfileId);
 
 		Task Create(ServicesRendered model, string userIdentifier);
 
@@ -87,5 +87,8 @@ namespace NPOMS.Services.Interfaces
 		Task CreateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
 
 		Task UpdateStaffMemberProfile(StaffMemberProfile model, string userIdentifier);
+        Task ApproveNpoProfile(int npoProfileId, string userIdentifier);
+        Task RejectNpoProfile(int npoProfileId, string userIdentifier);
+        Task SubmitProfileNpoProfile(int npoProfileId, string userIdentifier);
     }
 }

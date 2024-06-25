@@ -85,6 +85,7 @@ export class ViewProfileDetailsComponent implements OnInit {
 
   staffCategories: IStaffCategory[];
   staffMemberProfiles: IStaffMemberProfile[];
+  source: string = 'NpoProfile';
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -355,7 +356,7 @@ export class ViewProfileDetailsComponent implements OnInit {
   }
 
   private loadServicesRendered(npoProfileId: number) {
-    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId).subscribe(
+    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId,this.source).subscribe(
       (results) => {
         this.servicesRendered = results;
         this.updateServicesRenderedObjects();
