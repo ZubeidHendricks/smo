@@ -1,6 +1,6 @@
 
 trigger:
-- Non-Prod
+- 2-NonProd
 
 variables:
   buildConfiguration: 'Release'
