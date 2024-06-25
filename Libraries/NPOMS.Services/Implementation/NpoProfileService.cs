@@ -189,19 +189,23 @@ namespace NPOMS.Services.Implementation
             var services = await _servicesRenderedRepository.GetByNpoProfileId(npoProfileId);
 
             // Check if source is not empty
-            if (!string.IsNullOrEmpty(source) && (source == "workflow" || source == "viewapplication"))
-            {
-                // Fetch the application associated with the NPO profile ID
-                var app = await _applicationRepository.FindByCondition(x => x.NpoId == npoProfileId)
-                                                      .Include(x => x.ApplicationPeriod)
-                                                      .FirstOrDefaultAsync();
+            //if (!string.IsNullOrEmpty(source) && (source == "workflow" || source == "viewapplication"))
+            //{
+            //    //var app1 =  _applicationRepository.FindByCondition(x => x.NpoId == npoProfileId);
+            //    // Fetch the application associated with the NPO profile ID
+            //    var app = await _applicationRepository.FindByCondition(x => x.NpoId == npoProfileId)
+            //                                          .Include(x => x.ApplicationPeriod)
+            //                                          .FirstOrDefaultAsync();
 
-                // Extract the programme ID from the application period
-                var progid = app.ApplicationPeriod.ProgrammeId;
+            //    if (app != null && app.ApplicationPeriod != null && app.ApplicationPeriod.ProgrammeId != null)
+            //    {
+            //        // Extract the programme ID from the application period
+            //        var progid = app.ApplicationPeriod.ProgrammeId;
 
-                // Filter services to only include those that contain the progid
-                services = services.Where(service => service.ProgrammeId == progid);
-            }
+            //        // Filter services to only include those that contain the progid
+            //        services = services.Where(service => service.ProgrammeId == progid);
+            //    }
+            //}
 
             return services;
         }
@@ -641,7 +645,7 @@ namespace NPOMS.Services.Implementation
                     await _programeContactDetailRepository.UpdateAsync(contact);
                 }
 
-                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programId);
+                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryyProgramId(programId);
                 foreach (var delivery in activeDeliveryInfo)
                 {
                     delivery.ApprovalStatusId = (int)AccessStatusEnum.Approved;

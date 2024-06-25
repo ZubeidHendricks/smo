@@ -1105,6 +1105,24 @@ export interface IDenodoBudgetWrapper {
     elements: IDenodoBudget[];
 }
 
+export interface IProgrammeBudgets{
+    id: number;
+    financialYearId: string;
+    departmentId: number;
+    departmentName: string;
+    programmeId: number;
+    programmeName: string;
+    subProgrammeId: number;
+    subProgrammeName: string;
+    subProgrammeTypeId: number;
+    subProgrammeTypeName: string;
+    originalBudgetAmount: string;
+    adjustedBudgetAmount: string;
+    responsibilityCode: string;
+    objectiveCode: string;
+    isActive: number;
+}
+
 export interface IDenodoBudget {
     source: string;
     nationalprovincial: string;
@@ -1239,6 +1257,16 @@ export interface ISegmentCode
     responsibilityCode: string;
     subProgrammeTypeId: number;
     objectiveCode: string;
+}
+
+export interface IBudgetAdjustment
+{
+    id: number;
+    programmeId: number;
+    responsibilityCode: string;
+    subProgrammeTypeId: number;
+    objectiveCode: string;
+    amount: string;
 }
 
 /* Indicator */

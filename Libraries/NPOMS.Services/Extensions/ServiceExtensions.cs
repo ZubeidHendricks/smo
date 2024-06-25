@@ -211,6 +211,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IDepartmentBudgetRepository, DepartmentBudgetRepository>();
             services.AddScoped<IDirectorateBudgetRepository, DirectorateBudgetRepository>();
             services.AddScoped<IProgrammeBudgetRepository, ProgrammeBudgetRepository>();
+            services.AddScoped<IBudgetAdjustmentRepository, BudgetAdjustmentRepository>();
 
             /* Evaluation */
             services.AddScoped<IQuestionRepository, QuestionRepository>();
