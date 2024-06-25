@@ -13,7 +13,7 @@ stages:
   - job: 'Build'
     displayName: 'Build job'
     pool:
-      vmImage: windows-latest
+      vmImage: 'windows-latest'
 
     steps:
     - task: UseDotNet@2
@@ -92,7 +92,7 @@ stages:
     - Build
     - BuildSPAJob
     pool:
-      vmImage: windows-2019
+      vmImage: 'windows-latest'
     steps:
     - checkout: none
     - download: current
