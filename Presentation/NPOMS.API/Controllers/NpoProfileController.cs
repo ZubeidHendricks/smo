@@ -201,12 +201,12 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("services-rendered/npoProfileId/{npoProfileId}", Name = "GetServicesRenderedByNpoProfileId")]
-		public async Task<IActionResult> GetServicesRenderedByNpoProfileId(int npoProfileId)
+		[HttpGet("services-rendered/{source}/npoProfileId/{npoProfileId}", Name = "GetServicesRenderedByNpoProfileId")]
+		public async Task<IActionResult> GetServicesRenderedByNpoProfileId(string source,int npoProfileId)
 		{
 			try
 			{
-				var results = await _npoProfileService.GetServicesRenderedByNpoProfileId(npoProfileId);
+				var results = await _npoProfileService.GetServicesRenderedByNpoProfileId(source,npoProfileId);
 				return Ok(results);
 			}
 			catch (Exception ex)
@@ -702,6 +702,27 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		#endregion
-	}
+        [HttpPost("approve/{npoProfileId}", Name = "ApproveNpoProfile")]
+        public async Task<IActionResult> ApproveNpoProfile(int npoProfileId)
+        {
+            await _npoProfileService.ApproveNpoProfile(npoProfileId, base.GetUserIdentifier());
+            return Ok(npoProfileId);
+        }
+
+        [HttpPost("reject/{npoProfileId}", Name = "RejectNpoProfile")]
+        public async Task<IActionResult> RejectNpoProfile(int npoProfileId)
+        {
+            await _npoProfileService.RejectNpoProfile(npoProfileId, base.GetUserIdentifier());
+            return Ok(npoProfileId);
+        }
+
+        [HttpPost("submitProfile/{npoProfileId}", Name = "SubmitProfileNpoProfile")]
+        public async Task<IActionResult> SubmitProfileNpoProfile(int npoProfileId)
+        {
+            await _npoProfileService.SubmitProfileNpoProfile(npoProfileId, base.GetUserIdentifier());
+            return Ok(npoProfileId);
+        }
+
+        #endregion
+    }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Core;
+using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Interfaces.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,18 +12,41 @@ namespace NPOMS.Repository.Implementation.Core
 	public class DepartmentRepository : BaseRepository<Department>, IDepartmentRepository
 	{
 		#region Constructors
+		private readonly RepositoryContext _context;
 
-		public DepartmentRepository(RepositoryContext repositoryContext)
+		public DepartmentRepository(RepositoryContext repositoryContext,RepositoryContext context)
 			: base(repositoryContext)
 		{
+			_context = context;
 
-		}
+        }
 
-		#endregion
+        public async Task<Department> GetDepartmentById(int id)
+        {
+           return  await _context.Departments.Where(x => x.Id == id && x.IsActive).FirstOrDefaultAsync();
+        }
 
-		#region Methods
+        public async Task<List<int>> GetDepartmentIdOfLogggedInUserAsync(int userId)
+        {
+            try
+            {
+                var dep = await _context.UserDepartments
+                                        .Where(x => x.UserId == userId)
+                                        .Select(x => x.DepartmentId)
+                                        .ToListAsync();
+                return dep;
+            }
+            catch (Exception ex)
+            {
+                throw; // Re-throw the exception to be handled by the calling method
+            }
+        }
 
-		public async Task<IEnumerable<Department>> GetEntities(bool returnInactive)
+        #endregion
+
+        #region Methods
+
+        public async Task<IEnumerable<Department>> GetEntities(bool returnInactive)
 		{
 			if (returnInactive)
 			{

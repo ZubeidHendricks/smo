@@ -80,8 +80,14 @@ namespace NPOMS.Repository.Implementation
 			{
 				if (oldEntity != null)
 				{
-					this.RepositoryContext.Entry(oldEntity).CurrentValues.SetValues(newEntity);
-					await this.RepositoryContext.SaveChangesAsync(Convert.ToInt32(currentUserId));
+					try {
+                        this.RepositoryContext.Entry(oldEntity).CurrentValues.SetValues(newEntity);
+                        await this.RepositoryContext.SaveChangesAsync(Convert.ToInt32(currentUserId));
+                    }
+					catch (Exception ex)
+					{
+					
+					}
 				}
 			}
 			else

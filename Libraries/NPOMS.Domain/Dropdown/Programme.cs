@@ -22,7 +22,9 @@ namespace NPOMS.Domain.Dropdown
 
 		public int? DirectorateId { get; set; }
 
-		public bool IsActive { get; set; }
+        public string Code { get; set; }
+
+        public bool IsActive { get; set; }
 
 		public int CreatedUserId { get; set; }
 

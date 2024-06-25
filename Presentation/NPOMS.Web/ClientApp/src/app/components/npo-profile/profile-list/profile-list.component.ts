@@ -77,7 +77,8 @@ export class ProfileListComponent implements OnInit {
       { field: 'npo.name', header: 'Organisation', width: '40%' },
       { field: 'npo.organisationType.name', header: 'Organisation Type', width: '12%' },
       { field: 'npo.approvalStatus.name', header: 'Organisation Status', width: '13%' },
-      { field: 'npo.yearRegistered', header: 'Year Registered', width: '10%' }
+      { field: 'npo.yearRegistered', header: 'Year Registered', width: '10%' },
+      { field: 'accessStatus.name', header: 'Profile status', width: '15%' }
     ];
   }
 
@@ -117,11 +118,25 @@ export class ProfileListComponent implements OnInit {
     );
   }
 
+  // getCellData(row: any, col: any): any {
+  //   const nestedProperties: string[] = col.field.split('.');
+  //   let value: any = row;
+
+  //   for (const prop of nestedProperties) {
+  //     value = value[prop];
+  //   }
+
+  //   return value;
+  // }
+
   getCellData(row: any, col: any): any {
     const nestedProperties: string[] = col.field.split('.');
     let value: any = row;
 
     for (const prop of nestedProperties) {
+      if (value === null || value === undefined) {
+        return '';
+      }
       value = value[prop];
     }
 

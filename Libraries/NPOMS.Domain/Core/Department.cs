@@ -15,6 +15,10 @@ namespace NPOMS.Domain.Core
 		[Column(TypeName = "nvarchar(50)")]
 		public string Abbreviation { get; set; }
 
+        [Required]
+        [Column(TypeName = "nvarchar(255)")]
+        public string DenodoDepartmentName { get; set; }
+
 		public bool IsActive { get; set; }
 
 		public int CreatedUserId { get; set; }

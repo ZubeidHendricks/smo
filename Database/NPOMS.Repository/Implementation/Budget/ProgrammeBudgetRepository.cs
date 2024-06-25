@@ -26,12 +26,24 @@ namespace NPOMS.Repository.Implementation.Budget
 							.AsNoTracking().ToListAsync();
 		}
 
-		public async Task<ProgrammeBudget> GetProgrammeBudgetByProgrammeId(int programmeId, int financialYearId)
+        public async Task<IEnumerable<ProgrammeBudget>> GetProgrammeBudgetsByIds(int departmentId, string financialYearId)
+        {
+            return await FindByCondition(x => x.DepartmentId.Equals(departmentId) && x.FinancialYearId.Equals(financialYearId) && x.IsActive)
+                            .AsNoTracking().ToListAsync();
+        }
+
+        public async Task<ProgrammeBudget> GetProgrammeBudgetByProgrammeId(int programmeId, int financialYearId)
 		{
 			return await FindByCondition(x => x.ProgrammeId.Equals(programmeId) && x.FinancialYearId.Equals(financialYearId) && x.IsActive)
 							.AsNoTracking().FirstOrDefaultAsync();
 		}
 
-		#endregion
-	}
+        public async Task<ProgrammeBudget> GetProgrammeBudgetById(int id)
+        {
+            return await FindByCondition(x => x.Id.Equals(id) && x.IsActive)
+                            .AsNoTracking().FirstOrDefaultAsync();
+        }
+
+        #endregion
+    }
 }

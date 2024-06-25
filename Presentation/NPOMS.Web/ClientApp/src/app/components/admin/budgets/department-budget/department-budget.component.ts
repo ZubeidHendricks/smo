@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
-import { IDepartment, IDepartmentBudget, IFinancialYear, IUser } from 'src/app/models/interfaces';
+import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
+import { IDenodoBudget, IDepartment, IFinancialYear, IProgrammeBudgets, IUser } from 'src/app/models/interfaces';
 import { BudgetService } from 'src/app/services/api-services/budget/budget.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -30,25 +30,16 @@ export class DepartmentBudgetComponent implements OnInit {
 
   profile: IUser;
   budgetCols: any[];
+  denodoBudgets: IDenodoBudget[];
+  programmeBudgets: IProgrammeBudgets[];
 
   financialYears: IFinancialYear[];
   selectedFinancialYearSummary: IFinancialYear;
-  selectedFinancialYear: IFinancialYear;
-
-  displayNewDialog: boolean;
-  displayEditDialog: boolean;
-
-  newDeptBudget: boolean;
-  editDeptBudget: boolean;
 
   departments: IDepartment[];
   selectedDepartmentSummary: IDepartment;
-  selectedDepartment: IDepartment;
 
   isSystemAdmin: boolean;
-
-  departmentBudgets: IDepartmentBudget[];
-  departmentBudget: IDepartmentBudget = {} as IDepartmentBudget;
 
   // Details displayed in summary
   totalBudget: number;
@@ -62,12 +53,10 @@ export class DepartmentBudgetComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _dropdownRepo: DropdownService,
     private _loggerService: LoggerService,
-    private _budgetRepo: BudgetService,
-    private _messageService: MessageService
+    private _budgetRepo: BudgetService
   ) { }
 
   ngOnInit(): void {
-    this._spinner.show();
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -77,15 +66,13 @@ export class DepartmentBudgetComponent implements OnInit {
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.loadFinancialYears();
-        this.loadDepartments();
       }
     });
 
     this.budgetCols = [
-      { header: 'Financial Year', width: '15%' },
-      { header: 'Budget (R)', width: '25%' },
-      { header: 'Allocated Amount (R)', width: '25%' },
-      { header: 'Balance Amount (R)', width: '25%' }
+      { header: 'Budget', width: '33%' },
+      { header: 'Allocated Amount', width: '33%' },
+      { header: 'Balance Amount', width: '33%' }
     ];
   }
 
@@ -97,7 +84,8 @@ export class DepartmentBudgetComponent implements OnInit {
         let currentDate = new Date();
         let currentFinancialYear = results.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
         this.financialYears = results.filter(x => x.id <= currentFinancialYear.id);
-        this._spinner.hide();
+
+        this.loadDepartments();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -107,15 +95,15 @@ export class DepartmentBudgetComponent implements OnInit {
   }
 
   private loadDepartments() {
-    this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
       (results) => {
-        this.departments = results;
+        this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
 
         // In Department Budget Summary...
         // If user is system admin, show department dropdown
         // If user is not system admin, default department to assigned department in user department table
         this.selectedDepartmentSummary = this.isSystemAdmin ? null : this.departments.find(x => x.id === this.profile.departments[0].id);
+       
 
         this._spinner.hide();
       },
@@ -124,126 +112,32 @@ export class DepartmentBudgetComponent implements OnInit {
         this._spinner.hide();
       }
     );
-  }
-
-  add() {
-    this.newDeptBudget = true;
-    this.editDeptBudget = false;
-    this.departmentBudget = {} as IDepartmentBudget;
-    this.selectedFinancialYear = null;
-    this.selectedDepartment = this.isSystemAdmin ? null : this.departments.find(x => x.id === this.profile.departments[0].id);
-    this.displayNewDialog = true;
-  }
-
-  disableSave() {
-    if (!this.selectedFinancialYear || !this.departmentBudget.amount)
-      return true;
-
-    if (this.isSystemAdmin && !this.selectedDepartment)
-      return true;
-
-    return false;
-  }
-
-  saveNewBudget() {
-    this.departmentBudget.departmentId = this.selectedDepartment.id;
-    this.departmentBudget.financialYearId = this.selectedFinancialYear.id;
-    this.departmentBudget.isActive = true;
-
-    this._budgetRepo.getDepartmentBudgetsByIds(this.departmentBudget.departmentId, this.departmentBudget.financialYearId).subscribe(
-      (results) => {
-        if (results != null && results.length > 0) {
-          this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Department Budget already exists.' });
-        }
-        else {
-          this._budgetRepo.createDepartmentBudget(this.departmentBudget).subscribe(
-            (resp) => {
-              this.loadDepartmentBudgets();
-              this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Department Budget successfully created.' });
-              this.displayNewDialog = false;
-            },
-            (err) => {
-              this._loggerService.logException(err);
-              this._spinner.hide();
-            }
-          );
-        }
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  edit(data: IDepartmentBudget) {
-    this.newDeptBudget = false;
-    this.editDeptBudget = true;
-    this.departmentBudget = this.cloneDepartmentBudget(data);
-    this.displayEditDialog = true;
-  }
-
-  private cloneDepartmentBudget(data: IDepartmentBudget): IDepartmentBudget {
-    let departmentBudget = {} as IDepartmentBudget;
-
-    for (let prop in data)
-      departmentBudget[prop] = data[prop];
-
-    this.selectedDepartment = this.departments.find(x => x.id === data.departmentId);
-    this.selectedFinancialYear = data.financialYear;
-
-    return departmentBudget;
-  }
-
-  saveEditBudget() {
-    this.departmentBudget.financialYear = null;
-
-    this._budgetRepo.updateDepartmentBudget(this.departmentBudget).subscribe(
-      (resp) => {
-        this.loadDepartmentBudgets();
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Department Budget successfully updated.' });
-        this.displayEditDialog = false;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  delete() {
-
   }
 
   departmentSummaryChange() {
-    this.loadDepartmentBudgets();
+    this.loadBudgets();
   }
 
   financialYearSummaryChange() {
-    this.loadDepartmentBudgets();
+    this.loadBudgets();
   }
 
-  private loadDepartmentBudgets() {
+  private loadBudgets() {
     if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
+      this._spinner.show();
 
       this.totalBudget = 0;
       this.totalAllocated = 0;
       this.totalPaid = 0;
       this.totalBalance = 0;
 
-      this._spinner.show();
-      this._budgetRepo.getDepartmentBudgetsByIds(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.id).subscribe(
+      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
-          if (results != null) {
-            this.departmentBudgets = results;
 
-            this.departmentBudgets.forEach(item => {
-              item.financialYear = this.financialYears.find(x => x.id === item.financialYearId);
-              this.totalBudget += item.amount;
-            });
-
-            this.loadDirectorateBudgets();
-          }
+          this.programmeBudgets = results ? results : [];
+          
+          this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
+          this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
 
           this._spinner.hide();
         },
@@ -252,31 +146,6 @@ export class DepartmentBudgetComponent implements OnInit {
           this._spinner.hide();
         }
       );
-    }
-  }
-
-  private loadDirectorateBudgets() {
-    if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
-
-      this._spinner.show();
-      this._budgetRepo.getDirectorateBudgetsByIds(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.id).subscribe(
-        (results) => {
-          if (results != null && results.length > 0) {
-
-            results.forEach(item => {
-              this.totalAllocated += item.amount;
-            });
-
-            this.totalBalance = this.totalBudget - this.totalAllocated;
-          }
-
-          this._spinner.hide();
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
-        }
-      );
-    }
+    }    
   }
 }

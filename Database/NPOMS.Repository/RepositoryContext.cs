@@ -17,11 +17,9 @@ using NPOMS.Repository.Configurations.Entities;
 using NPOMS.Repository.Configurations.Lookup;
 using NPOMS.Repository.Configurations.Mapping;
 using NPOMS.Repository.DTO;
-using NPOMS.Repository.Implementation.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace NPOMS.Repository
@@ -70,6 +68,7 @@ namespace NPOMS.Repository
 
         /* Core */
         public DbSet<Department> Departments { get; set; }
+       // public DbSet<UserProgram> UserProgram { get; set; }
         public DbSet<DocumentStore> DocumentStores { get; set; }
         public DbSet<FundAppDocuments> FundAppDocuments { get; set; }
 
@@ -87,6 +86,7 @@ namespace NPOMS.Repository
         public DbSet<EmbeddedReport> EmbeddedReports { get; set; }
 
         /* Dropdown */
+        public DbSet<Programme> programmes { get; set; }
         public DbSet<ActivityType> ActivityTypes { get; set; }
         public DbSet<ApplicationType> AllocationTypes { get; set; }
         public DbSet<ApplicationType> ApplicationTypes { get; set; }
@@ -191,8 +191,11 @@ namespace NPOMS.Repository
         public DbSet<UserDepartment> UserDepartments { get; set; }
         public DbSet<UserNpo> UserNpos { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<DepartmentRoleMapping> DepartmentRoleMappings { get; set; }
+        public DbSet<UserProgramMapping> UserProgramMappings { get; set; }
         public DbSet<ActivityFacilityList> ActivityFacilityLists { get; set; }
         public DbSet<ActivityRecipient> ActivityRecipients { get; set; }
+        public DbSet<SegmentCode> SegmentCodes { get; set; }
 
         /* Indicator */
         public DbSet<WorkplanTarget> WorkplanTargets { get; set; }
@@ -203,7 +206,16 @@ namespace NPOMS.Repository
         /* Budget */
         public DbSet<DepartmentBudget> DepartmentBudgets { get; set; }
         public DbSet<DirectorateBudget> DirectorateBudgets { get; set; }
-        public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }
+        public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }   
+        public DbSet<BudgetAdjustment> BudgetAdjustment { get; set; }
+        public DbSet<ImportBudget> ImportBudget { get; set; }
+
+        /* Program */
+
+        public DbSet<ProgramBankDetails> ProgramBankDetails { get; set; }
+        public DbSet<ProgramContactInformation> ProgramContactInformation { get; set; }
+        public DbSet<ProgrammeServiceDelivery> ProgrammeServiceDelivery { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -235,6 +247,7 @@ namespace NPOMS.Repository
 
             /* Core */
             modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
+          //  modelBuilder.ApplyConfiguration(new UserProgramConfiguration());
             modelBuilder.ApplyConfiguration(new DocumentTypeConfiguration());
             modelBuilder.ApplyConfiguration(new EmailAccountConfiguration());
             modelBuilder.ApplyConfiguration(new EmailTemplateConfiguration());
@@ -300,8 +313,11 @@ namespace NPOMS.Repository
 
             /* Mapping */
             modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
+            modelBuilder.ApplyConfiguration(new DepartmentRoleConfiguration());  
             modelBuilder.ApplyConfiguration(new UserDepartmentConfiguration());
             modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new UserProgramMppingConfiguration());
+            modelBuilder.ApplyConfiguration(new SegmentCodeConfiguration());
 
         }
 

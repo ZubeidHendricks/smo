@@ -110,7 +110,7 @@ export class NavigationComponent implements OnInit {
             this._router.navigateByUrl('npos');
           }
         });
-      }   
+      }
 
       if (this.IsAuthorized(PermissionsEnum.ViewProfileMenu)) {
         this.mainMenu.push({
@@ -120,7 +120,7 @@ export class NavigationComponent implements OnInit {
             this._router.navigateByUrl('npo-profiles');
           }
         });
-      }   
+      }
 
       if (this.IsAuthorized(PermissionsEnum.ViewApplicationPeriodMenu)) {
         this.mainMenu.push({
@@ -203,7 +203,7 @@ export class NavigationComponent implements OnInit {
         });
       }
 
-      
+
       if (this.IsAuthorized(PermissionsEnum.ViewQC)) {
         this.mainMenu.push({
           label: '10.QuickCapture',
@@ -212,7 +212,7 @@ export class NavigationComponent implements OnInit {
             this._router.navigateByUrl('quick-captures');
           }
         });
-      }           
+      }
     }
   }
 
@@ -305,6 +305,29 @@ export class NavigationComponent implements OnInit {
           icon: 'fa fa-credit-card-alt',
           items: []
         });
+
+        if (this.IsAuthorized(PermissionsEnum.ViewBudgetSummarySubMenu)) {
+          this.sideMenu[2].items.push({
+            label: 'Upload Budget',
+            icon: 'fa fa-bar-chart',
+           // disabled: !this.IsAuthorized(PermissionsEnum.UploadBudget),
+            command: () => {
+              this._router.navigateByUrl('admin/upload-budget');
+              this.displaySideMenu = false;
+            }
+          });
+        }
+        if (this.IsAuthorized(PermissionsEnum.ViewBudgetSummarySubMenu)) {
+          this.sideMenu[2].items.push({
+            label: 'Budget Summary',
+            icon: 'fa fa-bar-chart',
+            disabled: !this.IsAuthorized(PermissionsEnum.ViewBudgetSummary),
+            command: () => {
+              this._router.navigateByUrl('admin/budget-summary');
+              this.displaySideMenu = false;
+            }
+          });
+        }
 
         if (this.IsAuthorized(PermissionsEnum.ViewDepartmentBudgetSubMenu)) {
           this.sideMenu[2].items.push({

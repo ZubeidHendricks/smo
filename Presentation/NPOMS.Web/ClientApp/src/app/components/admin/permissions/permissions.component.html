@@ -5,20 +5,22 @@
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 50px; text-align: center;">#</th>
-            <th>Categories</th>
             <th>Activities</th>
-            <th style="width: 105px; text-align: center;" *ngFor="let role of featurePermissionRoleMatrix.availableRoles">
-              {{role.name}}
-            </th>
+            <th style="width: 110px; text-align: center;" *ngFor="let role of featurePermissionRoleMatrix.availableRoles">{{role.name}}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-permission let-rowIndex="rowIndex">
+          <tr *ngIf="rowGroupMetadata[permission.categoryName].index === rowIndex">
+            <td [attr.colspan]="getColspan()" style="background: #f4f4f4;">
+                <span class="p-text-bold p-ml-2">{{permission.categoryName}}</span>
+            </td>
+          </tr>
           <tr class="default-font">
             <td style="text-align: center;">{{rowIndex + 1}}</td>
-            <td>{{permission.categoryName}}</td>
             <td>{{permission.name}}</td>
             <td *ngFor="let role of featurePermissionRoleMatrix.availableRoles" style="text-align: center;">
-              <p-tableCheckbox *ngIf="IsAuthorized(PermissionsEnum.EditPermissions)" [value]="getTableRoleObj(role, permission)" (click)="onselectedChanged(role, permission)" [disabled]="canEdit()"></p-tableCheckbox>
+              <!-- <p-tableCheckbox *ngIf="IsAuthorized(PermissionsEnum.EditPermissions)" [value]="getTableRoleObj(role, permission)" (click)="onselectedChanged(role, permission)" [disabled]="canEdit()"></p-tableCheckbox> -->
+              <p-tableCheckbox [value]="getTableRoleObj(role, permission)" (click)="onselectedChanged(role, permission)" [disabled]="!this.IsAuthorized(PermissionsEnum.EditPermissions)"></p-tableCheckbox>
             </td>
           </tr>
         </ng-template>

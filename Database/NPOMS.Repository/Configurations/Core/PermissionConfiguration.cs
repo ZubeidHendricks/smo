@@ -841,6 +841,27 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "Download Assessment",
                     SystemName = "WFA.DownloadAssessment",
                     CategoryName = "DownloadAssessment"
+                },
+                new Permission
+                {
+                    Id = 120,
+                    Name = "View Budget Summary Sub Menu",
+                    SystemName = "SN.BudgetSummary",
+                    CategoryName = "Administration - Side Navigation"
+                },
+                new Permission
+                {
+                    Id = 121,
+                    Name = "View Budget Summary",
+                    SystemName = "Bud.VBS",
+                    CategoryName = "Budgets"
+                },
+                new Permission
+                {
+                    Id = 122,
+                    Name = "Upload Budget",
+                    SystemName = "Bud.UB",
+                    CategoryName = "Budgets"
                 }
             );
 		}
