@@ -16,6 +16,7 @@ namespace NPOMS.Services.DenodoAPI.Interfaces
         Task<BudgetAdjustment> Create(string responsibilityCode, string objectiveCode, decimal amount);
         Task<IEnumerable<ImportBudget>> ImportBudget(string responsibilityCode, string objectiveCode, string userIdentifier);
         Task <ProgrammeBudget> Update(string amount, int id,  string userIdentifier);
+        Task<ProgrammeBudget> ProvisionalAmountUpdate(string amount, int id, string userIdentifier);
 
     }
 }

@@ -98,6 +98,7 @@
                         <td>{{rowData.programmeName}}</td>
                         <td>{{rowData.subProgrammeName}}</td>
                         <td>{{rowData.subProgrammeTypeName}}</td>
+                        <td style="text-align: right;">R {{rowData.provisionalBudgetAmount | number : '1.2-2'}}</td>
                         <td style="text-align: right;">R {{rowData.originalBudgetAmount | number : '1.2-2'}}</td>
                         <td style="text-align: right;">R {{rowData.adjustedBudgetAmount | number : '1.2-2'}}</td>
                         <!-- <td></td> -->
@@ -114,6 +115,7 @@
                         <td style="text-align: right;">{{totalBudget | number : '1.2-2'}}</td>                        
                         <td style="text-align: right;">{{totalAdjustedBudget | number : '1.2-2'}}</td> 
                         <td></td>
+                        <td></td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
@@ -126,29 +128,29 @@
     </div>
 </p-panel>
 
-<p-dialog header="Add Budget Adjustment Amount" 
+<p-dialog header="Add Amount" 
           [(visible)]="displayEditDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-
-          <div class="p-col">
-            <input type="text" class="form-text" [(ngModel)]="AdjustmentAmount" pInputText [ngModelOptions]="{standalone: true}">
-        </div>
-
-    <!-- <div class="p-grid" *ngIf="isSystemAdmin">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Department</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
-        </div>
-    </div> -->
-    <ng-template pTemplate="footer">
-        <button pButton pRipple type="button" label="Save" (click)="SaveData(true, 'singleComment')" class="p-button-text" icon="fa fa-floppy-o"></button>
-    </ng-template>
+        
+        <table>
+            <tr class="default-font">
+                <td>&nbsp;</td>
+                <td> <input type="text" class="form-text" [(ngModel)]="AdjustmentAmount" pInputText [ngModelOptions]="{standalone: true}"></td>
+                <td><button pButton pRipple type="button" label="Add Budget Adjustment Amount" (click)="SaveAdjustmentAmountData(true, 'singleComment')" class="p-button-text" icon="fa fa-floppy-o"></button></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="default-font">
+                <td>&nbsp;</td>
+                <td> <input type="text" class="form-text" [(ngModel)]="ProvisionalAmount" pInputText [ngModelOptions]="{standalone: true}"></td>
+                <td><button pButton pRipple type="button" label="Add Provisional Budget Amount" (click)="SaveProvisionalAmountData(true, 'singleComment')" class="p-button-text" icon="fa fa-floppy-o"></button></td>
+            </tr>
+        </table>
 </p-dialog>

@@ -105,8 +105,8 @@
                         <td>{{rowData.programmeName}}</td>
                         <td>{{rowData.subProgrammeName}}</td>
                         <td>{{rowData.subProgrammeTypeName}}</td>
-                        <td style="text-align: right;">{{rowData.originalBudgetAmount | number : '1.2-2'}}</td>                        
-                        <td style="text-align: right;">{{rowData.adjustedBudgetAmount | number : '1.2-2'}}</td>
+                        <td style="text-align: right;">R {{rowData.originalBudgetAmount | number : '1.2-2'}}</td>                        
+                        <td style="text-align: right;">R {{rowData.adjustedBudgetAmount | number : '1.2-2'}}</td>
                         <td style="text-align: right;"></td>
                         <td style="text-align: right;"></td>
                     </tr>
@@ -116,10 +116,11 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td style="text-align: right;">{{totalBudget | number : '1.2-2'}}</td>                        
-                        <td style="text-align: right;">{{totalAdjustedBudget | number : '1.2-2'}}</td> 
+                        <td style="text-align: right;">R {{totalBudget | number : '1.2-2'}}</td>                        
+                        <td style="text-align: right;">R {{totalAdjustedBudget | number : '1.2-2'}}</td> 
                         <td></td>
-                        <td></td> </tr>
+                        <td></td> 
+                    </tr>
                 </ng-template>
                 <!-- <ng-template  pTemplate="footer">
                     <tr class="default-font">

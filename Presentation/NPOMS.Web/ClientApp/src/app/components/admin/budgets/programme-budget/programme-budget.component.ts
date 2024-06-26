@@ -63,6 +63,7 @@ export class ProgrammeBudgetComponent implements OnInit {
   segmentCode: ISegmentCode[] = [];
   filteredSegmentCode: ISegmentCode[] = [];
   AdjustmentAmount: string;
+  ProvisionalAmount: string;
   budgetId: number;
 
   constructor(
@@ -97,10 +98,11 @@ export class ProgrammeBudgetComponent implements OnInit {
     this.budgetCols = [
       // { header: 'Directorate', width: '15%' },
       { header: 'Programme', width: '20%' },
-      { header: 'Sub Program', width: '20%' },
-      { header: 'Sub Program Type', width: '20%' },
-      { header: 'Original Approved Budget', width: '20%' },
-      { header: 'Adjusted Budget', width: '20%' }
+      { header: 'Sub Program', width: '18%' },
+      { header: 'Sub Program Type', width: '18%' },
+      { header: 'Provisional Budget', width: '15%' },
+      { header: 'Original Approved Budget', width: '16%' },
+      { header: 'Adjusted Budget', width: '15%' }
     ];
   }
 
@@ -220,7 +222,7 @@ export class ProgrammeBudgetComponent implements OnInit {
           //   this.setSubProgrammeTypeName(application);
           // });
 
-          this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
+          this.programmeBudgets = this.programmeBudgets; // ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
           this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
           this.totalAdjustedBudget = this.programmeBudgets.reduce((n, {adjustedBudgetAmount}) => n + Number(adjustedBudgetAmount), 0);
           
@@ -254,21 +256,30 @@ export class ProgrammeBudgetComponent implements OnInit {
     this.displayEditDialog = true;
   }
 
-  SaveData(changesRequired: boolean, origin: string) {
+  SaveAdjustmentAmountData(changesRequired: boolean, origin: string) {
 
     this._budgetRepo.addAdjustmentAmount(this.AdjustmentAmount, this.budgetId).subscribe(
       (results) => {
 
-       // this.programmeBudgets = results ? results : [];
-
-        // this.programmeBudgets.forEach(application => {
-        //   this.setSubProgrammeTypeName(application);
-        // });
-
-       // this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
-       // this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
        this.displayEditDialog = false;
-       this._router.navigateByUrl('admin/programme-budget');
+       this.loadBudgets();
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+
+  }
+
+  SaveProvisionalAmountData(changesRequired: boolean, origin: string) {
+
+    this._budgetRepo.addProvisionalAmount(this.ProvisionalAmount, this.budgetId).subscribe(
+      (results) => {
+
+        this.displayEditDialog = false;
+       this.loadBudgets();
         this._spinner.hide();
       },
       (err) => {

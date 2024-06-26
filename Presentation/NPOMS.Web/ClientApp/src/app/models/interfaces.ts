@@ -1115,6 +1115,7 @@ export interface IProgrammeBudgets{
     subProgrammeTypeId: number;
     subProgrammeTypeName: string;
     originalBudgetAmount: string;
+    provisionalBudgetAmount: string;
     adjustedBudgetAmount: string;
     responsibilityCode: string;
     objectiveCode: string;

@@ -87,9 +87,14 @@ namespace NPOMS.API.Controllers
         [HttpPut("add-budgetAdjustment/adjustmentAmount/{adjustmentAmount}/id/{id}", Name = "AddBudgetAdjustmentAmount")]
         public async Task<IActionResult> AddBudgetAdjustmentAmount( string adjustmentAmount, int id)
         {
-           // var model = _programmeBudgetRepository.GetProgrammeBudgetById(id);
-            
             var result = await this._denodoService.Update(adjustmentAmount, id, base.GetUserIdentifier());
+            return Ok(result);
+        }
+
+        [HttpPut("add-provisionalAmount/provisionalAmount/{provisionalAmount}/id/{id}", Name = "AddBudgetProvisionalAmount")]
+        public async Task<IActionResult> AddBudgetProvisionalAmount(string provisionalAmount, int id)
+        {
+            var result = await this._denodoService.ProvisionalAmountUpdate(provisionalAmount, id, base.GetUserIdentifier());
             return Ok(result);
         }
 
