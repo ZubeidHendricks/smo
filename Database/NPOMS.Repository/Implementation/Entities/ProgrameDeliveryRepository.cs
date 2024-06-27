@@ -20,10 +20,10 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByProgramId(int progId)
         {
-            var result =  await FindByCondition(x => x.ProgramId.Equals(progId) && x.IsActive)
+            var result = await FindByCondition(x => x.ProgramId.Equals(progId) && x.IsActive)
                             .Include(x => x.DistrictCouncil)
                             .Include(x => x.ApprovalStatus)
-                            .Include(x => x.LocalMunicipality)                             
+                            .Include(x => x.LocalMunicipality)
                             .Include(x => x.ServiceDeliveryAreas).
                                 ThenInclude(x => x.ServiceDeliveryArea)
                             .Include(x => x.Regions)
@@ -35,6 +35,14 @@ namespace NPOMS.Repository.Implementation.Entities
                 psd.ServiceDeliveryAreas = psd.ServiceDeliveryAreas.Where(sda => sda.IsActive).ToList();
                 psd.Regions = psd.Regions.Where(region => region.IsActive).ToList();
             });
+
+            return result;
+        }
+
+        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryyProgramId(int progId)
+        {
+            var result = await FindByCondition(x => x.ProgramId.Equals(progId) && x.IsActive)
+                           .AsNoTracking().ToListAsync();
 
             return result;
         }

@@ -34,7 +34,7 @@ export class NpoApprovalComponent implements OnInit {
   }
 
   profile: IUser;
-
+  programId: number = 0;
   npos: any[];
   accessStatuses: IAccessStatus[];
   cols: any[];

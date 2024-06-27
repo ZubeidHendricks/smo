@@ -1,4 +1,7 @@
-﻿using System;
+﻿using NPOMS.Domain.Dropdown;
+using NPOMS.Domain.Mapping;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NPOMS.Domain.Entities

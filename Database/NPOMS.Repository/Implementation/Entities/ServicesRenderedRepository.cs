@@ -6,56 +6,43 @@ using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Implementation.Entities
 {
-	public class ServicesRenderedRepository : BaseRepository<ServicesRendered>, IServicesRenderedRepository
-	{
-		#region Constructors
+    public class ServicesRenderedRepository : BaseRepository<ServicesRendered>, IServicesRenderedRepository
+    {
+        #region Constructors
 
-		public ServicesRenderedRepository(RepositoryContext repositoryContext)
-			: base(repositoryContext)
-		{
+        public ServicesRenderedRepository(RepositoryContext repositoryContext)
+            : base(repositoryContext)
+        {
 
-		}
+        }
 
         #endregion
 
         #region Methods
 
-        //public async Task<IEnumerable<ServicesRendered>> GetByNpoProfileId(int npoProfileId)
-        //{
-        //	return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
-        //		.Include(x => x.ServiceSubProgramme)
-        //		   .ThenInclude(y => y.SubProgramme)
-        //					.AsNoTracking()
-        //					.ToListAsync();
-        //}
-
         public async Task<IEnumerable<ServicesRendered>> GetByNpoProfileId(int npoProfileId)
         {
             return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
-                .Include(x => x.ServiceSubProgramme)
-                    .ThenInclude(y => y.SubProgramme)
-                .Include(x => x.ServiceSubProgramme)
-                    .ThenInclude(y => y.ServiceProgrammeTypes) 
-                .AsNoTracking()
-                .ToListAsync();
+                            .AsNoTracking()
+                            .ToListAsync();
         }
 
         public async Task DeleteEntity(int id, int currentUserId)
-		{
-			var model = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
-			model.IsActive = false;
+        {
+            var model = await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+            model.IsActive = false;
 
-			var oldEntity = await this.RepositoryContext.ServicesRendered.FindAsync(model.Id);
-			await UpdateAsync(oldEntity, model, true, currentUserId);
-		}
+            var oldEntity = await this.RepositoryContext.ServicesRendered.FindAsync(model.Id);
+            await UpdateAsync(oldEntity, model, true, currentUserId);
+        }
 
-		public async Task<ServicesRendered> GetByProperties(ServicesRendered model)
-		{
-			return await FindByCondition(x => x.ProgrammeId.Equals(model.ProgrammeId) &&
-											  x.SubProgrammeId.Equals(model.SubProgrammeId) &&
-											  x.SubProgrammeTypeId.Equals(model.SubProgrammeTypeId))
-								.AsNoTracking().FirstOrDefaultAsync();
-		}
+        public async Task<ServicesRendered> GetByProperties(ServicesRendered model)
+        {
+            return await FindByCondition(x => x.ProgrammeId.Equals(model.ProgrammeId) &&
+                                              x.SubProgrammeId.Equals(model.SubProgrammeId) &&
+                                              x.SubProgrammeTypeId.Equals(model.SubProgrammeTypeId))
+                                .AsNoTracking().FirstOrDefaultAsync();
+        }
 
         #endregion
     }

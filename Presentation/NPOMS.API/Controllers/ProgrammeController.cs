@@ -81,7 +81,7 @@ namespace NPOMS.API.Controllers
         }
 
         [HttpPost("create-contact/{progId}", Name = "CreateProgrameContact")]
-        public async Task<IActionResult> CreateProgrameContact([FromBody] ProgramContactInformation model,int progId)
+        public async Task<IActionResult> CreateProgrameContact([FromBody] ProgramContactInformation model, int progId)
         {
             try
             {
@@ -175,7 +175,7 @@ namespace NPOMS.API.Controllers
         }
 
         [HttpPut("update-delivery/{progId}", Name = "UpdateProgrameDelivery")]
-        public async Task<IActionResult> UpdateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model,int progId)
+        public async Task<IActionResult> UpdateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model, int progId)
         {
             try
             {
@@ -212,10 +212,10 @@ namespace NPOMS.API.Controllers
             model.LanguageId = model.Language?.Id ?? model.LanguageId;
 
             model.Position = null;
-                model.Race = null;
-                model.Gender = null;
-                model.Language = null;
-                model.Title = null;
+            model.Race = null;
+            model.Gender = null;
+            model.Language = null;
+            model.Title = null;
         }
     }
 }
