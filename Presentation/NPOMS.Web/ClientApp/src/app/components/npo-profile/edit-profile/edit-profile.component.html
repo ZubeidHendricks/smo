@@ -287,28 +287,15 @@
                     <th style="width: 7%;">Actions</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr class="default-font">
-                    <td *ngIf="rowData.programme" (click)="toggleBankingDetailsPanel(rowData.programme)">{{rowData.programme.name}}</td>
-
-                    <td *ngIf="rowData.subProgramme">
-                        <ng-container *ngFor="let subProgramme of rowData.subProgramme; let i = index">
-                            {{subProgramme.description}}{{i < rowData.subProgramme.length - 1 ? ', ' : ''}}
-                        </ng-container>
-                    </td>
-                    
-                    <!-- Display names for subProgrammeType array -->
-                    <td *ngIf="rowData.subProgrammeType">
-                        <ng-container *ngFor="let subProgrammeType of rowData.subProgrammeType; let i = index">
-                            {{subProgrammeType.description}}{{i < rowData.subProgrammeType.length - 1 ? ', ' : ''}}
-                        </ng-container>
-                    </td>
-                    <!-- <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</td>
-                    <td *ngIf="rowData.subProgrammeType">{{rowData.subProgrammeType.name}}</td> -->
-                    <td style="text-align: center;">
-                        <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editServicesRendered(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
-                        <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteServicesRendered(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
-                    </td>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="default-font" [ngClass]="{'selected-row': selectedRowIndex === rowIndex}">
+                  <td (click)="onFirstTdClick(rowIndex); toggleBankingDetailsPanel(rowData.programme)">{{rowData.programme.name}}</td>
+                  <td>{{rowData.subProgramme.name}}</td>
+                  <td>{{rowData.subProgrammeType.name}}</td>
+                  <td style="text-align: center;">
+                    <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editServicesRendered(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                    <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteServicesRendered(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                  </td>
                 </tr>
               </ng-template>
             <ng-template pTemplate="emptymessage">
@@ -389,7 +376,7 @@
           </p-panel>
 
           <div style="height: 10px;"></div>
-          <p-panel [header]="'Programme Service Deliveries'">
+          <p-panel [header]="'Service Delivery Areas'">
             <p-table [value]="programDeliveryDetails" styleClass="p-datatable-sm">
               <ng-template pTemplate="header">
                 <tr>
@@ -425,7 +412,6 @@
         <!-- <p-message *ngIf="!programContactInformation || !programContactInformation.length" severity="info" text="No contact details available."></p-message> -->
     </p-panel>
     <div style="height: 10px;"></div>
-
 
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
         <p-table [rowHover]="true" [columns]="facilityInfoCols" [value]="npoProfileFacilityLists" *ngIf="npoProfileFacilityLists" styleClass="p-datatable-sm">
@@ -821,16 +807,17 @@
           [transitionOptions]="'0ms'"
           [modal]="true">
 
-        <div *ngIf="isApplicant" class="p-grid">
-                <div class="p-col-fixed form-label">
-                    <div class="box">
-                        <span class="mandatory-content">Department</span>
-                    </div>
+          <div *ngIf="isApplicant" class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Department</span>
                 </div>
-                <div class="p-col">
-                    <p-dropdown [options]="departments1" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"  (onChange)="loadDepartmentPrograms($event.value.id)" [filter]="true" filterBy="name"></p-dropdown>
-                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="departments1" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"  (onChange)="loadDepartmentPrograms($event.value.id)" [filter]="true" filterBy="name"></p-dropdown>
+            </div>
         </div>
+    
         
         <div class="p-grid">
             <div class="p-col-fixed form-label">
@@ -860,8 +847,27 @@
                     <span class="mandatory-content">Sub-Programme</span>
                 </div>
             </div>
-       
+            <div class="p-col">
+                <p-dropdown [options]="filteredSubProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="subProgrammeChange($event.value)" [disabled]="disableSubProgramme()"></p-dropdown>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub-Programme Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
+            </div>
+        </div>
 
+        <!-- <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub-Programme</span>
+                </div>
+            </div>
             <div class="p-col">
                 <p-multiSelect 
                     [options]="filteredSubProgrammes"
@@ -876,19 +882,14 @@
                     defaultLabel="Select Sub-Programme(s)"
                     selectedItemsLabel="{0} items selected">
                 </p-multiSelect>
-            </div>
-            
-            
-        </div>
-        <div class="p-grid">
+            </div> 
+        </div> -->
+        <!-- <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
                     <span class="mandatory-content">Sub-Programme Type</span>
                 </div>
             </div>
-            <!-- <div class="p-col">
-                <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
-            </div> -->
             <div class="p-col">
                 <p-multiSelect 
                     [options]="filteredSubProgrammeTypes"
@@ -904,7 +905,7 @@
                 </p-multiSelect>
             </div>
             
-        </div>
+        </div> -->
         <ng-template pTemplate="footer">
             <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveServicesRendered() (click)="saveServicesRendered()"></button>
         </ng-template>
@@ -1066,9 +1067,6 @@
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveAuditorInfo() (click)="saveAuditorInformation()"></button>
     </ng-template>
 </p-dialog>
-
-
-
 
 <p-dialog header="Contact " 
           [(visible)]="displayContactDialog" 
@@ -1432,7 +1430,6 @@
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" (click)="saveProgrammeServiceDelivery()" [disabled]="disableProgrammeerviceDeliverySave()"></button>
     </ng-template>
 </p-dialog>
-
 
 
 <div class="content-section implementation">

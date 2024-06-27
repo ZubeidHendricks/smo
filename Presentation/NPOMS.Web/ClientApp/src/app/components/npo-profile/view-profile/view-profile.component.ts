@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, StaffCategoryEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ISubProgrammeTypeVM, ISubProgrammeVM } from 'src/app/models/interfaces';
+import { AccessStatusEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, StaffCategoryEnum } from 'src/app/models/enums';
+import { IAccountType, IAddressInformation, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpoProfile, INpoProfileFacilityList, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
@@ -19,6 +19,7 @@ export class ViewProfileComponent implements OnInit {
 
   @Input() npoId: number;
   @Input() source: string;
+  @Input() programId: number;
   @Output() retrievedNpoProfile = new EventEmitter<INpoProfile>();
 
   npoProfile: INpoProfile;
@@ -31,13 +32,6 @@ export class ViewProfileComponent implements OnInit {
   documentTypeCols: any[];
   serviceRenderedCols: any[];
   bankDetailCols: any[];
-
-  selectedProgramme: IProgramme;
-    //new 
-  selectedServiceSubProgrammeTypes: ISubProgrammeType[];			  
-  selectedServiceSubProgrammes: ISubProgramme[];
-  filteredSubProgrammeTypes: ISubProgrammeType[] = [];
-  
 
   mapping: INpoProfileFacilityList = {} as INpoProfileFacilityList;
   displayFacilityInformationDialog: boolean;
@@ -401,6 +395,10 @@ export class ViewProfileComponent implements OnInit {
     this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId, this.source).subscribe(
       (results) => {
         this.servicesRendered = results;
+        if(this.programId != null && this.programId > 0)
+        {
+            this.servicesRendered = results.filter(service => service.programmeId === this.programId);
+        }
         this.updateServicesRenderedObjects();
       },
       (err) => {
@@ -423,96 +421,16 @@ export class ViewProfileComponent implements OnInit {
     );
   }
 
-  // private updateServicesRenderedObjects() {
-  //   if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
-  //     this.servicesRendered.forEach(item => {
-  //       item.programme = this.programmes.find(x => x.id === item.programmeId);
-  //       item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
-  //       item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
-  //     });
-
-  //     this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
-  //   }
-  // }
-
-  // private updateServicesRenderedObjects() {
-  //   if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
-  //     this.servicesRendered.forEach(item => {
-  //       item.programme = this.programmes.find(x => x.id === item.programmeId);
-
-  //       // Assuming item.selectedServiceSubProgrammes contains actual IServiceSubProgramme objects
-  //       const subProgrammeIds = item.subProgramme.map(sp => sp.id);
-  //       item.subProgramme = this.subProgrammes.filter(subProgramme => subProgrammeIds.includes(subProgramme.id));
-
-  //       // Assuming item.selectedServiceSubProgrammeTypes contains actual IServiceProgrammeType objects
-  //       const subProgrammeTypeIds = item.subProgrammeType.map(spt => spt.id);
-  //       item.subProgrammeType = this.subProgrammeTypes.filter(subProgrammeType => subProgrammeTypeIds.includes(subProgrammeType.id));
-  //     });
-
-  //     this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
-  //   }
-  // }
-
-  //   private updateServicesRenderedObjects() {
-  //     console.log('servicesRendered1', this.servicesRendered);
-  //     if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
-  //         this.servicesRendered.forEach(item => {
-  //             item.programme = this.programmes.find(x => x.id === item.programmeId);
-
-  //             // Update subProgrammes for the item
-  //             const subProgrammeIds = item.subProgramme.map(sp => sp.id);
-  //             item.subProgramme = this.subProgrammes.filter(subProgramme => subProgrammeIds.includes(subProgramme.id));
-
-  //             // For each subProgramme, update its nested subProgrammeTypes
-  //             item.subProgramme.forEach(sp => {
-  //                 const subProgrammeTypeIds = sp.subProgrammeType.map(spt => spt.id);
-  //                 sp.subProgrammeType = this.subProgrammeTypes.filter(subProgrammeType => subProgrammeTypeIds.includes(subProgrammeType.id));
-  //             });
-  //         });
-
-  //         this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
-  //     }
-  //     console.log('servicesRendered2', this.servicesRendered);
-  // }
-
   private updateServicesRenderedObjects() {
-    console.log('servicesRendered1', this.servicesRendered);
     if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
-        this.servicesRendered.forEach(item => {
-            item.programme = this.programmes.find(x => x.id === item.programmeId);
+      this.servicesRendered.forEach(item => {
+        item.programme = this.programmes.find(x => x.id === item.programmeId);
+        item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
+        item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
+      });
 
-            // Update subProgrammes for the item with proper mapping to ISubProgrammeVM
-            const subProgrammeIds = item.subProgramme.map(sp => sp.id);
-            item.subProgramme = this.subProgrammes
-                .filter(subProgramme => subProgrammeIds.includes(subProgramme.id))
-                .map(sp => this.mapToSubProgrammeVM(sp));
-        });
-
-        this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
+      this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
     }
-    console.log('servicesRendered2', this.servicesRendered);
-  }
-
-  private mapToSubProgrammeVM(sp: ISubProgramme): ISubProgrammeVM {
-    return {
-        id: sp.id,
-        name: sp.name,
-        description: sp.description,
-        programmeId: sp.programmeId,
-        isActive: sp.isActive,
-        subProgrammeType: this.subProgrammeTypes
-            .filter(spt => spt.subProgrammeId === sp.id)
-            .map(spt => this.mapToSubProgrammeTypeVM(spt))
-    };
-  }
-
-  private mapToSubProgrammeTypeVM(spt: ISubProgrammeType): ISubProgrammeTypeVM {
-    return {
-        id: spt.id,
-        name: spt.name,
-        description: spt.description,
-        isActive: spt.isActive,
-    };
   }
 
   private updateBankDetailObjects() {

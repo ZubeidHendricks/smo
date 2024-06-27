@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
-import { Subscription, forkJoin } from 'rxjs';
-import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDistrictCouncil, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFlattenedServiceRendered, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IRace, IRegion, ISDA, IServiceProgrammeType, IServiceSubProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ISubProgrammeTypeVM, ISubProgrammeVM, ITitle, IUser } from 'src/app/models/interfaces';
+import { Observable, Subscription, forkJoin, of, throwError } from 'rxjs';
+import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RoleEnum, StaffCategoryEnum } from 'src/app/models/enums';
+import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDistrictCouncil, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IRace, IRegion, ISDA, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -141,19 +141,10 @@ export class EditProfileComponent implements OnInit {
   selectedProgramme: IProgramme;
   subProgrammes: ISubProgramme[];
   filteredSubProgrammes: ISubProgramme[] = [];
-
-  subProgrammeTypes: ISubProgrammeType[];
-  //subProgrammeTypes: IServiceProgrammeType[];
-  // filteredSubProgrammeTypes: ISubProgrammeType[] = [];
-
-
-  selectedSubProgrammeType: ISubProgrammeType;
   selectedSubProgramme: ISubProgramme;
-
-  //new 
-  selectedServiceSubProgrammeTypes: ISubProgrammeType[];			  
-  selectedServiceSubProgrammes: ISubProgramme[];
+  subProgrammeTypes: ISubProgrammeType[];
   filteredSubProgrammeTypes: ISubProgrammeType[] = [];
+  selectedSubProgrammeType: ISubProgrammeType;
 
   departments: IDepartment[];
   selectedDepartment: IDepartment;
@@ -1311,7 +1302,6 @@ private loadTitles() {
     this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId,this.source).subscribe(
       (results) => {
         this.servicesRendered = results;
-        console.log('this.servicesRenderedlist',this.flattenServicesRendered(this.servicesRendered));
         this.updateServicesRenderedObjects();
       },
       (err) => {
@@ -1348,163 +1338,17 @@ private loadTitles() {
     );
   }
 
-  // update this : private updateServicesRenderedObjects() {
-  //   if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
-  //     this.servicesRendered.forEach(item => {
-  //       item.programme = this.programmes.find(x => x.id === item.programmeId);
-  //       item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
-  //       item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
-  //     });
-
-  //     this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
-  //   }
-  // }
-
-  // private updateServicesRenderedObjects() {
-  //   console.log('servicesRendered1',this.servicesRendered);
-  //   if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
-  //     this.servicesRendered.forEach(item => {
-  //       item.programme = this.programmes.find(x => x.id === item.programmeId);
-
-  //       // Assuming item.selectedServiceSubProgrammes contains actual IServiceSubProgramme objects
-  //       const subProgrammeIds = item.subProgramme.map(sp => sp.id);
-  //       item.subProgramme = this.subProgrammes.filter(subProgramme => subProgrammeIds.includes(subProgramme.id));
-
-  //       // Assuming item.selectedServiceSubProgrammeTypes contains actual IServiceProgrammeType objects
-  //       const subProgrammeTypeIds = item.subProgramme.subProgrammeType.map(spt => spt.id);
-  //       item.subProgramme.subProgrammeType = this.subProgrammeTypes.filter(subProgrammeType => subProgrammeTypeIds.includes(subProgrammeType.id));
-  //     });
-
-  //     this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
-  //   }
-  //   console.log('servicesRendered2',this.servicesRendered);
-  // }
-
-  //   private updateServicesRenderedObjects() {
-  //     console.log('servicesRendered1', this.servicesRendered);
-  //     if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
-  //         this.servicesRendered.forEach(item => {
-  //             item.programme = this.programmes.find(x => x.id === item.programmeId);
-
-  //             // Update subProgrammes for the item
-  //             const subProgrammeIds = item.subProgramme.map(sp => sp.id);
-  //             item.subProgramme = this.subProgrammes.filter(subProgramme => subProgrammeIds.includes(subProgramme.id));
-
-  //             // For each subProgramme, update its nested subProgrammeTypes
-  //             item.subProgramme.forEach(sp => {
-  //                 const subProgrammeTypeIds = sp.subProgrammeType.map(spt => spt.id);
-  //                 sp.subProgrammeType = this.subProgrammeTypes.filter(subProgrammeType => subProgrammeTypeIds.includes(subProgrammeType.id));
-  //             });
-  //         });
-
-  //         this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
-  //     }
-  //     console.log('servicesRendered2', this.servicesRendered);
-  // }
-
-//   private updateServicesRenderedObjects() {
-//     console.log('servicesRendered1', this.servicesRendered);
-//     if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
-//         this.servicesRendered.forEach(item => {
-//             item.programme = this.programmes.find(x => x.id === item.programmeId);
-
-//             // Update subProgrammes for the item
-//             const subProgrammeIds = item.subProgramme.map(sp => sp.id);
-//             item.subProgramme = this.subProgrammes
-//                 .filter(subProgramme => subProgrammeIds.includes(subProgramme.id))
-//                 .map(sp => ({
-//                     ...sp,
-//                     subProgrammeType: this.subProgrammeTypes.filter(spt => spt.subProgrammeId === sp.id)
-//                 }));
-
-//             // For each subProgrammeVM, update its nested subProgrammeTypes
-//             item.subProgramme.forEach(sp => {
-//                 const subProgrammeTypeIds = sp.subProgrammeType.map(spt => spt.id);
-//                 sp.subProgrammeType = this.subProgrammeTypes.filter(subProgrammeType => subProgrammeTypeIds.includes(subProgrammeType.id));
-//             });
-//         });
-
-//         this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
-//     }
-//     console.log('servicesRendered2', this.servicesRendered);
-// }
-
-  private flattenServicesRendered(servicesRenderedList: IServicesRendered[]): IFlattenedServiceRendered[] {
-    const flattenedList: IFlattenedServiceRendered[] = [];
-
-    servicesRenderedList.forEach(service => {
-        service.subProgramme.forEach(subProgramme => {
-            if (subProgramme.subProgrammeType.length > 0) {
-                subProgramme.subProgrammeType.forEach(subProgrammeType => {
-                    flattenedList.push({
-                        id: service.id,
-                        npoProfileId: service.npoProfileId,
-                        programmeId: service.programme.id,
-                        programmeName: service.programme.name,
-                        subProgrammeId: subProgramme.id,
-                        subProgrammeName: subProgramme.name,
-                        subProgrammeTypeId: subProgrammeType.id,
-                        subProgrammeTypeName: subProgrammeType.name,
-                        isActive: service.isActive,
-                    });
-                });
-            } else {
-                flattenedList.push({
-                    id: service.id,
-                    npoProfileId: service.npoProfileId,
-                    programmeId: service.programme.id,
-                    programmeName: service.programme.name,
-                    subProgrammeId: subProgramme.id,
-                    subProgrammeName: subProgramme.name,
-                    isActive: service.isActive,
-                });
-            }
-        });
-    });
-
-    return flattenedList;
+  private updateServicesRenderedObjects() {
+    if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
+      this.servicesRendered.forEach(item => {
+        item.programme = this.programmes.find(x => x.id === item.programmeId);
+        item.department = this.departments.find(x => x.id === item.programme.departmentId);
+        item.subProgramme = this.subProgrammes.find(x => x.id === item.subProgrammeId);
+        item.subProgrammeType = this.subProgrammeTypes.find(x => x.id === item.subProgrammeTypeId);
+      });
+      this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
+    }
   }
-
-
-    private updateServicesRenderedObjects() {
-      console.log('servicesRendered1', this.servicesRendered);
-      if (this.npoProfile && this.programmes && this.subProgrammes && this.subProgrammeTypes && this.servicesRendered) {
-          this.servicesRendered.forEach(item => {
-              item.programme = this.programmes.find(x => x.id === item.programmeId);
-
-              // Update subProgrammes for the item with proper mapping to ISubProgrammeVM
-              const subProgrammeIds = item.subProgramme.map(sp => sp.id);
-              item.subProgramme = this.subProgrammes
-                  .filter(subProgramme => subProgrammeIds.includes(subProgramme.id))
-                  .map(sp => this.mapToSubProgrammeVM(sp));
-          });
-
-          this.servicesRendered.sort((a, b) => a.programme.name.localeCompare(b.programme.name));
-      }
-      console.log('servicesRendered2', this.servicesRendered);
-    }
-
-    private mapToSubProgrammeVM(sp: ISubProgramme): ISubProgrammeVM {
-      return {
-          id: sp.id,
-          name: sp.name,
-          description: sp.description,
-          programmeId: sp.programmeId,
-          isActive: sp.isActive,
-          subProgrammeType: this.subProgrammeTypes
-              .filter(spt => spt.subProgrammeId === sp.id)
-              .map(spt => this.mapToSubProgrammeTypeVM(spt))
-      };
-    }
-
-    private mapToSubProgrammeTypeVM(spt: ISubProgrammeType): ISubProgrammeTypeVM {
-      return {
-          id: spt.id,
-          name: spt.name,
-          description: spt.description,
-          isActive: spt.isActive,
-      };
-    }
 
   private updateBankDetailObjects() {
     if (this.npoProfile && this.banks && this.accountTypes && this.bankDetails) {
@@ -2190,8 +2034,9 @@ private loadTitles() {
     this.serviceRendered = {} as IServicesRendered;
 
     this.selectedProgramme = null;
-    this.selectedServiceSubProgrammes = null;
-    this.selectedServiceSubProgrammeTypes = null;
+    this.selectedDepartment = null;
+    this.selectedSubProgramme = null;
+    this.selectedSubProgrammeType = null;
 
     this.filteredSubProgrammes = [];
     this.filteredSubProgrammeTypes = [];
@@ -2199,33 +2044,16 @@ private loadTitles() {
     this.displayServiceRenderedDialog = true;
   }
 
-  // saveServicesRendered() {
-  //   this.serviceRendered.npoProfileId = Number(this.npoProfileId);
-  //   this.serviceRendered.programmeId = this.selectedProgramme.id;
-  //   this.serviceRendered.subProgrammeType = this.selectedServiceSubProgrammeTypes;
-  //   this.serviceRendered.subProgramme = this.selectedServiceSubProgrammes;
-  //   this.serviceRendered.isActive = true;
-
-  //   this.newServiceRendered ? this.createServiceRendered(this.serviceRendered) : this.updateServiceRendered(this.serviceRendered);
-  //   this.displayServiceRenderedDialog = false;
-  // }
-  
   saveServicesRendered() {
     this.serviceRendered.npoProfileId = Number(this.npoProfileId);
     this.serviceRendered.programmeId = this.selectedProgramme.id;
+    this.serviceRendered.subProgrammeId = this.selectedSubProgramme.id;
+    this.serviceRendered.subProgrammeTypeId = this.selectedSubProgrammeType.id;
     this.serviceRendered.isActive = true;
-
-    // Ensure that subProgrammes are mapped correctly with their nested subProgrammeTypes
-    this.serviceRendered.subProgramme = this.selectedServiceSubProgrammes.map(sp => {
-        return {
-            ...sp,
-            subProgrammeType: this.selectedServiceSubProgrammeTypes.filter(spt => spt.subProgrammeId === sp.id)
-        };
-    });
 
     this.newServiceRendered ? this.createServiceRendered(this.serviceRendered) : this.updateServiceRendered(this.serviceRendered);
     this.displayServiceRenderedDialog = false;
-}
+  }
 
   private createServiceRendered(service: IServicesRendered) {
     this._npoProfileRepo.createServicesRendered(service).subscribe(
@@ -2252,48 +2080,42 @@ private loadTitles() {
   }
 
   disableSaveServicesRendered() {
-    if (
-      !this.selectedProgramme || 
-      !this.selectedServiceSubProgrammes || this.selectedServiceSubProgrammes.length === 0 || 
-      !this.selectedServiceSubProgrammeTypes || this.selectedServiceSubProgrammeTypes.length === 0
-    ) {
+    if (!this.selectedProgramme || !this.selectedSubProgramme || !this.selectedSubProgrammeType)
       return true;
-    }
+
     return false;
   }
-  
-
-  // disableSaveServicesRendered() {
-  //   if (!this.selectedProgramme || !this.selectedSubProgramme || !this.selectedSubProgrammeType)
-  //     return true;
-
-  //   return false;
-  // }
 
   editServicesRendered(data: IServicesRendered) {
     this.selectedServiceRendered = data;
     this.isServiceRenderedEdit = true;
     this.newServiceRendered = false;
-    //this.serviceRendered = this.cloneServicesRendered(data);
+    this.serviceRendered = this.cloneServicesRendered(data);
     this.displayServiceRenderedDialog = true;
   }
 
-  // private cloneServicesRendered(data: IServicesRendered): IServicesRendered {
-  //   let serviceRendered = {} as IServicesRendered;
+  private cloneServicesRendered(data: IServicesRendered): IServicesRendered {
+    let serviceRendered = {} as IServicesRendered;
 
-  //   for (let prop in data)
-  //     serviceRendered[prop] = data[prop];
+    for (let prop in data)
+      serviceRendered[prop] = data[prop];
 
-  //   this.selectedProgramme = data.programme;
-  //   this.programmeChange(this.selectedProgramme);
+    if(this.isApplicant)
+      {
+        this.selectedDepartment = data.department;
+        this.loadDepartmentPrograms(this.selectedDepartment.id);
+      }
 
-  //   this.selectedServiceSubProgrammes = data.subProgramme;
-  //   this.subProgrammeChange(this.selectedServiceSubProgrammes);
+    this.selectedProgramme = data.programme;
+    this.programmeChange(this.selectedProgramme);
 
-  //   this.selectedServiceSubProgrammeTypes = data.subProgrammeType;
+    this.selectedSubProgramme = data.subProgramme;
+    this.subProgrammeChange(this.selectedSubProgramme);
 
-  //   return serviceRendered;
-  // }
+    this.selectedSubProgrammeType = data.subProgrammeType;
+
+    return serviceRendered;
+  }
 
 
   deleteServicesRendered(data: IServicesRendered) {
@@ -2322,41 +2144,14 @@ private loadTitles() {
     }
   }
 
-  // subProgrammeChange(subProgramme: ISubProgramme) {
-  //   this.selectedSubProgrammeType = null;
-  //   this.filteredSubProgrammeTypes = [];
-
-  //   if (subProgramme.id != null) {
-  //     this.filteredSubProgrammeTypes = this.subProgrammeTypes.filter(x => x.subProgrammeId === subProgramme.id);
-  //   }
-  // }
-
-  subProgrammeChange(subProgrammes: ISubProgramme[]) {
-    this.selectedServiceSubProgrammeTypes = null;
+  subProgrammeChange(subProgramme: ISubProgramme) {
+    this.selectedSubProgrammeType = null;
     this.filteredSubProgrammeTypes = [];
 
-    console.log('subProgrammes',subProgrammes);
-    if (subProgrammes.length > 0) {
-      const selectedIds = subProgrammes.map(subProgramme => subProgramme.id);
-      this.filteredSubProgrammeTypes = this.subProgrammeTypes.filter(x => selectedIds.includes(x.subProgrammeId));
+    if (subProgramme.id != null) {
+      this.filteredSubProgrammeTypes = this.subProgrammeTypes.filter(x => x.subProgrammeId === subProgramme.id);
     }
   }
-
-  subProgrammeChange1(event: any) {
-    // Extract subProgrammes from the event object
-    const subProgrammes: ISubProgramme[] = event.value;
-    
-    this.selectedServiceSubProgrammeTypes = [];
-    this.filteredSubProgrammeTypes = [];
-
-    console.log('subProgrammes', subProgrammes);
-    
-    if (subProgrammes.length > 0) {
-        const selectedIds = subProgrammes.map(subProgramme => subProgramme.id);
-        this.filteredSubProgrammeTypes = this.subProgrammeTypes.filter(x => selectedIds.includes(x.subProgrammeId));
-    }
-}
-
 
   disableSubProgramme(): boolean {
     if (this.filteredSubProgrammes.length > 0)

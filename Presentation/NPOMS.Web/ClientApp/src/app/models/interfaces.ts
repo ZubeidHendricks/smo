@@ -50,7 +50,7 @@ export interface IProgramBankDetails {
     approvalStatus: IAccessStatus;
 }
 
-  export interface IProgramContactInformation {
+export interface IProgramContactInformation {
     id: number;
     programmeId: number;
     titleId: number;
@@ -817,37 +817,9 @@ export interface IServicesRendered {
 
     department: IDepartment;
     programme: IProgramme;
-    subProgramme: ISubProgrammeVM[];
+    subProgramme: ISubProgramme;
+    subProgrammeType: ISubProgrammeType;
 }
-
-export interface ISubProgrammeVM {
-    id: number;
-    name: string;
-    description: string;
-    programmeId: number;
-    isActive: boolean;
-    subProgrammeType: ISubProgrammeTypeVM[];
-}
-
-export interface ISubProgrammeTypeVM {
-    id: number;
-    name: string;
-    description: string;
-    isActive: boolean;
-}
-
-export interface IFlattenedServiceRendered {
-    id: number;
-    npoProfileId: number;
-    programmeId: number;
-    programmeName: string;
-    subProgrammeId: number;
-    subProgrammeName: string;
-    subProgrammeTypeId?: number;
-    subProgrammeTypeName?: string;
-    isActive: boolean;
-}
-
 
 export interface IBankDetail {
     id: number;
