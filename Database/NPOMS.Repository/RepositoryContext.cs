@@ -195,6 +195,7 @@ namespace NPOMS.Repository
         public DbSet<UserProgramMapping> UserProgramMappings { get; set; }
         public DbSet<ActivityFacilityList> ActivityFacilityLists { get; set; }
         public DbSet<ActivityRecipient> ActivityRecipients { get; set; }
+        public DbSet<SegmentCode> SegmentCodes { get; set; }
 
         /* Indicator */
         public DbSet<WorkplanTarget> WorkplanTargets { get; set; }
@@ -205,7 +206,9 @@ namespace NPOMS.Repository
         /* Budget */
         public DbSet<DepartmentBudget> DepartmentBudgets { get; set; }
         public DbSet<DirectorateBudget> DirectorateBudgets { get; set; }
-        public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }
+        public DbSet<ProgrammeBudget> ProgrammeBudgets { get; set; }   
+        public DbSet<BudgetAdjustment> BudgetAdjustment { get; set; }
+        public DbSet<ImportBudget> ImportBudget { get; set; }
 
         /* Program */
 
@@ -314,6 +317,7 @@ namespace NPOMS.Repository
             modelBuilder.ApplyConfiguration(new UserDepartmentConfiguration());
             modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserProgramMppingConfiguration());
+            modelBuilder.ApplyConfiguration(new SegmentCodeConfiguration());
 
         }
 

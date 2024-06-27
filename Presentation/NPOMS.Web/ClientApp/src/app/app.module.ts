@@ -193,7 +193,7 @@ import { QcFundedDocumentUploadViewComponent } from './components/application/ap
 import { QcObjectivesViewComponent } from './components/application/application-steps/quick-capture-view/qc-objectives-view/qc-objectives-view.component';
 import { QcNpoDetailsViewComponent } from './components/application/application-steps/quick-capture-view/qc-npo-details-view/qc-npo-details-view.component';
 import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
-
+import { UploadBudgetComponent } from './components/admin/budgets/upload-budget/upload-budget.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -380,8 +380,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ScorecardActionComponent,
     AdjudicateNpoComponent,
     ReviewAdjudicatedNpoComponent,
-    BudgetSummaryComponent
-   // ScorecardComponent
+    BudgetSummaryComponent,
+    UploadBudgetComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
