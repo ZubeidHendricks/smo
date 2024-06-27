@@ -98,6 +98,7 @@
                         <th></th>
                         <th></th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -105,8 +106,10 @@
                         <td>{{rowData.programmeName}}</td>
                         <td>{{rowData.subProgrammeName}}</td>
                         <td>{{rowData.subProgrammeTypeName}}</td>
+                        <td style="text-align: right;">R {{rowData.provisionalBudgetAmount | number : '1.2-2'}}</td>
                         <td style="text-align: right;">R {{rowData.originalBudgetAmount | number : '1.2-2'}}</td>                        
                         <td style="text-align: right;">R {{rowData.adjustedBudgetAmount | number : '1.2-2'}}</td>
+                        <td style="text-align: right;"></td>
                         <td style="text-align: right;"></td>
                         <td style="text-align: right;"></td>
                     </tr>
@@ -120,19 +123,9 @@
                         <td style="text-align: right;">R {{totalAdjustedBudget | number : '1.2-2'}}</td> 
                         <td></td>
                         <td></td> 
+                        <td></td> 
                     </tr>
                 </ng-template>
-                <!-- <ng-template  pTemplate="footer">
-                    <tr class="default-font">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td style="text-align: right;">{{rowData.totalBudget | number : '1.2-2'}}</td>                        
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </ng-template> -->
                 <ng-template pTemplate="emptymessage">
                     <tr class="default-font">
                         <td colspan="9" style="text-align: center;">No results found</td>
