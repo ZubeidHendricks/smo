@@ -306,6 +306,17 @@ export class NavigationComponent implements OnInit {
           items: []
         });
 
+        if (this.IsAuthorized(PermissionsEnum.UploadBudget)) {
+          this.sideMenu[2].items.push({
+            label: 'Upload Budget',
+            icon: 'fa fa-bar-chart',
+           // disabled: !this.IsAuthorized(PermissionsEnum.UploadBudget),
+            command: () => {
+              this._router.navigateByUrl('admin/upload-budget');
+              this.displaySideMenu = false;
+            }
+          });
+        }
         if (this.IsAuthorized(PermissionsEnum.ViewBudgetSummarySubMenu)) {
           this.sideMenu[2].items.push({
             label: 'Budget Summary',
