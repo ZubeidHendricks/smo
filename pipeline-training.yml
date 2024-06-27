@@ -1,6 +1,6 @@
 
 trigger:
-- branch-from-c55e42b4
+- lastest-working
 
 variables:
   buildConfiguration: 'Release'
