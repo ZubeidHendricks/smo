@@ -1,5 +1,6 @@
 ﻿using NPOMS.Domain.Entities;
 using NPOMS.Domain.Mapping;
+using NPOMS.Services.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,11 +24,11 @@ namespace NPOMS.Services.Interfaces
 
 		Task Update(NpoProfileFacilityList model, string userIdentifier);
 
-		Task<IEnumerable<ServicesRendered>> GetServicesRenderedByNpoProfileId(string source, int npoProfileId);
+		Task<IEnumerable<ServicesRenderedVM>> GetServicesRenderedByNpoProfileId(int npoProfileId);
 
-		Task Create(ServicesRendered model, string userIdentifier);
+		Task Create(ServicesRenderedVM model, string userIdentifier);
 
-		Task Update(ServicesRendered model, string userIdentifier);
+		Task Update(ServicesRenderedVM model, string userIdentifier);
 
         Task<IEnumerable<BankDetail>> GetBankDetailsByNpoProfileId(int npoProfileId);
 
