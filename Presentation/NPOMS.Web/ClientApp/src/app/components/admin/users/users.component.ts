@@ -33,6 +33,7 @@ export class UsersComponent implements OnInit {
 
   isSystemAdmin: boolean = true;
   userDepartmentId: number;
+  isAdmin: boolean = true;
 
   newUserForm: FormGroup;
   editUserForm: FormGroup;
@@ -78,6 +79,7 @@ export class UsersComponent implements OnInit {
 
         this.userDepartmentId = profile.departments.length > 0 ? profile.departments[0].id : null;
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        this.isAdmin =  profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
 
         if (!this.isSystemAdmin)
         {
@@ -101,7 +103,18 @@ export class UsersComponent implements OnInit {
     this._spinner.show();
     this._userRepo.getAllUsers().subscribe(
       (users) => {
-        this.users = users;
+
+        if( this.isSystemAdmin)
+        {
+          this.users = users;
+        }
+
+        if( this.isAdmin)
+        {
+          this.users = users.filter(x => x.departments[0].id === this.userDepartmentId);
+        }
+
+        console.log('this.users', this.users);
         this._spinner.hide();
       },
       (err) => {
