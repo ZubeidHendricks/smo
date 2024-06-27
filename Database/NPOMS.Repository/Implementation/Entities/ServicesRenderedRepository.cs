@@ -32,10 +32,10 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<IEnumerable<ServicesRendered>> GetByNpoProfileId(int npoProfileId)
         {
             return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && x.IsActive)
-                .Include(x => x.ServiceSubProgramme)
-                    .ThenInclude(y => y.SubProgramme)
-                .Include(x => x.ServiceSubProgramme)
-                    .ThenInclude(y => y.ServiceProgrammeTypes) 
+                //.Include(x => x.ServiceSubProgramme)
+                //    .ThenInclude(y => y.SubProgramme)
+                //.Include(x => x.ServiceSubProgramme)
+                //    .ThenInclude(y => y.ServiceProgrammeTypes) 
                 .AsNoTracking()
                 .ToListAsync();
         }
