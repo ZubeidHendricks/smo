@@ -12,7 +12,7 @@ stages:
   displayName: 'Build the web application'
   jobs: 
   - job: 'Build'
-    displayName: 'Build job - lastest-working'
+    displayName: 'Build job - 3-Training'
     pool:
       vmImage: windows-2019
 
