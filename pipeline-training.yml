@@ -31,7 +31,7 @@ stages:
       displayName: 'Build the project - $(buildConfiguration)'
       inputs:
         command: 'build'
-        arguments: '--no-restore --configuration $(buildConfiguration)'
+        arguments: '--no-restore --configuration $(buildConfiguration) -v diag'
         projects: '**/NPOMS.API.csproj'
 
     - task: DotNetCoreCLI@2
