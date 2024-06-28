@@ -12,7 +12,7 @@ stages:
   displayName: 'Build the web application'
   jobs: 
   - job: 'Build'
-    displayName: 'Build job - 3-Training'
+    displayName: 'Build job - (Training)'
     pool:
       vmImage: windows-2019
 
@@ -139,4 +139,4 @@ stages:
               appType: 'webAppLinux'
               appName: 'wa-wcg-npoms-training-zan'
               package: '$(Pipeline.Workspace)/WebAPI/WebAPI1.zip'
-              runtimeStack: 'DOTNETCORE|6.0'
+              runtimeStack: 'DOTNETCORE|8.0'
