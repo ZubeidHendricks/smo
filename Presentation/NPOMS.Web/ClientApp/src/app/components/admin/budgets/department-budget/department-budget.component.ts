@@ -65,6 +65,8 @@ export class DepartmentBudgetComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        
+        this.loadDepartments();
         this.loadFinancialYears();
       }
     });
@@ -85,7 +87,6 @@ export class DepartmentBudgetComponent implements OnInit {
         let currentFinancialYear = results.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
         this.financialYears = results.filter(x => x.id <= currentFinancialYear.id);
 
-        this.loadDepartments();
       },
       (err) => {
         this._loggerService.logException(err);
