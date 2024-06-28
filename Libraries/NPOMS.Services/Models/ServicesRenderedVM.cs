@@ -2,13 +2,19 @@
 using NPOMS.Domain.Mapping;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace NPOMS.Domain.Entities
+namespace NPOMS.Services.Models
 {
-    [Table("ServicesRendered", Schema = "dbo")]
-    public class ServicesRendered : BaseEntity
+    public class ServicesRenderedVM
     {
+        public ServicesRenderedVM()
+        {
+            this.SubProgramme = this.SubProgramme ?? new List<SubProgrammeVM>();
+        }
+        public int Id { get; set; }
         public int NpoProfileId { get; set; }
 
         public int ProgrammeId { get; set; }
@@ -27,8 +33,6 @@ namespace NPOMS.Domain.Entities
 
         public DateTime? UpdatedDateTime { get; set; }
 
-        public int EntityTypeNumber { get; set; }
-
-        public int EntitySystemNumber { get; set; }
+        public List<SubProgrammeVM> SubProgramme { get; set; } = new List<SubProgrammeVM>();
     }
 }
