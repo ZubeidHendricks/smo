@@ -35,7 +35,8 @@ namespace NPOMS.Repository.Implementation.Core
         public IQueryable<Permission> GetEntities()
         {
             return FindAll().Where(x => x.IsActive)
-                .Include(x => x.Roles).ThenInclude(x => x.Role);
+                .Include(x => x.Roles).ThenInclude(x => x.Role)
+                .AsQueryable();
         }
 
         public async Task CreateEntity(Permission entity)

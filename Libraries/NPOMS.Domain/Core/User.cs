@@ -41,7 +41,7 @@ namespace NPOMS.Domain.Core
 		public DateTime? UpdatedDateTime { get; set; }
 
 		public List<UserDepartment> Departments { get; set; } = new List<UserDepartment>();
-
-		public List<UserRole> Roles { get; set; } = new List<UserRole>();
+        public List<UserProgramMapping> UserPrograms { get; set; } = new List<UserProgramMapping>();
+        public List<UserRole> Roles { get; set; } = new List<UserRole>();
 	}
 }

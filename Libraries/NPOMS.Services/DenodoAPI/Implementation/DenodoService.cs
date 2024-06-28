@@ -43,12 +43,12 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 			StringBuilder sbFullQuery = new StringBuilder();
 			StringBuilder sbFilter = new StringBuilder();
 
-			sbFullQuery.AppendFormat("bv_sinjani_facility_view/views/vwdohfacility?$count={0}", denodoFacilityResourceParameters.PageSize);
+            sbFullQuery.AppendFormat($"{_denodoAPIConfig.FacilityView}?$count={0}", denodoFacilityResourceParameters.PageSize);
 
-			if (!string.IsNullOrEmpty(denodoFacilityResourceParameters.FacilityName))
+            if (!string.IsNullOrEmpty(denodoFacilityResourceParameters.FacilityName))
 			{
 				//encoded parameters
-				sbFilter.AppendFormat("name+like+%27%25{0}%25%27", denodoFacilityResourceParameters.FacilityName);
+				sbFilter.AppendFormat($"name+like+%27%25{denodoFacilityResourceParameters.FacilityName}%25%27");
 			}
 
 			if (!string.IsNullOrEmpty(denodoFacilityResourceParameters.Status))
@@ -59,12 +59,12 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 				}
 
 				//encoded parameters
-				sbFilter.AppendFormat("status+like+%27%25{0}%25%27", denodoFacilityResourceParameters.Status);
+				sbFilter.AppendFormat($"status+like+%27%25{denodoFacilityResourceParameters.Status}%25%27");
 			}
 
 			if (sbFilter.Length > 1)
 			{
-				sbFullQuery.AppendFormat("&$filter={0}", sbFilter);
+				sbFullQuery.AppendFormat($"&$filter={sbFilter}");
 			}
 
 			FacilityAPIWrapperModel facilities = null;
@@ -77,5 +77,31 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 
 			return facilities;
 		}
-	}
+
+        public async Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear)
+		{
+            StringBuilder sbFullQuery = new StringBuilder();
+            StringBuilder sbFilter = new StringBuilder();
+
+            //Append view to Denodo URL
+            sbFullQuery.AppendFormat($"{_denodoAPIConfig.BudgetView}");
+			_denodoAPIConfig.BaseUri = "https://ldw.westerncape.gov.za/server/dev_ldw/";
+
+			//Filter by 
+			sbFilter.AppendFormat($"?DepartmentName={department}&FinancialYear={financialYear}");
+
+			//Append filter to query
+			sbFullQuery.AppendFormat($"{sbFilter}");
+
+			BudgetAPIWrapperModel data = null;
+
+            HttpResponseMessage response = await PrepareClient(_denodoAPIConfig).GetAsync(sbFullQuery.ToString());
+            if (response.IsSuccessStatusCode)
+            {
+                data = await response.Content.ReadAsAsync<BudgetAPIWrapperModel>();
+            }
+
+            return data;
+        }
+    }
 }

@@ -20,6 +20,8 @@ namespace NPOMS.Domain.Dropdown
 		[Required]
 		public int ProgrammeId { get; set; }
 
+		//public string Code { get; set; }
+
 		public bool IsActive { get; set; }
 
 		public int CreatedUserId { get; set; }

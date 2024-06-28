@@ -30,7 +30,7 @@ export class NpoDetailsComponent implements OnInit {
 
   showWarningMessage: boolean;
   showConfirmationButton: boolean;
-
+  source: string = 'NPO Details';
   constructor(
     private _messageService: MessageService,
     private _applicationRepo: ApplicationService,

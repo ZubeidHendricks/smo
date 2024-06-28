@@ -1,17 +1,18 @@
 
 trigger:
-- Training
+- branch-from-c55e42b4
 
 variables:
   buildConfiguration: 'Release'
-  dotnetSdkVersion: '6.x'
+  dotnetSdkVersion: '8.x'
+  System.Debug: 'true'
   
 stages:
 - stage: 'Build'
   displayName: 'Build the web application'
   jobs: 
   - job: 'Build'
-    displayName: 'Build job'
+    displayName: 'Build job - lastest-working'
     pool:
       vmImage: windows-latest
 
@@ -92,7 +93,7 @@ stages:
     - Build
     - BuildSPAJob
     pool:
-      vmImage: windows-2019
+      vmImage: windows-latest
     steps:
     - checkout: none
     - download: current
@@ -138,4 +139,4 @@ stages:
               appType: 'webAppLinux'
               appName: 'wa-wcg-npoms-training-zan'
               package: '$(Pipeline.Workspace)/WebAPI/WebAPI1.zip'
-              runtimeStack: 'DOTNETCORE|6.0'
+              runtimeStack: 'DOTNETCORE|8.0'

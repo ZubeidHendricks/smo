@@ -287,20 +287,20 @@
                     <th style="width: 7%;">Actions</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr class="default-font">
-                    <td *ngIf="rowData.programme">{{rowData.programme.name}}</td>
-                    <td *ngIf="rowData.subProgramme">{{rowData.subProgramme.name}}</td>
-                    <td *ngIf="rowData.subProgrammeType">{{rowData.subProgrammeType.name}}</td>
-                    <td style="text-align: center;">
-                        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editServicesRendered(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
-                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteServicesRendered(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
-                    </td>
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                <tr class="default-font" [ngClass]="{'selected-row': selectedRowIndex === rowIndex}">
+                  <td (click)="onFirstTdClick(rowIndex); toggleBankingDetailsPanel(rowData.programme)">{{rowData.programme.name}}</td>
+                  <td>{{rowData.subProgramme.name}}</td>
+                  <td>{{rowData.subProgrammeType.name}}</td>
+                  <td style="text-align: center;">
+                    <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editServicesRendered(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                    <button *ngIf="canEditServicesRendered(rowData.programme)" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteServicesRendered(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                  </td>
                 </tr>
-            </ng-template>
+              </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr class="default-font">
-                    <td colspan="4" style="text-align: center;">No results found</td>
+                    <td colspan="6" style="text-align: center;">No results found</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="summary" let-rowData>
@@ -311,6 +311,108 @@
         </p-table>
     </p-panel>
     <div style="height: 10px;"></div>
+    <div style="height: 10px;"></div>
+    <p-panel [header]="'Banking Details, Service delivery and Contact Information - ' + (selectedProgram ? selectedProgram.name : '')" [(visible)]="displayBankingDetailsPanel" [style]="{'font-size':'12px'}" *ngIf="selectedProgram">
+        <p-table [value]="programBankDetails" styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Bank Name</th>
+              <th>Account Number</th>
+              <th>Branch</th>
+              <th>Status</th>
+              <th style="width: 7%;">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-detail>
+            <tr>
+              <td>{{detail?.bank?.name}}</td>
+              <td>{{detail?.accountNumber}}</td>
+              <td>{{detail?.branch?.name}}</td>
+              <td>{{detail?.approvalStatus?.name}}</td>
+              <td style="text-align: center;">
+                <button *ngIf="canEdit()"  pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgrammeBankDetail(detail)" pTooltip="Edit" tooltipPosition="top"></button>
+                <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgrammeBankDetail(detail)" pTooltip="Delete" tooltipPosition="top"></button>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="summary" let-rowData>
+            <div style="text-align:left">
+                <button *ngIf="canEdit()" pButton pRipple type="button" label="Add Banking Details" class="p-button-text" icon="fa fa-plus" (click)="addProgrammeBankDetail()"></button>
+            </div>
+        </ng-template>
+        </p-table>
+        <div style="height: 10px;"></div>
+        <p-panel [header]="'Contact Details'">  
+            <p-table [value]="programContactInformation" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th style="width: 7%;">Actions</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-contact>
+                  <tr>
+                    <td>{{contact.firstName}}</td>
+                    <td>{{contact.lastName}}</td>
+                    <td>{{contact.emailAddress}}</td>
+                    <td>{{contact.cellphone}}</td>
+                    <td>{{contact?.approvalStatus?.name}}</td>
+                    <td style="text-align: center;">
+                      <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgramContactInformation(contact)" pTooltip="Edit" tooltipPosition="top"></button>
+                      <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgramContactInformation(contact)" pTooltip="Delete" tooltipPosition="top"></button>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="summary" let-rowData>
+                    <div style="text-align:left">
+                        <button *ngIf="canEdit()" pButton pRipple type="button" label="Add Contact Details" class="p-button-text" icon="fa fa-plus" (click)="addContactInformation()"></button>
+                    </div>
+                </ng-template>
+              </p-table> 
+          </p-panel>
+
+          <div style="height: 10px;"></div>
+          <p-panel [header]="'Service Delivery Areas'">
+            <p-table [value]="programDeliveryDetails" styleClass="p-datatable-sm">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Region</th>
+                  <th>District Council</th>
+                  <th>Local Municipality</th>
+                  <th>Servive delivery address</th>
+                  <th>Status</th>
+                  <th style="width: 7%;">Actions</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-delivery>
+                <tr>
+                  <td>{{getNames(delivery?.regions)}}</td>
+                  <td>{{delivery.districtCouncil?.name}}</td>
+                  <td>{{delivery.localMunicipality?.name}}</td>
+                  <td>{{getNames(delivery?.serviceDeliveryAreas)}}</td>
+                  <td>{{delivery?.approvalStatus?.name}}</td>
+                  <td style="text-align: center;">
+                    <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgrammeServiceDelivery(delivery)" pTooltip="Edit" tooltipPosition="top"></button>
+                    <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgrammeServiceDelivery(delivery)" pTooltip="Delete" tooltipPosition="top"></button>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="summary" let-rowData>
+                <div style="text-align:left">
+                  <button *ngIf="canEdit()" pButton pRipple type="button" label="Add Service Delivery" class="p-button-text" icon="fa fa-plus" (click)="addProgrammeServiceDelivery()"></button>
+                </div>
+              </ng-template>
+            </p-table>
+          </p-panel>
+          
+        <!-- <p-message *ngIf="!programContactInformation || !programContactInformation.length" severity="info" text="No contact details available."></p-message> -->
+    </p-panel>
+    <div style="height: 10px;"></div>
+
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
         <p-table [rowHover]="true" [columns]="facilityInfoCols" [value]="npoProfileFacilityLists" *ngIf="npoProfileFacilityLists" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
@@ -704,16 +806,41 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-        <div class="p-grid">
+
+          <div *ngIf="isApplicant" class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
-                    <span class="mandatory-content">Programme</span>
+                    <span class="mandatory-content">Department</span>
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="filteredProgrammes" placeholder="Select a Programme" optionLabel="name" [(ngModel)]="selectedProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)" [filter]="true" filterBy="name"></p-dropdown>
+                <p-dropdown [options]="departments1" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"  (onChange)="loadDepartmentPrograms($event.value.id)" [filter]="true" filterBy="name"></p-dropdown>
             </div>
         </div>
+    
+        
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+              <div class="box">
+                <span class="mandatory-content">Programme</span>
+              </div>
+            </div>
+            <div class="p-col">
+              <p-dropdown 
+                [options]="filteredProgrammes" 
+                placeholder="Select a Programme" 
+                optionLabel="name" 
+                [(ngModel)]="selectedProgramme" 
+                [ngModelOptions]="{standalone: true}" 
+                [style]="{'width':'100%'}" 
+                appendTo="body" 
+                (onChange)="programmeChange($event.value)" 
+                [filter]="true" 
+                filterBy="name">
+              </p-dropdown>
+            </div>
+        </div>
+
         <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
@@ -734,6 +861,51 @@
                 <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
             </div>
         </div>
+
+        <!-- <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub-Programme</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-multiSelect 
+                    [options]="filteredSubProgrammes"
+                    placeholder="Select a Sub-Programme"
+                    optionLabel="name"
+                    [(ngModel)]="selectedServiceSubProgrammes"
+                    [ngModelOptions]="{standalone: true}"
+                    [style]="{'width':'100%'}"
+                    appendTo="body"
+                    (onChange)="subProgrammeChange1($event)"
+                    [disabled]="disableSubProgramme()"
+                    defaultLabel="Select Sub-Programme(s)"
+                    selectedItemsLabel="{0} items selected">
+                </p-multiSelect>
+            </div> 
+        </div> -->
+        <!-- <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub-Programme Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-multiSelect 
+                    [options]="filteredSubProgrammeTypes"
+                    placeholder="Select a Sub-Programme Type"
+                    optionLabel="name"
+                    [(ngModel)]="selectedServiceSubProgrammeTypes"
+                    [ngModelOptions]="{standalone: true}"
+                    [style]="{'width':'100%'}"
+                    appendTo="body"
+                    [disabled]="disableSubProgrammeType()"
+                    defaultLabel="Select Sub-Programme Type(s)"
+                    selectedItemsLabel="{0} items selected">
+                </p-multiSelect>
+            </div>
+            
+        </div> -->
         <ng-template pTemplate="footer">
             <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveServicesRendered() (click)="saveServicesRendered()"></button>
         </ng-template>
@@ -895,6 +1067,370 @@
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveAuditorInfo() (click)="saveAuditorInformation()"></button>
     </ng-template>
 </p-dialog>
+
+<p-dialog header="Contact " 
+          [(visible)]="displayContactDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Title</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="titles" placeholder="Select a Title" optionLabel="name" [(ngModel)]="selectedTitle" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">First Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.firstName" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Last Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.lastName" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">RSA ID No.</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="contactInformation.rsaIdNumber" [ngModelOptions]="{standalone: true}" (onChange)="clearIdPassportNumber($event)"></p-selectButton>
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="contactInformation.rsaIdNumber === true">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">RSA ID Number</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.idNumber" [ngModelOptions]="{standalone: true}" [minlength]="13" [maxlength]="13" (keypress)="numberOnly($event)">
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="contactInformation.rsaIdNumber === false">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Passport Number</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.passportNumber" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Email</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.emailAddress" [ngModelOptions]="{standalone: true}" #emailAddress="ngModel">
+            <div class="md-errors-spacer" [hidden]="emailAddress.valid || emailAddress.untouched">
+                <small class="text-danger" *ngIf="emailAddress.errors && emailAddress.errors.pattern">Please provide a valid email address</small>
+            </div>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Telephone</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.telephone" [ngModelOptions]="{standalone: true}" [minlength]="10" [maxlength]="10" (keypress)="numberOnly($event)">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Cellphone</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.cellphone" [ngModelOptions]="{standalone: true}" [minlength]="10" [maxlength]="10" (keypress)="numberOnly($event)">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Position</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="positions" placeholder="Select a Position" optionLabel="name" [(ngModel)]="selectedPosition" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body"></p-dropdown>
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Race</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="races" placeholder="Select a Race" optionLabel="name" [(ngModel)]="selectedRace" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body"></p-dropdown>
+        </div>
+    </div> 
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Preferred Language</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="languages" placeholder="Select a Preferred Language" optionLabel="name" [(ngModel)]="selectedLanguage" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body"></p-dropdown>
+        </div>
+    </div>     
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Gender</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="gender" placeholder="Select a Gender" optionLabel="name" [(ngModel)]="selectedGender" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [filter]="true" filterBy="name" appendTo="body"></p-dropdown>
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Qualifications</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.qualifications" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Physical Address</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.addressInformation" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>    
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Years of Experience</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="contactInformation.yearsOfExperience" [ngModelOptions]="{standalone: true}" [minlength]="10" [maxlength]="10" (keypress)="numberOnly($event)">
+        </div>
+    </div>  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Date of Employment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-calendar [minDate]="minDate" [maxDate]="maxDate"  [(ngModel)]="contactInformation.dateOfEmployment" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [style]="{'width': '50%'}" inputId="time" appendTo="body"></p-calendar>
+        </div>
+    </div> 
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Comments</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="contactInformation.comments" [ngModelOptions]="{standalone: true}" [maxlength]="1000"></textarea>
+        </div>
+    </div> 
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Primary Contact</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="contactInformation.isPrimaryContact" [ngModelOptions]="{standalone: true}"></p-selectButton>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Disabled</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isDisabled" binary="true" inputId="binary"></p-checkbox>
+        </div>
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Bank Signatory</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isSignatory" binary="true" inputId="binary"></p-checkbox>
+        </div>
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Written Agreement Signatory</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isWrittenAgreementSignatory" binary="true" inputId="binary"></p-checkbox>
+        </div>        
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Is Board Member</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-checkbox [(ngModel)]="contactInformation.isBoardMember" binary="true" inputId="binary"></p-checkbox>
+        </div>
+    </div>         
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableProgrammeSaveContactInfo() (click)="saveProgrammeContactInformation()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog header="Bank Detail" [(visible)]="displayBankDetailDialog" [style]="{width: '50vw'}" [focusOnShow]="false" showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+    <div class="p-grid">
+      <div class="p-col-fixed form-label">
+        <div class="box">
+          <span class="mandatory-content">Bank</span>
+        </div>
+      </div>
+      <div class="p-col">
+        <p-dropdown [options]="banks" placeholder="Select a Bank" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="bankChange()" [filter]="true" filterBy="name"></p-dropdown>
+      </div>
+    </div>
+    <div class="p-grid">
+      <div class="p-col-fixed form-label">
+        <div class="box">
+          <span class="mandatory-content">Branch</span>
+        </div>
+      </div>
+      <div class="p-col">
+        <p-dropdown [options]="branches" placeholder="Select a branch" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="branchProgrammeChange()" [filter]="true" filterBy="name"></p-dropdown>
+      </div>
+    </div>
+    <div class="p-grid">
+      <div class="p-col-fixed form-label">
+        <div class="box">
+          <span class="non-mandatory-content">Branch Code</span>
+        </div>
+      </div>
+      <div class="p-col">
+        <input type="text" name="branchCode" class="form-text" pInputText [(ngModel)]="programBankDetail.branchCode" [ngModelOptions]="{standalone: true}" [disabled]="true"> 
+      </div>
+    </div>        
+    <div class="p-grid">
+      <div class="p-col-fixed form-label">
+        <div class="box">
+          <span class="mandatory-content">Account Type</span>
+        </div>
+      </div>
+      <div class="p-col">
+        <p-dropdown [options]="accountTypes" placeholder="Select an Account Type" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+      </div>
+    </div>        
+    <div class="p-grid">
+      <div class="p-col-fixed form-label">
+        <div class="box">
+          <span class="mandatory-content">Account Number</span>
+        </div>
+      </div>
+      <div class="p-col">
+        <input type="text" name="accountNumber" class="form-text" pInputText [(ngModel)]="programBankDetail.accountNumber" [ngModelOptions]="{standalone: true}" (keypress)="numberOnly($event)"> 
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]="disableSaveProgramBankDetail()" (click)="saveProgrammeBankDetail()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog header="Programme Service Delivery" 
+          [(visible)]="displayDeliveryDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+
+          <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">District Council</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown (onChange)="OnDistrictCouncilChange($event.value)" [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name" [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+            </div>
+        </div>
+        
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Local Municipality</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown (onChange)="onLocalMunicipalityChange($event.value)" [options]="localMunicipalities" placeholder="Select a Local Municipality" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+            </div>
+        </div>
+    
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Region</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="regions"
+                [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body"
+                (onChange)="onRegionChange($event.value)" [style]="{'width':'100%'}"
+                ></p-multiSelect>
+            </div>
+
+        </div>
+
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Servive delivery address</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
+                [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="onSdaChange($event.value)"
+                [style]="{'width':'100%'}"></p-multiSelect>
+            </div>
+        </div>
+        
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" (click)="saveProgrammeServiceDelivery()" [disabled]="disableProgrammeerviceDeliverySave()"></button>
+    </ng-template>
+</p-dialog>
+
 
 <div class="content-section implementation">
     <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">

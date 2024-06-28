@@ -8,7 +8,7 @@ namespace NPOMS.Services.Interfaces
 {
 	public interface IRolePermissionService
 	{
-		RolePermissionsMatrix GetMatrix();
+        Task<RolePermissionsMatrix> GetMatrix(string userIdentifier);
 
 		Task CreateMapping(int permissionId, int roleId);
 

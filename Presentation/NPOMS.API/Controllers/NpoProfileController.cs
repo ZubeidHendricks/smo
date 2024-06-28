@@ -9,6 +9,7 @@ using NPOMS.Services.Email;
 using NPOMS.Services.Email.EmailTemplates;
 using NPOMS.Services.Implementation;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -201,50 +202,48 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("services-rendered/npoProfileId/{npoProfileId}", Name = "GetServicesRenderedByNpoProfileId")]
-		public async Task<IActionResult> GetServicesRenderedByNpoProfileId(int npoProfileId)
-		{
-			try
-			{
-				var results = await _npoProfileService.GetServicesRenderedByNpoProfileId(npoProfileId);
-				return Ok(results);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Something went wrong inside GetServicesRenderedByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
-				return StatusCode(500, $"Internal server error: {ex.Message}");
-			}
-		}
-
-		[HttpPost("services-rendered", Name = "CreateServicesRendered")]
-		public async Task<IActionResult> CreateServicesRendered([FromBody] ServicesRendered model)
-		{
-			try
-			{
-				await _npoProfileService.Create(model, base.GetUserIdentifier());
-				return Ok(model);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Something went wrong inside CreateServicesRendered action: {ex.Message} Inner Exception: {ex.InnerException}");
-				return StatusCode(500, $"Internal server error: {ex.Message}");
-			}
-		}
-
-		[HttpPut("services-rendered", Name = "UpdateServicesRendered")]
-		public async Task<IActionResult> UpdateServicesRendered([FromBody] ServicesRendered model)
-		{
-			try
-			{
-				await _npoProfileService.Update(model, base.GetUserIdentifier());
-				return Ok(model);
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Something went wrong inside UpdateServicesRendered action: {ex.Message} Inner Exception: {ex.InnerException}");
-				return StatusCode(500, $"Internal server error: {ex.Message}");
-			}
-		}
+        [HttpGet("services-rendered/{source}/npoProfileId/{npoProfileId}", Name = "GetServicesRenderedByNpoProfileId")]
+        public async Task<IActionResult> GetServicesRenderedByNpoProfileId(string source, int npoProfileId)
+        {
+            try
+            {
+                var results = await _npoProfileService.GetServicesRenderedByNpoProfileId(source, npoProfileId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetServicesRenderedByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpPost("services-rendered", Name = "CreateServicesRendered")]
+        public async Task<IActionResult> CreateServicesRendered([FromBody] ServicesRendered model)
+        {
+            try
+            {
+                await _npoProfileService.Create(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateServicesRendered action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpPut("services-rendered", Name = "UpdateServicesRendered")]
+        public async Task<IActionResult> UpdateServicesRendered([FromBody] ServicesRendered model)
+        {
+            try
+            {
+                await _npoProfileService.Update(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateServicesRendered action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpGet("projImpl/npoProfileId/{npoProfileId}", Name = "GetProjImplByNpoProfileId")]
         public async Task<IActionResult> GetProjImplByNpoProfileId(int npoProfileId)
@@ -702,6 +701,26 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		#endregion
-	}
+        [HttpPost("approve/{npoProfileId}", Name = "ApproveNpoProfile")]
+        public async Task<IActionResult> ApproveNpoProfile(int npoProfileId)
+        {
+            await _npoProfileService.ApproveNpoProfile(npoProfileId, base.GetUserIdentifier());
+            return Ok(npoProfileId);
+        }
+
+        [HttpPost("reject/{npoProfileId}", Name = "RejectNpoProfile")]
+        public async Task<IActionResult> RejectNpoProfile(int npoProfileId)
+        {
+            await _npoProfileService.RejectNpoProfile(npoProfileId, base.GetUserIdentifier());
+            return Ok(npoProfileId);
+        }
+
+        [HttpPost("submitProfile/{npoProfileId}", Name = "SubmitProfileNpoProfile")]
+        public async Task<IActionResult> SubmitProfileNpoProfile(int npoProfileId)
+        {
+            await _npoProfileService.SubmitProfileNpoProfile(npoProfileId, base.GetUserIdentifier());
+            return Ok(npoProfileId);
+        }
+        #endregion
+    }
 }

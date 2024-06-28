@@ -48,6 +48,7 @@ export class FundingListComponent implements OnInit {
 
   cols: any[];
   buttonItems: MenuItem[];
+  source: string = 'Funding';
 
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
@@ -213,7 +214,7 @@ export class FundingListComponent implements OnInit {
 
   private getServicesRendered(npoProfile: INpoProfile) {
     this._spinner.show();
-    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfile.id).subscribe(
+    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfile.id,this.source).subscribe(
       (services) => {
         // Populate filtered programmes based on npo profile services rendered programmes
         this.filteredProgrammes = this.programmes.filter(programme => {

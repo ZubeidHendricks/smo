@@ -1,4 +1,3 @@
-import { PropertySubType } from './PropertySubType';
 export enum AccessStatusEnum {
     AllStatuses = 0,
     Pending = 1,
@@ -87,7 +86,9 @@ export enum DropdownTypeEnum {
     Question = 53,
     ResponseOption = 54,
     WorkflowAssessment = 55,
-    QuarterlyPeriod = 56
+    QuarterlyPeriod = 56,
+    FilteredProgrammesByDepartment = 57,
+    FilteredRolesByDepartment = 58
 }
 
 export enum EntityTypeEnum {
@@ -136,7 +137,10 @@ export enum RoleEnum {
     Evaluator = 7,
     Adjudicator = 8,
     Approver = 9,
-    ViewOnly = 10
+    ViewOnly = 10,
+    ProgrammeCapturer = 11,
+    ProgrammeApprover = 12,
+    ProgrammeViewOnly = 13
 }
 
 export enum ServiceProvisionStepsEnum {
@@ -306,6 +310,12 @@ export enum PermissionsEnum {
     AddProgrammeBudget = "Bud.APB",
     EditProgrammeBudget = "Bud.EPB",
     ViewProgrammeBudget = "Bud.VPB",
+    ViewBudgetSummary = "Bud.VBS",
+
+    //Program
+    ApproveProgram = "Programme.Edit",
+    EditProgram = "Programme.Approve",
+    ViewProgram = "Programme.Viewer",
 
     /* Side Navigation */
     ViewSecurityMenu = "SN.Security",
@@ -321,6 +331,7 @@ export enum PermissionsEnum {
     ViewDepartmentBudgetSubMenu = "SN.DeptBudget",
     ViewDirectorateBudgetSubMenu = "SN.DirectorateBudget",
     ViewProgrammeBudgetSubMenu = "SN.ProgBudget",
+    ViewBudgetSummarySubMenu = "SN.BudgetSummary",
 
     /* Funding */
     AddNpoFunding = "Fund.ANF",
@@ -420,16 +431,16 @@ export enum FrequencyPeriodEnum {
 export enum DepartmentEnum {
     ALL = 1,
     DEDAT = 2,
-    DTPW = 3,
+    WCMD = 3,
     WCED = 4,
-    DotP = 5,
+    DOTP = 5,
     PT = 6,
     DSD = 7,
-    DoA = 8,
-    DCS = 9,
+    DOA = 8,
+    DOCS = 9,
     DCAS = 10,
-    DoH = 11,
-    DHS = 12,
+    DOH = 11,
+    DOI = 12,
     DLG = 13,
     WCPP = 14,
     DEADP = 15,

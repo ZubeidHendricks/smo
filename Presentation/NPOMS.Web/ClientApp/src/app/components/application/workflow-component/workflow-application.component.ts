@@ -83,7 +83,7 @@ export class WorkflowApplicationComponent implements OnInit {
   isDataAvailable: boolean;
   npo: INpo;
   npoProfile: INpoProfile;
-
+  source: string = 'workflow';
   applicationDetailView: IApplicationDetails;
   projInfoView:IProjectInformation;
   projImplView:IProjectImplementation;
