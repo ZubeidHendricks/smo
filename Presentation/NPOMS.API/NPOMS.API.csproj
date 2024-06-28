@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Database\NPOMS.Repository\NPOMS.Repository.csproj" />
-    <ProjectReference Include="..\..\Libraries\NPOMS.Domain\NPOMS.Domain.csproj" />
     <ProjectReference Include="..\..\Libraries\NPOMS.Services\NPOMS.Services.csproj" />
   </ItemGroup>
 
