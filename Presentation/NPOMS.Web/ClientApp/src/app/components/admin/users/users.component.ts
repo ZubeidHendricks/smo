@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
+import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
 import { IDepartment, IProgramme, IProgrammes, IRole, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
@@ -111,10 +111,9 @@ export class UsersComponent implements OnInit {
 
         if( this.isAdmin)
         {
-          this.users = users.filter(x => x.departments[0].id === this.userDepartmentId);
+          this.users = users.filter(x => x.departments[0].id === this.userDepartmentId || x.departments[0].id === DepartmentEnum.NONE);
         }
 
-        console.log('this.users', this.users);
         this._spinner.hide();
       },
       (err) => {
