@@ -18,6 +18,7 @@ using NPOMS.Repository.Interfaces.Evaluation;
 using Microsoft.EntityFrameworkCore;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Interfaces.Mapping;
+using NPOMS.Domain.Mapping;
 
 namespace NPOMS.Services.Implementation
 {
@@ -84,6 +85,7 @@ namespace NPOMS.Services.Implementation
         private IFundingTemplateTypeRepository _fundingTemplateTypeRepository;
         private IQuarterlyPeriodRepository _quarterlyPeriodRepository;
         private IDepartmentRoleRepository _departmentRoleRepository;
+        private ISegmentCodeRepository _segmentCodeRepository;
         #endregion
 
         #region Constructors
@@ -147,7 +149,8 @@ namespace NPOMS.Services.Implementation
             IResponseTypeRepository responseTypeRepository,
             IWorkflowAssessmentRepository workflowAssessmentRepository,
             IFundingTemplateTypeRepository fundingTemplateTypeRepository,
-            IQuarterlyPeriodRepository quarterlyPeriodRepository)
+            IQuarterlyPeriodRepository quarterlyPeriodRepository,
+            ISegmentCodeRepository segmentCodeRepository)
         {
             _mapper = mapper;
             _roleRepository = roleRepository;
@@ -208,6 +211,7 @@ namespace NPOMS.Services.Implementation
             _fundingTemplateTypeRepository = fundingTemplateTypeRepository;
             _quarterlyPeriodRepository = quarterlyPeriodRepository;
             _departmentRoleRepository = departmentRoleRepository;
+            _segmentCodeRepository = segmentCodeRepository;
         }
 
         #endregion
@@ -540,6 +544,11 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<QuarterlyPeriod>> GetQuarterlyPeriod(bool returnInactive)
         {
             return await _quarterlyPeriodRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<SegmentCode>> GetSegmentCode(bool returnInactive)
+        {
+            return await _segmentCodeRepository.GetEntities(returnInactive);
         }
 
         public async Task<IEnumerable<FinancialYear>> GetFromCurrentFinancialYear()

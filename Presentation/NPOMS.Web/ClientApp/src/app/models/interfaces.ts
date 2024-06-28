@@ -1130,8 +1130,28 @@ export interface IDenodoFacility {
 }
 
 export interface IDenodoBudgetWrapper {
+    forEach(arg0: (application: any) => void): unknown;
     name: string;
     elements: IDenodoBudget[];
+}
+
+export interface IProgrammeBudgets{
+    id: number;
+    financialYearId: string;
+    departmentId: number;
+    departmentName: string;
+    programmeId: number;
+    programmeName: string;
+    subProgrammeId: number;
+    subProgrammeName: string;
+    subProgrammeTypeId: number;
+    subProgrammeTypeName: string;
+    originalBudgetAmount: string;
+    provisionalBudgetAmount: string;
+    adjustedBudgetAmount: string;
+    responsibilityCode: string;
+    objectiveCode: string;
+    isActive: number;
 }
 
 export interface IDenodoBudget {
@@ -1256,6 +1276,28 @@ export interface IDenodoBudget {
     finalvirementshifts: string;
     fundshift: string;
     rollover: string;
+    programme: string;
+    subProgramme: string;
+    subProgrammeType: string;
+}
+
+export interface ISegmentCode
+{
+    id: number;
+    programmeId: number;
+    responsibilityCode: string;
+    subProgrammeTypeId: number;
+    objectiveCode: string;
+}
+
+export interface IBudgetAdjustment
+{
+    id: number;
+    programmeId: number;
+    responsibilityCode: string;
+    subProgrammeTypeId: number;
+    objectiveCode: string;
+    amount: string;
 }
 
 /* Indicator */

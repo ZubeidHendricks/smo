@@ -45,6 +45,11 @@ namespace NPOMS.Repository.Implementation.Dropdown
 			return await FindByCondition(x => x.SubProgrammeId.Equals(subProgrammeId) && x.IsActive).AsNoTracking().ToListAsync();
 		}
 
-		#endregion
-	}
+        public async Task<List<SubProgrammeType>> GetById(int id)
+        {
+            return await FindByCondition(x => x.Id.Equals(id) && x.IsActive).AsNoTracking().ToListAsync();
+        }
+
+        #endregion
+    }
 }

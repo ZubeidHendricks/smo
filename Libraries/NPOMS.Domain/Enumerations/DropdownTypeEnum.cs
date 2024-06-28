@@ -59,6 +59,7 @@
 		WorkflowAssessment = 55,
 		QuarterlyPeriod = 56,
 		FilteredProgrammesByDepartment = 57,
-        FilteredRolesByDepartment = 58
+        FilteredRolesByDepartment = 58,
+        SegmentCode = 59
     }
 }
