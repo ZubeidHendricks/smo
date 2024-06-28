@@ -14,7 +14,6 @@ stages:
   - job: 'Build'
     displayName: 'Build job - (Training)'
     pool:
-      name: TAPS_Dev
       vmImage: windows-2019
 
     steps:
@@ -94,7 +93,6 @@ stages:
     - Build
     - BuildSPAJob
     pool:
-      name: TAPS_Dev
       vmImage: windows-2019
     steps:
     - checkout: none
@@ -124,7 +122,6 @@ stages:
   jobs:
   - deployment: Deploy
     pool:
-      name: TAPS_Dev
       vmImage: 'windows-2019'
     environment: TapsNonProd
     #variables:
