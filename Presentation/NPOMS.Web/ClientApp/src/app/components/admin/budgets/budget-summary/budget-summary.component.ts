@@ -90,13 +90,14 @@ export class BudgetSummaryComponent implements OnInit {
     });
 
     this.budgetCols = [
-      { header: 'Programme', width: '15%' },
-      { header: 'Sub Programme', width: '15%' },
-      { header: 'Sub Programme Type', width: '18%' },
-      { header: 'Original Budget', width: '15%' },
-      { header: 'Adjusted Budget', width: '13%' },
-      { header: 'Allocated', width: '12%' },
-      { header: 'Balance', width: '12%' }
+      { header: 'Programme', width: '14%' },
+      { header: 'SubProgramme', width: '14%' },
+      { header: 'SubProgrammeType', width: '15%' },
+      { header: 'ProvisionalBudget', width: '14%' },
+      { header: 'OriginalBudget', width: '13%' },
+      { header: 'AdjustedBudget', width: '13%' },
+      { header: 'Allocated', width: '9%' },
+      { header: 'Balance', width: '9%' }
     ];
   }
 

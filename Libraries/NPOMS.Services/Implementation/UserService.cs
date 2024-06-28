@@ -20,6 +20,7 @@ using Azure.Storage.Blobs.Models;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Repository.Implementation.Mapping;
 using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
+using System.Data;
 
 namespace NPOMS.Services.Implementation
 {
@@ -234,8 +235,11 @@ namespace NPOMS.Services.Implementation
 			{
 				if (departments.Any(d => d.Id == department.Id))
 				{
-					newUser.Departments.Add(new UserDepartment() { DepartmentId = department.Id });
-				}
+                    if (newUser.Roles.Any(r => r.Role.Name == "Applicant"))
+                        newUser.Departments.Add(new UserDepartment() { DepartmentId = Convert.ToInt32(DepartmentEnum.NONE)});
+					else
+                        newUser.Departments.Add(new UserDepartment() { DepartmentId = department.Id });
+                }
 			}
 
 			foreach (var userProgram in user.UserPrograms)
@@ -267,8 +271,18 @@ namespace NPOMS.Services.Implementation
 			existingUser.UpdatedDateTime = DateTime.Now;
 
 			//not supporting multiple departments
-			existingUser.Departments.FirstOrDefault().DepartmentId = user.Departments.FirstOrDefault().Id;
-			existingUser.Departments.FirstOrDefault().Department = null;
+			if(existingUser.IsActive == false)
+			{
+                existingUser.Departments.FirstOrDefault().DepartmentId = Convert.ToInt32(DepartmentEnum.NONE);
+                existingUser.Departments.FirstOrDefault().Department = null;
+            }
+			else
+			{
+                existingUser.Departments.FirstOrDefault().DepartmentId = user.Departments.FirstOrDefault().Id;
+                existingUser.Departments.FirstOrDefault().Department = null;
+            }
+			
+			
 			_repositoryContext.UserDepartments.Update(existingUser.Departments.FirstOrDefault());
 
 			await UpdateUserRoles(user, existingUser, loggedInUser.Id);

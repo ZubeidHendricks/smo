@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,10 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20240626085522_Added_ProvisionalBudgetAmount_Column_In_PrpgrammeBudgets")]
+    partial class Added_ProvisionalBudgetAmount_Column_In_PrpgrammeBudgets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1192,7 +1194,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 24,
-                            Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for <strong>{organisationName}</strong> with reference number <strong>{ApplicationRefNo}</strong> is now available for rating.</p><p>Please <a href=\"{url}/#/scorecard/{ApplicationId}\">click here</a> to access this workplan.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
+                            Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for <strong>{organisationName}</strong> with reference number <strong>{ApplicationRefNo}</strong> is now available for rating.</p><p>If you are required to rate this workplan, please <a href=\"{url}/#/scorecard/{ApplicationId}\">click here</a> to access.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
                             EmailAccountId = 0,
                             IsActive = false,
                             Name = "InitiateScorecard",
@@ -2731,36 +2733,6 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 122,
-                            CategoryName = "Programme",
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Edit capability",
-                            SystemName = "Programme.Edit"
-                        },
-                        new
-                        {
-                            Id = 123,
-                            CategoryName = "Programme",
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Approve Programme",
-                            SystemName = "Programme.Approve"
-                        },
-                        new
-                        {
-                            Id = 124,
-                            CategoryName = "Programme",
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Programme Viewer",
-                            SystemName = "Programme.Viewer"
-                        },
-                        new
-                        {
-                            Id = 125,
                             CategoryName = "Budgets",
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,
@@ -2981,33 +2953,6 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "View Only",
                             SystemName = "ViewOnly"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Programme Capturer",
-                            SystemName = "ProgrammeCapturer"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Programme Approver",
-                            SystemName = "ProgrammeApprover"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Programme viewer",
-                            SystemName = "ProgrammeViewOnly"
                         });
                 });
 
