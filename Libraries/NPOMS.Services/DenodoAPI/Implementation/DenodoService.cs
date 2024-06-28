@@ -199,8 +199,8 @@ namespace NPOMS.Services.DenodoAPI.Implementation
                 var dtoRow = new ImportBudget();
 				if(!string.IsNullOrEmpty(r.originalbudget))
 				{
-					if (r.originalbudget != "0.00")
-					{
+					//if (r.originalbudget != "0.00")
+					//{
 						try
 						{
                             var prog = await _segmentCodeRepository.GetByValue(r.responsibilitylowestlevelcode, r.objectivelowestlevelcode);
@@ -245,7 +245,7 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 
 						}
 						
-					}
+					//}
                 }
             }		
             
@@ -271,5 +271,20 @@ namespace NPOMS.Services.DenodoAPI.Implementation
             await _programmeBudgetRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 			return model;
         }
+
+        public async Task<ProgrammeBudget> ProvisionalAmountUpdate(string amount, int id, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var model = await _programmeBudgetRepository.GetProgrammeBudgetById(id);
+
+            model.ProvisionalBudgetAmount = decimal.Parse(amount, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture); ;
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            var oldEntity = await this._repositoryContext.ProgrammeBudgets.FindAsync(model.Id);
+            await _programmeBudgetRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+            return model;
+        }
+        
     }
 }

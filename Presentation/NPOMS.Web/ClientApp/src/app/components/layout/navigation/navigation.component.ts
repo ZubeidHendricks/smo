@@ -306,7 +306,7 @@ export class NavigationComponent implements OnInit {
           items: []
         });
 
-        if (this.IsAuthorized(PermissionsEnum.ViewBudgetSummarySubMenu)) {
+        if (this.IsAuthorized(PermissionsEnum.UploadBudget)) {
           this.sideMenu[2].items.push({
             label: 'Upload Budget',
             icon: 'fa fa-bar-chart',
