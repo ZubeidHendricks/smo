@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
-import { IDenodoBudget, IDepartment, IFinancialYear, IUser } from 'src/app/models/interfaces';
+import { IDenodoBudget, IDepartment, IFinancialYear, IProgrammeBudgets, IUser } from 'src/app/models/interfaces';
 import { BudgetService } from 'src/app/services/api-services/budget/budget.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -31,6 +31,7 @@ export class DepartmentBudgetComponent implements OnInit {
   profile: IUser;
   budgetCols: any[];
   denodoBudgets: IDenodoBudget[];
+  programmeBudgets: IProgrammeBudgets[];
 
   financialYears: IFinancialYear[];
   selectedFinancialYearSummary: IFinancialYear;
@@ -64,6 +65,8 @@ export class DepartmentBudgetComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        
+        this.loadDepartments();
         this.loadFinancialYears();
       }
     });
@@ -84,7 +87,6 @@ export class DepartmentBudgetComponent implements OnInit {
         let currentFinancialYear = results.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
         this.financialYears = results.filter(x => x.id <= currentFinancialYear.id);
 
-        this.loadDepartments();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -102,6 +104,7 @@ export class DepartmentBudgetComponent implements OnInit {
         // If user is system admin, show department dropdown
         // If user is not system admin, default department to assigned department in user department table
         this.selectedDepartmentSummary = this.isSystemAdmin ? null : this.departments.find(x => x.id === this.profile.departments[0].id);
+       
 
         this._spinner.hide();
       },
@@ -129,9 +132,14 @@ export class DepartmentBudgetComponent implements OnInit {
       this.totalPaid = 0;
       this.totalBalance = 0;
 
-      this._budgetRepo.getBudgets(this.selectedDepartmentSummary.denodoDepartmentName, this.selectedFinancialYearSummary.year).subscribe(
+      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
-          this.denodoBudgets = results ? results.elements : [];
+
+          this.programmeBudgets = results ? results : [];
+          
+          this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
+          this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
+
           this._spinner.hide();
         },
         (err) => {
@@ -139,6 +147,6 @@ export class DepartmentBudgetComponent implements OnInit {
           this._spinner.hide();
         }
       );
-    }
+    }    
   }
 }

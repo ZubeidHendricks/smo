@@ -856,27 +856,12 @@ namespace NPOMS.Repository.Configurations.Core
                     SystemName = "Bud.VBS",
                     CategoryName = "Budgets"
                 },
-
                 new Permission
                 {
                     Id = 122,
-                    Name = "Edit capability",
-                    SystemName = "Programme.Edit",
-                    CategoryName = "Programme"
-                },
-                new Permission
-                {
-                    Id = 123,
-                    Name = "Approve Programme",
-                    SystemName = "Programme.Approve",
-                    CategoryName = "Programme"
-                },
-                new Permission
-                {
-                    Id = 124,
-                    Name = "Programme Viewer",
-                    SystemName = "Programme.Viewer",
-                    CategoryName = "Programme"
+                    Name = "Upload Budget",
+                    SystemName = "Bud.UB",
+                    CategoryName = "Budgets"
                 }
             );
 		}

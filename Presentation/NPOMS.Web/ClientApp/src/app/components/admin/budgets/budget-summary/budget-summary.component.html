@@ -1,7 +1,7 @@
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Budget Summary">
     <div style="height: 10px;"></div>
     <div class="p-grid">
-        <div class="p-col-2">
+        <div class="p-col-3">
             <p-card subheader="Budget Summary" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
                 <div class="p-fluid">
                     <div class="p-grid" *ngIf="isSystemAdmin">
@@ -10,8 +10,54 @@
                                 <span class="non-mandatory-content">Department</span>
                             </div>
                         </div>
-                        <div class="p-col">
-                            <p-dropdown [options]="departments" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedDepartmentSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="departmentSummaryChange()"></p-dropdown>
+                        <div class="p-col-12 p-md-10">
+                            <p-dropdown [options]="departments" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedDepartmentSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
+                            (onChange)="loadPrograms($event.value.id)"></p-dropdown>
+                        </div>
+                    </div>                  
+                   <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Programme</span>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-10">
+                            <p-multiSelect [options]="filteredProgrammes" 
+                            defaultLabel="Select Programme(s)" 
+                            optionLabel="name" 
+                            optionValue="id"
+                            [(ngModel)]="selectedProgrammes" 
+                            [ngModelOptions]="{standalone: true}" 
+                            [style]="{'width':'100%'}" appendTo="body" 
+                            selectedItemsLabel="{0} items selected"
+                            (onChange)="programmeChange($event.value)"></p-multiSelect>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="non-mandatory-content">SubProgram</span>
+                        </div>
+                    </div>
+                        <div class="p-col-12 p-md-10">
+                            <p-multiSelect [options]="filteredSubProgrammes" 
+                            defaultLabel="Select SubProgramme(s)" optionLabel="name" optionValue="id" [(ngModel)]="selectedSubProgrammes" 
+                            [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
+                            selectedItemsLabel="{0} items selected" (onChange)="subProgrammeChange($event.value)"></p-multiSelect>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Sub ProgramType</span>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-10">
+                            <p-multiSelect [options]="filteredSubProgrammeType" defaultLabel="Select SubProgramType(s)" 
+                            optionLabel="name" optionValue="id" [(ngModel)]="selectedSubProgrammeType" 
+                            [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
+                            appendTo="body" selectedItemsLabel="{0} items selected"
+                            (onChange)="subProgrammeTypeChange($event.value)"></p-multiSelect>
                         </div>
                     </div>
                     <div class="p-grid">
@@ -20,64 +66,64 @@
                                 <span class="non-mandatory-content">Financial Year</span>
                             </div>
                         </div>
-                        <div class="p-col">
+                        <div class="p-col-12 p-md-10">
                             <p-dropdown [options]="financialYears" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedFinancialYearSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearSummaryChange()"></p-dropdown>
                         </div>
                     </div>
-                    <div class="p-grid">
-                        <div class="p-col-fixed form-label">
-                            <div class="box">
-                                <span class="non-mandatory-content">Directorate</span>
-                            </div>
-                        </div>
-                        <div class="p-col">
-                            <!-- <p-multiSelect [options]="programmes" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedProgrammes" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)" selectedItemsLabel="{0} items selected"></p-multiSelect> -->
-                            <p-multiSelect [options]="list" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="item" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
-                        </div>
-                    </div>
-                    <div class="p-grid">
-                        <div class="p-col-fixed form-label">
-                            <div class="box">
-                                <span class="non-mandatory-content">Programme</span>
-                            </div>
-                        </div>
-                        <div class="p-col">
-                            <p-multiSelect [options]="list" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="item" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
-                        </div>
-                    </div>
-                    <div class="p-grid">
-                        <div class="p-col-fixed form-label">
-                            <div class="box">
-                                <span class="non-mandatory-content">Subsidy Group</span>
-                            </div>
-                        </div>
-                        <div class="p-col">
-                            <p-multiSelect [options]="list" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="item" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
-                        </div>
-                    </div>
+
                 </div>
             </p-card>
         </div>
-        <div class="p-col-10">
-            <p-table [rowHover]="true" [columns]="budgetCols" [value]="denodoBudgets" styleClass="p-datatable-sm">
+        <div class="p-col-9">
+            <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="programmeBudgets" 
+            styleClass="p-datatable-sm"
+            [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['programme','subProgramme',
+        'subProgrammeType']">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                             {{col.header}}
+                            <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
+                            ariaLabelDesc="Activate to sort in descending order" 
+                            ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                         </th>
+                    </tr>
+                    <tr>
+                        <th><p-columnFilter type="text" field="programmeName"></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="subProgrammeName"></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="subProgrammeTypeName"></p-columnFilter></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
+                        <td>{{rowData.programmeName}}</td>
+                        <td>{{rowData.subProgrammeName}}</td>
+                        <td>{{rowData.subProgrammeTypeName}}</td>
+                        <td style="text-align: right;">R {{rowData.provisionalBudgetAmount | number : '1.2-2'}}</td>
+                        <td style="text-align: right;">R {{rowData.originalBudgetAmount | number : '1.2-2'}}</td>                        
+                        <td style="text-align: right;">R {{rowData.adjustedBudgetAmount | number : '1.2-2'}}</td>
+                        <td style="text-align: right;"></td>
+                        <td style="text-align: right;"></td>
+                        <td style="text-align: right;"></td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr class="default-font">
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td style="text-align: right;">R {{totalBudget | number : '1.2-2'}}</td>                        
+                        <td style="text-align: right;">R {{totalAdjustedBudget | number : '1.2-2'}}</td> 
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td></td> 
+                        <td></td> 
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">

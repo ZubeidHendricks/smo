@@ -109,6 +109,7 @@ import { QcApplicationPeriodsViewComponent } from './components/application/appl
 import { QcFundedDocumentUploadViewComponent } from './components/application/application-steps/quick-capture-view/qc-funded-document-upload-view/qc-funded-document-upload-view.component';
 import { QcObjectivesViewComponent } from './components/application/application-steps/quick-capture-view/qc-objectives-view/qc-objectives-view.component';
 import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
+import { UploadBudgetComponent } from './components/admin/budgets/upload-budget/upload-budget.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -230,6 +231,7 @@ const routes: Routes = [
   { path: 'admin/directorate-budget', component: DirectorateBudgetComponent },
   { path: 'admin/programme-budget', component: ProgrammeBudgetComponent },
   { path: 'admin/budget-summary', component: BudgetSummaryComponent },
+  { path: 'admin/upload-budget', component: UploadBudgetComponent },
 
   // Funding
   { path: 'npo-funding', component: FundingListComponent },
