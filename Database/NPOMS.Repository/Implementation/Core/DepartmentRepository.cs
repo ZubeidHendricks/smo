@@ -28,18 +28,23 @@ namespace NPOMS.Repository.Implementation.Core
 
         public async Task<List<int>> GetDepartmentIdOfLogggedInUserAsync(int userId)
         {
-            try
-            {
-                var dep = await _context.UserDepartments
-                                        .Where(x => x.UserId == userId)
-                                        .Select(x => x.DepartmentId)
-                                        .ToListAsync();
-                return dep;
-            }
-            catch (Exception ex)
-            {
-                throw; // Re-throw the exception to be handled by the calling method
-            }
+            var dep = await _context.UserDepartments
+                                       .Where(x => x.UserId == userId)
+                                       .Select(x => x.DepartmentId)
+                                       .ToListAsync();
+            return dep;
+            //try
+            //{
+            //    var dep = await _context.UserDepartments
+            //                            .Where(x => x.UserId == userId)
+            //                            .Select(x => x.DepartmentId)
+            //                            .ToListAsync();
+            //    return dep;
+            //}
+            //catch (Exception ex)
+            //{
+            //    ex.ToString(); // Re-throw the exception to be handled by the calling method
+            //}
         }
 
         #endregion
