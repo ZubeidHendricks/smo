@@ -16,7 +16,7 @@ namespace NPOMS.Services.Interfaces
 
 		Task<UserViewModel> Update(UserViewModel user, string userIdentifier);
 
-		Task Delete(UserViewModel user, string userIdentifier);
+		//Task Delete(UserViewModel user, string userIdentifier);
 
 		Task<UserViewModel> GetById(int id);
 	}

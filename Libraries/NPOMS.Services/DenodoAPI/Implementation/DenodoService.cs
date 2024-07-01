@@ -242,7 +242,7 @@ namespace NPOMS.Services.DenodoAPI.Implementation
                         }
 						catch(Exception ex) 
 						{
-
+							ex.ToString();
 						}
 						
 					//}

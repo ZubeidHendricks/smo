@@ -197,7 +197,7 @@ namespace NPOMS.Services.Implementation
 
 		public async Task<UserViewModel> Create(UserViewModel user, string userIdentifier)
 		{
-			bool returnInactive;
+			//bool returnInactive;
 
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var newUser = await _userRepository.GetByUserNameWithDetails(user.UserName);
@@ -361,10 +361,10 @@ namespace NPOMS.Services.Implementation
             }
         }
 
-        public async Task Delete(UserViewModel user, string userIdentifier)
-		{
-			throw new NotImplementedException();
-		}
+  //      public async Task Delete(UserViewModel user, string userIdentifier)
+		//{
+		//	throw new NotImplementedException();
+		//}
 
 		public async Task<UserViewModel> GetById(int id)
 		{
