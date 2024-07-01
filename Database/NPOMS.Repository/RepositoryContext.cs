@@ -215,7 +215,8 @@ namespace NPOMS.Repository
         public DbSet<ProgramBankDetails> ProgramBankDetails { get; set; }
         public DbSet<ProgramContactInformation> ProgramContactInformation { get; set; }
         public DbSet<ProgrammeServiceDelivery> ProgrammeServiceDelivery { get; set; }
-        
+        public DbSet<NpoUserTracking> NpoUserTrackings { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

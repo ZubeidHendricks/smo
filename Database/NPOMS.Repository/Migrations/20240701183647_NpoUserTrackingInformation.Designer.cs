@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,11 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20240701183647_NpoUserTrackingInformation")]
+    partial class NpoUserTrackingInformation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2767,36 +2770,6 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "Upload Budget",
                             SystemName = "Bud.UB"
-                        },
-                        new
-                        {
-                            Id = 123,
-                            CategoryName = "Programme",
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Edit capability",
-                            SystemName = "Programme.Edit"
-                        },
-                        new
-                        {
-                            Id = 124,
-                            CategoryName = "Programme",
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Approve Programme",
-                            SystemName = "Programme.Approve"
-                        },
-                        new
-                        {
-                            Id = 125,
-                            CategoryName = "Programme",
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Programme Viewer",
-                            SystemName = "Programme.Viewer"
                         });
                 });
 

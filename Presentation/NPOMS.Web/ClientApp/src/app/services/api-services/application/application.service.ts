@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IResource, ISDA, ISubPlace, ISustainabilityPlan } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -229,4 +229,14 @@ export class ApplicationService {
     const url = `${this._envUrl.urlAddress}/api/applications/UpdateCloseScorecardValue/applicationId/${applicationId}`;
     return this._http.put<IApplication>(url, httpOptions);
   }  
+
+  public reviewers() {
+    const url = `${this._envUrl.urlAddress}/api/applications/reviewers`;
+    return this._http.get<IUser[]>(url, httpOptions);
+  }
+
+  public UpdateInitiateScorecardValueAndEmail(applicationId: number, users: { fullName: string, email: string, id: number }[]) {
+    const url = `${this._envUrl.urlAddress}/api/applications/UpdateInitiateScorecardValueAndEmail/applicationId/${applicationId}`;
+    return this._http.put<IApplication>(url, users, httpOptions);
+}
 }

@@ -471,8 +471,13 @@ export interface IApplication {
     status: IStatus;
     createdUser: IUser;
     updatedUser: IUser;
+    npoUserTrackings: INpoUserTracking[];
 }
-
+export interface INpoUserTracking {
+    id: number;
+    applicationId: number;
+    userId: number;
+}
 export interface FinYear {
     id: number;
     name: string;
