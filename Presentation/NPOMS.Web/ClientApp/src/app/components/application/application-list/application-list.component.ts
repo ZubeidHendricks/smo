@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
@@ -18,6 +19,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   styleUrls: ['./application-list.component.css']
 })
 export class ApplicationListComponent implements OnInit {
+  displayDialog: boolean;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -35,6 +37,9 @@ export class ApplicationListComponent implements OnInit {
   }
 
   profile: IUser;
+
+  reviewerlist: IUser[];
+  selectedreviewerlist: IUser[] = [];
 
   cols: any[];
   allApplications: IApplication[];
@@ -59,6 +64,7 @@ export class ApplicationListComponent implements OnInit {
 
   canShowOptions: boolean = false;
   canShowOptionsNpo: boolean = false;
+  reviewerForm: FormGroup;
 
   constructor(
     private _router: Router,
@@ -69,7 +75,8 @@ export class ApplicationListComponent implements OnInit {
     private _loggerService: LoggerService,
     private _confirmationService: ConfirmationService,
     private _messageService: MessageService,
-    private _evaluationService: EvaluationService
+    private _evaluationService: EvaluationService,
+    private _formBuilder: FormBuilder,
   ) { }
 
   ngOnInit(): void {
@@ -88,6 +95,7 @@ export class ApplicationListComponent implements OnInit {
           this.hasAdminRole = true;
 
         this.loadNpos();
+        this.reviewers();
 
         var splitUrl = window.location.href.split('/');
         this.headerTitle = splitUrl[5];
@@ -105,6 +113,52 @@ export class ApplicationListComponent implements OnInit {
       { field: 'applicationPeriod.closingDate', header: 'Closing Date', width: '10%' },
       { field: 'status.name', header: 'Application Status', width: '11%' }
     ];
+
+    this.reviewerForm = this._formBuilder.group({});
+  }
+
+  reviewers() {
+     this._applicationRepo.reviewers().subscribe(
+      (results) => {
+        this.reviewerlist = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  submit() {
+    this.UpdateInitiateScorecardValue();
+  }
+
+  private UpdateInitiateScorecardValue() {
+    const users = this.selectedreviewerlist.map(user => ({
+        fullName: user.fullName,
+        email: user.email,
+        id: user.id
+    }));
+    
+    this._applicationRepo.UpdateInitiateScorecardValueAndEmail(Number(this.selectedApplication.id), users).subscribe(
+      (results) => {
+        this.displayDialog = false;
+        this._router.navigateByUrl('applications');
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+}
+
+
+  disableSubmit() {
+
+    if (this.selectedreviewerlist.length == 0)
+      return true;
+
+    return false;
   }
 
   private loadNpos() {
@@ -506,7 +560,15 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('BusinessPlan Summary');   
     }
 
-    // Hide options based on status
+    if (this.selectedApplication.npoUserTrackings.length > 0) {
+      if (!this.selectedApplication.npoUserTrackings.some(item => item.userId === this.profile.id)) 
+      {
+          this.optionItemExists('Capture Scorecard'); 
+      }  
+    }
+
+    console.log('this.selectedApplication.initiateScorecard',this.selectedApplication.initiateScorecard);
+
     if(this.selectedApplication.initiateScorecard === 1)
     {
       this.optionItemExists('Initiate Score Card');      
@@ -841,7 +903,7 @@ export class ApplicationListComponent implements OnInit {
             label: 'Initiate Score Card',
             icon: 'fa fa-envelope-open-o',
             command: () => {
-              this._router.navigateByUrl('initiate/' + this.selectedApplication.id);
+              this.displayDialog = true;
             }
           });
       }
