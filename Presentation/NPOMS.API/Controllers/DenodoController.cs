@@ -74,7 +74,22 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var results = await this._denodoService.GetFilteredBudgets(department, $"{year}/{year + 1}");
+                var results = await this._denodoService.GetFilteredBudgets(department, $"{year}/{year + 1}", base.GetUserIdentifier());
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDenodoBudgets action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("departmentBudgetSummary/department/{department}/year/{year}", Name = "GetDepartmentBudgetsSummary")]
+        public async Task<IActionResult> GetDepartmentBudgetsSummary(int department, int year)
+        {
+            try
+            {
+                var results = await this._denodoService.GetDepartmentBudgetsSummary(department, $"{year}/{year + 1}", base.GetUserIdentifier());
                 return Ok(results);
             }
             catch (Exception ex)

@@ -43,14 +43,14 @@ export class ProgrammeBudgetComponent implements OnInit {
   selectedDepartmentSummary: IDepartment;
 
   isSystemAdmin: boolean;
-
+  isDepartmentAdmin: boolean;
   // Details displayed in summary
   totalBudget: number;
   totalAllocated: number;
   totalPaid: number;
   totalBalance: number;
   totalAdjustedBudget: number;
-
+  totalProvisionalBudget: number;
   programmes: IProgramme[];
   filteredProgrammes: IProgramme[];
   selectedProgrammes: IProgramme;
@@ -65,6 +65,20 @@ export class ProgrammeBudgetComponent implements OnInit {
   AdjustmentAmount: string;
   ProvisionalAmount: string;
   budgetId: number;
+  selectedProgram: any;
+  selectedDepartment: any;
+  selectedSubProgram: any;
+  selectedSubProgramType: any;
+  filterProgramIds: string;
+  filterDepartmentIds: string;
+  filterSubProgramIds: string;
+  filterSubProgramTypeIds: string;
+  filteredSubProgramTypeIds: number[];
+  profileProgramIds: number[];
+  profileDepartmentIds: number[];
+  linkedProgramId: any;
+  filteredLinkedProgramId: string;
+  filteredLinkedProgramIds: number[];
 
   constructor(
     private _router: Router,
@@ -80,30 +94,35 @@ export class ProgrammeBudgetComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-        console.log('profile', profile);
-
+        
+       
+        
         if (!this.IsAuthorized(PermissionsEnum.ViewProgrammeBudget))
           this._router.navigate(['401']);
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
-        
+        this.isDepartmentAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+
         this.loadDepartments();
         this.loadProgrammes();
         this.loadSubProgrammes();
         this.loadProgrammeTypes();
         this.loadSegmentCode();
         this.loadFinancialYears();
+        this.ProfileProgramme(this.profile.userPrograms);
+        this.ProfileDepartment(this.profile.departments);
       }
     });
 
     this.budgetCols = [
-      // { header: 'Directorate', width: '15%' },
-      { header: 'Programme', width: '20%' },
-      { header: 'Sub Program', width: '18%' },
-      { header: 'Sub Program Type', width: '18%' },
-      { header: 'Provisional Budget', width: '15%' },
-      { header: 'Original Approved Budget', width: '16%' },
-      { header: 'Adjusted Budget', width: '15%' }
+      { header: 'Programme', width: '14%' },
+      { header: 'SubProgramme', width: '14%' },
+      { header: 'SubProgrammeType', width: '15%' },
+      { header: 'ProvisionalBudget', width: '14%' },
+      { header: 'OriginalBudget', width: '13%' },
+      { header: 'AdjustedBudget', width: '13%' },
+      { header: 'Allocated', width: '9%' },
+      { header: 'Balance', width: '9%' }
     ];
   }
 
@@ -125,14 +144,24 @@ export class ProgrammeBudgetComponent implements OnInit {
   }
 
   private loadDepartments() {
+   
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
       (results) => {
-        this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
 
+        if(this.isSystemAdmin )
+        {
+          this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+        }
+        else{
+          this.departments = results.filter(x => x.id === this.profile.departments[0].id);
+        }
+        this.selectedDepartmentSummary = null;
+        this.selectedDepartmentSummary = this.departments.find(x => x.id === this.profile.departments[0].id);
         // In Programme Budget Summary...
         // If user is system admin, show department dropdown
         // If user is not system admin, default department to assigned department in user department table
-        this.selectedDepartmentSummary = this.isSystemAdmin ? null : this.departments.find(x => x.id === this.profile.departments[0].id);
+      
+        
 
         this._spinner.hide();
       },
@@ -143,10 +172,13 @@ export class ProgrammeBudgetComponent implements OnInit {
     );
   }
 
-  departmentSummaryChange() {
-    this.loadBudgets();
+  // departmentSummaryChange() {
+  //   this.loadBudgets();
+  // }
+  loadPrograms(id: number) {
+    this.filteredProgrammes = this.programmes.filter(x => x.departmentId === id); 
   }
-
+  
   financialYearSummaryChange() {
     this.loadBudgets();
   }
@@ -155,6 +187,26 @@ export class ProgrammeBudgetComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
       (results) => {
         this.programmes = results;
+        if(this.isSystemAdmin)
+        {
+          this.filteredProgrammes = this.programmes;
+        }
+        
+        if(!this.isDepartmentAdmin)
+        {
+          if( this.profileProgramIds != undefined){
+            this.filteredProgrammes = this.programmes.filter(item =>
+              this.profileProgramIds.includes(item.id)
+            );
+          }
+        }
+        else{
+          if( this.profileDepartmentIds != undefined){
+            this.filteredProgrammes = this.programmes.filter(item =>
+              this.profileDepartmentIds.includes(item.departmentId)
+            );
+          }
+        }
 
         this._spinner.hide();
       },
@@ -205,6 +257,122 @@ export class ProgrammeBudgetComponent implements OnInit {
     );
   }
 
+  ProfileProgramme(profileProgram: any[])
+  {
+    let selectedProgrammes = [];
+
+    profileProgram.forEach(program => 
+    {
+      selectedProgrammes.push(program.id);
+    }
+    );
+
+    if(selectedProgrammes.length > 0)
+      {
+        this.selectedProgram = selectedProgrammes.join(",");
+        this.filterProgramIds = this.selectedProgram;
+        const programIds = this.filterProgramIds.split(',').map(Number);
+        this.profileProgramIds = programIds;
+      }     
+  }
+
+  ProfileDepartment(profileDepartment: any[])
+  {
+    let selectedDepartments = [];
+
+    profileDepartment.forEach(department => 
+    {
+      selectedDepartments.push(department.id);
+    }
+    );
+
+    if(selectedDepartments.length > 0)
+      {
+        this.selectedDepartment = selectedDepartments.join(",");
+        this.filterDepartmentIds = this.selectedDepartment;
+        const departmentIds = this.filterDepartmentIds.split(',').map(Number);
+        this.profileDepartmentIds = departmentIds;
+      }     
+  }
+
+  programmeChange(programs: any[])
+  {
+    let selectedProgrammes = [];
+    selectedProgrammes.push(programs); 
+
+    if (selectedProgrammes.length > 0)
+    {
+      this.selectedProgram = selectedProgrammes.join(",");
+     
+      this.filterProgramIds = this.selectedProgram;
+      const programIds = this.filterProgramIds.split(',').map(Number);
+      
+      this.filteredSubProgrammes = this.subProgrammes.filter(item =>
+        programIds.includes(item.programmeId)
+      );
+    }  
+    else
+    this.selectedProgram = "0";
+  }
+
+  subProgrammeChange(subProgram: any[])
+  {
+    let selectedSubProgrammes = [];
+    selectedSubProgrammes.push(subProgram); 
+    if (selectedSubProgrammes.length > 0)
+    {
+      this.selectedSubProgram = selectedSubProgrammes.join(",");
+     
+      this.filterSubProgramIds = this.selectedSubProgram;
+      const subProgrammeIds = this.filterSubProgramIds.split(',').map(Number);
+      
+      this.filteredSubProgrammeType = this.subProgrammeType.filter(item =>
+        subProgrammeIds.includes(item.subProgrammeId)
+      );     
+    }  
+    else
+    this.selectedProgram = "0";
+  }
+
+  subProgrammeTypeChange(subProgramType: any[])
+  {
+    let selectedSubProgrammesType = [];
+    selectedSubProgrammesType.push(subProgramType); 
+
+    if (selectedSubProgrammesType.length > 0)
+    {
+      this.selectedSubProgramType = selectedSubProgrammesType.join(",");
+     
+      this.filterSubProgramTypeIds = this.selectedSubProgramType;
+      const subProgrammeTypeIds = this.filterSubProgramTypeIds.split(',').map(Number);
+      
+      this.filteredSubProgramTypeIds = subProgrammeTypeIds;
+
+      this.loadBudgets();
+    }  
+    else
+    this.selectedProgram = "0";
+  }
+
+  linkedProgram()
+  {
+    let linkedPrograms = [];
+
+    linkedPrograms.push(this.profile.userPrograms); 
+
+    if (linkedPrograms.length > 0)
+    {
+      this.linkedProgramId = linkedPrograms.join(",");
+     
+      this.filteredLinkedProgramId = this.selectedSubProgramType;
+      const linkedProgramIds = this.filteredLinkedProgramId.split(',').map(Number);
+      
+      this.filteredLinkedProgramIds = linkedProgramIds;
+    }  
+    else
+    this.linkedProgramId = "0";
+  }
+
   private loadBudgets() {
     if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
       this._spinner.show();
@@ -219,14 +387,22 @@ export class ProgrammeBudgetComponent implements OnInit {
 
           this.programmeBudgets = results ? results : [];
 
-          // this.programmeBudgets.forEach(application => {
-          //   this.setSubProgrammeTypeName(application);
-          // });
+          if(!this.isDepartmentAdmin)
+          {
+            if( this.filteredSubProgramTypeIds != undefined){
+              this.programmeBudgets = this.programmeBudgets.filter(item =>
+                this.filteredSubProgramTypeIds.includes(item.subProgrammeTypeId)
+              );
+            }
+          }
+          else{
+            this.programmeBudgets = this.programmeBudgets;
+          }         
 
-          this.programmeBudgets = this.programmeBudgets; // ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
+          //this.programmeBudgets = this.programmeBudgets; // ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
           this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
           this.totalAdjustedBudget = this.programmeBudgets.reduce((n, {adjustedBudgetAmount}) => n + Number(adjustedBudgetAmount), 0);
-          
+          this.totalProvisionalBudget = this.programmeBudgets.reduce((n, {provisionalBudgetAmount}) => n + Number(provisionalBudgetAmount), 0);
           this._spinner.hide();
         },
         (err) => {

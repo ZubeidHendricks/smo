@@ -37,7 +37,6 @@ export class BudgetSummaryComponent implements OnInit {
 
   departments: IDepartment[];
   selectedDepartmentSummary: IDepartment;
-
   isSystemAdmin: boolean;
   rowGroupMetadataActivities: any[];
 
@@ -54,6 +53,7 @@ export class BudgetSummaryComponent implements OnInit {
   filteredSegmentCode: ISegmentCode[] = [];
   totalBudget: number;
   totalAdjustedBudget: number;
+  totalProvisionalBudget: number;
   selectedProgram: any;
   selectedSubProgram: any;
   selectedSubProgramType: any;
@@ -87,24 +87,19 @@ export class BudgetSummaryComponent implements OnInit {
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
        
-       // this.linkedProgram();
-        this.loadDepartments();
-        this.loadProgrammes();
-        this.loadSubProgrammes();
-        this.loadProgrammeTypes();
+        this.loadDepartments();       
         this.loadFinancialYears();
       }
     });
 
     this.budgetCols = [
-      { header: 'Programme', width: '14%' },
-      { header: 'SubProgramme', width: '14%' },
-      { header: 'SubProgrammeType', width: '15%' },
-      { header: 'ProvisionalBudget', width: '14%' },
-      { header: 'OriginalBudget', width: '13%' },
+     
+      { header: 'ApprovedBudget', width: '13%' },
+      { header: 'ProvisionalBudget', width: '13%' },
       { header: 'AdjustedBudget', width: '13%' },
-      { header: 'Allocated', width: '9%' },
-      { header: 'Balance', width: '9%' }
+      { header: 'Allocated', width: '13%' },
+      { header: 'Paid', width: '13%' },
+      { header: 'Balance', width: '13%' }
     ];
   }
 
@@ -128,7 +123,14 @@ export class BudgetSummaryComponent implements OnInit {
   private loadDepartments() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
       (results) => {
-        this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+        
+        if(this.isSystemAdmin )
+          {
+            this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          }
+          else{
+            this.departments = results.filter(x => x.id === this.profile.departments[0].id);
+          }
 
         // In Programme Budget Summary...
         // If user is system admin, show department dropdown
@@ -145,71 +147,13 @@ export class BudgetSummaryComponent implements OnInit {
     );
   }
 
-  private loadProgrammes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
-      (results) => {
-        this.programmes = results;
-
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadSubProgrammes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
-      (results) => {
-        this.subProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadProgrammeTypes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
-      (results) => {
-        this.subProgrammeType = results;
-       
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadSegmentCode(id: number) {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SegmentCode, false).subscribe(
-      (results) => {       
-        this.segmentCode = results;
-         this.filteredSegmentCode = this.segmentCode.filter(x=> x.programmeId === id);
-       
-        this._spinner.hide();
-      }, 
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+  
 
     departmentSummaryChange() {
     this.loadBudgets();
   }
 
-  loadPrograms(id: number) {
-   
-    this.filteredProgrammes = this.programmes.filter(x => x.departmentId === id); 
-  }
-  
+ 
   programmeChange(programs: any[])
   {
     let selectedProgrammes = [];
@@ -296,20 +240,21 @@ export class BudgetSummaryComponent implements OnInit {
   private loadBudgets() {
     if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
       this._spinner.show();
-      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
+      this._budgetRepo.getDepartmentBudgetSummary(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
           
           this.programmeBudgets = results ? results : [];
 
-          if( this.filteredSubProgramTypeIds != undefined){
-            this.programmeBudgets = this.programmeBudgets.filter(item =>
-              this.filteredSubProgramTypeIds.includes(item.subProgrammeTypeId)
-            );
-          }
+          // if( this.filteredSubProgramTypeIds != undefined){
+          //   this.programmeBudgets = this.programmeBudgets.filter(item =>
+          //     this.filteredSubProgramTypeIds.includes(item.subProgrammeTypeId)
+          //   );
+          // }
 
-          this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
+         // this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
           this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
           this.totalAdjustedBudget = this.programmeBudgets.reduce((n, {adjustedBudgetAmount}) => n + Number(adjustedBudgetAmount), 0);
+          this.totalProvisionalBudget = this.programmeBudgets.reduce((n, {provisionalBudgetAmount}) => n + Number(provisionalBudgetAmount), 0);
           this._spinner.hide();
         },
         (err) => {
