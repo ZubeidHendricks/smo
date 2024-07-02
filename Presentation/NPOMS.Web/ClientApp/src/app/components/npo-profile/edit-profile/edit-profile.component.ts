@@ -26,6 +26,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 export class EditProfileComponent implements OnInit {
   isDeliveryInformationEdit: boolean;
   isSystemAdmin: boolean;
+  isAdmin: boolean;
   isApplicant: boolean;
   canReviewOrApprove: boolean = false;
   ProgrammeApprover: boolean;
@@ -54,11 +55,11 @@ export class EditProfileComponent implements OnInit {
     this.isSystemAdmin = roles.some(role => role.id === RoleEnum.SystemAdmin);
     this.isApplicant = roles.some(role => role.id === RoleEnum.Applicant);
 
-    this.ProgrammeApprover = roles.some(role => role.id === RoleEnum.ProgrammeApprover || role.id === RoleEnum.SystemAdmin);
+    this.ProgrammeApprover = roles.some(role => role.id === RoleEnum.ProgrammeApprover || role.id === RoleEnum.SystemAdmin || role.id === RoleEnum.Admin);
 
-    this.ProgrammeCapturer = roles.some(role => role.id === RoleEnum.ProgrammeCapturer || role.id === RoleEnum.SystemAdmin);
+    this.ProgrammeCapturer = roles.some(role => role.id === RoleEnum.ProgrammeCapturer || role.id === RoleEnum.SystemAdmin || role.id === RoleEnum.Admin);
 
-    this.ProgrammeViewOnly = roles.some(role => role.id === RoleEnum.ProgrammeViewOnly || role.id === RoleEnum.SystemAdmin);
+    this.ProgrammeViewOnly = roles.some(role => role.id === RoleEnum.ProgrammeViewOnly || role.id === RoleEnum.SystemAdmin || role.id === RoleEnum.Admin);
     return permissions.some(x => x.systemName === permission);
 }
 
@@ -386,11 +387,34 @@ export class EditProfileComponent implements OnInit {
     );
   }
 
-
   loadDepartmentPrograms(id: number = 0) {
-    this.applicantfilteredProgrammes = this.programmes.filter(x => x.department.isActive == true);
-    this.filteredProgrammes =  this.applicantfilteredProgrammes.filter(x => x.department.id === id);
+    // Filter active programs within the department
+    this.applicantfilteredProgrammes = this.programmes.filter(x => x.department.isActive);
+
+    // Further filter by department ID if provided
+    if (id > 0) {
+        this.applicantfilteredProgrammes = this.applicantfilteredProgrammes.filter(x => x.department.id === id);
+    }
+
+   // If the user is not a system admin or an applicant, apply additional filtering
+    if (!this.isSystemAdmin && !this.isApplicant) {
+      if (this.ProgrammeCapturer) { 
+        this.filteredProgrammes = this.applicantfilteredProgrammes.filter(programme => 
+          this.profile.userPrograms.some(userProgram => userProgram.id === programme.id)
+      );
+      }
+    } else {
+        // Otherwise, use the initially filtered programs
+        this.filteredProgrammes = this.applicantfilteredProgrammes;
+    }
   }
+
+
+  // loadDepartmentPrograms(id: number = 0) {
+  //   this.applicantfilteredProgrammes = this.programmes.filter(x => x.department.isActive == true);
+  //   this.filteredProgrammes =  this.applicantfilteredProgrammes.filter(x => x.department.id === id);
+  //   this.filteredProgrammes = this.profile.userPrograms.some(userProgram => userProgram.id === programme.id);
+  // }
 
   onFirstTdClick(rowIndex: number) {
     this.selectedRowIndex = rowIndex;
