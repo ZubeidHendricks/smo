@@ -61,6 +61,10 @@ export class BudgetSummaryComponent implements OnInit {
   filterSubProgramIds: string;
   filterSubProgramTypeIds: string;
   filteredSubProgramTypeIds: number[];
+  linkedProgramId: any;
+  filteredLinkedProgramId: string;
+  filteredLinkedProgramIds: number[];
+
   list: any[] = [];
   item: any;
 
@@ -83,6 +87,7 @@ export class BudgetSummaryComponent implements OnInit {
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
        
+       // this.linkedProgram();
         this.loadDepartments();
         this.loadProgrammes();
         this.loadSubProgrammes();
@@ -128,6 +133,7 @@ export class BudgetSummaryComponent implements OnInit {
         // In Programme Budget Summary...
         // If user is system admin, show department dropdown
         // If user is not system admin, default department to assigned department in user department table
+       
         this.selectedDepartmentSummary = this.isSystemAdmin ? null : this.departments.find(x => x.id === this.profile.departments[0].id);
 
         this._spinner.hide();
@@ -261,6 +267,26 @@ export class BudgetSummaryComponent implements OnInit {
     }  
     else
     this.selectedProgram = "0";
+  }
+
+  linkedProgram()
+  {
+    let linkedPrograms = [];
+
+    alert(this.profile.userPrograms.length);
+    linkedPrograms.push(this.profile.userPrograms); 
+
+    if (linkedPrograms.length > 0)
+    {
+      this.linkedProgramId = linkedPrograms.join(",");
+     
+      this.filteredLinkedProgramId = this.selectedSubProgramType;
+      const linkedProgramIds = this.filteredLinkedProgramId.split(',').map(Number);
+      
+      this.filteredLinkedProgramIds = linkedProgramIds;
+    }  
+    else
+    this.linkedProgramId = "0";
   }
 
   financialYearSummaryChange() {

@@ -2728,6 +2728,8 @@ namespace NPOMS.Repository.Migrations
                             Name = "View Budget Summary",
                             SystemName = "Bud.VBS"
                         },
+
+                        /*
                         new
                         {
                             Id = 122,
@@ -2758,9 +2760,10 @@ namespace NPOMS.Repository.Migrations
                             Name = "Programme Viewer",
                             SystemName = "Programme.Viewer"
                         },
+                        */
                         new
                         {
-                            Id = 125,
+                            Id = 122,
                             CategoryName = "Budgets",
                             CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedUserId = 0,

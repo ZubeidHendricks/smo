@@ -44,24 +44,24 @@ namespace NPOMS.Repository.Migrations
                 column: "Body",
                 value: "<p>Dear {ToUserFullName}</p><p>The Scorecard for <strong>{organisationName}</strong> with reference number <strong>{ApplicationRefNo}</strong> is now available for rating.</p><p>Please <a href=\"{url}/#/scorecard/{ApplicationId}\">click here</a> to access this workplan.</p><p>Kind Regards,</p><p>NPO MS Team</p>");
 
-            migrationBuilder.UpdateData(
-                schema: "core",
-                table: "Permissions",
-                keyColumn: "Id",
-                keyValue: 122,
-                columns: new[] { "CategoryName", "Name", "SystemName" },
-                values: new object[] { "Programme", "Edit capability", "Programme.Edit" });
+            //migrationBuilder.UpdateData(
+            //    schema: "core",
+            //    table: "Permissions",
+            //    keyColumn: "Id",
+            //    keyValue: 122,
+            //    columns: new[] { "CategoryName", "Name", "SystemName" },
+            //    values: new object[] { "Programme", "Edit capability", "Programme.Edit" });
 
-            migrationBuilder.InsertData(
-                schema: "core",
-                table: "Permissions",
-                columns: new[] { "Id", "CategoryName", "Name", "SystemName", "UpdatedDateTime", "UpdatedUserId" },
-                values: new object[,]
-                {
-                    { 123, "Programme", "Approve Programme", "Programme.Approve", null, null },
-                    { 124, "Programme", "Programme Viewer", "Programme.Viewer", null, null },
-                    { 125, "Budgets", "Upload Budget", "Bud.UB", null, null }
-                });
+            //migrationBuilder.InsertData(
+            //    schema: "core",
+            //    table: "Permissions",
+            //    columns: new[] { "Id", "CategoryName", "Name", "SystemName", "UpdatedDateTime", "UpdatedUserId" },
+            //    values: new object[,]
+            //    {
+            //        { 123, "Programme", "Approve Programme", "Programme.Approve", null, null },
+            //        { 124, "Programme", "Programme Viewer", "Programme.Viewer", null, null },
+            //        { 125, "Budgets", "Upload Budget", "Bud.UB", null, null }
+            //    });
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",
@@ -375,16 +375,16 @@ namespace NPOMS.Repository.Migrations
                 column: "CreatedDateTime",
                 value: new DateTime(2024, 7, 1, 20, 36, 40, 383, DateTimeKind.Local).AddTicks(2879));
 
-            migrationBuilder.InsertData(
-                schema: "core",
-                table: "Roles",
-                columns: new[] { "Id", "Name", "SystemName", "UpdatedDateTime", "UpdatedUserId" },
-                values: new object[,]
-                {
-                    { 11, "Programme Capturer", "ProgrammeCapturer", null, null },
-                    { 12, "Programme Approver", "ProgrammeApprover", null, null },
-                    { 13, "Programme viewer", "ProgrammeViewOnly", null, null }
-                });
+            //migrationBuilder.InsertData(
+            //    schema: "core",
+            //    table: "Roles",
+            //    columns: new[] { "Id", "Name", "SystemName", "UpdatedDateTime", "UpdatedUserId" },
+            //    values: new object[,]
+            //    {
+            //        { 11, "Programme Capturer", "ProgrammeCapturer", null, null },
+            //        { 12, "Programme Approver", "ProgrammeApprover", null, null },
+            //        { 13, "Programme viewer", "ProgrammeViewOnly", null, null }
+            //    });
 
             migrationBuilder.CreateIndex(
                 name: "IX_NpoUserTrackings_ApplicationId",
