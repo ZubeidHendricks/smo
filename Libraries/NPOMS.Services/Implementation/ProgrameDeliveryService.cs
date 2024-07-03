@@ -25,9 +25,9 @@ namespace NPOMS.Services.Implementation
 
         public async Task<IEnumerable<ProgrammeServiceDeliveryVM>> GetDeliveryDetailsByProgramId(int progId)
         {
-          var  model = await _programeDeliveryRepository.GetDeliveryDetailsByProgramId(progId);
+            var model = await _programeDeliveryRepository.GetDeliveryDetailsByProgramId(progId);
 
-          return await MapToViewModelListAsync(model);
+            return await MapToViewModelListAsync(model);
         }
 
 
@@ -54,21 +54,21 @@ namespace NPOMS.Services.Implementation
 
             if (entity.DistrictCouncilId.HasValue)
             {
-                    viewModel.DistrictCouncil = new DistrictCouncilViewModel
-                    {
-                        Id = entity.DistrictCouncil.Id,
-                        Name = entity.DistrictCouncil.Name,
-                    };
+                viewModel.DistrictCouncil = new DistrictCouncilViewModel
+                {
+                    Id = entity.DistrictCouncil.Id,
+                    Name = entity.DistrictCouncil.Name,
+                };
             }
 
             if (entity.LocalMunicipalityId.HasValue)
             {
-                    viewModel.LocalMunicipality = new LocalMunicipalityViewModel
-                    {
-                        ID = entity.LocalMunicipality.Id,
-                        ParentId = entity.LocalMunicipality.DistrictCouncilId,
-                        Name = entity.LocalMunicipality.Name,
-                    };
+                viewModel.LocalMunicipality = new LocalMunicipalityViewModel
+                {
+                    ID = entity.LocalMunicipality.Id,
+                    ParentId = entity.LocalMunicipality.DistrictCouncilId,
+                    Name = entity.LocalMunicipality.Name,
+                };
             }
 
             viewModel.Regions = await Task.WhenAll(entity.Regions.Select(async r => new RegionViewModel

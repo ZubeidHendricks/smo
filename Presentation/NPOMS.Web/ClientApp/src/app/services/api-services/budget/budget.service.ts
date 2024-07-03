@@ -89,6 +89,11 @@ export class BudgetService {
     return this._http.get<IProgrammeBudgets[]>(url, httpOptions);
   }
 
+  public getDepartmentBudgetSummary(department: number, year: number) {
+    const url = `${this._envUrl.urlAddress}/api/denodo/departmentBudgetSummary/department/${department}/year/${year}`;
+    return this._http.get<IProgrammeBudgets[]>(url, httpOptions);
+  }
+
   public createBudgetAdjustment(responsibilityCode: string, objectiveCode: string, amount: number)
   {
     const url = `${this._envUrl.urlAddress}/api/denodo/add-budgetAdjustment/responsibilityCode/${responsibilityCode}/objectiveCode/${objectiveCode}/amount/${amount}`;

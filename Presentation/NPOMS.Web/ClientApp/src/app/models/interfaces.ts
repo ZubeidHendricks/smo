@@ -50,7 +50,7 @@ export interface IProgramBankDetails {
     approvalStatus: IAccessStatus;
 }
 
-  export interface IProgramContactInformation {
+export interface IProgramContactInformation {
     id: number;
     programmeId: number;
     titleId: number;
@@ -349,6 +349,21 @@ export interface ISubProgrammeType {
     subProgramme: ISubProgramme;
 }
 
+export interface IServiceSubProgramme {
+    id: number;
+    servicesRenderedId: number;
+    subProgrammeId: number;
+    isActive: boolean;
+    subProgramme: ISubProgramme;
+}
+export interface IServiceProgrammeType {
+    id: number;
+    servicesRenderedId: number;
+    subProgrammeTypeId: number;
+    isActive: boolean;
+    subProgrammeType: ISubProgrammeType;
+}
+
 export interface IStaffCategory {
     id: number;
     name: string;
@@ -456,8 +471,13 @@ export interface IApplication {
     status: IStatus;
     createdUser: IUser;
     updatedUser: IUser;
+    npoUserTrackings: INpoUserTracking[];
 }
-
+export interface INpoUserTracking {
+    id: number;
+    applicationId: number;
+    userId: number;
+}
 export interface FinYear {
     id: number;
     name: string;
@@ -773,6 +793,21 @@ export interface ITrainingMaterial {
     updatedUserId: number;
     updatedDateTime: Date;
 }
+
+// export interface IServicesRendered {
+//     id: number;
+//     npoProfileId: number;
+//     programmeId: number;
+//     subProgrammeId: number;
+//     subProgrammeTypeId: number;
+//     isActive: boolean;
+
+//     programme: IProgramme;
+//     // selectedServiceSubProgrammeTypes: ISubProgrammeType[];			  
+//     // selectedServiceSubProgrammes: ISubProgramme[];
+//     subProgramme: ISubProgramme[];
+//     subProgrammeType: ISubProgrammeType[];
+// }
 
 export interface IServicesRendered {
     id: number;

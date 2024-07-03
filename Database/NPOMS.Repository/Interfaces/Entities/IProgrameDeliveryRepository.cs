@@ -11,6 +11,6 @@ namespace NPOMS.Repository.Interfaces.Entities
     {
         Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByProgramId(int progId);
         Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryyProgramId(int progId);
-        
+
     }
 }

@@ -413,7 +413,6 @@
     </p-panel>
     <div style="height: 10px;"></div>
 
-
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
         <p-table [rowHover]="true" [columns]="facilityInfoCols" [value]="npoProfileFacilityLists" *ngIf="npoProfileFacilityLists" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
@@ -808,16 +807,17 @@
           [transitionOptions]="'0ms'"
           [modal]="true">
 
-        <div *ngIf="isApplicant" class="p-grid">
-                <div class="p-col-fixed form-label">
-                    <div class="box">
-                        <span class="mandatory-content">Department</span>
-                    </div>
+          <div *ngIf="isApplicant" class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Department</span>
                 </div>
-                <div class="p-col">
-                    <p-dropdown [options]="departments1" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"  (onChange)="loadDepartmentPrograms($event.value.id)" [filter]="true" filterBy="name"></p-dropdown>
-                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown [options]="departments1" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"  (onChange)="loadDepartmentPrograms($event.value.id)" [filter]="true" filterBy="name"></p-dropdown>
+            </div>
         </div>
+    
         
         <div class="p-grid">
             <div class="p-col-fixed form-label">
@@ -861,6 +861,51 @@
                 <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
             </div>
         </div>
+
+        <!-- <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub-Programme</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-multiSelect 
+                    [options]="filteredSubProgrammes"
+                    placeholder="Select a Sub-Programme"
+                    optionLabel="name"
+                    [(ngModel)]="selectedServiceSubProgrammes"
+                    [ngModelOptions]="{standalone: true}"
+                    [style]="{'width':'100%'}"
+                    appendTo="body"
+                    (onChange)="subProgrammeChange1($event)"
+                    [disabled]="disableSubProgramme()"
+                    defaultLabel="Select Sub-Programme(s)"
+                    selectedItemsLabel="{0} items selected">
+                </p-multiSelect>
+            </div> 
+        </div> -->
+        <!-- <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub-Programme Type</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-multiSelect 
+                    [options]="filteredSubProgrammeTypes"
+                    placeholder="Select a Sub-Programme Type"
+                    optionLabel="name"
+                    [(ngModel)]="selectedServiceSubProgrammeTypes"
+                    [ngModelOptions]="{standalone: true}"
+                    [style]="{'width':'100%'}"
+                    appendTo="body"
+                    [disabled]="disableSubProgrammeType()"
+                    defaultLabel="Select Sub-Programme Type(s)"
+                    selectedItemsLabel="{0} items selected">
+                </p-multiSelect>
+            </div>
+            
+        </div> -->
         <ng-template pTemplate="footer">
             <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveServicesRendered() (click)="saveServicesRendered()"></button>
         </ng-template>
@@ -1022,9 +1067,6 @@
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveAuditorInfo() (click)="saveAuditorInformation()"></button>
     </ng-template>
 </p-dialog>
-
-
-
 
 <p-dialog header="Contact " 
           [(visible)]="displayContactDialog" 
@@ -1388,7 +1430,6 @@
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" (click)="saveProgrammeServiceDelivery()" [disabled]="disableProgrammeerviceDeliverySave()"></button>
     </ng-template>
 </p-dialog>
-
 
 
 <div class="content-section implementation">
