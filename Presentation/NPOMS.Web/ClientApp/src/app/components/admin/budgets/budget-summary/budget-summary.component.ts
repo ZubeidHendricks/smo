@@ -240,18 +240,11 @@ export class BudgetSummaryComponent implements OnInit {
   private loadBudgets() {
     if (this.selectedDepartmentSummary && this.selectedFinancialYearSummary) {
       this._spinner.show();
-      this._budgetRepo.getDepartmentBudgetSummary(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
+      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
           
           this.programmeBudgets = results ? results : [];
 
-          // if( this.filteredSubProgramTypeIds != undefined){
-          //   this.programmeBudgets = this.programmeBudgets.filter(item =>
-          //     this.filteredSubProgramTypeIds.includes(item.subProgrammeTypeId)
-          //   );
-          // }
-
-         // this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
           this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
           this.totalAdjustedBudget = this.programmeBudgets.reduce((n, {adjustedBudgetAmount}) => n + Number(adjustedBudgetAmount), 0);
           this.totalProvisionalBudget = this.programmeBudgets.reduce((n, {provisionalBudgetAmount}) => n + Number(provisionalBudgetAmount), 0);

@@ -387,19 +387,15 @@ export class ProgrammeBudgetComponent implements OnInit {
 
           this.programmeBudgets = results ? results : [];
 
-          if(!this.isDepartmentAdmin)
-          {
-            if( this.filteredSubProgramTypeIds != undefined){
-              this.programmeBudgets = this.programmeBudgets.filter(item =>
-                this.filteredSubProgramTypeIds.includes(item.subProgrammeTypeId)
-              );
-            }
+          if( this.filteredSubProgramTypeIds != undefined){
+            this.programmeBudgets = this.programmeBudgets.filter(item =>
+              this.filteredSubProgramTypeIds.includes(item.subProgrammeTypeId)
+            );
           }
           else{
             this.programmeBudgets = this.programmeBudgets;
           }         
 
-          //this.programmeBudgets = this.programmeBudgets; // ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
           this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
           this.totalAdjustedBudget = this.programmeBudgets.reduce((n, {adjustedBudgetAmount}) => n + Number(adjustedBudgetAmount), 0);
           this.totalProvisionalBudget = this.programmeBudgets.reduce((n, {provisionalBudgetAmount}) => n + Number(provisionalBudgetAmount), 0);
