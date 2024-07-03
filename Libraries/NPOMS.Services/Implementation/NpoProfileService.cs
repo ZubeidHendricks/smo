@@ -110,7 +110,7 @@ namespace NPOMS.Services.Implementation
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
             var npoProfiles = await _npoProfileRepository.GetEntities();
 
-            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.ProgrammeCapturer) || x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin) || x.RoleId.Equals((int)RoleEnum.ViewOnly))))
+            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.ProgrammeCapturer) || x.RoleId.Equals((int)RoleEnum.ProgrammeApprover) || x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.ProgrammeViewOnly) || x.RoleId.Equals((int)RoleEnum.Admin) || x.RoleId.Equals((int)RoleEnum.ViewOnly))))
             {
                 return npoProfiles;
             }

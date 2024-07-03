@@ -807,7 +807,7 @@
           [transitionOptions]="'0ms'"
           [modal]="true">
 
-          <div *ngIf="isApplicant" class="p-grid">
+        <div *ngIf="isApplicant || isAdmin || isSystemAdmin" class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
                     <span class="mandatory-content">Department</span>

@@ -397,7 +397,7 @@ export class EditProfileComponent implements OnInit {
     }
 
    // If the user is not a system admin or an applicant, apply additional filtering
-    if (!this.isSystemAdmin && !this.isApplicant) {
+    if (!this.isSystemAdmin || !this.isApplicant || !this.isAdmin) {
       if (this.ProgrammeCapturer) { 
         this.filteredProgrammes = this.applicantfilteredProgrammes.filter(programme => 
           this.profile.userPrograms.some(userProgram => userProgram.id === programme.id)
@@ -1047,6 +1047,14 @@ private loadTitles() {
       });
 
       this.filteredProgrammes = this.programmes.filter(x => x.department.isActive == true);
+
+      if (!this.isSystemAdmin || !this.isApplicant || !this.isAdmin) {
+          this.filteredProgrammes = this.filteredProgrammes.filter(programme => 
+            this.profile.userPrograms.some(userProgram => userProgram.id === programme.id)
+        );
+      } else {
+          this.filteredProgrammes = this.filteredProgrammes;
+      }
     }
   }
 
