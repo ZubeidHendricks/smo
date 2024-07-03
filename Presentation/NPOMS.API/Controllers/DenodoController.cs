@@ -6,6 +6,7 @@ using NPOMS.Repository.Interfaces.Budget;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Services.DenodoAPI.Interfaces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NPOMS.API.Controllers
@@ -90,7 +91,34 @@ namespace NPOMS.API.Controllers
             try
             {
                 var results = await this._denodoService.GetDepartmentBudgetsSummary(department, $"{year}/{year + 1}", base.GetUserIdentifier());
-                return Ok(results);
+
+                var query = from p in results
+                            group p by p.ProgrammeId into g
+                            select new
+                            {
+                                Id = g.First().Id,
+                                DepartmentId = g.First().DepartmentId,
+                                FinancialYearId = g.First().FinancialYearId,
+                                SubProgrammeTypeId = g.First().SubProgrammeId,
+                                ProgrammeId = g.First().ProgrammeId,
+                                IsActive = g.First().IsActive,
+                                CreatedUserId = g.First().CreatedUserId,
+                                CreatedDateTime = g.First().CreatedDateTime,
+                                UpdatedUserId = g.First().UpdatedUserId,
+                                UpdatedDateTime = g.First().UpdatedDateTime,
+                                OriginalBudgetAmount = g.Sum(p => p.OriginalBudgetAmount),
+                                AdjustedBudgetAmount = g.Sum(p => p.AdjustedBudgetAmount),
+                                ProvisionalBudgetAmount = g.Sum(p => p.ProvisionalBudgetAmount),
+                                DepartmentName = g.First().DepartmentName,
+                                ObjectiveCode = g.First().ObjectiveCode,
+                                ProgrammeName = g.First().ProgrammeName,
+                                ResponsibilityCode = g.First().ResponsibilityCode,
+                                SubProgrammeId = g.First().SubProgrammeId,
+                                SubProgrammeName = g.First().SubProgrammeName,
+                                SubProgrammeTypeName = g.First().SubProgrammeTypeName
+                            };
+
+                return Ok(query);
             }
             catch (Exception ex)
             {

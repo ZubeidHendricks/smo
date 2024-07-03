@@ -23,6 +23,8 @@ using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using NPOMS.Repository.Implementation.Budget;
 using NPOMS.Domain.Enumerations;
+using NPOMS.Domain.Dropdown;
+using System.Collections;
 
 namespace NPOMS.Services.DenodoAPI.Implementation
 {
@@ -125,8 +127,37 @@ namespace NPOMS.Services.DenodoAPI.Implementation
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
             var results = await _programmeBudgetRepository.GetProgrammeBudgetsByIds(department, financialYear);
-            
-             return results;           
+            var departmentIds = await _departmentRepository.GetDepartmentIdOfLogggedInUserAsync(loggedInUser.Id);
+            var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
+
+
+
+            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin))))
+            {
+                return results;
+            }
+            else if (loggedInUser.Roles.Any(x => x.IsActive && x.RoleId.Equals((int)RoleEnum.Admin)))
+            {
+                results = results.Where(x => departmentIds.Contains(x.DepartmentId));
+
+                return results;
+            }
+            else if (loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))
+            {
+                results = results.Where(x => departmentIds.Contains(x.DepartmentId)
+                         && programmesIds.Contains(x.ProgrammeId));
+
+                return results;
+            }
+            else
+            {
+                results = results.Where(x => departmentIds.Contains(x.DepartmentId)
+                        && programmesIds.Contains(x.ProgrammeId));
+                return results;
+            }
+
+
+            //return results;           
 
         }
 
@@ -136,8 +167,10 @@ namespace NPOMS.Services.DenodoAPI.Implementation
             var results = await _programmeBudgetRepository.GetProgrammeBudgetsByIds(department, financialYear);
             var departmentIds = await _departmentRepository.GetDepartmentIdOfLogggedInUserAsync(loggedInUser.Id);
             var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
-			
-			if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin))))
+
+           
+
+            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin))))
 			{
 				return results;
 			}

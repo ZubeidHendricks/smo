@@ -144,7 +144,7 @@ export class DepartmentBudgetComponent implements OnInit {
       this.totalPaid = 0;
       this.totalBalance = 0;
 
-      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
+      this._budgetRepo.getDepartmentBudgetSummary(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
 
           this.programmeBudgets = results ? results : [];
