@@ -1,6 +1,6 @@
 
 trigger:
-- Non-Prod
+- tendai-latest
 
 variables:
   buildConfiguration: 'Release'

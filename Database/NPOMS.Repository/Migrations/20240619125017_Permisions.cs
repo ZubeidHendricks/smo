@@ -13,16 +13,16 @@ namespace NPOMS.Repository.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.InsertData(
-                schema: "core",
-                table: "Permissions",
-                columns: new[] { "Id", "CategoryName", "Name", "SystemName", "UpdatedDateTime", "UpdatedUserId" },
-                values: new object[,]
-                {
-                    { 122, "Programme", "Edit capability", "Programme.Edit", null, null },
-                    { 123, "Programme", "Approve Programme", "Programme.Approve", null, null },
-                    { 124, "Programme", "Programme Viewer", "Programme.Viewer", null, null }
-                });
+            //migrationBuilder.InsertData(
+            //    schema: "core",
+            //    table: "Permissions",
+            //    columns: new[] { "Id", "CategoryName", "Name", "SystemName", "UpdatedDateTime", "UpdatedUserId" },
+            //    values: new object[,]
+            //    {
+            //        { 122, "Programme", "Edit capability", "Programme.Edit", null, null },
+            //        { 123, "Programme", "Approve Programme", "Programme.Approve", null, null },
+            //        { 124, "Programme", "Programme Viewer", "Programme.Viewer", null, null }
+            //    });
 
             migrationBuilder.UpdateData(
                 schema: "dropdown",

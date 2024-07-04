@@ -27,7 +27,7 @@ namespace NPOMS.Services.Implementation
         private readonly ILocalMunicipalityRepository _localMunicipalityRepository;
         private IProgrammeRepository _programme;
         private IDepartmentRepository _department;
-        
+
         public ProgrammeService(
             IProgrameBankDetailRepository programeBankDetailRepository,
             IProgrameContactDetailRepository programeContactDetailRepository,

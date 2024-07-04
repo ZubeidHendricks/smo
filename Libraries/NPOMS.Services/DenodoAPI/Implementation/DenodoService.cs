@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿//using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.PowerBI.Api.Models;
 using NPOMS.Domain.Budget;
 using NPOMS.Domain.Core;
@@ -22,6 +22,9 @@ using NPOMS.Repository;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using NPOMS.Repository.Implementation.Budget;
+using NPOMS.Domain.Enumerations;
+using NPOMS.Domain.Dropdown;
+using System.Collections;
 
 namespace NPOMS.Services.DenodoAPI.Implementation
 {
@@ -120,11 +123,77 @@ namespace NPOMS.Services.DenodoAPI.Implementation
 			return facilities;
 		}
 
-		public async Task<IEnumerable<ProgrammeBudget>> GetFilteredBudgets(int department, string financialYear)
-		{
-			var data = await _programmeBudgetRepository.GetProgrammeBudgetsByIds(department, financialYear);
+        public async Task<IEnumerable<ProgrammeBudget>> GetDepartmentBudgetsSummary(int department, string financialYear, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var results = await _programmeBudgetRepository.GetProgrammeBudgetsByIds(department, financialYear);
+            var departmentIds = await _departmentRepository.GetDepartmentIdOfLogggedInUserAsync(loggedInUser.Id);
+            var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
 
-            return data;
+
+
+            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin))))
+            {
+                return results;
+            }
+            else if (loggedInUser.Roles.Any(x => x.IsActive && x.RoleId.Equals((int)RoleEnum.Admin)))
+            {
+                results = results.Where(x => departmentIds.Contains(x.DepartmentId));
+
+                return results;
+            }
+            else if (loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))
+            {
+                results = results.Where(x => departmentIds.Contains(x.DepartmentId)
+                         && programmesIds.Contains(x.ProgrammeId));
+
+                return results;
+            }
+            else
+            {
+                results = results.Where(x => departmentIds.Contains(x.DepartmentId)
+                        && programmesIds.Contains(x.ProgrammeId));
+                return results;
+            }
+
+
+            //return results;           
+
+        }
+
+        public async Task<IEnumerable<ProgrammeBudget>> GetFilteredBudgets(int department, string financialYear, string userIdentifier)
+		{
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var results = await _programmeBudgetRepository.GetProgrammeBudgetsByIds(department, financialYear);
+            var departmentIds = await _departmentRepository.GetDepartmentIdOfLogggedInUserAsync(loggedInUser.Id);
+            var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
+
+           
+
+            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin))))
+			{
+				return results;
+			}
+            else if (loggedInUser.Roles.Any(x => x.IsActive && x.RoleId.Equals((int)RoleEnum.Admin)))
+            {
+                results = results.Where(x => departmentIds.Contains(x.DepartmentId));
+
+                return results;
+            }
+            else if (loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))
+			{
+                results = results.Where(x => departmentIds.Contains(x.DepartmentId)
+                         && programmesIds.Contains(x.ProgrammeId));
+
+                return results;
+            }
+			else
+			{
+                results = results.Where(x => departmentIds.Contains(x.DepartmentId)
+                        && programmesIds.Contains(x.ProgrammeId));
+                return results;
+            }
+           
 		}
 
 		public async Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear, string userIdentifier)
@@ -199,8 +268,8 @@ namespace NPOMS.Services.DenodoAPI.Implementation
                 var dtoRow = new ImportBudget();
 				if(!string.IsNullOrEmpty(r.originalbudget))
 				{
-					if (r.originalbudget != "0.00")
-					{
+					//if (r.originalbudget != "0.00")
+					//{
 						try
 						{
                             var prog = await _segmentCodeRepository.GetByValue(r.responsibilitylowestlevelcode, r.objectivelowestlevelcode);
@@ -242,10 +311,10 @@ namespace NPOMS.Services.DenodoAPI.Implementation
                         }
 						catch(Exception ex) 
 						{
-
+							ex.ToString();
 						}
 						
-					}
+					//}
                 }
             }		
             
@@ -271,5 +340,20 @@ namespace NPOMS.Services.DenodoAPI.Implementation
             await _programmeBudgetRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 			return model;
         }
+
+        public async Task<ProgrammeBudget> ProvisionalAmountUpdate(string amount, int id, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var model = await _programmeBudgetRepository.GetProgrammeBudgetById(id);
+
+            model.ProvisionalBudgetAmount = decimal.Parse(amount, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture); ;
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            var oldEntity = await this._repositoryContext.ProgrammeBudgets.FindAsync(model.Id);
+            await _programmeBudgetRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+            return model;
+        }
+        
     }
 }

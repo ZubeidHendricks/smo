@@ -121,7 +121,7 @@ stages:
   jobs:
   - deployment: Deploy
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'windows-2019'
     environment: TapsProd
     #variables:
     #- group: Release

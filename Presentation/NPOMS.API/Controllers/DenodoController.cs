@@ -6,6 +6,7 @@ using NPOMS.Repository.Interfaces.Budget;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Services.DenodoAPI.Interfaces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NPOMS.API.Controllers
@@ -74,8 +75,50 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var results = await this._denodoService.GetFilteredBudgets(department, $"{year}/{year + 1}");
+                var results = await this._denodoService.GetFilteredBudgets(department, $"{year}/{year + 1}", base.GetUserIdentifier());
                 return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDenodoBudgets action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("departmentBudgetSummary/department/{department}/year/{year}", Name = "GetDepartmentBudgetsSummary")]
+        public async Task<IActionResult> GetDepartmentBudgetsSummary(int department, int year)
+        {
+            try
+            {
+                var results = await this._denodoService.GetDepartmentBudgetsSummary(department, $"{year}/{year + 1}", base.GetUserIdentifier());
+
+                var query = from p in results
+                            group p by p.ProgrammeId into g
+                            select new
+                            {
+                                Id = g.First().Id,
+                                DepartmentId = g.First().DepartmentId,
+                                FinancialYearId = g.First().FinancialYearId,
+                                SubProgrammeTypeId = g.First().SubProgrammeId,
+                                ProgrammeId = g.First().ProgrammeId,
+                                IsActive = g.First().IsActive,
+                                CreatedUserId = g.First().CreatedUserId,
+                                CreatedDateTime = g.First().CreatedDateTime,
+                                UpdatedUserId = g.First().UpdatedUserId,
+                                UpdatedDateTime = g.First().UpdatedDateTime,
+                                OriginalBudgetAmount = g.Sum(p => p.OriginalBudgetAmount),
+                                AdjustedBudgetAmount = g.Sum(p => p.AdjustedBudgetAmount),
+                                ProvisionalBudgetAmount = g.Sum(p => p.ProvisionalBudgetAmount),
+                                DepartmentName = g.First().DepartmentName,
+                                ObjectiveCode = g.First().ObjectiveCode,
+                                ProgrammeName = g.First().ProgrammeName,
+                                ResponsibilityCode = g.First().ResponsibilityCode,
+                                SubProgrammeId = g.First().SubProgrammeId,
+                                SubProgrammeName = g.First().SubProgrammeName,
+                                SubProgrammeTypeName = g.First().SubProgrammeTypeName
+                            };
+
+                return Ok(query);
             }
             catch (Exception ex)
             {
@@ -87,9 +130,14 @@ namespace NPOMS.API.Controllers
         [HttpPut("add-budgetAdjustment/adjustmentAmount/{adjustmentAmount}/id/{id}", Name = "AddBudgetAdjustmentAmount")]
         public async Task<IActionResult> AddBudgetAdjustmentAmount( string adjustmentAmount, int id)
         {
-           // var model = _programmeBudgetRepository.GetProgrammeBudgetById(id);
-            
             var result = await this._denodoService.Update(adjustmentAmount, id, base.GetUserIdentifier());
+            return Ok(result);
+        }
+
+        [HttpPut("add-provisionalAmount/provisionalAmount/{provisionalAmount}/id/{id}", Name = "AddBudgetProvisionalAmount")]
+        public async Task<IActionResult> AddBudgetProvisionalAmount(string provisionalAmount, int id)
+        {
+            var result = await this._denodoService.ProvisionalAmountUpdate(provisionalAmount, id, base.GetUserIdentifier());
             return Ok(result);
         }
 

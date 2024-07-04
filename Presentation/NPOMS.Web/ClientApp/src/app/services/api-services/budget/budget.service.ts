@@ -74,6 +74,11 @@ export class BudgetService {
     return this._http.put<IProgrammeBudget>(url, httpOptions);
   }
 
+  public addProvisionalAmount(provisionalAmount: string, id: number) {
+    const url = `${this._envUrl.urlAddress}/api/denodo/add-provisionalAmount/provisionalAmount/${provisionalAmount}/id/${id}`;
+    return this._http.put<IProgrammeBudget>(url, httpOptions);
+  }
+
   public getBudgets(department: string, year: number) {
     const url = `${this._envUrl.urlAddress}/api/denodo/budgets/department/${department}/year/${year}`;
     return this._http.get<IDenodoBudgetWrapper>(url, httpOptions);
@@ -81,6 +86,11 @@ export class BudgetService {
 
   public getFilteredBudgets(department: number, year: number) {
     const url = `${this._envUrl.urlAddress}/api/denodo/filteredBudgets/department/${department}/year/${year}`;
+    return this._http.get<IProgrammeBudgets[]>(url, httpOptions);
+  }
+
+  public getDepartmentBudgetSummary(department: number, year: number) {
+    const url = `${this._envUrl.urlAddress}/api/denodo/departmentBudgetSummary/department/${department}/year/${year}`;
     return this._http.get<IProgrammeBudgets[]>(url, httpOptions);
   }
 

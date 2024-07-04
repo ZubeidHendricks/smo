@@ -96,7 +96,14 @@ export class DirectorateBudgetComponent implements OnInit {
   private loadDepartments() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
       (results) => {
-        this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          
+        if(this.isSystemAdmin )
+          {
+            this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          }
+          else{
+            this.departments = results.filter(x => x.id === this.profile.departments[0].id);
+          }
 
         // In Directorate Budget Summary...
         // If user is system admin, show department dropdown
