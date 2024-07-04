@@ -23,9 +23,9 @@ namespace NPOMS.Services.Implementation
 
         }
 
-        public async Task<IEnumerable<ProgrammeServiceDeliveryVM>> GetDeliveryDetailsByProgramId(int progId)
+        public async Task<IEnumerable<ProgrammeServiceDeliveryVM>> GetDeliveryDetailsByProgramId(int programmeId, int npoProfileId)
         {
-            var model = await _programeDeliveryRepository.GetDeliveryDetailsByProgramId(progId);
+            var model = await _programeDeliveryRepository.GetDeliveryDetailsByProgramId(programmeId, npoProfileId);
 
             return await MapToViewModelListAsync(model);
         }

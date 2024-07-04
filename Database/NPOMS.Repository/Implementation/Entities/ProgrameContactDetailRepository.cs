@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Repository.Interfaces.Entities;
 using System;
@@ -18,9 +19,9 @@ namespace NPOMS.Repository.Implementation.Entities
 
         }
 
-        public async Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByProgramId(int progId)
+        public async Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByProgramId(int programmeId, int npoProfileId)
         {
-            return await FindByCondition(x => x.ProgrammeId.Equals(progId) && x.IsActive)
+            return await FindByCondition(x => x.ProgrammeId.Equals(programmeId) && x.IsActive && x.NpoProfileId == npoProfileId)
                            .Include(x => x.Title)
                            .Include(x => x.Position)
                            .Include(x => x.Gender)

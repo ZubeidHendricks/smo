@@ -50,12 +50,12 @@ namespace NPOMS.API.Controllers
         }
         #endregion
 
-        [HttpGet("bank/programmeId/{programmeId}", Name = "GetBankDetailsByProgramId")]
-        public async Task<IActionResult> GetBankDetailsByProgramId(int programmeId)
+        [HttpGet("bank/programmeId/{programmeId}/npoProfileId/{npoProfileId}", Name = "GetBankDetailsByProgramId")]
+        public async Task<IActionResult> GetBankDetailsByProgramId(int programmeId, int npoProfileId)
         {
             try
             {
-                var results = await _bankService.GetBankDetailsByProgramId(programmeId);
+                var results = await _bankService.GetBankDetailsByProgramId(programmeId, npoProfileId);
                 return Ok(results);
             }
             catch (Exception ex)
@@ -65,12 +65,12 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpGet("contact/programmeId/{programmeId}", Name = "GetContactDetailsByProgramId")]
-        public async Task<IActionResult> GetContactDetailsByProgramId(int programmeId)
+        [HttpGet("contact/programmeId/{programmeId}/npoProfileId/{npoProfileId}", Name = "GetContactDetailsByProgramId")]
+        public async Task<IActionResult> GetContactDetailsByProgramId(int programmeId, int npoProfileId)
         {
             try
             {
-                var results = await _contactService.GetContactDetailsByProgramId(programmeId);
+                var results = await _contactService.GetContactDetailsByProgramId(programmeId, npoProfileId);
                 return Ok(results);
             }
             catch (Exception ex)
@@ -80,74 +80,12 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPost("create-contact/{progId}", Name = "CreateProgrameContact")]
-        public async Task<IActionResult> CreateProgrameContact([FromBody] ProgramContactInformation model, int progId)
+        [HttpGet("delivery/programmeId/{programmeId}/npoProfileId/{npoProfileId}", Name = "GetDeliveryDetailsByProgramId")]
+        public async Task<IActionResult> GetDeliveryDetailsByProgramId(int programmeId, int npoProfileId)
         {
             try
             {
-                ClearObjects(model);
-                await _programmeService.CreateContact(model, base.GetUserIdentifier(), progId);
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside CreateProgrameContact action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        [HttpPut("update-contact/{progId}", Name = "UpdateProgrameContact")]
-        public async Task<IActionResult> UpdateProgrameContact([FromBody] ProgramContactInformation model, int progId)
-        {
-            try
-            {
-                ClearObjects(model);
-                await _programmeService.UpdateContact(model, base.GetUserIdentifier(), progId);
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside UpdateProgrameContact action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        [HttpPost("create-bank/{progId}", Name = "CreateProgramBankDetails")]
-        public async Task<IActionResult> CreateProgramBankDetails([FromBody] ProgramBankDetails model, int progId)
-        {
-            try
-            {
-                await _programmeService.CreateBankDetails(model, base.GetUserIdentifier(), progId);
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside CreateProgramBankDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        [HttpPut("update-bank/{progId}", Name = "UpdateProgramBankDetails")]
-        public async Task<IActionResult> UpdateProgramBankDetails([FromBody] ProgramBankDetails model, int progId)
-        {
-            try
-            {
-                await _programmeService.UpdateBankDetails(model, base.GetUserIdentifier(), progId);
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside UpdateProgramBankDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        [HttpGet("delivery/programmeId/{programmeId}", Name = "GetDeliveryDetailsByProgramId")]
-        public async Task<IActionResult> GetDeliveryDetailsByProgramId(int programmeId)
-        {
-            try
-            {
-                var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId);
+                var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId, npoProfileId);
                 return Ok(results);
             }
             catch (Exception ex)
@@ -157,14 +95,75 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPost("create-contact/{npoProfileId}", Name = "CreateProgrameContact")]
+        public async Task<IActionResult> CreateProgrameContact([FromBody] ProgramContactInformation model, int npoProfileId)
+        {
+            try
+            {
+                ClearObjects(model);
+                await _programmeService.CreateContact(model, base.GetUserIdentifier(), npoProfileId);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateProgrameContact action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
-        [HttpPost("create-delivery/{progId}", Name = "CreateProgrameDelivery")]
-        public async Task<IActionResult> CreateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model, int progId)
+        [HttpPut("update-contact/{npoProfileId}", Name = "UpdateProgrameContact")]
+        public async Task<IActionResult> UpdateProgrameContact([FromBody] ProgramContactInformation model, int npoProfileId)
+        {
+            try
+            {
+                ClearObjects(model);
+                await _programmeService.UpdateContact(model, base.GetUserIdentifier(), npoProfileId);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateProgrameContact action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("create-bank/{npoProfileId}", Name = "CreateProgramBankDetails")]
+        public async Task<IActionResult> CreateProgramBankDetails([FromBody] ProgramBankDetails model, int npoProfileId)
+        {
+            try
+            {
+                await _programmeService.CreateBankDetails(model, base.GetUserIdentifier(), npoProfileId);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateProgramBankDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("update-bank/{npoProfileId}", Name = "UpdateProgramBankDetails")]
+        public async Task<IActionResult> UpdateProgramBankDetails([FromBody] ProgramBankDetails model, int npoProfileId)
+        {
+            try
+            {
+                await _programmeService.UpdateBankDetails(model, base.GetUserIdentifier(), npoProfileId);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateProgramBankDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("create-delivery/{npoProfileId}", Name = "CreateProgrameDelivery")]
+        public async Task<IActionResult> CreateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model, int npoProfileId)
         {
             try
             {
                 //ClearDeliveryObjects(model);
-                await _programmeService.CreateDelivery(model, base.GetUserIdentifier(), progId);
+                await _programmeService.CreateDelivery(model, base.GetUserIdentifier(), npoProfileId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -174,13 +173,13 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut("update-delivery/{progId}", Name = "UpdateProgrameDelivery")]
-        public async Task<IActionResult> UpdateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model, int progId)
+        [HttpPut("update-delivery/{npoProfileId}", Name = "UpdateProgrameDelivery")]
+        public async Task<IActionResult> UpdateProgrameDelivery([FromBody] ProgrammeServiceDeliveryVM model, int npoProfileId)
         {
             try
             {
                 //ClearDeliveryObjects(model);
-                await _programmeService.UpdateDelivery(model, base.GetUserIdentifier(), progId);
+                await _programmeService.UpdateDelivery(model, base.GetUserIdentifier(), npoProfileId);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -202,7 +201,6 @@ namespace NPOMS.API.Controllers
             //model.Region = null;
             //model.ServiceDeliveryArea = null;
         }
-
         private static void ClearObjects(ProgramContactInformation model)
         {
             model.TitleId = model.Title?.Id ?? model.TitleId;

@@ -629,7 +629,7 @@ namespace NPOMS.Services.Implementation
             {
                 var programId = serviceRendered.ProgrammeId;
 
-                var activeBankingDetails = await _programeBankDetailRepository.GetBankDetailsByProgramId(programId);
+                var activeBankingDetails = await _programeBankDetailRepository.GetBankDetailsByProgramId(programId, npoProfileId);
                 foreach (var bankingDetail in activeBankingDetails)
                 {
                     bankingDetail.ApprovalStatusId = (int)AccessStatusEnum.Approved;
@@ -637,7 +637,7 @@ namespace NPOMS.Services.Implementation
                     await _programeBankDetailRepository.UpdateAsync(bankingDetail);
                 }
 
-                var activeContactInfo = await _programeContactDetailRepository.GetContactDetailsByProgramId(programId);
+                var activeContactInfo = await _programeContactDetailRepository.GetContactDetailsByProgramId(programId, npoProfileId);
                 foreach (var contact in activeContactInfo)
                 {
                     contact.ApprovalStatusId = (int)AccessStatusEnum.Approved;
@@ -645,7 +645,7 @@ namespace NPOMS.Services.Implementation
                     await _programeContactDetailRepository.UpdateAsync(contact);
                 }
 
-                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryyProgramId(programId);
+                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryyProgramId(programId,npoProfileId);
                 foreach (var delivery in activeDeliveryInfo)
                 {
                     delivery.ApprovalStatusId = (int)AccessStatusEnum.Approved;
@@ -688,7 +688,7 @@ namespace NPOMS.Services.Implementation
                 var programId = serviceRendered.ProgrammeId;
 
                 // Fetch and update active banking details if pending
-                var activeBankingDetails = await _programeBankDetailRepository.GetBankDetailsByProgramId(programId);
+                var activeBankingDetails = await _programeBankDetailRepository.GetBankDetailsByProgramId(programId, npoProfileId);
                 foreach (var bankingDetail in activeBankingDetails)
                 {
                     if (bankingDetail.ApprovalStatusId == (int)AccessStatusEnum.Pending)
@@ -699,7 +699,7 @@ namespace NPOMS.Services.Implementation
                 }
 
                 // Fetch and update active contact information if pending
-                var activeContactInfo = await _programeContactDetailRepository.GetContactDetailsByProgramId(programId);
+                var activeContactInfo = await _programeContactDetailRepository.GetContactDetailsByProgramId(programId, npoProfileId);
                 foreach (var contact in activeContactInfo)
                 {
                     if (contact.ApprovalStatusId == (int)AccessStatusEnum.Pending)
@@ -710,7 +710,7 @@ namespace NPOMS.Services.Implementation
                 }
 
                 // Fetch and update active delivery information if pending
-                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programId);
+                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programId , npoProfileId);
                 foreach (var delivery in activeDeliveryInfo)
                 {
                     if (delivery.ApprovalStatusId == (int)AccessStatusEnum.Pending)

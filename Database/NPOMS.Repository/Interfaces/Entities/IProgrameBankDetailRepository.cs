@@ -6,6 +6,6 @@ namespace NPOMS.Repository.Interfaces.Entities
 {
     public interface IProgrameBankDetailRepository : IBaseRepository<ProgramBankDetails>
     {
-        Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByProgramId(int progId);
+        Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByProgramId(int programmeId, int npoProfileId);
     }
 }
