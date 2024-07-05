@@ -360,9 +360,9 @@ export class EditProfileComponent implements OnInit {
     ];
 
     this.serviceRenderedCols = [
-      { header: 'Programme', width: '15%' },
-      { header: 'Sub-Programme', width: '15%' },
-      { header: 'Sub-Programme Type', width: '15%' },
+      { header: 'Programme', width: '31%' },
+      { header: 'Sub-Programme', width: '31%' },
+      { header: 'Sub-Programme Type', width: '31%' },
       // { header: 'Entity System Number', width: '20%' },
       // { header: 'Entity Type Number', width: '20%' }
     ];
