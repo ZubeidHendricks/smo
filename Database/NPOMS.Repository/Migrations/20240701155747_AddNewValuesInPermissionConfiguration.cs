@@ -336,16 +336,16 @@ namespace NPOMS.Repository.Migrations
                 column: "CreatedDateTime",
                 value: new DateTime(2024, 7, 1, 17, 57, 40, 752, DateTimeKind.Local).AddTicks(8214));
 
-            migrationBuilder.InsertData(
-                schema: "core",
-                table: "Roles",
-                columns: new[] { "Id", "Name", "SystemName", "UpdatedDateTime", "UpdatedUserId" },
-                values: new object[,]
-                {
-                    { 11, "Programme Capturer", "ProgrammeCapturer", null, null },
-                    { 12, "Programme Approver", "ProgrammeApprover", null, null },
-                    { 13, "Programme viewer", "ProgrammeViewOnly", null, null }
-                });
+            //migrationBuilder.InsertData(
+            //    schema: "core",
+            //    table: "Roles",
+            //    columns: new[] { "Id", "Name", "SystemName", "UpdatedDateTime", "UpdatedUserId" },
+            //    values: new object[,]
+            //    {
+            //        { 11, "Programme Capturer", "ProgrammeCapturer", null, null },
+            //        { 12, "Programme Approver", "ProgrammeApprover", null, null },
+            //        { 13, "Programme viewer", "ProgrammeViewOnly", null, null }
+            //    });
         }
 
         /// <inheritdoc />
