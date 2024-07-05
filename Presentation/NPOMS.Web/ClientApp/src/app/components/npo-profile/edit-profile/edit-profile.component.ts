@@ -360,9 +360,9 @@ export class EditProfileComponent implements OnInit {
     ];
 
     this.serviceRenderedCols = [
-      { header: 'Programme', width: '15%' },
-      { header: 'Sub-Programme', width: '15%' },
-      { header: 'Sub-Programme Type', width: '15%' },
+      { header: 'Programme', width: '31%' },
+      { header: 'Sub-Programme', width: '31%' },
+      { header: 'Sub-Programme Type', width: '31%' },
       // { header: 'Entity System Number', width: '20%' },
       // { header: 'Entity Type Number', width: '20%' }
     ];
@@ -804,16 +804,18 @@ private loadTitles() {
       }
     });
   }
-
   
   toggleBankingDetailsPanel(program: any) {
-    if (this.selectedProgram && this.selectedProgram.id === program.id) {
-      this.displayBankingDetailsPanel = !this.displayBankingDetailsPanel;
-    } else {
-      this.selectedProgram = program;
-      this.loadProgrammeDetails(program.id);
-      this.displayBankingDetailsPanel = true;
-    }
+    // if (this.selectedProgram && this.selectedProgram.id === program.id) {
+    //   this.displayBankingDetailsPanel = true;
+    // } else {
+    //   this.selectedProgram = program;
+    //   this.loadProgrammeDetails(program.id);
+    //   this.displayBankingDetailsPanel = true;
+    // }
+    this.selectedProgram = program;
+    this.loadProgrammeDetails(program.id);
+    this.displayBankingDetailsPanel = true;
   }
 
   getNames(array: any[]): string {
@@ -826,9 +828,9 @@ private loadTitles() {
   
   loadProgrammeDetails(progId: number): void {
     forkJoin({
-      contacts: this._npoProfileRepo.getProgrammeContactsById(progId),
-      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId),
-      deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId)
+      contacts: this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfileId)),
+      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfileId)),
+      deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfileId))
     }).subscribe({
       next: (result) => {
         this.programContactInformation = result.contacts;
@@ -843,7 +845,7 @@ private loadTitles() {
   }
 
   loadProgrammeContactInformation(progId: number): void {
-    this._npoProfileRepo.getProgrammeContactsById(progId).subscribe({
+    this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfileId)).subscribe({
       next: (data) => {
         this.programContactInformation = data;
         this.updateProgramBankDetailObjects();
@@ -855,7 +857,7 @@ private loadTitles() {
   }
   
   loadProgrammeBankDetails(progId: number): void {
-    this._npoProfileRepo.getProgrammeBankDetailsById(progId).subscribe({
+    this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfileId)).subscribe({
       next: (data) => {
         this.programBankDetails = data;
         this.updateProgramBankDetailObjects();
@@ -1422,7 +1424,7 @@ private loadTitles() {
   }
 
   private getProgrammeDeliveryDetailsById(selectedProgramme: number) {
-    this._npoProfileRepo.getProgrammeDeliveryDetailsById(selectedProgramme).subscribe(
+    this._npoProfileRepo.getProgrammeDeliveryDetailsById(selectedProgramme,Number(this.npoProfileId)).subscribe(
       (results) => {
         this.programDeliveryDetails = results;
         this.updateServicesRenderedObjects();

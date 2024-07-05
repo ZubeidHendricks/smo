@@ -58,6 +58,7 @@ namespace NPOMS.Services.Implementation
 
             model.CreatedUserId = loggedInUser.Id;
             model.CreatedDateTime = DateTime.Now;
+            model.NpoProfileId = npoProfileId;
 
             bool isDSD = await IsDepartmentAbbreviationDSD(model.ProgramId);
 
@@ -83,6 +84,40 @@ namespace NPOMS.Services.Implementation
             }
             await _npoProfileRepository.UpdateAsync(npoProfile);
         }
+        public async Task UpdateBankDetails(ProgramBankDetails model, string userId, int npoProfileId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
+
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+            model.NpoProfileId = npoProfileId;
+
+            bool isDSD = await IsDepartmentAbbreviationDSD(model.ProgramId);
+
+            if (isDSD)
+            {
+                model.ApprovalStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                model.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+            }
+
+            var oldEntity = await _repositoryContext.ProgramBankDetails.FirstOrDefaultAsync(x=> x.Id == model.Id && x.NpoProfileId == npoProfileId);
+            await _programeBankDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+
+            var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
+
+            if (isDSD)
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
+            }
+            await _npoProfileRepository.UpdateAsync(npoProfile);
+        }
 
         public async Task CreateContact(ProgramContactInformation model, string userId, int npoProfileId)
         {
@@ -90,6 +125,7 @@ namespace NPOMS.Services.Implementation
 
             model.CreatedUserId = loggedInUser.Id;
             model.CreatedDateTime = DateTime.Now;
+            model.NpoProfileId = npoProfileId;
 
             bool isDSD = await IsDepartmentAbbreviationDSD(model.ProgrammeId);
 
@@ -118,46 +154,13 @@ namespace NPOMS.Services.Implementation
             await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
-        public async Task UpdateBankDetails(ProgramBankDetails model, string userId, int npoProfileId)
-        {
-            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
-
-            model.UpdatedUserId = loggedInUser.Id;
-            model.UpdatedDateTime = DateTime.Now;
-
-            bool isDSD = await IsDepartmentAbbreviationDSD(model.ProgramId);
-
-            if (isDSD)
-            {
-                model.ApprovalStatusId = (int)AccessStatusEnum.Pending;
-            }
-            else
-            {
-                model.ApprovalStatusId = (int)AccessStatusEnum.Approved;
-            }
-
-            var oldEntity = await _repositoryContext.ProgramBankDetails.FindAsync(model.Id);
-            await _programeBankDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
-
-            var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
-
-            if (isDSD)
-            {
-                npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
-            }
-            else
-            {
-                npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
-            }
-            await _npoProfileRepository.UpdateAsync(npoProfile);
-        }
-
         public async Task UpdateContact(ProgramContactInformation model, string userId, int npoProfileId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
 
             model.UpdatedUserId = loggedInUser.Id;
             model.UpdatedDateTime = DateTime.Now;
+            model.NpoProfileId = npoProfileId;
 
             bool isDSD = await IsDepartmentAbbreviationDSD(model.ProgrammeId);
 
@@ -170,8 +173,43 @@ namespace NPOMS.Services.Implementation
                 model.ApprovalStatusId = (int)AccessStatusEnum.Approved;
             }
 
-            var oldEntity = await this._repositoryContext.ProgramContactInformation.FindAsync(model.Id);
+            var oldEntity = await this._repositoryContext.ProgramContactInformation.FirstOrDefaultAsync(x => x.Id == model.Id && x.NpoProfileId == npoProfileId);
             await _programeContactDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
+
+            var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
+            if (isDSD)
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+                npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
+            }
+
+            await _npoProfileRepository.UpdateAsync(npoProfile);
+        }
+        public async Task CreateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId, int npoProfileId)
+        {
+            var model = await ProgrammeServiceDeliveryDetails(programmeServiceDeliveryVM);
+
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
+            model.IsActive = true;
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+            model.NpoProfileId = npoProfileId;
+            bool isDSD = await IsDepartmentAbbreviationDSD(programmeServiceDeliveryVM.ProgramId);
+
+            if (isDSD)
+            {
+
+                model.ApprovalStatusId = (int)AccessStatusEnum.Pending;
+            }
+            else
+            {
+
+                model.ApprovalStatusId = (int)AccessStatusEnum.Approved;
+            }
+            await _programeDeliveryRepository.CreateAsync(model);
 
             var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
             if (isDSD)
@@ -195,7 +233,7 @@ namespace NPOMS.Services.Implementation
                 .Include(psd => psd.ServiceDeliveryAreas)
                 .Include(psd => psd.DistrictCouncil)
                 .Include(psd => psd.LocalMunicipality)
-                .FirstOrDefaultAsync(psd => psd.Id == programmeServiceDeliveryVM.Id);
+                .FirstOrDefaultAsync(psd => psd.Id == programmeServiceDeliveryVM.Id && psd.NpoProfileId == npoProfileId);
 
             if (existingEntity == null)
             {
@@ -206,6 +244,7 @@ namespace NPOMS.Services.Implementation
             existingEntity.UpdatedUserId = loggedInUser.Id;
             existingEntity.UpdatedDateTime = DateTime.Now;
             existingEntity.IsActive = programmeServiceDeliveryVM.IsActive;
+            existingEntity.NpoProfileId = npoProfileId;
 
             bool isDSD = await IsDepartmentAbbreviationDSD(programmeServiceDeliveryVM.ProgramId);
 
@@ -304,40 +343,6 @@ namespace NPOMS.Services.Implementation
             {
                 throw new Exception("An error occurred while saving changes", ex);
             }
-        }
-        public async Task CreateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId, int npoProfileId)
-        {
-            var model = await ProgrammeServiceDeliveryDetails(programmeServiceDeliveryVM);
-
-            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
-            model.IsActive = true;
-            model.CreatedUserId = loggedInUser.Id;
-            model.CreatedDateTime = DateTime.Now;
-            bool isDSD = await IsDepartmentAbbreviationDSD(programmeServiceDeliveryVM.ProgramId);
-
-            if (isDSD)
-            {
-
-                model.ApprovalStatusId = (int)AccessStatusEnum.Pending;
-            }
-            else
-            {
-
-                model.ApprovalStatusId = (int)AccessStatusEnum.Approved;
-            }
-            await _programeDeliveryRepository.CreateAsync(model);
-
-            var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
-            if (isDSD)
-            {
-                npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
-            }
-            else
-            {
-                npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
-            }
-
-            await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
         private async Task<ProgrammeServiceDelivery> ProgrammeServiceDeliveryDetails1(ProgrammeServiceDeliveryVM model)

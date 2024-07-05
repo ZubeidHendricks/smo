@@ -6,6 +6,6 @@ namespace NPOMS.Services.Interfaces
 {
     public interface IContactService
     {
-        Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByProgramId(int progId);
+        Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByProgramId(int programmeId, int npoProfileId);
     }
 }

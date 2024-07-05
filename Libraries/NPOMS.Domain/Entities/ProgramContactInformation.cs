@@ -8,6 +8,7 @@ namespace NPOMS.Domain.Entities
     public class ProgramContactInformation : BaseEntity
     {
         public int ProgrammeId { get; set; }
+        public int NpoProfileId { get; set; }
 
         public int TitleId { get; set; }
 

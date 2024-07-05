@@ -30,11 +30,13 @@ export interface IProgramBankDetails {
     bank: IBank;
     branch: IBranch;
     accountType: IAccountType;
-  }
+    npoProfileId: number;
+}
 
   export interface IProgrammeServiceDelivery {
     id: number;
     programId: number;
+    npoProfileId: number;
     isActive: boolean;
     createdUserId: number;
     createdDateTime: Date;
@@ -53,6 +55,7 @@ export interface IProgramBankDetails {
 export interface IProgramContactInformation {
     id: number;
     programmeId: number;
+    npoProfileId: number;
     titleId: number;
     raceId: number;
     languageId: number;
@@ -87,7 +90,7 @@ export interface IProgramContactInformation {
     race: IRace;
     language: ILanguage;
     approvalStatus: IAccessStatus;
-  }
+}
   
 export interface IDocumentStore {
     id: number,
