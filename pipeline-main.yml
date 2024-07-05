@@ -12,6 +12,7 @@ stages:
   jobs: 
   - job: 'Build'
     displayName: 'Build job'
+    timeoutInMinutes: 120
     pool:
       vmImage: windows-2019
 
