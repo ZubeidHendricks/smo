@@ -15,9 +15,9 @@ stages:
     timeoutInMinutes: 120 # Adjusted to 300 minutes for longer builds
     pool:
       vmImage: windows-latest
-      demands:
-       - msbuild
-       - visualstudio
+      # demands:
+      #  - msbuild
+      #  - visualstudio
     steps:
     # - script: |
     #     echo "Checking network connectivity to Azure DevOps..."
