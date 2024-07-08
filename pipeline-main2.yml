@@ -1,11 +1,10 @@
-
 trigger:
 - main
 
 variables:
   buildConfiguration: 'Release'
   dotnetSdkVersion: '8.x'
-  system.debug: true # Enable detailed logging
+  # system.debug: true # Enable detailed logging
 
 stages:
 - stage: 'Build'
@@ -13,17 +12,22 @@ stages:
   jobs: 
   - job: 'Build'
     displayName: 'Build job'
-    timeoutInMinutes: 300
+    timeoutInMinutes: 120 # Adjusted to 300 minutes for longer builds
     pool:
       vmImage: windows-latest
-      demands:
-       - msbuild
-       - visualstudio
+      # demands:
+      #  - msbuild
+      #  - visualstudio
     steps:
-    - task: UseDotNet@2
-      displayName: 'Use .NET SDK $(dotnetSdkVersion)'
-      inputs:
-        version: '$(dotnetSdkVersion)'
+    # - script: |
+    #     echo "Checking network connectivity to Azure DevOps..."
+    #     ping dev.azure.com
+    #     tracert dev.azure.com
+    #   displayName: 'Network Diagnostics'
+    # - task: UseDotNet@2
+    #   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+    #   inputs:
+    #     version: '$(dotnetSdkVersion)'
     - task: DotNetCoreCLI@2
       displayName: 'Restore project dependencies'
       inputs:
@@ -87,8 +91,9 @@ stages:
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         replaceExistingArchive: true
-        
+
     - task: PublishBuildArtifacts@1
+      displayName: 'Publish SPA build artifacts'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         ArtifactName: 'app'
