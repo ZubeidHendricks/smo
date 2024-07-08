@@ -45,7 +45,6 @@ namespace NPOMS.Services.Extensions
         {
             // Take note of the IDBAuthTokenService service. This is how we provide support Managed Identity in app services
             services.AddDbContext<RepositoryContext>();
-            services.AddTransient<IDBAuthTokenService, AzureSqlAuthTokenService>();
 
             /* AutoMapper */
             var mappingConfig = new MapperConfiguration(mc =>
