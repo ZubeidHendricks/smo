@@ -1,11 +1,11 @@
-
 trigger:
 - main
 
 variables:
   buildConfiguration: 'Release'
   dotnetSdkVersion: '8.x'
-  
+  system.debug: true # Enable detailed logging
+
 stages:
 - stage: 'Build'
   displayName: 'Build the web application'
@@ -83,9 +83,13 @@ stages:
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         replaceExistingArchive: true
-        
+
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         ArtifactName: 'app'
         publishLocation: 'Container'
+      continueOnError: true
+      retry:
+        maxRetries: 3
+        delayInMinutes: 2
