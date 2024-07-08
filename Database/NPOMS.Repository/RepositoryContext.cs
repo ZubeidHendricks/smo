@@ -1,3 +1,4 @@
+using Azure.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -27,7 +28,6 @@ namespace NPOMS.Repository
     public class RepositoryContext : DbContext
     {
         private IConfiguration _configuration;
-        private IDBAuthTokenService _authTokenService;
 
         public RepositoryContext(DbContextOptions options)
             : base(options)
@@ -37,13 +37,11 @@ namespace NPOMS.Repository
 
         public RepositoryContext(
                 IConfiguration configuration,
-                IDBAuthTokenService tokenService,
                 DbContextOptions options
             )
             : base(options)
         {
             _configuration = configuration;
-            _authTokenService = tokenService;
         }
 
 
@@ -58,10 +56,13 @@ namespace NPOMS.Repository
 
             if (connection.ConnectionString.Contains("database.windows.net"))
             {
-                connection.AccessToken = _authTokenService.GetToken().Result;
+                var credentials = new ChainedTokenCredential(new VisualStudioCredential(), new ManagedIdentityCredential());
+
+                var token = credentials.GetTokenAsync(new Azure.Core.TokenRequestContext(new[] { "https://database.windows.net/.default" })).Result;
+                connection.AccessToken = token.Token;
             }
 
-            optionsBuilder.UseSqlServer(connection, s => s.MigrationsAssembly("NPOMS.Repository"));
+            optionsBuilder.UseSqlServer(connection);
             optionsBuilder.EnableSensitiveDataLogging();
 
 		}
