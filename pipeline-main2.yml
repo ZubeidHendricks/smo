@@ -4,7 +4,7 @@ trigger:
 variables:
   buildConfiguration: 'Release'
   dotnetSdkVersion: '8.x'
-  system.debug: true # Enable detailed logging
+  # system.debug: true # Enable detailed logging
 
 stages:
 - stage: 'Build'
