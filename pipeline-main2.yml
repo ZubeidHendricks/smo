@@ -15,7 +15,6 @@ stages:
     displayName: 'Build job'
     timeoutInMinutes: 300
     pool:
-      name: 'TAPS_Dev'
       vmImage: windows-latest
       demands:
        - msbuild
