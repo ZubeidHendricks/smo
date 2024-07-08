@@ -19,15 +19,15 @@ stages:
        - msbuild
        - visualstudio
     steps:
-    - script: |
-        echo "Checking network connectivity to Azure DevOps..."
-        ping dev.azure.com
-        tracert dev.azure.com
-      displayName: 'Network Diagnostics'
-    - task: UseDotNet@2
-      displayName: 'Use .NET SDK $(dotnetSdkVersion)'
-      inputs:
-        version: '$(dotnetSdkVersion)'
+    # - script: |
+    #     echo "Checking network connectivity to Azure DevOps..."
+    #     ping dev.azure.com
+    #     tracert dev.azure.com
+    #   displayName: 'Network Diagnostics'
+    # - task: UseDotNet@2
+    #   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+    #   inputs:
+    #     version: '$(dotnetSdkVersion)'
     - task: DotNetCoreCLI@2
       displayName: 'Restore project dependencies'
       inputs:
