@@ -47,8 +47,12 @@ stages:
         arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
         zipAfterPublish: true
 
-    - publish: '$(Build.ArtifactStagingDirectory)'
-      artifact: drop
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish build artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
 
   - job: BuildSPAJob
     displayName: Build SPA job
