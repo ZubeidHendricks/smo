@@ -5,7 +5,6 @@ trigger:
 variables:
   buildConfiguration: 'Release'
   dotnetSdkVersion: '8.x'
-  # system.debug: true # Enable detailed logging
 
 stages:
 - stage: 'Build'
@@ -13,13 +12,10 @@ stages:
   jobs: 
   - job: 'Build'
     displayName: 'Build job'
-    timeoutInMinutes: 300
+    timeoutInMinutes: 120
     pool:
-      name: 'TAPS_Dev'
       vmImage: windows-latest
-      demands:
-       - msbuild
-       - visualstudio
+
     steps:
     - task: UseDotNet@2
       displayName: 'Use .NET SDK $(dotnetSdkVersion)'
