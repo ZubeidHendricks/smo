@@ -131,7 +131,7 @@
     </p-panel>
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
-        <p-table [rowHover]="true" [columns]="serviceRenderedCols" [value]="servicesRendered" *ngIf="servicesRendered" styleClass="p-datatable-sm">
+        <p-table [rowHover]="true" [columns]="serviceRenderedCols" [value]="servicesRendered" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
