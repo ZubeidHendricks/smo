@@ -3092,6 +3092,196 @@ namespace NPOMS.Repository.Migrations
                         });
                 });
 
+            modelBuilder.Entity("NPOMS.Domain.Core.UserProgram", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("UpdatedDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserProgram", "core");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "All"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Care and Services to Older Persons"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Care And Support to Families"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Child Care and Protection Services"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Crime Prevention"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "EPWP"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Services to persons with Disabilities"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Substance Abuse"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Sustainable Livelihood"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Youth Development"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Facility Management"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Victim Empowerment"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Facility Management"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "ECD & Partial Care"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "ECD Conditional Grant"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "Not Available"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            DepartmentId = 7,
+                            IsActive = true,
+                            Name = "None"
+                        });
+                });
+
             modelBuilder.Entity("NPOMS.Domain.Core.Utility", b =>
                 {
                     b.Property<int>("Id")
@@ -10781,7 +10971,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6765),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6760),
                             CreatedUserID = 3,
                             Frequency = 12,
                             HaveComment = false,
@@ -10794,7 +10984,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6767),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6800),
                             CreatedUserID = 3,
                             Frequency = 1,
                             HaveComment = false,
@@ -10807,7 +10997,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6769),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6802),
                             CreatedUserID = 3,
                             Frequency = 264,
                             HaveComment = false,
@@ -10820,7 +11010,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6771),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6803),
                             CreatedUserID = 3,
                             Frequency = 240,
                             HaveComment = false,
@@ -10833,7 +11023,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6773),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6805),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = false,
@@ -10845,7 +11035,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6774),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6806),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10857,7 +11047,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6776),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6808),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10869,7 +11059,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6777),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6809),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10881,7 +11071,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6779),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6848),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10893,7 +11083,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6780),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6849),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10905,7 +11095,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6782),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6851),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10917,7 +11107,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6783),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6853),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10929,7 +11119,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6785),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6854),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10941,7 +11131,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 14,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6787),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6856),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10953,7 +11143,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 15,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6788),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6857),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10965,7 +11155,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 16,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6790),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6859),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10977,7 +11167,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 17,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6791),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6860),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -10989,7 +11179,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 18,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6793),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6862),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11001,7 +11191,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 19,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6795),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6863),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11013,7 +11203,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 20,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6797),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6865),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11025,7 +11215,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 21,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6803),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6866),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = false,
@@ -11037,7 +11227,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 22,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6804),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6880),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11049,7 +11239,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 23,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6815),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6882),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11061,7 +11251,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 24,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6832),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6883),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11073,7 +11263,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 25,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6833),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6885),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11085,7 +11275,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 26,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6835),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6886),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11097,7 +11287,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 27,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6837),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6888),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11109,7 +11299,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 28,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6838),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6889),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11121,7 +11311,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 29,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6840),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6891),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11133,7 +11323,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 30,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6841),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6896),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11145,7 +11335,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 31,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6843),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6921),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11157,7 +11347,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 32,
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6844),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(6923),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11237,7 +11427,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 1,
                             CanDefineName = false,
                             Code = "AdministrationFee",
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6651),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(7701),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -11256,7 +11446,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 2,
                             CanDefineName = false,
                             Code = "PostItem",
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6668),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(7706),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = false,
@@ -11275,7 +11465,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 3,
                             CanDefineName = true,
                             Code = "UnitItem",
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6670),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(7709),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = true,
@@ -11294,7 +11484,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 4,
                             CanDefineName = false,
                             Code = "OperationalItem",
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6672),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(7712),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = false,
@@ -11313,7 +11503,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 6,
                             CanDefineName = false,
                             Code = "RuleForSocialWorkers",
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6675),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(7714),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -11332,7 +11522,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 7,
                             CanDefineName = false,
                             Code = "UIFFee",
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6677),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(7716),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -11351,7 +11541,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 8,
                             CanDefineName = false,
                             Code = "COIDAFee",
-                            CreatedDateTime = new DateTime(2024, 7, 4, 18, 41, 1, 235, DateTimeKind.Local).AddTicks(6679),
+                            CreatedDateTime = new DateTime(2024, 7, 14, 12, 31, 4, 777, DateTimeKind.Local).AddTicks(7718),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -16668,13 +16858,19 @@ namespace NPOMS.Repository.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
 
                     b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -16702,6 +16898,305 @@ namespace NPOMS.Repository.Migrations
                     b.HasIndex("ResponseTypeId");
 
                     b.ToTable("Questions", "eval");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "% Own Funding Contribution to Funding Requested",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The organisation applying for support must be formally registered or incorporated. Company registration documents or documents of incorporation (NPO/NPC registration certificate, partnership agreements, sole proprietor tax certificate etc.) clearly identifying the director(s) of the company or organisation must be submitted. CFP 4.1",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The organisation applying for support must be operational (still trading) and must have been in operation for a minimum of three financial years. Management accounts for the two months preceding the application closing date must be submitted. CFP 4.2",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Signed annual financial statements for the three most recent financial years (the annual financial statements for the latest financial year must be audited and must be submitted. CFP 4.2",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "A tax compliant status (TCS) letter with a valid (not expired) tax pin must be submitted. The tax pin must be valid for a period of 60 days after the closing date for applications. CFP 4.3",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The organisation must have obtained an unqualified audit opinion during its latest financial period. Signed audited annual financial statements (AFS) for the latest financial year must be submitted. It is important that the AFS are signed off. CFP 4.4",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "A valid BBBEE certificate / affidavit for the applicant organisation. CFP 4.5",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The value of funding requested from the Department must not be less than R500 000, 00 and the maximum value of funding requested must not exceed R2 million. CFP 4.6",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 8
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The organisation must demonstrate an own funding (including third party funding if any) contribution of 50% or more of the requested amount. CFP 4.7",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 9
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "A signed letter by the Chief Executive Officer (CEO) / Chief Financial Officer (CFO) or similar executive authority confirming the value of own funding committed must be submitted. CFP 4.7",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 10
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The identity document of the signatory to the agreement must be provided. CFP 4.8",
+                            QuestionSectionId = 1,
+                            ResponseTypeId = 1,
+                            SortOrder = 11
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The proposed intervention(s) qualifies in terms of what the Booster Fund aims to achieve i.e., enhancing and/or expanding interventions that supports SMMEs.",
+                            QuestionSectionId = 2,
+                            ResponseTypeId = 2,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The project implementation plan demonstrates that the project has commenced or will commence within two months of signing the agreement with the Department.",
+                            QuestionSectionId = 2,
+                            ResponseTypeId = 2,
+                            SortOrder = 2
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The utilisation of the funds is in line with what the SMME Booster Fund aims to achieve i.e.; interventions that provide direct support to SMMEs.",
+                            QuestionSectionId = 2,
+                            ResponseTypeId = 2,
+                            SortOrder = 3
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The spatial and designated group impact of the proposed intervention is in line with what the SMME Booster Fund sets out to achieve i.e., beneficiaries are township/rural based and are women, youth or persons living with a disability.",
+                            QuestionSectionId = 2,
+                            ResponseTypeId = 2,
+                            SortOrder = 4
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The organisation requesting support for the qualifying intervention has adequate and relevant experience.",
+                            QuestionSectionId = 3,
+                            ResponseTypeId = 2,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The organisation has in the proposal, demonstrated success either relating to the intervention they are seeking assistance for or relevant work done by the organisation.",
+                            QuestionSectionId = 3,
+                            ResponseTypeId = 2,
+                            SortOrder = 2
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The co-funding / own contribution is of a substantial nature.",
+                            QuestionSectionId = 4,
+                            ResponseTypeId = 2,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The impact of the proposed intervention supports the primary objective of the SMME Booster Fund i.e., the propensity of job creation and/or job retention.",
+                            QuestionSectionId = 5,
+                            ResponseTypeId = 2,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The average cost of creating the projected number of jobs is tolerable.",
+                            QuestionSectionId = 5,
+                            ResponseTypeId = 2,
+                            SortOrder = 2
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The average cost of supporting an individual SMME is tolerable",
+                            QuestionSectionId = 5,
+                            ResponseTypeId = 2,
+                            SortOrder = 3
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The organisation in the proposal has demonstrated an intention to implement a monitoring and evaluation framework in line with what the Department requires.",
+                            QuestionSectionId = 6,
+                            ResponseTypeId = 2,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 23,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The AFS submitted by the organisation indicates that the 	organisation is in a good financial position",
+                            QuestionSectionId = 7,
+                            ResponseTypeId = 2,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 24,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Risk: The level of risk associated with the organisation and the implementation of the project is tolerable",
+                            QuestionSectionId = 8,
+                            ResponseTypeId = 2,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 25,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Impact: The impact of the intervention in terms of the following areas:",
+                            QuestionSectionId = 8,
+                            ResponseTypeId = 2,
+                            SortOrder = 2
+                        },
+                        new
+                        {
+                            Id = 26,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "The proposal has a propensity to create or sustain employment",
+                            QuestionSectionId = 8,
+                            ResponseTypeId = 2,
+                            SortOrder = 3
+                        },
+                        new
+                        {
+                            Id = 27,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "DEDAT funding will contribute to the development of SMMEs or enhance the ecosystem",
+                            QuestionSectionId = 8,
+                            ResponseTypeId = 2,
+                            SortOrder = 4
+                        });
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Evaluation.QuestionCategory", b =>
@@ -16713,16 +17208,22 @@ namespace NPOMS.Repository.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
 
                     b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
 
                     b.Property<int>("FundingTemplateTypeId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -16736,7 +17237,39 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FundingTemplateTypeId", "Name")
+                        .IsUnique();
+
                     b.ToTable("QuestionCategories", "eval");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            FundingTemplateTypeId = 1,
+                            IsActive = false,
+                            Name = "Pre-evaluation"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            FundingTemplateTypeId = 1,
+                            IsActive = false,
+                            Name = "Evaluation"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            FundingTemplateTypeId = 1,
+                            IsActive = false,
+                            Name = "Adjudication"
+                        });
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Evaluation.QuestionProperty", b =>
@@ -16771,6 +17304,278 @@ namespace NPOMS.Repository.Migrations
                         .IsUnique();
 
                     b.ToTable("QuestionProperties", "eval");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 1,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 2,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 3,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 4,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 5,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 6,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 7,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 8,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 9,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 10,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 11,
+                            Weighting = 0
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 12,
+                            Weighting = 10
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 13,
+                            Weighting = 5
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 14,
+                            Weighting = 10
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 15,
+                            Weighting = 5
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 16,
+                            Weighting = 5
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 17,
+                            Weighting = 10
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 18,
+                            Weighting = 10
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 19,
+                            Weighting = 10
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 20,
+                            Weighting = 15
+                        },
+                        new
+                        {
+                            Id = 21,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 21,
+                            Weighting = 10
+                        },
+                        new
+                        {
+                            Id = 22,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 22,
+                            Weighting = 5
+                        },
+                        new
+                        {
+                            Id = 23,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 23,
+                            Weighting = 5
+                        },
+                        new
+                        {
+                            Id = 24,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 24,
+                            Weighting = 25
+                        },
+                        new
+                        {
+                            Id = 25,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 25,
+                            Weighting = 25
+                        },
+                        new
+                        {
+                            Id = 26,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 26,
+                            Weighting = 25
+                        },
+                        new
+                        {
+                            Id = 27,
+                            CommentRequired = true,
+                            DocumentRequired = false,
+                            HasComment = true,
+                            HasDocument = false,
+                            QuestionId = 27,
+                            Weighting = 25
+                        });
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Evaluation.QuestionSection", b =>
@@ -16782,13 +17587,19 @@ namespace NPOMS.Repository.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
 
                     b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -16808,9 +17619,92 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionCategoryId");
+                    b.HasIndex("QuestionCategoryId", "Name")
+                        .IsUnique();
 
                     b.ToTable("QuestionSections", "eval");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Pre-evaluation",
+                            QuestionCategoryId = 1,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Alignment of the proposal to the Fund objectives",
+                            QuestionCategoryId = 2,
+                            SortOrder = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Experience and ability (success)",
+                            QuestionCategoryId = 2,
+                            SortOrder = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Level of co-funding",
+                            QuestionCategoryId = 2,
+                            SortOrder = 3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Impact on business sustainability and/or expansion",
+                            QuestionCategoryId = 2,
+                            SortOrder = 4
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Monitoring and Evaluation",
+                            QuestionCategoryId = 2,
+                            SortOrder = 5
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Financial sustainability of the organisation",
+                            QuestionCategoryId = 2,
+                            SortOrder = 6
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Adjudication",
+                            QuestionCategoryId = 3,
+                            SortOrder = 1
+                        });
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Evaluation.Response", b =>
@@ -16915,13 +17809,19 @@ namespace NPOMS.Repository.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
 
                     b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -16941,7 +17841,92 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("ResponseOptions", "eval");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Yes",
+                            ResponseTypeId = 1,
+                            SystemName = "Yes"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "No",
+                            ResponseTypeId = 1,
+                            SystemName = "No"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "Not Applicable",
+                            ResponseTypeId = 1,
+                            SystemName = "N/A"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "1",
+                            ResponseTypeId = 2,
+                            SystemName = "1"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "2",
+                            ResponseTypeId = 2,
+                            SystemName = "2"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "3",
+                            ResponseTypeId = 2,
+                            SystemName = "3"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "4",
+                            ResponseTypeId = 2,
+                            SystemName = "4"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            Name = "5",
+                            ResponseTypeId = 2,
+                            SystemName = "5"
+                        });
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Evaluation.ResponseType", b =>
@@ -16953,16 +17938,22 @@ namespace NPOMS.Repository.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
 
                     b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -16976,7 +17967,30 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("ResponseTypes", "eval");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "Yes, No and Not Applicable",
+                            IsActive = false,
+                            Name = "Close Ended"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            Description = "1, 2, 3, 4 and 5",
+                            IsActive = false,
+                            Name = "Score"
+                        });
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Evaluation.WorkflowAssessment", b =>
@@ -16988,13 +18002,19 @@ namespace NPOMS.Repository.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GetDate()");
 
                     b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("1");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("1");
 
                     b.Property<int>("NumberOfAssessments")
                         .HasColumnType("int");
@@ -17010,7 +18030,39 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("QuestionCategoryId")
+                        .IsUnique();
+
                     b.ToTable("WorkflowAssessments", "eval");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            NumberOfAssessments = 1,
+                            QuestionCategoryId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            NumberOfAssessments = 4,
+                            QuestionCategoryId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedUserId = 0,
+                            IsActive = false,
+                            NumberOfAssessments = 4,
+                            QuestionCategoryId = 3
+                        });
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Indicator.WorkplanActual", b =>
