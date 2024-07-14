@@ -153,6 +153,30 @@
         </p-panel>
         <div style="height: 10px;"></div>
         <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
+            <p-table [rowHover]="true" [columns]="serviceRenderedCols" [value]="servicesRendered" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                    <tr class="default-font" [ngClass]="{'selected-row': selectedRowIndex === rowIndex}">
+                      <td (click)="onFirstTdClick(rowIndex); toggleBankingDetailsPanel(rowData.programme)">{{rowData.programme.name}}</td>
+                      <td >{{rowData.subProgramme.name}}</td>
+                      <td >{{rowData.subProgrammeType.name}}</td>
+                    </tr>
+                  </ng-template>
+    
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="5" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-panel>
+        <!-- <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
             <p-table [rowHover]="true" [columns]="serviceRenderedCols" [value]="servicesRendered" *ngIf="servicesRendered" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
@@ -174,8 +198,93 @@
                     </tr>
                 </ng-template>
             </p-table>
-        </p-panel>
+        </p-panel> -->
+    <div style="height: 10px;"></div>
+    <div style="height: 10px;"></div>
+    <p-panel [header]="'Banking Details, Service delivery and Contact Information - ' + (selectedProgram ? selectedProgram.name : '')"  [style]="{'font-size':'12px'}"  *ngIf="displayBankingDetailsPanel && selectedProgram">
+        <p-table [value]="programBankDetails" styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Bank Name</th>
+              <th>Account Number</th>
+              <th>Branch</th>
+              <th>Status</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-detail>
+            <tr>
+              <td>{{detail?.bank?.name}}</td>
+              <td>{{detail?.accountNumber}}</td>
+              <td>{{detail?.branch?.name}}</td>
+              <td>{{detail?.approvalStatus?.name}}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="5" style="text-align: center;">No results found.</td>
+            </tr>
+        </ng-template>
+        </p-table>
         <div style="height: 10px;"></div>
+        <p-panel [header]="'Contact Details'">  
+            <p-table [value]="programContactInformation" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-contact>
+                  <tr>
+                    <td>{{contact.firstName}}</td>
+                    <td>{{contact.lastName}}</td>
+                    <td>{{contact.emailAddress}}</td>
+                    <td>{{contact.cellphone}}</td>
+                    <td>{{contact?.approvalStatus?.name}}</td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="5" style="text-align: center;">No results found.</td>
+                    </tr>
+                </ng-template>
+              </p-table> 
+          </p-panel>
+
+          <div style="height: 10px;"></div>
+          <p-panel [header]="'Service Delivery Areas'">
+            <p-table [value]="programDeliveryDetails" styleClass="p-datatable-sm">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Region</th>
+                  <th>District Council</th>
+                  <th>Local Municipality</th>
+                  <th>Servive delivery address</th>
+                  <th>Status</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-delivery>
+                <tr>
+                  <td>{{getNames(delivery?.regions)}}</td>
+                  <td>{{delivery.districtCouncil?.name}}</td>
+                  <td>{{delivery.localMunicipality?.name}}</td>
+                  <td>{{getNames(delivery?.serviceDeliveryAreas)}}</td>
+                  <td>{{delivery?.approvalStatus?.name}}</td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found.</td>
+                </tr>
+            </ng-template>
+            </p-table>
+          </p-panel>
+    </p-panel>
+    <div style="height: 10px;"></div>
+    
         <p-panel [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
             <p-table [rowHover]="true" [columns]="facilityInfoCols" [value]="npoProfileFacilityLists" *ngIf="npoProfileFacilityLists" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header" let-columns>

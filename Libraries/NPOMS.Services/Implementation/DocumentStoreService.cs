@@ -168,20 +168,20 @@ namespace NPOMS.Services.Implementation
 		}
 
 
-        public async Task<List<DocumentStore>> DocumentByRefNo(string refNo)
-        {
-            try
-            {
-                var query = _documentStoreRepository.GetEntities();           
+        //public async Task<List<DocumentStore>> DocumentByRefNo(string refNo)
+        //{
+        //    try
+        //    {
+        //        var query = _documentStoreRepository.GetEntities();           
 
-                return query.ToList();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside GetDocuments action: {ex.Message} Inner Exception: {ex.InnerException}");
-                throw;
-            }
-        }
+        //        return query.ToList();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside GetDocuments action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        throw;
+        //    }
+        //}
 
         public async Task<List<DocumentStore>> GetAllDocuments()
         {

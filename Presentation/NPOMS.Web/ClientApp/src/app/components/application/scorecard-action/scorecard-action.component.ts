@@ -150,7 +150,7 @@ export class ScorecardActionComponent implements OnInit {
 
     if(this.headerTitle === 'initiate')
     {
-      this.UpdateInitiateScorecardValue();
+      //this.UpdateInitiateScorecardValue();
     }
     else{
       this.UpdateCloseScorecardValue();

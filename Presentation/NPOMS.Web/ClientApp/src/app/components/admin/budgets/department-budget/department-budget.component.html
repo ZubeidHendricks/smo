@@ -5,7 +5,7 @@
         <div class="p-col-2">
             <p-card subheader="Department Budget Summary" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
                 <div class="p-fluid">
-                    <div class="p-grid" *ngIf="isSystemAdmin">
+                    <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
                                 <span class="non-mandatory-content">Department</span>
@@ -71,7 +71,7 @@
         <div class="p-col-10">
             <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="programmeBudgets" styleClass="p-datatable-sm"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true"  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-            [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['originalbudget']">
+            [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['programmeName']">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -82,22 +82,34 @@
                         </th>
                     </tr>
                     <tr>
-                        <th><p-columnFilter type="text" field="originalbudget"></p-columnFilter></th>
+                        <th><p-columnFilter type="text" field="programmeName"></p-columnFilter></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                         <th></th>
                         <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
-                        <td style="text-align: right;">R {{rowData.originalBudgetAmount | number : '1.2-2'}}</td>
+                        <td>{{rowData.programmeName}}</td>
+                        <td style="text-align: right;">R {{rowData.originalBudgetAmount | number : '1.2-2'}}</td>  
+                        <td style="text-align: right;">R {{rowData.provisionalBudgetAmount | number : '1.2-2'}}</td>                      
+                        <td style="text-align: right;">R {{rowData.adjustedBudgetAmount | number : '1.2-2'}}</td>
+                        <td style="text-align: right;"></td>
                         <td style="text-align: right;"></td>
                         <td style="text-align: right;"></td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="footer">
                     <tr class="default-font">
-                        <td style="text-align: right;">R {{totalBudget | number : '1.2-2'}}</td>                        
                         <td></td> 
+                        <td style="text-align: right;">R {{totalBudget | number : '1.2-2'}}</td>                        
+                        <td style="text-align: right;">R{{totalProvisionalBudget | number : '1.2-2'}}</td> 
+                        <td style="text-align: right;">R {{totalAdjustedBudget | number : '1.2-2'}}</td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                     </tr>
                 </ng-template>

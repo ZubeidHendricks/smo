@@ -4,14 +4,15 @@ trigger:
 
 variables:
   buildConfiguration: 'Release'
-  dotnetSdkVersion: '6.x'
-  
+  dotnetSdkVersion: '8.x'
+
 stages:
 - stage: 'Build'
   displayName: 'Build the web application'
   jobs: 
   - job: 'Build'
     displayName: 'Build job'
+    timeoutInMinutes: 120
     pool:
       vmImage: windows-latest
 

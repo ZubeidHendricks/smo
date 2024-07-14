@@ -391,3 +391,4 @@ testem.log
 .DS_Store
 Thumbs.db
 /Presentation/NPOMS.Web/ClientApp/.angular/cache/13.3.11
+/Presentation/NPOMS.Web/ClientApp/dist - nonprod/wwwroot

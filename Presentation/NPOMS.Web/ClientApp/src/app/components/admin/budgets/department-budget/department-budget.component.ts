@@ -43,6 +43,8 @@ export class DepartmentBudgetComponent implements OnInit {
 
   // Details displayed in summary
   totalBudget: number;
+  totalAdjustedBudget: number;
+  totalProvisionalBudget: number;
   totalAllocated: number;
   totalPaid: number;
   totalBalance: number;
@@ -65,14 +67,20 @@ export class DepartmentBudgetComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        
+        this.loadDepartments();
         this.loadFinancialYears();
       }
     });
 
     this.budgetCols = [
-      { header: 'Budget', width: '33%' },
-      { header: 'Allocated Amount', width: '33%' },
-      { header: 'Balance Amount', width: '33%' }
+      { header: 'Programme', width: '22%' },
+      { header: 'ApprovedBudget', width: '13%' },
+      { header: 'ProvisionalBudget', width: '13%' },
+      { header: 'AdjustedBudget', width: '13%' },
+      { header: 'Allocated', width: '13%' },
+      { header: 'Paid', width: '13%' },
+      { header: 'Balance', width: '13%' }
     ];
   }
 
@@ -85,7 +93,6 @@ export class DepartmentBudgetComponent implements OnInit {
         let currentFinancialYear = results.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
         this.financialYears = results.filter(x => x.id <= currentFinancialYear.id);
 
-        this.loadDepartments();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -97,7 +104,14 @@ export class DepartmentBudgetComponent implements OnInit {
   private loadDepartments() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
       (results) => {
-        this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          
+        if(this.isSystemAdmin )
+          {
+            this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          }
+          else{
+            this.departments = results.filter(x => x.id === this.profile.departments[0].id);
+          }
 
         // In Department Budget Summary...
         // If user is system admin, show department dropdown
@@ -131,14 +145,15 @@ export class DepartmentBudgetComponent implements OnInit {
       this.totalPaid = 0;
       this.totalBalance = 0;
 
-      this._budgetRepo.getFilteredBudgets(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
+      this._budgetRepo.getDepartmentBudgetSummary(this.selectedDepartmentSummary.id, this.selectedFinancialYearSummary.year).subscribe(
         (results) => {
 
           this.programmeBudgets = results ? results : [];
           
           this.programmeBudgets = this.programmeBudgets ? this.programmeBudgets.filter(x => Number(x.originalBudgetAmount) > 0) : [];
           this.totalBudget = this.programmeBudgets.reduce((n, {originalBudgetAmount}) => n + Number(originalBudgetAmount), 0);
-
+          this.totalAdjustedBudget = this.programmeBudgets.reduce((n, {adjustedBudgetAmount}) => n + Number(adjustedBudgetAmount), 0);
+          this.totalProvisionalBudget = this.programmeBudgets.reduce((n, {provisionalBudgetAmount}) => n + Number(provisionalBudgetAmount), 0);
           this._spinner.hide();
         },
         (err) => {
