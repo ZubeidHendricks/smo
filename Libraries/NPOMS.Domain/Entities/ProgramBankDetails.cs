@@ -7,7 +7,7 @@ namespace NPOMS.Domain.Entities
     public class ProgramBankDetails : BaseEntity
     {
         public int ProgramId { get; set; }
-
+        public int NpoProfileId { get; set; }
         public int BankId { get; set; }
 
         public int BranchId { get; set; }

@@ -61,7 +61,7 @@ namespace NPOMS.Services.Implementation
 					npos = npos.Where(x => x.ApprovalStatusId == accessStatusId);
 			}
 
-			if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin) || x.RoleId.Equals((int)RoleEnum.ViewOnly))))
+			if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.ProgrammeApprover) || x.RoleId.Equals((int)RoleEnum.ProgrammeViewOnly) || x.RoleId.Equals((int)RoleEnum.ProgrammeCapturer) || x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin) || x.RoleId.Equals((int)RoleEnum.ViewOnly))))
 			{
 				return npos;
 			}

@@ -9,6 +9,6 @@ namespace NPOMS.Repository.Interfaces.Entities
 {
     public interface IProgrameContactDetailRepository : IBaseRepository<ProgramContactInformation>
     {
-        Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByProgramId(int progId);
+        Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByProgramId(int programmeId, int npoProfileId);
     }
 }

@@ -32,48 +32,48 @@ export class NpoProfileService {
   }
 
 
-  public getProgrammeContactsById(progId: number) {
-    const url = `${this._envUrl.urlAddress}/api/programme/contact/programmeId/${progId}`;
+  public getProgrammeContactsById(programmeId: number,npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/contact/programmeId/${programmeId}/npoProfileId/${npoProfileId}`;
     return this._http.get<IProgramContactInformation[]>(url, httpOptions);
   }
 
-  public getProgrammeBankDetailsById(progId: number) {
-    const url = `${this._envUrl.urlAddress}/api/programme/bank/programmeId/${progId}`;
+  public getProgrammeBankDetailsById(programmeId: number,npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/bank/programmeId/${programmeId}/npoProfileId/${npoProfileId}`;
     return this._http.get<IProgramBankDetails[]>(url, httpOptions);
   }
-
-  public createProgrammeContact(progId: number,programContactInformation: IProgramContactInformation) {
-    const url = `${this._envUrl.urlAddress}/api/programme/create-contact/${progId}`;
-    return this._http.post<IProgramContactInformation>(url, programContactInformation, httpOptions);
-  }
-
-  public createProgrammeBankDetails(progId: number,programBankDetails: IProgramBankDetails) {
-    const url = `${this._envUrl.urlAddress}/api/programme/create-bank/${progId}`;
-    return this._http.post<IProgramBankDetails>(url,programBankDetails, httpOptions);
-  }
-
-  public updateProgrammeContact(progId: number,programContactInformation: IProgramContactInformation) {
-    const url = `${this._envUrl.urlAddress}/api/programme/update-contact/${progId}`;
-    return this._http.put<IProgramContactInformation>(url,programContactInformation, httpOptions);
-  }
-
-  public updateProgrammeBankDetails(progId: number,programBankDetails: IProgramBankDetails) {
-    const url = `${this._envUrl.urlAddress}/api/programme/update-bank/${progId}`;
-    return this._http.put<IProgramBankDetails>(url,programBankDetails, httpOptions);
-  }
   
-  public getProgrammeDeliveryDetailsById(progId: number) {
-    const url = `${this._envUrl.urlAddress}/api/programme/delivery/programmeId/${progId}`;
+  public getProgrammeDeliveryDetailsById(programmeId: number,npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/delivery/programmeId/${programmeId}/npoProfileId/${npoProfileId}`;
     return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);
   }
 
-  public updateProgrammeDeliveryDetails(progId: number,programBankDetails: IProgrammeServiceDelivery) {
-    const url = `${this._envUrl.urlAddress}/api/programme/update-delivery/${progId}`;
+  public createProgrammeContact(npoProfileId: number,programContactInformation: IProgramContactInformation) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-contact/${npoProfileId}`;
+    return this._http.post<IProgramContactInformation>(url, programContactInformation, httpOptions);
+  }
+
+  public createProgrammeBankDetails(npoProfileId: number,programBankDetails: IProgramBankDetails) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-bank/${npoProfileId}`;
+    return this._http.post<IProgramBankDetails>(url,programBankDetails, httpOptions);
+  }
+
+  public updateProgrammeContact(npoProfileId: number,programContactInformation: IProgramContactInformation) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-contact/${npoProfileId}`;
+    return this._http.put<IProgramContactInformation>(url,programContactInformation, httpOptions);
+  }
+
+  public updateProgrammeBankDetails(npoProfileId: number,programBankDetails: IProgramBankDetails) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-bank/${npoProfileId}`;
+    return this._http.put<IProgramBankDetails>(url,programBankDetails, httpOptions);
+  }
+
+  public updateProgrammeDeliveryDetails(npoProfileId: number,programBankDetails: IProgrammeServiceDelivery) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-delivery/${npoProfileId}`;
     return this._http.put<IProgrammeServiceDelivery>(url,programBankDetails, httpOptions);
   }
 
-  public createProgrammeDeliveryDetails(progId: number,programBankDetails: IProgrammeServiceDelivery) {
-    const url = `${this._envUrl.urlAddress}/api/programme/create-delivery/${progId}`;
+  public createProgrammeDeliveryDetails(npoProfileId: number,programBankDetails: IProgrammeServiceDelivery) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-delivery/${npoProfileId}`;
     return this._http.post<IProgrammeServiceDelivery>(url,programBankDetails, httpOptions);
   }
 

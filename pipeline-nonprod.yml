@@ -1,6 +1,6 @@
 
 trigger:
-- Non-Prod
+- 2-NonProd
 
 variables:
   buildConfiguration: 'Release'
@@ -13,7 +13,7 @@ stages:
   - job: 'Build'
     displayName: 'Build job'
     pool:
-      vmImage: windows-2019
+      vmImage: windows-latest
 
     steps:
     - task: UseDotNet@2
