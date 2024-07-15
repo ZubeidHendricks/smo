@@ -2,17 +2,65 @@
 <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Programme Budget Management">
     <div style="height: 10px;"></div>
     <div class="p-grid">
-        <div class="p-col-2">
+        <div class="p-col-3">
             <p-card subheader="Programme Budget Summary" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
                 <div class="p-fluid">
-                    <div class="p-grid" *ngIf="isSystemAdmin">
+                    <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
                                 <span class="non-mandatory-content">Department</span>
                             </div>
                         </div>
-                        <div class="p-col">
-                            <p-dropdown [options]="departments" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedDepartmentSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="departmentSummaryChange()"></p-dropdown>
+                        <div  class="p-col-12 p-md-10">
+                            <p-dropdown [options]="departments" placeholder="Select an option" optionLabel="name" 
+                            [(ngModel)]="selectedDepartmentSummary" [ngModelOptions]="{standalone: true}" 
+                            [style]="{'width':'100%'}" appendTo="body" (onChange)="loadPrograms($event.value.id)">
+                        </p-dropdown>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Programme</span>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-10">
+                            <p-multiSelect [options]="filteredProgrammes" 
+                            defaultLabel="Select Programme(s)" 
+                            optionLabel="name" 
+                            optionValue="id"
+                            [(ngModel)]="selectedProgrammes" 
+                            [ngModelOptions]="{standalone: true}" 
+                            [style]="{'width':'100%'}" appendTo="body" 
+                            selectedItemsLabel="{0} items selected"
+                            (onChange)="programmeChange($event.value)"></p-multiSelect>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="non-mandatory-content">SubProgram</span>
+                        </div>
+                    </div>
+                        <div class="p-col-12 p-md-10">
+                            <p-multiSelect [options]="filteredSubProgrammes" 
+                            defaultLabel="Select SubProgramme(s)" optionLabel="name" optionValue="id" [(ngModel)]="selectedSubProgrammes" 
+                            [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" 
+                            selectedItemsLabel="{0} items selected" (onChange)="subProgrammeChange($event.value)"></p-multiSelect>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">SubProgramType</span>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-10">
+                            <p-multiSelect [options]="filteredSubProgrammeType" defaultLabel="Select SubProgramType(s)" 
+                            optionLabel="name" optionValue="id" [(ngModel)]="selectedSubProgrammeType" 
+                            [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
+                            appendTo="body" selectedItemsLabel="{0} items selected"
+                            (onChange)="subProgrammeTypeChange($event.value)"></p-multiSelect>
                         </div>
                     </div>
                     <div class="p-grid">
@@ -21,11 +69,11 @@
                                 <span class="non-mandatory-content">Financial Year</span>
                             </div>
                         </div>
-                        <div class="p-col">
+                        <div class="p-col-12 p-md-10">
                             <p-dropdown [options]="financialYears" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedFinancialYearSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearSummaryChange()"></p-dropdown>
                         </div>
                     </div>
-                    <div class="p-grid">
+                    <!-- <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
                                 <span class="non-mandatory-content">Budget</span>
@@ -64,11 +112,11 @@
                         <div class="p-col summary-value">
                             R {{totalBalance | number : '1.2-2'}}
                         </div>
-                    </div>
+                    </div> -->
                 </div>                
             </p-card>
         </div>
-        <div class="p-col-10">
+        <div class="p-col-9">
             <p-table [rowHover]="true" #dt [columns]="budgetCols" [value]="programmeBudgets" styleClass="p-datatable-sm"
             [paginator]="true" [rows]="10" [showCurrentPageReport]="true"  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['programmeName','subProgrammeName',
@@ -83,24 +131,17 @@
                         </th>
                         <th style="width: 5%; text-align: center;"></th>
                     </tr>
-                    <tr>
-                        <th><p-columnFilter type="text" field="programme"></p-columnFilter></th>
-                        <th><p-columnFilter type="text" field="subProgramme"></p-columnFilter></th>
-                        <th><p-columnFilter type="text" field="subProgrammeType"></p-columnFilter></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="default-font">
                         <td>{{rowData.programmeName}}</td>
                         <td>{{rowData.subProgrammeName}}</td>
                         <td>{{rowData.subProgrammeTypeName}}</td>
+                        <td style="text-align: right;">R {{rowData.provisionalBudgetAmount | number : '1.2-2'}}</td>
                         <td style="text-align: right;">R {{rowData.originalBudgetAmount | number : '1.2-2'}}</td>
                         <td style="text-align: right;">R {{rowData.adjustedBudgetAmount | number : '1.2-2'}}</td>
-                        <!-- <td></td> -->
+                        <td></td>
+                        <td></td>
                         <td style="text-align: center;">
                             <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="edit(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
                         </td>
@@ -111,14 +152,17 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td style="text-align: right;">{{totalProvisionalBudget | number : '1.2-2'}}</td>
                         <td style="text-align: right;">{{totalBudget | number : '1.2-2'}}</td>                        
                         <td style="text-align: right;">{{totalAdjustedBudget | number : '1.2-2'}}</td> 
+                        <td></td>
+                        <td></td>
                         <td></td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr class="default-font">
-                        <td colspan="7" style="text-align: center;">No results found</td>
+                        <td colspan="9" style="text-align: center;">No results found</td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -126,29 +170,29 @@
     </div>
 </p-panel>
 
-<p-dialog header="Add Budget Adjustment Amount" 
+<p-dialog header="Add Amount" 
           [(visible)]="displayEditDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-
-          <div class="p-col">
-            <input type="text" class="form-text" [(ngModel)]="AdjustmentAmount" pInputText [ngModelOptions]="{standalone: true}">
-        </div>
-
-    <!-- <div class="p-grid" *ngIf="isSystemAdmin">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Department</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-dropdown [options]="departments" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
-        </div>
-    </div> -->
-    <ng-template pTemplate="footer">
-        <button pButton pRipple type="button" label="Save" (click)="SaveData(true, 'singleComment')" class="p-button-text" icon="fa fa-floppy-o"></button>
-    </ng-template>
+        
+        <table>
+            <tr class="default-font">
+                <td>&nbsp;</td>
+                <td> <input type="text" class="form-text" [(ngModel)]="AdjustmentAmount" pInputText [ngModelOptions]="{standalone: true}"></td>
+                <td><button pButton pRipple type="button" label="Add Budget Adjustment Amount" (click)="SaveAdjustmentAmountData(true, 'singleComment')" class="p-button-text" icon="fa fa-floppy-o"></button></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr class="default-font">
+                <td>&nbsp;</td>
+                <td> <input type="text" class="form-text" [(ngModel)]="ProvisionalAmount" pInputText [ngModelOptions]="{standalone: true}"></td>
+                <td><button pButton pRipple type="button" label="Add Provisional Budget Amount" (click)="SaveProvisionalAmountData(true, 'singleComment')" class="p-button-text" icon="fa fa-floppy-o"></button></td>
+            </tr>
+        </table>
 </p-dialog>

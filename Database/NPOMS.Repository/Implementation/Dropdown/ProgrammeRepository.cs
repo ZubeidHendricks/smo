@@ -76,7 +76,7 @@ namespace NPOMS.Repository.Implementation.Dropdown
         public async Task<List<int>> GetProgrammesIdOfLoggenInUserAsync(int userid)
         {
             return await _repositoryContext.UserProgramMappings
-                         .Where(x => x.UserId == userid)
+                         .Where(x => x.UserId == userid && x.IsActive)
                          .Select(x => x.ProgramId)
                          .ToListAsync();
         }

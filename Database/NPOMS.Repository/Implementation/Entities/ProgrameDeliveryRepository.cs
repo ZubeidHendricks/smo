@@ -18,12 +18,12 @@ namespace NPOMS.Repository.Implementation.Entities
 
         }
 
-        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByProgramId(int progId)
+        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByProgramId(int programmeId, int npoProfileId)
         {
-            var result =  await FindByCondition(x => x.ProgramId.Equals(progId) && x.IsActive)
+            var result = await FindByCondition(x => x.ProgramId.Equals(programmeId) && x.IsActive && x.NpoProfileId == npoProfileId)
                             .Include(x => x.DistrictCouncil)
                             .Include(x => x.ApprovalStatus)
-                            .Include(x => x.LocalMunicipality)                             
+                            .Include(x => x.LocalMunicipality)
                             .Include(x => x.ServiceDeliveryAreas).
                                 ThenInclude(x => x.ServiceDeliveryArea)
                             .Include(x => x.Regions)
@@ -39,9 +39,9 @@ namespace NPOMS.Repository.Implementation.Entities
             return result;
         }
 
-        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryyProgramId(int progId)
+        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryyProgramId(int programmeId, int npoProfileId)
         {
-            var result = await FindByCondition(x => x.ProgramId.Equals(progId) && x.IsActive)
+            var result = await FindByCondition(x => x.ProgramId.Equals(programmeId) && x.NpoProfileId == npoProfileId && x.IsActive)
                            .AsNoTracking().ToListAsync();
 
             return result;

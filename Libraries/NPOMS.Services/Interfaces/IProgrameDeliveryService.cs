@@ -10,6 +10,6 @@ namespace NPOMS.Services.Interfaces
 {
     public interface IProgrameDeliveryService
     {
-        Task<IEnumerable<ProgrammeServiceDeliveryVM>> GetDeliveryDetailsByProgramId(int progId);
+        Task<IEnumerable<ProgrammeServiceDeliveryVM>> GetDeliveryDetailsByProgramId(int programmeId, int npoProfileId);
     }
 }

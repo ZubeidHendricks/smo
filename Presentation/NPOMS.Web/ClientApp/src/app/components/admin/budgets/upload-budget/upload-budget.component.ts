@@ -61,10 +61,12 @@ export class UploadBudgetComponent implements OnInit {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewDepartmentBudget))
+        if (!this.IsAuthorized(PermissionsEnum.UploadBudget))
           this._router.navigate(['401']);
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        
+        this.loadDepartments();
         this.loadFinancialYears();
       }
     });
@@ -85,7 +87,6 @@ export class UploadBudgetComponent implements OnInit {
         let currentFinancialYear = results.find(x => new Date(x.startDate) <= currentDate && new Date(x.endDate) >= currentDate);
         this.financialYears = results.filter(x => x.id <= currentFinancialYear.id);
 
-        this.loadDepartments();
       },
       (err) => {
         this._loggerService.logException(err);

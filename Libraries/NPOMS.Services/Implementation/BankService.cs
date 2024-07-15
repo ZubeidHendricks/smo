@@ -72,9 +72,9 @@ namespace NPOMS.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByProgramId(int progId)
+        public async Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByProgramId(int programmeId, int npoProfileId)
         {
-            return await _programeBankDetailRepository.GetBankDetailsByProgramId(progId);
+            return await _programeBankDetailRepository.GetBankDetailsByProgramId(programmeId, npoProfileId);
         }
 
         #endregion

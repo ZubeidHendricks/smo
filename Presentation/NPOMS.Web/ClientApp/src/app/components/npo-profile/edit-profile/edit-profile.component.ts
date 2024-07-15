@@ -26,6 +26,8 @@ import { catchError, map, tap } from 'rxjs/operators';
 export class EditProfileComponent implements OnInit {
   isDeliveryInformationEdit: boolean;
   isSystemAdmin: boolean;
+  isDepartmentAdmin: boolean;
+  isAdmin: boolean;
   isApplicant: boolean;
   canReviewOrApprove: boolean = false;
   ProgrammeApprover: boolean;
@@ -53,12 +55,13 @@ export class EditProfileComponent implements OnInit {
 
     this.isSystemAdmin = roles.some(role => role.id === RoleEnum.SystemAdmin);
     this.isApplicant = roles.some(role => role.id === RoleEnum.Applicant);
+    this.isDepartmentAdmin = roles.some(function (role) { return role.id === RoleEnum.Admin });
 
-    this.ProgrammeApprover = roles.some(role => role.id === RoleEnum.ProgrammeApprover || role.id === RoleEnum.SystemAdmin);
+    this.ProgrammeApprover = roles.some(role => role.id === RoleEnum.ProgrammeApprover || role.id === RoleEnum.SystemAdmin || role.id === RoleEnum.Admin);
 
-    this.ProgrammeCapturer = roles.some(role => role.id === RoleEnum.ProgrammeCapturer || role.id === RoleEnum.SystemAdmin);
+    this.ProgrammeCapturer = roles.some(role => role.id === RoleEnum.ProgrammeCapturer || role.id === RoleEnum.SystemAdmin || role.id === RoleEnum.Admin);
 
-    this.ProgrammeViewOnly = roles.some(role => role.id === RoleEnum.ProgrammeViewOnly || role.id === RoleEnum.SystemAdmin);
+    this.ProgrammeViewOnly = roles.some(role => role.id === RoleEnum.ProgrammeViewOnly || role.id === RoleEnum.SystemAdmin || role.id === RoleEnum.Admin);
     return permissions.some(x => x.systemName === permission);
 }
 
@@ -148,7 +151,7 @@ export class EditProfileComponent implements OnInit {
 
   departments: IDepartment[];
   selectedDepartment: IDepartment;
-
+  selectedProfileDepartment: any;
   departments1: IDepartment[];
 
   bankDetailCols: any[];
@@ -243,6 +246,16 @@ export class EditProfileComponent implements OnInit {
   selectedRegionsText: string;
   selectedSDAsText: string;
   selectedDropdownValue: string;
+
+  filterProgramIds: string;
+  filterDepartmentIds: string;
+  filterSubProgramIds: string;
+  filterSubProgramTypeIds: string;
+  filteredSubProgramTypeIds: number[];
+  profileProgramIds: number[];
+  profileDepartmentIds: number[];
+  
+
   // sdasAll: ISDA[];
   // sdas: ISDA[] = [];
   // selectedSdas: ISDA[];
@@ -312,6 +325,10 @@ export class EditProfileComponent implements OnInit {
            //Get all service delivery areas
         this.loadServiceDeliveryAreas();
         this.loadDepartments1();
+
+        this.ProfileProgramme(this.profile.userPrograms);
+        this.ProfileDepartment(this.profile.departments);
+
       }
     });
 
@@ -343,9 +360,9 @@ export class EditProfileComponent implements OnInit {
     ];
 
     this.serviceRenderedCols = [
-      { header: 'Programme', width: '15%' },
-      { header: 'Sub-Programme', width: '15%' },
-      { header: 'Sub-Programme Type', width: '15%' },
+      { header: 'Programme', width: '31%' },
+      { header: 'Sub-Programme', width: '31%' },
+      { header: 'Sub-Programme Type', width: '31%' },
       // { header: 'Entity System Number', width: '20%' },
       // { header: 'Entity Type Number', width: '20%' }
     ];
@@ -386,11 +403,37 @@ export class EditProfileComponent implements OnInit {
     );
   }
 
-
   loadDepartmentPrograms(id: number = 0) {
-    this.applicantfilteredProgrammes = this.programmes.filter(x => x.department.isActive == true);
-    this.filteredProgrammes =  this.applicantfilteredProgrammes.filter(x => x.department.id === id);
+    this.filteredProgrammes = this.programmes.filter(x => x.departmentId === id); 
+    // Filter active programs within the department
+   //// this.applicantfilteredProgrammes = this.filteredProgrammes.filter(x => x.department.isActive);
+
+    // Further filter by department ID if provided
+
+    // if (id > 0) {
+    //     this.applicantfilteredProgrammes = this.applicantfilteredProgrammes.filter(x => x.department.id === id);
+    // }
+
+   // If the user is not a system admin or an applicant, apply additional filtering
+
+    // if (!this.isSystemAdmin || !this.isApplicant || !this.isAdmin) {
+    //   if (this.ProgrammeCapturer) { 
+    //     this.filteredProgrammes = this.applicantfilteredProgrammes.filter(programme => 
+    //       this.profile.userPrograms.some(userProgram => userProgram.id === programme.id)
+    //   );
+    //   }
+    // } else {
+    //     // Otherwise, use the initially filtered programs
+    //     this.filteredProgrammes = this.applicantfilteredProgrammes;
+    // }
   }
+
+
+  // loadDepartmentPrograms(id: number = 0) {
+  //   this.applicantfilteredProgrammes = this.programmes.filter(x => x.department.isActive == true);
+  //   this.filteredProgrammes =  this.applicantfilteredProgrammes.filter(x => x.department.id === id);
+  //   this.filteredProgrammes = this.profile.userPrograms.some(userProgram => userProgram.id === programme.id);
+  // }
 
   onFirstTdClick(rowIndex: number) {
     this.selectedRowIndex = rowIndex;
@@ -676,6 +719,43 @@ private loadTitles() {
       this.contactInformation.idNumber = "";
   }
 
+  ProfileProgramme(profileProgram: any[])
+  {
+    let selectedProgrammes = [];
+
+    profileProgram.forEach(program => 
+    {
+      selectedProgrammes.push(program.id);
+    }
+    );
+
+    if(selectedProgrammes.length > 0)
+      {
+        this.selectedProgram = selectedProgrammes.join(",");
+        this.filterProgramIds = this.selectedProgram;
+        const programIds = this.filterProgramIds.split(',').map(Number);
+        this.profileProgramIds = programIds;
+      }     
+  }
+
+  ProfileDepartment(profileDepartment: any[])
+  {
+    let selectedDepartments = [];
+
+    profileDepartment.forEach(department => 
+    {
+      selectedDepartments.push(department.id);
+    }
+    );
+
+    if(selectedDepartments.length > 0)
+      {
+        this.selectedProfileDepartment = selectedDepartments.join(",");
+        this.filterDepartmentIds = this.selectedProfileDepartment;
+        const departmentIds = this.filterDepartmentIds.split(',').map(Number);
+        this.profileDepartmentIds = departmentIds;
+      }     
+  }
 
   disableProgrammeSaveContactInfo() {
     const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -724,16 +804,18 @@ private loadTitles() {
       }
     });
   }
-
   
   toggleBankingDetailsPanel(program: any) {
-    if (this.selectedProgram && this.selectedProgram.id === program.id) {
-      this.displayBankingDetailsPanel = !this.displayBankingDetailsPanel;
-    } else {
-      this.selectedProgram = program;
-      this.loadProgrammeDetails(program.id);
-      this.displayBankingDetailsPanel = true;
-    }
+    // if (this.selectedProgram && this.selectedProgram.id === program.id) {
+    //   this.displayBankingDetailsPanel = true;
+    // } else {
+    //   this.selectedProgram = program;
+    //   this.loadProgrammeDetails(program.id);
+    //   this.displayBankingDetailsPanel = true;
+    // }
+    this.selectedProgram = program;
+    this.loadProgrammeDetails(program.id);
+    this.displayBankingDetailsPanel = true;
   }
 
   getNames(array: any[]): string {
@@ -746,9 +828,9 @@ private loadTitles() {
   
   loadProgrammeDetails(progId: number): void {
     forkJoin({
-      contacts: this._npoProfileRepo.getProgrammeContactsById(progId),
-      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId),
-      deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId)
+      contacts: this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfileId)),
+      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfileId)),
+      deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfileId))
     }).subscribe({
       next: (result) => {
         this.programContactInformation = result.contacts;
@@ -763,7 +845,7 @@ private loadTitles() {
   }
 
   loadProgrammeContactInformation(progId: number): void {
-    this._npoProfileRepo.getProgrammeContactsById(progId).subscribe({
+    this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfileId)).subscribe({
       next: (data) => {
         this.programContactInformation = data;
         this.updateProgramBankDetailObjects();
@@ -775,7 +857,7 @@ private loadTitles() {
   }
   
   loadProgrammeBankDetails(progId: number): void {
-    this._npoProfileRepo.getProgrammeBankDetailsById(progId).subscribe({
+    this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfileId)).subscribe({
       next: (data) => {
         this.programBankDetails = data;
         this.updateProgramBankDetailObjects();
@@ -993,7 +1075,7 @@ private loadTitles() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, true).subscribe(
       (results) => {
         this.departments = results;
-        this.updateDepartments();
+      //  this.updateDepartments();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1006,7 +1088,30 @@ private loadTitles() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
       (results) => {
         this.programmes = results;
-        this.updateDepartments();
+        
+        if(this.isSystemAdmin)
+          {
+            this.filteredProgrammes = this.programmes;
+            console.log('this.filteredProgrammes', this.filteredProgrammes);
+          }
+          
+          if(!this.isDepartmentAdmin)
+          {
+            if( this.profileProgramIds != undefined){
+              this.filteredProgrammes = this.programmes.filter(item =>
+                this.profileProgramIds.includes(item.id)
+              );
+            }
+          }
+          else{
+            if( this.profileDepartmentIds != undefined){
+              this.filteredProgrammes = this.programmes.filter(item =>
+                this.profileDepartmentIds.includes(item.departmentId)
+              );
+            }
+          }
+        
+     //   this.updateDepartments();
         this.updateServicesRenderedObjects();
       },
       (err) => {
@@ -1021,8 +1126,15 @@ private loadTitles() {
       this.programmes.forEach(item => {
         item.department = this.departments.find(x => x.id === item.departmentId);
       });
-
       this.filteredProgrammes = this.programmes.filter(x => x.department.isActive == true);
+
+      if (!this.isSystemAdmin || !this.isApplicant || !this.isAdmin) {
+          this.filteredProgrammes = this.filteredProgrammes.filter(programme => 
+            this.profile.userPrograms.some(userProgram => userProgram.id === programme.id)
+        );
+      } else {
+          this.filteredProgrammes = this.filteredProgrammes;
+      }
     }
   }
 
@@ -1312,7 +1424,7 @@ private loadTitles() {
   }
 
   private getProgrammeDeliveryDetailsById(selectedProgramme: number) {
-    this._npoProfileRepo.getProgrammeDeliveryDetailsById(selectedProgramme).subscribe(
+    this._npoProfileRepo.getProgrammeDeliveryDetailsById(selectedProgramme,Number(this.npoProfileId)).subscribe(
       (results) => {
         this.programDeliveryDetails = results;
         this.updateServicesRenderedObjects();

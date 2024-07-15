@@ -166,14 +166,27 @@ export class ViewProfileComponent implements OnInit {
     this.selectedRowIndex = rowIndex;
   }
   toggleBankingDetailsPanel(program: any) {
-    if (this.selectedProgram && this.selectedProgram.id === program.id) {
-      this.displayBankingDetailsPanel = !this.displayBankingDetailsPanel;
-    } else {
-      this.selectedProgram = program;
-      this.loadProgrammeDetails(program.id);
-      this.displayBankingDetailsPanel = true;
-    }
+    console.log(program);
+    // if (this.selectedProgram && this.selectedProgram.id === program.id) {
+    //   this.displayBankingDetailsPanel = true;
+    // } else {
+    //   this.selectedProgram = program;
+    //   this.loadProgrammeDetails(program.id);
+    //   this.displayBankingDetailsPanel = true;
+    // }
+    this.selectedProgram = program;
+    this.loadProgrammeDetails(program.id);
+    this.displayBankingDetailsPanel = true;
   }
+  // toggleBankingDetailsPanel(program: any) {
+  //   if (this.selectedProgram && this.selectedProgram.id === program.id) {
+  //     this.displayBankingDetailsPanel = !this.displayBankingDetailsPanel;
+  //   } else {
+  //     this.selectedProgram = program;
+  //     this.loadProgrammeDetails(program.id);
+  //     this.displayBankingDetailsPanel = true;
+  //   }
+  // }
 
   getNames(array: any[]): string {
     const names = array.map(item => item.name) // Access 'name' directly
@@ -185,9 +198,9 @@ export class ViewProfileComponent implements OnInit {
 
   loadProgrammeDetails(progId: number): void {
     forkJoin({
-      contacts: this._npoProfileRepo.getProgrammeContactsById(progId),
-      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId),
-      deliveryDetails: this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId)
+      contacts: this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfile.id)),
+      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfile.id)),
+      deliveryDetails: this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfile.id))
     }).subscribe({
       next: (result) => {
         this.programContactInformation = result.contacts.filter(contact => contact.approvalStatus.id === AccessStatusEnum.Approved);

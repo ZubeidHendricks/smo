@@ -12,10 +12,12 @@ namespace NPOMS.Services.DenodoAPI.Interfaces
 		Task<FacilityAPIWrapperModel> Get(DenodoFacilityResourceParameters denodoFacilityResourceParameters, string userIdentifier);
 
         Task<BudgetAPIWrapperModel> GetBudgets(string department, string financialYear, string userIdentifier);
-        Task<IEnumerable<ProgrammeBudget>> GetFilteredBudgets(int department, string financialYear);
+        Task<IEnumerable<ProgrammeBudget>> GetFilteredBudgets(int department, string financialYear, string userIdentifier);
+        Task<IEnumerable<ProgrammeBudget>> GetDepartmentBudgetsSummary(int department, string financialYear, string userIdentifier);
         Task<BudgetAdjustment> Create(string responsibilityCode, string objectiveCode, decimal amount);
         Task<IEnumerable<ImportBudget>> ImportBudget(string responsibilityCode, string objectiveCode, string userIdentifier);
         Task <ProgrammeBudget> Update(string amount, int id,  string userIdentifier);
+        Task<ProgrammeBudget> ProvisionalAmountUpdate(string amount, int id, string userIdentifier);
 
     }
 }
