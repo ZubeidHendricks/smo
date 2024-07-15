@@ -1,6 +1,6 @@
 
 trigger:
-- 3-Training
+- Training
 
 variables:
   buildConfiguration: 'Release'
