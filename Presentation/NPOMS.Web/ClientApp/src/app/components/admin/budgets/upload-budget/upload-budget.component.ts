@@ -61,7 +61,7 @@ export class UploadBudgetComponent implements OnInit {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
-        if (!this.IsAuthorized(PermissionsEnum.ViewDepartmentBudget))
+        if (!this.IsAuthorized(PermissionsEnum.UploadBudget))
           this._router.navigate(['401']);
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });

@@ -158,21 +158,42 @@ namespace NPOMS.Services.Implementation
             var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
 
 
-            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin))))
+            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Applicant))))
             {
                 return results;
             }
-			else if(loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))
+            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.Admin))))
             {
-                results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId)
-                          && programmesIds.Contains(x.ApplicationPeriod.ProgrammeId));
+				results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId));
+						
 
+                return results;
+            }
+            else if(loggedInUser.Roles.Any(x => x.IsActive))
+            {
+                if (loggedInUser.Departments.Any(x => x.DepartmentId == 11))
+				{
+                    results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId));
+                }
+				else
+				{
+                    results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId)
+                                             && programmesIds.Contains(x.ApplicationPeriod.ProgrammeId));
+                }
+                   
                 return results;
             }
 			else
 			{
-                results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId)
-                         && programmesIds.Contains(x.ApplicationPeriod.ProgrammeId));
+                if (loggedInUser.Departments.Any(x => x.DepartmentId == 11))
+                {
+                    results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId));
+                }
+				else
+                {
+                    results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId)
+                                             && programmesIds.Contains(x.ApplicationPeriod.ProgrammeId));
+                }
 
                 var mappings = await _userNpoRepository.GetApprovedEntities(loggedInUser.Id);
                 var NpoIds = mappings.Select(x => x.NpoId);
