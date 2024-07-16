@@ -51,15 +51,20 @@ namespace NPOMS.Services.Implementation
 
             var departmentIds = await _departmentRepository.GetDepartmentIdOfLogggedInUserAsync(loggedInUser.Id);
             var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
-            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin)) || x.RoleId.Equals((int)RoleEnum.Applicant)))
+            if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin))))
             {
                 return results;
             }
             else
             {
-               
-                results = results.Where(x => departmentIds.Contains(x.DepartmentId)
-                         || programmesIds.Contains(x.ProgrammeId));
+				if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.Applicant))))
+				{
+                    results = results.Where(x => x.CreatedUserId == loggedInUser.Id);
+                }
+				else {
+                    results = results.Where(x => departmentIds.Contains(x.DepartmentId)
+                    || programmesIds.Contains(x.ProgrammeId));
+                }
 
                 return results;
             }
