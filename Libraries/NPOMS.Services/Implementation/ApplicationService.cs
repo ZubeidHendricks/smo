@@ -185,10 +185,8 @@ namespace NPOMS.Services.Implementation
             }
 			else if(loggedInUser.Roles.Any(x => x.IsActive && x.RoleId.Equals((int)RoleEnum.Applicant)))
 			{
-
-				results = results.Where(x => x.CreatedUserId == loggedInUser.Id);
+				//results = results.Where(x => x.CreatedUserId == loggedInUser.Id);
 				return results;
-
             }
 			else
 			{
