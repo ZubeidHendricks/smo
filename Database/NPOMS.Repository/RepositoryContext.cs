@@ -1,3 +1,4 @@
+using Azure.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -20,6 +21,7 @@ using NPOMS.Repository.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace NPOMS.Repository
@@ -27,7 +29,6 @@ namespace NPOMS.Repository
     public class RepositoryContext : DbContext
     {
         private IConfiguration _configuration;
-        private IDBAuthTokenService _authTokenService;
 
         public RepositoryContext(DbContextOptions options)
             : base(options)
@@ -37,13 +38,11 @@ namespace NPOMS.Repository
 
         public RepositoryContext(
                 IConfiguration configuration,
-                IDBAuthTokenService tokenService,
                 DbContextOptions options
             )
             : base(options)
         {
             _configuration = configuration;
-            _authTokenService = tokenService;
         }
 
 
@@ -58,10 +57,13 @@ namespace NPOMS.Repository
 
             if (connection.ConnectionString.Contains("database.windows.net"))
             {
-                connection.AccessToken = _authTokenService.GetToken().Result;
+                var credentials = new ChainedTokenCredential(new VisualStudioCredential(), new ManagedIdentityCredential());
+
+                var token = credentials.GetTokenAsync(new Azure.Core.TokenRequestContext(new[] { "https://database.windows.net/.default" })).Result;
+                connection.AccessToken = token.Token;
             }
 
-            optionsBuilder.UseSqlServer(connection, s => s.MigrationsAssembly("NPOMS.Repository"));
+            optionsBuilder.UseSqlServer(connection);
             optionsBuilder.EnableSensitiveDataLogging();
 
 		}
@@ -220,7 +222,8 @@ namespace NPOMS.Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
 
             modelBuilder.Entity<RolePermission>().HasKey(x => new { x.RoleId, x.PermissionId });
             modelBuilder.Entity<ObjectiveProgramme>().HasKey(x => new { x.ObjectiveId, x.ProgrammeId, x.SubProgrammeId });
@@ -246,80 +249,7 @@ namespace NPOMS.Repository
                 .WithMany(x => x.Programmes)
                 .HasForeignKey(x => x.SubProgrammeId);
 
-            /* Core */
-            modelBuilder.ApplyConfiguration(new DepartmentConfiguration());
-          //  modelBuilder.ApplyConfiguration(new UserProgramConfiguration());
-            modelBuilder.ApplyConfiguration(new DocumentTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new EmailAccountConfiguration());
-            modelBuilder.ApplyConfiguration(new EmailTemplateConfiguration());
-            modelBuilder.ApplyConfiguration(new EntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new FinancialYearConfiguration());
-            modelBuilder.ApplyConfiguration(new QuarterlyPeriodConfiguration());
-            modelBuilder.ApplyConfiguration(new PermissionConfiguration());
-            modelBuilder.ApplyConfiguration(new RoleConfiguration());
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
-            modelBuilder.ApplyConfiguration(new UtilityConfiguration());
-            modelBuilder.ApplyConfiguration(new EmbeddedReportConfiguration());
-
-            /* Dropdown */
-            modelBuilder.ApplyConfiguration(new ActivityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new AllocationTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new ApplicationTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new FacilityClassConfiguration());
-            modelBuilder.ApplyConfiguration(new FacilityDistrictConfiguration());
-            modelBuilder.ApplyConfiguration(new FacilitySubDistrictConfiguration());
-            modelBuilder.ApplyConfiguration(new FacilityTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new OrganisationTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new PositionConfiguration());
-            modelBuilder.ApplyConfiguration(new ProgrammeConfiguration());
-            modelBuilder.ApplyConfiguration(new ProvisionTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new RecipientTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new ResourceTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new ServiceTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new SubProgrammeConfiguration());
-            modelBuilder.ApplyConfiguration(new TitleConfiguration());
-            modelBuilder.ApplyConfiguration(new FrequencyConfiguration());
-            modelBuilder.ApplyConfiguration(new FrequencyPeriodConfiguration());
-            modelBuilder.ApplyConfiguration(new SubProgrammeTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new DirectorateConfiguration());
-            modelBuilder.ApplyConfiguration(new BankConfiguration());
-            modelBuilder.ApplyConfiguration(new BranchConfiguration());
-            modelBuilder.ApplyConfiguration(new AccountTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new DistrictCouncilConfiguration());
-            modelBuilder.ApplyConfiguration(new LocalMunicipalityConfiguration());
-            modelBuilder.ApplyConfiguration(new RegionConfiguration());
-            modelBuilder.ApplyConfiguration(new ServiceDeliveryAreaConfiguration());
-            modelBuilder.ApplyConfiguration(new PropertyTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new PropertySubTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new PlaceConfiguration());
-            modelBuilder.ApplyConfiguration(new SubPlaceConfiguration());
-            modelBuilder.ApplyConfiguration(new GenderConfiguration());
-            modelBuilder.ApplyConfiguration(new RaceConfiguration());
-            modelBuilder.ApplyConfiguration(new LanguageConfiguration());
-            modelBuilder.ApplyConfiguration(new RegistrationStatusConfiguration());
-            modelBuilder.ApplyConfiguration(new StaffCategoryConfiguration());
-
-            /* Entities */
-            modelBuilder.ApplyConfiguration(new AccessStatusConfiguration());
-            modelBuilder.ApplyConfiguration(new StatusConfiguration());
-            modelBuilder.ApplyConfiguration(new TrainingMaterialConfiguration());
-            modelBuilder.ApplyConfiguration(new CompliantCycleRuleConfiguration());
-            modelBuilder.ApplyConfiguration(new PreviousYearFinanceConfiguration());
-            modelBuilder.ApplyConfiguration(new FundingTemplateTypeConfiguration());
-            //modelBuilder.ApplyConfiguration(new AffiliatedOrganisationInformationConfiguration());
-            //modelBuilder.ApplyConfiguration(new SourceOfInformationConfiguration());
-            /* Lookup */
-            modelBuilder.ApplyConfiguration(new ActivityListConfiguration());
-            modelBuilder.ApplyConfiguration(new ResourceListConfiguration());
-
-            /* Mapping */
-            modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
-            modelBuilder.ApplyConfiguration(new DepartmentRoleConfiguration());  
-            modelBuilder.ApplyConfiguration(new UserDepartmentConfiguration());
-            modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
-            modelBuilder.ApplyConfiguration(new UserProgramMppingConfiguration());
-            modelBuilder.ApplyConfiguration(new SegmentCodeConfiguration());
-
+          
         }
 
         /// <summary>

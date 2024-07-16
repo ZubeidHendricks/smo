@@ -1,11 +1,10 @@
 
 trigger:
-- branch-from-c55e42b4
+- Training
 
 variables:
   buildConfiguration: 'Release'
   dotnetSdkVersion: '8.x'
-  System.Debug: 'true'
   
 stages:
 - stage: 'Build'
@@ -14,7 +13,7 @@ stages:
   - job: 'Build'
     displayName: 'Build job - lastest-working'
     pool:
-      vmImage: windows-2019
+      vmImage: windows-latest
 
     steps:
     - task: UseDotNet@2

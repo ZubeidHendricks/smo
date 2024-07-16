@@ -1,25 +1,33 @@
-
 trigger:
-- Prod
+- main
 
 variables:
   buildConfiguration: 'Release'
   dotnetSdkVersion: '8.x'
-  
+  # system.debug: true # Enable detailed logging
+
 stages:
 - stage: 'Build'
   displayName: 'Build the web application'
   jobs: 
   - job: 'Build'
     displayName: 'Build job'
+    timeoutInMinutes: 120 # Adjusted to 300 minutes for longer builds
     pool:
       vmImage: windows-latest
-
+      # demands:
+      #  - msbuild
+      #  - visualstudio
     steps:
-    - task: UseDotNet@2
-      displayName: 'Use .NET SDK $(dotnetSdkVersion)'
-      inputs:
-        version: '$(dotnetSdkVersion)'
+    # - script: |
+    #     echo "Checking network connectivity to Azure DevOps..."
+    #     ping dev.azure.com
+    #     tracert dev.azure.com
+    #   displayName: 'Network Diagnostics'
+    # - task: UseDotNet@2
+    #   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+    #   inputs:
+    #     version: '$(dotnetSdkVersion)'
     - task: DotNetCoreCLI@2
       displayName: 'Restore project dependencies'
       inputs:
@@ -42,8 +50,12 @@ stages:
         arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
         zipAfterPublish: true
 
-    - publish: '$(Build.ArtifactStagingDirectory)'
-      artifact: drop
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish build artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
 
   - job: BuildSPAJob
     displayName: Build SPA job
@@ -68,7 +80,7 @@ stages:
         cd '$(System.DefaultWorkingDirectory)/Presentation/NPOMS.Web/ClientApp'
         npm install -g @angular/cli@11.2.19
         npm install --force
-        ng build --configuration production
+        ng build --configuration nonprod
       displayName: 'npm install and build'
 
     - task: ArchiveFiles@2
@@ -79,63 +91,10 @@ stages:
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         replaceExistingArchive: true
-        
+
     - task: PublishBuildArtifacts@1
+      displayName: 'Publish SPA build artifacts'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         ArtifactName: 'app'
         publishLocation: 'Container'
-
-  - job: CreateReleaseArtifact
-    displayName: 'Package for shared-hosting of angular app and web api'
-    dependsOn: 
-    - Build
-    - BuildSPAJob
-    pool:
-      vmImage: windows-2019
-    steps:
-    - checkout: none
-    - download: current
-
-    - task: ExtractFiles@1
-      inputs:
-       archiveFilePatterns: '$(Pipeline.Workspace)/**/*.zip'
-       destinationFolder: '$(Pipeline.Workspace)/NewPackage'
-       cleanDestinationFolder: false
-       overwriteExistingFiles: false
-
-    - task: ArchiveFiles@2
-      displayName: 'Archive files'
-      inputs:
-        rootFolderOrFile: '$(Pipeline.Workspace)/NewPackage'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Pipeline.Workspace)/WebAPI1.zip'
-
-    - publish: $(Pipeline.Workspace)/WebAPI1.zip
-      artifact: WebAPI
-
-- stage: 'DeployAPI'
-  displayName: 'Deploy the web application'
-  dependsOn: Build
-  jobs:
-  - deployment: Deploy
-    pool:
-      vmImage: 'windows-2019'
-    environment: TapsProd
-    #variables:
-    #- group: Release
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: WebAPI
-          - task: AzureWebApp@1
-            displayName: 'Azure App Service Deploy: website'
-            inputs:
-              azureSubscription: 'sp-taps-rg-prod-mtp-appsvc-lnx-std-zan-TAPS_Dev'
-              appType: 'webAppLinux'
-              appName: 'wa-wcg-npoms-prod-zan'
-              package: '$(Pipeline.Workspace)/WebAPI/WebAPI1.zip'
-              runtimeStack: 'DOTNETCORE|8.0'

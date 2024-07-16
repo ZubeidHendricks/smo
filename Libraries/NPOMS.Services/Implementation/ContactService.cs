@@ -17,9 +17,9 @@ namespace NPOMS.Services.Implementation
 
         }
 
-        public Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByProgramId(int progId)
+        public Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByProgramId(int programmeId, int npoProfileId)
         {
-            return _programeContactDetailRepository.GetContactDetailsByProgramId(progId);
+            return _programeContactDetailRepository.GetContactDetailsByProgramId(programmeId,npoProfileId);
         }
     }
 }
