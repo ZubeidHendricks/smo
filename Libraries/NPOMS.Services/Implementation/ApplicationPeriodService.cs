@@ -59,9 +59,10 @@ namespace NPOMS.Services.Implementation
             {
 				if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.Applicant))))
 				{
-                    results = results.Where(x => x.CreatedUserId == loggedInUser.Id);
+                    return results;
+                    //= results.Where(x => x.CreatedUserId == loggedInUser.Id);
                 }
-				else {
+                else {
                     results = results.Where(x => departmentIds.Contains(x.DepartmentId)
                     || programmesIds.Contains(x.ProgrammeId));
                 }
