@@ -2,13 +2,13 @@ import { FinancialMatters, IFinancialMattersExpenditure, IFinancialMattersIncome
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { CalculatedFinMatters } from 'src/app/models/CalculatedFinMatters';
 import { IPreviousFinancialYear } from 'src/app/models/FinancialMatters';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { PropertyType } from 'src/app/models/PropertyType';
 import { DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, FinYear, IFundingApplicationDetails, IBankDetail, IBank, IBranch, IAccountType } from 'src/app/models/interfaces';
+import { IApplication, FinYear, IFundingApplicationDetails, IBankDetail, IBank, IBranch, IAccountType, IFinancialYear, IProgramBankDetails } from 'src/app/models/interfaces';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
@@ -109,6 +109,9 @@ export class FinancialMattersComponent implements OnInit {
   accountTypes: IAccountType[];
   selectedAccountType: IAccountType;
   bankDetails: IBankDetail[];
+  programBankDetails : IProgramBankDetails [];
+  previous_year: any;
+
   constructor(private dropDownService: DropdownService,
     private _confirmationService: ConfirmationService,
     private _bidServie: BidService,
@@ -126,7 +129,11 @@ export class FinancialMattersComponent implements OnInit {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
 
-    });
+      this.loadProgrammeDetails();
+     // this.current_year = new Date("YYYY").toString();
+     // alert(this.current_year);
+
+    }); 
 
     this.GetPreviousYearFinanceData();
     this.GetBankDetail();
@@ -176,16 +183,17 @@ export class FinancialMattersComponent implements OnInit {
     this.financialMattersOthers = [];
     this.financicalMattersOthrSourceFunding = [];
     // }
-
+    
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(res => {
       this.finYears = res;
-
+      this.previous_year = this.finYears[this.application.applicationPeriod.financialYearId - 2].name;
+      
       this.cols = [
         { field: 'property', header: 'Item Description', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
-        { field: 'year1', header: this.finYears[2].name, width: '15%' },
-        { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },
-        { field: 'year3', header: this.finYears[4].name + '[estimated]', width: '15%' },
+        { field: 'year1', header: this.finYears[this.application.applicationPeriod.financialYearId - 1].name, width: '15%' },
+        { field: 'year2', header: this.finYears[this.application.applicationPeriod.financialYearId].name + '[estimated]', width: '15%' },
+        { field: 'year3', header: this.finYears[this.application.applicationPeriod.financialYearId + 1].name + '[estimated]', width: '15%' },
         { field: 'total', header: 'Total Funding ', width: '10%' },
         { field: 'action', header: 'Action ', width: '5%' }
 
@@ -193,9 +201,9 @@ export class FinancialMattersComponent implements OnInit {
       this.colsOther = [
         { field: 'property', header: 'Name of Organisation from whom funding has been received', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
-        { field: 'year1', header: this.finYears[2].name, width: '15%' },
-        { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },
-        { field: 'year3', header: this.finYears[4].name + '[estimated]', width: '15%' },
+        { field: 'year1', header: this.finYears[this.application.applicationPeriod.financialYearId -1].name, width: '15%' },
+        { field: 'year2', header: this.finYears[this.application.applicationPeriod.financialYearId].name + '[estimated]', width: '15%' },
+        { field: 'year3', header: this.finYears[this.application.applicationPeriod.financialYearId + 1].name + '[estimated]', width: '15%' },
         { field: 'total', header: 'Total Funding ', width: '10%' },
         { field: 'action', header: 'Action ', width: '5%' }
 
@@ -217,6 +225,18 @@ export class FinancialMattersComponent implements OnInit {
     this.loadBanks();
     this.loadAccountTypes();
   }
+
+  private loadProgrammeDetails() {
+    this._npoProfile.getProgrammeBankDetails(this.application.id).subscribe(
+      (results) => {
+        this.programBankDetails = results;
+        this.updateBankDetailObjects();
+      }, 
+      (err) => {
+      }
+    );
+  }
+  
 
   private loadBanks() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Banks, false).subscribe(
