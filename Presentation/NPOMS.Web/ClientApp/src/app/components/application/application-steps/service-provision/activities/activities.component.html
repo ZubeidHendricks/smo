@@ -68,6 +68,49 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
+    <!-- <div class="p-grid p-nogutter">
+
+            <div class="p-col form-label">
+                <div class="box">
+                    <span class="mandatory-content">District</span>
+                </div>
+                <p-multiSelect [options]="facilityDistricts" defaultLabel="Select District(s)" optionLabel="name" [(ngModel)]="selectedDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onDistrictChange()"></p-multiSelect>
+            </div>
+            <div class="p-col form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub District</span>
+                </div>
+                <p-multiSelect [options]="facilitySubDistricts" defaultLabel="Select Sub District(s)" optionLabel="name" [(ngModel)]="selectedSubDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onSubDistrictChange()"></p-multiSelect>
+            </div>
+            <div class="p-col form-label">
+                <div class="box">
+                    <span class="mandatory-content">Sub Structures</span>
+                </div>
+                <p-multiSelect [options]="facilitySubStructures" defaultLabel="Select Sub Structure(s)" optionLabel="name" [(ngModel)]="selectedFacilitySubStructures" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
+            </div>
+    </div> -->
+
+    <div class="p-grid p-nogutter" style="margin-bottom: 0.5rem;">
+        <div class="p-col-3 p-offset-3 form-label" style="padding-right: 1rem;">
+            <div class="box">
+                <span class="mandatory-content">District</span>
+            </div>
+            <p-dropdown [options]="facilityDistricts" placeholder="Select District" optionLabel="name" [(ngModel)]="selectedDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="onDistrictChange()"></p-dropdown>
+        </div>
+        <div class="p-col-3 form-label" style="padding-right: 1rem;">
+            <div class="box">
+                <span class="mandatory-content">Sub District</span>
+            </div>
+            <p-multiSelect [options]="facilitySubDistricts" defaultLabel="Select Sub District(s)" optionLabel="name" [(ngModel)]="selectedSubDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+        <div class="p-col-3 form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub Structures</span>
+            </div>
+            <p-dropdown [options]="facilitySubStructures" placeholder="Select Sub Structure" optionLabel="name" [(ngModel)]="selectedFacilitySubStructures" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
+ 
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -223,6 +266,176 @@
         <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
     </ng-template>
 </p-dialog>
+
+
+<!-- <p-dialog header="Activity" 
+          [(visible)]="displayActivityDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid p-nogutter">
+        <div class="p-col form-label">
+            <div class="box">
+                <span class="mandatory-content">District</span>
+            </div>
+            <p-multiSelect [options]="districts" defaultLabel="Select District(s)" optionLabel="name" [(ngModel)]="selectedDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onDistrictChange()"></p-multiSelect>
+        </div>
+        <div class="p-col form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub District</span>
+            </div>
+            <p-multiSelect [options]="subDistricts" defaultLabel="Select Sub District(s)" optionLabel="name" [(ngModel)]="selectedSubDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onSubDistrictChange()"></p-multiSelect>
+        </div>
+        <div class="p-col form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub Structures</span>
+            </div>
+            <p-multiSelect [options]="subStructures" defaultLabel="Select Sub Structure(s)" optionLabel="name" [(ngModel)]="selectedSubStructures" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+    </div>
+    <div class="p-grid">
+         <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Objective</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="objectives" placeholder="Select an Objective" optionLabel="name" [(ngModel)]="selectedObjective" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="objectiveChange($event.value)" [disabled]="!canEdit"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="selectedObjective">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Objective Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub-Programme</span>
+            </div>
+        </div>
+        <div class="p-col" *ngIf="canEdit">
+            <p-multiSelect [options]="subProgrammes" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedSubProgrammes" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgramme()" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+        <div class="p-col" *ngIf="!canEdit">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Activity Lookup</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-autoComplete appendTo="body" id="selectedActivity"                      
+                [(ngModel)]="selectedActivity"
+                [style]="{'width':'100%'}"
+                [inputStyle]="{'width':'100%'}"
+                [suggestions]="activityList"
+                field="name"
+                (completeMethod)="search($event)"
+                [size]="20"
+                placeholder="Find Activity (type 4 letters)"
+                [forceSelection]="true"
+                [minLength]="4"
+                [showTransitionOptions]="'0ms'"
+                [hideTransitionOptions]="'0ms'"
+                emptyMessage="No results found"
+                name="facility"
+                [showEmptyMessage]="true"
+                (onSelect)="selectActivity($event)"
+                [disabled]="!canEdit">
+            </p-autoComplete>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.name" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" [maxlength]="maxChars">
+            <span *ngIf="canEdit">Characters Remaining: <span *ngIf="activity.name">{{activity.name.length}}</span>/{{maxChars}}</span>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="activity.description" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="activityTypes" placeholder="Select an Activity Type" optionLabel="name" [(ngModel)]="selectedActivityType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Timeline</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-calendar [(ngModel)]="activity.timelineStartDate" placeholder="Select a Start Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
+            &nbsp; to &nbsp;
+            <p-calendar [(ngModel)]="activity.timelineEndDate" placeholder="Select a End Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Target</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-inputNumber [(ngModel)]="activity.target" inputId="integeronly" [style]="{'width':'100%'}" [disabled]="!canEdit"></p-inputNumber>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Indicators of Success</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit">
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="activityTypeDetails && selectedActivityType">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Activity Type Details</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="activityTypeDetails" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
+        </div>
+    </div>
+    <p-footer>
+        <p-button label="Save" icon="pi pi-check" (onClick)="saveActivity()" *ngIf="canEdit"></p-button>
+        <p-button label="Cancel" icon="pi pi-times" (onClick)="cancelActivity()"></p-button>
+    </p-footer>
+</p-dialog> -->
+
+
 
 <p-dialog header="Add Comment" 
           [(visible)]="displayCommentDialog" 

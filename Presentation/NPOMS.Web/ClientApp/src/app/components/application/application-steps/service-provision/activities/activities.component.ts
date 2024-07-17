@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityFacilityList, IActivityList, IActivityRecipient, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, INpo, IObjective, IRecipientType, ISubProgramme } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, INpo, IObjective, IRecipientType, ISubProgramme } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -15,6 +15,30 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   styleUrls: ['./activities.component.css']
 })
 export class ActivitiesComponent implements OnInit {
+
+  // districts: any[] = [
+  //   { name: 'District 1', code: 'D1' },
+  //   { name: 'District 2', code: 'D2' }
+  // ];
+
+  // subDistricts: any[] = [];
+  // subStructures: any[] = [];
+
+  // allSubDistricts: any[] = [
+  //   { name: 'Sub District 1-1', code: 'SD1', districtCode: 'D1' },
+  //   { name: 'Sub District 1-2', code: 'SD2', districtCode: 'D1' },
+  //   { name: 'Sub District 2-1', code: 'SD3', districtCode: 'D2' }
+  // ];
+
+  // allSubStructures: any[] = [
+  //   { name: 'Sub Structure 1-1-1', code: 'SS1', subDistrictCode: 'SD1' },
+  //   { name: 'Sub Structure 1-1-2', code: 'SS2', subDistrictCode: 'SD1' },
+  //   { name: 'Sub Structure 2-1-1', code: 'SS3', subDistrictCode: 'SD3' }
+  // ];
+
+  // selectedDistricts: any[] = [];
+  // selectedSubDistricts: any[] = [];
+  // selectedSubStructures: any[] = [];
 
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
@@ -84,6 +108,17 @@ export class ActivitiesComponent implements OnInit {
   selectedRecipients: IActivityRecipient[] = [];
   selectedRecipientsText: string;
 
+  facilityDistricts: IFacilityDistrict[];
+  selectedDistricts: IFacilityDistrict;
+
+  allFacilitySubDistricts: IFacilitySubDistrict[];
+  facilitySubDistricts: IFacilitySubDistrict[];
+  selectedSubDistricts: IFacilitySubDistrict[];
+
+  allFacilitySubStructures: IFacilitySubStructure[];
+  facilitySubStructures: IFacilitySubStructure[];
+  selectedFacilitySubStructures: IFacilitySubStructure;
+
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
@@ -119,6 +154,9 @@ export class ActivitiesComponent implements OnInit {
     this.loadFacilities();
     this.setYearRange();
     this.loadAllSubProgrammes();
+    this.loadFacilityDistricts();
+    this.loadFacilitySubDistricts();
+    this.loadFacilitySubStructures();
 
     this.activityCols = [
       { header: 'Activity Name', width: '20%' },
@@ -142,6 +180,91 @@ export class ActivitiesComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
+
+  private loadFacilityDistricts() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilityDistricts, false).subscribe(
+      (results) => {
+        this.facilityDistricts = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadFacilitySubDistricts() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubDistricts, false).subscribe(
+      (results) => {
+        this.allFacilitySubDistricts = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadFacilitySubStructures() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubStructure, false).subscribe(
+      (results) => {
+        console.log('substructures', results)
+        this.allFacilitySubStructures = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  onDistrictChange() {
+    this.selectedSubDistricts = [];
+    this.selectedFacilitySubStructures  = null;
+    
+    if (this.selectedDistricts) {
+      this.facilitySubDistricts = this.allFacilitySubDistricts.filter(sd => 
+        sd.facilityDistrictId === this.selectedDistricts.id
+      );
+  
+      this.facilitySubStructures = this.allFacilitySubStructures.filter(ss => 
+        ss.facilityDistrictId === this.selectedDistricts.id
+      );
+
+    } else {
+      this.selectedSubDistricts = [];
+      this.selectedFacilitySubStructures = null;
+    }
+  }
+  
+  // onDistrictChange() {
+  //   this.selectedSubDistricts = [];
+  //   this.selectedFacilitySubStructures = [];
+  //   if (this.selectedDistricts.length > 0) {
+  //     this.facilitySubDistricts = this.allFacilitySubDistricts.filter(sd => 
+  //       this.selectedDistricts.some(d => d.id === sd.facilityDistrictId)
+  //     );
+
+  //     this.facilitySubStructures = this.allFacilitySubStructures.filter(ss => 
+  //       this.selectedDistricts.some(sd => sd.id === ss.facilityDistrictId)
+  //     );
+
+  //   } else {
+  //     this.facilitySubDistricts = [];
+  //     this.facilitySubStructures = [];
+  //   }
+  // }
+
+  // onSubDistrictChange() {
+  //   this.selectedFacilitySubStructures = [];
+  //   if (this.selectedSubDistricts.length > 0) {
+  //     this.facilitySubStructures = this.allFacilitySubStructures.filter(ss => 
+  //       this.selectedSubDistricts.some(sd => sd.id === ss.FacilitySubDistrictId)
+  //     );
+  //   } else {
+  //     this.facilitySubStructures = [];
+  //   }
+  // }
 
   private loadNpo() {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(
@@ -295,8 +418,17 @@ export class ActivitiesComponent implements OnInit {
     this.newActivity = true;
     this.activity = {
       activitySubProgrammes: [] as IActivitySubProgramme[],
-      activityFacilityLists: [] as IActivityFacilityList[]
+      activityFacilityLists: [] as IActivityFacilityList[],
+      activityDistrict: {
+        id: null,
+        name: '',
+        isActive: false,
+        activityId: null,
+        activitySubDistrict: [] as IActivitySubDistrict[],
+        activitySubStructure: {} as IActivitySubStructure,
+      } as IActivityDistrict,
     } as IActivity;
+    
     this.selectedObjective = null;
     this.selectedActivityType = null;
     this.selectedFacilities = [];
@@ -352,6 +484,23 @@ export class ActivitiesComponent implements OnInit {
     });
 
     this.getTextValues();
+
+    // Handle selected districts
+    // const districtIds = data.activityDistricts.map(({ id }) => id);
+    // this.selectedDistricts = this.facilityDistricts.filter(item => districtIds.includes(item.id));
+
+    // Handle selected district
+    const districtId = data.activityDistrict?.id; // Assuming data.activityDistricts is a single item
+    this.selectedDistricts = this.facilityDistricts.find(item => item.id === districtId);
+
+    const subDistrictIds = data.activityDistrict.activitySubDistrict.map(({ id }) => id);
+    this.selectedSubDistricts = this.allFacilitySubDistricts.filter(item => subDistrictIds.includes(item.id));
+
+    const subStructureId = data.activityDistrict.activitySubStructure?.id;
+    this.selectedFacilitySubStructures = this.allFacilitySubStructures.find(item => item.id === subStructureId);
+    // Handle selected facility sub-structures
+    // const subStructureIds = data.activitySubStructures.map(({ id }) => id);
+    // this.selectedFacilitySubStructures = this.allFacilitySubStructures.filter(item => subStructureIds.includes(item.id));
 
     return activity;
   }
@@ -478,18 +627,118 @@ export class ActivitiesComponent implements OnInit {
 
     this.activity.activityRecipients = this.selectedRecipients;
 
-    this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(
-      (resp) => {
-        this.activity.activityListId = resp.id;
-        this.newActivity ? this.createActivity() : this.updateActivity();
-        this.displayActivityDialog = false;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+
+    // Initialize the selected district
+this.activity.activityDistrict = {
+  facilityDistrictId: this.selectedDistricts.id,
+  name: this.selectedDistricts.name,
+  isActive: this.selectedDistricts.isActive,
+  activityId: this.activity.id,
+  activitySubDistrict: [],
+  activitySubStructure: {} as IActivitySubStructure,
+} as IActivityDistrict;
+
+// Add selected sub-districts
+this.selectedSubDistricts.forEach(item => {
+  let selectedSubDistrict = {
+    // id: item.id,
+    facilityDistrictId: item.facilityDistrictId,
+    name: item.name,
+    isActive: item.isActive,
+  } as IActivitySubDistrict;
+
+  this.activity.activityDistrict.activitySubDistrict.push(selectedSubDistrict);
+});
+
+this.activity.activityDistrict.activitySubStructure = {
+  // id: this.selectedFacilitySubStructures.id,
+  facilityDistrictId: this.selectedFacilitySubStructures.facilityDistrictId,
+  name: this.selectedFacilitySubStructures.name,
+  isActive: this.selectedFacilitySubStructures.isActive,
+} as IActivitySubStructure;
+
+console.log('activity', this.activity);
+
+
+
+
+
+
+
+
+
+
+
+// // Add selected districts
+// this.activity.activityDistricts = [];
+// this.selectedDistricts.forEach(item => {
+//   let selectedDistrict = {
+//     id: item.id,
+//     name: item.name,
+//     isActive: item.isActive,
+//     activityId: this.activity.id,
+//   } as IActivityDistrict;
+
+//   this.activity.activityDistricts.push(selectedDistrict);
+// });
+
+
+// Add selected district
+// this.activity.activityDistricts = {
+//   id: this.selectedDistricts.id,
+//   name: this.selectedDistricts.name,
+//   isActive: this.selectedDistricts.isActive,
+//   activityId: this.activity.id,
+// } as IActivityDistrict;
+
+// this.activity.activityDistricts.activitySubDistricts = [];
+// this.selectedSubDistricts.forEach(item => {
+//   let selectedSubDistrict = {
+//     id: item.id,
+//     facilityDistrictId: item.facilityDistrictId,
+//     name: item.name,
+//     isActive: item.isActive,
+//     activityId: this.activity.id,
+//   } as IActivitySubDistrict;
+
+//   this.activity.activityDistricts.activitySubDistricts.push(selectedSubDistrict);
+// });
+
+// this.activity.activityDistricts.activitySubStructures = {
+//   id: this.selectedFacilitySubStructures.id,
+//   FacilityDistrictId: this.selectedFacilitySubStructures.facilityDistrictId,
+//   name: this.selectedFacilitySubStructures.name,
+//   isActive: this.selectedFacilitySubStructures.isActive,
+//   activityId: this.activity.id,
+// } as IActivitySubStructure;
+
+
+// // Add selected facility sub-structures
+// this.activity.activitySubStructures = [];
+// this.selectedFacilitySubStructures.forEach(item => {
+//   let selectedFacilitySubStructure = {
+//     id: item.id,
+//     FacilityDistrictId: item.facilityDistrictId,
+//     name: item.name,
+//     isActive: item.isActive,
+//     activityId: this.activity.id,
+//   } as IActivitySubStructure;
+
+//   this.activity.activitySubStructures.push(selectedFacilitySubStructure);
+// });
+
+this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(
+  (resp) => {
+    this.activity.activityListId = resp.id;
+    this.newActivity ? this.createActivity() : this.updateActivity();
+    this.displayActivityDialog = false;
+  },
+  (err) => {
+    this._loggerService.logException(err);
+    this._spinner.hide();
   }
+);
+}
 
   private createActivity() {
     this._applicationRepo.createActivity(this.activity, this.application).subscribe(

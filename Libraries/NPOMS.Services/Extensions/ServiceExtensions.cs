@@ -83,6 +83,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IFacilityClassRepository, FacilityClassRepository>();
             services.AddScoped<IFacilityDistrictRepository, FacilityDistrictRepository>();
             services.AddScoped<IFacilitySubDistrictRepository, FacilitySubDistrictRepository>();
+            services.AddScoped<IFacilitySubStructureRepository, FacilitySubStructureRepository>();
             services.AddScoped<IFacilityTypeRepository, FacilityTypeRepository>();
             services.AddScoped<IOrganisationTypeRepository, OrganisationTypeRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();

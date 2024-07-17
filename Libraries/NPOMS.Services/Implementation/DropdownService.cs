@@ -86,6 +86,7 @@ namespace NPOMS.Services.Implementation
         private IQuarterlyPeriodRepository _quarterlyPeriodRepository;
         private IDepartmentRoleRepository _departmentRoleRepository;
         private ISegmentCodeRepository _segmentCodeRepository;
+        private IFacilitySubStructureRepository _facilitySubStructuresRepository;
         #endregion
 
         #region Constructors
@@ -150,7 +151,8 @@ namespace NPOMS.Services.Implementation
             IWorkflowAssessmentRepository workflowAssessmentRepository,
             IFundingTemplateTypeRepository fundingTemplateTypeRepository,
             IQuarterlyPeriodRepository quarterlyPeriodRepository,
-            ISegmentCodeRepository segmentCodeRepository)
+            ISegmentCodeRepository segmentCodeRepository,
+            IFacilitySubStructureRepository facilitySubStructuresRepository)
         {
             _mapper = mapper;
             _roleRepository = roleRepository;
@@ -212,6 +214,7 @@ namespace NPOMS.Services.Implementation
             _quarterlyPeriodRepository = quarterlyPeriodRepository;
             _departmentRoleRepository = departmentRoleRepository;
             _segmentCodeRepository = segmentCodeRepository;
+            _facilitySubStructuresRepository = facilitySubStructuresRepository;
         }
 
         #endregion
@@ -812,6 +815,21 @@ namespace NPOMS.Services.Implementation
             model.UpdatedDateTime = DateTime.Now;
 
             await _facilitySubDistrictRepository.UpdateAsync(null, model, false, loggedInUser.Id);
+        }
+
+        public async Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructures(bool returnInactive)
+        {
+            return await _facilitySubStructuresRepository.GetEntities(returnInactive);
+        }
+
+        public Task CreateFacilitySubStructures(FacilitySubStructure model, string userIdentifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateFacilitySubStructures(FacilitySubStructure model, string userIdentifier)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -1723,6 +1741,13 @@ namespace NPOMS.Services.Implementation
         {
             return await _departmentRepository.GetDepartmentById(depId);
         }
+
+        public Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructure(bool returnInactive)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         #endregion
 

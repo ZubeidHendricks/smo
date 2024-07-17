@@ -11,7 +11,7 @@ namespace NPOMS.Services.Interfaces
 {
     public interface IDropdownService
     {
-        Task<IEnumerable<Role>> GetRoles(bool returnInactive);
+        Task<IEnumerable<Role>> GetRoles(bool returnInactive); 
 
         Task CreateRole(Role model, string userIdentifier);
 
@@ -133,6 +133,14 @@ namespace NPOMS.Services.Interfaces
         Task CreateFacilitySubDistrict(FacilitySubDistrict model, string userIdentifier);
 
         Task UpdateFacilitySubDistrict(FacilitySubDistrict model, string userIdentifier);
+
+        Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructures(bool returnInactive);
+
+        Task CreateFacilitySubStructures(FacilitySubStructure model, string userIdentifier);
+
+        Task UpdateFacilitySubStructures(FacilitySubStructure model, string userIdentifier);
+
+
 
         Task<IEnumerable<FacilityClass>> GetFacilityClasses(bool returnInactive);
 
@@ -324,5 +332,6 @@ namespace NPOMS.Services.Interfaces
         Task DeleteQuestionSection(int id, string userIdentifier);
         Task<IEnumerable<Programme>> GetProgramsByDepartment(int id);
         Task<IEnumerable<Role>> GetRolesByDepartment(int id);
+        Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructure(bool returnInactive);
     }
 }

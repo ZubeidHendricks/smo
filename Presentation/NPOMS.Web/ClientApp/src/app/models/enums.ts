@@ -89,7 +89,8 @@ export enum DropdownTypeEnum {
     QuarterlyPeriod = 56,
     FilteredProgrammesByDepartment = 57,
     FilteredRolesByDepartment = 58,
-    SegmentCode = 59
+    SegmentCode = 59,
+    FacilitySubStructure = 60
 }
 
 export enum EntityTypeEnum {

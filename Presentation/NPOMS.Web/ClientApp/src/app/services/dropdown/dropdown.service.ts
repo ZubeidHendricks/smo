@@ -1,4 +1,4 @@
-import { ILanguage, IProgrammes, ISegmentCode, IStaffCategory } from '../../models/interfaces';
+import { IFacilitySubStructure, ILanguage, IProgrammes, ISegmentCode, IStaffCategory } from '../../models/interfaces';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -203,6 +203,9 @@ export class DropdownService {
         break;
       case DropdownTypeEnum.SegmentCode:
         data = this._http.get<ISegmentCode[]>(url, httpOptions);
+        break;   
+      case DropdownTypeEnum.FacilitySubStructure:
+        data = this._http.get<IFacilitySubStructure[]>(url, httpOptions);
         break;
     }
 

@@ -218,6 +218,7 @@ export interface IFacilityDistrict {
     id: number;
     name: string;
     isActive: boolean;
+    activityId: number;
 }
 
 export interface IFacilitySubDistrict {
@@ -225,10 +226,18 @@ export interface IFacilitySubDistrict {
     facilityDistrictId: number;
     name: string;
     isActive: boolean;
-
+    activityId: number;
     facilityDistrict: IFacilityDistrict;
 }
 
+export interface IFacilitySubStructure {
+    id: number;
+    activityId: number;
+    facilityDistrictId: number;
+    name: string;
+    isActive: boolean;
+    facilityDistrict: IFacilityDistrict;
+}
 
 export interface IFacilityType {
     id: number;
@@ -443,6 +452,33 @@ export interface IActivity {
     activityList: IActivityList;
     activityFacilityLists: IActivityFacilityList[];
     activityRecipients: IActivityRecipient[];
+    activityDistrict: IActivityDistrict;
+}
+
+export interface IActivityDistrict {
+    id: number;
+    facilityDistrictId : number;
+    name: string;
+    isActive: boolean;
+    activityId: number;
+    activitySubDistrict: IActivitySubDistrict[];
+    activitySubStructure: IActivitySubStructure;
+}
+
+export interface IActivitySubDistrict {
+    id: number;
+    facilityDistrictId: number;
+    name: string;
+    isActive: boolean;
+    facilityDistrict: IFacilityDistrict;
+}
+
+export interface IActivitySubStructure {
+    id: number;
+    facilityDistrictId: number;
+    name: string;
+    isActive: boolean;
+    facilityDistrict: IFacilityDistrict;
 }
 
 export interface IAddressInformation {

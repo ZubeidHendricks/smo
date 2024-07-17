@@ -157,7 +157,6 @@ namespace NPOMS.Services.Implementation
 
             var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
 
-
             if (loggedInUser.Roles.Any(x => x.IsActive && x.RoleId.Equals((int)RoleEnum.SystemAdmin)))
             {
                 return results;
@@ -166,7 +165,6 @@ namespace NPOMS.Services.Implementation
             {
 				results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId));
 						
-
                 return results;
             }
             else if(loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))

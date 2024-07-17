@@ -102,6 +102,9 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.FacilitySubDistricts:
                         var facilitySubDistricts = await _dropdownService.GetFacilitySubDistricts(returnInactive);
                         return Ok(facilitySubDistricts);
+                    case DropdownTypeEnum.FacilitySubStructure:
+                        var subStructures = await _dropdownService.GetFacilitySubStructures(returnInactive);
+                        return Ok(subStructures);
                     case DropdownTypeEnum.FacilityClasses:
                         var facilityClasses = await _dropdownService.GetFacilityClasses(returnInactive);
                         return Ok(facilityClasses);
@@ -407,6 +410,10 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.FacilitySubDistricts:
                         var facilitySubDistrict = JsonConvert.DeserializeObject<FacilitySubDistrict>(Convert.ToString(entity));
                         await _dropdownService.CreateFacilitySubDistrict(facilitySubDistrict, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.FacilitySubStructure:
+                        var facilitySubStructure = JsonConvert.DeserializeObject<FacilitySubStructure>(Convert.ToString(entity));
+                        await _dropdownService.CreateFacilitySubStructures(facilitySubStructure, base.GetUserIdentifier());
                         break;
                     case DropdownTypeEnum.FacilityClasses:
                         var facilityClass = JsonConvert.DeserializeObject<FacilityClass>(Convert.ToString(entity));
