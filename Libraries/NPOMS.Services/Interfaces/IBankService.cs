@@ -8,15 +8,16 @@ namespace NPOMS.Services.Interfaces
 {
 	public interface IBankService
 	{
-		Task<IEnumerable<BankDetail>> GetBankDetailsById(int banDetailId);
+		//Task<IEnumerable<BankDetail>> GetBankDetailsById(int banDetailId);
 
         Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByProgramId(int programmeId, int npoProfileId);
+        Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByIds(int npoProfileId);
 
         Task Create(BankDetail model, string userIdentifier);
 
 		Task Update(BankDetail model, string userIdentifier);
 
-		Task<IEnumerable<BankDetail>> GetBankDetails();
+		//Task<IEnumerable<BankDetail>> GetBankDetails();
 
 	}
 }

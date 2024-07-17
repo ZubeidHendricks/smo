@@ -65,6 +65,22 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("bank/npoProfileId/{npoProfileId}", Name = "GetProgrammeBankDetails")]
+        public async Task<IActionResult> GetProgrammeBankDetails(int npoProfileId)
+        {
+            try
+            {
+                var npoProfile = await _applicationService.GetApplicationById(npoProfileId);
+                var results = await _bankService.GetBankDetailsByIds(npoProfile.NpoId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetBankDetailsById action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("contact/programmeId/{programmeId}/npoProfileId/{npoProfileId}", Name = "GetContactDetailsByProgramId")]
         public async Task<IActionResult> GetContactDetailsByProgramId(int programmeId, int npoProfileId)
         {

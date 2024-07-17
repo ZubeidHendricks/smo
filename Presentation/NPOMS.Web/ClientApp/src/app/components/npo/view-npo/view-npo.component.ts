@@ -85,7 +85,7 @@ export class ViewNpoComponent implements OnInit {
           this.npo = results;
           this.retrievedNpo.emit(results);
 
-          this.stakeholderDetails = this.npo.contactInformation.filter(x => x.isBoardMember || x.isSignatory || x.isWrittenAgreementSignatory || x.isDisabled);
+          this.stakeholderDetails = this.npo.contactInformation.filter(x => x.isPrimaryContact || x.isBoardMember || x.isSignatory || x.isWrittenAgreementSignatory || x.isDisabled);
 
           this.isDataAvailable = true;
           this._spinner.hide();

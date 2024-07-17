@@ -61,22 +61,17 @@ namespace NPOMS.Services.Implementation
 			var oldEntity = await this._repositoryContext.BankDetails.FindAsync(model.Id);
 			await _bankDetailRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
-	
-        public Task<IEnumerable<BankDetail>> GetBankDetailsById(int banDetailId)
-        {
-            throw new NotImplementedException();
-        }     
-
-        public Task<IEnumerable<BankDetail>> GetBankDetails()
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByProgramId(int programmeId, int npoProfileId)
         {
             return await _programeBankDetailRepository.GetBankDetailsByProgramId(programmeId, npoProfileId);
         }
 
+        public async Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByIds(int npoProfileId)
+        {
+            return await _programeBankDetailRepository.GetBankDetailsByIds(npoProfileId);
+        }
+        
         #endregion
     }
 }
