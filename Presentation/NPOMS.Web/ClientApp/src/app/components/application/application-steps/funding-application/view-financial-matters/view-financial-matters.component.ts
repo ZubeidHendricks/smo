@@ -243,7 +243,7 @@ export class ViewFinancialMattersComponent implements OnInit {
         //   this.loadApprovedStatus(approvedStatus.approvalStatus);
         // });
 
-        this.programBankDetails = results;
+        this.programBankDetails = results.filter(x=> x.approvalStatus.id === 2);
         this.updateBankDetailObjects();
       }, 
       (err) => {
@@ -275,8 +275,8 @@ export class ViewFinancialMattersComponent implements OnInit {
   }
 
   private updateBankDetailObjects() {
-    if (this.banks && this.accountTypes && this.bankDetails) {
-      this.bankDetails.forEach(item => {
+    if (this.banks && this.accountTypes && this.programBankDetails) {
+      this.programBankDetails.forEach(item => {
         item.bank = this.banks.find(x => x.id === item.bankId);
         this.loadBranch(item);
         item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
