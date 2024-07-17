@@ -184,6 +184,8 @@ export class ReviewScorecardComponent implements OnInit {
   disableButton: boolean;
   questionCategory: string;
   initialComment: string;
+  cardlistCount: number;
+  scorerOverallAvgScores: number[] = [];
 
   constructor(
     private _router: Router,
@@ -224,7 +226,7 @@ export class ReviewScorecardComponent implements OnInit {
     this.getQuestionCategory();
     this.getResponseType();
 
-    //this.loadApplication();
+    this.loadApplication();
     this.loadApplications();
     this.selectedResponses();
     this.loadQuestionnaire();
@@ -245,13 +247,20 @@ export class ReviewScorecardComponent implements OnInit {
 
   }
 
+   getRange(): number[] {
+    const count = this.getLimit();
+    return Array(count).fill(0).map((x, i) => i);
+  }
+
+  // Get the limit based on cardlistCount, defaulting to 10 if cardlistCount is 0 or negative
+  getLimit(): number {
+    return Math.min(this.cardlistCount <= 0 ? 10 : this.cardlistCount, 10);
+  }
+
   private loadApplication() {
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
-        this.application = results;
-
-        this.loadQuestionnaire();
-        this.loadObjectives();
+        this.cardlistCount = results.npoUserTrackings.length;
       },
     );
   }
@@ -1048,6 +1057,19 @@ export class ReviewScorecardComponent implements OnInit {
         if (isNaN(this.allScorerOverallAvgScore)) {
           this.allScorerOverallAvgScore = 0;
         }
+
+        this.scorerOverallAvgScores = [
+          scorer1OverallTotalScores,
+          scorer2OverallTotalScores,
+          scorer3OverallTotalScores,
+          scorer4OverallTotalScores,
+          scorer5OverallTotalScores,
+          scorer6OverallTotalScores,
+          scorer7OverallTotalScores,
+          scorer8OverallTotalScores,
+          scorer9OverallTotalScores,
+          scorer10OverallTotalScores
+        ]; 
       },
       (err) => {
         this._loggerService.logException(err);

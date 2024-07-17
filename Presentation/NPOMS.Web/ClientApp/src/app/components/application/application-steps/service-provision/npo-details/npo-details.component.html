@@ -9,6 +9,8 @@
     <div style="height: 10px;"></div>
     <app-view-profile
         [npoId]="application.npoId"
+        [programId]="application.applicationPeriod.programmeId"
+        [source]="source"
         (retrievedNpoProfile)="updateNpoProfile($event)">
     </app-view-profile>
     <div style="height: 10px;"></div>

@@ -13,7 +13,7 @@
       </div>
     </div>
     <p-table [rowHover]="true" #dt [style]="{'border':'none'}" [columns]="cols" [paginator]="true" [rows]="10" [value]="allProfiles" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" 
-    [globalFilterFields]="['refNo','npo.name','npo.organisationType.name','npo.approvalStatus.name', 'npo.yearRegistered']">
+    [globalFilterFields]="['refNo','npo.name','npo.organisationType.name','npo.approvalStatus.name', 'npo.yearRegistered', 'accessStatus.name']">
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th style="width: 5%;"></th>
@@ -30,6 +30,7 @@
           <th><p-columnFilter type="text" field="npo.organisationType.name"></p-columnFilter></th>
           <th><p-columnFilter type="text" field="npo.approvalStatus.name"></p-columnFilter></th>
           <th><p-columnFilter type="text" field="npo.yearRegistered"></p-columnFilter></th>
+          <th><p-columnFilter type="text" field="accessStatus.name"></p-columnFilter></th>
           <th></th>
       </tr>
       </ng-template>

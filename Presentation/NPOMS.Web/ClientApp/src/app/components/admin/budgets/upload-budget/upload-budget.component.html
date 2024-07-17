@@ -1,0 +1,83 @@
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Upload Budget">
+    <div style="height: 10px;"></div>
+    <div class="p-grid">
+        <div class="p-col-2">
+            <p-card subheader="Upload Budget" [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+                <div class="p-fluid">
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Department</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-dropdown [options]="departments" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedDepartmentSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="departmentSummaryChange()"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Financial Year</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-dropdown [options]="financialYears" placeholder="Select an option" optionLabel="name" [(ngModel)]="selectedFinancialYearSummary" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearSummaryChange()"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <!-- <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Budget</span>
+                            </div>
+                        </div>
+                        <div class="p-col summary-value">
+                            R {{totalBudget | number : '1.2-2'}}
+                        </div> -->
+                    </div>
+                    <div class="p-grid">
+                        <!-- <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Allocated</span>
+                            </div>
+                        </div>
+                        <div class="p-col summary-value">
+                            R {{totalAllocated | number : '1.2-2'}}
+                        </div> -->
+                    </div>
+                    <div class="p-grid">
+                        <!-- <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Paid</span>
+                            </div>
+                        </div>
+                        <div class="p-col summary-value">
+                            R {{totalPaid | number : '1.2-2'}}
+                        </div> -->
+                    </div>
+                    <div class="p-grid">
+                        <!-- <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Balance</span>
+                            </div>
+                        </div>
+                        <div class="p-col summary-value">
+                            R {{totalBalance | number : '1.2-2'}}
+                        </div> -->
+                    </div>
+                </div>
+            </p-card>
+        </div>
+        <div class="p-col-10" style="height: 25px; text-align: center;">
+            <p-table [rowHover]="true" [value]="programmeBudgets" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="3">
+                            {{displayMessage}}
+                        </th>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</p-panel>

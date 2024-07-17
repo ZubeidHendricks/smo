@@ -37,6 +37,7 @@ namespace NPOMS.Repository.Implementation.Core
             return await FindAll().AsNoTracking()
                 .Include(x => x.Roles.Where(y => y.IsActive)).ThenInclude(x => x.Role)
                 .Include(x => x.Departments).ThenInclude(x => x.Department)
+                .Include(x => x.UserPrograms.Where(y => y.IsActive)).ThenInclude(x => x.Program)
                 .OrderBy(ow => ow.UserName).ToListAsync();
         }
 
@@ -74,6 +75,8 @@ namespace NPOMS.Repository.Implementation.Core
                                 .ThenInclude(x => x.Role)
                             .Include(x => x.Departments)
                                 .ThenInclude(x => x.Department)
+                             //.Include(x => x.UserPrograms)
+                             //   .ThenInclude(x => x.Program)
                             .FirstOrDefaultAsync();
         }
 
@@ -95,6 +98,8 @@ namespace NPOMS.Repository.Implementation.Core
                                         .ThenInclude(x => x.Permission)
                             .Include(x => x.Departments)
                                 .ThenInclude(x => x.Department)
+                                    .Include(x => x.UserPrograms)
+                                      .ThenInclude(x => x.Program)
                             .FirstOrDefaultAsync();
         }
 
@@ -109,6 +114,8 @@ namespace NPOMS.Repository.Implementation.Core
                                     .ThenInclude(x => x.Permission)
                         .Include(x => x.Departments)
                             .ThenInclude(x => x.Department)
+                        .Include(x => x.UserPrograms.Where(y => y.IsActive))
+                            .ThenInclude(x => x.Program)
                         .FirstOrDefaultAsync();
             }
             catch(Exception ex)

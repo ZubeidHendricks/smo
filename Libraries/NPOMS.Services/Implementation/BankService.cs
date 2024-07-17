@@ -17,7 +17,8 @@ namespace NPOMS.Services.Implementation
 		#region Fields
 
 		private IBankDetailRepository _bankDetailRepository;
-		private IUserRepository _userRepository;
+		private IProgrameBankDetailRepository _programeBankDetailRepository;
+        private IUserRepository _userRepository;
 		private RepositoryContext _repositoryContext;
 
 		#endregion
@@ -26,13 +27,16 @@ namespace NPOMS.Services.Implementation
 
 		public BankService(
             IBankDetailRepository bankDetailRepository,
-			IUserRepository userRepository,			
-			RepositoryContext repositoryContext)
+			IUserRepository userRepository,
+            IProgrameBankDetailRepository programeBankDetailRepository,
+            RepositoryContext repositoryContext)
 		{
 			_bankDetailRepository = bankDetailRepository;
             _userRepository = userRepository;
             _repositoryContext = repositoryContext;
-		}
+            _programeBankDetailRepository = programeBankDetailRepository;
+
+        }
 
 		#endregion
 
@@ -66,6 +70,11 @@ namespace NPOMS.Services.Implementation
         public Task<IEnumerable<BankDetail>> GetBankDetails()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByProgramId(int programmeId, int npoProfileId)
+        {
+            return await _programeBankDetailRepository.GetBankDetailsByProgramId(programmeId, npoProfileId);
         }
 
         #endregion

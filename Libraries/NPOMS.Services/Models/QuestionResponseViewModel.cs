@@ -111,7 +111,7 @@ namespace NPOMS.Services.Models
             }
 			catch(Exception ex)
 			{
-
+				ex.ToString();
 			}
             
         }

@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  primefacesUrl: 'https://primefaces.org/primeng/#/',
+  primefacesUrl: 'https://primeng.org/',
   environmentName: 'Local',
   appInsights: {
     instrumentationConnString: 'InstrumentationKey=3e255d0b-6da1-4c4a-bc33-ac766b657c57;IngestionEndpoint=https://southafricanorth-1.in.applicationinsights.azure.com/'

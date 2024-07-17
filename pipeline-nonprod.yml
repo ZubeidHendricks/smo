@@ -1,10 +1,10 @@
 
 trigger:
-- Non-Prod
+- 2-NonProd
 
 variables:
   buildConfiguration: 'Release'
-  dotnetSdkVersion: '6.x'
+  dotnetSdkVersion: '8.x'
   
 stages:
 - stage: 'Build'
@@ -121,7 +121,7 @@ stages:
   jobs:
   - deployment: Deploy
     pool:
-      vmImage: 'windows-latest'
+      vmImage: 'windows-2019'
     environment: TapsNonProd
     #variables:
     #- group: Release
@@ -138,4 +138,4 @@ stages:
               appType: 'webAppLinux'
               appName: 'wa-wcg-npoms-nonprod-zan'
               package: '$(Pipeline.Workspace)/WebAPI/WebAPI1.zip'
-              runtimeStack: 'DOTNETCORE|6.0'
+              runtimeStack: 'DOTNETCORE|8.0'

@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NPOMS.Repository;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Test.Config;
@@ -10,10 +11,11 @@ namespace NPOMS.Test.Repository
     public class DepartmentTest
     {
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly RepositoryContext _context;
 
         public DepartmentTest()
         {
-            _departmentRepository = new DepartmentRepository(ContextConfig.GetContext());
+            _departmentRepository = new DepartmentRepository(_context,ContextConfig.GetContext());
         }
 
         [TestMethod]

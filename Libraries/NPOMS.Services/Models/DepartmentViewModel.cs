@@ -8,6 +8,8 @@ namespace NPOMS.Services.Models
 
 		public string Abbreviation { get; set; }
 
+		public string DenodoDepartmentName { get; set; }
+
 		public bool IsActive { get; set; }
 	}
 }

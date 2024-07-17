@@ -3,6 +3,7 @@ using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Evaluation;
 using NPOMS.Domain.Lookup;
+using NPOMS.Domain.Mapping;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,6 +18,8 @@ namespace NPOMS.Services.Interfaces
         Task UpdateRole(Role model, string userIdentifier);
 
         Task<IEnumerable<Department>> GetDepartments(bool returnInactive);
+
+        Task<Department> GetDepartment(int depId);
 
         Task CreateDepartment(Department model, string userIdentifier);
 
@@ -62,6 +65,8 @@ namespace NPOMS.Services.Interfaces
 
         Task<IEnumerable<Programme>> GetProgrammes(bool returnInactive);
 
+        Task<Programme> GetProgramme(int id);
+
         Task CreateProgramme(Programme model, string userIdentifier);
 
         Task UpdateProgramme(Programme model, string userIdentifier);
@@ -74,6 +79,7 @@ namespace NPOMS.Services.Interfaces
 
         Task<IEnumerable<FinancialYear>> GetFinancialYears(bool returnInactive);
         Task<IEnumerable<QuarterlyPeriod>> GetQuarterlyPeriod(bool returnInactive);
+        Task<IEnumerable<SegmentCode>> GetSegmentCode(bool returnInactive);
         Task<IEnumerable<FinancialYear>> GetFromCurrentFinancialYear();
 
         Task CreateFinancialYear(FinancialYear model, string userIdentifier);
@@ -213,7 +219,6 @@ namespace NPOMS.Services.Interfaces
         Task UpdateDirectorate(Directorate model, string userIdentifier);
 
         Task<IEnumerable<SubProgramme>> GetSubProgrammesByProgrammeId(int programmeId);
-
         Task<IEnumerable<SubProgrammeType>> GetSubProgrammeTypesBySubProgrammeId(int subProgrammeId);
 
         Task<IEnumerable<Bank>> GetBanks(bool returnInactive);
@@ -317,5 +322,7 @@ namespace NPOMS.Services.Interfaces
         Task DeleteQuestion(int id, string userIdentifier);
         Task DeleteQuestionCategory(int id, string userIdentifier);
         Task DeleteQuestionSection(int id, string userIdentifier);
+        Task<IEnumerable<Programme>> GetProgramsByDepartment(int id);
+        Task<IEnumerable<Role>> GetRolesByDepartment(int id);
     }
 }

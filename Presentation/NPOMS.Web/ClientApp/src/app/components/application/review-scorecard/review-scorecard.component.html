@@ -3,7 +3,7 @@
         Score Card Summary
     </div>
 </div>
-
+ 
 <div class="p-grid p-nogutter p-justify-end">
        
     <button pButton type="button" label="Download" icon="fa fa-download" *ngIf="hasScorecardSubmitted"
@@ -24,10 +24,23 @@
     </div>
 </div>
 <p-panel [style]="{'font-size':'12px', 'width':'100%'}" header="Qualitative Performance">
-    <p-table [value]="allQuestionnaires" *ngIf="allQuestionnaires" [rowHover]="true" 
+    <p-table [value]="allQuestionnaires" *ngIf="allQuestionnaires" [rowHover]="true"
         styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
             <ng-template pTemplate="header">
                 <tr>
+                    <th style="width: 15%; text-align: center;">#</th>
+                    <th style="width: 25%; text-align: center;">Name (Question/Statement)</th>
+                   
+                    <ng-container *ngFor="let i of getRange(); let idx = index">
+                        <th style="width: 8%; text-align: center;">Scorer <b>{{ idx + 1 }}</b></th>
+                    </ng-container>
+                   
+                    <th style="width: 10%; text-align: center; text-wrap:break-word;">Average Category Score</th>
+                    <th style="width: 10%; text-align: center;">Action</th>
+                    <th style="width: 8%; text-align: center;">Total score</th>
+                </tr>
+                 
+                <!-- <tr>
                     <th style="width: 15%; text-align: center;">#</th>
                     <th style="width: 25%; text-align: center;">Name (Question/Statement)</th>
                     <th style="width: 8%; text-align: center;">Scorer<b> 1</b></th>
@@ -43,22 +56,29 @@
                     <th style="width: 10%; text-align: center; text-wrap:break-word;">Average Category Score</th>
                     <th style="width: 10%; text-align: center;">Action</th>
                     <th style="width: 8%; text-align: center;" >Total score</th>
-                </tr>
+                </tr> -->
             </ng-template>
             <ng-template pTemplate="body" let-question let-rowIndex="rowIndex">
                 <tr *ngIf="updateRowGroupMetaData(allQuestionnaires)[question.questionSectionName].index === rowIndex">
                     <td style="text-align: center;">
                         <span class="p-text-bold p-ml-2"><b>{{question.questionCategoryName}}</b></span>
                     </td>
-                    <td class="p-text-bold p-ml-2">{{question.questionName}}</td>                        
-                    <td style="text-align: center;" class="{{getRagColour1(question.responsesO[0])}}">{{question.responsesO[0]}}
+                    <td class="p-text-bold p-ml-2">{{question.questionName}}</td>  
+ 
+                    <ng-container *ngFor="let idx of getRange(); let i = index">
+                        <td style="text-align: center;" [ngClass]="getRagColour1(question.responsesO[i])">
+                          {{ question.responsesO[i] }}
+                        </td>
+                    </ng-container>
+                     
+                    <!-- <td style="text-align: center;" class="{{getRagColour1(question.responsesO[0])}}">{{question.responsesO[0]}}
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[1])}}">{{question.responsesO[1]}}
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[2])}}">{{question.responsesO[2]}}
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[3])}}">{{question.responsesO[3]}}
-                    </td> 
+                    </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[4])}}">{{question.responsesO[4]}}
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[5])}}">{{question.responsesO[5]}}
@@ -70,7 +90,7 @@
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[8])}}">{{question.responsesO[8]}}
                     </td>
                     <td style="text-align: center;" class="{{getRagColour1(question.responsesO[9])}}">{{question.responsesO[9]}}
-                    </td>                        
+                    </td>-->
                     <td style="text-align: center;" class="{{getRagColour1((question.sumOfResponse/question.responsesO.length).toFixed(2))}}" *ngIf="question.sumOfResponse > 0 && question.responsesO.length > 0">
                         {{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
                     </td>
@@ -81,7 +101,7 @@
                        <div *ngIf = "hideComment() === false">
                             <button *ngIf="question.hasComment"  pButton pRipple type="button"
                             class="p-button-text action-button" icon="fa fa-pencil-square-o"
-                            pTooltip="Amendment" tooltipPosition="top" (click)="onSelectAmendmentComment(question, question.questionCategoryName, 1)"></button>   
+                            pTooltip="Amendment" tooltipPosition="top" (click)="onSelectAmendmentComment(question, question.questionCategoryName, 1)"></button>  
                        </div>                                            
                     </td>
                     <td style="text-align: center;"><span style="font-weight: bold;" class="{{getRagColour(allQuestionnaires)}}">{{question.sumOfResponse}}</span></td>
@@ -91,7 +111,48 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="footer">
-                <tr>
+                <ng-container *ngIf="scorerOverallAvgScores.length > 0">
+                    <tr>
+                      <td style="border: 1px solid #CCCCCC; text-align: center;">
+                        <span class="p-text-bold p-ml-2"><b>(Score per scorer -/50)</b></span>
+                      </td>
+                      <td style="text-align: center; border: 1px solid #CCCCCC;">&nbsp;</td>
+                      <ng-container *ngFor="let idx of getRange(); let i = index">
+                        <td style="text-align: center; border: 1px solid #CCCCCC;">
+                          <b>{{ scorerOverallAvgScores[i] }}</b>
+                        </td>
+                      </ng-container>
+                      <td style="text-align: center; border: 1px solid #CCCCCC;" colspan="2"></td>
+                      <td style="text-align: center; border: 1px solid #CCCCCC;">
+                        <b>{{ allScorerOverallTotalScore }}</b>
+                      </td>
+                    </tr>
+                 
+                    <tr>
+                      <td style="border: 1px solid #CCCCCC; border-radius: 6px; text-align: center;">
+                        <span class="p-text-bold p-ml-2"><b>Overall Qualitative Performance</b></span>
+                      </td>
+                      <td style="text-align: center; border: 1px solid #CCCCCC; border-radius: 6px;">&nbsp;</td>
+                      <ng-container *ngFor="let idx of getRange(); let i = index">
+                        <td style="text-align: center; border: 1px solid #CCCCCC; border-radius: 6px;"
+                          [ngClass]="getRagBackgroundColour1(scorerOverallAvgScores[i])">
+                          <b>{{ scorerOverallAvgScores[i] }}</b>
+                        </td>
+                      </ng-container>
+                      <td style="text-align: center; border: 1px solid #CCCCCC; border-radius: 6px;" colspan="2">
+                        <div *ngIf="disableAmendementSubmit() === false">
+                          <button pButton type="button" label="Amendment Request" icon="fa fa-floppy-o" (click)="submitAmendment()"
+                            [disabled]="disableButton"></button>
+                        </div>
+                      </td>
+                      <td style="text-align: center; border: 1px solid #CCCCCC; border-radius: 6px;"
+                        [ngClass]="getRagBackgroundColour1(allScorerOverallAvgScore)">
+                        <b>{{ allScorerOverallAvgScore }}</b>
+                      </td>
+                    </tr>
+                  </ng-container>
+                 
+                <!-- <tr>
                     <td style="border: 1px solid #CCCCCC; text-align: center; "> <span class="p-text-bold p-ml-2"><b>(Score per scorer -/50)</b></span></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;">&nbsp;</td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;"><b>{{Scorer1OverallTotalScore}}</b></td>
@@ -122,18 +183,18 @@
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(scorer10OverallAvgScore)}}"><b>{{scorer10OverallAvgScore}}</b></td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " colspan="2">
                         <div *ngIf = "disableAmendementSubmit() === false">
-                            <button pButton type="button" label="Amendment Request" icon="fa fa-floppy-o" 
+                            <button pButton type="button" label="Amendment Request" icon="fa fa-floppy-o"
                             (click)="submitAmendment()" [disabled]="disableButton"></button>
                         </div>
                     </td>
                     <td style="text-align: center; border: 1px solid #CCCCCC;border-radius: 6px 6px 6px 6px; " class="{{getRagBackgroundColour1(allScorerOverallAvgScore)}}"><b>{{allScorerOverallAvgScore}}</b></td>
-                </tr>
+                </tr> -->
             </ng-template>
     </p-table>
 </p-panel>
-
+ 
 <div style="height: 10px;"></div>
-
+ 
 <p-panel [style]="{'font-size':'12px', 'width':'100%'}" >
     <table styleClass="p-datatable-striped" style="width: 100%;">
         <tr>
@@ -193,9 +254,9 @@
         </tr>
     </table>
 </p-panel>
-
+ 
 <div style="height: 10px;"></div>
-
+ 
 <p-panel [style]="{'font-size':'12px', 'width':'100%'}" header="Quantitative Performance" [toggleable]="true">
     <p-table [rowHover]="true" [value]="filterWorkplanIndicators()" *ngIf="filterWorkplanIndicators()">
         <ng-template pTemplate="header">
@@ -238,9 +299,9 @@
         </ng-template>
     </p-table>
 </p-panel>
-
+ 
 <div style="height: 10px;"></div>
-
+ 
 <p-panel [style]="{'font-size':'12px', 'width':'100%'}" >
     <table styleClass="p-datatable-striped" style="width: 100%;">
         <tr>
@@ -301,7 +362,7 @@
         </tr>
     </table>
 </p-panel>
-
+ 
 <p-panel header="Main Reviewer Summary">
     <div class="p-grid">
         <div class="p-col-3 form-label">
@@ -311,8 +372,8 @@
             </div>
         </div>
         <div class="p-col-9">
-            <textarea class="form-text" [rows]="3" pInputTextarea 
-            [(ngModel)]="captureImprovementArea" [ngModelOptions]="{standalone: true}" 
+            <textarea class="form-text" [rows]="3" pInputTextarea
+            [(ngModel)]="captureImprovementArea" [ngModelOptions]="{standalone: true}"
             [autoResize]="true" [disabled]="hascapturedImprovementArea"></textarea>
         </div>
         <div class="p-col-3 form-label">
@@ -322,8 +383,8 @@
             </div>
         </div>
         <div class="p-col-9">
-            <textarea class="form-text" [rows]="3" pInputTextarea 
-            [(ngModel)]="captureRequiredAction" [ngModelOptions]="{standalone: true}" 
+            <textarea class="form-text" [rows]="3" pInputTextarea
+            [(ngModel)]="captureRequiredAction" [ngModelOptions]="{standalone: true}"
             [autoResize]="true" [disabled]="hasCapturedRequiredAction"></textarea>
         </div>
     </div>
@@ -335,8 +396,8 @@
             </div>
         </div>
         <div class="p-col-9">
-            <textarea class="form-text" [rows]="3" pInputTextarea 
-            [(ngModel)]="generalReviewComment" [ngModelOptions]="{standalone: true}" 
+            <textarea class="form-text" [rows]="3" pInputTextarea
+            [(ngModel)]="generalReviewComment" [ngModelOptions]="{standalone: true}"
             [autoResize]="true" [disabled]="hasCapturedRequiredAction"></textarea>
         </div>
     </div>
@@ -369,7 +430,7 @@
            
     </div>
 </p-panel>
-
+ 
 <p-dialog header="Comments" [(visible)]="displayCommentDialog" [style]="{width: '75vw'}" [focusOnShow]="false"
     showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
     <p-table [rowHover]="true" [style]="{'border':'none'}"
@@ -412,7 +473,7 @@
                 </td>
                 <td>
                     <button type="button" [disabled] = mainReviewerComment()
-                    (click)="click(rowData.fundingApplicationId, rowData.questionId, rowData.createdUser.id, rowData.responseOptionId, 0)"> 
+                    (click)="click(rowData.fundingApplicationId, rowData.questionId, rowData.createdUser.id, rowData.responseOptionId, 0)">
                     Main Reviewer Comment
                     </button>
                 </td>
@@ -420,7 +481,7 @@
         </ng-template>
     </p-table>
 </p-dialog>
-
+ 
 <p-dialog header="Amendment Comments" [(visible)]="displayAmendmentCommentDialog" [style]="{width: '75vw'}" [focusOnShow]="false"
     showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
     <p-table [rowHover]="true" [style]="{'border':'none'}"
@@ -440,7 +501,7 @@
                 <th style="text-align: center;">
                     Commented By
                 </th>
-                <th style="text-align: center; width: 30%;"> 
+                <th style="text-align: center; width: 30%;">
                     <div *ngIf = "hideComment() === false">
                         Main Reviewer Comments
                     </div>
@@ -472,7 +533,7 @@
                 </td>
                 <td>
                     <button type="button" [disabled] = mainReviewerComment()
-                    (click)="click(rowData.fundingApplicationId, rowData.questionId, rowData.createdUser.id, rowData.responseOptionId, 1)"> 
+                    (click)="click(rowData.fundingApplicationId, rowData.questionId, rowData.createdUser.id, rowData.responseOptionId, 1)">
                     Amendments Required
                     </button>
                 </td>
@@ -480,10 +541,10 @@
         </ng-template>
     </p-table>
 </p-dialog>
-
-<p-dialog header="Add Comment" 
-          [(visible)]="addAmendCommentDialog" 
-          [style]="{width: '50vw'}" 
+ 
+<p-dialog header="Add Comment"
+          [(visible)]="addAmendCommentDialog"
+          [style]="{width: '50vw'}"
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
@@ -502,10 +563,10 @@
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveAmendComment(true, 'singleComment')"></button>
     </ng-template>
 </p-dialog>
-
-<p-dialog header="Add Main Reviewer Comment" 
-          [(visible)]="displayReviewerCommentDialog" 
-          [style]="{width: '50vw'}" 
+ 
+<p-dialog header="Add Main Reviewer Comment"
+          [(visible)]="displayReviewerCommentDialog"
+          [style]="{width: '50vw'}"
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
@@ -524,7 +585,7 @@
         <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableReviewerSaveComment() (click)="saveReviewerComment(true, 'singleComment')"></button>
     </ng-template>
 </p-dialog>
-
+ 
 <p-dialog header="Comments" [(visible)]="displayDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
     showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
     <div class="p-grid">
@@ -535,8 +596,8 @@
             </div>
         </div>
         <div class="p-col-9">
-            <textarea class="form-text" [rows]="3" pInputTextarea 
-            [(ngModel)]="captureImprovementAreaComment" [ngModelOptions]="{standalone: true}" 
+            <textarea class="form-text" [rows]="3" pInputTextarea
+            [(ngModel)]="captureImprovementAreaComment" [ngModelOptions]="{standalone: true}"
             [autoResize]="true" [disabled]="true"></textarea>
         </div>
         <div class="p-col-3 form-label">
@@ -546,8 +607,8 @@
             </div>
         </div>
         <div class="p-col-9">
-            <textarea class="form-text" [rows]="3" pInputTextarea 
-            [(ngModel)]="captureRequiredActionComment" [ngModelOptions]="{standalone: true}" 
+            <textarea class="form-text" [rows]="3" pInputTextarea
+            [(ngModel)]="captureRequiredActionComment" [ngModelOptions]="{standalone: true}"
             [autoResize]="true" [disabled]="true"></textarea>
         </div>
     </div>
@@ -574,7 +635,7 @@
         </div>
     </div>
 </p-dialog>
-
+ 
 <p-dialog header="Comments" [(visible)]="displayMainReviewerCommentDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
     showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
     <div class="p-grid">
@@ -585,8 +646,8 @@
             </div>
         </div>
         <div class="p-col-9">
-            <textarea class="form-text" [rows]="3" pInputTextarea 
-            [(ngModel)]="ReviewerComment" [ngModelOptions]="{standalone: true}" 
+            <textarea class="form-text" [rows]="3" pInputTextarea
+            [(ngModel)]="ReviewerComment" [ngModelOptions]="{standalone: true}"
             [autoResize]="true" [disabled]="true"></textarea>
         </div>
     </div>
@@ -597,17 +658,17 @@
             </div>
         </div>
         <div class="p-col-9">
-            <button pButton pRipple type="button" label="Add/Update Main Reviewer Comment" class="p-button-text" 
+            <button pButton pRipple type="button" label="Add/Update Main Reviewer Comment" class="p-button-text"
             icon="fa fa-floppy-o" (click)="click1(capturedResponseId)"  [disabled] = mainReviewerComment()></button>
         </div>
     </div>
    
 </p-dialog>
-
-
-<p-dialog header="History" 
-          [(visible)]="displayHistoryDialog" 
-          [style]="{width: '70vw'}" 
+ 
+ 
+<p-dialog header="History"
+          [(visible)]="displayHistoryDialog"
+          [style]="{width: '70vw'}"
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"

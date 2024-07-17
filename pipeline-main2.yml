@@ -1,0 +1,100 @@
+trigger:
+- main
+
+variables:
+  buildConfiguration: 'Release'
+  dotnetSdkVersion: '8.x'
+  # system.debug: true # Enable detailed logging
+
+stages:
+- stage: 'Build'
+  displayName: 'Build the web application'
+  jobs: 
+  - job: 'Build'
+    displayName: 'Build job'
+    timeoutInMinutes: 120 # Adjusted to 300 minutes for longer builds
+    pool:
+      vmImage: windows-latest
+      # demands:
+      #  - msbuild
+      #  - visualstudio
+    steps:
+    # - script: |
+    #     echo "Checking network connectivity to Azure DevOps..."
+    #     ping dev.azure.com
+    #     tracert dev.azure.com
+    #   displayName: 'Network Diagnostics'
+    # - task: UseDotNet@2
+    #   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+    #   inputs:
+    #     version: '$(dotnetSdkVersion)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore project dependencies'
+      inputs:
+        command: 'restore'
+        projects: '**/NPOMS.API.csproj'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build the project - $(buildConfiguration)'
+      inputs:
+        command: 'build'
+        arguments: '--no-restore --configuration $(buildConfiguration)'
+        projects: '**/NPOMS.API.csproj'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish the project - $(buildConfiguration)'
+      inputs:
+        command: 'publish'
+        projects: '**/NPOMS.API.csproj'
+        publishWebProjects: false
+        arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
+        zipAfterPublish: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish build artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+
+  - job: BuildSPAJob
+    displayName: Build SPA job
+    dependsOn: 
+    - Build
+    pool:
+      vmImage: 'ubuntu-20.04'
+       
+    variables:
+      buildPlatform: 'Any CPU'
+      buildConfiguration: 'Release'
+      artifactName: 'drop'
+
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '16.x'
+        checkLatest: true
+      displayName: 'Install Node.js'
+
+    - script: |
+        cd '$(System.DefaultWorkingDirectory)/Presentation/NPOMS.Web/ClientApp'
+        npm install -g @angular/cli@11.2.19
+        npm install --force
+        ng build --configuration nonprod
+      displayName: 'npm install and build'
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/Presentation/NPOMS.Web/ClientApp/dist/wwwroot'
+        includeRootFolder: true
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish SPA build artifacts'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        ArtifactName: 'app'
+        publishLocation: 'Container'

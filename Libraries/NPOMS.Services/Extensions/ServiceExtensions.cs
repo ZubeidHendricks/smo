@@ -27,6 +27,7 @@ using NPOMS.Services.Interfaces;
 using NPOMS.Services.Mappings;
 using NPOMS.Services.PowerBI;
 using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
+using NPOMS.Domain.Enumerations;
 
 namespace NPOMS.Services.Extensions
 {
@@ -44,7 +45,6 @@ namespace NPOMS.Services.Extensions
         {
             // Take note of the IDBAuthTokenService service. This is how we provide support Managed Identity in app services
             services.AddDbContext<RepositoryContext>();
-            services.AddTransient<IDBAuthTokenService, AzureSqlAuthTokenService>();
 
             /* AutoMapper */
             var mappingConfig = new MapperConfiguration(mc =>
@@ -61,6 +61,7 @@ namespace NPOMS.Services.Extensions
 
             /* Core */
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+          //  services.AddScoped<IUserProgramRepository, UserProgramRepository>();
             services.AddScoped<IDocumentStoreRepository, DocumentStoreRepository>();
             services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
             services.AddScoped<IEmailAccountRepository, EmailAccountRepository>();
@@ -186,15 +187,18 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IActivitySubProgrammeRepository, ActivitySubProgrammeRepository>();
             services.AddScoped<INpoProfileFacilityListRepository, NpoProfileFacilityListRepository>();
             services.AddScoped<IObjectiveProgrammeRepository, ObjectiveProgrammeRepository>();
+            services.AddScoped<IDepartmentRoleRepository, DepartmentRoleRepository>();
             services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
             services.AddScoped<IUserNpoRepository, UserNpoRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IUserProgramMappingRepository, UserProgramMappingRepository>();
             services.AddScoped<IActivityFacilityListRepository, ActivityFacilityListRepository>();
             services.AddScoped<IActivityRecipientRepository, ActivityRecipientRepository>();
 
             services.AddScoped<IProjectImplementationPlaceRepository, ProjectImplementationPlaceRepository>();
             services.AddScoped<IProjectImplementationSubPlaceRepository, ProjectImplementationSubPlaceRepository>();
             services.AddScoped<IFundAppDocumentRepository, FundAppDocumentsRepository>();
+            services.AddScoped<ISegmentCodeRepository, SegmentCodeRepository>();
 
             /* Indicator */
             services.AddScoped<IWorkplanTargetRepository, WorkplanTargetRepository>();
@@ -206,6 +210,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IDepartmentBudgetRepository, DepartmentBudgetRepository>();
             services.AddScoped<IDirectorateBudgetRepository, DirectorateBudgetRepository>();
             services.AddScoped<IProgrammeBudgetRepository, ProgrammeBudgetRepository>();
+            services.AddScoped<IBudgetAdjustmentRepository, BudgetAdjustmentRepository>();
 
             /* Evaluation */
             services.AddScoped<IQuestionRepository, QuestionRepository>();
@@ -217,6 +222,10 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IResponseRepository, ResponseRepository>();
             services.AddScoped<IResponseHistoryRepository, ResponseHistoryRepository>();
             services.AddScoped<ICapturedResponseRepository, CapturedResponseRepository>();
+
+            services.AddScoped<IProgrameBankDetailRepository, ProgrameBankDetailRepository>();
+            services.AddScoped<IProgrameContactDetailRepository, ProgrameContactDetailRepository>();
+            services.AddScoped<IProgrameDeliveryRepository, ProgrameDeliveryRepository>();
 
 
             #endregion
@@ -242,6 +251,11 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBidService, BidService>();
             services.AddScoped<IEvaluationService, EvaluationService>();
+
+            services.AddScoped<IBankService, BankService>();
+            services.AddScoped<IContactService, ContactService>();
+            services.AddScoped<IProgrammeService, ProgrammeService>();
+            services.AddScoped<IProgrameDeliveryService, ProgrameDeliveryService>();
 
             services.AddConfiguration<dtoBlobConfig>(builder.Configuration, "BlobStorageSettings");
 

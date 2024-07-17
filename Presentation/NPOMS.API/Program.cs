@@ -20,16 +20,23 @@ builder.Services.ConfigureRepositoryWrapper(builder);
 builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration, "AzureAdB2C");
 
 var blobConfig = builder.Configuration.GetSection("BlobStorageSettings").Get<BlobStorageSettings>();
+var msGraphConfig = builder.Configuration.GetSection("MicrosoftGraph").Get<MSGraphConfiguration>();
 //var msGraphConfig = builder.Configuration.GetSection("MicrosoftGraph").Get<dtoMicrosoftGrap>
+var denodoAPIConfig = builder.Configuration.GetSection("DenodoAPIConfiguration").Get<DenodoAPIConfig>();
 
 #if !DEBUG
 	blobConfig.StorageAccount = Environment.GetEnvironmentVariable("APPSETTING_Storage01");
 	blobConfig.SubFolderPath = Environment.GetEnvironmentVariable("APPSETTING_FolderPath01");
+
+	msGraphConfig.ClientId = Environment.GetEnvironmentVariable("APPSETTING_B2B_ClientId");
+	msGraphConfig.TenantId = Environment.GetEnvironmentVariable("APPSETTING_B2B_TenantId");
+	msGraphConfig.Secret = Environment.GetEnvironmentVariable("APPSETTING_B2B_Client_Secret");
+	
 #endif
 
 builder.Services.AddSingleton(blobConfig);
+builder.Services.AddSingleton(denodoAPIConfig);
 
-builder.Services.AddConfiguration<DenodoAPIConfig>(builder.Configuration, "DenodoAPIConfiguration");
 builder.Services.AddConfiguration<MSGraphConfiguration>(builder.Configuration, "MicrosoftGraph");
 builder.Services.AddConfiguration<GeneralConfiguration>(builder.Configuration, "GeneralConfiguration");
 

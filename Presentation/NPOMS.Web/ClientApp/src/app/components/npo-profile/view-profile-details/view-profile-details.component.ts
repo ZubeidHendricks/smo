@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService } from 'primeng/api';
-import { Subscription } from 'rxjs';
-import { AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
-import { IAccountType, IAddressInformation, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpo, INpoProfile, INpoProfileFacilityList, IProgramme, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
+import { Subscription, forkJoin } from 'rxjs';
+import { AccessStatusEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, StaffCategoryEnum } from 'src/app/models/enums';
+import { IAccountType, IAddressInformation, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IDocumentStore, IDocumentType, INpo, INpoProfile, INpoProfileFacilityList, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
@@ -18,6 +18,18 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   styleUrls: ['./view-profile-details.component.css']
 })
 export class ViewProfileDetailsComponent implements OnInit {
+  selectedRowIndex: number | null = null;
+  selectedProgram: any;
+  displayBankingDetailsPanel: boolean = false;
+
+  contactInformation: IProgramContactInformation = {} as IProgramContactInformation;
+  selectedContactInformation: IProgramContactInformation;
+  primaryContactInformation: IProgramContactInformation;
+
+  programBankDetails : IProgramBankDetails [];
+  programContactInformation: IProgramContactInformation[];
+  programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
+  programDeliveryDetails : IProgrammeServiceDelivery [];
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -85,6 +97,7 @@ export class ViewProfileDetailsComponent implements OnInit {
 
   staffCategories: IStaffCategory[];
   staffMemberProfiles: IStaffMemberProfile[];
+  source: string = 'NpoProfile';
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -179,6 +192,64 @@ export class ViewProfileDetailsComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.StaffCategory, false).subscribe(
       (results) => {
         this.staffCategories = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  onFirstTdClick(rowIndex: number) {
+    this.selectedRowIndex = rowIndex;
+  }
+  toggleBankingDetailsPanel(program: any) {
+    this.selectedProgram = program;
+    this.loadProgrammeDetails(program.id);
+    this.displayBankingDetailsPanel = true;
+  }
+
+  getNames(array: any[]): string {
+    const names = array.map(item => item.name) // Access 'name' directly
+                       .filter(name => name !== undefined && name.trim() !== '') // Filter out undefined or empty strings
+                       .join(', '); // Join the names with a comma
+  
+    return names; // Return the joined names as a string
+  }
+
+  loadProgrammeDetails(progId: number): void {
+    forkJoin({
+      contacts: this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfile.id)),
+      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfile.id)),
+      deliveryDetails: this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfile.id))
+    }).subscribe({
+      next: (result) => {
+        this.programContactInformation = result.contacts.filter(contact => contact.approvalStatus.id === AccessStatusEnum.Approved);
+        this.programBankDetails = result.bankDetails.filter(bankDetail => bankDetail.approvalStatus.id === AccessStatusEnum.Approved);
+        this.programDeliveryDetails = result.deliveryDetails.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
+        this.updateProgramBankDetailObjects();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  private updateProgramBankDetailObjects() {
+    if (this.banks && this.accountTypes && this.programBankDetails) {
+      this.programBankDetails.forEach(item => {
+        item.bank = this.banks.find(x => x.id === item.bankId);
+        this.loadProgrammeBranch(item);
+        item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
+      });
+    }
+  }
+
+  private loadProgrammeBranch(bankDetail: IProgramBankDetails) {
+    this._dropdownRepo.getBranchById(bankDetail.branchId).subscribe(
+      (results) => {
+        bankDetail.branch = results;
+        bankDetail.branchCode = bankDetail.branch.branchCode != null ? bankDetail.branch.branchCode : bankDetail.bank.code;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -355,7 +426,7 @@ export class ViewProfileDetailsComponent implements OnInit {
   }
 
   private loadServicesRendered(npoProfileId: number) {
-    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId).subscribe(
+    this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId,this.source).subscribe(
       (results) => {
         this.servicesRendered = results;
         this.updateServicesRenderedObjects();
