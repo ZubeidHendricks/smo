@@ -1,4 +1,4 @@
-import { IApplicationDetails, IFundAppSDADetail, IPlace, ISDA, ISubPlace, } from './../../../../../models/interfaces';
+import { IApplicationDetails, IFundAppSDADetail, IPlace, ISDA, ISubPlace, ISubProgrammeType, } from './../../../../../models/interfaces';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -96,6 +96,10 @@ export class ApplicationDetailsComponent implements OnInit {
 
   finYearRange: string;
 
+  subProgrammeType: ISubProgrammeType[];
+  filteredSubProgrammeType: ISubProgrammeType[];
+  selectedSubProgrammeType: ISubProgrammeType;
+
   // Highlight required fields on validate click
   validated: boolean = false;
   allDistrictCouncils: IDistrictCouncil[];
@@ -127,6 +131,8 @@ export class ApplicationDetailsComponent implements OnInit {
   allApplicationPeriods: IApplicationPeriod[];
   cols: any[];
 
+  selectedSubProgram: any;
+  filterSubProgramIds: string;
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -484,6 +490,7 @@ export class ApplicationDetailsComponent implements OnInit {
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
+          this.loadSubProgrammeTypes(results.subProgrammeId);
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
           this.selectedSubProgramme = results.subProgramme;
@@ -857,6 +864,38 @@ export class ApplicationDetailsComponent implements OnInit {
       }
     );
   }
+
+  private loadSubProgrammeTypes(subProgramId: number) {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.subProgrammeType = results;
+       this.filteredSubProgrammeType = this.subProgrammeType.filter(x=> x.subProgrammeId === subProgramId);
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  // subProgrammeChange(subProgram: any[])
+  // {
+  //   let selectedSubProgrammes = [];
+  //   selectedSubProgrammes.push(subProgram); 
+  //   if (selectedSubProgrammes.length > 0)
+  //   {
+  //     this.selectedSubProgram = selectedSubProgrammes.join(",");
+  //     this.filterSubProgramIds = this.selectedSubProgram;
+  //     const subProgrammeIds = this.filterSubProgramIds.split(',').map(Number);
+      
+  //     this.filteredSubProgrammeType = this.subProgrammeType.filter(item =>
+  //       subProgrammeIds.includes(item.subProgrammeId)
+  //     );     
+  //   }  
+  //   else
+  //   this.filterSubProgramIds = "0";
+  // }
 
   private setStatus(applicationPeriod: IApplicationPeriod) {
     let openingDate = new Date(applicationPeriod.openingDate);

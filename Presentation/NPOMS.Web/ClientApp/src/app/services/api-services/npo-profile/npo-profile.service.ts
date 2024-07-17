@@ -42,6 +42,11 @@ export class NpoProfileService {
     return this._http.get<IProgramBankDetails[]>(url, httpOptions);
   }
   
+  public getProgrammeBankDetails(npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/bank/npoProfileId/${npoProfileId}`;
+    return this._http.get<IProgramBankDetails[]>(url, httpOptions);
+  }
+
   public getProgrammeDeliveryDetailsById(programmeId: number,npoProfileId: number) {
     const url = `${this._envUrl.urlAddress}/api/programme/delivery/programmeId/${programmeId}/npoProfileId/${npoProfileId}`;
     return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);

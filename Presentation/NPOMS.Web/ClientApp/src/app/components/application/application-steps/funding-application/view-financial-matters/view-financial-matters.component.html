@@ -19,7 +19,7 @@
   <ng-template pTemplate="header">
     <tr>
       <th colspan="5" style="text-align:center">
-        Total Income and Expenditure for the previous financial year (2022/23)
+        Total Income and Expenditure for the previous financial year ({{previous_year}})
       </th>
     </tr>
     <tr>
@@ -412,7 +412,7 @@
 
 <div style="height: 10px;"></div>
  <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Bank Details">
-    <p-table [rowHover]="true" [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
+    <!-- <p-table [rowHover]="true" [columns]="bankDetailCols" [value]="bankDetails" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
           <tr>
               <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -428,9 +428,9 @@
             <td *ngIf="rowData.accountType">{{rowData.accountType.name}}</td>
             <td>{{rowData.accountNumber}}</td>
             <td style="text-align: center;">
-              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editBankDetail(rowData)" pTooltip="Edit" tooltipPosition="top" [disabled]="true" ></button>
+              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editBankDetail(rowData)" pTooltip="Edit" tooltipPosition="top" [disabled]="true" ></button> -->
               <!-- <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteBankDetail(rowData.id)" pTooltip="Delete" [disabled]="true" tooltipPosition="top" [disabled]="true" ></button> -->
-            </td>
+            <!-- </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
@@ -443,7 +443,32 @@
                 <button pButton pRipple type="button" label="Add Bank Detail" class="p-button-text" icon="fa fa-plus" (click)="addBankDetail()" [disabled]="true" ></button>
             </div>
         </ng-template>
-    </p-table>
+    </p-table> -->
+
+    <p-table [value]="bankDetails" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+          <tr>
+          <th style="width: 25%;">Bank Name</th>
+          <th style="width: 25%;">Account Number</th>
+          <th style="width: 25%;">Branch</th>
+          <th style="width: 25%;">Status</th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-detail>
+          <tr>
+          <td>{{detail?.bank?.name}}</td>
+          <td>{{detail?.accountNumber}}</td>
+          <td>{{detail?.branch?.name}}</td>
+          <td>{{detail?.approvalStatus?.name}}</td>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+          <tr class="default-font">
+              <td colspan="5" style="text-align: center;">No results found.</td>
+          </tr>
+      </ng-template>
+  </p-table>
+
 </p-panel>    
 <div style="height: 10px;"></div>
 <div class="content-section implementation">

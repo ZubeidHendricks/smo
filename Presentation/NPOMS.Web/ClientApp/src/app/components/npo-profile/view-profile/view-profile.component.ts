@@ -85,6 +85,8 @@ export class ViewProfileComponent implements OnInit {
   programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
   programDeliveryDetails : IProgrammeServiceDelivery [];
   selectedRowIndex: number | null = null;
+  headerTitle: string;
+  viewHeader:boolean;
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -96,6 +98,15 @@ export class ViewProfileComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
+    if(this.headerTitle === "view")
+    {
+      this.viewHeader = true;
+    }
+    
+
     this.loadDocumentTypes();
     this.loadProgrammes();
     this.loadSubProgrammes();
@@ -163,10 +174,10 @@ export class ViewProfileComponent implements OnInit {
     ];
   }
   onFirstTdClick(rowIndex: number) {
-    this.selectedRowIndex = rowIndex;
+    if(this.headerTitle !== 'view')
+      this.selectedRowIndex = rowIndex;
   }
   toggleBankingDetailsPanel(program: any) {
-    console.log(program);
     // if (this.selectedProgram && this.selectedProgram.id === program.id) {
     //   this.displayBankingDetailsPanel = true;
     // } else {
@@ -174,9 +185,12 @@ export class ViewProfileComponent implements OnInit {
     //   this.loadProgrammeDetails(program.id);
     //   this.displayBankingDetailsPanel = true;
     // }
-    this.selectedProgram = program;
-    this.loadProgrammeDetails(program.id);
-    this.displayBankingDetailsPanel = true;
+    if(this.headerTitle !== 'view')
+    {
+      this.selectedProgram = program;
+      this.loadProgrammeDetails(program.id);
+      this.displayBankingDetailsPanel = true;
+    }   
   }
   // toggleBankingDetailsPanel(program: any) {
   //   if (this.selectedProgram && this.selectedProgram.id === program.id) {
