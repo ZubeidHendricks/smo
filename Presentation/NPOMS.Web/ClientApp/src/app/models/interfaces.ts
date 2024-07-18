@@ -559,6 +559,7 @@ export interface IApplicationPeriod {
     departmentId: number;
     programmeId: number;
     subProgrammeId: number;
+    subProgrammeTypeId: number;
     applicationTypeId: number;
     name: string;
     description: string;
@@ -572,6 +573,7 @@ export interface IApplicationPeriod {
     department: IDepartment;
     programme: IProgramme;
     subProgramme: ISubProgramme;
+    subProgramType: ISubProgrammeType
     financialYear: IFinancialYear;
     applicationType: IApplicationType;
     createdUser: IUser;
@@ -700,6 +702,7 @@ export interface IObjective {
 export interface IFundingApplicationDetails {
     id: number;
     applicationId: number;
+    programmeId: number;
     applicationPeriodId: number;
     projectInformation: IProjectInformation;
     monitoringEvaluation: IMonitoringAndEvaluation;

@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IProgramme, ISubProgramme, IUser } from 'src/app/models/interfaces';
+import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IProgramme, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -53,6 +53,10 @@ export class EditApplicationPeriodComponent implements OnInit {
   applicationTypes: IApplicationType[];
   selectedApplicationType: IApplicationType;
 
+  subProgrammesType: ISubProgrammeType[] = [];
+  selectedSubProgrammeType: ISubProgrammeType;
+  filteredSubProgrammeType: ISubProgrammeType[];
+  
   openingMinDate: Date;
   closingMinDate: Date;
   disableClosingDate: boolean = true;
@@ -137,7 +141,7 @@ export class EditApplicationPeriodComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
       this.validationErrors.push({ severity: 'error', summary: "Edit Programme:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -162,10 +166,10 @@ export class EditApplicationPeriodComponent implements OnInit {
       data.subProgrammeId = this.selectedSubProgramme.id;
       data.financialYearId = this.selectedFinancialYear.id;
       data.applicationTypeId = this.selectedApplicationType.id;
-
+      data.subProgrammeTypeId = this.selectedSubProgrammeType.id;
       data.openingDate = this.addTwoHours(data.openingDate);
       data.closingDate = this.addTwoHours(data.closingDate);
-
+      data.name = this.selectedSubProgrammeType.name;
       this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
         (resp) => {
           this._spinner.hide();
@@ -263,6 +267,31 @@ export class EditApplicationPeriodComponent implements OnInit {
     }
   }
 
+  disableSubProgrammeType(): boolean {
+    if (this.subProgrammesType.length > 0)
+      return false;
+
+    return true;
+  }
+
+  private loadSubProgrammeTypes(subProgramId: number) {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.subProgrammesType = results;
+       this.filteredSubProgrammeType = this.subProgrammesType.filter(x=> x.subProgrammeId === subProgramId);
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  subProgrammeChange(subProgram: ISubProgramme) {
+    this.loadSubProgrammeTypes(subProgram.id);
+  }
+
   private loadApplicationPeriod() {
     if (this.applicationPeriodId != null) {
       this._applicationPeriodRepo.getApplicationPeriodById(Number(this.applicationPeriodId)).subscribe(
@@ -270,7 +299,7 @@ export class EditApplicationPeriodComponent implements OnInit {
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
-
+          this.loadSubProgrammeTypes(results.subProgrammeId);
           this.updateDateField(results.financialYear.startDate, 'opening date');
           this.updateDateField(results.openingDate, 'closing date');
 
@@ -280,6 +309,7 @@ export class EditApplicationPeriodComponent implements OnInit {
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
           this.selectedSubProgramme = results.subProgramme;
+          this.selectedSubProgrammeType = results.subProgramType;
           this.selectedFinancialYear = results.financialYear;
           this.selectedApplicationType = results.applicationType;
 

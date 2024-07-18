@@ -52,17 +52,19 @@ namespace NPOMS.Services.Implementation
 		private readonly IProjectImplementationPlaceRepository _implementationPlaceRepository;
 		private readonly IApplicationDetailsRepository _applicationDetailsRepository;
 		private readonly IApplicationPeriodService _applicationPeriodService;
+        private readonly IProgrameDeliveryService _programeDeliveryService;
+        private readonly IBidRepository _bidRepository;
+        private readonly IApplicationService _applicationService;
 
-		private readonly IBidRepository _bidRepository;
 
-
-		public BidService(IFundingApplicationDetailsRepository fundingApplicationDetailsRepository, INpoService npoService, IProjectImplementationRepository bidImplementationRepository
+        public BidService(IFundingApplicationDetailsRepository fundingApplicationDetailsRepository, INpoService npoService, IProjectImplementationRepository bidImplementationRepository
 			, IFinancialMattersRepository financialMattersRepository, IApplicationDetailsRepository applicationDetailsRepository, IFinancialYearRepository finYearRepository
 			, IPropertyTypeRepository propertyTypeRepository, IPropertySubTypeRepository propertySubTypeRepository, IUserRepository userRepository,
 			IMapper mapper, IProjectImplementationSubPlaceRepository implementationSubPlaceRepository, IProjectImplementationPlaceRepository implementationPlaceRepository, IDistrictCouncilRepository districtRepository, ILocalMunicipalityRepository localMunicipalityRepository, IPlaceRepository placeRepository,
 			IRegionRepository regionRepository, ISubPlaceRepository subPlaceRepository, IApplicationPeriodService applicationPeriodService,
 			IFundAppServiceDeliveryAreaRepository bidServiceDeliveryAreaRepository, IProjectInformationRepository projectInformationRepository,
-		IServiceDeliveryAreaRepository serviceDeliveryAreaRepository, IFundAppRegionRepository bidRegionRepository, IFundAppSDADetailRepository geographicalDetailsRepositoryRepository, IMonitoringEvaluationRepository monitoringEvaluationRepository, IBidRepository bidRepository)
+		IServiceDeliveryAreaRepository serviceDeliveryAreaRepository, IFundAppRegionRepository bidRegionRepository, IFundAppSDADetailRepository geographicalDetailsRepositoryRepository, IMonitoringEvaluationRepository monitoringEvaluationRepository, IBidRepository bidRepository,
+         IProgrameDeliveryService programeDeliveryService, IApplicationService applicationService)
 		{
 			_fundingApplicationDetailsRepository = fundingApplicationDetailsRepository;
 			_bidRegionRepository = bidRegionRepository;
@@ -89,7 +91,9 @@ namespace NPOMS.Services.Implementation
 			_monitoringEvaluationRepository = monitoringEvaluationRepository;
 			_applicationPeriodService = applicationPeriodService;
 			_bidRepository = bidRepository;
-		}
+            _programeDeliveryService = programeDeliveryService;
+            _applicationService = applicationService;
+        }
 
 		#endregion
 
@@ -126,9 +130,9 @@ namespace NPOMS.Services.Implementation
 		public async Task<FundAppDetailViewModel> Create(string userIdentifier, FundAppDetailViewModel model)
 		{
 
-
-			// var geoDetails = GetGeoDetails(model.GeographicalDetails);
-			var appDetail = await GetAppDetails(model.ApplicationDetails);
+            var npoProfile = await _applicationService.GetApplicationById(model.ApplicationPeriodId);
+            // var geoDetails = GetGeoDetails(model.GeographicalDetails);
+            var appDetail = await GetAppDetails(model.ApplicationDetails, model.ProgrammeId, npoProfile.NpoId);
 			var projectInfo = GetProjectInfoViewModel(model.ProjectInformation);
 			var monotoring = GetMonitoringEvaluationViewModel(model.MonitoringEvaluation);
 			var bid = new FundingApplicationDetail
@@ -265,19 +269,28 @@ namespace NPOMS.Services.Implementation
 			return this._mapper.Map<FundAppDetailViewModel>(bid);
 		}
 
-		private async Task<ApplicationDetail> GetAppDetails(ApplicationDetailViewModel model)
+		private async Task<ApplicationDetail> GetAppDetails(ApplicationDetailViewModel model, int programmeId, int npoId)
 		{
-			// var geographicalDetails = new GeographicalDetails();
-			var applicationDetails = new ApplicationDetail();
+            var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId, npoId);
+            // var geographicalDetails = new GeographicalDetails();
+            var applicationDetails = new ApplicationDetail();
 			var geo = new FundAppSDADetail();
 			applicationDetails.FundAppSDADetail = geo;
 			applicationDetails.AmountApplyingFor = model.AmountApplyingFor;
-			int districtId = model.FundAppSDADetail.DistrictCouncil.Id;
+            
+			var districtCouncil = results.Select(x => x.DistrictCouncil).FirstOrDefault();
+            var localMunicipality = results.Select(x => x.LocalMunicipality).FirstOrDefault();
+            var regions = results.Select(x => x.Regions).FirstOrDefault();
+			var serviceDeliveryAreas = results.Select(x => x.ServiceDeliveryAreas).FirstOrDefault();
+
+
+            int districtId = districtCouncil.Id; //  model.FundAppSDADetail.DistrictCouncil.Id;
 			var district = await _districtRepository.GetById(districtId);
 
 			applicationDetails.FundAppSDADetail.DistrictCouncil = district;
+
 			applicationDetails.FundAppSDADetail.LocalMunicipality
-				= await _localMunicipalityRepository.GetById(model.FundAppSDADetail.LocalMunicipality.ID);
+                = await _localMunicipalityRepository.GetById(localMunicipality.ID);
 
 			applicationDetails.FundAppSDADetail.DistrictCouncilId = applicationDetails.FundAppSDADetail.DistrictCouncil == null ? 0 : applicationDetails.FundAppSDADetail.DistrictCouncil.Id;
 			applicationDetails.FundAppSDADetail.DistrictCouncil = null;
@@ -285,7 +298,7 @@ namespace NPOMS.Services.Implementation
 			applicationDetails.FundAppSDADetail.LocalMunicipalityId = applicationDetails.FundAppSDADetail.LocalMunicipality == null ? 0 : applicationDetails.FundAppSDADetail.LocalMunicipality.Id;
 			applicationDetails.FundAppSDADetail.LocalMunicipality = null;
 
-			foreach (var item in model.FundAppSDADetail.Regions)
+			foreach (var item in regions)
 			{
 				var bidRegion = new FundAppSDADetail_Region
 				{
@@ -298,7 +311,7 @@ namespace NPOMS.Services.Implementation
 				applicationDetails.FundAppSDADetail.Regions.Add(bidRegion);
 			}
 
-			foreach (var item in model.FundAppSDADetail.ServiceDeliveryAreas)
+			foreach (var item in serviceDeliveryAreas)
 			{
 				var bidServiceDeliveryArea = new FundAppServiceDeliveryArea()
 				{

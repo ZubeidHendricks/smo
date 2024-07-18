@@ -1,6 +1,6 @@
 import { NpoProfileService } from './../../../services/api-services/npo-profile/npo-profile.service';
 import { FundingApplicationService } from './../../../services/api-services/funding-application/funding-application.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Console } from 'console';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -49,7 +49,9 @@ export class EditApplicationComponent implements OnInit {
   public get FundingApplicationStepsEnum(): typeof FundingApplicationStepsEnum {
     return FundingApplicationStepsEnum;
   }
-
+  @Input() source: string;
+  @Input() programId: number;
+  
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
@@ -318,6 +320,7 @@ export class EditApplicationComponent implements OnInit {
 
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
               if(this.activeStep !== 5)
+                alert(this.programId );
               this.bidForm(StatusEnum.Saved);
             }
           }
@@ -352,9 +355,9 @@ export class EditApplicationComponent implements OnInit {
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;
-
+      this.fundingApplicationDetails.programmeId = this.programId;
       this._applicationRepo.updateApplication(this.application).subscribe(resp => { this._applicationRepo.getApplicationById(Number(this.id)) });
-      this.application.statusId = status;
+      this.application.statusId = status;    
 
       if (applicationIdOnBid.id == null) {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {

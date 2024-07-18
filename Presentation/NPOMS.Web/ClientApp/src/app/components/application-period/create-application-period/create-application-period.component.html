@@ -26,7 +26,11 @@
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Sub-Programme</label>
-                <p-dropdown [options]="subProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgramme()" #subProgramme="ngModel" [ngClass]="{'ng-dirty': (subProgramme.invalid && validated) || (subProgramme.dirty && subProgramme.invalid)}" required></p-dropdown>
+                <p-dropdown [options]="subProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" 
+                [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                 appendTo="body" [disabled]="disableSubProgramme()" #subProgramme="ngModel" 
+                 (onChange)="subProgrammeChange($event.value)"
+                 [ngClass]="{'ng-dirty': (subProgramme.invalid && validated) || (subProgramme.dirty && subProgramme.invalid)}" required></p-dropdown>
                 <small *ngIf="(subProgramme.invalid && validated) || (subProgramme.dirty && subProgramme.invalid)" class="p-error">Sub-Programme is required.</small>
             </div>
             <div class="p-field p-col-12 p-md-6">
@@ -52,10 +56,19 @@
                 <input type="text" class="form-text" pInputText [(ngModel)]="financialYear.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
             </div> -->
 
-            <div class="p-field p-col-12 p-md-6">
+            <!-- <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Name</label>
                 <input type="text" class="form-text" pInputText [(ngModel)]="applicationPeriod.name" [ngModelOptions]="{standalone: true}" #applicationName="ngModel" [ngClass]="{'ng-dirty': (applicationName.invalid && validated) || (applicationName.dirty && applicationName.invalid)}" required>
                 <small *ngIf="(applicationName.invalid && validated) || (applicationName.dirty && applicationName.invalid)" class="p-error">Name is required.</small>
+            </div> -->
+            <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Sub Program Type</label>
+                <div class="p-col-12 p-md-10">
+                    <p-dropdown [options]="filteredSubProgrammeType" placeholder="Select a Sub-Programme Type"
+                    optionLabel="name" optionValue="id" [(ngModel)]="selectedSubProgrammeType" 
+                    [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" [disabled]="disableSubProgrammeType()"
+                    appendTo="body" selectedItemsLabel="{0} items selected" required></p-dropdown>
+                </div>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Closing Date</label>

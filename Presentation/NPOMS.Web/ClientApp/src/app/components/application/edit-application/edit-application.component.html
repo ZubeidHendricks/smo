@@ -30,12 +30,16 @@
             [(activeStep)]="activeStep" [application]="application"
             [(fundingApplicationDetails)]="fundingApplicationDetails"
             [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
+            [programId]="application.applicationPeriod.programmeId" 
             (getPlace)="places($event)"
             (getSubPlace)=" subPlaces($event)"
             [isEdit]="true">
         </app-application-details>
         <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
-            [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
+            [(activeStep)]="activeStep" [application]="application"
+            [programId]="application.applicationPeriod.programmeId" 
+            [source]="source" 
+            [isAdmin]=false
             [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
         </app-financial-matters>
 

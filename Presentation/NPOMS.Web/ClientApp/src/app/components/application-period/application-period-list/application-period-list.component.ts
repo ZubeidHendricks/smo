@@ -130,6 +130,7 @@ export class ApplicationPeriodListComponent implements OnInit {
         });
 
         this.allApplicationPeriods = results;
+        console.log('this.allApplicationPeriods', this.allApplicationPeriods);
         this._spinner.hide();
       },
       (err) => {

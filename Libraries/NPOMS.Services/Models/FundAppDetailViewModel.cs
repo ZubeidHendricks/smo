@@ -20,6 +20,7 @@ namespace NPOMS.Services.Models
         public int? ProjectInformationId { get; set; }
         public bool IsActive { get; set; }
         public int ApplicationId { get; set; }
+        public int ProgrammeId { get; set; }
         public string ApplicationPeriodName { get; set; }
         public string MonEvDescrition { get; set; }
         public ProjectInformationViewModel ProjectInformation { get; set; }

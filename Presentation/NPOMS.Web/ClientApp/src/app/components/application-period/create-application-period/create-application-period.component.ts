@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IProgramme, ISubProgramme, IUser } from 'src/app/models/interfaces';
+import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IProgramme, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -47,6 +47,9 @@ export class CreateApplicationPeriodComponent implements OnInit {
   applicationTypes: IApplicationType[];
   selectedApplicationType: IApplicationType;
 
+  subProgrammesType: ISubProgrammeType[] = [];
+  selectedSubProgrammeType: ISubProgrammeType;
+  filteredSubProgrammeType: ISubProgrammeType[];
   openingMinDate: Date;
   closingMinDate: Date;
   disableClosingDate: boolean = true;
@@ -126,7 +129,7 @@ export class CreateApplicationPeriodComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
       this.validationErrors.push({ severity: 'error', summary: "New Application Period:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -151,10 +154,10 @@ export class CreateApplicationPeriodComponent implements OnInit {
       data.subProgrammeId = this.selectedSubProgramme.id;
       data.financialYearId = this.selectedFinancialYear.id;
       data.applicationTypeId = this.selectedApplicationType.id;
-
+      data.subProgrammeTypeId = this.selectedSubProgrammeType.id;
       data.openingDate = this.addTwoHours(data.openingDate);
       data.closingDate = this.addTwoHours(data.closingDate);
-
+      data.name = this.selectedSubProgrammeType.name;
       this._applicationPeriodRepo.createApplicationPeriod(data).subscribe(
         (resp) => {
           this._spinner.hide();
@@ -183,6 +186,24 @@ export class CreateApplicationPeriodComponent implements OnInit {
       return true;
 
     return false;
+  }
+
+  private loadSubProgrammeTypes(subProgramId: number) {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.subProgrammesType = results;
+       this.filteredSubProgrammeType = this.subProgrammesType.filter(x=> x.subProgrammeId === subProgramId);
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  subProgrammeChange(subProgram: ISubProgramme) {
+    this.loadSubProgrammeTypes(subProgram.id);
   }
 
   private loadFinancialYears() {
@@ -232,6 +253,21 @@ export class CreateApplicationPeriodComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
       (results) => {
         this.allSubProgrammes = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  
+  private loadSubProgrammesType() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.subProgrammesType = results;
         this._spinner.hide();
       },
       (err) => {
@@ -319,6 +355,13 @@ export class CreateApplicationPeriodComponent implements OnInit {
 
   disableSubProgramme(): boolean {
     if (this.subProgrammes.length > 0)
+      return false;
+
+    return true;
+  }
+
+  disableSubProgrammeType(): boolean {
+    if (this.subProgrammesType.length > 0)
       return false;
 
     return true;
