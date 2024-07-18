@@ -52,6 +52,16 @@ export class NpoProfileService {
     return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);
   }
 
+  public getProgrammeDeliveryDetails(npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/delivery/npoProfileId/${npoProfileId}`;
+    return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);
+  }
+
+  public getProgrammeContacts(npoProfileId: number, source: string) {
+    const url = `${this._envUrl.urlAddress}/api/programme/contact/npoProfileId/${npoProfileId}`;
+    return this._http.get<IProgramContactInformation[]>(url, httpOptions);
+  }
+
   public createProgrammeContact(npoProfileId: number,programContactInformation: IProgramContactInformation) {
     const url = `${this._envUrl.urlAddress}/api/programme/create-contact/${npoProfileId}`;
     return this._http.post<IProgramContactInformation>(url, programContactInformation, httpOptions);

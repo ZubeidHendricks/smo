@@ -1,3 +1,4 @@
+import { style } from '@angular/animations';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -28,6 +29,7 @@ export class ViewFinancialMattersComponent implements OnInit {
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() currentUserId: number;
+  @Input() programId: number;
 
   previousFinancialYear: IPreviousFinancialYear[];
   totalIncome: number;
@@ -238,12 +240,7 @@ export class ViewFinancialMattersComponent implements OnInit {
   private loadProgrammeDetails() {
     this._npoProfile.getProgrammeBankDetails(this.application.id).subscribe(
       (results) => {
-
-        // results.forEach(approvedStatus => {
-        //   this.loadApprovedStatus(approvedStatus.approvalStatus);
-        // });
-
-        this.programBankDetails = results.filter(x=> x.approvalStatus.id === 2);
+        this.programBankDetails = results.filter(x=> x.approvalStatus.id === 2 && x.programId == this.programId);
         this.updateBankDetailObjects();
       }, 
       (err) => {

@@ -30,6 +30,13 @@ namespace NPOMS.Services.Implementation
             return await MapToViewModelListAsync(model);
         }
 
+        public async Task<IEnumerable<ProgrammeServiceDeliveryVM>> GetDeliveryDetails( int npoProfileId)
+        {
+            var model = await _programeDeliveryRepository.GetDeliveryDetails(npoProfileId);
+
+            return await MapToViewModelListAsync(model);
+        }
+        
 
         public async Task<IEnumerable<ProgrammeServiceDeliveryVM>> MapToViewModelListAsync(IEnumerable<ProgrammeServiceDelivery> entities)
         {

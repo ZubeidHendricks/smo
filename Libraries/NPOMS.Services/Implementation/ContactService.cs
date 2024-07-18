@@ -21,5 +21,11 @@ namespace NPOMS.Services.Implementation
         {
             return _programeContactDetailRepository.GetContactDetailsByProgramId(programmeId,npoProfileId);
         }
+
+        public Task<IEnumerable<ProgramContactInformation>> GetContactDetails(int npoProfileId)
+        {
+            return _programeContactDetailRepository.GetContactDetails(npoProfileId);
+        }
+
     }
 }

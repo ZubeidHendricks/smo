@@ -96,6 +96,21 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("contact/npoProfileId/{npoProfileId}", Name = "GetContactDetails")]
+        public async Task<IActionResult> GetContactDetails(int npoProfileId)
+        {
+            try
+            {
+                var results = await _contactService.GetContactDetails(npoProfileId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetContactDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("delivery/programmeId/{programmeId}/npoProfileId/{npoProfileId}", Name = "GetDeliveryDetailsByProgramId")]
         public async Task<IActionResult> GetDeliveryDetailsByProgramId(int programmeId, int npoProfileId)
         {
@@ -110,6 +125,38 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("delivery/npoProfileId/{npoProfileId}", Name = "GetDeliveryDetails")]
+        public async Task<IActionResult> GetDeliveryDetails(int programmeId, int npoProfileId)
+        {
+            try
+            {
+                var npoProfile = await _applicationService.GetApplicationById(npoProfileId);
+                var results = await _programeDeliveryService.GetDeliveryDetails(npoProfile.NpoId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDeliveryDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        //[HttpGet("contact/npoProfileId/{npoProfileId}", Name = "GetContactDetails")]
+        //public async Task<IActionResult> GetContactDetails(int npoProfileId)
+        //{
+        //    try
+        //    {
+        //        var npoProfile = await _applicationService.GetApplicationById(npoProfileId);
+        //        var results = await _contactService.GetContactDetailsByProgramId(npoProfile.NpoId);
+        //        return Ok(results);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside GetContactDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         [HttpPost("create-contact/{npoProfileId}", Name = "CreateProgrameContact")]
         public async Task<IActionResult> CreateProgrameContact([FromBody] ProgramContactInformation model, int npoProfileId)
