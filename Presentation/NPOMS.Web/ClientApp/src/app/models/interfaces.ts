@@ -467,6 +467,7 @@ export interface IActivityDistrict {
 
 export interface IActivitySubDistrict {
     id: number;
+    subDistrictid: number;
     facilityDistrictId: number;
     name: string;
     isActive: boolean;
@@ -475,6 +476,7 @@ export interface IActivitySubDistrict {
 
 export interface IActivitySubStructure {
     id: number;
+    subStructureid: number;
     facilityDistrictId: number;
     name: string;
     isActive: boolean;

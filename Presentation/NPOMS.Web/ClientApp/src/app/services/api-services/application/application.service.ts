@@ -239,4 +239,8 @@ export class ApplicationService {
     const url = `${this._envUrl.urlAddress}/api/applications/UpdateInitiateScorecardValueAndEmail/applicationId/${applicationId}`;
     return this._http.put<IApplication>(url, users, httpOptions);
 }
+public UpdatesatisfactionReviewers(applicationId: number, users: { fullName: string, email: string, id: number }[]) {
+  const url = `${this._envUrl.urlAddress}/api/applications/UpdatesatisfactionReviewers/applicationId/${applicationId}`;
+  return this._http.put<IApplication>(url, users, httpOptions);
+}
 }

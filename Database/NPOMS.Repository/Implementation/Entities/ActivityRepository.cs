@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Entities;
+using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Interfaces.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -23,7 +24,11 @@ namespace NPOMS.Repository.Implementation.Entities
 		public async Task<IEnumerable<Activity>> GetByApplicationId(int applicationId)
 		{
 			return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
-				.Include(x => x.Objective).Include(x => x.ActivityType)
+                .Include(x => x.ActivityDistrict)
+				  .ThenInclude(x => x.ActivitySubDistrict)
+                .Include(x => x.ActivityDistrict)
+                  .ThenInclude(x => x.ActivitySubStructure)
+                .Include(x => x.Objective).Include(x => x.ActivityType)
 				.Include(x => x.ActivityList).AsNoTracking().ToListAsync();
 		}
 

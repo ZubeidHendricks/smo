@@ -974,6 +974,23 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("UpdatesatisfactionReviewers/applicationId/{applicationId}", Name = "UpdatesatisfactionReviewers")]
+        public async Task<IActionResult> UpdatesatisfactionReviewers(int applicationId, [FromBody] UserVM[] users)
+        {
+            try
+            {
+                var fundingApplication = await _applicationService.GetById(applicationId);
+                await UpdatesatisfactionReviewers(fundingApplication, users);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateInitiateScorecardValueAndEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
         [HttpGet("reviewers", Name = "Reviewers")]
         public async Task<IActionResult> Reviewers()
@@ -1003,6 +1020,25 @@ namespace NPOMS.API.Controllers
             {
                 _logger.LogError($"Something went wrong inside DeleteApplicationById action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        private async Task UpdatesatisfactionReviewers(Application fundingApplication, UserVM[] users)
+        {
+            try
+            {
+                var initiateScorecardEmail = EmailTemplateFactory
+                            .Create(EmailTemplateTypeEnum.SatisficationApprovalEmail)
+                            .Get<SatisficationEmailTemplates>()
+                            .Init(fundingApplication, users);
+
+                await initiateScorecardEmail.SubmitToQueue();
+
+                await _emailService.SendEmailFromQueue();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside EvaluationController-ConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
             }
         }
 

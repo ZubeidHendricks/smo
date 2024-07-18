@@ -79,6 +79,11 @@ namespace NPOMS.Repository.Implementation.Entities
             await this.RepositoryContext.NpoUserTrackings.AddRangeAsync(npoUserTrackings);
         }
 
+        public async Task CreateNpoUserSatisfactionTracking(IEnumerable<NpoUserSatisfactionTracking> npoUserSatisfactionTracking)
+        {
+            await this.RepositoryContext.NpoUserSatisfactionTrackings.AddRangeAsync(npoUserSatisfactionTracking);
+        }
+
         #endregion
     }
 }

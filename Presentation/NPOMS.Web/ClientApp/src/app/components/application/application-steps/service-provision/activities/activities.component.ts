@@ -457,6 +457,7 @@ export class ActivitiesComponent implements OnInit {
   }
 
   private cloneActivity(data: IActivity): IActivity {
+    console.log('clone', data);
     data.name = data.activityList.name;
     data.description = data.activityList.description;
 
@@ -485,23 +486,25 @@ export class ActivitiesComponent implements OnInit {
 
     this.getTextValues();
 
-    // Handle selected districts
-    // const districtIds = data.activityDistricts.map(({ id }) => id);
-    // this.selectedDistricts = this.facilityDistricts.filter(item => districtIds.includes(item.id));
-
     // Handle selected district
-    const districtId = data.activityDistrict?.id; // Assuming data.activityDistricts is a single item
+    const districtId = data?.activityDistrict?.facilityDistrictId;
     this.selectedDistricts = this.facilityDistricts.find(item => item.id === districtId);
 
-    const subDistrictIds = data.activityDistrict.activitySubDistrict.map(({ id }) => id);
+    if (this.selectedDistricts) {
+      this.facilitySubDistricts = this.allFacilitySubDistricts.filter(sd => 
+        sd.facilityDistrictId === this.selectedDistricts.id
+      );
+  
+      this.facilitySubStructures = this.allFacilitySubStructures.filter(ss => 
+        ss.facilityDistrictId === this.selectedDistricts.id
+      );
+    }
+
+    const subDistrictIds = data?.activityDistrict?.activitySubDistrict?.map(({ subDistrictid }) => subDistrictid);
     this.selectedSubDistricts = this.allFacilitySubDistricts.filter(item => subDistrictIds.includes(item.id));
 
-    const subStructureId = data.activityDistrict.activitySubStructure?.id;
+    const subStructureId = data?.activityDistrict?.activitySubStructure?.subStructureid;
     this.selectedFacilitySubStructures = this.allFacilitySubStructures.find(item => item.id === subStructureId);
-    // Handle selected facility sub-structures
-    // const subStructureIds = data.activitySubStructures.map(({ id }) => id);
-    // this.selectedFacilitySubStructures = this.allFacilitySubStructures.filter(item => subStructureIds.includes(item.id));
-
     return activity;
   }
 
@@ -641,8 +644,8 @@ this.activity.activityDistrict = {
 // Add selected sub-districts
 this.selectedSubDistricts.forEach(item => {
   let selectedSubDistrict = {
-    // id: item.id,
-    facilityDistrictId: item.facilityDistrictId,
+    subDistrictid : item.id,
+    facilityDistrictId: this.selectedDistricts.id,
     name: item.name,
     isActive: item.isActive,
   } as IActivitySubDistrict;
@@ -651,23 +654,13 @@ this.selectedSubDistricts.forEach(item => {
 });
 
 this.activity.activityDistrict.activitySubStructure = {
-  // id: this.selectedFacilitySubStructures.id,
-  facilityDistrictId: this.selectedFacilitySubStructures.facilityDistrictId,
+  subStructureid: this.selectedFacilitySubStructures.id,
+  facilityDistrictId: this.selectedDistricts.id,
   name: this.selectedFacilitySubStructures.name,
   isActive: this.selectedFacilitySubStructures.isActive,
 } as IActivitySubStructure;
 
 console.log('activity', this.activity);
-
-
-
-
-
-
-
-
-
-
 
 // // Add selected districts
 // this.activity.activityDistricts = [];

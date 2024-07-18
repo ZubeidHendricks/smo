@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationAudit, IApplicationReviewerSatisfaction, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -24,6 +26,7 @@ export class ConfirmationComponent implements OnInit {
 
   auditCols: any[];
   statuses: any[] = [];
+  selectedStatus: any;
 
   applicationAudits: IApplicationAudit[];
   displayHistory: boolean;
@@ -39,15 +42,29 @@ export class ConfirmationComponent implements OnInit {
   showReviewerSatisfaction: boolean;
   reviewerSatisfactionCols: any;
 
+  reviewerlist: IUser[];
+  selectedreviewerlist: IUser[] = [];
+  displayDialog: boolean;
+  reviewerForm: FormGroup;
+
+  public get PermissionsEnum(): typeof PermissionsEnum {
+    return PermissionsEnum;
+  }
+
+  public get StatusEnum(): typeof StatusEnum {
+    return StatusEnum;
+  }
+
   constructor(
     private _applicationRepo: ApplicationService,
+    private _router: Router,
     private _loggerService: LoggerService,
-    private _spinner: NgxSpinnerService
+    private _spinner: NgxSpinnerService,
+    private _formBuilder: FormBuilder,
   ) { }
 
   ngOnInit(): void {
     this.buildStatusOptions();
-
     this.auditCols = [
       { header: '', width: '5%' },
       { header: 'Status', width: '55%' },
@@ -66,9 +83,22 @@ export class ConfirmationComponent implements OnInit {
       { header: 'Created User', width: '35%' },
       { header: 'Created Date', width: '35%' }
     ];
-
+    this.reviewerForm = this._formBuilder.group({});
     this.loadApplicationApprovals();
+    this.reviewers();
   }
+
+  reviewers() {
+    this._applicationRepo.reviewers().subscribe(
+     (results) => {
+       this.reviewerlist = results;
+     },
+     (err) => {
+       this._loggerService.logException(err);
+       this._spinner.hide();
+     }
+   );
+ }
 
   private loadApplicationApprovals() {
     this._applicationRepo.getApplicationApprovals(this.application.id).subscribe(
@@ -106,9 +136,45 @@ export class ConfirmationComponent implements OnInit {
     this.activeStepChange.emit(this.activeStep);
   }
 
-  statusEnumChange(status: any) {
-    this.statusChange.emit(status.value);
+  submit() {
+    //this.UpdateApplicationStatus();
   }
+
+  private UpdateApplicationStatus() {
+    const users = this.selectedreviewerlist.map(user => ({
+        fullName: user.fullName,
+        email: user.email,
+        id: user.id
+    }));
+    
+    this._applicationRepo.UpdateInitiateScorecardValueAndEmail(Number(this.application.id), users).subscribe(
+      (results) => {
+        this.displayDialog = false;
+        this._router.navigateByUrl('applications');
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+}
+
+disableSubmit() {
+
+  if (this.selectedreviewerlist.length == 0)
+    return true;
+
+  return false;
+}
+
+
+statusEnumChange(status: any) {
+    this.selectedStatus = status.value;
+    if(status.value === StatusEnum.PendingApproval) {
+      this.displayDialog = true;
+    }
+    this.statusChange.emit(status.value);
+}
 
   approvedFromChange(item: any) {
     this.approvalFromChange.emit(item.value);

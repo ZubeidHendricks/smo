@@ -8,6 +8,7 @@ namespace NPOMS.Repository.Interfaces.Entities
     {
         Task<IEnumerable<Application>> GetEntities();
         Task CreateNpoUserTracking(IEnumerable<NpoUserTracking> npoUserTrackings);
+        Task CreateNpoUserSatisfactionTracking(IEnumerable<NpoUserSatisfactionTracking> npoUserSatisfactionTracking);
 
         Task<Application> GetById(int id);
 

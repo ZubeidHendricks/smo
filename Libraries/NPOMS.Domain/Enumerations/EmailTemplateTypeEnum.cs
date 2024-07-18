@@ -34,6 +34,7 @@
 		ScorecardSummary = 30,
         InitiateScorecard = 31,
         RejectedScorecard = 32,
-        AmendedScorecard = 33
+        AmendedScorecard = 33,
+        SatisficationApprovalEmail = 34
     }
 }

@@ -12,6 +12,7 @@ namespace NPOMS.Domain.Mapping
     public class ActivitySubDistrict : BaseEntity
     {
         public string Name { get; set; }
+        public int subDistrictid { get; set; }
         public bool IsActive { get; set; }
         public int ActivityDistrictId { get; set; }
         public ActivityDistrict ActivityDistrict { get; set; }

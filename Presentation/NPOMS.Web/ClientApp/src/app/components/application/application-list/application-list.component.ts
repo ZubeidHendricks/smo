@@ -20,6 +20,8 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class ApplicationListComponent implements OnInit {
   displayDialog: boolean;
+  displaySatisfactionReviewDialog: boolean;
+  
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -128,6 +130,28 @@ export class ApplicationListComponent implements OnInit {
       }
     );
   }
+  submitSatisfactionReviewers(){
+    this.satisfactionReviewers();
+  }
+
+  private satisfactionReviewers() {
+    const users = this.selectedreviewerlist.map(user => ({
+        fullName: user.fullName,
+        email: user.email,
+        id: user.id
+    }));
+    
+    this._applicationRepo.UpdatesatisfactionReviewers(Number(this.selectedApplication.id), users).subscribe(
+      (results) => {
+        this.displaySatisfactionReviewDialog = false;
+        this._router.navigateByUrl('applications');
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+}
 
   submit() {
     this.UpdateInitiateScorecardValue();
@@ -478,6 +502,17 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.ReviewApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Select Reviewers',
+          target: 'Work Plan',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this.displaySatisfactionReviewDialog = true;
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
         this.buttonItems[0].items.push({
           label: 'View Application',
@@ -567,8 +602,6 @@ export class ApplicationListComponent implements OnInit {
       }  
     }
 
-    console.log('this.selectedApplication.initiateScorecard',this.selectedApplication.initiateScorecard);
-
     if(this.selectedApplication.initiateScorecard === 1)
     {
       this.optionItemExists('Initiate Score Card');      
@@ -628,6 +661,10 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
+
+      if (this.selectedApplication.statusId !== StatusEnum.PendingReviewerSatisfaction) {
+        this.buttonItemExists('Select Reviewers', 'Work Plan');
+       }
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
