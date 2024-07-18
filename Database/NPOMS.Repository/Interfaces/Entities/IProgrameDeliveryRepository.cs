@@ -11,6 +11,7 @@ namespace NPOMS.Repository.Interfaces.Entities
     {
         Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByProgramId(int programmeId, int npoProfileId);
         Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryyProgramId(int programmeId, int npoProfileId);
+        Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetails(int npoProfileId);
 
     }
 }

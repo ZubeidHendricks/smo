@@ -39,6 +39,27 @@ namespace NPOMS.Repository.Implementation.Entities
             return result;
         }
 
+        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetails(int npoProfileId)
+        {
+            var result = await FindByCondition(x => x.IsActive && x.NpoProfileId == npoProfileId)
+                            .Include(x => x.DistrictCouncil)
+                            .Include(x => x.ApprovalStatus)
+                            .Include(x => x.LocalMunicipality)
+                            .Include(x => x.ServiceDeliveryAreas).
+                                ThenInclude(x => x.ServiceDeliveryArea)
+                            .Include(x => x.Regions)
+                              .ThenInclude(x => x.Region)
+                           .AsNoTracking().ToListAsync();
+
+            result.ForEach(psd =>
+            {
+                psd.ServiceDeliveryAreas = psd.ServiceDeliveryAreas.Where(sda => sda.IsActive).ToList();
+                psd.Regions = psd.Regions.Where(region => region.IsActive).ToList();
+            });
+
+            return result;
+        }
+
         public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryyProgramId(int programmeId, int npoProfileId)
         {
             var result = await FindByCondition(x => x.ProgramId.Equals(programmeId) && x.NpoProfileId == npoProfileId && x.IsActive)

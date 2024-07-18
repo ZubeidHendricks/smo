@@ -4,6 +4,7 @@ import { IContactInformation, INpo } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-view-npo',
@@ -59,7 +60,7 @@ export class ViewNpoComponent implements OnInit {
 
     this.stakeholderCols = [
       { header: 'Name', width: '15%' },
-      { header: 'Primary Contact', width: '15%' },
+      { header: 'Primary Contact', width: '15%'},
       { header: 'Board Member', width: '15%' },
       { header: 'Bank Signatory', width: '15%' },
       { header: 'Written Agreement Signatory', width: '15%' },

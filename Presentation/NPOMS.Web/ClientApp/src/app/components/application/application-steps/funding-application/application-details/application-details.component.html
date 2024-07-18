@@ -123,7 +123,7 @@
                     *ngIf="(applicationName.invalid && validated) || (applicationName.dirty && applicationName.invalid)"
                     class="p-error">Name is required.</small> -->
             </div>
-            <div class="p-field p-col-12 p-md-3">
+            <!-- <div class="p-field p-col-12 p-md-3">
                 <label class="mandatory-content">District Council</label>
                 <p-dropdown [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name"
                     [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}"
@@ -155,7 +155,37 @@
                 <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
                     [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="onSdaChange($event.value)"
                     [style]="{'width':'100%'}" [disabled]="readonly()"></p-multiSelect>
-            </div>
+            </div> -->
+
+            <div style="height: 10px;"></div>
+          <p-panel [header]="'Service Delivery Areas'">
+            <p-table [value]="programDeliveryDetails" styleClass="p-datatable-sm">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Region</th>
+                  <th>District Council</th>
+                  <th>Local Municipality</th>
+                  <th>Service delivery address</th>
+                  <th>Status</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-delivery>
+                <tr>
+                  <td>{{getNames(delivery?.regions)}}</td>
+                  <td>{{delivery.districtCouncil?.name}}</td>
+                  <td>{{delivery.localMunicipality?.name}}</td>
+                  <td>{{getNames(delivery?.serviceDeliveryAreas)}}</td>
+                  <td>{{delivery?.approvalStatus?.name}}</td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found.</td>
+                </tr>
+            </ng-template>
+            </p-table>
+          </p-panel>
+
         </div>
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Rand amount you applying for</label>

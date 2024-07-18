@@ -1,9 +1,9 @@
-import { IApplicationDetails, IFundAppSDADetail, IPlace, ISDA, ISubPlace, ISubProgrammeType, } from './../../../../../models/interfaces';
+import { IApplicationDetails, IFundAppSDADetail, IPlace, IProgrammeServiceDelivery, ISDA, ISubPlace, ISubProgrammeType, } from './../../../../../models/interfaces';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
+import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
 import {
   IFinancialYear, IProgramme, IDepartment, ISubProgramme, IApplicationType, IApplicationPeriod,
   IMonitoringAndEvaluation, IProjectInformation, IUser, IDistrictCouncil, ILocalMunicipality, IFundingApplicationDetails, IApplication, IRegion
@@ -121,6 +121,7 @@ export class ApplicationDetailsComponent implements OnInit {
   sdas: ISDA[] = [];
   selectedSdas: ISDA[];
   selected: ISDA[] = [];
+  programDeliveryDetails : IProgrammeServiceDelivery[];
 
   places: IPlace[] = [];
   subPlacesAll: ISubPlace[];
@@ -536,7 +537,25 @@ export class ApplicationDetailsComponent implements OnInit {
     this.getFinancialYearRange(finYear);
   }
 
+  private getProgrammeDeliveryDetails() {
+    this._npoProfile.getProgrammeDeliveryDetails(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.programDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
+        } this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      });
+  }
 
+  getNames(array: any[]): string {
+    const names = array.map(item => item.name) // Access 'name' directly
+                       .filter(name => name !== undefined && name.trim() !== '') // Filter out undefined or empty strings
+                       .join(', '); // Join the names with a comma
+  
+    return names; // Return the joined names as a string
+  }
 
   private getFinancialYearRange(finYear: IFinancialYear) {
     if (this.financialYears.length > 0) {
