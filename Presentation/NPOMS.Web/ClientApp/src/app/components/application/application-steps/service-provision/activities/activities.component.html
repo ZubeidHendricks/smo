@@ -27,6 +27,11 @@
                 <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date: 'yyyy-MM-dd'}}</td>
                 <td>{{rowData.target}}</td>
                 <td>{{rowData.facilityListText}}</td>
+
+                <td>{{rowData?.activityDistrict?.name}}
+                <td>{{ getSubDistrictNames(rowData?.activityDistrict) }}</td>  
+                <td>{{rowData?.activityDistrict?.activitySubStructure?.name}}
+
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActivity(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
                     <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -40,7 +45,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
             <tr class="default-font">
-                <td colspan="6" style="text-align: center;">No results found</td>
+                <td colspan="9" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>
         <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">

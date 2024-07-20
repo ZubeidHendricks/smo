@@ -142,24 +142,6 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut(Name = "UpdateApplication")]
-        public async Task<IActionResult> UpdateApplication([FromBody] Application model)
-        {
-            try
-            {
-                await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
-                await CreateApplicationAudit(model);
-
-                await ConfigureEmail(model);
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside UpdateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
         [HttpPut("applicationId/{applicationId}", Name = "DeleteApplicationById")]
         public async Task<IActionResult> DeleteApplicationById(int applicationId)
         {
@@ -991,6 +973,73 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("Addworkplanapprovers", Name = "Addworkplanapprovers")]
+        public async Task<IActionResult> Addworkplanapprovers([FromBody] ApplicationWithUsers model)
+        {
+            try
+            {
+                await _applicationService.UpdateApplication(model.model, base.GetUserIdentifier());
+                await CreateApplicationAudit(model.model);
+
+                await AddworkplanapproversEmails(model.model, model.users);
+                return Ok(model.model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut(Name = "UpdateApplication")]
+        public async Task<IActionResult> UpdateApplication([FromBody] Application model)
+        {
+            try
+            {
+                await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
+                await CreateApplicationAudit(model);
+
+                await ConfigureEmail(model);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("depReviewers/{departmentId}", Name = "depReviewers")]
+        public async Task<IActionResult> DepReviewers(int departmentId)
+        {
+            try
+            {
+                var users = await _userService.GetByRoleAndDepartmentId((int)RoleEnum.Reviewer, departmentId);
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateInitiateScorecardValue action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("workplanapprovers/{departmentId}", Name = "workplanapprovers")]
+        public async Task<IActionResult> Workplanapprovers(int departmentId)
+        {
+            try
+            {
+                var users = await _userService.GetByRoleAndDepartmentId((int)RoleEnum.Approver, departmentId);
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateInitiateScorecardValue action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpGet("reviewers", Name = "Reviewers")]
         public async Task<IActionResult> Reviewers()
@@ -1042,6 +1091,25 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        private async Task AddworkplanapproversEmails(Application fundingApplication, UserVM[] users)
+        {
+            try
+            {
+                var initiateScorecardEmail = EmailTemplateFactory
+                            .Create(EmailTemplateTypeEnum.AddworkplanapproversEmails)
+                            .Get<AddworkplanapproversEmailsTemplates>()
+                            .Init(fundingApplication, users);
+
+                await initiateScorecardEmail.SubmitToQueue();
+
+                await _emailService.SendEmailFromQueue();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside EvaluationController-ConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
+
         private async Task InitiateScorecardNotificationWithEmails(Application fundingApplication, UserVM[] users)
         {
             try
@@ -1080,7 +1148,6 @@ namespace NPOMS.API.Controllers
         //        _logger.LogError($"Something went wrong inside EvaluationController-ConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
         //    }
         //}
-
         #endregion       
     }
 }

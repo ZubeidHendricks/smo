@@ -10,6 +10,8 @@ namespace NPOMS.Repository.Interfaces.Entities
         Task CreateNpoUserTracking(IEnumerable<NpoUserTracking> npoUserTrackings);
         Task CreateNpoUserSatisfactionTracking(IEnumerable<NpoUserSatisfactionTracking> npoUserSatisfactionTracking);
 
+        Task CreateNpoWorkPlanApproverTracking(IEnumerable<NpoWorkPlanApproverTracking> npoWorkPlanApproverTracking);
+
         Task<Application> GetById(int id);
 
         Task<Application> GetByNpoIdAndPeriodId(int NpoId, int applicationPeriodId);

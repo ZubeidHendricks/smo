@@ -85,6 +85,9 @@ namespace NPOMS.Services.Email
                 case EmailTemplateTypeEnum.SatisficationApprovalEmail:
                     _template = new SatisficationEmailTemplates();
                     break;
+                case EmailTemplateTypeEnum.AddworkplanapproversEmails:
+                    _template = new AddworkplanapproversEmailsTemplates();
+                    break;
                 case EmailTemplateTypeEnum.RejectedScorecard:
                     _template = new RejectedScorecardEmailTemplate();
                     break;

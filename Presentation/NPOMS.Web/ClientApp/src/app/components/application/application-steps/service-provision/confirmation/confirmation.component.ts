@@ -23,6 +23,7 @@ export class ConfirmationComponent implements OnInit {
   @Input() approvalFrom: string;
   @Output() approvalFromChange: EventEmitter<string> = new EventEmitter<string>();
   @Input() approveApplication: boolean;
+  @Output() selectedReviewersChange: EventEmitter<{ fullName: string, email: string, id: number }[]> = new EventEmitter();
 
   auditCols: any[];
   statuses: any[] = [];
@@ -89,7 +90,7 @@ export class ConfirmationComponent implements OnInit {
   }
 
   reviewers() {
-    this._applicationRepo.reviewers().subscribe(
+    this._applicationRepo.workplanapprovers(this.application.applicationPeriod.departmentId).subscribe(
      (results) => {
        this.reviewerlist = results;
      },
@@ -137,27 +138,14 @@ export class ConfirmationComponent implements OnInit {
   }
 
   submit() {
-    //this.UpdateApplicationStatus();
-  }
-
-  private UpdateApplicationStatus() {
-    const users = this.selectedreviewerlist.map(user => ({
+      const users = this.selectedreviewerlist.map(user => ({
         fullName: user.fullName,
         email: user.email,
         id: user.id
     }));
-    
-    this._applicationRepo.UpdateInitiateScorecardValueAndEmail(Number(this.application.id), users).subscribe(
-      (results) => {
-        this.displayDialog = false;
-        this._router.navigateByUrl('applications');
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-}
+    this.selectedReviewersChange.emit(users);
+    this.statusChange.emit(this.selectedStatus);
+  }
 
 disableSubmit() {
 
@@ -167,13 +155,21 @@ disableSubmit() {
   return false;
 }
 
-
 statusEnumChange(status: any) {
-    this.selectedStatus = status.value;
+    this.selectedreviewerlist = [];
     if(status.value === StatusEnum.PendingApproval) {
+      this.selectedStatus = status.value;
       this.displayDialog = true;
     }
-    this.statusChange.emit(status.value);
+    else{
+        const users = this.selectedreviewerlist.map(user => ({
+          fullName: user.fullName,
+          email: user.email,
+          id: user.id
+      }));
+      this.selectedReviewersChange.emit(users);
+      this.statusChange.emit(status.value);
+    }
 }
 
   approvedFromChange(item: any) {

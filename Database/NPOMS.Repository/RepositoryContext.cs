@@ -223,8 +223,8 @@ namespace NPOMS.Repository
         public DbSet<ActivityDistrict> ActivityDistricts { get; set; }
         public DbSet<ActivitySubDistrict> ActivitySubDistricts { get; set; }    
          public DbSet<ActivitySubStructure> ActivitySubStructures { get; set; }
-
-
+        public DbSet<NpoWorkPlanApproverTracking> NpoWorkPlanApproverTrackings { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

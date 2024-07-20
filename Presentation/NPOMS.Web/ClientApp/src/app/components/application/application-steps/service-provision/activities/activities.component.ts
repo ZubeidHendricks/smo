@@ -163,7 +163,10 @@ export class ActivitiesComponent implements OnInit {
       { header: 'Activity Type', width: '10%' },
       { header: 'Timeline', width: '10%' },
       { header: 'Target', width: '10%' },
-      { header: 'Facilities and/or Community Places', width: '36%' }
+      { header: 'Facilities and/or Community Places', width: '20%' },
+      { header: 'Districts', width: '10%' },
+      { header: 'Sub Districts', width: '10%' },
+      { header: 'Sub Structures', width: '10%' },
     ];
 
     this.commentCols = [
@@ -191,6 +194,14 @@ export class ActivitiesComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  getSubDistrictNames(activityDistrict: any): string {
+    if (!activityDistrict || !activityDistrict.activitySubDistrict) {
+      return '';
+    }
+
+    return activityDistrict.activitySubDistrict.map((subDistrict: any) => subDistrict.name).join(', ');
   }
 
   private loadFacilitySubDistricts() {
@@ -322,6 +333,7 @@ export class ActivitiesComponent implements OnInit {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.allActivities = results;
+        console.log('this.allActivities', this.allActivities);
         this.activeActivities = this.allActivities.filter(x => x.isActive === true);
         this.getFacilityListText(results);
         this.updateRowGroupMetaData();
@@ -927,7 +939,7 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
   }
 
   public getColspan() {
-    return this.application.isCloned && this.isReview ? 7 : 6;
+    return this.application.isCloned && this.isReview ? 7 : 9;
   }
 
   public viewDeletedActivities() {

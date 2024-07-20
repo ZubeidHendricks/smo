@@ -8,6 +8,7 @@ using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Infrastructure.Implementation;
 using NPOMS.Services.Interfaces;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NPOMS.Services.Email.EmailTemplates
@@ -22,53 +23,66 @@ namespace NPOMS.Services.Email.EmailTemplates
 			return this;
 		}
 
-		public async Task SubmitToQueue()
-		{
-			var emailQueueService = EngineContext.Current.Resolve<IEmailQueueService>();
-			var emailTemplateService = EngineContext.Current.Resolve<IEmailTemplateService>();
-			var logger = EngineContext.Current.Resolve<ILogger<StatusChangedAmendmentsRequiredEmailTemplate>>();
-			var applicationRepository = EngineContext.Current.Resolve<IApplicationRepository>();
-			var httpContextAccessor = EngineContext.Current.Resolve<IHttpContextAccessor>();
-			var npoRepository = EngineContext.Current.Resolve<INpoRepository>();
-			var userRepository = EngineContext.Current.Resolve<IUserRepository>();
+        public async Task SubmitToQueue()
+        {
+            var emailQueueService = EngineContext.Current.Resolve<IEmailQueueService>();
+            var emailTemplateService = EngineContext.Current.Resolve<IEmailTemplateService>();
+            var logger = EngineContext.Current.Resolve<ILogger<StatusChangedAmendmentsRequiredEmailTemplate>>();
+            var applicationRepository = EngineContext.Current.Resolve<IApplicationRepository>();
+            var httpContextAccessor = EngineContext.Current.Resolve<IHttpContextAccessor>();
+            var npoRepository = EngineContext.Current.Resolve<INpoRepository>();
+            var userRepository = EngineContext.Current.Resolve<IUserRepository>();
 
-			var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.StatusChangedAmendmentsRequired);
-			var application = await applicationRepository.GetById(this._application.Id);
-			var npo = await npoRepository.GetById(application.NpoId);
-			var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
-			var createdUser = await userRepository.GetActiveUserById(application.CreatedUserId);
+            var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.StatusChangedAmendmentsRequired);
+            var application = await applicationRepository.GetById(this._application.Id);
+            var npo = await npoRepository.GetById(application.NpoId);
+            var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
+            var userContactPrimary = npo.ContactInformation.Where(n => n.IsPrimaryContact == true).FirstOrDefault();
+            var createdUser = await userRepository.GetActiveUserById(application.CreatedUserId);
 
-			try
-			{
-				EmailQueue emailQueue = new EmailQueue()
-				{
-					CreatedDateTime = DateTime.Now,
-					EmailTemplateId = emailTemplate.Id,
-					FromEmailAddress = emailTemplate.EmailAccount.FromEmail,
-					FromEmailName = emailTemplate.EmailAccount.FromDisplayName,
-					Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, createdUser, npo),
-					Subject = ReplacePlaceholders(emailTemplate.Subject, application, requestOrigin, createdUser, npo),
-					RecipientEmail = createdUser.Email,
-					RecipientName = createdUser.FullName
-				};
+            try
+            {
+                EmailQueue emailQueue = new EmailQueue()
+                {
+                    CreatedDateTime = DateTime.Now,
+                    EmailTemplateId = emailTemplate.Id,
+                    FromEmailAddress = emailTemplate.EmailAccount.FromEmail,
+                    FromEmailName = emailTemplate.EmailAccount.FromDisplayName
+                };
 
-				await emailQueueService.Create(emailQueue);
-			}
-			catch (Exception ex)
-			{
-				logger.LogError($"Something went wrong inside StatusChangedAmendmentsRequiredEmailTemplate-SubmitToQueue action: {ex.Message} Inner Exception: { ex.InnerException}");
-				throw;
-			}
-		}
+                if (userContactPrimary != null)
+                {
+                    var fullName = userContactPrimary.FirstName + " " + userContactPrimary.LastName;
+                    emailQueue.Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, fullName, npo);
+                    emailQueue.Subject = ReplacePlaceholders(emailTemplate.Subject, application, requestOrigin, fullName, npo);
+                    emailQueue.RecipientEmail = userContactPrimary.EmailAddress;
+                    emailQueue.RecipientName = fullName;
+                }
+                else
+                {
+                    emailQueue.Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, createdUser.FullName, npo);
+                    emailQueue.Subject = ReplacePlaceholders(emailTemplate.Subject, application, requestOrigin, createdUser.FullName, npo);
+                    emailQueue.RecipientEmail = createdUser.Email;
+                    emailQueue.RecipientName = createdUser.FullName;
+                }
 
-		private string ReplacePlaceholders(string value, Application application, string requestOrigin, User user, Npo npo)
-		{
-			var returnResult = value.Replace("{ToUserFullName}", user.FullName)
-									.Replace("{ApplicationRefNo}", application.RefNo)
-									.Replace("{url}", requestOrigin)
-									.Replace("{NPO}", npo.Name);
+                await emailQueueService.Create(emailQueue);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Something went wrong inside StatusChangedAmendmentsRequiredEmailTemplate-SubmitToQueue action: {ex.Message} Inner Exception: {ex.InnerException}");
+                throw;
+            }
+        }
 
-			return returnResult;
-		}
-	}
+        private string ReplacePlaceholders(string value, Application application, string requestOrigin, string FullName, Npo npo)
+        {
+            var returnResult = value.Replace("{ToUserFullName}", FullName)
+                                    .Replace("{ApplicationRefNo}", application.RefNo)
+                                    .Replace("{url}", requestOrigin)
+                                    .Replace("{NPO}", npo.Name);
+
+            return returnResult;
+        }
+    }
 }

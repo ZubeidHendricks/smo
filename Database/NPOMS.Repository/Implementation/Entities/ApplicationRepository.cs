@@ -84,6 +84,11 @@ namespace NPOMS.Repository.Implementation.Entities
             await this.RepositoryContext.NpoUserSatisfactionTrackings.AddRangeAsync(npoUserSatisfactionTracking);
         }
 
+        public async Task CreateNpoWorkPlanApproverTracking(IEnumerable<NpoWorkPlanApproverTracking> npoWorkPlanApproverTracking)
+        {
+            await this.RepositoryContext.NpoWorkPlanApproverTrackings.AddRangeAsync(npoWorkPlanApproverTracking);
+        }
+
         #endregion
     }
 }

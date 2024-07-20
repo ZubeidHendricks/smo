@@ -491,6 +491,12 @@ export interface IAddressInformation {
     postalAddress: string;
 }
 
+export interface ApplicationWithUsers
+{
+    application: IApplication;
+    userVM : any;
+}
+
 export interface IApplication {
     id: number;
     refNo: string;
