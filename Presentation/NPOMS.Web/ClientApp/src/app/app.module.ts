@@ -194,6 +194,7 @@ import { QcObjectivesViewComponent } from './components/application/application-
 import { QcNpoDetailsViewComponent } from './components/application/application-steps/quick-capture-view/qc-npo-details-view/qc-npo-details-view.component';
 import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
 import { UploadBudgetComponent } from './components/admin/budgets/upload-budget/upload-budget.component';
+import { DownloadWorkplanComponent } from './components/application/download-workplan/download-workplan.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -381,7 +382,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     AdjudicateNpoComponent,
     ReviewAdjudicatedNpoComponent,
     BudgetSummaryComponent,
-    UploadBudgetComponent
+    UploadBudgetComponent,
+    DownloadWorkplanComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

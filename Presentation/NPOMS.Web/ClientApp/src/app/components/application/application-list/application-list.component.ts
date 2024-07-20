@@ -458,6 +458,17 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Download Workplan',
+          target: 'Workplan',
+          icon: 'fa fa-download',
+          command: () => {
+            this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id, 4] } }]);
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.DownloadAssessmentOption)) {
         this.buttonItems[0].items.push({
           label: 'Download Assessment',
@@ -729,6 +740,8 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
+      this.buttonItemExists('Download Workplan', 'Workplan');
+      this.buttonItemExists('Select Reviewers', 'Work Plan');
       //this.buttonItemExists('Score Card', 'Service Provision');
 
       if (this.selectedApplication.isQuickCapture)
@@ -842,6 +855,8 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Evaluate Application', 'Funding Application');
       this.buttonItemExists('Approve Application', 'Funding Application');
       this.buttonItemExists('Delete Application', 'Funding Application');
+      this.buttonItemExists('Download Workplan', 'Workplan');
+      this.buttonItemExists('Select Reviewers', 'Work Plan');
 
       switch (this.selectedApplication.statusId) {
           case StatusEnum.PendingReview: {
