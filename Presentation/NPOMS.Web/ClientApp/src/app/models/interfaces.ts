@@ -519,6 +519,18 @@ export interface IApplication {
     createdUser: IUser;
     updatedUser: IUser;
     npoUserTrackings: INpoUserTracking[];
+    npoUserSatisfactionTrackings: INpoUserTracking[];
+    npoWorkPlanApproverTrackings: INpoUserTracking[];
+}
+export interface IUserSatisfactionTracking {
+    id: number;
+    applicationId: number;
+    userId: number;
+}
+export interface IWorkPlanApproverTracking {
+    id: number;
+    applicationId: number;
+    userId: number;
 }
 export interface INpoUserTracking {
     id: number;

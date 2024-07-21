@@ -672,6 +672,20 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
+      
+      if (this.selectedApplication.npoUserSatisfactionTrackings.length > 0) {
+        if (!this.selectedApplication.npoUserSatisfactionTrackings.some(item => item.userId === this.profile.id)) 
+        {
+          this.buttonItemExists('Review Application', 'Service Provision');
+        }  
+      }
+
+      if (this.selectedApplication.npoWorkPlanApproverTrackings.length > 0) {
+        if (!this.selectedApplication.npoWorkPlanApproverTrackings.some(item => item.userId === this.profile.id)) 
+        {
+          this.buttonItemExists('Approve Application', 'Service Provision');
+        }  
+      }
 
       if (this.selectedApplication.statusId !== StatusEnum.PendingReviewerSatisfaction) {
         this.buttonItemExists('Select Reviewers', 'Work Plan');
