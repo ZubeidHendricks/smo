@@ -103,7 +103,7 @@ export class FinancialMattersComponent implements OnInit {
   newBankDetail: boolean;
   bankDetail: IBankDetail = {} as IBankDetail;
   selectedBankDetail: IBankDetail;
-
+  isSDASelected: boolean;
   banks: IBank[];
   selectedBank: IBank;
   branches: IBranch[];
@@ -113,6 +113,7 @@ export class FinancialMattersComponent implements OnInit {
   bankDetails: IBankDetail[];
   programBankDetails : IProgramBankDetails [];
   previous_year: any;
+  private _loggerService: any;
 
   constructor(private dropDownService: DropdownService,
     private _confirmationService: ConfirmationService,
@@ -133,7 +134,6 @@ export class FinancialMattersComponent implements OnInit {
 
       this.loadProgrammeDetails();
      // this.current_year = new Date("YYYY").toString();
-     // alert(this.current_year);
 
     }); 
 
@@ -241,13 +241,19 @@ export class FinancialMattersComponent implements OnInit {
   
   setValue(event, value) {  
     if(event.target.checked)
-    {
-     // alert('Checked');    
-    }
-    else
-    {
-     // alert('Not Checked');     
-    }  
+      {
+        this.isSDASelected = true;
+      }
+      else
+      {
+        this.isSDASelected = false;
+      }  
+      
+      this._npoProfile.updateProgrammeBankSelection(value, this.isSDASelected).subscribe(resp => {        
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      });
   }
 
   private loadBanks() {

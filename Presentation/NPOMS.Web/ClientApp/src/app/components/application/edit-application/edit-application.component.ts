@@ -355,8 +355,12 @@ export class EditApplicationComponent implements OnInit {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;
       this.fundingApplicationDetails.programmeId = this.application.applicationPeriod.programmeId;
-      this._applicationRepo.updateApplication(this.application).subscribe(resp => { this._applicationRepo.getApplicationById(Number(this.id)) });
-      this.application.statusId = status;    
+      this.fundingApplicationDetails.applicationPeriodId = this.application.applicationPeriodId;
+      this.fundingApplicationDetails.applicationId = Number(this.id);
+      this._applicationRepo.updateApplication(this.application).subscribe(resp => 
+      { 
+        this._applicationRepo.getApplicationById(Number(this.id)) });
+        this.application.statusId = status;    
 
       if (applicationIdOnBid.id == null) {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
@@ -379,7 +383,6 @@ export class EditApplicationComponent implements OnInit {
       }
 
       if (status == StatusEnum.PendingReview) {
-
         this.application.statusId = status;
         this._applicationRepo.updateApplication(this.application).subscribe();
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
@@ -401,7 +404,6 @@ export class EditApplicationComponent implements OnInit {
 
   //funding drop downs
   private loadfundingSteps() {
-
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
@@ -423,10 +425,8 @@ export class EditApplicationComponent implements OnInit {
 
   private getFundingApplicationDetails(data) {
     this._bidService.getBid(data.id).subscribe(response => {
-
       this.getBidFullObject(response)
     });
-
   }
 
   private getBidFullObject(data) {

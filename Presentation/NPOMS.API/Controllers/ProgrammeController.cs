@@ -252,6 +252,36 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("update-DeliveryServiceAreaSelection/id/{id}/selection/{selection}", Name = "DeliveryServiceAreaSelection")]
+        public async Task<IActionResult> DeliveryServiceAreaSelection( int id, bool selection)
+        {
+            try
+            {
+                 await _programmeService.UpdateDeliveryAreaSelection(base.GetUserIdentifier(), id, selection);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside DeliveryServiceAreaSelection action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("update-BankSelection/id/{id}/selection/{selection}", Name = "UpdateBankSelection")]
+        public async Task<IActionResult> UpdateBankSelection(int id, bool selection)
+        {
+            try
+            {
+                await _programmeService.UpdateBankSelection(base.GetUserIdentifier(), id, selection);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateBankSelection action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         private static void ClearDeliveryObjects(ProgrammeServiceDeliveryVM model)
         {
             model.DistrictCouncilId = model.DistrictCouncil.Id;

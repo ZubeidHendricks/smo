@@ -223,6 +223,53 @@ namespace NPOMS.Services.Implementation
 
             await _npoProfileRepository.UpdateAsync(npoProfile);
         }
+
+        public async Task UpdateBankSelection(string userId, int id, bool selection)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
+
+            // Fetch the existing entity
+            var existingEntity = await _repositoryContext.ProgramBankDetails
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (existingEntity == null)
+            {
+                throw new Exception("Entity not found");
+            }
+
+            // Set existing entity properties
+            existingEntity.UpdatedUserId = loggedInUser.Id;
+            existingEntity.UpdatedDateTime = DateTime.Now;
+            existingEntity.IsSelected = selection;
+
+            // Save the updated entity to mark old regions and areas as inactive
+            await _repositoryContext.SaveChangesAsync();
+
+        }
+
+        public async Task UpdateDeliveryAreaSelection(string userId, int id, bool selection)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
+
+            // Fetch the existing entity
+            var existingEntity = await _repositoryContext.ProgrammeServiceDelivery
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (existingEntity == null)
+            {
+                throw new Exception("Entity not found");
+            }
+
+            // Set existing entity properties
+            existingEntity.UpdatedUserId = loggedInUser.Id;
+            existingEntity.UpdatedDateTime = DateTime.Now;
+            existingEntity.IsSelected = selection;
+
+            // Save the updated entity to mark old regions and areas as inactive
+            await _repositoryContext.SaveChangesAsync();
+
+        }
+
         public async Task UpdateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId, int npoProfileId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);

@@ -140,7 +140,7 @@ export class EditApplicationPeriodComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedSubProgrammeType || !this.selectedApplicationType || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
       this.validationErrors.push({ severity: 'error', summary: "Edit Programme:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -159,7 +159,6 @@ export class EditApplicationPeriodComponent implements OnInit {
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.applicationPeriod;
-
       data.departmentId = this.selectedDepartment.id;
       data.programmeId = this.selectedProgramme.id;
       data.subProgrammeId = this.selectedSubProgramme.id;
@@ -169,8 +168,6 @@ export class EditApplicationPeriodComponent implements OnInit {
       data.openingDate = this.addTwoHours(data.openingDate);
       data.closingDate = this.addTwoHours(data.closingDate);
       data.name = this.selectedSubProgrammeType.name;
-      alert(data.name);
-      alert(data.subProgrammeTypeId);
       this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
         (resp) => {
           this._spinner.hide();
@@ -268,17 +265,18 @@ export class EditApplicationPeriodComponent implements OnInit {
     }
   }
 
-  disableSubProgrammeType(): boolean {
-    if (this.subProgrammesTypes.length > 0)
-      return false;
+  // disableSubProgrammeType(): boolean {
+  //   if (this.subProgrammesTypes.length > 0)
+  //     return false;
 
-    return true;
-  }
+  //   return true;
+  // }
 
   private loadSubProgrammeTypes(subProgramId: number) {
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
       (results) => {
-        this.AllsubProgrammesTypes = results.filter(x=> x.subProgrammeId === subProgramId);
+        this.AllsubProgrammesTypes = results;
+        this.subProgrammesTypes = this.AllsubProgrammesTypes.filter(x=> x.subProgrammeId === subProgramId);
         this._spinner.hide();
       },
       (err) => {
@@ -286,23 +284,6 @@ export class EditApplicationPeriodComponent implements OnInit {
         this._spinner.hide();
       }
     );
-  }
-
-  subProgrammeChange(subProgram: ISubProgramme) {
-    this.selectedSubProgrammeType = null;
-    this.subProgrammesTypes = [];
-    if (subProgram.id != null) {
-      for (var i = 0; i < this.AllsubProgrammesTypes.length; i++) {
-        if (this.AllsubProgrammesTypes[i].subProgrammeId == subProgram.id) {
-          this.subProgrammesTypes.push(this.AllsubProgrammesTypes[i]);
-        }
-      }
-    }
-  }
-
-  subProgramTypeChange(subProgramType: ISubProgrammeType)
-  {
-    this.loadSubProgrammeTypes(subProgramType.id);
   }
 
   private loadApplicationPeriod() {
@@ -400,6 +381,14 @@ export class EditApplicationPeriodComponent implements OnInit {
           this.subProgrammes.push(this.allSubProgrammes[i]);
         }
       }
+    }
+  }
+
+  subProgrammeChange(subProgram: ISubProgramme) {
+    this.selectedSubProgrammeType = null;
+    this.subProgrammesTypes = [];
+    if (subProgram.id != null) {
+      this.subProgrammesTypes = this.AllsubProgrammesTypes.filter(x => x.subProgrammeId === subProgram.id);
     }
   }
 

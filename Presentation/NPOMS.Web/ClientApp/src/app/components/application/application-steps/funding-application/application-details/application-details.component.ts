@@ -57,7 +57,7 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
-
+  isSDASelected: boolean;
   amountApplyingFor: number;
   menuActions: MenuItem[];
   profile: IUser;
@@ -278,7 +278,10 @@ export class ApplicationDetailsComponent implements OnInit {
     this.application.statusId = status;
     this.fundingApplicationDetails.programmeId = this.programId;
     const applicationIdOnBid = this.fundingApplicationDetails;
-   
+    this.fundingApplicationDetails.programmeId = this.application.applicationPeriod.programmeId;
+    this.fundingApplicationDetails.applicationPeriodId = this.application.applicationPeriodId;
+    this.fundingApplicationDetails.applicationId = Number( this.application.id);
+    
     if (applicationIdOnBid.id == null) {
       this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
       //  this._menuActions[1].visible = false;
@@ -559,12 +562,18 @@ export class ApplicationDetailsComponent implements OnInit {
   setValue(event, value) {  
     if(event.target.checked)
       {
-       // alert('Checked');    
+        this.isSDASelected = true;
       }
       else
       {
-       // alert('Not Checked');     
+        this.isSDASelected = false;
       }  
+      
+      this._npoProfile.updateProgrammeDeliveryServiceSelection(value, this.isSDASelected).subscribe(resp => {        
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      });
   }
 
   private getProgrammeDeliveryDetails() {

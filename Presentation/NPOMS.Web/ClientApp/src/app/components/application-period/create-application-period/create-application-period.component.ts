@@ -130,7 +130,7 @@ export class CreateApplicationPeriodComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !this.selectedSubProgrammeType || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedSubProgrammeType || !this.selectedApplicationType || !this.selectedSubProgrammeType || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
       this.validationErrors.push({ severity: 'error', summary: "New Application Period:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -149,9 +149,6 @@ export class CreateApplicationPeriodComponent implements OnInit {
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.applicationPeriod;
-    alert(this.selectedSubProgrammeType);
-    alert(this.selectedSubProgrammeType.name);
-    alert(this.selectedSubProgramme.name);
       data.departmentId = this.selectedDepartment.id;
       data.programmeId = this.selectedProgramme.id;
       data.subProgrammeId = this.selectedSubProgramme.id;
@@ -279,9 +276,11 @@ export class CreateApplicationPeriodComponent implements OnInit {
   departmentChange(department: IDepartment) {
     this.selectedProgramme = null;
     this.selectedSubProgramme = null;
+    this.selectedSubProgrammeType = null;
 
     this.programmes = [];
     this.subProgrammes = [];
+    this.subProgrammesTypes = [];
 
     if (department.id != null) {
       for (var i = 0; i < this.allProgrammes.length; i++) {
@@ -319,7 +318,9 @@ export class CreateApplicationPeriodComponent implements OnInit {
 
   programmeChange(programme: IProgramme) {
     this.selectedSubProgramme = null;
+    this.selectedSubProgrammeType = null;
     this.subProgrammes = [];
+    this.subProgrammesTypes = [];
     if (programme.id != null) {
       for (var i = 0; i < this.allSubProgrammes.length; i++) {
         if (this.allSubProgrammes[i].programmeId == programme.id) {
@@ -333,11 +334,7 @@ export class CreateApplicationPeriodComponent implements OnInit {
     this.selectedSubProgrammeType = null;
     this.subProgrammesTypes = [];
     if (subProgram.id != null) {
-      for (var i = 0; i < this.AllsubProgrammesTypes.length; i++) {
-        if (this.AllsubProgrammesTypes[i].subProgrammeId == subProgram.id) {
-          this.subProgrammesTypes.push(this.AllsubProgrammesTypes[i]);
-        }
-      }
+      this.subProgrammesTypes = this.AllsubProgrammesTypes.filter(x => x.subProgrammeId === subProgram.id);
     }
   }
 

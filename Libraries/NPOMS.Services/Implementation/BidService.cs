@@ -130,7 +130,7 @@ namespace NPOMS.Services.Implementation
 		public async Task<FundAppDetailViewModel> Create(string userIdentifier, FundAppDetailViewModel model)
 		{
 
-            var npoProfile = await _applicationService.GetApplicationById(model.ApplicationPeriodId);
+            var npoProfile = await _applicationService.GetApplicationById(model.ApplicationId);
             // var geoDetails = GetGeoDetails(model.GeographicalDetails);
             var appDetail = await GetAppDetails(model.ApplicationDetails, model.ProgrammeId, npoProfile.NpoId);
 			var projectInfo = GetProjectInfoViewModel(model.ProjectInformation);
@@ -227,9 +227,6 @@ namespace NPOMS.Services.Implementation
 			}
 			return filteredSuPlace;
 		}
-
-
-
 
 		public async Task<FundAppDetailViewModel> GetById(int bidId)
 		{

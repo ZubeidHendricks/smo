@@ -87,6 +87,16 @@ export class NpoProfileService {
     return this._http.put<IProgrammeServiceDelivery>(url,programBankDetails, httpOptions);
   }
 
+  public updateProgrammeDeliveryServiceSelection(id: number, selection: boolean) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-DeliveryServiceAreaSelection/id/${id}/selection/${selection}`;
+    return this._http.put<IProgrammeServiceDelivery>(url, httpOptions);
+  }
+
+  public updateProgrammeBankSelection(id: number, selection: boolean) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-BankSelection/id/${id}/selection/${selection}`;
+    return this._http.put<IProgrammeServiceDelivery>(url, httpOptions);
+  }
+
   public createProgrammeDeliveryDetails(npoProfileId: number,programBankDetails: IProgrammeServiceDelivery) {
     const url = `${this._envUrl.urlAddress}/api/programme/create-delivery/${npoProfileId}`;
     return this._http.post<IProgrammeServiceDelivery>(url,programBankDetails, httpOptions);

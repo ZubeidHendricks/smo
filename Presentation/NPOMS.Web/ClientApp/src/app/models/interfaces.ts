@@ -48,11 +48,9 @@ export interface IProgramBankDetails {
     districtCouncilId?: number;
     localMunicipalityId?: number;
     regions?: IRegion[];
-   // region?: IRegion;
     districtCouncil?: IDistrictCouncil;
     localMunicipality?: ILocalMunicipality;
     serviceDeliveryAreas?: ISDA[];
-  //  serviceDeliveryArea?: ISDA;
     approvalStatus: IAccessStatus;
 }
 
@@ -1470,6 +1468,8 @@ export interface IRegion {
 export interface IApplicationDetails {
     id: number;
     amountApplyingFor: number;
+    isSDASelected: boolean;
+    programmeSDId: number;
     fundAppSDADetailId: number;
     fundAppSDADetail: IFundAppSDADetail;
 }
