@@ -20,6 +20,7 @@ namespace NPOMS.Domain.Entities
         public int ProgramId { get; set; }
         public int NpoProfileId { get; set; }
         public bool IsActive { get; set; }
+        public bool IsSelected { get; set; }
         public int CreatedUserId { get; set; }
         public DateTime CreatedDateTime { get; set; }
         public int? UpdatedUserId { get; set; }

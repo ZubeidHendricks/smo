@@ -13,6 +13,7 @@ namespace NPOMS.Services.Models
         public int Id { get; set; }
         public int ProgramId { get; set; }
         public bool IsActive { get; set; }
+        public bool IsSelected { get; set; }
         public int CreatedUserId { get; set; }
         public DateTime CreatedDateTime { get; set; }
         public int? UpdatedUserId { get; set; }

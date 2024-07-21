@@ -320,7 +320,6 @@ export class EditApplicationComponent implements OnInit {
 
             if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
               if(this.activeStep !== 5)
-                alert(this.programId );
               this.bidForm(StatusEnum.Saved);
             }
           }
@@ -355,7 +354,7 @@ export class EditApplicationComponent implements OnInit {
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;
-      this.fundingApplicationDetails.programmeId = this.programId;
+      this.fundingApplicationDetails.programmeId = this.application.applicationPeriod.programmeId;
       this._applicationRepo.updateApplication(this.application).subscribe(resp => { this._applicationRepo.getApplicationById(Number(this.id)) });
       this.application.statusId = status;    
 

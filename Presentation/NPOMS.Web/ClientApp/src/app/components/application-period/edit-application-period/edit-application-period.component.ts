@@ -50,13 +50,12 @@ export class EditApplicationPeriodComponent implements OnInit {
   allSubProgrammes: ISubProgramme[];
   subProgrammes: ISubProgramme[] = [];
   selectedSubProgramme: ISubProgramme;
+  AllsubProgrammesTypes: ISubProgrammeType[];
+  subProgrammesTypes: ISubProgrammeType[] = [];
+  selectedSubProgrammeType: ISubProgrammeType;
   applicationTypes: IApplicationType[];
   selectedApplicationType: IApplicationType;
-
-  subProgrammesType: ISubProgrammeType[] = [];
-  selectedSubProgrammeType: ISubProgrammeType;
   filteredSubProgrammeType: ISubProgrammeType[];
-  
   openingMinDate: Date;
   closingMinDate: Date;
   disableClosingDate: boolean = true;
@@ -170,6 +169,8 @@ export class EditApplicationPeriodComponent implements OnInit {
       data.openingDate = this.addTwoHours(data.openingDate);
       data.closingDate = this.addTwoHours(data.closingDate);
       data.name = this.selectedSubProgrammeType.name;
+      alert(data.name);
+      alert(data.subProgrammeTypeId);
       this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
         (resp) => {
           this._spinner.hide();
@@ -268,7 +269,7 @@ export class EditApplicationPeriodComponent implements OnInit {
   }
 
   disableSubProgrammeType(): boolean {
-    if (this.subProgrammesType.length > 0)
+    if (this.subProgrammesTypes.length > 0)
       return false;
 
     return true;
@@ -277,8 +278,7 @@ export class EditApplicationPeriodComponent implements OnInit {
   private loadSubProgrammeTypes(subProgramId: number) {
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
       (results) => {
-        this.subProgrammesType = results;
-       this.filteredSubProgrammeType = this.subProgrammesType.filter(x=> x.subProgrammeId === subProgramId);
+        this.AllsubProgrammesTypes = results.filter(x=> x.subProgrammeId === subProgramId);
         this._spinner.hide();
       },
       (err) => {
@@ -289,7 +289,20 @@ export class EditApplicationPeriodComponent implements OnInit {
   }
 
   subProgrammeChange(subProgram: ISubProgramme) {
-    this.loadSubProgrammeTypes(subProgram.id);
+    this.selectedSubProgrammeType = null;
+    this.subProgrammesTypes = [];
+    if (subProgram.id != null) {
+      for (var i = 0; i < this.AllsubProgrammesTypes.length; i++) {
+        if (this.AllsubProgrammesTypes[i].subProgrammeId == subProgram.id) {
+          this.subProgrammesTypes.push(this.AllsubProgrammesTypes[i]);
+        }
+      }
+    }
+  }
+
+  subProgramTypeChange(subProgramType: ISubProgrammeType)
+  {
+    this.loadSubProgrammeTypes(subProgramType.id);
   }
 
   private loadApplicationPeriod() {
@@ -309,7 +322,7 @@ export class EditApplicationPeriodComponent implements OnInit {
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
           this.selectedSubProgramme = results.subProgramme;
-          this.selectedSubProgrammeType = results.subProgramType;
+          this.selectedSubProgrammeType = results.subProgrammeType;
           this.selectedFinancialYear = results.financialYear;
           this.selectedApplicationType = results.applicationType;
 

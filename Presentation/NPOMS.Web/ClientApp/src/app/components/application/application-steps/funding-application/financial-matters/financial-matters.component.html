@@ -128,7 +128,7 @@
   <p-table [rowHover]="true" [columns]="cols" [value]="financialMattersIncome" selectionMode="single"  styleClass="p-datatable-sm" [(selection)]="selectedFinancialMatterIncome" (onRowSelect)="onRowSelect($event)">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field" style="text-align: center;">
           {{col.header}}
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
@@ -231,7 +231,7 @@
     [(selection)]="selectedFinancialMatterExpenditure" (onRowSelect)="onRowSelect($event)">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field" style="text-align: center;">
           {{col.header}}
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
@@ -333,7 +333,7 @@
     [(selection)]="selectedFinancialMatterOthers" (onRowSelect)="onRowSelect($event)">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field" style="text-align: center;">
           {{col.header}}
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
@@ -453,20 +453,24 @@
     </p-table> -->
     <p-table [value]="programBankDetails" styleClass="p-datatable-sm">
       <ng-template pTemplate="header">
-          <tr>
-          <th>Bank Name</th>
-          <th>Account Number</th>
-          <th>Branch</th>
-          <th>Status</th>
-          </tr>
+      <tr>
+        <th></th>
+        <th>Bank Name</th>
+        <th>Account Number</th>
+        <th>Branch</th>
+        <th>Status</th>
+      </tr>
       </ng-template>
       <ng-template pTemplate="body" let-detail>
-          <tr>
-          <td>{{detail?.bank?.name}}</td>
-          <td>{{detail?.accountNumber}}</td>
-          <td>{{detail?.branch?.name}}</td>
-          <td>{{detail?.approvalStatus?.name}}</td>
-          </tr>
+      <tr>
+        <td>
+          <input type="checkbox" [(ngModel)]="detail.isSelected" (change)="setValue($event,detail.id)">
+        </td>
+        <td>{{detail?.bank?.name}}</td>
+        <td>{{detail?.accountNumber}}</td>
+        <td>{{detail?.branch?.name}}</td>
+        <td>{{detail?.approvalStatus?.name}}</td>
+      </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
           <tr class="default-font">

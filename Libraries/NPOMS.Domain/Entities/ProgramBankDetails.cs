@@ -18,7 +18,7 @@ namespace NPOMS.Domain.Entities
         public string AccountNumber { get; set; }
 
         public bool IsActive { get; set; }
-
+        public bool IsSelected { get; set; }
         public int CreatedUserId { get; set; }
 
         public DateTime CreatedDateTime { get; set; }

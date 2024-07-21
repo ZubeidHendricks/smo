@@ -239,6 +239,16 @@ export class FinancialMattersComponent implements OnInit {
     );
   }
   
+  setValue(event, value) {  
+    if(event.target.checked)
+    {
+     // alert('Checked');    
+    }
+    else
+    {
+     // alert('Not Checked');     
+    }  
+  }
 
   private loadBanks() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Banks, false).subscribe(

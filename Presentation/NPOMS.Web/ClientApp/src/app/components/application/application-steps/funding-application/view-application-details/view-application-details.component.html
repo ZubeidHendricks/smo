@@ -104,9 +104,10 @@
 
         <div style="height: 10px;"></div>
           <p-panel [header]="'Service Delivery Areas'">
-            <p-table [value]="programDeliveryDetails" styleClass="p-datatable-sm">
+            <p-table [value]="programDeliveryDetails" styleClass="p-datatable-sm" >
               <ng-template pTemplate="header">
                 <tr>
+                  <th></th>
                   <th>Region</th>
                   <th>District Council</th>
                   <th>Local Municipality</th>
@@ -116,6 +117,9 @@
               </ng-template>
               <ng-template pTemplate="body" let-delivery>
                 <tr>
+                <td>
+                    <input type="checkbox" [(ngModel)]="delivery.isSelected" [disabled]="true">
+                </td>
                   <td>{{getNames(delivery?.regions)}}</td>
                   <td>{{delivery.districtCouncil?.name}}</td>
                   <td>{{delivery.localMunicipality?.name}}</td>

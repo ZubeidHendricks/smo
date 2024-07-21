@@ -1394,7 +1394,8 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown (onChange)="onLocalMunicipalityChange($event.value)" [options]="localMunicipalities" placeholder="Select a Local Municipality" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+                <p-dropdown (onChange)="onLocalMunicipalityChange($event.value)" [options]="localMunicipalities" 
+                placeholder="Select a Local Municipality" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
             </div>
         </div>
     
@@ -1405,12 +1406,12 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="regions"
+                <p-dropdown defaultLabel="Choose" optionLabel="name" [options]="regions"
                 [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body"
+            
                 (onChange)="onRegionChange($event.value)" [style]="{'width':'100%'}"
-                ></p-multiSelect>
+                ></p-dropdown>
             </div>
-
         </div>
 
         <div class="p-grid">
@@ -1420,9 +1421,10 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
+                <p-dropdown defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
+                
                 [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="onSdaChange($event.value)"
-                [style]="{'width':'100%'}"></p-multiSelect>
+                [style]="{'width':'100%'}"></p-dropdown>
             </div>
         </div>
         

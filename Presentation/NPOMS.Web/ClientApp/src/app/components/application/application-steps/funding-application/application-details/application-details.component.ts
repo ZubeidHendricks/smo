@@ -79,7 +79,7 @@ export class ApplicationDetailsComponent implements OnInit {
   entity: IDistrictCouncil = {} as IDistrictCouncil;
   sourceOfInformationText: string;
   financialYears: IFinancialYear[];
-
+  selectedOnes = [];
   selectedFinancialYear: IFinancialYear;
   departments: IDepartment[];
   selectedDepartment: IDepartment;
@@ -556,11 +556,23 @@ export class ApplicationDetailsComponent implements OnInit {
     this.getFinancialYearRange(finYear);
   }
 
+  setValue(event, value) {  
+    if(event.target.checked)
+      {
+       // alert('Checked');    
+      }
+      else
+      {
+       // alert('Not Checked');     
+      }  
+  }
+
   private getProgrammeDeliveryDetails() {
     this._npoProfile.getProgrammeDeliveryDetails(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
           this.programDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
+          console.log(' this.programDeliveryDetails ',  this.programDeliveryDetails );
         } this._spinner.hide();
       },
       (err) => {
@@ -646,8 +658,6 @@ export class ApplicationDetailsComponent implements OnInit {
   nextPage() {
     if(this.programDeliveryDetails != undefined)
     { 
-      alert(this.programId);
-     
       this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === this.programDeliveryDetails[0].districtCouncil.id);
       this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === this.programDeliveryDetails[0].localMunicipality.id);
       
@@ -661,16 +671,6 @@ export class ApplicationDetailsComponent implements OnInit {
         
         this.selectedSdas = this.sdas.concat(this.sdasAll.find(x => x.id === item.id));
       });
-
-      // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.selectedDistrictCouncil;
-      // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.selectedLocalMunicipality;
-      // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.selectedRegions;
-      // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
-
-      console.log('selectedDistrictCouncil', this.selectedDistrictCouncil);
-      console.log('selectedLocalMunicipality', this.selectedLocalMunicipality);
-      console.log('selectedSdas', this.selectedSdas);
-      console.log('selectedRegions', this.selectedRegions);
       
     }
     else{
