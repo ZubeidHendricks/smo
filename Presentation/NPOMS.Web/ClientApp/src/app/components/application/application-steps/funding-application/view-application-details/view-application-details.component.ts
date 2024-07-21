@@ -105,7 +105,7 @@ export class ViewApplicationDetailsComponent implements OnInit {
   selectedDistrictCouncilName: string;
   selectedRegionName: string;
   selectedSdasName: string;
-
+  subProgrammesType: ISubProgrammeType[] = [];
 
 
   regionsAll: IRegion[];
@@ -319,8 +319,8 @@ export class ViewApplicationDetailsComponent implements OnInit {
   private loadSubProgrammeTypes(subProgramId: number) {
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
       (results) => {
-        this.subProgrammeType = results;
-       this.filteredSubProgrammeType = this.subProgrammeType.filter(x=> x.subProgrammeId === subProgramId);
+        this.subProgrammesType = results;
+       this.filteredSubProgrammeType = this.subProgrammesType.filter(x=> x.subProgrammeId === subProgramId);
         this._spinner.hide();
       },
       (err) => {

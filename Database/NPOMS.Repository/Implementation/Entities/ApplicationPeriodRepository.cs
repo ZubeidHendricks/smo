@@ -27,7 +27,9 @@ namespace NPOMS.Repository.Implementation.Entities
 								  .Include(x => x.Department)
 								  .Include(x => x.FinancialYear)
 								  .Include(x => x.SubProgramme)
-								  .AsNoTracking()
+                                   .Include(x => x.SubProgrammeType)
+                                  .Include(x => x.SubProgrammeType)
+                                  .AsNoTracking()
 								  .ToListAsync();
 		}
 
@@ -37,7 +39,8 @@ namespace NPOMS.Repository.Implementation.Entities
 							.Include(x => x.Department)
 							.Include(x => x.Programme)
 							.Include(x => x.SubProgramme)
-							.Include(x => x.FinancialYear)
+                            .Include(x => x.SubProgrammeType)
+                            .Include(x => x.FinancialYear)
 							.Include(x => x.ApplicationType)
 							.AsNoTracking()
 							.FirstOrDefaultAsync();

@@ -21,6 +21,7 @@ export interface IProgramBankDetails {
     accountTypeId: number;
     accountNumber: string;
     isActive: boolean;
+    isSelected: boolean;
     createdUserId: number;
     createdDateTime: Date;
     updatedUserId?: number;
@@ -38,6 +39,7 @@ export interface IProgramBankDetails {
     programId: number;
     npoProfileId: number;
     isActive: boolean;
+    isSelected: boolean;
     createdUserId: number;
     createdDateTime: Date;
     updatedUserId?: number;
@@ -559,6 +561,7 @@ export interface IApplicationPeriod {
     departmentId: number;
     programmeId: number;
     subProgrammeId: number;
+    subProgrammeTypeId: number;
     applicationTypeId: number;
     name: string;
     description: string;
@@ -572,6 +575,7 @@ export interface IApplicationPeriod {
     department: IDepartment;
     programme: IProgramme;
     subProgramme: ISubProgramme;
+    subProgrammeType: ISubProgrammeType
     financialYear: IFinancialYear;
     applicationType: IApplicationType;
     createdUser: IUser;
@@ -700,6 +704,7 @@ export interface IObjective {
 export interface IFundingApplicationDetails {
     id: number;
     applicationId: number;
+    programmeId: number;
     applicationPeriodId: number;
     projectInformation: IProjectInformation;
     monitoringEvaluation: IMonitoringAndEvaluation;
@@ -1463,6 +1468,8 @@ export interface IRegion {
 export interface IApplicationDetails {
     id: number;
     amountApplyingFor: number;
+    isSDASelected: boolean;
+    programmeSDId: number;
     fundAppSDADetailId: number;
     fundAppSDADetail: IFundAppSDADetail;
 }
@@ -1472,7 +1479,9 @@ export interface IFundAppSDADetail {
     districtCouncil: IDistrictCouncil;
     localMunicipality: ILocalMunicipality;
     regions: IRegion[];
+    region: IRegion;
     serviceDeliveryAreas: ISDA[];
+    serviceDeliveryArea: ISDA;
 }
 
 export interface ISubPlace {

@@ -95,7 +95,8 @@ namespace NPOMS.Services.Implementation
 
             viewModel.Id = entity.Id;
             viewModel.ApprovalStatus = entity.ApprovalStatus;
-
+            viewModel.IsSelected = entity.IsSelected;
+            viewModel.IsActive = entity.IsActive;
             return viewModel;
         }
 

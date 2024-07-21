@@ -41,7 +41,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
   @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
-
+  @Input() programId: number;
   @Input() isEdit: boolean;
 
   dropdownTouched: boolean = false;
@@ -57,7 +57,7 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
-
+  isSDASelected: boolean;
   amountApplyingFor: number;
   menuActions: MenuItem[];
   profile: IUser;
@@ -79,7 +79,7 @@ export class ApplicationDetailsComponent implements OnInit {
   entity: IDistrictCouncil = {} as IDistrictCouncil;
   sourceOfInformationText: string;
   financialYears: IFinancialYear[];
-
+  selectedOnes = [];
   selectedFinancialYear: IFinancialYear;
   departments: IDepartment[];
   selectedDepartment: IDepartment;
@@ -94,11 +94,14 @@ export class ApplicationDetailsComponent implements OnInit {
   selectedApplicationType: IApplicationType;
   stateOptions: any[];
 
+  subProgrammesType: ISubProgrammeType[] = [];
+  selectedSubProgrammeType: ISubProgrammeType;
+
   finYearRange: string;
 
-  subProgrammeType: ISubProgrammeType[];
-  filteredSubProgrammeType: ISubProgrammeType[];
-  selectedSubProgrammeType: ISubProgrammeType;
+  // subProgrammeType: ISubProgrammeType[];
+   filteredSubProgrammeType: ISubProgrammeType[];
+  // selectedSubProgrammeType: ISubProgrammeType;
 
   // Highlight required fields on validate click
   validated: boolean = false;
@@ -172,16 +175,18 @@ export class ApplicationDetailsComponent implements OnInit {
         let amountStringId = (<HTMLInputElement>document.getElementById("amountApplyingFor"));
         amountStringId.focus();
         //Get all district councils
-        this.loadDistrictCouncils();
+         this.loadDistrictCouncils();
         //Gel all local municipalities
-        this.loadMunicipalities();
+         this.loadMunicipalities();
         //Get all regions
-        this.regionDropdown();
+         this.regionDropdown();
         //Get all service delivery areas
-        this.loadServiceDeliveryAreas();
+         this.loadServiceDeliveryAreas();
+
         this.GetAffiliatedOrganisation();
         this.GetSourceOfInformation();
         this.loadApplication();
+        this.getProgrammeDeliveryDetails();
       }
     });
 
@@ -256,7 +261,8 @@ export class ApplicationDetailsComponent implements OnInit {
       this.fundingApplicationDetails.monitoringEvaluation = {} as IMonitoringAndEvaluation;
     }
     this.fundingApplicationDetails.financialMatters = data.financialMatters;
-    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail = data.applicationDetails.fundAppSDADetail;
+
+    this.fundingApplicationDetails.applicationDetails.fundAppSDADetail =  data.applicationDetails.fundAppSDADetail;
 
     this.fundingApplicationDetails.implementations?.forEach(c => {
 
@@ -270,8 +276,12 @@ export class ApplicationDetailsComponent implements OnInit {
   private bidForm(status: StatusEnum) {
     this.application.status = null;
     this.application.statusId = status;
+    this.fundingApplicationDetails.programmeId = this.programId;
     const applicationIdOnBid = this.fundingApplicationDetails;
-
+    this.fundingApplicationDetails.programmeId = this.application.applicationPeriod.programmeId;
+    this.fundingApplicationDetails.applicationPeriodId = this.application.applicationPeriodId;
+    this.fundingApplicationDetails.applicationId = Number( this.application.id);
+    
     if (applicationIdOnBid.id == null) {
       this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
       //  this._menuActions[1].visible = false;
@@ -522,6 +532,18 @@ export class ApplicationDetailsComponent implements OnInit {
     }
   }
 
+  subProgrammeChange(subProgram: ISubProgramme) {
+    this.selectedSubProgrammeType = null;
+    this.subProgrammesType = [];
+    if (subProgram.id != null) {
+      for (var i = 0; i < this.allSubProgrammes.length; i++) {
+        if (this.subProgrammesType[i].subProgrammeId == subProgram.id) {
+          this.subProgrammesType.push(this.subProgrammesType[i]);
+        }
+      }
+    }
+  }
+
   programmeChange(programme: IProgramme) {
     this.selectedSubProgramme = null;
     this.subProgrammes = [];
@@ -537,11 +559,29 @@ export class ApplicationDetailsComponent implements OnInit {
     this.getFinancialYearRange(finYear);
   }
 
+  setValue(event, value) {  
+    if(event.target.checked)
+      {
+        this.isSDASelected = true;
+      }
+      else
+      {
+        this.isSDASelected = false;
+      }  
+      
+      this._npoProfile.updateProgrammeDeliveryServiceSelection(value, this.isSDASelected).subscribe(resp => {        
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      });
+  }
+
   private getProgrammeDeliveryDetails() {
     this._npoProfile.getProgrammeDeliveryDetails(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
           this.programDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
+          console.log(' this.programDeliveryDetails ',  this.programDeliveryDetails );
         } this._spinner.hide();
       },
       (err) => {
@@ -624,8 +664,28 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
 
-
   nextPage() {
+    if(this.programDeliveryDetails != undefined)
+    { 
+      this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === this.programDeliveryDetails[0].districtCouncil.id);
+      this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === this.programDeliveryDetails[0].localMunicipality.id);
+      
+      this.programDeliveryDetails[0].regions.forEach(item => {
+        
+       this.selectedRegions = this.regionsAll.filter(x => x.id === item.id);
+
+      });
+
+      this.programDeliveryDetails[0].serviceDeliveryAreas.forEach(item => {
+        
+        this.selectedSdas = this.sdas.concat(this.sdasAll.find(x => x.id === item.id));
+      });
+      
+    }
+    else{
+      alert('Service area missing');
+      return false;
+    }
     this.activeStep = this.activeStep + 1;
     this.bidForm(StatusEnum.Saved);
     this.activeStepChange.emit(this.activeStep);
@@ -887,8 +947,8 @@ export class ApplicationDetailsComponent implements OnInit {
   private loadSubProgrammeTypes(subProgramId: number) {
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
       (results) => {
-        this.subProgrammeType = results;
-       this.filteredSubProgrammeType = this.subProgrammeType.filter(x=> x.subProgrammeId === subProgramId);
+        this.subProgrammesType = results;
+       this.filteredSubProgrammeType = this.subProgrammesType.filter(x=> x.subProgrammeId === subProgramId);
         this._spinner.hide();
       },
       (err) => {

@@ -518,26 +518,27 @@ export class EditProfileComponent implements OnInit {
     }
   }
 
-  onRegionChange(regions: IRegion[]) { 
+  onRegionChange(regions: IRegion) { 
     this.selectedRegions = [];
     this.selectedSdas = [];
     this.selected = [];
     this.sdas = [];
-
-    regions.forEach(item => {
-      this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
-    });
+   this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === regions.id));
+    // regions.forEach(item => {
+    //   this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
+    // });
     if (this.selectedDelivery != null)
         this.selectedDelivery.regions = this.selectedRegions;
 
+    this.sdas = this.sdasAll.filter(x => x.regionId == regions.id);
     // filter items matching the selected regions
-    if (regions != null && regions.length != 0) {
-      for (var i = 0; i < this.sdasAll.length; i++) {
-        if (regions.filter(r => r.id === this.sdasAll[i].regionId).length != 0) {
-          this.sdas.push(this.sdasAll[i]);
-        }
-      }
-    }
+    // if (regions != null && regions.length != 0) {
+    //   for (var i = 0; i < this.sdasAll.length; i++) {
+    //     if (regions.filter(r => r.id === this.sdasAll[i].regionId).length != 0) {
+    //       this.sdas.push(this.sdasAll[i]);
+    //     }
+    //   }
+    // }
 
     // this.selected = [];
     // for (var i = 0; i < regions?.length; i++) {
@@ -556,17 +557,17 @@ export class EditProfileComponent implements OnInit {
   }
 
   
- onSdaChange(sdas: ISDA[]) {
+ onSdaChange(sdas: ISDA) {
     // this.places = [];
     // this.subPlacesAll = [];
     this.selectedSdas = [];
     // this.sdas =[];
 
     // this.setPlaces(sdas); // populate specific locations where the service will be delivered to
-    sdas.forEach(item => {
-      this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
-    });
-
+    // sdas.forEach(item => {
+    //   this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
+    // });
+    this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === sdas.id));
     this.selectedDelivery.serviceDeliveryAreas = this.selectedSdas;
      //map selected service delivery areas 
     // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
@@ -605,10 +606,10 @@ export class EditProfileComponent implements OnInit {
         this.onLocalMunicipalityChange(this.selectedDelivery.localMunicipality);
 
       if (this.selectedDelivery.regions?.length > 0)
-        this.onRegionChange(this.selectedDelivery.regions);
+        this.onRegionChange(this.selectedDelivery.regions[0]);
 
       if (this.selectedDelivery.serviceDeliveryAreas?.length > 0)
-        this.onSdaChange(this.selectedDelivery.serviceDeliveryAreas);
+        this.onSdaChange(this.selectedDelivery.serviceDeliveryAreas[0]);
     }
   }
   

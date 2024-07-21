@@ -33,9 +33,9 @@
       </tr>
       <tr>
           <th colspan="1">Description</th>
-          <th colspan="1">Amount</th>
+          <th colspan="1" style="text-align: center;">Amount</th>
           <th colspan="1">Description</th>
-          <th colspan="1">Amount</th>
+          <th colspan="1" style="text-align: center;">Amount</th>
           <th colspan="1">Action</th>
       </tr>
   </ng-template>
@@ -51,13 +51,13 @@
                   </ng-template>
               </p-cellEditor>
           </td>
-          <td pEditableColumn>
+          <td pEditableColumn style="text-align: right;">
               <p-cellEditor>
                   <ng-template pTemplate="input">
                       <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()" [(ngModel)]="rowData.incomeAmount" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
                   </ng-template>
                   <ng-template pTemplate="output">
-                      {{rowData.incomeAmount}}
+                      R {{rowData.incomeAmount | number: '1.0':'en-US'}}
                   </ng-template>
               </p-cellEditor>
           </td>
@@ -71,13 +71,13 @@
                   </ng-template>
               </p-cellEditor>
           </td>
-          <td pEditableColumn>
+          <td pEditableColumn style="text-align: right;">
               <p-cellEditor>
                   <ng-template pTemplate="input">
                       <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculatePreviousYearTotal()" [(ngModel)]="rowData.expenditureAmount" [ngModelOptions]="{standalone: true}" (change)="updateDetail(rowData)">
                   </ng-template>
                   <ng-template pTemplate="output">
-                      {{rowData.expenditureAmount}}
+                      R {{rowData.expenditureAmount | number: '1.0':'en-US'}}
                   </ng-template>
               </p-cellEditor>
           </td>
@@ -91,9 +91,9 @@
   <ng-template pTemplate="footer">
       <tr>
           <td colspan="1" class="p-text-right">Total</td>
-          <td>R{{totalIncome | number: '1.0':'en-US'}}</td>
+          <td style="text-align: right;">R {{totalIncome | number: '1.0':'en-US'}}</td>
           <td colspan="1" class="p-text-right">Total</td>
-          <td>R{{totalExpenditure | number: '1.0':'en-US'}}</td>
+          <td style="text-align: right;">R {{totalExpenditure | number: '1.0':'en-US'}}</td>
           <td></td>
       </tr>
       <tr>
@@ -101,7 +101,7 @@
               <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus" (click)="addIncomeExpenditure()" style="float: left;"></button>                            
               Budget Deficit / Surplus                            
           </td>
-          <td>R{{totalDeficitSurplus | number: '1.0':'en-US'}}</td>
+          <td style="text-align: right;">R {{totalDeficitSurplus | number: '1.0':'en-US'}}</td>
           <td></td>
       </tr>
   </ng-template>
@@ -128,7 +128,7 @@
   <p-table [rowHover]="true" [columns]="cols" [value]="financialMattersIncome" selectionMode="single"  styleClass="p-datatable-sm" [(selection)]="selectedFinancialMatterIncome" (onRowSelect)="onRowSelect($event)">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field" style="text-align: center;">
           {{col.header}}
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
@@ -149,8 +149,7 @@
             </ng-template>
           </p-cellEditor>
         </td>
-     
-        <td pEditableColumn>
+        <td pEditableColumn style="text-align: right;">
           <p-cellEditor>
             <ng-template pTemplate="input">
               <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()"
@@ -158,11 +157,11 @@
                 placeholder="Number Only Field">
             </ng-template>
             <ng-template pTemplate="output">
-              {{financialMattersIncome.amountOneI}}
+              R {{financialMattersIncome.amountOneI | number: '1.0':'en-US'}}
             </ng-template>
           </p-cellEditor>
         </td>
-        <td pEditableColumn>
+        <td pEditableColumn style="text-align: right;">
           <p-cellEditor>
             <ng-template pTemplate="input">
               <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()"
@@ -170,11 +169,11 @@
                 placeholder="Number Only Field">
             </ng-template>
             <ng-template pTemplate="output">
-              {{financialMattersIncome.amountTwoI}}
+              R {{financialMattersIncome.amountTwoI | number: '1.0':'en-US'}}
             </ng-template>
           </p-cellEditor>
         </td>
-        <td pEditableColumn>
+        <td pEditableColumn style="text-align: right;">
           <p-cellEditor>
             <ng-template pTemplate="input">
               <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)" (change)="calculateTotals()" 
@@ -182,11 +181,11 @@
                 placeholder="Number Only Field">
             </ng-template>
             <ng-template pTemplate="output">
-              {{financialMattersIncome.amountThreeI}}
+              R {{financialMattersIncome.amountThreeI | number: '1.0':'en-US'}}
             </ng-template>
           </p-cellEditor>
         </td>
-        <td>R{{financialMattersIncome.totalFundingAmountI | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{financialMattersIncome.totalFundingAmountI | number: '1.0':'en-US'}}</td>
         <td style="text-align: center;">
           <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
             class="p-button-text p-button-danger" icon="pi pi-trash" (click)="deleteBudgetItem(financialMattersIncome)"
@@ -201,14 +200,13 @@
           <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus"
             (click)="addBudgetIncomeItem()"></button>
         </td>
-        <td>R{{totalAmountOne | number: '1.0':'en-US'}}</td>
-        <td>R{{totalAmountTwo | number: '1.0':'en-US'}}</td>
-        <td>R{{totalAmountThree | number: '1.0':'en-US'}}</td>
-        <td>R{{fundingTotal | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{totalAmountOne | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{totalAmountTwo | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{totalAmountThree | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{fundingTotal | number: '1.0':'en-US'}}</td>
         <td></td>
       </tr>
-    </ng-template>
-  
+    </ng-template>  
   </p-table>
 </p-panel>
 
@@ -233,7 +231,7 @@
     [(selection)]="selectedFinancialMatterExpenditure" (onRowSelect)="onRowSelect($event)">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field" style="text-align: center;">
           {{col.header}}
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
@@ -253,7 +251,7 @@
             </ng-template>
           </p-cellEditor>        
         </td>
-        <td pEditableColumn>
+        <td pEditableColumn style="text-align: right;">
           <p-cellEditor>
             <ng-template pTemplate="input">
               <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
@@ -261,11 +259,11 @@
                 [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
             </ng-template>
             <ng-template pTemplate="output">
-              {{financialMattersExpenditure.amountOneE}}
+              R {{financialMattersExpenditure.amountOneE | number: '1.0':'en-US'}}
             </ng-template>
           </p-cellEditor>
         </td>
-        <td pEditableColumn>
+        <td pEditableColumn style="text-align: right;">
           <p-cellEditor>
             <ng-template pTemplate="input">
               <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
@@ -273,11 +271,11 @@
                 [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
             </ng-template>
             <ng-template pTemplate="output">
-              {{financialMattersExpenditure.amountTwoE}}
+              R {{financialMattersExpenditure.amountTwoE | number: '1.0':'en-US'}}
             </ng-template>
           </p-cellEditor>
         </td>
-        <td pEditableColumn>
+        <td pEditableColumn style="text-align: right;">
           <p-cellEditor>
             <ng-template pTemplate="input">
               <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
@@ -285,11 +283,11 @@
                 [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
             </ng-template>
             <ng-template pTemplate="output">
-              {{financialMattersExpenditure.amountThreeE}}
+              R {{financialMattersExpenditure.amountThreeE | number: '1.0':'en-US'}}
             </ng-template>
           </p-cellEditor>
         </td>
-        <td>R{{financialMattersExpenditure.totalFundingAmountE | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{financialMattersExpenditure.totalFundingAmountE | number: '1.0':'en-US'}}</td>
         <td style="text-align: center;">
           <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
             class="p-button-text p-button-danger" icon="pi pi-trash"
@@ -304,10 +302,10 @@
           <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus"
             (click)="addBudgetExpenditureItem()"></button>
         </td>
-        <td>R{{totalAmountOneE | number: '1.0':'en-US'}}</td>
-        <td>R{{totalAmountTwoE | number: '1.0':'en-US'}}</td>
-        <td>R{{totalAmountThreeE | number: '1.0':'en-US'}}</td>
-        <td>R{{fundingTotalE | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{totalAmountOneE | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{totalAmountTwoE | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{totalAmountThreeE | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{fundingTotalE | number: '1.0':'en-US'}}</td>
         <td></td>
       </tr>
     </ng-template>
@@ -335,7 +333,7 @@
     [(selection)]="selectedFinancialMatterOthers" (onRowSelect)="onRowSelect($event)">
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
+        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field" style="text-align: center;">
           {{col.header}}
           <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
@@ -355,7 +353,7 @@
             </ng-template>
           </p-cellEditor>          
         </td>
-        <td pEditableColumn>
+        <td pEditableColumn style="text-align: right;">
           <p-cellEditor>
             <ng-template pTemplate="input">
               <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
@@ -363,11 +361,11 @@
                 [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
             </ng-template>
             <ng-template pTemplate="output">
-              {{financialMattersOthers.amountOneO}}
+              R {{financialMattersOthers.amountOneO | number: '1.0':'en-US'}}
             </ng-template>
           </p-cellEditor>
         </td>
-        <td pEditableColumn>
+        <td pEditableColumn style="text-align: right;">
           <p-cellEditor>
             <ng-template pTemplate="input">
               <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
@@ -375,11 +373,11 @@
                 [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
             </ng-template>
             <ng-template pTemplate="output">
-              {{financialMattersOthers.amountTwoO}}
+              R {{financialMattersOthers.amountTwoO | number: '1.0':'en-US'}}
             </ng-template>
           </p-cellEditor>
         </td>
-        <td pEditableColumn>
+        <td pEditableColumn style="text-align: right;">
           <p-cellEditor>
             <ng-template pTemplate="input">
               <input type="text" class="form-text" pInputText (keypress)="numberOnly($event)"
@@ -387,11 +385,11 @@
                 [ngModelOptions]="{standalone: true}" placeholder="Number Only Field">
             </ng-template>
             <ng-template pTemplate="output">
-              {{financialMattersOthers.amountThreeO}}
+              R {{financialMattersOthers.amountThreeO | number: '1.0':'en-US'}}
             </ng-template>
           </p-cellEditor>
         </td>
-        <td>R{{financialMattersOthers.totalFundingAmountO | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{financialMattersOthers.totalFundingAmountO | number: '1.0':'en-US'}}</td>
         <td style="text-align: center;">
           <button pButton pRipple type="button" style="margin-right: 1px; height: 25px; width: 25px;"
             class="p-button-text p-button-danger" icon="pi pi-trash"
@@ -407,10 +405,10 @@
           <button pButton pRipple type="button" label="Add Row" class="p-button-text" icon="fa fa-plus"
             (click)="addBudgetOthrSourceFunding()"></button>
         </td>
-        <td>R{{totalAmountOneO | number: '1.0':'en-US'}}</td>
-        <td>R{{totalAmountTwoO | number: '1.0':'en-US'}}</td>
-        <td>R{{totalAmountThreeO | number: '1.0':'en-US'}}</td>
-        <td>R{{fundingTotalO | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{totalAmountOneO | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{totalAmountTwoO | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{totalAmountThreeO | number: '1.0':'en-US'}}</td>
+        <td style="text-align: right;">R {{fundingTotalO | number: '1.0':'en-US'}}</td>
         <td></td>
       </tr>
     </ng-template>
@@ -455,20 +453,24 @@
     </p-table> -->
     <p-table [value]="programBankDetails" styleClass="p-datatable-sm">
       <ng-template pTemplate="header">
-          <tr>
-          <th>Bank Name</th>
-          <th>Account Number</th>
-          <th>Branch</th>
-          <th>Status</th>
-          </tr>
+      <tr>
+        <th></th>
+        <th>Bank Name</th>
+        <th>Account Number</th>
+        <th>Branch</th>
+        <th>Status</th>
+      </tr>
       </ng-template>
       <ng-template pTemplate="body" let-detail>
-          <tr>
-          <td>{{detail?.bank?.name}}</td>
-          <td>{{detail?.accountNumber}}</td>
-          <td>{{detail?.branch?.name}}</td>
-          <td>{{detail?.approvalStatus?.name}}</td>
-          </tr>
+      <tr>
+        <td>
+          <input type="checkbox" [(ngModel)]="detail.isSelected" (change)="setValue($event,detail.id)">
+        </td>
+        <td>{{detail?.bank?.name}}</td>
+        <td>{{detail?.accountNumber}}</td>
+        <td>{{detail?.branch?.name}}</td>
+        <td>{{detail?.approvalStatus?.name}}</td>
+      </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
           <tr class="default-font">

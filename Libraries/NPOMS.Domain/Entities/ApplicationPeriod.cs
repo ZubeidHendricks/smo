@@ -16,8 +16,9 @@ namespace NPOMS.Domain.Entities
 		public int ProgrammeId { get; set; }
 
 		public int SubProgrammeId { get; set; }
+		public int? SubProgrammeTypeId { get; set; }	
 
-		public int ApplicationTypeId { get; set; }
+        public int ApplicationTypeId { get; set; }
 
 		[Column(TypeName = "nvarchar(255)")]
 		public string Name { get; set; }
@@ -44,6 +45,8 @@ namespace NPOMS.Domain.Entities
 		public Programme Programme { get; set; }
 
 		public SubProgramme SubProgramme { get; set; }
+
+		public SubProgrammeType SubProgrammeType { get; set; }
 
 		public FinancialYear FinancialYear { get; set; }
 
