@@ -477,6 +477,11 @@
               <td colspan="5" style="text-align: center;">No results found.</td>
           </tr>
       </ng-template>
+      <ng-template pTemplate="summary" let-rowData>
+        <div style="text-align:left">
+            <button pButton pRipple type="button" label="Add Bank Detail" class="p-button-text" icon="fa fa-plus" (click)="addProgrammeBankDetail()"></button>
+        </div>
+      </ng-template>
   </p-table>
 </p-panel>    
 <div style="height: 10px;"></div>
@@ -489,67 +494,60 @@
     </p-footer>
   </p-confirmDialog>
 </div>
-
-<p-dialog header="Bank Detail" 
-          [(visible)]="displayBankDetailDialog" 
-          [style]="{width: '50vw'}" 
-          [focusOnShow]="false"
-          showEffect="fade"
-          [transitionOptions]="'0ms'"
-          [modal]="true">
-        <div class="p-grid">
-            <div class="p-col">
-                <div class="box">
-                    <span class="mandatory-content">Bank:</span>
-                </div>
-            </div>
-            <div class="p-col">
-                <p-dropdown [options]="banks" placeholder="Select a Bank" [style]="{'width':'100%'}" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="bankChange()"  [filter]="true" filterBy="name"></p-dropdown>
-            </div>
-        </div>
-        <div class="p-grid">
-            <div class="p-col">
-                <div class="box">
-                    <span class="mandatory-content">Branch:</span>
-                </div>
-            </div>
-            <div class="p-col">
-                <p-dropdown [options]="branches" placeholder="Select a branch" [style]="{'width':'100%'}" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="branchChange()" [filter]="true" filterBy="name"></p-dropdown>
-            </div>
-        </div>
-        <div class="p-grid">
-            <div class="p-col">
-                <div class="box">
-                    <span class="non-mandatory-content">Branch Code:</span>
-                </div>
-            </div>
-            <div class="p-col">
-                <input type="text" name="branchCode" [style]="{'width':'100%'}" class="form-text" pInputText [(ngModel)]="bankDetail.branchCode" [ngModelOptions]="{standalone: true}" [disabled]="true"> 
-            </div>
-        </div>        
-        <div class="p-grid">
-            <div class="p-col">
-                <div class="box">
-                    <span class="mandatory-content">Account Type:</span>
-                </div>
-            </div>
-            <div class="p-col">
-                <p-dropdown [options]="accountTypes" placeholder="Select an Account Type" [style]="{'width':'100%'}" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" appendTo="body"></p-dropdown>
-            </div>
-        </div>        
-        <div class="p-grid">
-            <div class="p-col">
-                <div class="box">
-                    <span class="mandatory-content">Account Number:</span>
-                </div>
-            </div>
-            <div class="p-col">
-                <input type="text" name="accountNumber" class="form-text" [style]="{'width':'100%'}" pInputText [(ngModel)]="bankDetail.accountNumber" [ngModelOptions]="{standalone: true}" (keypress)="numberOnly($event)"> 
-            </div>
-        </div>
-        <ng-template pTemplate="footer">
-            <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveBankDetail() (click)="saveBankDetail()"></button>
-        </ng-template>
+<p-dialog header="Bank Detail" [(visible)]="displayBankDetailDialog" [style]="{width: '50vw'}" [focusOnShow]="false" showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Bank</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <p-dropdown [options]="banks" placeholder="Select a Bank" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="bankChange()" [filter]="true" filterBy="name"></p-dropdown>
+    </div>
+  </div>
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Branch</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <p-dropdown [options]="branches" placeholder="Select a branch" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="branchProgrammeChange()" [filter]="true" filterBy="name"></p-dropdown>
+    </div>
+  </div>
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="non-mandatory-content">Branch Code</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <input type="text" name="branchCode" class="form-text" pInputText [(ngModel)]="programBankDetail.branchCode" [ngModelOptions]="{standalone: true}" [disabled]="true"> 
+    </div>
+  </div>        
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Account Type</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <p-dropdown [options]="accountTypes" placeholder="Select an Account Type" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+    </div>
+  </div>        
+  <div class="p-grid">
+    <div class="p-col-fixed form-label">
+      <div class="box">
+        <span class="mandatory-content">Account Number</span>
+      </div>
+    </div>
+    <div class="p-col">
+      <input type="text" name="accountNumber" class="form-text" pInputText [(ngModel)]="programBankDetail.accountNumber" [ngModelOptions]="{standalone: true}" (keypress)="numberOnly($event)"> 
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]="disableSaveProgramBankDetail()" (click)="saveProgrammeBankDetail()"></button>
+  </ng-template>
 </p-dialog>
 <div style="height: 10px;"></div>
 <!-- <div class="p-grid">

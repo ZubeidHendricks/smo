@@ -14,6 +14,7 @@ import { ApplicationService } from 'src/app/services/api-services/application/ap
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { style } from '@angular/animations';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-financial-matters',
@@ -58,7 +59,7 @@ export class FinancialMattersComponent implements OnInit {
   financialmatterIncome: IFinancialMattersIncome = {} as IFinancialMattersIncome;
   financialmatterExpenditure: IFinancialMattersExpenditure = {} as IFinancialMattersExpenditure;
   financialmatterOther: IFinancialMattersOthers = {} as IFinancialMattersOthers;
-
+  programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
   financicalMattersOthrSourceFunding: IFinancialMattersOthers[];
 
   selectedFinancialMatterIncome: IFinancialMattersIncome;
@@ -124,6 +125,7 @@ export class FinancialMattersComponent implements OnInit {
     private _npoProfile: NpoProfileService,
     private _bidService: BidService,
     private _router: Router,
+    private _spinner: NgxSpinnerService,
     private messageService: MessageService) { }
 
 
@@ -138,7 +140,6 @@ export class FinancialMattersComponent implements OnInit {
     }); 
 
     this.GetPreviousYearFinanceData();
-    this.GetBankDetail();
 
     if (this.previousFinancialYear != null && this.previousFinancialYear.length > 0)
       this.calculatePreviousYearTotals();
@@ -231,7 +232,7 @@ export class FinancialMattersComponent implements OnInit {
   private loadProgrammeDetails() {
     this._npoProfile.getProgrammeBankDetails(this.application.id).subscribe(
       (results) => {
-        this.programBankDetails = results.filter(x=> x.approvalStatus.id === 2 && x.programId == this.programId);
+        this.programBankDetails = results.filter(x=> x.programId == this.programId); // x.approvalStatus.id === 2 && 
         this.updateBankDetailObjects();
       }, 
       (err) => {
@@ -255,7 +256,12 @@ export class FinancialMattersComponent implements OnInit {
         this._loggerService.logException(err);
       });
   }
+  disableSaveProgramBankDetail() {
+    if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.programBankDetail.accountNumber)
+      return true;
 
+    return false;
+  }
   private loadBanks() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Banks, false).subscribe(
       (results) => {
@@ -331,16 +337,27 @@ export class FinancialMattersComponent implements OnInit {
     return true;
   }
 
-  addBankDetail() {
+  addProgrammeBankDetail() {
     this.isBankDetailEdit = false;
     this.newBankDetail = true;
-    this.bankDetail = {} as IBankDetail;
+    this.programBankDetail = {} as IProgramBankDetails;
     this.selectedBank = null;
     this.branches = [];
     this.selectedBranch = null;
     this.selectedAccountType = null;
     this.displayBankDetailDialog = true;
   }
+
+  // addBankDetail() {
+  //   this.isBankDetailEdit = false;
+  //   this.newBankDetail = true;
+  //   this.bankDetail = {} as IBankDetail;
+  //   this.selectedBank = null;
+  //   this.branches = [];
+  //   this.selectedBranch = null;
+  //   this.selectedAccountType = null;
+  //   this.displayBankDetailDialog = true;
+  // }
 
 
   editBankDetail(data: IBankDetail) {
@@ -366,72 +383,36 @@ export class FinancialMattersComponent implements OnInit {
     return bankDetail;
   }
 
-
-  deleteBankDetail(bankDetail) {
-    this._confirmationService.confirm({
-      message: 'Are you sure that you want to delete this item?',
-      header: 'Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-        this._npoProfile.deleteBankDetail(bankDetail).subscribe(
-          (resp) => {
-            this.GetBankDetail();
-          },
-          (err) => {
-            //
-          }
-        );
-      },
-      reject: () => {
-        //
-      }
-    });
+ 
+  branchProgrammeChange() {
+    if (this.selectedBranch) {
+      this.programBankDetail.branchCode = this.selectedBranch.branchCode != null ? this.selectedBranch.branchCode : this.selectedBank.code;
+    }
   }
-
-  saveBankDetail() {
-    this.bankDetail.npoProfileId = Number(this.selectedApplicationId);
-    this.bankDetail.bankId = this.selectedBank.id;
-    this.bankDetail.branchId = this.selectedBranch.id;
-    this.bankDetail.accountTypeId = this.selectedAccountType.id;
-
-    this.newBankDetail ? this.createBankDetail(this.bankDetail) : this.updateBankDetail(this.bankDetail);
+  saveProgrammeBankDetail() {
+    this.programBankDetail.programId = Number(this.application.applicationPeriod.programmeId);
+    this.programBankDetail.bankId = this.selectedBank.id;
+    this.programBankDetail.branchId = this.selectedBranch.id;
+    this.programBankDetail.accountTypeId = this.selectedAccountType.id;
+    this.programBankDetail.isActive = true;
+    
+    this.createProgrameBankDetail(this.programBankDetail)
+    //this.newBankDetail ? this.createProgrameBankDetail(this.programBankDetail) : this.updateProgrameBankDetail(this.programBankDetail);
     this.displayBankDetailDialog = false;
   }
 
-  private createBankDetail(bankDetail: IBankDetail) {
-    this._npoProfile.createBankDetail(bankDetail).subscribe(
+  private createProgrameBankDetail(bankDetail: IProgramBankDetails) {
+    this._npoProfile.createProgrammeBankDetails(Number(this.application.npoId),bankDetail).subscribe(
       (resp) => {
-        this.GetBankDetail();
+        this.loadProgrammeDetails();
       },
-      (err) => {//
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
 
-  private updateBankDetail(bankDetail: IBankDetail) {
-    this._npoProfile.updateBankDetail(bankDetail).subscribe(
-      (resp) => {
-        this.loadBankDetails(Number(this.npoProfileId));
-      },
-      (err) => {
-        // this._loggerService.logException(err);
-        // this._spinner.hide();
-      }
-    );
-  }
-
-  private loadBankDetails(npoProfileId: number) {
-    this._npoProfile.getBankDetailByNpoProfileId(this.application.id).subscribe(
-      (results) => {
-        this.bankDetails = results;
-        this.updateBankDetailObjects();
-      },
-      (err) => {
-        // this._loggerService.logException(err);
-        // this._spinner.hide();
-      }
-    );
-  }
 
   disableSaveBankDetail() {
     if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.bankDetail.accountNumber)
@@ -907,18 +888,6 @@ export class FinancialMattersComponent implements OnInit {
           document.getElementById('previousFinancialYear').hidden = false;
         }
         this.calculatePreviousYearTotals();
-      },
-      (err) => {
-        //
-      }
-    );
-  }
-
-  private GetBankDetail() {
-    this._npoProfile.getBankDetailByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
-      (results) => {
-        this.bankDetails = results;
-        this.updateBankDetailObjects();
       },
       (err) => {
         //

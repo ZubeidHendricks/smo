@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
 import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IProgramme, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -33,7 +33,7 @@ export class CreateApplicationPeriodComponent implements OnInit {
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
-
+  filteredProgrammes: IProgramme[] = [];
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
   departments: IDepartment[];
@@ -55,10 +55,15 @@ export class CreateApplicationPeriodComponent implements OnInit {
   disableClosingDate: boolean = true;
   disableOpeningDate: boolean = true;
   finYearRange: string;
-
+  filteredSubProgrammes: ISubProgramme[] = []; 
+  filteredSubProgrammeTypes: ISubProgrammeType[] = [];
+  subProgrammeTypes: ISubProgrammeType[];
+  departments1: IDepartment[];
   // Highlight required fields on validate click
   validated: boolean = false;
-
+  isSystemAdmin: boolean;
+  isDepartmentAdmin: boolean;
+  selectedDepartmentSummary: IDepartment;
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -76,8 +81,12 @@ export class CreateApplicationPeriodComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.AddApplicationPeriod))
           this._router.navigate(['401']);
 
+        this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        this.isDepartmentAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+
         this.loadFinancialYears();
         this.loadDepartments();
+        this.loadDepartments1();
         this.loadProgrammes();
         this.loadSubProgrammes();
         this.loadSubProgrammeTypes();
@@ -202,6 +211,27 @@ export class CreateApplicationPeriodComponent implements OnInit {
     );
   }
 
+  private loadDepartments1() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
+      (results) => {
+        this.departments1 = results;
+        if(this.isSystemAdmin )
+          {
+            this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          }
+          else{
+            this.departments1 = results.filter(x => x.id === this.profile.departments[0].id);
+          }
+          this.selectedDepartmentSummary = null;
+          this.selectedDepartmentSummary = this.departments1.find(x => x.id === this.profile.departments[0].id);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadDepartments() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
@@ -263,7 +293,14 @@ export class CreateApplicationPeriodComponent implements OnInit {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
       (results) => {
+
+        if(this.profile.departments[0].id === DepartmentEnum.DSD)
+          this.applicationTypes = results.filter(x => x.systemName === 'FA' || x.systemName === 'QC');
+        else if(this.profile.departments[0].id === DepartmentEnum.DOH)
+          this.applicationTypes = results.filter(x => x.systemName === 'SP' || x.systemName === 'BP');
+        else
         this.applicationTypes = results;
+
         this._spinner.hide();
       },
       (err) => {
@@ -299,6 +336,31 @@ export class CreateApplicationPeriodComponent implements OnInit {
     }
   }
 
+  loadDepartmentPrograms(id: number = 0) {
+    this.filteredProgrammes = this.allProgrammes.filter(x => x.departmentId === id); 
+  }
+
+  programmeChange(programme: IProgramme) {
+    this.selectedSubProgramme = null;
+    this.selectedSubProgrammeType = null;
+   
+    this.filteredSubProgrammes = [];
+    this.filteredSubProgrammeTypes = [];
+
+    if (programme.id != null) {
+      this.filteredSubProgrammes = this.allSubProgrammes.filter(x => x.programmeId === programme.id);
+    }
+  }
+
+  subProgrammeChange(subProgramme: ISubProgramme) {
+    this.selectedSubProgrammeType = null;
+    this.filteredSubProgrammeTypes = [];
+
+    if (subProgramme.id != null) {
+      this.filteredSubProgrammeTypes = this.AllsubProgrammesTypes.filter(x => x.subProgrammeId === subProgramme.id);
+    }
+  }
+
   // displayDOHInfo()
   // {
   //   alert(this.selectedApplicationType.name);
@@ -316,27 +378,6 @@ export class CreateApplicationPeriodComponent implements OnInit {
     
   // }
 
-  programmeChange(programme: IProgramme) {
-    this.selectedSubProgramme = null;
-    this.selectedSubProgrammeType = null;
-    this.subProgrammes = [];
-    this.subProgrammesTypes = [];
-    if (programme.id != null) {
-      for (var i = 0; i < this.allSubProgrammes.length; i++) {
-        if (this.allSubProgrammes[i].programmeId == programme.id) {
-          this.subProgrammes.push(this.allSubProgrammes[i]);
-        }
-      }
-    }
-  }
-
-  subProgrammeChange(subProgram: ISubProgramme) {
-    this.selectedSubProgrammeType = null;
-    this.subProgrammesTypes = [];
-    if (subProgram.id != null) {
-      this.subProgrammesTypes = this.AllsubProgrammesTypes.filter(x => x.subProgrammeId === subProgram.id);
-    }
-  }
 
   disableProgramme(): boolean {
     if (this.programmes.length > 0)
@@ -346,14 +387,14 @@ export class CreateApplicationPeriodComponent implements OnInit {
   }
 
   disableSubProgramme(): boolean {
-    if (this.subProgrammes.length > 0)
+    if (this.filteredSubProgrammes.length > 0)
       return false;
 
     return true;
   }
 
   disableSubProgrammeType(): boolean {
-    if (this.subProgrammesTypes.length > 0)
+    if (this.filteredSubProgrammeTypes.length > 0)
       return false;
 
     return true;

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
 import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IProgramme, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -61,9 +61,15 @@ export class EditApplicationPeriodComponent implements OnInit {
   disableClosingDate: boolean = true;
   disableOpeningDate: boolean = true;
   finYearRange: string;
-
+  filteredSubProgrammes: ISubProgramme[] = []; 
+  filteredSubProgrammeTypes: ISubProgrammeType[] = [];
+  departments1: IDepartment[];
   // Highlight required fields on validate click
   validated: boolean = false;
+  isSystemAdmin: boolean;
+  isDepartmentAdmin: boolean;
+  selectedDepartmentSummary: IDepartment;
+  filteredProgrammes: IProgramme[] = [];
 
   constructor(
     private _router: Router,
@@ -89,6 +95,10 @@ export class EditApplicationPeriodComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.EditApplicationPeriod))
           this._router.navigate(['401']);
 
+        this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        this.isDepartmentAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+
+        this.loadDepartments1();
         this.loadDepartments();
         this.loadApplicationTypes();
         this.loadApplicationPeriod();
@@ -223,6 +233,27 @@ export class EditApplicationPeriodComponent implements OnInit {
     );
   }
 
+  private loadDepartments1() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
+      (results) => {
+        this.departments1 = results;
+        if(this.isSystemAdmin )
+          {
+            this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          }
+          else{
+            this.departments1 = results.filter(x => x.id === this.profile.departments[0].id);
+          }
+          this.selectedDepartmentSummary = null;
+          this.selectedDepartmentSummary = this.departments1.find(x => x.id === this.profile.departments[0].id);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadApplicationTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
       (results) => {
@@ -240,7 +271,7 @@ export class EditApplicationPeriodComponent implements OnInit {
       this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
         (results) => {
           this.allProgrammes = results;
-          this.programmes = results.filter(x => x.departmentId === departmentId);
+          this.filteredProgrammes = results.filter(x => x.departmentId === departmentId);
         },
         (err) => {
           this._loggerService.logException(err);
@@ -255,7 +286,7 @@ export class EditApplicationPeriodComponent implements OnInit {
       this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
         (results) => {
           this.allSubProgrammes = results;
-          this.subProgrammes = results.filter(x => x.programmeId === programmeId);
+          this.filteredSubProgrammes = results.filter(x => x.programmeId === programmeId);
         },
         (err) => {
           this._loggerService.logException(err);
@@ -265,18 +296,30 @@ export class EditApplicationPeriodComponent implements OnInit {
     }
   }
 
-  // disableSubProgrammeType(): boolean {
-  //   if (this.subProgrammesTypes.length > 0)
-  //     return false;
+  loadDepartmentPrograms(id: number = 0) {
+    this.filteredProgrammes = this.allProgrammes.filter(x => x.departmentId === id); 
+  }
 
-  //   return true;
-  // }
+
+  disableSubProgramme(): boolean {
+    if (this.filteredSubProgrammes.length > 0)
+      return false;
+
+    return true;
+  }
+
+ disableSubProgrammeType(): boolean {
+    if (this.filteredSubProgrammeTypes.length > 0)
+      return false;
+
+    return true;
+  }
 
   private loadSubProgrammeTypes(subProgramId: number) {
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
       (results) => {
         this.AllsubProgrammesTypes = results;
-        this.subProgrammesTypes = this.AllsubProgrammesTypes.filter(x=> x.subProgrammeId === subProgramId);
+        this.filteredSubProgrammeTypes = this.AllsubProgrammesTypes.filter(x=> x.subProgrammeId === subProgramId);
         this._spinner.hide();
       },
       (err) => {
