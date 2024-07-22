@@ -92,8 +92,8 @@ export class NpoProfileService {
     return this._http.put<IProgrammeServiceDelivery>(url, httpOptions);
   }
 
-  public updateProgrammeBankSelection(id: number, selection: boolean) {
-    const url = `${this._envUrl.urlAddress}/api/programme/update-BankSelection/id/${id}/selection/${selection}`;
+  public updateProgrammeBankSelection(id: number, selection: boolean, npoId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-BankSelection/id/${id}/selection/${selection}/npoId/${npoId}`;
     return this._http.put<IProgrammeServiceDelivery>(url, httpOptions);
   }
 

@@ -267,12 +267,12 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut("update-BankSelection/id/{id}/selection/{selection}", Name = "UpdateBankSelection")]
-        public async Task<IActionResult> UpdateBankSelection(int id, bool selection)
+        [HttpPut("update-BankSelection/id/{id}/selection/{selection}/npoId/{npoId}", Name = "UpdateBankSelection")]
+        public async Task<IActionResult> UpdateBankSelection(int id, bool selection, int npoId)
         {
             try
             {
-                await _programmeService.UpdateBankSelection(base.GetUserIdentifier(), id, selection);
+                await _programmeService.UpdateBankSelection(base.GetUserIdentifier(), id, selection, npoId);
                 return Ok();
             }
             catch (Exception ex)

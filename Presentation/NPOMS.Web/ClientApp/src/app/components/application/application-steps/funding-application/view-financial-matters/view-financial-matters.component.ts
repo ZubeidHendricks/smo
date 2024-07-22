@@ -240,7 +240,7 @@ export class ViewFinancialMattersComponent implements OnInit {
   private loadProgrammeDetails() {
     this._npoProfile.getProgrammeBankDetails(this.application.id).subscribe(
       (results) => {
-        this.programBankDetails = results.filter(x=> x.approvalStatus.id === 2 && x.programId == this.programId);
+        this.programBankDetails = results.filter(x=> x.programId == this.programId);
         this.updateBankDetailObjects();
       }, 
       (err) => {
@@ -294,19 +294,7 @@ export class ViewFinancialMattersComponent implements OnInit {
     );
   }
 
-  private loadApprovedStatus(bankDetail: IProgramBankDetails) {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.AccessStatuses, false).subscribe(
-      (results) => {
-        //this.accessStatus = results[0].filter(x=> x.);
-       // bankDetail.approvalStatus = this.accessStatus
-      },
-      (err) => {
-        //this._loggerService.logException(err);
-        //this._spinner.hide();
-      }
-    );
-  }
-
+ 
   readonly(): boolean {
 
     if (this.application.statusId == StatusEnum.PendingReview ||
