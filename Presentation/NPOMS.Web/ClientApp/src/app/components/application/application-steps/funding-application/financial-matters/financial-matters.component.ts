@@ -115,6 +115,7 @@ export class FinancialMattersComponent implements OnInit {
   programBankDetails : IProgramBankDetails [];
   previous_year: any;
   private _loggerService: any;
+  isDisabledButton: boolean;
 
   constructor(private dropDownService: DropdownService,
     private _confirmationService: ConfirmationService,
@@ -244,18 +245,14 @@ export class FinancialMattersComponent implements OnInit {
     if(event.target.checked)
       {
         this.isSDASelected = true;
+        this._npoProfile.updateProgrammeBankSelection(value, this.isSDASelected, this.application.npoId).subscribe(resp => {        
+        },
+        (err) => {
+          this._loggerService.logException(err);
+        });
       }
-      else
-      {
-        this.isSDASelected = false;
-      }  
-      
-      this._npoProfile.updateProgrammeBankSelection(value, this.isSDASelected).subscribe(resp => {        
-      },
-      (err) => {
-        this._loggerService.logException(err);
-      });
   }
+
   disableSaveProgramBankDetail() {
     if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.programBankDetail.accountNumber)
       return true;
@@ -347,18 +344,6 @@ export class FinancialMattersComponent implements OnInit {
     this.selectedAccountType = null;
     this.displayBankDetailDialog = true;
   }
-
-  // addBankDetail() {
-  //   this.isBankDetailEdit = false;
-  //   this.newBankDetail = true;
-  //   this.bankDetail = {} as IBankDetail;
-  //   this.selectedBank = null;
-  //   this.branches = [];
-  //   this.selectedBranch = null;
-  //   this.selectedAccountType = null;
-  //   this.displayBankDetailDialog = true;
-  // }
-
 
   editBankDetail(data: IBankDetail) {
     this.selectedBankDetail = data;

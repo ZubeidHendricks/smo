@@ -464,7 +464,9 @@
       <ng-template pTemplate="body" let-detail>
       <tr>
         <td>
-          <input type="checkbox" [(ngModel)]="detail.isSelected" (change)="setValue($event,detail.id)">
+          <input *ngIf ="detail?.approvalStatus?.id == 2" type="radio" [(ngModel)]="detail.isSelected" 
+          (change)="setValue($event,detail.id)"
+          name="options"  [ngValue]="detail.isSelected" [checked]="detail.isSelected">
         </td>
         <td>{{detail?.bank?.name}}</td>
         <td>{{detail?.accountNumber}}</td>

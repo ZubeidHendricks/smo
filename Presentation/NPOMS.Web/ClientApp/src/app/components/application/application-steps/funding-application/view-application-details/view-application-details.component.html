@@ -143,6 +143,7 @@
             <label class="mandatory-content">Rand amount you applying for</label>
             <input type="text" class="form-text" pKeyFilter="int" pInputText name="amountApplyingFor"
                 id="amountApplyingFor" (ngModelChange)="onAmountChange($event)" [(ngModel)]="Amount"
+                mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
                 [ngModelOptions]="{standalone: true}" [ngModelOptions]="{standalone: true}" autofocus autocomplete="off"
                 [disabled]="true" />
         </div>

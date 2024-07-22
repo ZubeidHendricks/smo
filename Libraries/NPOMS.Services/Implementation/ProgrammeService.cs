@@ -224,23 +224,32 @@ namespace NPOMS.Services.Implementation
             await _npoProfileRepository.UpdateAsync(npoProfile);
         }
 
-        public async Task UpdateBankSelection(string userId, int id, bool selection)
+        public async Task UpdateBankSelection(string userId, int id, bool selection, int npoId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
 
             // Fetch the existing entity
             var existingEntity = await _repositoryContext.ProgramBankDetails
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .Where(x => x.NpoProfileId == npoId).ToListAsync();
 
             if (existingEntity == null)
             {
                 throw new Exception("Entity not found");
             }
 
+            foreach (var entity in existingEntity)
+            {
+                entity.IsSelected = false;
+                await _repositoryContext.SaveChangesAsync();
+            }
+
+            var existingEntityUpdate = await _repositoryContext.ProgramBankDetails
+                .FirstOrDefaultAsync(x => x.Id == id);
+
             // Set existing entity properties
-            existingEntity.UpdatedUserId = loggedInUser.Id;
-            existingEntity.UpdatedDateTime = DateTime.Now;
-            existingEntity.IsSelected = selection;
+            existingEntityUpdate.UpdatedUserId = loggedInUser.Id;
+            existingEntityUpdate.UpdatedDateTime = DateTime.Now;
+            existingEntityUpdate.IsSelected = selection;
 
             // Save the updated entity to mark old regions and areas as inactive
             await _repositoryContext.SaveChangesAsync();
