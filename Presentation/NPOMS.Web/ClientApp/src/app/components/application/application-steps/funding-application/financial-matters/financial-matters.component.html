@@ -464,9 +464,7 @@
       <ng-template pTemplate="body" let-detail>
       <tr>
         <td>
-          <input *ngIf ="detail?.approvalStatus?.id == 2" type="radio" [(ngModel)]="detail.isSelected" 
-          (change)="setValue($event,detail.id)"
-          name="options"  [ngValue]="detail.isSelected" [checked]="detail.isSelected">
+          <p-toggleButton [(ngModel)]="detail.isSelected" [ngModelOptions]="{standalone: true}" (onChange)="setValue($event,detail.id)" [disabled]="detail.approvalStatusId !== 2"></p-toggleButton>
         </td>
         <td>{{detail?.bank?.name}}</td>
         <td>{{detail?.accountNumber}}</td>
