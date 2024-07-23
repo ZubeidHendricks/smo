@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Dropdown;
+using NPOMS.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace NPOMS.Domain.Mapping
 {
     public class ActivitySubStructure : BaseEntity
     {
-        public int ActivityDistrictId { get; set; }
         public string Name { get; set; }
-        public int SubStructureid { get; set; }
         public bool IsActive { get; set; }
-        public ActivityDistrict ActivityDistrict { get; set; }
+        public int ActivityId { get; set; }
+        public int MunicipalityId { get; set; }
+        public Activity Activity { get; set; }
     }
 }

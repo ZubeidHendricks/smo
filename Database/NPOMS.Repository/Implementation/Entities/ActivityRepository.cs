@@ -25,9 +25,9 @@ namespace NPOMS.Repository.Implementation.Entities
 		{
 			return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
                 .Include(x => x.ActivityDistrict)
-				  .ThenInclude(x => x.ActivitySubDistrict)
-                .Include(x => x.ActivityDistrict)
-                  .ThenInclude(x => x.ActivitySubStructure)
+				.Include(x => x.ActivitySubDistrict)
+                .Include(x => x.ActivitySubStructure)
+                .Include(x => x.ActivityManicipality)
                 .Include(x => x.Objective).Include(x => x.ActivityType)
 				.Include(x => x.ActivityList).AsNoTracking().ToListAsync();
 		}
@@ -55,6 +55,10 @@ namespace NPOMS.Repository.Implementation.Entities
 							.Include(x => x.ActivityFacilityLists)
 							.Include(x => x.ActivityList)
 							.Include(x => x.ActivityRecipients)
+							.Include(x => x.ActivityDistrict)
+							.Include(x => x.ActivitySubDistrict)
+							.Include(x => x.ActivitySubStructure)
+							.Include(x => x.ActivityManicipality)
 							.AsNoTracking().FirstOrDefaultAsync();
 		}
 

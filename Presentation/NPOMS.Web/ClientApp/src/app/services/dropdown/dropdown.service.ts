@@ -1,4 +1,4 @@
-import { IFacilitySubStructure, ILanguage, IProgrammes, ISegmentCode, IStaffCategory } from '../../models/interfaces';
+import { IDistrictDemographic, IFacilitySubStructure, ILanguage, IManicipalityDemographic, IProgrammes, ISegmentCode, IStaffCategory, ISubstructureDemographic } from '../../models/interfaces';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -206,6 +206,22 @@ export class DropdownService {
         break;   
       case DropdownTypeEnum.FacilitySubStructure:
         data = this._http.get<IFacilitySubStructure[]>(url, httpOptions);
+        break;
+
+      case DropdownTypeEnum.DemographicSubStructure:
+        data = this._http.get<ISubstructureDemographic[]>(url, httpOptions);
+        break;
+
+      case DropdownTypeEnum.DemographicDistrict:
+        data = this._http.get<IDistrictDemographic[]>(url, httpOptions);
+        break;
+
+      case DropdownTypeEnum.DemographicManicipality:
+        data = this._http.get<IManicipalityDemographic[]>(url, httpOptions);
+        break;
+
+      case DropdownTypeEnum.DemographicSubDistrict:
+        data = this._http.get<ISubstructureDemographic[]>(url, httpOptions);
         break;
     }
 

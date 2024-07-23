@@ -333,5 +333,9 @@ namespace NPOMS.Services.Interfaces
         Task<IEnumerable<Programme>> GetProgramsByDepartment(int id);
         Task<IEnumerable<Role>> GetRolesByDepartment(int id);
         Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructure(bool returnInactive);
+        Task<IEnumerable<DistrictDemographic>> DemographicDistricts(bool returnInactive);
+        Task<IEnumerable<SubstructureDemographic>> DemographicSubStructures(bool returnInactive);
+        Task<IEnumerable<ManicipalityDemographic>> DemographicManicipalities(bool returnInactive);
+        Task<IEnumerable<SubDistrictDemographic>> DemographicSubDistricts(bool returnInactive);
     }
 }

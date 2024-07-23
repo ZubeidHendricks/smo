@@ -28,10 +28,12 @@
                 <td>{{rowData.target}}</td>
                 <td>{{rowData.facilityListText}}</td>
 
-                <td>{{rowData?.activityDistrict?.name}}
-                <td>{{ getSubDistrictNames(rowData?.activityDistrict) }}</td>  
-                <td>{{rowData?.activityDistrict?.activitySubStructure?.name}}
-
+                <!-- <td>{{rowData?.activityDistrict?.name}} -->
+                <td>{{ getSubDistrictNames(rowData?.activityDistrict) }}</td> 
+                <td>{{ getSubDistrictNames(rowData?.activityManicipality) }}</td> 
+                <td>{{ getSubDistrictNames(rowData?.activitySubStructure) }}</td>  
+                <td>{{ getSubDistrictNames(rowData?.activitySubDistrict) }}</td>  
+                
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActivity(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
                     <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -45,7 +47,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
             <tr class="default-font">
-                <td colspan="9" style="text-align: center;">No results found</td>
+                <td colspan="10" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>
         <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
@@ -73,49 +75,45 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-    <!-- <div class="p-grid p-nogutter">
 
-            <div class="p-col form-label">
+          <div class="p-grid p-nogutter" style="margin-bottom: 0.5rem;">
+            <div class="p-col-6 p-offset-3 form-label" style="padding-right: 1rem;">
                 <div class="box">
                     <span class="mandatory-content">District</span>
                 </div>
-                <p-multiSelect [options]="facilityDistricts" defaultLabel="Select District(s)" optionLabel="name" [(ngModel)]="selectedDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onDistrictChange()"></p-multiSelect>
+                <p-dropdown [options]="allIDistrictDemographics" placeholder="Select District" optionLabel="name"
+                    [(ngModel)]="selectedIDistrictDemographics" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                    appendTo="body" (onChange)="onDemographicDistrictChange()"></p-dropdown>
             </div>
-            <div class="p-col form-label">
+            <div class="p-col-6 form-label" style="padding-right: 1rem;">
                 <div class="box">
-                    <span class="mandatory-content">Sub District</span>
+                    <span class="mandatory-content">Manicipality</span>
                 </div>
-                <p-multiSelect [options]="facilitySubDistricts" defaultLabel="Select Sub District(s)" optionLabel="name" [(ngModel)]="selectedSubDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onSubDistrictChange()"></p-multiSelect>
+                <p-multiSelect [options]="ManicipalityDemographics" defaultLabel="Select Manicipality Demographics"
+                optionLabel="name" [(ngModel)]="selectedManicipalityDemographics" [ngModelOptions]="{standalone: true}"
+                [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"
+                (onChange)="onDemographicManicipalitiesChange()"></p-multiSelect>
             </div>
-            <div class="p-col form-label">
+        </div>
+
+        <div class="p-grid p-nogutter" style="margin-bottom: 0.5rem;">
+            <div class="p-col-6 p-offset-3 form-label" style="padding-right: 1rem;">
                 <div class="box">
                     <span class="mandatory-content">Sub Structures</span>
                 </div>
-                <p-multiSelect [options]="facilitySubStructures" defaultLabel="Select Sub Structure(s)" optionLabel="name" [(ngModel)]="selectedFacilitySubStructures" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
+                <p-multiSelect [options]="SubstructureDemographics" defaultLabel="Select Sub Structures" optionLabel="name"
+                    [(ngModel)]="selectedSubstructureDemographics" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                    appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onDemographicSubStructuresChange()"></p-multiSelect>
             </div>
-    </div> -->
-
-    <div class="p-grid p-nogutter" style="margin-bottom: 0.5rem;">
-        <div class="p-col-3 p-offset-3 form-label" style="padding-right: 1rem;">
-            <div class="box">
-                <span class="mandatory-content">District</span>
+            <div class="p-col-6 form-label" style="padding-right: 1rem;">
+                <div class="box">
+                    <span class="mandatory-content">Sub District</span>
+                </div>
+                <p-multiSelect [options]="SubDistrictDemographics" defaultLabel="Select Sub District(s)" optionLabel="name"
+                    [(ngModel)]="selectedSubDistrictDemographics" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                    appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
             </div>
-            <p-dropdown [options]="facilityDistricts" placeholder="Select District" optionLabel="name" [(ngModel)]="selectedDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="onDistrictChange()"></p-dropdown>
         </div>
-        <div class="p-col-3 form-label" style="padding-right: 1rem;">
-            <div class="box">
-                <span class="mandatory-content">Sub District</span>
-            </div>
-            <p-multiSelect [options]="facilitySubDistricts" defaultLabel="Select Sub District(s)" optionLabel="name" [(ngModel)]="selectedSubDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
-        </div>
-        <div class="p-col-3 form-label">
-            <div class="box">
-                <span class="mandatory-content">Sub Structures</span>
-            </div>
-            <p-dropdown [options]="facilitySubStructures" placeholder="Select Sub Structure" optionLabel="name" [(ngModel)]="selectedFacilitySubStructures" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
-        </div>
-    </div>
- 
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">

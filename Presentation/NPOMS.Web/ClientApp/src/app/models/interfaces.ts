@@ -230,6 +230,55 @@ export interface IFacilitySubDistrict {
     facilityDistrict: IFacilityDistrict;
 }
 
+
+export interface IDistrictDemographic {
+    id: number;
+    name: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number | null;
+    updatedDateTime?: Date | null;
+}
+
+export interface IManicipalityDemographic {
+    id: number;
+    districtDemographicId: number;
+    name: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number | null;
+    updatedDateTime?: Date | null;
+    districtDemographic: IDistrictDemographic;
+}
+
+export interface ISubstructureDemographic {
+    id: number;
+    manicipalityDemographicId: number;
+    name: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number | null;
+    updatedDateTime?: Date | null;
+    manicipalityDemographic: IManicipalityDemographic;
+}
+
+
+export interface ISubDistrictDemographic {
+    id: number;
+    subSctrcureDemographicId: number;
+    name: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number | null;
+    updatedDateTime?: Date | null;
+    subSctrcureDemographic: ISubstructureDemographic;
+}
+
+
 export interface IFacilitySubStructure {
     id: number;
     activityId: number;
@@ -452,35 +501,44 @@ export interface IActivity {
     activityList: IActivityList;
     activityFacilityLists: IActivityFacilityList[];
     activityRecipients: IActivityRecipient[];
-    activityDistrict: IActivityDistrict;
+    // activityDistrict: IActivityDistrict;
+
+    activityDistrict: IActivityDistrict[];
+    activitySubDistrict: IActivitySubDistrict[];
+    activitySubStructure: IActivitySubStructure[];
+    activityManicipality: IActivityManicipality[];
 }
 
 export interface IActivityDistrict {
     id: number;
-    facilityDistrictId : number;
+    demographicDistrictId : number;
     name: string;
     isActive: boolean;
     activityId: number;
-    activitySubDistrict: IActivitySubDistrict[];
-    activitySubStructure: IActivitySubStructure;
+}
+
+export interface IActivityManicipality {
+    id: number;
+    demographicDistrictId : number;
+    name: string;
+    isActive: boolean;
+    activityId: number;
 }
 
 export interface IActivitySubDistrict {
     id: number;
-    subDistrictid: number;
-    facilityDistrictId: number;
     name: string;
+    substructureId : number;
     isActive: boolean;
-    facilityDistrict: IFacilityDistrict;
+    activityId: number;
 }
 
 export interface IActivitySubStructure {
     id: number;
-    subStructureid: number;
-    facilityDistrictId: number;
     name: string;
+    municipalityId : number;
     isActive: boolean;
-    facilityDistrict: IFacilityDistrict;
+    activityId: number;
 }
 
 export interface IAddressInformation {

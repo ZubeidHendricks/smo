@@ -84,6 +84,10 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IFacilityDistrictRepository, FacilityDistrictRepository>();
             services.AddScoped<IFacilitySubDistrictRepository, FacilitySubDistrictRepository>();
             services.AddScoped<IFacilitySubStructureRepository, FacilitySubStructureRepository>();
+            services.AddScoped<IDemographicSubStructureRepository, DemographicSubStructureRepository>();
+            services.AddScoped<IDistrictDemographicRepository, DistrictDemographicRepository>();
+            services.AddScoped<IManicipalityDemographicRepository, ManicipalityDemographicRepository>();
+            services.AddScoped<ISubDistrictDemographicRepository, SubDistrictDemographicRepository>();
             services.AddScoped<IFacilityTypeRepository, FacilityTypeRepository>();
             services.AddScoped<IOrganisationTypeRepository, OrganisationTypeRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();
@@ -227,6 +231,11 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IProgrameBankDetailRepository, ProgrameBankDetailRepository>();
             services.AddScoped<IProgrameContactDetailRepository, ProgrameContactDetailRepository>();
             services.AddScoped<IProgrameDeliveryRepository, ProgrameDeliveryRepository>();
+
+            services.AddScoped<IActivityDistrictRepository, ActivityDistrictRepository>();
+            services.AddScoped<IActivityManicipalityRepository, ActivityManicipalityRepository>();
+            services.AddScoped<IActivitySubDistrictRepository, ActivitySubDistrictRepository>();
+            services.AddScoped<IActivitySubStructureRepository, ActivitySubStructureRepository>();
 
 
             #endregion
