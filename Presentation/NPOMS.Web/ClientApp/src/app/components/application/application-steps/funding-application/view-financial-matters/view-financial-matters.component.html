@@ -448,7 +448,6 @@
     <p-table [value]="programBankDetails" styleClass="p-datatable-sm">
       <ng-template pTemplate="header">
           <tr>
-          <th></th>
           <th>Bank Name</th>
           <th>Account Number</th>
           <th>Branch</th>
@@ -457,10 +456,6 @@
       </ng-template>
       <ng-template pTemplate="body" let-detail>
           <tr>
-          <td>
-            <input *ngIf ="detail?.approvalStatus?.id == 2" type="radio" [(ngModel)]="detail.isSelected" 
-            name="options"  [ngValue]="detail.isSelected" [checked]="detail.isSelected" [disabled] = true>
-          </td>
           <td>{{detail?.bank?.name}}</td>
           <td>{{detail?.accountNumber}}</td>
           <td>{{detail?.branch?.name}}</td>

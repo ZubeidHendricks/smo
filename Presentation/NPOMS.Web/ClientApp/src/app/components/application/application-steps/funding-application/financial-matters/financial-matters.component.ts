@@ -15,6 +15,7 @@ import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { style } from '@angular/animations';
 import { NgxSpinnerService } from 'ngx-spinner';
+import * as internal from 'stream';
 
 @Component({
   selector: 'app-financial-matters',
@@ -116,7 +117,6 @@ export class FinancialMattersComponent implements OnInit {
   previous_year: any;
   private _loggerService: any;
   isDisabledButton: boolean;
-
   constructor(private dropDownService: DropdownService,
     private _confirmationService: ConfirmationService,
     private _bidServie: BidService,
@@ -239,17 +239,20 @@ export class FinancialMattersComponent implements OnInit {
       (err) => {
       }
     );
-  }
+  }  
   
   setValue(event, value) {  
-    if(event.target.checked)
+
+      if(event.checked)
       {
         this.isSDASelected = true;
-        this._npoProfile.updateProgrammeBankSelection(value, this.isSDASelected, this.application.npoId).subscribe(resp => {        
+        this._npoProfile.updateProgrammeBankSelection(value, this.isSDASelected, this.application.npoId).subscribe(resp => {
+          this.loadProgrammeDetails();
         },
         (err) => {
           this._loggerService.logException(err);
         });
+        
       }
   }
 
