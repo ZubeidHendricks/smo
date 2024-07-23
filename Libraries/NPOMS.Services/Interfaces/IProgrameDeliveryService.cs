@@ -11,5 +11,6 @@ namespace NPOMS.Services.Interfaces
     public interface IProgrameDeliveryService
     {
         Task<IEnumerable<ProgrammeServiceDeliveryVM>> GetDeliveryDetailsByProgramId(int programmeId, int npoProfileId);
+        Task<IEnumerable<ProgrammeServiceDeliveryVM>> GetDeliveryDetails(int npoProfileId);
     }
 }

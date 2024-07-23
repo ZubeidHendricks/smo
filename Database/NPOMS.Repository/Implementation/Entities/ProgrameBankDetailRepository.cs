@@ -24,5 +24,12 @@ namespace NPOMS.Repository.Implementation.Entities
                              .Include(x => x.ApprovalStatus)
                              .AsNoTracking().ToListAsync();
         }
+
+        public async Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByIds(int npoProfileId)
+        {
+            return await FindByCondition(x => x.IsActive && x.NpoProfileId == npoProfileId)
+                             .Include(x => x.ApprovalStatus)
+                             .AsNoTracking().ToListAsync();
+        }
     }
 }

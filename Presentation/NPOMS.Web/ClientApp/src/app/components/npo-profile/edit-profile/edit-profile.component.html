@@ -383,7 +383,7 @@
                   <th>Region</th>
                   <th>District Council</th>
                   <th>Local Municipality</th>
-                  <th>Servive delivery address</th>
+                  <th>Service delivery address</th>
                   <th>Status</th>
                   <th style="width: 7%;">Actions</th>
                 </tr>
@@ -807,14 +807,18 @@
           [transitionOptions]="'0ms'"
           [modal]="true">
 
-        <div *ngIf="isApplicant || isAdmin || isSystemAdmin" class="p-grid">
+        <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
                     <span class="mandatory-content">Department</span>
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="departments1" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"  (onChange)="loadDepartmentPrograms($event.value.id)" [filter]="true" filterBy="name"></p-dropdown>
+                <p-dropdown [options]="departments1" 
+                placeholder="Select a Department" optionLabel="name"
+                 [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" 
+                 [style]="{'width':'100%'}" appendTo="body"  
+                 (onChange)="loadDepartmentPrograms($event.value.id)" [filter]="true" filterBy="name"></p-dropdown>
             </div>
         </div>
     
@@ -848,7 +852,9 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="filteredSubProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="subProgrammeChange($event.value)" [disabled]="disableSubProgramme()"></p-dropdown>
+                <p-dropdown [options]="filteredSubProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" 
+                [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
+                appendTo="body" (onChange)="subProgrammeChange($event.value)" [disabled]="disableSubProgramme()"></p-dropdown>
             </div>
         </div>
         <div class="p-grid">
@@ -858,7 +864,9 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
+                <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name"
+                 [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                  appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
             </div>
         </div>
 
@@ -1394,7 +1402,9 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown (onChange)="onLocalMunicipalityChange($event.value)" [options]="localMunicipalities" placeholder="Select a Local Municipality" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+                <p-dropdown (onChange)="onLocalMunicipalityChange($event.value)" [options]="localMunicipalities" 
+                placeholder="Select a Local Municipality" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" 
+                [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
             </div>
         </div>
     
@@ -1405,24 +1415,24 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="regions"
+                <p-dropdown defaultLabel="Choose" optionLabel="name" [options]="regions"
                 [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body"
                 (onChange)="onRegionChange($event.value)" [style]="{'width':'100%'}"
-                ></p-multiSelect>
+                ></p-dropdown>
             </div>
-
         </div>
 
         <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
-                    <span class="mandatory-content">Servive delivery address</span>
+                    <span class="mandatory-content">Service delivery address</span>
                 </div>
             </div>
             <div class="p-col">
-                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
+                <p-dropdown defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
+                [filter]="true" filterBy="name"
                 [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="onSdaChange($event.value)"
-                [style]="{'width':'100%'}"></p-multiSelect>
+                [style]="{'width':'100%'}"></p-dropdown>
             </div>
         </div>
         

@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IProgramme, ISubProgramme, IUser } from 'src/app/models/interfaces';
+import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
+import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IProgramme, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -50,17 +50,26 @@ export class EditApplicationPeriodComponent implements OnInit {
   allSubProgrammes: ISubProgramme[];
   subProgrammes: ISubProgramme[] = [];
   selectedSubProgramme: ISubProgramme;
+  AllsubProgrammesTypes: ISubProgrammeType[];
+  subProgrammesTypes: ISubProgrammeType[] = [];
+  selectedSubProgrammeType: ISubProgrammeType;
   applicationTypes: IApplicationType[];
   selectedApplicationType: IApplicationType;
-
+  filteredSubProgrammeType: ISubProgrammeType[];
   openingMinDate: Date;
   closingMinDate: Date;
   disableClosingDate: boolean = true;
   disableOpeningDate: boolean = true;
   finYearRange: string;
-
+  filteredSubProgrammes: ISubProgramme[] = []; 
+  filteredSubProgrammeTypes: ISubProgrammeType[] = [];
+  departments1: IDepartment[];
   // Highlight required fields on validate click
   validated: boolean = false;
+  isSystemAdmin: boolean;
+  isDepartmentAdmin: boolean;
+  selectedDepartmentSummary: IDepartment;
+  filteredProgrammes: IProgramme[] = [];
 
   constructor(
     private _router: Router,
@@ -86,6 +95,10 @@ export class EditApplicationPeriodComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.EditApplicationPeriod))
           this._router.navigate(['401']);
 
+        this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        this.isDepartmentAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+
+        this.loadDepartments1();
         this.loadDepartments();
         this.loadApplicationTypes();
         this.loadApplicationPeriod();
@@ -137,7 +150,7 @@ export class EditApplicationPeriodComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedSubProgrammeType || !this.selectedApplicationType || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
       this.validationErrors.push({ severity: 'error', summary: "Edit Programme:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -156,16 +169,15 @@ export class EditApplicationPeriodComponent implements OnInit {
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.applicationPeriod;
-
       data.departmentId = this.selectedDepartment.id;
       data.programmeId = this.selectedProgramme.id;
       data.subProgrammeId = this.selectedSubProgramme.id;
       data.financialYearId = this.selectedFinancialYear.id;
       data.applicationTypeId = this.selectedApplicationType.id;
-
+      data.subProgrammeTypeId = this.selectedSubProgrammeType.id;
       data.openingDate = this.addTwoHours(data.openingDate);
       data.closingDate = this.addTwoHours(data.closingDate);
-
+      data.name = this.selectedSubProgrammeType.name;
       this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
         (resp) => {
           this._spinner.hide();
@@ -221,6 +233,27 @@ export class EditApplicationPeriodComponent implements OnInit {
     );
   }
 
+  private loadDepartments1() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
+      (results) => {
+        this.departments1 = results;
+        if(this.isSystemAdmin )
+          {
+            this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          }
+          else{
+            this.departments1 = results.filter(x => x.id === this.profile.departments[0].id);
+          }
+          this.selectedDepartmentSummary = null;
+          this.selectedDepartmentSummary = this.departments1.find(x => x.id === this.profile.departments[0].id);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadApplicationTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
       (results) => {
@@ -238,7 +271,7 @@ export class EditApplicationPeriodComponent implements OnInit {
       this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
         (results) => {
           this.allProgrammes = results;
-          this.programmes = results.filter(x => x.departmentId === departmentId);
+          this.filteredProgrammes = results.filter(x => x.departmentId === departmentId);
         },
         (err) => {
           this._loggerService.logException(err);
@@ -253,7 +286,7 @@ export class EditApplicationPeriodComponent implements OnInit {
       this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
         (results) => {
           this.allSubProgrammes = results;
-          this.subProgrammes = results.filter(x => x.programmeId === programmeId);
+          this.filteredSubProgrammes = results.filter(x => x.programmeId === programmeId);
         },
         (err) => {
           this._loggerService.logException(err);
@@ -263,6 +296,39 @@ export class EditApplicationPeriodComponent implements OnInit {
     }
   }
 
+  loadDepartmentPrograms(id: number = 0) {
+    this.filteredProgrammes = this.allProgrammes.filter(x => x.departmentId === id); 
+  }
+
+
+  disableSubProgramme(): boolean {
+    if (this.filteredSubProgrammes.length > 0)
+      return false;
+
+    return true;
+  }
+
+ disableSubProgrammeType(): boolean {
+    if (this.filteredSubProgrammeTypes.length > 0)
+      return false;
+
+    return true;
+  }
+
+  private loadSubProgrammeTypes(subProgramId: number) {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.AllsubProgrammesTypes = results;
+        this.filteredSubProgrammeTypes = this.AllsubProgrammesTypes.filter(x=> x.subProgrammeId === subProgramId);
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadApplicationPeriod() {
     if (this.applicationPeriodId != null) {
       this._applicationPeriodRepo.getApplicationPeriodById(Number(this.applicationPeriodId)).subscribe(
@@ -270,7 +336,7 @@ export class EditApplicationPeriodComponent implements OnInit {
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
-
+          this.loadSubProgrammeTypes(results.subProgrammeId);
           this.updateDateField(results.financialYear.startDate, 'opening date');
           this.updateDateField(results.openingDate, 'closing date');
 
@@ -280,6 +346,7 @@ export class EditApplicationPeriodComponent implements OnInit {
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
           this.selectedSubProgramme = results.subProgramme;
+          this.selectedSubProgrammeType = results.subProgrammeType;
           this.selectedFinancialYear = results.financialYear;
           this.selectedApplicationType = results.applicationType;
 
@@ -357,6 +424,14 @@ export class EditApplicationPeriodComponent implements OnInit {
           this.subProgrammes.push(this.allSubProgrammes[i]);
         }
       }
+    }
+  }
+
+  subProgrammeChange(subProgram: ISubProgramme) {
+    this.selectedSubProgrammeType = null;
+    this.subProgrammesTypes = [];
+    if (subProgram.id != null) {
+      this.subProgrammesTypes = this.AllsubProgrammesTypes.filter(x => x.subProgrammeId === subProgram.id);
     }
   }
 

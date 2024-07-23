@@ -36,6 +36,7 @@ import { CardModule } from 'primeng/card';
 import { AccordionModule } from 'primeng/accordion';
 import { MenuModule } from 'primeng/menu';
 import { ScrollTopModule } from 'primeng/scrolltop';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 
 // B2B / B2C
@@ -425,7 +426,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     AccordionModule,
     MenuModule,
     ScrollTopModule,
-    EditorModule
+    EditorModule,
+    ToggleButtonModule
   ],
   providers: [
     {

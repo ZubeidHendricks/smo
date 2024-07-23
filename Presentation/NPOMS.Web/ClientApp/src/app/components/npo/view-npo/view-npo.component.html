@@ -83,9 +83,15 @@
         <p-table [rowHover]="true" [columns]="stakeholderCols" [value]="stakeholderDetails" *ngIf="stakeholderDetails" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
                 <tr>
-                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    <!-- <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                         {{col.header}}
-                    </th>
+                    </th> -->
+                    <th style = "width: 15%; text-align: left;">Name</th>
+                    <th style = "width: 15%; text-align: center;">Primary Contact</th>
+                    <th style = "width: 15%; text-align: center;">Board Member</th>
+                    <th style = "width: 15%; text-align: center;">Bank Signatory</th>
+                    <th style = "width: 15%; text-align: center;">Written Agreement Signatory</th>
+                    <th style = "width: 15%; text-align: center;">Disabled</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">

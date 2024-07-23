@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
-import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IProgramme, ISubProgramme, IUser } from 'src/app/models/interfaces';
+import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum } from 'src/app/models/enums';
+import { IApplicationPeriod, IApplicationType, IDepartment, IFinancialYear, IProgramme, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -33,7 +33,7 @@ export class CreateApplicationPeriodComponent implements OnInit {
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
-
+  filteredProgrammes: IProgramme[] = [];
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
   departments: IDepartment[];
@@ -41,21 +41,29 @@ export class CreateApplicationPeriodComponent implements OnInit {
   allProgrammes: IProgramme[];
   programmes: IProgramme[] = [];
   selectedProgramme: IProgramme;
-  allSubProgrammes: ISubProgramme[];
+  allSubProgrammes: ISubProgramme[];  
   subProgrammes: ISubProgramme[] = [];
-  selectedSubProgramme: ISubProgramme;
+  selectedSubProgramme: ISubProgramme; 
+  AllsubProgrammesTypes: ISubProgrammeType[];
+  subProgrammesTypes: ISubProgrammeType[] = [];
+  selectedSubProgrammeType: ISubProgrammeType;
+  selectedApplicationType: IApplicationType; 
   applicationTypes: IApplicationType[];
-  selectedApplicationType: IApplicationType;
-
+  filteredSubProgrammeType: ISubProgrammeType[];
   openingMinDate: Date;
   closingMinDate: Date;
   disableClosingDate: boolean = true;
   disableOpeningDate: boolean = true;
   finYearRange: string;
-
+  filteredSubProgrammes: ISubProgramme[] = []; 
+  filteredSubProgrammeTypes: ISubProgrammeType[] = [];
+  subProgrammeTypes: ISubProgrammeType[];
+  departments1: IDepartment[];
   // Highlight required fields on validate click
   validated: boolean = false;
-
+  isSystemAdmin: boolean;
+  isDepartmentAdmin: boolean;
+  selectedDepartmentSummary: IDepartment;
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -73,10 +81,15 @@ export class CreateApplicationPeriodComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.AddApplicationPeriod))
           this._router.navigate(['401']);
 
+        this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        this.isDepartmentAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+
         this.loadFinancialYears();
         this.loadDepartments();
+        this.loadDepartments1();
         this.loadProgrammes();
         this.loadSubProgrammes();
+        this.loadSubProgrammeTypes();
         this.loadApplicationTypes();
         this.buildMenu();
       }
@@ -126,7 +139,7 @@ export class CreateApplicationPeriodComponent implements OnInit {
 
     let data = this.applicationPeriod;
 
-    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
+    if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedSubProgrammeType || !this.selectedApplicationType || !this.selectedSubProgrammeType || !data.description || !this.selectedFinancialYear || !data.openingDate || !data.closingDate)
       this.validationErrors.push({ severity: 'error', summary: "New Application Period:", detail: "Missing detail required." });
 
     if (this.validationErrors.length == 0)
@@ -145,16 +158,15 @@ export class CreateApplicationPeriodComponent implements OnInit {
     if (this.canContinue()) {
       this._spinner.show();
       let data = this.applicationPeriod;
-
       data.departmentId = this.selectedDepartment.id;
       data.programmeId = this.selectedProgramme.id;
       data.subProgrammeId = this.selectedSubProgramme.id;
       data.financialYearId = this.selectedFinancialYear.id;
       data.applicationTypeId = this.selectedApplicationType.id;
-
+      data.subProgrammeTypeId = this.selectedSubProgrammeType.id;
       data.openingDate = this.addTwoHours(data.openingDate);
       data.closingDate = this.addTwoHours(data.closingDate);
-
+      data.name = this.selectedSubProgrammeType.name;
       this._applicationPeriodRepo.createApplicationPeriod(data).subscribe(
         (resp) => {
           this._spinner.hide();
@@ -191,6 +203,27 @@ export class CreateApplicationPeriodComponent implements OnInit {
       (results) => {
         this.financialYears = results;
         this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadDepartments1() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
+      (results) => {
+        this.departments1 = results;
+        if(this.isSystemAdmin )
+          {
+            this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          }
+          else{
+            this.departments1 = results.filter(x => x.id === this.profile.departments[0].id);
+          }
+          this.selectedDepartmentSummary = null;
+          this.selectedDepartmentSummary = this.departments1.find(x => x.id === this.profile.departments[0].id);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -241,11 +274,33 @@ export class CreateApplicationPeriodComponent implements OnInit {
     );
   }
 
+  
+  private loadSubProgrammeTypes() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.AllsubProgrammesTypes = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadApplicationTypes() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
       (results) => {
+
+        if(this.profile.departments[0].id === DepartmentEnum.DSD)
+          this.applicationTypes = results.filter(x => x.systemName === 'FA' || x.systemName === 'QC');
+        else if(this.profile.departments[0].id === DepartmentEnum.DOH)
+          this.applicationTypes = results.filter(x => x.systemName === 'SP' || x.systemName === 'BP');
+        else
         this.applicationTypes = results;
+
         this._spinner.hide();
       },
       (err) => {
@@ -258,9 +313,11 @@ export class CreateApplicationPeriodComponent implements OnInit {
   departmentChange(department: IDepartment) {
     this.selectedProgramme = null;
     this.selectedSubProgramme = null;
+    this.selectedSubProgrammeType = null;
 
     this.programmes = [];
     this.subProgrammes = [];
+    this.subProgrammesTypes = [];
 
     if (department.id != null) {
       for (var i = 0; i < this.allProgrammes.length; i++) {
@@ -276,6 +333,31 @@ export class CreateApplicationPeriodComponent implements OnInit {
     if(this.selectedApplicationType.name === 'Quick Capture' && this.selectedDepartment.name === 'Health')
     {
       alert(this.selectedDepartment.name);
+    }
+  }
+
+  loadDepartmentPrograms(id: number = 0) {
+    this.filteredProgrammes = this.allProgrammes.filter(x => x.departmentId === id); 
+  }
+
+  programmeChange(programme: IProgramme) {
+    this.selectedSubProgramme = null;
+    this.selectedSubProgrammeType = null;
+   
+    this.filteredSubProgrammes = [];
+    this.filteredSubProgrammeTypes = [];
+
+    if (programme.id != null) {
+      this.filteredSubProgrammes = this.allSubProgrammes.filter(x => x.programmeId === programme.id);
+    }
+  }
+
+  subProgrammeChange(subProgramme: ISubProgramme) {
+    this.selectedSubProgrammeType = null;
+    this.filteredSubProgrammeTypes = [];
+
+    if (subProgramme.id != null) {
+      this.filteredSubProgrammeTypes = this.AllsubProgrammesTypes.filter(x => x.subProgrammeId === subProgramme.id);
     }
   }
 
@@ -296,19 +378,6 @@ export class CreateApplicationPeriodComponent implements OnInit {
     
   // }
 
-  programmeChange(programme: IProgramme) {
-    this.selectedSubProgramme = null;
-
-    this.subProgrammes = [];
-
-    if (programme.id != null) {
-      for (var i = 0; i < this.allSubProgrammes.length; i++) {
-        if (this.allSubProgrammes[i].programmeId == programme.id) {
-          this.subProgrammes.push(this.allSubProgrammes[i]);
-        }
-      }
-    }
-  }
 
   disableProgramme(): boolean {
     if (this.programmes.length > 0)
@@ -318,7 +387,14 @@ export class CreateApplicationPeriodComponent implements OnInit {
   }
 
   disableSubProgramme(): boolean {
-    if (this.subProgrammes.length > 0)
+    if (this.filteredSubProgrammes.length > 0)
+      return false;
+
+    return true;
+  }
+
+  disableSubProgrammeType(): boolean {
+    if (this.filteredSubProgrammeTypes.length > 0)
       return false;
 
     return true;

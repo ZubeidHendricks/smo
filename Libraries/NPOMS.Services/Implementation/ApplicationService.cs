@@ -157,7 +157,6 @@ namespace NPOMS.Services.Implementation
 
             var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
 
-
             if (loggedInUser.Roles.Any(x => x.IsActive && x.RoleId.Equals((int)RoleEnum.SystemAdmin)))
             {
                 return results;
@@ -185,10 +184,19 @@ namespace NPOMS.Services.Implementation
             }
 			else if(loggedInUser.Roles.Any(x => x.IsActive && x.RoleId.Equals((int)RoleEnum.Applicant)))
 			{
+                var mappings = await _userNpoRepository.GetApprovedEntities(loggedInUser.Id);
+                var NpoIds = mappings.Select(x => x.NpoId);
+                var assignedOrganisations = results.Where(x => NpoIds.Contains(x.NpoId));
 
-				results = results.Where(x => x.CreatedUserId == loggedInUser.Id);
-				return results;
-
+                if (assignedOrganisations.Any())
+                {
+                    return assignedOrganisations;
+                }
+                else
+                {
+                    results = results.Where(x => x.CreatedUserId == loggedInUser.Id);
+                    return results;
+                }
             }
 			else
 			{
@@ -197,7 +205,6 @@ namespace NPOMS.Services.Implementation
                 var assignedOrganisations = results.Where(x => NpoIds.Contains(x.NpoId));
 
                 return assignedOrganisations;
-
             }
 		}
 

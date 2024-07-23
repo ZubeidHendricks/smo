@@ -42,9 +42,24 @@ export class NpoProfileService {
     return this._http.get<IProgramBankDetails[]>(url, httpOptions);
   }
   
+  public getProgrammeBankDetails(npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/bank/npoProfileId/${npoProfileId}`;
+    return this._http.get<IProgramBankDetails[]>(url, httpOptions);
+  }
+
   public getProgrammeDeliveryDetailsById(programmeId: number,npoProfileId: number) {
     const url = `${this._envUrl.urlAddress}/api/programme/delivery/programmeId/${programmeId}/npoProfileId/${npoProfileId}`;
     return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);
+  }
+
+  public getProgrammeDeliveryDetails(npoProfileId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/delivery/npoProfileId/${npoProfileId}`;
+    return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);
+  }
+
+  public getProgrammeContacts(npoProfileId: number, source: string) {
+    const url = `${this._envUrl.urlAddress}/api/programme/contact/npoProfileId/${npoProfileId}`;
+    return this._http.get<IProgramContactInformation[]>(url, httpOptions);
   }
 
   public createProgrammeContact(npoProfileId: number,programContactInformation: IProgramContactInformation) {
@@ -70,6 +85,16 @@ export class NpoProfileService {
   public updateProgrammeDeliveryDetails(npoProfileId: number,programBankDetails: IProgrammeServiceDelivery) {
     const url = `${this._envUrl.urlAddress}/api/programme/update-delivery/${npoProfileId}`;
     return this._http.put<IProgrammeServiceDelivery>(url,programBankDetails, httpOptions);
+  }
+
+  public updateProgrammeDeliveryServiceSelection(id: number, selection: boolean) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-DeliveryServiceAreaSelection/id/${id}/selection/${selection}`;
+    return this._http.put<IProgrammeServiceDelivery>(url, httpOptions);
+  }
+
+  public updateProgrammeBankSelection(id: number, selection: boolean, npoId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/update-BankSelection/id/${id}/selection/${selection}/npoId/${npoId}`;
+    return this._http.put<IProgrammeServiceDelivery>(url, httpOptions);
   }
 
   public createProgrammeDeliveryDetails(npoProfileId: number,programBankDetails: IProgrammeServiceDelivery) {

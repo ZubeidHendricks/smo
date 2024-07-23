@@ -12,5 +12,7 @@ namespace NPOMS.Services.Interfaces
         Task UpdateBankDetails(ProgramBankDetails model, string userId, int npoProfileId);
         Task CreateDelivery(ProgrammeServiceDeliveryVM model, string userId, int npoProfileId);
         Task UpdateDelivery(ProgrammeServiceDeliveryVM model, string userId, int npoProfileId);
+        Task UpdateDeliveryAreaSelection(string userId, int id, bool selection);
+        Task UpdateBankSelection(string userId, int id, bool selection, int npoId);
     }
 }

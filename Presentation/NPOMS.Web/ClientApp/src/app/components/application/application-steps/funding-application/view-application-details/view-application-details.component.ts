@@ -4,8 +4,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { IAffiliatedOrganisation, ISourceOfInformation } from 'src/app/models/FinancialMatters';
-import { PermissionsEnum, DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
-import { IFundingApplicationDetails, IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA } from 'src/app/models/interfaces';
+import { PermissionsEnum, DropdownTypeEnum, StatusEnum, AccessStatusEnum } from 'src/app/models/enums';
+import { IFundingApplicationDetails, IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA, ISubProgrammeType, IProgrammeServiceDelivery } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
@@ -88,6 +88,10 @@ export class ViewApplicationDetailsComponent implements OnInit {
 
   finYearRange: string;
 
+  subProgrammeType: ISubProgrammeType[];
+  filteredSubProgrammeType: ISubProgrammeType[];
+  selectedSubProgrammeType: ISubProgrammeType;
+
   // Highlight required fields on validate click
   validated: boolean = false;
   allDistrictCouncils: IDistrictCouncil[];
@@ -101,7 +105,7 @@ export class ViewApplicationDetailsComponent implements OnInit {
   selectedDistrictCouncilName: string;
   selectedRegionName: string;
   selectedSdasName: string;
-
+  subProgrammesType: ISubProgrammeType[] = [];
 
 
   regionsAll: IRegion[];
@@ -119,6 +123,7 @@ export class ViewApplicationDetailsComponent implements OnInit {
 
   places: IPlace[] = [];
   subPlacesAll: ISubPlace[];
+  programDeliveryDetails : IProgrammeServiceDelivery [];
 
   @Output() applicationDetailsChange: EventEmitter<IFundingApplicationDetails> = new EventEmitter<IFundingApplicationDetails>();
   selectedOption: string = '';
@@ -169,6 +174,7 @@ export class ViewApplicationDetailsComponent implements OnInit {
         this.loadServiceDeliveryAreas();
         this.GetAffiliatedOrganisation();
         this.GetSourceOfInformation();
+        this.getProgrammeDeliveryDetails();
       }
       this.setDropdownValues();
     });
@@ -310,6 +316,20 @@ export class ViewApplicationDetailsComponent implements OnInit {
     );
   }
 
+  private loadSubProgrammeTypes(subProgramId: number) {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.subProgrammesType = results;
+       this.filteredSubProgrammeType = this.subProgrammesType.filter(x=> x.subProgrammeId === subProgramId);
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadApplicationTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
       (results) => {
@@ -364,6 +384,27 @@ export class ViewApplicationDetailsComponent implements OnInit {
         this._loggerService.logException(err);
       });
   }
+
+  private getProgrammeDeliveryDetails() {
+    this._npoProfile.getProgrammeDeliveryDetails(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.programDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
+        } this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      });
+  }
+
+  getNames(array: any[]): string {
+    const names = array.map(item => item.name) // Access 'name' directly
+                       .filter(name => name !== undefined && name.trim() !== '') // Filter out undefined or empty strings
+                       .join(', '); // Join the names with a comma
+  
+    return names; // Return the joined names as a string
+  }
+
   private loadApplicationPeriodById(applnPeriodId: number) {
     if (this.applicationPeriodId != null) {
       this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
@@ -371,6 +412,7 @@ export class ViewApplicationDetailsComponent implements OnInit {
           this.loadFinancialYears(results.financialYear);
           this.loadProgrammes(results.departmentId);
           this.loadSubProgrammes(results.programmeId);
+          this.loadSubProgrammeTypes(results.subProgrammeId);
           this.selectedDepartment = results.department;
           this.selectedProgramme = results.programme;
           this.selectedSubProgramme = results.subProgramme;

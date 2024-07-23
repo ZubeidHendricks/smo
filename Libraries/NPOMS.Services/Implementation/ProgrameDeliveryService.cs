@@ -30,6 +30,13 @@ namespace NPOMS.Services.Implementation
             return await MapToViewModelListAsync(model);
         }
 
+        public async Task<IEnumerable<ProgrammeServiceDeliveryVM>> GetDeliveryDetails( int npoProfileId)
+        {
+            var model = await _programeDeliveryRepository.GetDeliveryDetails(npoProfileId);
+
+            return await MapToViewModelListAsync(model);
+        }
+        
 
         public async Task<IEnumerable<ProgrammeServiceDeliveryVM>> MapToViewModelListAsync(IEnumerable<ProgrammeServiceDelivery> entities)
         {
@@ -88,7 +95,8 @@ namespace NPOMS.Services.Implementation
 
             viewModel.Id = entity.Id;
             viewModel.ApprovalStatus = entity.ApprovalStatus;
-
+            viewModel.IsSelected = entity.IsSelected;
+            viewModel.IsActive = entity.IsActive;
             return viewModel;
         }
 

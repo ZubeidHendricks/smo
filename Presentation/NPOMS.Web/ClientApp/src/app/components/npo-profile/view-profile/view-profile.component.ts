@@ -85,6 +85,8 @@ export class ViewProfileComponent implements OnInit {
   programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
   programDeliveryDetails : IProgrammeServiceDelivery [];
   selectedRowIndex: number | null = null;
+  headerTitle: string;
+  viewHeader:boolean;
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -96,6 +98,15 @@ export class ViewProfileComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
+    if(this.headerTitle === "view")
+    {
+      this.viewHeader = true;
+    }
+    
+
     this.loadDocumentTypes();
     this.loadProgrammes();
     this.loadSubProgrammes();
@@ -104,6 +115,7 @@ export class ViewProfileComponent implements OnInit {
     this.loadAccountTypes();
     this.loadStaffCategories();
     this.loadNpoProfile();
+    
 
     this.stateOptions = [
       {
@@ -163,10 +175,10 @@ export class ViewProfileComponent implements OnInit {
     ];
   }
   onFirstTdClick(rowIndex: number) {
-    this.selectedRowIndex = rowIndex;
+    if(this.headerTitle !== 'view')
+      this.selectedRowIndex = rowIndex;
   }
   toggleBankingDetailsPanel(program: any) {
-    console.log(program);
     // if (this.selectedProgram && this.selectedProgram.id === program.id) {
     //   this.displayBankingDetailsPanel = true;
     // } else {
@@ -174,9 +186,12 @@ export class ViewProfileComponent implements OnInit {
     //   this.loadProgrammeDetails(program.id);
     //   this.displayBankingDetailsPanel = true;
     // }
-    this.selectedProgram = program;
-    this.loadProgrammeDetails(program.id);
-    this.displayBankingDetailsPanel = true;
+    if(this.headerTitle !== 'view')
+    {
+      this.selectedProgram = program;
+      this.loadProgrammeDetails(program.id);
+      this.displayBankingDetailsPanel = true;
+    }   
   }
   // toggleBankingDetailsPanel(program: any) {
   //   if (this.selectedProgram && this.selectedProgram.id === program.id) {
@@ -214,24 +229,17 @@ export class ViewProfileComponent implements OnInit {
     });
   }
   
-
-  // loadProgrammeDetails(progId: number): void {
-  //   forkJoin({
-  //     contacts: this._npoProfileRepo.getProgrammeContactsById(progId),
-  //     bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId),
-  //     deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId)
-  //   }).subscribe({
-  //     next: (result) => {
-  //       this.programContactInformation = result.contacts;
-  //       this.programBankDetails = result.bankDetails;
-  //       this.programDeliveryDetails = result.deliveryDetails;
-  //       this.updateProgramBankDetailObjects();
-  //     },
-  //     error: (err) => {
-  //       console.error(err);
-  //     }
-  //   });
-  // }
+  private getProgrammeDeliveryDetails(npoProfileId: number) {
+    this._npoProfileRepo.getProgrammeContacts(Number(npoProfileId), this.source).subscribe(
+      (results) => {
+        if (results != null) {
+          this.programContactInformation = results.filter(contact => contact.approvalStatus.id === AccessStatusEnum.Approved && contact.programmeId === this.programId);
+        } this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      });
+  }
 
   private updateProgramBankDetailObjects() {
     if (this.banks && this.accountTypes && this.programBankDetails) {
@@ -280,6 +288,7 @@ export class ViewProfileComponent implements OnInit {
 
           this.loadFacilities(this.npoProfile.id);
           this.loadServicesRendered(this.npoProfile.id);
+          this.getProgrammeDeliveryDetails(this.npoProfile.id);
           this.loadBankDetails(this.npoProfile.id);
           this.loadStaffMemberProfiles();
 
