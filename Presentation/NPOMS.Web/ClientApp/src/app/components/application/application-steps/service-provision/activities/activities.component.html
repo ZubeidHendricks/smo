@@ -4,16 +4,75 @@
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>    
     <div style="height: 10px;"></div>
-
-    <p-table [rowHover]="true" [columns]="activityCols" [value]="activeActivities" styleClass="p-datatable-sm">
+   
+    <p-table [rowHover]="true" [columns]="activityCols" [value]="activeActivities" styleClass="p-datatable-sm"
+    [globalFilterFields]="['activityList.name','ctivityType.name','timelineStartDate','target','facilityListText','mappedDistrict','mappedManicipality','mappedSubstructure','mappedSubdistrict']">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                     {{col.header}}
+                    <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
+                  ariaLabelDesc="Activate to sort in descending order"
+                   ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                 </th>
                 <th style="width: 7%;">Actions</th>
                 <th style="width: 7%;" *ngIf="application.isCloned && isReview">Difference</th>
             </tr>
+            <tr>
+                <th><p-columnFilter type="text" field="activityList.name"></p-columnFilter></th>
+               <th><p-columnFilter type="text" field="activityType.name"></p-columnFilter></th>
+                 <th><p-columnFilter type="text" field="timelineStartDate"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="target"></p-columnFilter></th>                
+                <th><p-columnFilter type="text" field="facilityListText"></p-columnFilter></th>
+                 <th>
+                    <p-columnFilter field="mappedDistrict" matchMode="contains">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <input pInputText type="text" (input)="filter($event.target.value, 'mappedDistrict', 'contains')" placeholder="Filter by District" />
+                        </ng-template>
+                    </p-columnFilter>
+                </th>  
+
+                <th>
+                    <p-columnFilter field="mappedManicipality" matchMode="custom">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-multiSelect 
+                                [options]="allManicipalityDemographics" 
+                                defaultLabel="Select Municipality" 
+                                optionLabel="name"
+                                [ngModel]="value"
+                                [ngModelOptions]="{standalone: true}" 
+                                [style]="{'width':'100%'}"
+                                appendTo="body" 
+                                selectedItemsLabel="{0} items selected"
+                                (onChange)="filter($event.value)">
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>
+
+                <th>
+                    <p-columnFilter field="mappedSubstructure" matchMode="custom">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
+                                 [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>          
+                   <th>
+                    <p-columnFilter field="mappedSubdistrict" matchMode="custom">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
+                            [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>
+            <!-- <th></th> -->
+        </tr>
+           
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="heading">
@@ -27,13 +86,12 @@
                 <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date: 'yyyy-MM-dd'}}</td>
                 <td>{{rowData.target}}</td>
                 <td>{{rowData.facilityListText}}</td>
+                <td>{{rowData?.mappedDistrict }}</td>
 
-                <!-- <td>{{rowData?.activityDistrict?.name}} -->
-                <td>{{ getSubDistrictNames(rowData?.activityDistrict) }}</td> 
-                <td>{{ getSubDistrictNames(rowData?.activityManicipality) }}</td> 
-                <td>{{ getSubDistrictNames(rowData?.activitySubStructure) }}</td>  
-                <td>{{ getSubDistrictNames(rowData?.activitySubDistrict) }}</td>  
-                
+                <td>{{rowData?.mappedManicipality}}</td>
+                <td>{{rowData?.mappedSubstructure}}</td>  
+                <td>{{rowData?.mappedSubdistrict}}</td> 
+
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActivity(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
                     <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -61,6 +119,7 @@
             </div>
         </ng-template>
     </p-table>
+    
     <div style="height: 10px;"></div>
     <div class="p-grid p-nogutter p-justify-between">
         <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
@@ -77,43 +136,74 @@
           [modal]="true">
 
           <div class="p-grid p-nogutter" style="margin-bottom: 0.5rem;">
-            <div class="p-col-6 p-offset-3 form-label" style="padding-right: 1rem;">
+            <div class="p-col-3 dropdown-column">
                 <div class="box">
                     <span class="mandatory-content">District</span>
                 </div>
-                <p-dropdown [options]="allIDistrictDemographics" placeholder="Select District" optionLabel="name"
-                    [(ngModel)]="selectedIDistrictDemographics" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                    appendTo="body" (onChange)="onDemographicDistrictChange()"></p-dropdown>
+                <p-dropdown 
+                    [options]="allIDistrictDemographics" 
+                    placeholder="Select District" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedIDistrictDemographics" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    (onChange)="onDemographicDistrictChange()">
+                </p-dropdown>
             </div>
-            <div class="p-col-6 form-label" style="padding-right: 1rem;">
+        
+            <div class="p-col-3 dropdown-column">
                 <div class="box">
                     <span class="mandatory-content">Manicipality</span>
                 </div>
-                <p-multiSelect [options]="ManicipalityDemographics" defaultLabel="Select Manicipality Demographics"
-                optionLabel="name" [(ngModel)]="selectedManicipalityDemographics" [ngModelOptions]="{standalone: true}"
-                [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"
-                (onChange)="onDemographicManicipalitiesChange()"></p-multiSelect>
+                <p-multiSelect 
+                    [options]="ManicipalityDemographics" 
+                    defaultLabel="Select Manicipality Demographics"
+                    optionLabel="name" 
+                    [(ngModel)]="selectedManicipalityDemographics" 
+                    [ngModelOptions]="{standalone: true}"
+                    [style]="{'width':'100%'}" 
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected"
+                    (onChange)="onDemographicManicipalitiesChange()">
+                </p-multiSelect>
             </div>
-        </div>
-
-        <div class="p-grid p-nogutter" style="margin-bottom: 0.5rem;">
-            <div class="p-col-6 p-offset-3 form-label" style="padding-right: 1rem;">
+        
+            <div class="p-col-3 dropdown-column">
                 <div class="box">
                     <span class="mandatory-content">Sub Structures</span>
                 </div>
-                <p-multiSelect [options]="SubstructureDemographics" defaultLabel="Select Sub Structures" optionLabel="name"
-                    [(ngModel)]="selectedSubstructureDemographics" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                    appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onDemographicSubStructuresChange()"></p-multiSelect>
+                <p-multiSelect 
+                    [options]="SubstructureDemographics" 
+                    defaultLabel="Select Sub Structures" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedSubstructureDemographics" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected"
+                    (onChange)="onDemographicSubStructuresChange()">
+                </p-multiSelect>
             </div>
-            <div class="p-col-6 form-label" style="padding-right: 1rem;">
+        
+            <div class="p-col-3 dropdown-column">
                 <div class="box">
                     <span class="mandatory-content">Sub District</span>
                 </div>
-                <p-multiSelect [options]="SubDistrictDemographics" defaultLabel="Select Sub District(s)" optionLabel="name"
-                    [(ngModel)]="selectedSubDistrictDemographics" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                    appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
+                <p-multiSelect 
+                    [options]="SubDistrictDemographics" 
+                    defaultLabel="Select Sub District(s)" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedSubDistrictDemographics" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected">
+                </p-multiSelect>
             </div>
         </div>
+        
+        
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">

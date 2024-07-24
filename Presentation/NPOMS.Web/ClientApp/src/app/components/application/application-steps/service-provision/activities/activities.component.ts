@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
@@ -8,11 +9,13 @@ import { ApplicationService } from 'src/app/services/api-services/application/ap
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { FilterService } from 'primeng/api';
 
 @Component({
   selector: 'app-activities',
   templateUrl: './activities.component.html',
-  styleUrls: ['./activities.component.css']
+  styleUrls: ['./activities.component.css'],
+  providers: [FilterService]
 })
 export class ActivitiesComponent implements OnInit {
 
@@ -138,6 +141,9 @@ export class ActivitiesComponent implements OnInit {
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
+  
+  // Used for table filtering
+  @ViewChild('dt') dt: Table | undefined;
 
   constructor(
     private _dropdownRepo: DropdownService,
@@ -147,11 +153,26 @@ export class ActivitiesComponent implements OnInit {
     private _applicationRepo: ApplicationService,
     private _datepipe: DatePipe,
     private _loggerService: LoggerService,
-    private _npoRepo: NpoService
+    private _npoRepo: NpoService,
+    private filterService: FilterService
   ) { }
 
   ngOnInit(): void {
     this._spinner.show();
+    
+    this.filterService.register('custom', (value: any, filter: any) => {
+      if (!filter || filter.length === 0) {
+          return true;
+      }
+      if (!value) {
+          return false; 
+      }
+      const selectedMunicipalities = filter.map((item: any) => item.name);
+      const rowMunicipalities = value.split(',').map((m: string) => m.trim());
+      const result = selectedMunicipalities.some(m => rowMunicipalities.includes(m));
+      return result;
+  });
+
 
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
@@ -185,7 +206,7 @@ export class ActivitiesComponent implements OnInit {
       { header: 'Target', width: '10%' },
       { header: 'Facilities and/or Community Places', width: '15%' },
       { header: 'District Name', width: '10%' },
-      { header: 'Manicipalities', width: '10%' },
+      { header: 'Municipalities', width: '10%' },
       { header: 'Sub Structures ', width: '10%' },
       { header: 'Sub Districts', width: '10%' },
     ];
@@ -203,6 +224,10 @@ export class ActivitiesComponent implements OnInit {
       { header: 'Created User', width: '35%' },
       { header: 'Created Date', width: '35%' }
     ];
+  }
+
+  applyFilterGlobal($event: any, stringVal: any) {
+    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
   private loadDemographicDistricts() {
@@ -430,6 +455,13 @@ onDemographicSubStructuresChange() {
       (results) => {
         this.allActivities = results;
         this.activeActivities = this.allActivities.filter(x => x.isActive === true);
+        this.activeActivities.forEach(item => {
+          item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),
+          item.mappedManicipality = this.getSubDistrictNames(item?.activityManicipality),
+          item.mappedSubstructure = this.getSubDistrictNames(item?.activitySubStructure),
+          item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict)
+        });
+
         this.getFacilityListText(results);
         this.updateRowGroupMetaData();
         this._spinner.hide();

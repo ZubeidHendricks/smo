@@ -501,12 +501,15 @@ export interface IActivity {
     activityList: IActivityList;
     activityFacilityLists: IActivityFacilityList[];
     activityRecipients: IActivityRecipient[];
-    // activityDistrict: IActivityDistrict;
-
     activityDistrict: IActivityDistrict[];
     activitySubDistrict: IActivitySubDistrict[];
     activitySubStructure: IActivitySubStructure[];
     activityManicipality: IActivityManicipality[];
+
+    mappedDistrict?: any;
+    mappedSubdistrict?: any;
+    mappedSubstructure?: any;
+    mappedManicipality?: any;
 }
 
 export interface IActivityDistrict {

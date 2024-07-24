@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Console } from 'console';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -214,6 +215,7 @@ export class ReviewApplicationComponent implements OnInit {
   private loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
+        console.log("review",results);
         this.activities = results.filter(x => x.isActive === true);
         this.loadSustainabilityPlans();
       },
