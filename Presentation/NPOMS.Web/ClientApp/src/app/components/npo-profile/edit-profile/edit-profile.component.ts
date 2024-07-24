@@ -303,6 +303,7 @@ export class EditProfileComponent implements OnInit {
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.isDepartmentAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+        this.isApplicant = profile.roles.some(function (role) { return role.id === RoleEnum.Applicant });
 
         this.loadTitles();
         this.loadPositions();
@@ -404,7 +405,7 @@ export class EditProfileComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
       (results) => {
         this.departments1 = results;
-        if(this.isSystemAdmin )
+        if(this.isSystemAdmin || this.isApplicant)
           {
             this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
           }

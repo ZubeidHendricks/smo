@@ -25,7 +25,7 @@ namespace NPOMS.API.Controllers
         private IContactService _contactService;
         private IProgrammeService _programmeService;
         private IProgrameDeliveryService _programeDeliveryService;
-
+        private INpoProfileService _npoProfilService;
         #endregion
 
         #region Constructors
@@ -37,7 +37,8 @@ namespace NPOMS.API.Controllers
             IBankService bankService,
             IContactService contactService,
             IProgrammeService programmeService,
-            IProgrameDeliveryService programeDeliveryService
+            IProgrameDeliveryService programeDeliveryService,
+            INpoProfileService npoProfilService
             )
         {
             _logger = logger;
@@ -47,6 +48,7 @@ namespace NPOMS.API.Controllers
             _contactService = contactService;
             _programmeService = programmeService;
             _programeDeliveryService = programeDeliveryService;
+            _npoProfilService = npoProfilService;
         }
         #endregion
 
@@ -70,8 +72,9 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var npoProfile = await _applicationService.GetApplicationById(npoProfileId);
-                var results = await _bankService.GetBankDetailsByIds(npoProfile.NpoId);
+                var npo = await _applicationService.GetApplicationById(npoProfileId);
+                var npoProfile = await _npoProfilService.GetByNpoId(npo.NpoId);
+                var results = await _bankService.GetBankDetailsByIds(npoProfile.Id);
                 return Ok(results);
             }
             catch (Exception ex)
@@ -116,6 +119,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                var npoId = await _npoProfilService.GetById(npoProfileId);
                 var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId, npoProfileId);
                 return Ok(results);
             }
@@ -131,8 +135,9 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var npoProfile = await _applicationService.GetApplicationById(npoProfileId);
-                var results = await _programeDeliveryService.GetDeliveryDetails(npoProfile.NpoId);
+                var npo = await _applicationService.GetApplicationById(npoProfileId);
+                var npoProfile = await _npoProfilService.GetByNpoId(npo.NpoId);
+                var results = await _programeDeliveryService.GetDeliveryDetails(npoProfile.Id);
                 return Ok(results);
             }
             catch (Exception ex)
