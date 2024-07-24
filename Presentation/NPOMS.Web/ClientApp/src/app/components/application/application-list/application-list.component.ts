@@ -20,6 +20,8 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class ApplicationListComponent implements OnInit {
   displayDialog: boolean;
+  displaySatisfactionReviewDialog: boolean;
+  
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -128,6 +130,28 @@ export class ApplicationListComponent implements OnInit {
       }
     );
   }
+  submitSatisfactionReviewers(){
+    this.satisfactionReviewers();
+  }
+
+  private satisfactionReviewers() {
+    const users = this.selectedreviewerlist.map(user => ({
+        fullName: user.fullName,
+        email: user.email,
+        id: user.id
+    }));
+    
+    this._applicationRepo.UpdatesatisfactionReviewers(Number(this.selectedApplication.id), users).subscribe(
+      (results) => {
+        this.displaySatisfactionReviewDialog = false;
+        this._router.navigateByUrl('applications');
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+}
 
   submit() {
     this.UpdateInitiateScorecardValue();
@@ -434,6 +458,17 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Download Workplan',
+          target: 'Workplan',
+          icon: 'fa fa-download',
+          command: () => {
+            this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id, 4] } }]);
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.DownloadAssessmentOption)) {
         this.buttonItems[0].items.push({
           label: 'Download Assessment',
@@ -474,6 +509,17 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-trash',
           command: () => {
             this.deleteApplication();
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Select Reviewers',
+          target: 'Work Plan',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this.displaySatisfactionReviewDialog = true;
           }
         });
       }
@@ -567,8 +613,6 @@ export class ApplicationListComponent implements OnInit {
       }  
     }
 
-    console.log('this.selectedApplication.initiateScorecard',this.selectedApplication.initiateScorecard);
-
     if(this.selectedApplication.initiateScorecard === 1)
     {
       this.optionItemExists('Initiate Score Card');      
@@ -628,6 +672,24 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
+      
+      if (this.selectedApplication.npoUserSatisfactionTrackings.length > 0) {
+        if (!this.selectedApplication.npoUserSatisfactionTrackings.some(item => item.userId === this.profile.id)) 
+        {
+          this.buttonItemExists('Review Application', 'Service Provision');
+        }  
+      }
+
+      if (this.selectedApplication.npoWorkPlanApproverTrackings.length > 0) {
+        if (!this.selectedApplication.npoWorkPlanApproverTrackings.some(item => item.userId === this.profile.id)) 
+        {
+          this.buttonItemExists('Approve Application', 'Service Provision');
+        }  
+      }
+
+      if (this.selectedApplication.statusId !== StatusEnum.PendingReviewerSatisfaction) {
+        this.buttonItemExists('Select Reviewers', 'Work Plan');
+       }
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
@@ -692,6 +754,8 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
+      this.buttonItemExists('Download Workplan', 'Workplan');
+      this.buttonItemExists('Select Reviewers', 'Work Plan');
       //this.buttonItemExists('Score Card', 'Service Provision');
 
       if (this.selectedApplication.isQuickCapture)
@@ -805,6 +869,8 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Evaluate Application', 'Funding Application');
       this.buttonItemExists('Approve Application', 'Funding Application');
       this.buttonItemExists('Delete Application', 'Funding Application');
+      this.buttonItemExists('Download Workplan', 'Workplan');
+      this.buttonItemExists('Select Reviewers', 'Work Plan');
 
       switch (this.selectedApplication.statusId) {
           case StatusEnum.PendingReview: {

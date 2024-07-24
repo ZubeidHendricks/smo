@@ -110,6 +110,7 @@ import { QcFundedDocumentUploadViewComponent } from './components/application/ap
 import { QcObjectivesViewComponent } from './components/application/application-steps/quick-capture-view/qc-objectives-view/qc-objectives-view.component';
 import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
 import { UploadBudgetComponent } from './components/admin/budgets/upload-budget/upload-budget.component';
+import { DownloadWorkplanComponent } from './components/application/download-workplan/download-workplan.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -125,6 +126,8 @@ const routes: Routes = [
   { path: 'print/:id/1', outlet: 'print', component: PrintWorkflowApplicationComponent },
   { path: 'print/:id/2', outlet: 'print', component: PrintScorecardComponent },
   { path: 'print/:id/3', outlet: 'print', component: DownloadQuickCaptureDohComponent },
+  { path: 'print/:id/4', outlet: 'print', component: DownloadWorkplanComponent },
+
   { path: 'access-request', component: AccessRequestComponent },
   { path: 'access-review', component: AccessReviewComponent },
 

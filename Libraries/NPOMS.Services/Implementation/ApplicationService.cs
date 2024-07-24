@@ -8,6 +8,7 @@ using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository;
 using NPOMS.Repository.Implementation.Dropdown;
+using NPOMS.Repository.Implementation.Mapping;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
@@ -59,8 +60,12 @@ namespace NPOMS.Services.Implementation
 		private ISubRecipientRepository _subRecipientRepository;
 		private ISubSubRecipientRepository _subSubRecipientRepository;
 		private IActivityRecipientRepository _activityRecipientRepository;
+        private IActivityDistrictRepository _activityDistrictRepository;
+        private IActivityManicipalityRepository _activityManicipalityRepository;
+        private IActivitySubDistrictRepository _activitySubDistrictRepository;
+        private IActivitySubStructureRepository _activitySubStructureRepository;
 
-		private RepositoryContext _repositoryContext;
+        private RepositoryContext _repositoryContext;
 
 		#endregion
 
@@ -68,7 +73,7 @@ namespace NPOMS.Services.Implementation
 
 		public ApplicationService(
             IApplicationRepository applicationRepository,
-			IUserRepository userRepository,
+            IUserRepository userRepository,
 			IObjectiveRepository objectiveRepository,
 			IActivityRepository activityRepository,
 			IResourceRepository resourceRepository,
@@ -102,11 +107,16 @@ namespace NPOMS.Services.Implementation
 			ISubSubRecipientRepository subSubRecipientRepository,
 			IActivityRecipientRepository activityRecipientRepository,
             IDepartmentRepository departmentRepository,
-            Repository.Interfaces.Dropdown.IProgrammeRepository programmeRepository
+            Repository.Interfaces.Dropdown.IProgrammeRepository programmeRepository,
+            IActivityDistrictRepository activityDistrictRepository,
+            IActivityManicipalityRepository activityManicipalityRepository,
+            IActivitySubDistrictRepository activitySubDistrictRepository,
+            IActivitySubStructureRepository activitySubStructureRepository
+
             )
 		{
             _applicationRepository = applicationRepository;
-			_userRepository = userRepository;
+            _userRepository = userRepository;
 			_objectiveRepository = objectiveRepository;
 			_activityRepository = activityRepository;
 			_resourceRepository = resourceRepository;
@@ -141,6 +151,10 @@ namespace NPOMS.Services.Implementation
 			_activityRecipientRepository = activityRecipientRepository;
             _departmentRepository = departmentRepository;
             _programmeRepository = programmeRepository;
+            _activityDistrictRepository = activityDistrictRepository;
+			_activityManicipalityRepository = activityManicipalityRepository;
+			_activitySubDistrictRepository = activitySubDistrictRepository;
+			_activitySubStructureRepository = activitySubStructureRepository;
         }
 
 		#endregion
@@ -165,7 +179,6 @@ namespace NPOMS.Services.Implementation
             {
 				results = results.Where(x => departmentIds.Contains(x.ApplicationPeriod.DepartmentId));
 						
-
                 return results;
             }
             else if(loggedInUser.Roles.Any(x => x.IsActive && !x.RoleId.Equals((int)RoleEnum.Applicant)))
@@ -959,7 +972,12 @@ namespace NPOMS.Services.Implementation
 			await UpdateActivitySubProgrammeMappings(activity, loggedInUser.Id);
 			await UpdateActivityFacilityListMappings(activity, loggedInUser.Id);
 
-			await _activityRecipientRepository.DeleteEntity(model.Id);
+            await UpdateActivityDistrictMappings(activity, loggedInUser.Id);
+            await UpdateActivitySubDistrictMappings(activity, loggedInUser.Id);
+            await UpdateActivitySubStructureMappings(activity, loggedInUser.Id);
+            await UpdateActivityManicipalityMappings(activity, loggedInUser.Id);
+
+            await _activityRecipientRepository.DeleteEntity(model.Id);
 
 			foreach (var mapping in model.ActivityRecipients)
 				await _activityRecipientRepository.CreateAsync(mapping);
@@ -967,7 +985,256 @@ namespace NPOMS.Services.Implementation
 			await _activityRepository.UpdateEntity(activity, loggedInUser.Id);
 		}
 
-		private async Task UpdateActivitySubProgrammeMappings(Activity model, int currentUserId)
+
+        private async Task UpdateActivityDistrictMappings(Activity model, int currentUserId)
+        {
+
+            // Fetch existing mappings for the activity
+            var mappings = await _activityDistrictRepository.GetByActivityId(model.Id, false);
+
+            // Deactivate mappings that no longer exist in the current model
+            foreach (var mapping in mappings)
+            {
+                var alreadyExists = model.ActivityDistrict.Any(x =>
+                    x.ActivityId.Equals(mapping.ActivityId) &&
+                    x.DemographicDistrictId.Equals(mapping.DemographicDistrictId) &&
+                    x.Name.Equals(mapping.Name));
+
+                if (!alreadyExists)
+                {
+                    mapping.IsActive = false;
+                    await _activityDistrictRepository.UpdateAsync(mapping);
+                }
+            }
+
+            // Update or create mappings based on the current model
+            foreach (var item in model.ActivityDistrict)
+            {
+                var existingMapping = await _activityDistrictRepository.GetByModel(item);
+
+                if (existingMapping != null)
+                {
+                    item.Id = existingMapping.Id;
+                    var oldEntity = await this._repositoryContext.ActivityDistricts.FindAsync(existingMapping.Id);
+                    await _activityDistrictRepository.UpdateAsync(oldEntity, item, true, currentUserId);
+                }
+                else
+                {
+                    await _activityDistrictRepository.CreateAsync(item);
+                }
+            }
+
+		}
+
+
+        private async Task UpdateActivityManicipalityMappings(Activity model, int currentUserId)
+        {
+            // Fetch existing mappings for the activity
+            var mappings = await _activityManicipalityRepository.GetByActivityId(model.Id, false);
+
+            // Deactivate mappings that no longer exist in the current model
+            foreach (var mapping in mappings)
+            {
+                var alreadyExists = model.ActivityManicipality.Any(x =>
+                    x.ActivityId.Equals(mapping.ActivityId) &&
+                    x.DemographicDistrictId.Equals(mapping.DemographicDistrictId) &&
+                    x.Name.Equals(mapping.Name));
+
+                if (!alreadyExists)
+                {
+                    mapping.IsActive = false;
+                    await _activityManicipalityRepository.UpdateAsync(mapping);
+                }
+            }
+
+            // Update or create mappings based on the current model
+            foreach (var item in model.ActivityManicipality)
+            {
+                var existingMapping = await _activityManicipalityRepository.GetByModel(item);
+
+                if (existingMapping != null)
+                {
+                    item.Id = existingMapping.Id;
+                    var oldEntity = await this._repositoryContext.ActivityManicipalities.FindAsync(existingMapping.Id);
+                    await _activityManicipalityRepository.UpdateAsync(oldEntity, item, true, currentUserId);
+                }
+                else
+                {
+                    await _activityManicipalityRepository.CreateAsync(item);
+                }
+            }
+        }
+
+        private async Task UpdateActivitySubStructureMappings(Activity model, int currentUserId)
+        {
+            // Fetch existing mappings for the activity
+            var mappings = await _activitySubStructureRepository.GetByActivityId(model.Id, false);
+
+            // Deactivate mappings that no longer exist in the current model
+            foreach (var mapping in mappings)
+            {
+                var alreadyExists = model.ActivitySubStructure.Any(x =>
+                    x.ActivityId.Equals(mapping.ActivityId) &&
+                    x.MunicipalityId.Equals(mapping.MunicipalityId) &&
+                    x.Name.Equals(mapping.Name));
+
+                if (!alreadyExists)
+                {
+                    mapping.IsActive = false;
+                    await _activitySubStructureRepository.UpdateAsync(mapping);
+                }
+            }
+
+            // Update or create mappings based on the current model
+            foreach (var item in model.ActivitySubStructure)
+            {
+                var existingMapping = await _activitySubStructureRepository.GetByModel(item);
+
+                if (existingMapping != null)
+                {
+                    item.Id = existingMapping.Id;
+                    var oldEntity = await this._repositoryContext.ActivitySubStructures.FindAsync(existingMapping.Id);
+                    await _activitySubStructureRepository.UpdateAsync(oldEntity, item, true, currentUserId);
+                }
+                else
+                {
+                    await _activitySubStructureRepository.CreateAsync(item);
+                }
+            }
+        }
+
+        private async Task UpdateActivitySubDistrictMappings(Activity model, int currentUserId)
+        {
+            // Fetch existing mappings for the activity
+            var mappings = await _activitySubDistrictRepository.GetByActivityId(model.Id, false);
+
+            // Deactivate mappings that no longer exist in the current model
+            foreach (var mapping in mappings)
+            {
+                var alreadyExists = model.ActivitySubDistrict.Any(x =>
+                    x.ActivityId.Equals(mapping.ActivityId) &&
+                    x.SubstructureId.Equals(mapping.SubstructureId) &&
+                    x.Name.Equals(mapping.Name));
+
+                if (!alreadyExists)
+                {
+                    mapping.IsActive = false;
+                    await _activitySubDistrictRepository.UpdateAsync(mapping);
+                }
+            }
+
+            // Update or create mappings based on the current model
+            foreach (var item in model.ActivitySubDistrict)
+            {
+                var existingMapping = await _activitySubDistrictRepository.GetByModel(item);
+
+                if (existingMapping != null)
+                {
+                    item.Id = existingMapping.Id;
+                    var oldEntity = await this._repositoryContext.ActivitySubDistricts.FindAsync(existingMapping.Id);
+                    await _activitySubDistrictRepository.UpdateAsync(oldEntity, item, true, currentUserId);
+                }
+                else
+                {
+                    await _activitySubDistrictRepository.CreateAsync(item);
+                }
+            }
+        }
+
+
+
+
+        //private async Task UpdateActivityManicipalityMappings(Activity model, int currentUserId)
+        //{
+        //    var mappings = await _activityManicipalityRepository.GetByActivityId(model.Id, false);
+
+        //    foreach (var mapping in mappings)
+        //    {
+        //        var alreadyExists = model.ActivityManicipality.Any(x => x.ActivityId.Equals(mapping.ActivityId) && x.DemographicDistrictId.Equals(mapping.DemographicDistrictId) &&
+        //         model.ActivityDistrict.Name.Equals(mapping.Name));
+
+        //        if (!alreadyExists)
+        //            model.ActivityManicipality.Add(new ActivityManicipality { ActivityId = mapping.ActivityId, DemographicDistrictId = mapping.DemographicDistrictId, IsActive = false, Name = mapping.Name });
+        //    }
+
+        //    foreach (var item in model.ActivityManicipality)
+        //    {
+        //        var mapping = await _activityManicipalityRepository.GetByModel(item);
+
+        //        if (mapping != null)
+        //        {
+        //            item.Id = mapping.Id;
+        //            var oldEntity = await this._repositoryContext.ActivityManicipalities.FindAsync(mapping.Id);
+        //            await _activityManicipalityRepository.UpdateAsync(oldEntity, item, true, currentUserId);
+        //        }
+        //        else
+        //        {
+        //            await _activityManicipalityRepository.CreateAsync(item);
+        //        }
+        //    }
+        //}
+
+
+        //private async Task UpdateActivitySubStructureMappings(Activity model, int currentUserId)
+        //{
+        //    var mappings = await _activitySubDistrictRepository.GetByActivityId(model.Id, false);
+
+        //    foreach (var mapping in mappings)
+        //    {
+        //        var alreadyExists = model.ActivitySubProgrammes.Any(x => x.ActivityId.Equals(mapping.ActivityId) && x.SubProgrammeId.Equals(mapping.SubProgrammeId));
+
+        //        if (!alreadyExists)
+        //            model.ActivitySubProgrammes.Add(new ActivitySubProgramme { ActivityId = mapping.ActivityId, SubProgrammeId = mapping.SubProgrammeId, IsActive = false });
+        //    }
+
+        //    foreach (var item in model.ActivitySubProgrammes)
+        //    {
+        //        var mapping = await _activitySubDistrictRepository.GetByModel(item);
+
+        //        if (mapping != null)
+        //        {
+        //            item.Id = mapping.Id;
+        //            var oldEntity = await this._repositoryContext.ActivitySubProgrammes.FindAsync(mapping.Id);
+        //            await _activitySubDistrictRepository.UpdateAsync(oldEntity, item, true, currentUserId);
+        //        }
+        //        else
+        //        {
+        //            await _activitySubDistrictRepository.CreateAsync(item);
+        //        }
+        //    }
+        //}
+
+
+        //private async Task  UpdateActivitySubDistrictMappings(Activity model, int currentUserId)
+        //{
+        //    var mappings = await _activitySubStructureRepository.GetByActivityId(model.Id, false);
+
+        //    foreach (var mapping in mappings)
+        //    {
+        //        var alreadyExists = model.ActivitySubProgrammes.Any(x => x.ActivityId.Equals(mapping.ActivityId) && x.SubProgrammeId.Equals(mapping.SubProgrammeId));
+
+        //        if (!alreadyExists)
+        //            model.ActivitySubProgrammes.Add(new ActivitySubProgramme { ActivityId = mapping.ActivityId, SubProgrammeId = mapping.SubProgrammeId, IsActive = false });
+        //    }
+
+        //    foreach (var item in model.ActivitySubProgrammes)
+        //    {
+        //        var mapping = await _activitySubStructureRepository.GetByModel(item);
+
+        //        if (mapping != null)
+        //        {
+        //            item.Id = mapping.Id;
+        //            var oldEntity = await this._repositoryContext.ActivitySubProgrammes.FindAsync(mapping.Id);
+        //            await _activitySubStructureRepository.UpdateAsync(oldEntity, item, true, currentUserId);
+        //        }
+        //        else
+        //        {
+        //            await _activitySubStructureRepository.CreateAsync(item);
+        //        }
+        //    }
+        //}
+
+        private async Task UpdateActivitySubProgrammeMappings(Activity model, int currentUserId)
 		{
 			var mappings = await _activitySubProgrammeRepository.GetByActivityId(model.Id, false);
 

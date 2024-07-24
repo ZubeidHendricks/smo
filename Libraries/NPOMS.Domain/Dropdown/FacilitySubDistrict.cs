@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NPOMS.Domain.Mapping;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,5 +27,6 @@ namespace NPOMS.Domain.Dropdown
 		public DateTime? UpdatedDateTime { get; set; }
 
 		public FacilityDistrict FacilityDistrict { get; set; }
-	}
+        public ICollection<ActivitySubDistrict> ActivitySubDistrict { get; set; }
+    }
 }
