@@ -26,6 +26,8 @@ namespace NPOMS.Repository.Implementation.Entities
         {
             return await FindByCondition(x => x.IsActive).Include(x => x.Npo)
                             .Include(x => x.NpoUserTrackings)
+                            .Include(x => x.NpoUserSatisfactionTrackings)
+                            .Include(x => x.NpoWorkPlanApproverTrackings)
                             .Include(x => x.ApplicationPeriod)
                                 .ThenInclude(x => x.ApplicationType)
                             .Include(x => x.ApplicationPeriod)
@@ -38,7 +40,11 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public async Task<Application> GetById(int id)
         {
-            return await FindByCondition(x => x.Id.Equals(id)).Include(x => x.NpoUserTrackings).Include(x => x.ApplicationPeriod)
+            return await FindByCondition(x => x.Id.Equals(id))
+                .Include(x => x.NpoUserTrackings)
+                .Include(x => x.NpoUserSatisfactionTrackings)
+                .Include(x => x.NpoWorkPlanApproverTrackings)
+                .Include(x => x.ApplicationPeriod)
                 .ThenInclude(x => x.FinancialYear).AsNoTracking().FirstOrDefaultAsync();
         }
 
@@ -77,6 +83,16 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task CreateNpoUserTracking(IEnumerable<NpoUserTracking> npoUserTrackings)
         {
             await this.RepositoryContext.NpoUserTrackings.AddRangeAsync(npoUserTrackings);
+        }
+
+        public async Task CreateNpoUserSatisfactionTracking(IEnumerable<NpoUserSatisfactionTracking> npoUserSatisfactionTracking)
+        {
+            await this.RepositoryContext.NpoUserSatisfactionTrackings.AddRangeAsync(npoUserSatisfactionTracking);
+        }
+
+        public async Task CreateNpoWorkPlanApproverTracking(IEnumerable<NpoWorkPlanApproverTracking> npoWorkPlanApproverTracking)
+        {
+            await this.RepositoryContext.NpoWorkPlanApproverTrackings.AddRangeAsync(npoWorkPlanApproverTracking);
         }
 
         #endregion

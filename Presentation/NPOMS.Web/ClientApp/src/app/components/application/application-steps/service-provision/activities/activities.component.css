@@ -45,3 +45,18 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 11px !important;
 }
+
+/* Add spacing between columns */
+.dropdown-column {
+    padding-right: 1rem; /* Space between columns */
+}
+
+/* Ensure the last column does not have extra padding on the right */
+.p-grid .p-col-3:last-child {
+    padding-right: 0;
+}
+
+/* Optional: Adjust the vertical alignment */
+.box {
+    margin-bottom: 0.5rem;
+}

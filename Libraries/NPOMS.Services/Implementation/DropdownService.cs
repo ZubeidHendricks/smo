@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Domain.Mapping;
+using NPOMS.Repository.Implementation.Dropdown;
 
 namespace NPOMS.Services.Implementation
 {
@@ -86,12 +87,21 @@ namespace NPOMS.Services.Implementation
         private IQuarterlyPeriodRepository _quarterlyPeriodRepository;
         private IDepartmentRoleRepository _departmentRoleRepository;
         private ISegmentCodeRepository _segmentCodeRepository;
+        private IFacilitySubStructureRepository _facilitySubStructuresRepository;
+        private IDemographicSubStructureRepository _demographicSubStructureRepository;
+        private IDistrictDemographicRepository _districtDemographicRepository;
+        private IManicipalityDemographicRepository _manicipalityDemographicRepository;
+        private ISubDistrictDemographicRepository _subDistrictDemographicRepository;
         #endregion
 
         #region Constructors
 
         public DropdownService(
             IMapper mapper,
+            IDemographicSubStructureRepository demographicSubStructureRepository,
+            IDistrictDemographicRepository districtDemographicRepository,
+            IManicipalityDemographicRepository manicipalityDemographicRepository,
+            ISubDistrictDemographicRepository subDistrictDemographicRepository,
             IDepartmentRoleRepository departmentRoleRepository,
             IRoleRepository roleRepository,
             IDepartmentRepository departmentRepository,
@@ -150,9 +160,14 @@ namespace NPOMS.Services.Implementation
             IWorkflowAssessmentRepository workflowAssessmentRepository,
             IFundingTemplateTypeRepository fundingTemplateTypeRepository,
             IQuarterlyPeriodRepository quarterlyPeriodRepository,
-            ISegmentCodeRepository segmentCodeRepository)
+            ISegmentCodeRepository segmentCodeRepository,
+            IFacilitySubStructureRepository facilitySubStructuresRepository)
         {
             _mapper = mapper;
+            _demographicSubStructureRepository = demographicSubStructureRepository;
+            _districtDemographicRepository = districtDemographicRepository;
+            _manicipalityDemographicRepository = manicipalityDemographicRepository;
+            _subDistrictDemographicRepository = subDistrictDemographicRepository;
             _roleRepository = roleRepository;
             _departmentRepository = departmentRepository;
             _organisationTypeRepository = organisationTypeRepository;
@@ -212,6 +227,7 @@ namespace NPOMS.Services.Implementation
             _quarterlyPeriodRepository = quarterlyPeriodRepository;
             _departmentRoleRepository = departmentRoleRepository;
             _segmentCodeRepository = segmentCodeRepository;
+            _facilitySubStructuresRepository = facilitySubStructuresRepository;
         }
 
         #endregion
@@ -812,6 +828,21 @@ namespace NPOMS.Services.Implementation
             model.UpdatedDateTime = DateTime.Now;
 
             await _facilitySubDistrictRepository.UpdateAsync(null, model, false, loggedInUser.Id);
+        }
+
+        public async Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructures(bool returnInactive)
+        {
+            return await _facilitySubStructuresRepository.GetEntities(returnInactive);
+        }
+
+        public Task CreateFacilitySubStructures(FacilitySubStructure model, string userIdentifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateFacilitySubStructures(FacilitySubStructure model, string userIdentifier)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -1722,6 +1753,31 @@ namespace NPOMS.Services.Implementation
         public async Task<Department> GetDepartment(int depId)
         {
             return await _departmentRepository.GetDepartmentById(depId);
+        }
+
+        public Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructure(bool returnInactive)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<DistrictDemographic>> DemographicDistricts(bool returnInactive)
+        {
+            return await _districtDemographicRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<SubstructureDemographic>> DemographicSubStructures(bool returnInactive)
+        {
+            return await _demographicSubStructureRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<ManicipalityDemographic>> DemographicManicipalities(bool returnInactive)
+        {
+            return await _manicipalityDemographicRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<SubDistrictDemographic>> DemographicSubDistricts(bool returnInactive)
+        {
+            return await _subDistrictDemographicRepository.GetEntities(returnInactive);
         }
 
         #endregion

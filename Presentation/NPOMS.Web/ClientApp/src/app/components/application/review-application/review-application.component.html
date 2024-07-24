@@ -31,7 +31,7 @@
         <app-activities *ngIf="activeStep == ServiceProvisionStepsEnum.Activities" [(activeStep)]="activeStep" [application]="application" (activityChange)="loadActivities()" [canAddComments]="true" [isReview]="true"></app-activities>
         <app-sustainability *ngIf="activeStep == ServiceProvisionStepsEnum.Sustainability" [(activeStep)]="activeStep" [application]="application" (sustainabilityPlanChange)="loadSustainabilityPlans()" [canAddComments]="true" [isReview]="true"></app-sustainability>
         <app-resourcing *ngIf="activeStep == ServiceProvisionStepsEnum.Resourcing" [(activeStep)]="activeStep" [application]="application" (resourceChange)="loadResources()" [reviewApplication]="true" [canReviewOrApprove]="canReviewOrApprove" [canAddComments]="true" [isReview]="true"></app-resourcing>
-        <app-confirmation *ngIf="activeStep == ServiceProvisionStepsEnum.ApplicationConfirmation" [(activeStep)]="activeStep" [application]="application" [(status)]="status" [profile]="profile" [approveApplication]="false"></app-confirmation>
+        <app-confirmation *ngIf="activeStep == ServiceProvisionStepsEnum.ApplicationConfirmation" [(activeStep)]="activeStep" [application]="application" [(status)]="status"  [profile]="profile" [approveApplication]="false"(selectedReviewersChange)="onSelectedReviewersChange($event)"></app-confirmation>
         
         <br>
         <p-accordion>

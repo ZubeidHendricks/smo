@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, PermissionsEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationApproval, IApplicationPeriod, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationWithUsers, IActivity, IApplication, IApplicationApproval, IApplicationPeriod, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -50,6 +50,7 @@ export class ApproveApplicationComponent implements OnInit {
   application: IApplication;
   isApplicationAvailable: boolean;
   isStepsAvailable: boolean;
+  applicationWithUsers = {} as ApplicationWithUsers;
 
   objectives: IObjective[] = [];
   activities: IActivity[] = [];
@@ -62,6 +63,7 @@ export class ApproveApplicationComponent implements OnInit {
   isSystemAdmin: boolean;
   isAdmin: boolean;
   canReviewOrApprove: boolean;
+  selectedReviewers: { fullName: string, email: string, id: number }[] = [];
 
   constructor(
     private _router: Router,
@@ -90,6 +92,10 @@ export class ApproveApplicationComponent implements OnInit {
         this.buildMenu();
       }
     });
+  }
+
+  onSelectedReviewersChange(reviewers: { fullName: string, email: string, id: number }[]) {
+    this.selectedReviewers = reviewers;
   }
 
   private loadApplication() {
@@ -266,7 +272,7 @@ export class ApproveApplicationComponent implements OnInit {
           icon: 'fa fa-thumbs-o-up',
           command: () => {
             if (this.status) {
-              this.saveItems(this.status);
+              this.saveItems(this.status,this.selectedReviewers);
             }
           }
         },
@@ -298,7 +304,7 @@ export class ApproveApplicationComponent implements OnInit {
     this.menuActions[1].visible = false;
   }
 
-  private saveItems(status: StatusEnum) {
+  private saveItems(status: StatusEnum, selectedReviewers: { fullName: string, email: string, id: number }[]) {
     if (this.canContinue()) {
       this._spinner.show();
       this.application.statusId = status;
@@ -321,17 +327,43 @@ export class ApproveApplicationComponent implements OnInit {
 
           if (approvedByCoCT && approvedByDoH)
             this.application.statusId = StatusEnum.PendingSLA;
+          // this._applicationRepo.updateApplication(this.application).subscribe(
+          //   (resp) => {
+          //     this._spinner.hide();
+          //     this._router.navigateByUrl('applications');
+          //   },
+          //   (err) => {
+          //     this._loggerService.logException(err);
+          //     this._spinner.hide();
+          //   }
+          // );
 
-          this._applicationRepo.updateApplication(this.application).subscribe(
-            (resp) => {
-              this._spinner.hide();
-              this._router.navigateByUrl('applications');
-            },
-            (err) => {
-              this._loggerService.logException(err);
-              this._spinner.hide();
-            }
-          );
+          if(selectedReviewers.length > 0){
+            this.applicationWithUsers.application = this.application;
+            this.applicationWithUsers.userVM = selectedReviewers;
+            this._applicationRepo.updateApplicationWithApprovers(this.applicationWithUsers).subscribe(
+              (resp) => {
+                this._spinner.hide();
+                this._router.navigateByUrl('applications');
+              },
+              (err) => {
+                this._loggerService.logException(err);
+                this._spinner.hide();
+              }
+            );
+          }
+          else{
+            this._applicationRepo.updateApplication(this.application).subscribe(
+              (resp) => {
+                this._spinner.hide();
+                this._router.navigateByUrl('applications');
+              },
+              (err) => {
+                this._loggerService.logException(err);
+                this._spinner.hide();
+              }
+            );
+          }
         },
         (err) => {
           this._loggerService.logException(err);

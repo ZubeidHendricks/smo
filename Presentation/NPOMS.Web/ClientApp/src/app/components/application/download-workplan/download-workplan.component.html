@@ -1,0 +1,799 @@
+<div class="navbar navbar-default navbar-fixed-top navbar-white bg-white shadow-sm">      
+    <div id="navbar-container">
+        <div class="navbar-header">
+            <img src="../../../assets/Images/wcg_logo_new.png" class="img-responsive" style="height: 70px;" alt="" />
+            <span style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: bold; font-size: 2.5em; text-align: center;">NPO Management System</span>
+        </div>
+    </div>
+</div>
+
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="View Application" *ngIf="isApplicationAvailable && application">
+
+    <div class="p-grid p-nogutter p-justify-between" *ngIf="application.createdUser && application.updatedUser">
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created By: {{application.createdUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created Date: {{application.createdDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated By: {{application.updatedUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated Date: {{application.updatedDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+    
+    <div>
+        <p-panel [style]="{'font-size':'12px'}" header="Organisation Details">
+            <app-view-npo [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)"></app-view-npo>
+            <div style="height: 10px;"></div>
+            <app-view-profile 
+            [npoId]="application.npoId" 
+            [source]="source" 
+            [programId]="application.applicationPeriod.programmeId"  
+            (retrievedNpoProfile)="updateNpoProfile($event)" 
+            *ngIf="!application.isQuickCapture">
+            </app-view-profile>
+            <!-- <app-view-profile [npoId]="application.npoId" [source]="source"   (retrievedNpoProfile)="updateNpoProfile($event)" *ngIf="!application.isQuickCapture"></app-view-profile> -->
+        </p-panel>
+    </div>
+    <br>
+    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
+        <p-panel [style]="{'font-size':'12px'}" header="Funding Application Information">        
+            <app-view-funding-application [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)"></app-view-funding-application>
+        </p-panel>
+    </div>
+    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.SP">
+        <p-panel [style]="{'font-size':'12px'}" header="Workplan Information">
+            <p-panel [style]="{'font-size':'12px'}" header="Objectives" *ngIf="isObjectivesAvailable">
+                <p-table [rowHover]="true" [columns]="objectiveCols" [value]="objectives" styleClass="p-datatable-sm">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                {{col.header}}
+                            </th>
+                            <th style="width: 7%;">Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-columns="columns">
+                        <tr class="default-font">
+                            <td>{{rowData.name}}</td>
+                            <td>{{rowData.fundingSource}}</td>
+                            <td>{{rowData.fundingPeriodStartDate}} to {{rowData.fundingPeriodEndDate}}</td>
+                            <td>{{rowData.recipientType.name}}</td>
+                            <td>{{rowData.budget}}</td>
+                            <td style="text-align: center;">
+                                <button pButton pRipple type="button" class="p-button-text action-button"
+                                    icon="fa fa-info-circle" (click)="editObjective(rowData)" pTooltip="View"
+                                    tooltipPosition="top"></button>
+                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
+                                    class="p-button-text action-button" icon="fa fa-comments-o"
+                                    (click)="viewComments(rowData, ServiceProvisionStepsEnum.Objectives)"
+                                    pTooltip="Comments" tooltipPosition="top"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-panel>
+            <div style="height: 10px;"></div>
+            <p-panel [style]="{'font-size':'12px'}" header="Activities" *ngIf="isActivitiesAvailable">
+                <p-table [rowHover]="true" [columns]="activityCols" [value]="activities" styleClass="p-datatable-sm">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                {{col.header}}
+                            </th>
+                            <th style="width: 7%;">Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                        <tr class="heading">
+                            <td *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false" [attr.colspan]="7">
+                                <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
+                            </td>
+                        </tr>
+                        <tr class="default-font">
+                            <td>{{rowData.activityList.name}}</td>
+                            <td>{{rowData.activityType.name}}</td>
+                            <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date:
+                                'yyyy-MM-dd'}}</td>
+                            <td>{{rowData.target}}</td>
+                            <td>{{rowData.facilityListText}}</td>
+                            <td style="text-align: center;">
+                                <button pButton pRipple type="button" class="p-button-text action-button"
+                                    icon="fa fa-info-circle" (click)="editActivity(rowData)" pTooltip="View"
+                                    tooltipPosition="top"></button>
+                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
+                                    class="p-button-text action-button" icon="fa fa-comments-o"
+                                    (click)="viewComments(rowData, ServiceProvisionStepsEnum.Activities)"
+                                    pTooltip="Comments" tooltipPosition="top"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-panel>
+            <div style="height: 10px;"></div>
+            <p-panel [style]="{'font-size':'12px'}" header="Sustainability Plans" *ngIf="isSustainabilityAvailable">
+                <p-table [rowHover]="true" [columns]="sustainabilityPlanCols" [value]="sustainabilityPlans"
+                    styleClass="p-datatable-sm">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                {{col.header}}
+                            </th>
+                            <th style="width: 7%;">Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                        <tr class="heading">
+                            <td *ngIf="rowGroupMetadataSustainability[rowIndex].itemExists === false"
+                                [attr.colspan]="3">
+                                <span><span class="p-text-bold">Activity:</span> {{rowData.activity.activityList.name}}</span>
+                            </td>
+                        </tr>
+                        <tr class="default-font">
+                            <td>{{rowData.risk}}</td>
+                            <td>{{rowData.mitigation}}</td>
+                            <td style="text-align: center;">
+                                <button pButton pRipple type="button" class="p-button-text action-button"
+                                    icon="fa fa-info-circle" (click)="editSustainabilityPlan(rowData)" pTooltip="View"
+                                    tooltipPosition="top"></button>
+                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
+                                    class="p-button-text action-button" icon="fa fa-comments-o"
+                                    (click)="viewComments(rowData, ServiceProvisionStepsEnum.Sustainability)"
+                                    pTooltip="Comments" tooltipPosition="top"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-panel>
+            <div style="height: 10px;"></div>
+            <p-panel [style]="{'font-size':'12px'}" header="Resourcing" *ngIf="isResourcesAvailable">
+                <p-table [rowHover]="true" [columns]="resourceCols" [value]="resources" styleClass="p-datatable-sm">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                {{col.header}}
+                            </th>
+                            <th style="width: 7%;">Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                        <tr class="heading">
+                            <td *ngIf="rowGroupMetadataResources[rowIndex].itemExists === false" [attr.colspan]="7">
+                                <span><span class="p-text-bold">Activity:</span> {{rowData.activity.activityList.name}}</span>
+                            </td>
+                        </tr>
+                        <tr class="default-font">
+                            <td *ngFor="let col of columns">
+                                <span>{{getCellData(rowData, col)}}</span>
+                            </td>
+                            <td style="text-align: center;">
+                                <button pButton pRipple type="button" class="p-button-text action-button"
+                                    icon="fa fa-info-circle" (click)="editResource(rowData)" pTooltip="View"
+                                    tooltipPosition="top"></button>
+                                <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button"
+                                    class="p-button-text action-button" icon="fa fa-comments-o"
+                                    (click)="viewComments(rowData, ServiceProvisionStepsEnum.Resourcing)"
+                                    pTooltip="Comments" tooltipPosition="top"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-panel>
+            <div style="height: 10px;"></div>
+            <p-panel [style]="{'font-size':'12px'}" header="Approvals">
+                <div *ngIf="mainReview">
+                    <p>As the <span class="approval-details">Main Reviewer</span>, I hereby confirm that the information
+                        captured on the application has been reviewed and accepted as accurate.</p>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Full Name</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <span class="form-text approval-details">{{mainReview.createdUser.fullName}}</span>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Email Address</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <span class="form-text approval-details">{{mainReview.createdUser.email}}</span>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Reviewed Date</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <span class="form-text approval-details">{{mainReview.createdDateTime | date:
+                                'yyyy-MM-dd'}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div *ngIf="approveFromCoCT">
+                    <p>On behalf of the <span class="approval-details">City of Cape Town</span>, I hereby confirm that
+                        the information captured on the application has been reviewed and approved as accurate.</p>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Full Name</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <span class="form-text approval-details">{{approveFromCoCT.createdUser.fullName}}</span>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Email Address</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <span class="form-text approval-details">{{approveFromCoCT.createdUser.email}}</span>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Approved Date</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <span class="form-text approval-details">{{approveFromCoCT.createdDateTime | date:
+                                'yyyy-MM-dd'}}</span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div *ngIf="approveFromDoH">
+                    <p>On behalf of the <span class="approval-details">Department of Health</span>, I hereby confirm
+                        that the information captured on the application has been reviewed and approved as accurate.</p>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Full Name</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <span class="form-text approval-details">{{approveFromDoH.createdUser.fullName}}</span>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Email Address</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <span class="form-text approval-details">{{approveFromDoH.createdUser.email}}</span>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Approved Date</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <span class="form-text approval-details">{{approveFromDoH.createdDateTime | date:
+                                'yyyy-MM-dd'}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-grid p-nogutter p-justify-end">
+                    <p-button label="View History" (onClick)="viewAuditHistory()" icon="fa fa-history"></p-button>
+                </div>
+            </p-panel>
+            <div style="height: 10px;"></div>
+            <p-panel [style]="{'font-size':'12px'}" header="SLA Documents">
+                <p-table [rowHover]="true" [value]="documents" styleClass="p-datatable-sm" [columns]="documentCols">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                                {{col.header}}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
+                        <tr class="default-font">
+                            <td style="text-align: center;">{{rowIndex + 1}}</td>
+                            <td>{{document.name}}</td>
+                            <td>{{document.documentType.name}}</td>
+                            <td>{{document.fileSize}}</td>
+                            <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                            <td style="text-align: center;">
+                                <button pButton pRipple type="button"
+                                    class="p-button-text p-button-success action-button" icon="fa fa-cloud-download"
+                                    (click)="onDownloadDocument(document)" pTooltip="Download"
+                                    tooltipPosition="top"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-panel>
+        </p-panel>
+    </div>
+</p-panel>
+
+<p-dialog header="Objective" [(visible)]="displayObjectiveDialog" [style]="{width: '75vw'}" [focusOnShow]="false"
+    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Objective Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="objective.name"
+                [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Objective Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="objective.description"
+                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Funding Source</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="objective.fundingSource"
+                [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Programme</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedProgrammesText"
+                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub-Programme</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText"
+                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Recipient Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText *ngIf="objective.recipientType"
+                [(ngModel)]="objective.recipientType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Funding Period</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-calendar [(ngModel)]="objective.fundingPeriodStartDate" placeholder="Select a Start Date" inputId="time"
+                [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}"
+                [disabled]="true"></p-calendar>
+            &nbsp; to &nbsp;
+            <p-calendar [(ngModel)]="objective.fundingPeriodEndDate" placeholder="Select a End Date" inputId="time"
+                [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}"
+                [disabled]="true"></p-calendar>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Budget</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-inputNumber [(ngModel)]="objective.budget" inputId="minmaxfraction" mode="decimal"
+                [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}"
+                [disabled]="true"></p-inputNumber>
+        </div>
+    </div>
+    <hr>
+    <p>Recipient Details</p>
+    <p-table [rowHover]="true" [value]="getActiveSRs()" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Organisation Name</th>
+                <th>Recipient Type</th>
+                <th>Funding Period</th>
+                <th>Budget</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-recipient let-rowIndex="rowIndex">
+            <tr *ngIf="rowGroupMetadata && rowGroupMetadata[rowIndex].itemExists === false">
+                <td><span class="p-text-bold">{{recipient.organisationName}}</span></td>
+                <td><span class="p-text-bold" *ngIf="recipient.recipientType">{{recipient.recipientType.name}}</span></td>
+                <td><span class="p-text-bold">{{recipient.fundingPeriodStartDate}} to {{recipient.fundingPeriodEndDate}}</span></td>
+                <td><span class="p-text-bold">{{recipient.budget}}</span></td>
+            </tr>
+            <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)" class="default-font">
+                <td style="text-align: right;">{{subSubRecipient.organisationName}}</td>
+                <td style="text-align: right;" *ngIf="subSubRecipient.recipientType">{{subSubRecipient.recipientType.name}}</td>
+                <td style="text-align: right;">{{subSubRecipient.fundingPeriodStartDate}} to {{subSubRecipient.fundingPeriodEndDate}}</td>
+                <td style="text-align: right;">{{subSubRecipient.budget}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Activity" [(visible)]="displayActivityDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+    <div class="p-grid" *ngIf="selectedObjective">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Objective</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedObjective.name"
+                [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="selectedObjective">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Objective Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
+                [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}"
+                [disabled]="true"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub-Programme</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText"
+                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.name"
+                [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="activity.description"
+                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText *ngIf="activity.activityType"
+                [(ngModel)]="activity.activityType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Timeline</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-calendar [(ngModel)]="activity.timelineStartDate" placeholder="Select a Start Date" inputId="time"
+                [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}"
+                [disabled]="true"></p-calendar>
+            &nbsp; to &nbsp;
+            <p-calendar [(ngModel)]="activity.timelineEndDate" placeholder="Select a End Date" inputId="time"
+                [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}"
+                [disabled]="true"></p-calendar>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Target</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-inputNumber [(ngModel)]="activity.target" inputId="integeronly" [style]="{'width':'100%'}"
+                [disabled]="true"></p-inputNumber>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Indicators of Success</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator"
+                [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Facility and Community Place</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText"
+                [ngModelOptions]="{standalone: true}" [disabled]="true" autoResize="autoResize"></textarea>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog header="Sustainability Plan" [(visible)]="displaySustainabilityPlanDialog" [style]="{width: '50vw'}"
+    [focusOnShow]="false" showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+    <div class="p-grid" *ngIf="selectedActivity">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText *ngIf="selectedActivity.activityList"
+                [(ngModel)]="selectedActivity.activityList.name" [ngModelOptions]="{standalone: true}"
+                [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="selectedActivity">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
+                [(ngModel)]="selectedActivity.activityList.description" [ngModelOptions]="{standalone: true}"
+                [disabled]="true"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Sustainability Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
+                [(ngModel)]="sustainabilityPlan.description" [ngModelOptions]="{standalone: true}"
+                [disabled]="true"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Risk</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="sustainabilityPlan.risk"
+                [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Mitigation</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="sustainabilityPlan.mitigation"
+                [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog header="Resource" [(visible)]="displayResourceDialog" [style]="{width: '50vw'}" [focusOnShow]="false"
+    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+    <div class="p-grid" *ngIf="selectedActivity">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText *ngIf="selectedActivity.activityList"
+                [(ngModel)]="selectedActivity.activityList.name" [ngModelOptions]="{standalone: true}"
+                [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="selectedActivity">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea
+                [(ngModel)]="selectedActivity.activityList.description" [ngModelOptions]="{standalone: true}"
+                [disabled]="true"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Resource Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText *ngIf="resource.resourceType"
+                [(ngModel)]="resource.resourceType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Service Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText *ngIf="resource.serviceType"
+                [(ngModel)]="resource.serviceType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Allocation Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText *ngIf="resource.allocationType"
+                [(ngModel)]="resource.allocationType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Provided vs Required</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText *ngIf="resource.provisionType"
+                [(ngModel)]="resource.provisionType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Resource Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="resource.name"
+                [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Resource Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="resource.description"
+                [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Number of Resources</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="resource.numberOfResources"
+                [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog header="View Comments" [(visible)]="displayAllCommentDialog" [style]="{width: '70vw'}" [focusOnShow]="false"
+    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10"
+        [value]="filteredApplicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.comment}}</td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Audit History" [(visible)]="displayHistory" [style]="{width: '50vw'}" [focusOnShow]="false"
+    showEffect="fade" [transitionOptions]="'0ms'" [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10"
+        [value]="applicationAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.status.name}}</td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes"
+                (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No"
+                (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>
