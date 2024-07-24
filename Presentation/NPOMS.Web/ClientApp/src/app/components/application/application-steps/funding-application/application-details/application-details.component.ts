@@ -308,8 +308,8 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   onAmountChange(event) {
-    let amount = Number(event).valueOf();
-    this.Amount = amount;
+    let amt = Number(event).valueOf();
+    this.Amount = amt;
     this.AmountChange.emit(this.Amount);
   }
   private buildMenu() {
@@ -667,6 +667,7 @@ export class ApplicationDetailsComponent implements OnInit {
   nextPage() {
     if(this.programDeliveryDetails != undefined)
     { 
+      this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.Amount;
       this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === this.programDeliveryDetails[0].districtCouncil.id);
       this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === this.programDeliveryDetails[0].localMunicipality.id);
       
