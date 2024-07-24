@@ -1009,23 +1009,23 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPut(Name = "UpdateApplication")]
-        public async Task<IActionResult> UpdateApplication([FromBody] Application model)
-        {
-            try
-            {
-                await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
-                await CreateApplicationAudit(model);
+        //[HttpPut(Name = "UpdateApplication")]
+        //public async Task<IActionResult> UpdateApplication([FromBody] Application model)
+        //{
+        //    try
+        //    {
+        //        await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
+        //        await CreateApplicationAudit(model);
 
-                await ConfigureEmail(model);
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside UpdateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        //        await ConfigureEmail(model);
+        //        return Ok(model);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside UpdateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         [HttpGet("depReviewers/{departmentId}", Name = "depReviewers")]
         public async Task<IActionResult> DepReviewers(int departmentId)
