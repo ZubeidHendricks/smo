@@ -148,9 +148,9 @@ namespace NPOMS.API.Controllers
             try
             {
                 await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
-              //  await CreateApplicationAudit(model);
+                await CreateApplicationAudit(model);
 
-             //   await ConfigureEmail(model);
+                await ConfigureEmail(model);
                 return Ok(model);
             }
             catch (Exception ex)

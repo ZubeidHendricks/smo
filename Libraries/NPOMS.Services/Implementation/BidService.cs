@@ -55,7 +55,7 @@ namespace NPOMS.Services.Implementation
         private readonly IProgrameDeliveryService _programeDeliveryService;
         private readonly IBidRepository _bidRepository;
         private readonly IApplicationService _applicationService;
-
+        private INpoProfileService _npoProfilService;
 
         public BidService(IFundingApplicationDetailsRepository fundingApplicationDetailsRepository, INpoService npoService, IProjectImplementationRepository bidImplementationRepository
 			, IFinancialMattersRepository financialMattersRepository, IApplicationDetailsRepository applicationDetailsRepository, IFinancialYearRepository finYearRepository
@@ -64,7 +64,8 @@ namespace NPOMS.Services.Implementation
 			IRegionRepository regionRepository, ISubPlaceRepository subPlaceRepository, IApplicationPeriodService applicationPeriodService,
 			IFundAppServiceDeliveryAreaRepository bidServiceDeliveryAreaRepository, IProjectInformationRepository projectInformationRepository,
 		IServiceDeliveryAreaRepository serviceDeliveryAreaRepository, IFundAppRegionRepository bidRegionRepository, IFundAppSDADetailRepository geographicalDetailsRepositoryRepository, IMonitoringEvaluationRepository monitoringEvaluationRepository, IBidRepository bidRepository,
-         IProgrameDeliveryService programeDeliveryService, IApplicationService applicationService)
+         IProgrameDeliveryService programeDeliveryService, IApplicationService applicationService,
+         INpoProfileService npoProfilService)
 		{
 			_fundingApplicationDetailsRepository = fundingApplicationDetailsRepository;
 			_bidRegionRepository = bidRegionRepository;
@@ -93,6 +94,7 @@ namespace NPOMS.Services.Implementation
 			_bidRepository = bidRepository;
             _programeDeliveryService = programeDeliveryService;
             _applicationService = applicationService;
+            _npoProfilService = npoProfilService;
         }
 
 		#endregion
@@ -130,9 +132,9 @@ namespace NPOMS.Services.Implementation
 		public async Task<FundAppDetailViewModel> Create(string userIdentifier, FundAppDetailViewModel model)
 		{
 
-            var npoProfile = await _applicationService.GetApplicationById(model.ApplicationId);
+            var application = await _applicationService.GetApplicationById(model.ApplicationId);
             // var geoDetails = GetGeoDetails(model.GeographicalDetails);
-            var appDetail = await GetAppDetails(model.ApplicationDetails, model.ProgrammeId, npoProfile.NpoId);
+            var appDetail = await GetAppDetails(model.ApplicationDetails, model.ProgrammeId, application.Id);
 			var projectInfo = GetProjectInfoViewModel(model.ProjectInformation);
 			var monotoring = GetMonitoringEvaluationViewModel(model.MonitoringEvaluation);
 			var bid = new FundingApplicationDetail
@@ -268,7 +270,12 @@ namespace NPOMS.Services.Implementation
 
 		private async Task<ApplicationDetail> GetAppDetails(ApplicationDetailViewModel model, int programmeId, int npoId)
 		{
-            var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId, npoId);
+
+
+            var npo = await _applicationService.GetApplicationById(npoId);
+            var npoProfile = await _npoProfilService.GetByNpoId(npo.NpoId);
+
+            var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId, npoProfile.Id);
             // var geographicalDetails = new GeographicalDetails();
             var applicationDetails = new ApplicationDetail();
 			var geo = new FundAppSDADetail();
