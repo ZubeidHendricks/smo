@@ -67,8 +67,8 @@ export class NpoProfileService {
     return this._http.post<IProgramContactInformation>(url, programContactInformation, httpOptions);
   }
 
-  public createProgrammeBankDetails(npoProfileId: number,programBankDetails: IProgramBankDetails) {
-    const url = `${this._envUrl.urlAddress}/api/programme/create-bank/${npoProfileId}`;
+  public createProgrammeBankDetails(applicationId: number,programBankDetails: IProgramBankDetails) {
+    const url = `${this._envUrl.urlAddress}/api/programme/create-bank/${applicationId}`;
     return this._http.post<IProgramBankDetails>(url,programBankDetails, httpOptions);
   }
 

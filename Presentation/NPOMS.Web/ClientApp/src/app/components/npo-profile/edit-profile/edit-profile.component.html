@@ -319,7 +319,7 @@
               <th>Bank Name</th>
               <th>Account Number</th>
               <th>Branch</th>
-              <th>Status</th>
+              <th>Account Type</th>
               <th style="width: 7%;">Actions</th>
             </tr>
           </ng-template>
@@ -328,7 +328,7 @@
               <td>{{detail?.bank?.name}}</td>
               <td>{{detail?.accountNumber}}</td>
               <td>{{detail?.branch?.name}}</td>
-              <td>{{detail?.approvalStatus?.name}}</td>
+              <td>{{detail?.accountType?.name}}</td>
               <td style="text-align: center;">
                 <button *ngIf="canEdit()"  pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgrammeBankDetail(detail)" pTooltip="Edit" tooltipPosition="top"></button>
                 <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgrammeBankDetail(detail)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -350,7 +350,7 @@
                     <th>Last Name</th>
                     <th>Email</th>
                     <th>Phone</th>
-                    <th>Status</th>
+                    <!-- <th>Status</th> -->
                     <th style="width: 7%;">Actions</th>
                   </tr>
                 </ng-template>
@@ -360,7 +360,7 @@
                     <td>{{contact.lastName}}</td>
                     <td>{{contact.emailAddress}}</td>
                     <td>{{contact.cellphone}}</td>
-                    <td>{{contact?.approvalStatus?.name}}</td>
+                    <!-- <td>{{contact?.approvalStatus?.name}}</td> -->
                     <td style="text-align: center;">
                       <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgramContactInformation(contact)" pTooltip="Edit" tooltipPosition="top"></button>
                       <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgramContactInformation(contact)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -384,7 +384,7 @@
                   <th>District Council</th>
                   <th>Local Municipality</th>
                   <th>Service delivery address</th>
-                  <th>Status</th>
+                  <!-- <th>Status</th> -->
                   <th style="width: 7%;">Actions</th>
                 </tr>
               </ng-template>
@@ -394,7 +394,7 @@
                   <td>{{delivery.districtCouncil?.name}}</td>
                   <td>{{delivery.localMunicipality?.name}}</td>
                   <td>{{getNames(delivery?.serviceDeliveryAreas)}}</td>
-                  <td>{{delivery?.approvalStatus?.name}}</td>
+                  <!-- <td>{{delivery?.approvalStatus?.name}}</td> -->
                   <td style="text-align: center;">
                     <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgrammeServiceDelivery(delivery)" pTooltip="Edit" tooltipPosition="top"></button>
                     <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgrammeServiceDelivery(delivery)" pTooltip="Delete" tooltipPosition="top"></button>

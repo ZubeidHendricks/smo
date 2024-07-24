@@ -710,7 +710,7 @@ private loadTitles() {
   }
 
   canEditServicesRendered(programme: IProgramme): boolean {
-    return this.isSystemAdmin || this.isApplicant || (programme &&
+    return this.isSystemAdmin || this.isApplicant || this.isDepartmentAdmin || (programme &&
            this.profile.userPrograms.some(userProgram => userProgram.id === programme.id));
   }
   
@@ -1125,7 +1125,7 @@ private loadTitles() {
       (results) => {
         this.programmes = results;
         
-        if(this.isSystemAdmin)
+        if(this.isSystemAdmin || this.isApplicant)
           {
             this.filteredProgrammes = this.programmes;
             console.log('this.filteredProgrammes', this.filteredProgrammes);
@@ -2248,12 +2248,12 @@ private loadTitles() {
     for (let prop in data)
       serviceRendered[prop] = data[prop];
 
-    if(this.isApplicant)
-      {
-        this.selectedDepartment = data.department;
-        this.loadDepartmentPrograms(this.selectedDepartment.id);
-      }
-
+    // if(this.isApplicant)
+    //   {
+    //     this.selectedDepartment = data.department;
+    //     this.loadDepartmentPrograms(this.selectedDepartment.id);
+    //   }
+    
     this.selectedProgramme = data.programme;
     this.programmeChange(this.selectedProgramme);
 

@@ -1,6 +1,4 @@
 ﻿using NPOMS.Domain.Mapping;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Interfaces.Mapping
 {
