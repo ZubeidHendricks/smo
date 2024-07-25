@@ -54,6 +54,7 @@
          [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
          [(isSDASelected)] = "fundingApplicationDetails.applicationDetails.isSDASelected"
          [(isSDASelected)] = "fundingApplicationDetails.applicationDetails.isSDASelected"
+         [programId]="application.applicationPeriod.programmeId" 
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
@@ -63,6 +64,7 @@
 
         <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"  
         [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
+        [programId]="application.applicationPeriod.programmeId" 
         [(fundingApplicationDetails)]="fundingApplicationDetails">
         </app-financial-matters>
 

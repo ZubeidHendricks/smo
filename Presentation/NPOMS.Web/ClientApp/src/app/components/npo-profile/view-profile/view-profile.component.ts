@@ -179,31 +179,6 @@ export class ViewProfileComponent implements OnInit {
     if(this.headerTitle !== 'view')
       this.selectedRowIndex = rowIndex;
   }
-  toggleBankingDetailsPanel(program: any) {
-    // if (this.selectedProgram && this.selectedProgram.id === program.id) {
-    //   this.displayBankingDetailsPanel = true;
-    // } else {
-    //   this.selectedProgram = program;
-    //   this.loadProgrammeDetails(program.id);
-    //   this.displayBankingDetailsPanel = true;
-    // }
-    if(this.headerTitle !== 'view')
-    {
-      this.selectedProgram = program;
-      this.loadProgrammeDetails(program.id);
-      this.displayBankingDetailsPanel = true;
-    }   
-  }
-  // toggleBankingDetailsPanel(program: any) {
-  //   if (this.selectedProgram && this.selectedProgram.id === program.id) {
-  //     this.displayBankingDetailsPanel = !this.displayBankingDetailsPanel;
-  //   } else {
-  //     this.selectedProgram = program;
-  //     this.loadProgrammeDetails(program.id);
-  //     this.displayBankingDetailsPanel = true;
-  //   }
-  // }
-
   getNames(array: any[]): string {
     const names = array.map(item => item.name) // Access 'name' directly
                        .filter(name => name !== undefined && name.trim() !== '') // Filter out undefined or empty strings
@@ -212,60 +187,16 @@ export class ViewProfileComponent implements OnInit {
     return names; // Return the joined names as a string
   }
 
-  loadProgrammeDetails(progId: number): void {
-    alert(progId);
-    alert(this.npoProfile.id);
-    forkJoin({
-     
-      contacts: this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfile.id)),
-      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfile.id)),
-      deliveryDetails: this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfile.id))
-    }).subscribe({
-      next: (result) => {
-        this.programContactInformation = result.contacts.filter(contact => contact.approvalStatus.id === AccessStatusEnum.Approved);
-        this.programBankDetails = result.bankDetails; //result.bankDetails.filter(bankDetail => bankDetail.approvalStatus.id === AccessStatusEnum.Approved);
-        this.programDeliveryDetails = result.deliveryDetails; //.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
-        this.updateProgramBankDetailObjects();
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
-  }
-  
   private getProgrammeDeliveryDetails(npoProfileId: number) {
     this._npoProfileRepo.getProgrammeContacts(Number(npoProfileId), this.source).subscribe(
       (results) => {
         if (results != null) {
-          this.programContactInformation1 = results; //.filter(contact => contact.acontact.programmeId === this.programId);
-        } this._spinner.hide();
+          this.programContactInformation1 = results.filter(contact => contact.programmeId === this.programId);
+        } this._spinner.hide();//
       },
       (err) => {
         this._loggerService.logException(err);
       });
-  }
-
-  private updateProgramBankDetailObjects() {
-    if (this.banks && this.accountTypes && this.programBankDetails) {
-      this.programBankDetails.forEach(item => {
-        item.bank = this.banks.find(x => x.id === item.bankId);
-        this.loadProgrammeBranch(item);
-        item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
-      });
-    }
-  }
-
-  private loadProgrammeBranch(bankDetail: IProgramBankDetails) {
-    this._dropdownRepo.getBranchById(bankDetail.branchId).subscribe(
-      (results) => {
-        bankDetail.branch = results;
-        bankDetail.branchCode = bankDetail.branch.branchCode != null ? bankDetail.branch.branchCode : bankDetail.bank.code;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
   }
 
   private loadStaffCategories() {

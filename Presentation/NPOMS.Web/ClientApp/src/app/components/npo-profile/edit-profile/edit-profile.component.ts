@@ -33,18 +33,7 @@ export class EditProfileComponent implements OnInit {
   ProgrammeApprover: boolean;
   ProgrammeViewOnly: boolean;
   ProgrammeCapturer: boolean;
-  /* Permission logic */
-  // public IsAuthorized(permission: PermissionsEnum): boolean {
-  //   this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
-  //   this.isApplicant = this.profile.roles.some(function (role) { return role.id === RoleEnum.Applicant });
-  //   this.canReviewOrApprove = this.profile.roles.some(function (role) { return role.id === RoleEnum.Approver || role.id === RoleEnum.SystemAdmin });
-  //   console.log(this.isSystemAdmin);
-  //   console.log(this.canReviewOrApprove);
-  //   if (this.profile != null && this.profile.permissions.length > 0) {
-  //     return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
-  //   }
-  // }
-
+ 
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (!this.profile) {
         return false;
@@ -1128,7 +1117,6 @@ private loadTitles() {
         if(this.isSystemAdmin || this.isApplicant)
           {
             this.filteredProgrammes = this.programmes;
-            console.log('this.filteredProgrammes', this.filteredProgrammes);
           }
           
           if(!this.isDepartmentAdmin)
