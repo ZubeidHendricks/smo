@@ -157,14 +157,14 @@
     <div style="height: 10px;"></div>
     <div style="height: 10px;"></div>
     <p-panel [header]="'Programme Contact Details'">  
-        <p-table [value]="programContactInformation" styleClass="p-datatable-sm">
+        <p-table [value]="programContactInformation1" styleClass="p-datatable-sm">
             <ng-template pTemplate="header">
               <tr>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>Status</th>
+                <!-- <th>Status</th> -->
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-contact>
@@ -173,7 +173,7 @@
                 <td>{{contact.lastName}}</td>
                 <td>{{contact.emailAddress}}</td>
                 <td>{{contact.cellphone}}</td>
-                <td>{{contact?.approvalStatus?.name}}</td>
+                <!-- <td>{{contact?.approvalStatus?.name}}</td> -->
               </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
