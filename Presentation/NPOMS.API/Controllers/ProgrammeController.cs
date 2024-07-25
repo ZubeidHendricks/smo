@@ -57,6 +57,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                var npoId = await _npoProfilService.GetById(npoProfileId);
                 var results = await _bankService.GetBankDetailsByProgramId(programmeId, npoProfileId);
                 return Ok(results);
             }
@@ -200,6 +201,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                //var npo = await _applicationService.GetApplicationById(applicationId);
                 await _programmeService.CreateBankDetails(model, base.GetUserIdentifier(), npoProfileId);
                 return Ok(model);
             }
@@ -277,7 +279,8 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                await _programmeService.UpdateBankSelection(base.GetUserIdentifier(), id, selection, npoId);
+                var npoProfile = await _npoProfilService.GetByNpoId(npoId);
+                await _programmeService.UpdateBankSelection(base.GetUserIdentifier(), id, selection, npoProfile.Id);
                 return Ok();
             }
             catch (Exception ex)

@@ -160,7 +160,7 @@
                   <th>District Council</th>
                   <th>Local Municipality</th>
                   <th>Service delivery address</th>
-                  <th>Status</th>
+                  <!-- <th>Status</th> -->
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-delivery>
@@ -172,7 +172,7 @@
                   <td>{{delivery.districtCouncil?.name}}</td>
                   <td>{{delivery.localMunicipality?.name}}</td>
                   <td>{{getNames(delivery?.serviceDeliveryAreas)}}</td>
-                  <td>{{delivery?.approvalStatus?.name}}</td>
+                  <!-- <td>{{delivery?.approvalStatus?.name}}</td> -->
                 </tr>
               </ng-template>
               <ng-template pTemplate="emptymessage">

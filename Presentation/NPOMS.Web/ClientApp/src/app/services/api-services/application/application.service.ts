@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationWithUsers, IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -235,8 +235,27 @@ export class ApplicationService {
     return this._http.get<IUser[]>(url, httpOptions);
   }
 
+  public depReviewers(departmentId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/workplanapprovers/${departmentId}`;
+    return this._http.get<IUser[]>(url, httpOptions);
+  }
+
+  public workplanapprovers(departmentId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/workplanapprovers/${departmentId}`;
+    return this._http.get<IUser[]>(url, httpOptions);
+  }
+
   public UpdateInitiateScorecardValueAndEmail(applicationId: number, users: { fullName: string, email: string, id: number }[]) {
     const url = `${this._envUrl.urlAddress}/api/applications/UpdateInitiateScorecardValueAndEmail/applicationId/${applicationId}`;
     return this._http.put<IApplication>(url, users, httpOptions);
+}
+public UpdatesatisfactionReviewers(applicationId: number, users: { fullName: string, email: string, id: number }[]) {
+  const url = `${this._envUrl.urlAddress}/api/applications/UpdatesatisfactionReviewers/applicationId/${applicationId}`;
+  return this._http.put<IApplication>(url, users, httpOptions);
+}
+
+public updateApplicationWithApprovers(model: ApplicationWithUsers) {
+  const url = `${this._envUrl.urlAddress}/api/applications/PlanApprover`;
+  return this._http.put<IApplication>(url, model, httpOptions);
 }
 }

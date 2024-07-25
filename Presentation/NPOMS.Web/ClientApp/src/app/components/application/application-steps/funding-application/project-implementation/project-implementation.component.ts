@@ -24,6 +24,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() implementations: IProjectImplementation[];
   @Output() implementationsChange = new EventEmitter();
+  @Input() programId: number;
   _menuActions: MenuItem[];
   
   projImpls: IProjectImplementation[] = [];
@@ -346,8 +347,8 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   private setPlaces(sdas: ISDA[]): void {
-    if (sdas && sdas.length != 0) {     
-      this._bidService.getPlaces(sdas).subscribe(res => {
+    //if (sdas && sdas.length != 0) {     
+      this._bidService.getSdaPlaces(sdas, this.application.id, this.programId).subscribe(res => {
         this.places = res;
         this.getPlace.emit(this.places)
         this._bidService.getSubPlaces(this.places).subscribe(res => {        
@@ -355,7 +356,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
           this.getSubPlace.emit(this.subPlacesAll)
         });
       });
-    }
+    //}
   }
 
   private allDropdownsLoaded() {  // use for edit purposes if implementation has places and sub places or not

@@ -55,6 +55,7 @@
         </app-monitoring-evaluation-plan>
         <app-project-implementation *ngIf="activeStep == FundingApplicationStepsEnum.ProjectImplementationPlan"
             [(activeStep)]="activeStep" [application]="application"
+            [programId]="application.applicationPeriod.programmeId"
             [(implementations)]="fundingApplicationDetails.implementations"
             [(fundingApplicationDetails)]="fundingApplicationDetails" [places]="placeAll" [allsubPlaces]="subPlacesAll">
         </app-project-implementation>

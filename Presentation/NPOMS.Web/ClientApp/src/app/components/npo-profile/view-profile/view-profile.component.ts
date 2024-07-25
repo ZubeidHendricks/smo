@@ -82,6 +82,7 @@ export class ViewProfileComponent implements OnInit {
 
   programBankDetails : IProgramBankDetails [];
   programContactInformation: IProgramContactInformation[];
+  programContactInformation1: IProgramContactInformation[];
   programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
   programDeliveryDetails : IProgrammeServiceDelivery [];
   selectedRowIndex: number | null = null;
@@ -212,15 +213,18 @@ export class ViewProfileComponent implements OnInit {
   }
 
   loadProgrammeDetails(progId: number): void {
+    alert(progId);
+    alert(this.npoProfile.id);
     forkJoin({
+     
       contacts: this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfile.id)),
       bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfile.id)),
       deliveryDetails: this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfile.id))
     }).subscribe({
       next: (result) => {
         this.programContactInformation = result.contacts.filter(contact => contact.approvalStatus.id === AccessStatusEnum.Approved);
-        this.programBankDetails = result.bankDetails.filter(bankDetail => bankDetail.approvalStatus.id === AccessStatusEnum.Approved);
-        this.programDeliveryDetails = result.deliveryDetails.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
+        this.programBankDetails = result.bankDetails; //result.bankDetails.filter(bankDetail => bankDetail.approvalStatus.id === AccessStatusEnum.Approved);
+        this.programDeliveryDetails = result.deliveryDetails; //.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
         this.updateProgramBankDetailObjects();
       },
       error: (err) => {
@@ -233,7 +237,7 @@ export class ViewProfileComponent implements OnInit {
     this._npoProfileRepo.getProgrammeContacts(Number(npoProfileId), this.source).subscribe(
       (results) => {
         if (results != null) {
-          this.programContactInformation = results.filter(contact => contact.approvalStatus.id === AccessStatusEnum.Approved && contact.programmeId === this.programId);
+          this.programContactInformation1 = results; //.filter(contact => contact.acontact.programmeId === this.programId);
         } this._spinner.hide();
       },
       (err) => {
