@@ -580,8 +580,7 @@ export class ApplicationDetailsComponent implements OnInit {
     this._npoProfile.getProgrammeDeliveryDetails(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          this.programDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
-          console.log(' this.programDeliveryDetails ',  this.programDeliveryDetails );
+          this.programDeliveryDetails = results; //.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
         } this._spinner.hide();
       },
       (err) => {

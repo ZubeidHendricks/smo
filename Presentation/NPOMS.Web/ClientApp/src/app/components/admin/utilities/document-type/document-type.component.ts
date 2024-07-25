@@ -83,10 +83,25 @@ export class DocumentTypeComponent implements OnInit {
       {
         name: DocumentUploadLocationsEnum.Workplan,
         value: DocumentUploadLocationsEnum.Workplan
-      },
+      }, 
       {
         name: DocumentUploadLocationsEnum.WorkplanActuals,
         value: DocumentUploadLocationsEnum.WorkplanActuals
+      }
+      , 
+      {
+        name: DocumentUploadLocationsEnum.FundApp,
+        value: DocumentUploadLocationsEnum.FundApp
+      }
+      , 
+      {
+        name: DocumentUploadLocationsEnum.QuickCapture,
+        value: DocumentUploadLocationsEnum.QuickCapture
+      }
+      , 
+      {
+        name: DocumentUploadLocationsEnum.FundedNpo,
+        value: DocumentUploadLocationsEnum.FundedNpo
       }
     ]
   }

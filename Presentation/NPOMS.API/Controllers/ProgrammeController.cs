@@ -57,6 +57,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                var npoId = await _npoProfilService.GetById(npoProfileId);
                 var results = await _bankService.GetBankDetailsByProgramId(programmeId, npoProfileId);
                 return Ok(results);
             }
@@ -195,13 +196,13 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPost("create-bank/{applicationId}", Name = "CreateProgramBankDetails")]
-        public async Task<IActionResult> CreateProgramBankDetails([FromBody] ProgramBankDetails model, int applicationId)
+        [HttpPost("create-bank/{npoProfileId}", Name = "CreateProgramBankDetails")]
+        public async Task<IActionResult> CreateProgramBankDetails([FromBody] ProgramBankDetails model, int npoProfileId)
         {
             try
             {
-                var npo = await _applicationService.GetApplicationById(applicationId);
-                await _programmeService.CreateBankDetails(model, base.GetUserIdentifier(), npo.NpoId);
+                //var npo = await _applicationService.GetApplicationById(applicationId);
+                await _programmeService.CreateBankDetails(model, base.GetUserIdentifier(), npoProfileId);
                 return Ok(model);
             }
             catch (Exception ex)
