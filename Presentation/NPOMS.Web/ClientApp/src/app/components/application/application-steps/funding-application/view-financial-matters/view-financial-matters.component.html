@@ -451,7 +451,7 @@
           <th>Bank Name</th>
           <th>Account Number</th>
           <th>Branch</th>
-          <th>Status</th>
+          <th>Account Type</th>
           </tr>
       </ng-template>
       <ng-template pTemplate="body" let-detail>
@@ -459,7 +459,7 @@
           <td>{{detail?.bank?.name}}</td>
           <td>{{detail?.accountNumber}}</td>
           <td>{{detail?.branch?.name}}</td>
-          <td>{{detail?.approvalStatus?.name}}</td>
+          <td>{{detail?.accountType?.name}}</td>
           </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">

@@ -390,7 +390,7 @@ export class FinancialMattersComponent implements OnInit {
   }
 
   private createProgrameBankDetail(bankDetail: IProgramBankDetails) {
-    this._npoProfile.createProgrammeBankDetails(Number(this.application.npoId),bankDetail).subscribe(
+    this._npoProfile.createProgrammeBankDetails(Number(this.application.id),bankDetail).subscribe(
       (resp) => {
         this.loadProgrammeDetails();
       },

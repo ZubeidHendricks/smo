@@ -458,18 +458,20 @@
         <th>Bank Name</th>
         <th>Account Number</th>
         <th>Branch</th>
-        <th>Status</th>
+        <th>Account Type</th>
       </tr>
       </ng-template>
       <ng-template pTemplate="body" let-detail>
       <tr>
         <td>
-          <p-toggleButton [(ngModel)]="detail.isSelected" [ngModelOptions]="{standalone: true}" (onChange)="setValue($event,detail.id)" [disabled]="detail.approvalStatusId !== 2"></p-toggleButton>
+          <p-toggleButton [(ngModel)]="detail.isSelected" [ngModelOptions]="{standalone: true}" (onChange)="setValue($event,detail.id)">
+            <!-- [disabled]="detail.approvalStatusId !== 2" -->
+          </p-toggleButton>
         </td>
         <td>{{detail?.bank?.name}}</td>
         <td>{{detail?.accountNumber}}</td>
         <td>{{detail?.branch?.name}}</td>
-        <td>{{detail?.approvalStatus?.name}}</td>
+        <td>{{detail?.accountType?.name}}</td>
       </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
@@ -477,11 +479,11 @@
               <td colspan="5" style="text-align: center;">No results found.</td>
           </tr>
       </ng-template>
-      <ng-template pTemplate="summary" let-rowData>
+      <!-- <ng-template pTemplate="summary" let-rowData>
         <div style="text-align:left">
             <button pButton pRipple type="button" label="Add Bank Detail" class="p-button-text" icon="fa fa-plus" (click)="addProgrammeBankDetail()"></button>
         </div>
-      </ng-template>
+      </ng-template> -->
   </p-table>
 </p-panel>    
 <div style="height: 10px;"></div>
