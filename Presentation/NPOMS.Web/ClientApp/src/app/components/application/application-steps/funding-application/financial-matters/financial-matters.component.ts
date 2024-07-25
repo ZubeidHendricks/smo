@@ -243,7 +243,7 @@ export class FinancialMattersComponent implements OnInit {
   
   setValue(event, value) {  
 
-      if(event.checked)
+      if(event.target.checked)//
       {
         this.isSDASelected = true;
         this._npoProfile.updateProgrammeBankSelection(value, this.isSDASelected, this.application.npoId).subscribe(resp => {
