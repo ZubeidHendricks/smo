@@ -92,13 +92,14 @@ export class ApplicationPeriodListComponent implements OnInit {
     this.cols = [
       // { field: 'refNo', header: 'Ref. No.', width: '10%' },
       { field: 'department.name', header: 'Department', width: '13%' },
-      { field: 'applicationType.name', header: 'Type', width: '12%' },
-      { field: 'name', header: 'Name', width: '15%' },
+      { field: 'applicationType.name', header: 'Type', width: '10%' },
+      { field: 'programme.name', header: 'Programme', width: '12%' },
       { field: 'subProgramme.name', header: 'Sub-Programme', width: '15%' },
+      { field: 'subProgrammeType.name', header: 'Sub-ProgrammeType', width: '17%' },
       { field: 'financialYear.name', header: 'Financial Year', width: '12%' },
       { field: 'openingDate', header: 'Opening Date', width: '12%' },
-      { field: 'closingDate', header: 'Closing Date', width: '13%' },
-      { field: 'status', header: 'Status', width: '13%' }
+      { field: 'closingDate', header: 'Closing Date', width: '12%' },
+      { field: 'status', header: 'Status', width: '12%' }
     ];
 
     this.stateOptions = [
