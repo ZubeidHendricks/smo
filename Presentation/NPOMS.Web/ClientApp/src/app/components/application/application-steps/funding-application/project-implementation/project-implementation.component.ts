@@ -125,7 +125,6 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   }
 
   editProjImpl(data: IProjectImplementation) {
-    alert(data.id);
     this.selectedImplementation = data;
     this.selectedPlaces = [];
     this.selectedSubPlaces = [];
