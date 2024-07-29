@@ -13,7 +13,9 @@
         </div>
     </div>
     <div style="height: 10px;"></div>
-    
+
+    <!-- <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
+     -->
     <div>
         <p-panel [style]="{'font-size':'12px'}" header="Organisation Details">
             <app-view-npo [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)"></app-view-npo>
@@ -79,7 +81,7 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                         <tr class="heading">
-                            <td *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false" [attr.colspan]="7">
+                            <td *ngIf="rowGroupMetadataActivities[rowIndex].itemExists === false" [attr.colspan]="10">
                                 <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
                             </td>
                         </tr>
@@ -90,6 +92,15 @@
                                 'yyyy-MM-dd'}}</td>
                             <td>{{rowData.target}}</td>
                             <td>{{rowData.facilityListText}}</td>
+                            <td>{{rowData?.mappedDistrict }}</td>
+                            <td>{{rowData?.mappedManicipality}}</td>
+                            <td>{{rowData?.mappedSubstructure}}</td>  
+                            <td>{{rowData?.mappedSubdistrict}}</td> 
+
+
+
+
+
                             <td style="text-align: center;">
                                 <button pButton pRipple type="button" class="p-button-text action-button"
                                     icon="fa fa-info-circle" (click)="editActivity(rowData)" pTooltip="View"

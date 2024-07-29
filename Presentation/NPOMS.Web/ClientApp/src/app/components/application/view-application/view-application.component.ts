@@ -2,7 +2,7 @@ import { ProjectImplementationComponent } from './../application-steps/funding-a
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationDetails, IDepartment, IDocumentStore, IFacilityList, IMonitoringAndEvaluation, INpo, INpoProfile, IObjective, IProgramme, IProjectImplementation, IProjectInformation, IRecipientType, IResource, ISubProgramme, ISubSubRecipient, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
@@ -58,6 +58,8 @@ export class ViewApplicationComponent implements OnInit {
   applicationDetailView: IApplicationDetails;
   projInfoView: IProjectInformation;
   projImplView: IProjectImplementation;
+
+  menuActions: MenuItem[];
 
   isObjectivesAvailable: boolean;
   isActivitiesAvailable: boolean;
@@ -150,6 +152,8 @@ export class ViewApplicationComponent implements OnInit {
 
   rowGroupMetadata: any[];
   recipientTypes: IRecipientType[];
+  allActivities: IActivity[];
+  activeActivities: IActivity[];
 
   constructor(
     private _router: Router,
@@ -169,6 +173,7 @@ export class ViewApplicationComponent implements OnInit {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
+      this.buildMenu();
     });
 
     this._authService.profile$.subscribe(profile => {
@@ -207,7 +212,11 @@ export class ViewApplicationComponent implements OnInit {
       { header: 'Activity Type', width: '10%' },
       { header: 'Timeline', width: '15%' },
       { header: 'Target', width: '10%' },
-      { header: 'Facilities and/or Community Places', width: '38%' }
+      { header: 'Facilities and/or Community Places', width: '38%' },
+      { header: 'District Name', width: '10%' },
+      { header: 'Municipalities', width: '10%' },
+      { header: 'Sub Structures ', width: '10%' },
+      { header: 'Sub Districts', width: '10%' }
     ];
 
     this.sustainabilityPlanCols = [
@@ -256,6 +265,47 @@ export class ViewApplicationComponent implements OnInit {
     ];
 
   }
+
+  private buildMenu() {
+    if (this.profile) {
+      this.menuActions = [
+        {
+          label: 'Download',
+          icon: 'fa fa-step-backward',
+          command: () => {
+            this.downloadAsPdf();
+          },
+          visible: true
+        },
+     
+
+   
+      ];
+    }
+  }
+
+  printDocument() {
+    setTimeout(() => {
+      document.title = "Work Plan";
+      window.print();
+      this._router.navigate([{ outlets: { print: null } }]);
+    }, 2500);
+  }
+
+  downloadAsPdf() {
+    const element = document.getElementById('print-section'); // The section you want to download as PDF
+
+    const opt = {
+      margin:       0.5,
+      filename:     'Work_Plan.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+   // html2pdf().from(element).set(opt).save();
+  }
+  
 
   private loadApplication() {
     this._spinner.show();
@@ -341,7 +391,16 @@ export class ViewApplicationComponent implements OnInit {
   private loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
+        console.log(
+          'activities',results);
         this.activities = results.filter(x => x.isActive === true);
+        this.activities.forEach(item => {
+          item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),
+          item.mappedManicipality = this.getSubDistrictNames(item?.activityManicipality),
+          item.mappedSubstructure = this.getSubDistrictNames(item?.activitySubStructure),
+          item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict)
+        });
+
         this.getFacilityListText(results);
         this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Activities);
         this.isActivitiesAvailable = true;
@@ -352,6 +411,15 @@ export class ViewApplicationComponent implements OnInit {
       }
     );
   }
+
+  getSubDistrictNames(activityDemoName: any): string {
+    if (!activityDemoName || !activityDemoName) {
+      return '';
+    }
+
+    return activityDemoName.map((subDistrict: any) => subDistrict.name).join(', ');
+  }
+
 
   private getFacilityListText(activities: IActivity[]) {
     activities.forEach(activity => {
