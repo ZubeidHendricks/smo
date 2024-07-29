@@ -49,6 +49,7 @@ export class ApplicationListComponent implements OnInit {
   // This is the selected application when clicking on option buttons...
   selectedApplication: IApplication;
   capturedResponses: ICapturedResponse[];
+  capturedResponse: ICapturedResponse[];
   isSystemAdmin: boolean = true;
   isAdmin: boolean = false;
   hasAdminRole: boolean = false;
@@ -59,6 +60,7 @@ export class ApplicationListComponent implements OnInit {
   buttonItems: MenuItem[];
   optionItems: MenuItem[];
   _responses: IResponseOptions[];
+  _response: IResponseOptions[];
   response: number;
 
   // Used for table filtering
@@ -98,7 +100,8 @@ export class ApplicationListComponent implements OnInit {
 
         this.loadNpos();
         this.reviewers();
-
+        this.getAllCapturedResponses();
+        this.getAllResponses();
         var splitUrl = window.location.href.split('/');
         this.headerTitle = splitUrl[5];
 
@@ -264,10 +267,15 @@ export class ApplicationListComponent implements OnInit {
   }
 
   private getRejectedInformation(application: IApplication, applicationId: number) {
-    this._evaluationService.getResponse(applicationId).subscribe(
+    this._response = this._responses.filter(x => x.createdUserId === this.profile.id && x.rejectionFlag === 1 && x.fundingApplicationId === applicationId);
+    application.rejectedScorecard = this._responses.length;
+   
+  }
+
+  private getAllResponses() {
+    this._evaluationService.getAllResponses().subscribe(
       (results) => {
-        this._responses = results.filter(x => x.createdUserId === this.profile.id && x.rejectionFlag === 1);
-        application.rejectedScorecard = this._responses.length;
+        this._responses = results;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -276,15 +284,20 @@ export class ApplicationListComponent implements OnInit {
   }
 
   private getSummarySubmissionStatus(application: IApplication, applicationId: number) {
-    this._evaluationService.getCapturedResponses(Number(applicationId)).subscribe(
+
+    this.capturedResponse = this.capturedResponses.filter(x => x.questionCategoryId === 100 && x.isActive === true && x.fundingApplicationId === applicationId);
+    if (this.capturedResponses.length > 0) {
+      application.submittedScorecard = this.capturedResponses.length
+    }
+    else{
+      application.submittedScorecard = 0;
+    }
+  }
+
+  private getAllCapturedResponses() {
+    this._evaluationService.getAllCapturedResponses().subscribe(
       (results) => {
-        this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.isActive === true);
-        if (this.capturedResponses.length > 0) {
-          application.submittedScorecard = this.capturedResponses.length
-        }
-        else{
-          application.submittedScorecard = 0;
-        }
+        this.capturedResponses = results;
       })
   }
 

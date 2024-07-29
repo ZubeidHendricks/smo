@@ -370,6 +370,7 @@ export class CreateApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
+    
     this.application.status = null;
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
@@ -378,11 +379,13 @@ export class CreateApplicationComponent implements OnInit {
       this.application.statusId = status;
     }
     if (this.bidCanContinue(status)) {
+      this.fundingApplicationDetails.implementations = null;
       this.application.statusId = status;
       if (this.validationErrors.length == 0) {
         this._applicationRepo.updateApplication(this.application).subscribe();
       }
       if (!this.applicationIdOnBid) {
+        this.fundingApplicationDetails.implementations = null;
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
           this.menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
@@ -397,6 +400,7 @@ export class CreateApplicationComponent implements OnInit {
       }
 
       if (status == StatusEnum.PendingReview) {
+        
         this.application.status.name = "PendingReview";
         this._applicationRepo.updateApplication(this.application).subscribe();
 
