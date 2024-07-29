@@ -42,7 +42,6 @@
             [isAdmin]=false
             [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
         </app-financial-matters>
-
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
             [(activeStep)]="activeStep" [application]="application"
             [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion"
