@@ -53,7 +53,6 @@
         [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails"
          [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
          [(isSDASelected)] = "fundingApplicationDetails.applicationDetails.isSDASelected"
-         [(isSDASelected)] = "fundingApplicationDetails.applicationDetails.isSDASelected"
          [(programId)]="application.applicationPeriod.programmeId" 
          [(subProgramId)] = "application.applicationPeriod.subProgrammeId"
          [(subProgramTypeId)] = "application.applicationPeriod.subProgrammeTypeId"
@@ -69,7 +68,8 @@
         [programId]="application.applicationPeriod.programmeId" 
         [subProgramId] = "application.applicationPeriod.subProgrammeId"
         [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
-        [(fundingApplicationDetails)]="fundingApplicationDetails">
+        [(fundingApplicationDetails)]="fundingApplicationDetails"
+        [(financialMattersIncome)]="financialMattersIncome">
         </app-financial-matters>
 
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"

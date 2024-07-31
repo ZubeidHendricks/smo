@@ -2555,7 +2555,7 @@ private loadTitles() {
   }
 
   private updateProgrammeBankDetail(bankDetail: IProgramBankDetails) {
-    this._npoProfileRepo.updateProgrammeBankDetails(Number(this.selectedProgram.id),bankDetail).subscribe(
+    this._npoProfileRepo.updateProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
       (resp) => {
         this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
       },

@@ -44,7 +44,8 @@
             [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
             [source]="source" 
             [isAdmin]=false
-            [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
+            [(fundingApplicationDetails)]="fundingApplicationDetails"
+            [(financialMattersIncome)]="financialMattersIncome" (financialMattersChange)="getfinFund($event)">
         </app-financial-matters>
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
             [(activeStep)]="activeStep" [application]="application"

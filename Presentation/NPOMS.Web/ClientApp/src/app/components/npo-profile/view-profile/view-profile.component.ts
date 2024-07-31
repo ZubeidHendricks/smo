@@ -20,8 +20,8 @@ export class ViewProfileComponent implements OnInit {
   @Input() npoId: number;
   @Input() source: string;
   @Input() programId: number;
-  @Input() SubProgramId: number;
-  @Input() SubProgramTypeId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
   @Output() retrievedNpoProfile = new EventEmitter<INpoProfile>();
 
   npoProfile: INpoProfile;
@@ -108,7 +108,7 @@ export class ViewProfileComponent implements OnInit {
     {
       this.viewHeader = true;
     }
-    
+   
     this.loadDocumentTypes();
     this.loadProgrammes();
     this.loadSubProgrammes();
@@ -154,9 +154,9 @@ export class ViewProfileComponent implements OnInit {
     ];
 
     this.serviceRenderedCols = [
-      { header: 'Programme', width: '30%' },
-      { header: 'Sub-Programme', width: '30%' },
-      { header: 'Sub-Programme Type', width: '30%' },
+      { header: 'Programme', width: '33%' },
+      { header: 'Sub-Programme', width: '33%' },
+      { header: 'Sub-Programme Type', width: '33%' },
     ];
 
     this.bankDetailCols = [
@@ -191,8 +191,9 @@ export class ViewProfileComponent implements OnInit {
   private getProgrammeDeliveryDetails(npoProfileId: number) {
     this._npoProfileRepo.getProgrammeContacts(Number(npoProfileId), this.source).subscribe(
       (results) => {
+
         if (results != null) {
-          this.programContactInformation1 = results.filter(contact => contact.programmeId === this.programId && contact.subProgrammeId === this.SubProgramId && contact.subProgrammeTypeId === this.SubProgramTypeId);
+          this.programContactInformation1 = results.filter(contact => contact.programmeId === this.programId && contact.subProgrammeId === this.subProgramId && contact.subProgrammeTypeId === this.subProgramTypeId);
         } this._spinner.hide();//
       },
       (err) => {
@@ -355,7 +356,7 @@ export class ViewProfileComponent implements OnInit {
         this.servicesRendered = results;
         if(this.programId != null && this.programId > 0)
         {
-            this.servicesRendered = results.filter(service => service.programmeId === this.programId && service.subProgrammeId === this.SubProgramId && service.subProgrammeTypeId === this.SubProgramTypeId);
+            this.servicesRendered = results.filter(service => service.programmeId === this.programId && service.subProgrammeId === this.subProgramId && service.subProgrammeTypeId === this.subProgramTypeId);
         }
         this.updateServicesRenderedObjects();
       },

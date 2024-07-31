@@ -393,14 +393,18 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     if (applicationIdOnBid.id == null) {
       this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
         //this._menuActions[1].visible = false;
+        resp;
+        this.implementations = null;
         this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-        resp;
+       
       });
     }
     else {
       this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
         if (resp) {
+          resp;
+          this.implementation = null;
           this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
         }
