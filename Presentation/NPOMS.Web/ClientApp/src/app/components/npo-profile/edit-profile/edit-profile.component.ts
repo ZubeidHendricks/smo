@@ -199,6 +199,8 @@ export class EditProfileComponent implements OnInit {
   bankingDetails: any[] = [];
   displayBankingDetailsPanel: boolean = false;
   selectedProgram: any;
+  selectedSubProgram: any;
+  selectedSubProgramType: any;
   //contactInformation: IContactInformation = {} as IContactInformation;
 
   contactInformation: IProgramContactInformation = {} as IProgramContactInformation;
@@ -821,7 +823,7 @@ private loadTitles() {
     });
   }
   
-  toggleBankingDetailsPanel(program: any) {
+  toggleBankingDetailsPanel(program: any, subProgram: any, subProgramType: any) {
     // if (this.selectedProgram && this.selectedProgram.id === program.id) {
     //   this.displayBankingDetailsPanel = true;
     // } else {
@@ -831,7 +833,11 @@ private loadTitles() {
     // }
     this.selectedProgram = program;
     this.loadProgrammeDetails(program.id);
+    this.selectedSubProgram = subProgram;
+    this.selectedSubProgramType = subProgramType;
     this.displayBankingDetailsPanel = true;
+    // alert(this.selectedSubProgram.id);
+    // alert(this.selectedSubProgramType.id);
   }
 
   getNames(array: any[]): string {
@@ -986,6 +992,8 @@ private loadTitles() {
   saveProgrammeServiceDelivery() {
   this.selectedDelivery.programId =  Number(this.selectedProgram.id);
   this.selectedDelivery.isActive = true;
+  this.selectedDelivery.subProgrammeId = Number(this.selectedSubProgram.id);
+  this.selectedDelivery.subProgrammeTypeId = Number(this.selectedSubProgramType.id);
 
   if (this.isNewDelivery) {
       this.createProgrammeServiceDelivery(this.selectedDelivery);
@@ -1438,7 +1446,9 @@ private loadTitles() {
     this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId,this.source).subscribe(
       (results) => {
         this.servicesRendered = results;
+
         this.updateServicesRenderedObjects();
+       
       },
       (err) => {
         this._loggerService.logException(err);
@@ -2186,6 +2196,7 @@ private loadTitles() {
     this.serviceRendered.subProgrammeId = this.selectedSubProgramme.id;
     this.serviceRendered.subProgrammeTypeId = this.selectedSubProgrammeType.id;
     this.serviceRendered.isActive = true;
+    
 
     this.newServiceRendered ? this.createServiceRendered(this.serviceRendered) : this.updateServiceRendered(this.serviceRendered);
     this.displayServiceRenderedDialog = false;
@@ -2433,6 +2444,8 @@ private loadTitles() {
     this.programBankDetail.branchId = this.selectedBranch.id;
     this.programBankDetail.accountTypeId = this.selectedAccountType.id;
     this.programBankDetail.isActive = true;
+    this.programBankDetail.subProgrammeId = Number(this.selectedSubProgram.id);
+    this.programBankDetail.subProgrammeTypeId = Number(this.selectedSubProgramType.id);
 
     this.newBankDetail ? this.createProgrameBankDetail(this.programBankDetail) : this.updateProgrameBankDetail(this.programBankDetail);
     this.displayBankDetailDialog = false;
@@ -2470,6 +2483,8 @@ private loadTitles() {
     this.contactInformation.race = this.selectedRace;
     this.contactInformation.gender = this.selectedGender;
     this.contactInformation.language = this.selectedLanguage;
+    this.contactInformation.subProgrammeId = Number(this.selectedSubProgram.id);
+    this.contactInformation.subProgrammeTypeId = Number(this.selectedSubProgramType.id);
 
     if (this.newContactInformation)
       this.createProgrameContactDetail(this.contactInformation)

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApplicationWithUsers, IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationWithUsers, IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IProjectImplementation, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -51,6 +51,16 @@ export class ApplicationService {
   public updateApplication(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications`;
     return this._http.put<IApplication>(url, application, httpOptions);
+  }
+
+  public addProjectImplementation(projectImplementation: IProjectImplementation) {
+    const url = `${this._envUrl.urlAddress}/api/applications/addProjectImplementation`;
+    return this._http.post<IProjectImplementation>(url, projectImplementation, httpOptions);
+  }
+
+  public updateProjectImplementation(projectImplementation: IProjectImplementation) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateProjectImplementation`;
+    return this._http.put<IProjectImplementation>(url, projectImplementation, httpOptions);
   }
 
   public deleteApplicationById(applicationId: number) {

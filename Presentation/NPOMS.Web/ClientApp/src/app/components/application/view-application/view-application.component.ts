@@ -1,5 +1,5 @@
 import { ProjectImplementationComponent } from './../application-steps/funding-application/project-implementation/project-implementation.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
@@ -44,6 +44,10 @@ export class ViewApplicationComponent implements OnInit {
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
+
+  @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
 
   paramSubcriptions: Subscription;
   id: string;

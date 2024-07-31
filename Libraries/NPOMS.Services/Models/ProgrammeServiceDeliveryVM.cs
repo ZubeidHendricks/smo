@@ -12,6 +12,8 @@ namespace NPOMS.Services.Models
     {
         public int Id { get; set; }
         public int ProgramId { get; set; }
+        public int SubProgrammeId { get; set; }
+        public int SubProgrammeTypeId { get; set; }
         public bool IsActive { get; set; }
         public bool IsSelected { get; set; }
         public int CreatedUserId { get; set; }

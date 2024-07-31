@@ -27,6 +27,7 @@ namespace NPOMS.Domain.Entities
         public DateTime CreatedDateTime { get; set; }
         public int? UpdatedUserId { get; set; }
         public DateTime? UpdatedDateTime { get; set; }
+        public int ApplicationId { get; set; }
         public FundingApplicationDetail FundingApplicationDetail { get; set; }
 
     }

@@ -544,15 +544,29 @@ export class EditApplicationComponent implements OnInit {
 
     if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
 
+      // if (this.fundingApplicationDetails.implementations.length === 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+      // if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
+      //   this.fundingApplicationDetails.projectInformation.purposeQuestion == null)
+      //   this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
+
+      // if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
+      //   this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+
+      if (this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
+        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please specify the Rand amount you applying for." });
+      if (this.fundingApplicationDetails.financialMatters.length === 0)
+        this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
+
       if (this.fundingApplicationDetails.implementations.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
-      if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
-        this.fundingApplicationDetails.projectInformation.purposeQuestion == null)
+      if (this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
 
-      if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
+      if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
-
+  
+    
     }
 
     // if (this.validationErrors.length == 0)

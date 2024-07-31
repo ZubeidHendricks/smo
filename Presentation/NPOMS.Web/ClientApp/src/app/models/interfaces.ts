@@ -16,12 +16,15 @@ export interface IDepartment {
 export interface IProgramBankDetails {
     id: number;
     programId: number;
+    subProgrammeId: number;
+    subProgrammeTypeId: number;
     bankId: number;
     branchId: number;
     accountTypeId: number;
     accountNumber: string;
     isActive: boolean;
     isSelected: boolean;
+    isSubmitted: boolean;
     createdUserId: number;
     createdDateTime: Date;
     updatedUserId?: number;
@@ -37,9 +40,12 @@ export interface IProgramBankDetails {
   export interface IProgrammeServiceDelivery {
     id: number;
     programId: number;
+    subProgrammeId: number;
+    subProgrammeTypeId: number;
     npoProfileId: number;
     isActive: boolean;
     isSelected: boolean;
+    isSubmitted: boolean;
     createdUserId: number;
     createdDateTime: Date;
     updatedUserId?: number;
@@ -57,6 +63,8 @@ export interface IProgramBankDetails {
 export interface IProgramContactInformation {
     id: number;
     programmeId: number;
+    subProgrammeId: number;
+    subProgrammeTypeId: number;
     npoProfileId: number;
     titleId: number;
     raceId: number;
@@ -76,6 +84,7 @@ export interface IProgramContactInformation {
     addressInformation: string;
     isPrimaryContact: boolean;
     isDisabled: boolean;
+    isSubmitted: boolean;
     isSignatory: boolean;
     isWrittenAgreementSignatory: boolean;
     isBoardMember: boolean;
@@ -577,6 +586,9 @@ export interface IApplication {
     scorecardCount: number;
     rejectedScorecard: number;
     submittedScorecard: number;
+    programmeId: number;
+    subProgrammeId: number;
+    subProgrammeTypeId: number;
     applicationPeriod: IApplicationPeriod;
     status: IStatus;
     createdUser: IUser;
@@ -584,6 +596,7 @@ export interface IApplication {
     npoUserTrackings: INpoUserTracking[];
     npoUserSatisfactionTrackings: INpoUserTracking[];
     npoWorkPlanApproverTrackings: INpoUserTracking[];
+    message: string;
 }
 export interface IUserSatisfactionTracking {
     id: number;
@@ -831,6 +844,9 @@ export interface IFundingApplicationDetails {
     expenses: Budget[],
     financialMatters: FinancialMatters[];
     applicationDetails: IApplicationDetails;
+    programId: number;
+    subProgramId: number;
+    subProgramTypeId: number;
     //fundAppDeclaration :IFundAppDeclaration;     
 }
 
@@ -844,16 +860,14 @@ export interface IQuickCaptureDetails {
     npo: INpo;
 }
 
-
-
 export interface IProjectInformation {
     id: number;
     applicationId: number;
     isActive: boolean;
     changeRequired: boolean;
     isNew: boolean;
-    //initiatedQuestion: string;
-    //considerQuestion: string;
+    initiatedQuestion: string;
+    considerQuestion: string;
     purposeQuestion: string;
 }
 export interface IMonitoringAndEvaluation {
@@ -863,6 +877,7 @@ export interface IMonitoringAndEvaluation {
     changeRequired: boolean;
     isNew: boolean;
     monEvalDescription: string;
+    createdUserId: number;
 }
 export interface IResource {
     id: number;
@@ -1584,11 +1599,13 @@ export interface IRegion {
 
 export interface IApplicationDetails {
     id: number;
+    applicationId: number;
     amountApplyingFor: number;
     isSDASelected: boolean;
     programmeSDId: number;
     fundAppSDADetailId: number;
     fundAppSDADetail: IFundAppSDADetail;
+  
 }
 
 export interface IFundAppSDADetail {
@@ -1630,9 +1647,11 @@ export interface IDistrictCouncil {
 }
 
 export interface IProjectInformation {
-    initiatedQuestion: string;
-    considerQuestion: string;
+    applicationId: number;
+    isNew: boolean;
+    isActive: boolean;
     purposeQuestion: string;
+    createdUserId: number;
 }
 
 export interface Budget {
@@ -1659,6 +1678,7 @@ export interface IProjectImplementation {
     budget: number;
     fundingApplicationDetailId;
     npoProfileId: number;
+    applicationId: number;
 }
 
 export interface IFundAppDeclaration {

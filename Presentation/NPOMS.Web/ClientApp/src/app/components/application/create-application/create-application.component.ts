@@ -372,6 +372,9 @@ export class CreateApplicationComponent implements OnInit {
   private bidForm(status: StatusEnum) {
     
     this.application.status = null;
+  //   alert(this.fundingApplicationDetails.programId);
+  //  alert(this.fundingApplicationDetails.subProgramId);
+  //  alert(this.fundingApplicationDetails.subProgramTypeId);
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
     }
@@ -379,13 +382,11 @@ export class CreateApplicationComponent implements OnInit {
       this.application.statusId = status;
     }
     if (this.bidCanContinue(status)) {
-      this.fundingApplicationDetails.implementations = null;
       this.application.statusId = status;
       if (this.validationErrors.length == 0) {
         this._applicationRepo.updateApplication(this.application).subscribe();
       }
       if (!this.applicationIdOnBid) {
-        this.fundingApplicationDetails.implementations = null;
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
           this.menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
@@ -473,23 +474,19 @@ export class CreateApplicationComponent implements OnInit {
     }
 
     if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length == 0 || this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
-        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please capture Application info and save." });
+      if (this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
+        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please specify the Rand amount you applying for." });
       if (this.fundingApplicationDetails.financialMatters.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
 
       if (this.fundingApplicationDetails.implementations.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
-      if (this.fundingApplicationDetails.projectInformation?.initiatedQuestion == undefined &&
-        this.fundingApplicationDetails.projectInformation?.considerQuestion == undefined &&
-        this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
+      if (this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
 
       if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
-
     }
-
 
     if (this.validationErrors.length == 0) {
       this.menuActions[3].disabled = false;

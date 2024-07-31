@@ -44,6 +44,15 @@ namespace NPOMS.Repository.Implementation.Entities
                                 .AsNoTracking().FirstOrDefaultAsync();
         }
 
+        public async Task<ServicesRendered> GetByProperties(int npoProfileId, int programmeId, int subProgrammeId, int subProgrammeTypeId)
+        {
+            return await FindByCondition(x => x.NpoProfileId.Equals(npoProfileId) && 
+                                              x.ProgrammeId.Equals(programmeId) &&
+                                              x.SubProgrammeId.Equals(subProgrammeId) &&
+                                              x.SubProgrammeTypeId.Equals(subProgrammeTypeId))
+                                .AsNoTracking().FirstOrDefaultAsync();
+        }
+
         #endregion
     }
 }

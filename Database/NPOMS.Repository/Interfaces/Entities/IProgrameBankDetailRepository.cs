@@ -8,5 +8,6 @@ namespace NPOMS.Repository.Interfaces.Entities
     {
         Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByProgramId(int programmeId, int npoProfileId);
         Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByIds(int npoProfileId);
+        Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByIds(int programmeId, int npoProfileId, int subProgramId, int subProgramTypeId);
     }
 }
