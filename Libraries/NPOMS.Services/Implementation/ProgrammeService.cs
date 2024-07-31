@@ -9,6 +9,8 @@ using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Models;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
@@ -379,6 +381,8 @@ namespace NPOMS.Services.Implementation
 
             // Set the new values for other properties
             existingEntity.ProgramId = programmeServiceDeliveryVM.ProgramId;
+            existingEntity.SubProgrammeId = programmeServiceDeliveryVM.SubProgrammeId;
+            existingEntity.SubProgrammeTypeId = programmeServiceDeliveryVM.SubProgrammeTypeId;
             existingEntity.DistrictCouncilId = programmeServiceDeliveryVM.DistrictCouncil.Id;
             existingEntity.LocalMunicipalityId = programmeServiceDeliveryVM.LocalMunicipality.ID;
 
@@ -489,6 +493,27 @@ namespace NPOMS.Services.Implementation
             var prog = await _programme.GetById(programId);
             var depart = await _department.GetDepartmentById(prog.DepartmentId);
             return depart.Abbreviation.ToLower() == "dsd";
+        }
+
+        public async Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByIds(int programmeId, int npoProfileId, int subProgramId, int subProgramTypeId)
+        {
+            var bankDetail = await _programeBankDetailRepository.GetBankDetailsByIds(programmeId,npoProfileId, subProgramId, subProgramTypeId);
+            
+            return bankDetail;
+        }
+
+        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByIds(int programmeId, int npoProfileId, int subProgramId, int subProgramTypeId)
+        {
+            var deliveryDetails = await _programeDeliveryRepository.GetDeliveryDetailsByIds(programmeId, npoProfileId, subProgramId, subProgramTypeId);
+
+            return deliveryDetails;
+        }
+
+        public async Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByIds(int programmeId, int npoProfileId, int subProgramId, int subProgramTypeId)
+        {
+            var contactDetails = await _programeContactDetailRepository.GetContactDetailsByIds(programmeId, npoProfileId, subProgramId, subProgramTypeId);
+
+            return contactDetails;
         }
 
     }

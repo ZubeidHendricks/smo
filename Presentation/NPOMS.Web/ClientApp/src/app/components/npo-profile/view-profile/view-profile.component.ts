@@ -20,6 +20,8 @@ export class ViewProfileComponent implements OnInit {
   @Input() npoId: number;
   @Input() source: string;
   @Input() programId: number;
+  @Input() SubProgramId: number;
+  @Input() SubProgramTypeId: number;
   @Output() retrievedNpoProfile = new EventEmitter<INpoProfile>();
 
   npoProfile: INpoProfile;
@@ -107,7 +109,6 @@ export class ViewProfileComponent implements OnInit {
       this.viewHeader = true;
     }
     
-
     this.loadDocumentTypes();
     this.loadProgrammes();
     this.loadSubProgrammes();
@@ -191,7 +192,7 @@ export class ViewProfileComponent implements OnInit {
     this._npoProfileRepo.getProgrammeContacts(Number(npoProfileId), this.source).subscribe(
       (results) => {
         if (results != null) {
-          this.programContactInformation1 = results.filter(contact => contact.programmeId === this.programId);
+          this.programContactInformation1 = results.filter(contact => contact.programmeId === this.programId && contact.subProgrammeId === this.SubProgramId && contact.subProgrammeTypeId === this.SubProgramTypeId);
         } this._spinner.hide();//
       },
       (err) => {
@@ -354,7 +355,7 @@ export class ViewProfileComponent implements OnInit {
         this.servicesRendered = results;
         if(this.programId != null && this.programId > 0)
         {
-            this.servicesRendered = results.filter(service => service.programmeId === this.programId);
+            this.servicesRendered = results.filter(service => service.programmeId === this.programId && service.subProgrammeId === this.SubProgramId && service.subProgrammeTypeId === this.SubProgramTypeId);
         }
         this.updateServicesRenderedObjects();
       },

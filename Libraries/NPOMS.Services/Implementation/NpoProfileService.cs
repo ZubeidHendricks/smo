@@ -128,6 +128,12 @@ namespace NPOMS.Services.Implementation
             return result;
         }
 
+        public async Task<ServicesRendered> GetServiceRenderedByProperties(int npoProfileId, int programmeId, int subProgrammeId, int subProgrammeTypeId)
+        {
+            var result = await _servicesRenderedRepository.GetByProperties(npoProfileId, programmeId, subProgrammeId, subProgrammeTypeId);
+            return result;
+        }
+
         public async Task Create(NpoProfile profile, string userIdentifier)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
@@ -320,7 +326,7 @@ namespace NPOMS.Services.Implementation
         public async Task UpdateIncome(FinancialMattersIncome model, string userIdentifier, string id)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
+            model.ApplicationId = Convert.ToInt32(id);
             model.UpdatedUserId = loggedInUser.Id;
             model.UpdatedDateTime = DateTime.Now;
 
@@ -330,7 +336,7 @@ namespace NPOMS.Services.Implementation
         public async Task UpdateExpenditure(FinancialMattersExpenditure model, string userIdentifier, string id)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
+            model.ApplicationId = Convert.ToInt32(id);
             model.UpdatedUserId = loggedInUser.Id;
             model.UpdatedDateTime = DateTime.Now;
 
@@ -340,7 +346,7 @@ namespace NPOMS.Services.Implementation
         public async Task UpdateOthers(FinancialMattersOthers model, string userIdentifier, string id)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
+            model.ApplicationId = Convert.ToInt32(id);
             model.UpdatedUserId = loggedInUser.Id;
             model.UpdatedDateTime = DateTime.Now;
 
@@ -643,7 +649,7 @@ namespace NPOMS.Services.Implementation
                     await _programeContactDetailRepository.UpdateAsync(contact);
                 }
 
-                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryyProgramId(programId,npoProfileId);
+                var activeDeliveryInfo = await _programeDeliveryService.GetDeliveryByProgramId(programId,npoProfileId);
                 foreach (var delivery in activeDeliveryInfo)
                 {
                     delivery.ApprovalStatusId = (int)AccessStatusEnum.Approved;

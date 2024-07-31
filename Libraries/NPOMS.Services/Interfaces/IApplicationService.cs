@@ -63,8 +63,11 @@ namespace NPOMS.Services.Interfaces
 		Task CreateFundingApplicationDetails(FundingApplicationDetail model, string userIdentifier);
 
 		Task UpdateFundingApplicationDetails(FundingApplicationDetail model, string userIdentifier);
+		//Task AddProjectImplementation(ProjectImplementationViewModel model, string userIdentifier);
 
-		Task<IEnumerable<Region>> GetRegions(int fundAppSDADetailId);
+  //      Task UpdateProjectImplementation(ProjectImplementationViewModel model, string userIdentifier);
+
+        Task<IEnumerable<Region>> GetRegions(int fundAppSDADetailId);
 
 		Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(int fundAppSDADetailId);
 

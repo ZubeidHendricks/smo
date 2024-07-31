@@ -22,6 +22,8 @@
             [npoId]="application.npoId" 
             [source]="source" 
             [programId]="application.applicationPeriod.programmeId"  
+            [subProgramId] = "application.applicationPeriod.subProgrammeId"
+            [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
             (retrievedNpoProfile)="updateNpoProfile($event)" 
             *ngIf="!application.isQuickCapture">
             </app-view-profile>

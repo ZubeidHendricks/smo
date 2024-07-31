@@ -42,7 +42,12 @@ export class ApplicationDetailsComponent implements OnInit {
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
   @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
   @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
   @Input() isEdit: boolean;
+
+  @Input() amount: number;
+  @Output() amountChange: EventEmitter<number> = new EventEmitter<number>();
 
   dropdownTouched: boolean = false;
   /* Permission logic */
@@ -189,7 +194,9 @@ export class ApplicationDetailsComponent implements OnInit {
         this.getProgrammeDeliveryDetails();
       }
     });
-
+// alert(this.programId);
+// alert(this.subProgramId);
+// alert(this.subProgramTypeId);
     this.stateOptions = [
       {
         label: 'Yes',
@@ -211,9 +218,6 @@ export class ApplicationDetailsComponent implements OnInit {
       { field: 'status', header: 'Status', width: '5%' }
     ];
   }
-
-
-
 
   private loadApplication() {
     this._spinner.show();
@@ -406,12 +410,14 @@ export class ApplicationDetailsComponent implements OnInit {
   }
 
   private canContinue() {
-    this.formValidate();
+    let applicationDetailsError: string[] = [];
+     if (!this.selectedDistrictCouncil || !this.selectedLocalMunicipality || this.selectedRegions.length === 0)
+      applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
 
-    if (this.validationErrors.length == 0)
-      return true;
+    if (this.amount === undefined)
+      applicationDetailsError.push("Please specify the Rand amount you applying for");
 
-    return false;
+    return applicationDetailsError.length > 0 ? false : true;
   }
 
   private loadFinancialYears(financialYear: IFinancialYear) {
@@ -580,8 +586,10 @@ export class ApplicationDetailsComponent implements OnInit {
     this._npoProfile.getProgrammeDeliveryDetails(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.programId === this.programId);
-        } this._spinner.hide();
+          this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.programId === this.programId && deliveryDetail.subProgrammeId === this.subProgramId && deliveryDetail.subProgrammeTypeId === this.subProgramTypeId);
+          
+        } 
+        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -664,31 +672,33 @@ export class ApplicationDetailsComponent implements OnInit {
 
 
   nextPage() {
-    if(this.programDeliveryDetails != undefined)
-    { 
-      this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.Amount;
-      this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === this.programDeliveryDetails[0].districtCouncil.id);
-      this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === this.programDeliveryDetails[0].localMunicipality.id);
-      
-      this.programDeliveryDetails[0].regions.forEach(item => {
+   // if (this.canContinue()) {
+      if(this.programDeliveryDetails != undefined)
+      { 
+        this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.Amount;
+        this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === this.programDeliveryDetails[0].districtCouncil.id);
+        this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === this.programDeliveryDetails[0].localMunicipality.id);
         
-       this.selectedRegions = this.regionsAll.filter(x => x.id === item.id);
+        this.programDeliveryDetails[0].regions.forEach(item => {
+          
+        this.selectedRegions = this.regionsAll.filter(x => x.id === item.id);
 
-      });
+        });
 
-      this.programDeliveryDetails[0].serviceDeliveryAreas.forEach(item => {
+        this.programDeliveryDetails[0].serviceDeliveryAreas.forEach(item => {
+          
+          this.selectedSdas = this.sdas.concat(this.sdasAll.find(x => x.id === item.id));
+        });
         
-        this.selectedSdas = this.sdas.concat(this.sdasAll.find(x => x.id === item.id));
-      });
-      
-    }
-    else{
-      alert('Service area missing');
-      return false;
-    }
-    this.activeStep = this.activeStep + 1;
-    this.bidForm(StatusEnum.Saved);
-    this.activeStepChange.emit(this.activeStep);
+      }
+      else{
+        alert('Service area missing');
+        return false;
+      }
+      this.activeStep = this.activeStep + 1;
+      this.bidForm(StatusEnum.Saved);
+      this.activeStepChange.emit(this.activeStep);
+  //  }
   }
 
   prevPage() {

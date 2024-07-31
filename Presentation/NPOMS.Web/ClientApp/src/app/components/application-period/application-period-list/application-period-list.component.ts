@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Table } from 'primeng/table';
+import { retry } from 'rxjs/operators';
 import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IApplicationPeriod, IFinancialYear, INpo, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
@@ -38,6 +39,9 @@ export class ApplicationPeriodListComponent implements OnInit {
   cols: any[];
   allApplicationPeriods: IApplicationPeriod[];
   applicationPeriodId: number;
+  programmeId: number;
+  subProgrammeId: number;
+  subProgrammeTypeId: number;
   displayDialog: boolean;
 
   isSystemAdmin: boolean = true;
@@ -180,6 +184,9 @@ export class ApplicationPeriodListComponent implements OnInit {
   onRowSelect(applicationPeriod: IApplicationPeriod) {
     this.selectedApplicationPeriod = applicationPeriod;
     this.applicationPeriodId = applicationPeriod.id;
+    this.programmeId = applicationPeriod.programmeId;
+    this.subProgrammeId = applicationPeriod.subProgrammeId;
+    this.subProgrammeTypeId = applicationPeriod.subProgrammeTypeId;
     this.selectedOption = true;
     this.selectedFinancialYear = null;
     this.selectedNPO = null;
@@ -206,14 +213,25 @@ export class ApplicationPeriodListComponent implements OnInit {
   private autoCreateApplication() {
     this.application.npoId = this.selectedNPO.id;
     this.application.applicationPeriodId = this.applicationPeriodId;
+    this.application.programmeId = this.programmeId;
+    this.application.subProgrammeId = this.subProgrammeId;
+    this.application.subProgrammeTypeId = this.subProgrammeTypeId;
     this.application.statusId = StatusEnum.New;
 
     this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
       (resp) => {
-        this._router.navigateByUrl('application/create/' + resp.id);
+          if(resp.id == undefined)
+          {
+            alert(resp.message);
+            this._spinner.hide();
+            return false;           
+          }
+          else{
+            this._router.navigateByUrl('application/create/' + resp.id);
+          }        
       },
       (err) => {
-        this._loggerService.logException(err);
+        this._loggerService.logException(err);       
         this._spinner.hide();
       }
     );

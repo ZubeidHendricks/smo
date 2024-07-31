@@ -31,6 +31,8 @@
             [(fundingApplicationDetails)]="fundingApplicationDetails"
             [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
             [programId]="application.applicationPeriod.programmeId" 
+            [subProgramId] = "application.applicationPeriod.subProgrammeId"
+            [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
             (getPlace)="places($event)"
             (getSubPlace)=" subPlaces($event)"
             [isEdit]="true">
@@ -38,6 +40,8 @@
         <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
             [(activeStep)]="activeStep" [application]="application"
             [programId]="application.applicationPeriod.programmeId" 
+            [subProgramId] = "application.applicationPeriod.subProgrammeId"
+            [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
             [source]="source" 
             [isAdmin]=false
             [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
@@ -55,6 +59,8 @@
         <app-project-implementation *ngIf="activeStep == FundingApplicationStepsEnum.ProjectImplementationPlan"
             [(activeStep)]="activeStep" [application]="application"
             [programId]="application.applicationPeriod.programmeId"
+            [subProgramId] = "application.applicationPeriod.subProgrammeId"
+            [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
             [(implementations)]="fundingApplicationDetails.implementations"
             [(fundingApplicationDetails)]="fundingApplicationDetails" [places]="placeAll" [allsubPlaces]="subPlacesAll">
         </app-project-implementation>

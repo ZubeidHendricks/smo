@@ -220,8 +220,8 @@ export class NpoProfileService {
     return this._http.post<any>(url, fundingApplicationId, httpOptions);
   }
 
-  public updateFinancialMattersOthers(financialMattersOthers: IFinancialMattersOthers, npoProfileId: string) {
-    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersOthers/npoProfileId/${npoProfileId}`;
+  public updateFinancialMattersOthers(financialMattersOthers: IFinancialMattersOthers, applicationId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersOthers/applicationId/${applicationId}`;
     return this._http.put<IFinancialMattersOthers>(url, financialMattersOthers, httpOptions);
   }
 

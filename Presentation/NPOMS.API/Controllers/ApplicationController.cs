@@ -27,6 +27,10 @@ namespace NPOMS.API.Controllers
         private IApplicationService _applicationService;
         private IEmailService _emailService;
         private IUserService _userService;
+        private IProgrammeService _programmeService;
+        private IProgrameDeliveryService _programeDeliveryService;
+        private INpoService _npoService;
+        private INpoProfileService _npoProfileService;
 
         #endregion
 
@@ -36,14 +40,21 @@ namespace NPOMS.API.Controllers
             ILogger<ApplicationController> logger,
             IApplicationService applicationService,
             IEmailService emailService,
-            IUserService userService
+            IUserService userService,
+            IProgrammeService programmeService,
+            IProgrameDeliveryService programeDeliveryService,
+            INpoService npoService,
+            INpoProfileService npoProfileService
             )
         {
             _logger = logger;
             _applicationService = applicationService;
             _emailService = emailService;
             _userService = userService;
-
+            _programmeService = programmeService;
+            _programeDeliveryService = programeDeliveryService;
+            _npoService = npoService;
+            _npoProfileService = npoProfileService;
         }
 
         #endregion
@@ -115,6 +126,15 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                var npo = await _npoProfileService.GetByNpoId(model.NpoId);
+                var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npo.Id, model.ProgrammeId, model.SubProgrammeId,model.SubProgrammeTypeId);
+
+                if (servicesRendered == null)
+                {
+                    var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
+                    return Ok(data);
+                }
+                
                 var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
 
                 if (application == null)
@@ -128,12 +148,16 @@ namespace NPOMS.API.Controllers
                         await _applicationService.CloneWorkplan(model, financialYearId, base.GetUserIdentifier());
                         await _applicationService.CreateActivityRecipients(model, financialYearId);
                     }
+
+                    var modelToReturn = application == null ? model : application;
+                    return Ok(modelToReturn);
+
                 }
                 else
-                    await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
-
-                var modelToReturn = application == null ? model : application;
-                return Ok(modelToReturn);
+                {
+                    var data = new { Message = "Application already captured for the selected programme. Please go to 'Submissions' to access this application." };
+                    return Ok(data);
+                }
             }
             catch (Exception ex)
             {
@@ -359,6 +383,36 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        //[HttpPost("addProjectImplementation")]
+        //public async Task<IActionResult> AddProjectImplementation([FromBody] ProjectImplementationViewModel model)
+        //{
+        //    try
+        //    {
+        //        await _applicationService.AddProjectImplementation(model, base.GetUserIdentifier());
+        //        return Ok(model);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside AddProjectImplementation action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+        //[HttpPut("updateProjectImplementation")]
+        //public async Task<IActionResult> UpdateProjectImplementation([FromBody] ProjectImplementation model)
+        //{
+        //    try
+        //    {
+        //       // await _applicationService.UpdateProjectImplementation(model, base.GetUserIdentifier());
+        //        return Ok(model);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside AddProjectImplementation action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         [HttpGet("region/{id}")]
         public async Task<IActionResult> GetRegions(int id)
