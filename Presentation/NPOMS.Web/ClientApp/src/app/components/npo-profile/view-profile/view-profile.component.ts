@@ -191,6 +191,7 @@ export class ViewProfileComponent implements OnInit {
   private getProgrammeDeliveryDetails(npoProfileId: number) {
     this._npoProfileRepo.getProgrammeContacts(Number(npoProfileId), this.source).subscribe(
       (results) => {
+        console.log('results',results);
         if (results != null) {
           this.programContactInformation1 = results.filter(contact => contact.programmeId === this.programId && contact.subProgrammeId === this.SubProgramId && contact.subProgrammeTypeId === this.SubProgramTypeId);
         } this._spinner.hide();//

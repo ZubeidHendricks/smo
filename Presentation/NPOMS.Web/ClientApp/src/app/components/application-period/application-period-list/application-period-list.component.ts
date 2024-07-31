@@ -47,6 +47,7 @@ export class ApplicationPeriodListComponent implements OnInit {
   isSystemAdmin: boolean = true;
   isAdmin: boolean = false;
   hasAdminRole: boolean = false;
+  isApplicant: boolean = false;
 
   allNpos: INpo[];
   selectedNPO: INpo;
@@ -84,6 +85,7 @@ export class ApplicationPeriodListComponent implements OnInit {
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+        this.isApplicant = profile.roles.some(function (role) { return role.id === RoleEnum.Applicant });
 
         if (this.isSystemAdmin || this.isAdmin)
           this.hasAdminRole = true;
@@ -116,7 +118,15 @@ export class ApplicationPeriodListComponent implements OnInit {
     this._spinner.show();
     this._npoRepo.getAllNpos(AccessStatusEnum.Approved).subscribe(
       (results) => {
-        this.allNpos = results;
+        if(this.isApplicant )
+          {
+            this.allNpos = results;
+          }
+          else{
+            this.allNpos = results;
+          }
+       console.log('this.allNpos', this.allNpos);
+
         this._spinner.hide();
       },
       (err) => {

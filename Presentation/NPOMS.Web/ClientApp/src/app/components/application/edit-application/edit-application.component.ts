@@ -125,7 +125,6 @@ export class EditApplicationComponent implements OnInit {
     this.loadfundingSteps();
     this.applicationPeriodId = +this.id;
     this.fundingApplicationDetails.applicationPeriodId = +this.id;
-
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -354,7 +353,9 @@ export class EditApplicationComponent implements OnInit {
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;
-      this.fundingApplicationDetails.programmeId = this.application.applicationPeriod.programmeId;
+      this.fundingApplicationDetails.programId = this.application.applicationPeriod.programmeId;
+      this.fundingApplicationDetails.subProgramId = this.application.applicationPeriod.subProgrammeId
+      this.fundingApplicationDetails.subProgramTypeId = this.application.applicationPeriod.subProgrammeTypeId
       this.fundingApplicationDetails.applicationPeriodId = this.application.applicationPeriodId;
       this.fundingApplicationDetails.applicationId = Number(this.id);
       this._applicationRepo.updateApplication(this.application).subscribe(resp => 

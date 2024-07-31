@@ -757,10 +757,16 @@ export class FinancialMattersComponent implements OnInit {
 
 
   nextPage() {
-
-    this.activeStep = this.activeStep + 1;
-    this.bidForm(StatusEnum.Saved);
-    this.activeStepChange.emit(this.activeStep);
+    if(this.isSDASelected === true)
+      {
+        this.activeStep = this.activeStep + 1;
+        this.bidForm(StatusEnum.Saved);
+        this.activeStepChange.emit(this.activeStep);
+      }
+      else{
+        alert('Please select bank account or add bank account in profile section');
+        return false;
+      }   
   }
 
 

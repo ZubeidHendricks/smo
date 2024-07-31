@@ -18,7 +18,10 @@ export class NpoDetailsComponent implements OnInit {
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() application: IApplication;
   @Input() newApplication: boolean;
-
+  @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input()subProgramTypeId: number;
+  
   public get StatusEnum(): typeof StatusEnum {
     return StatusEnum;
   }

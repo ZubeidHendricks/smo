@@ -372,9 +372,9 @@ export class CreateApplicationComponent implements OnInit {
   private bidForm(status: StatusEnum) {
     
     this.application.status = null;
-  //   alert(this.fundingApplicationDetails.programId);
-  //  alert(this.fundingApplicationDetails.subProgramId);
-  //  alert(this.fundingApplicationDetails.subProgramTypeId);
+    this.fundingApplicationDetails.programId = this.application.applicationPeriod.programmeId
+    this.fundingApplicationDetails.subProgramId = this.application.applicationPeriod.subProgrammeId
+    this.fundingApplicationDetails.subProgramTypeId = this.application.applicationPeriod.subProgrammeTypeId
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
     }
