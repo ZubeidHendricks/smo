@@ -18,6 +18,9 @@
             [(activeStep)]="activeStep" [application]="application"
             [(fundingApplicationDetails)]="fundingApplicationDetails"
             [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
+            [programId]="application.applicationPeriod.programmeId"  
+            [subProgramId] = "application.applicationPeriod.subProgrammeId"
+            [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
             (getPlace)="places($event)"
             (getSubPlace)=" subPlaces($event)">
         </app-view-application-details>

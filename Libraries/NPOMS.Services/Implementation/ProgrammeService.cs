@@ -448,7 +448,8 @@ namespace NPOMS.Services.Implementation
             var programmeServiceDeliveryDetails = new ProgrammeServiceDelivery();
 
             programmeServiceDeliveryDetails.ProgramId = model.ProgramId;
-
+            programmeServiceDeliveryDetails.SubProgrammeId = model.SubProgrammeId;
+            programmeServiceDeliveryDetails.SubProgrammeTypeId = model.SubProgrammeTypeId;
             int districtId = model.DistrictCouncil.Id;
             var district = await _districtRepository.GetById(districtId);
 
