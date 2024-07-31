@@ -36,6 +36,8 @@ export class ViewApplicationDetailsComponent implements OnInit {
   @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
   @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
   @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
   dropdownTouched: boolean = false;
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -389,7 +391,7 @@ export class ViewApplicationDetailsComponent implements OnInit {
     this._npoProfile.getProgrammeDeliveryDetails(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          this.programDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.programId === this.application.applicationPeriod.programmeId);
+          this.programDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.application.applicationPeriod.programmeId);
         } this._spinner.hide();
       },
       (err) => {

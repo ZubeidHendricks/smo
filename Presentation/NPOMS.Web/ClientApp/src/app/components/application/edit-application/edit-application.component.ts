@@ -6,7 +6,7 @@ import { Console } from 'console';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { FinancialMatters } from 'src/app/models/FinancialMatters';
+import { FinancialMatters, IFinancialMattersIncome } from 'src/app/models/FinancialMatters';
 import { ApplicationTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, 
   IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, 
@@ -55,7 +55,7 @@ export class EditApplicationComponent implements OnInit {
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
-
+  financialMattersIncome: IFinancialMattersIncome[];
   bidId: number;
   placeAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
@@ -426,7 +426,7 @@ export class EditApplicationComponent implements OnInit {
 
   private getFundingApplicationDetails(data) {
     this._bidService.getBid(data.id).subscribe(response => {
-      this.getBidFullObject(response)
+      this.getBidFullObject(response);
     });
   }
 
@@ -553,11 +553,10 @@ export class EditApplicationComponent implements OnInit {
 
       // if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
       //   this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
-
       if (this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please specify the Rand amount you applying for." });
-      if (this.fundingApplicationDetails.financialMatters.length === 0)
-        this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
+      // if (this.financialMattersIncome.length === 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
 
       if (this.fundingApplicationDetails.implementations.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });

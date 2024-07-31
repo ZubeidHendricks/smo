@@ -20,7 +20,7 @@ export class NpoDetailsComponent implements OnInit {
   @Input() newApplication: boolean;
   @Input() programId: number;
   @Input() subProgramId: number;
-  @Input()subProgramTypeId: number;
+  @Input() subProgramTypeId: number;
   
   public get StatusEnum(): typeof StatusEnum {
     return StatusEnum;

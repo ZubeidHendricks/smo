@@ -106,50 +106,50 @@ export class ViewProjectImplementationComponent implements OnInit {
     this.displayDialogImpl = true;
   }
 
-  private updateProjImplementations() {
-    if (this.places && this.subPlaces && this.projectImplementations) {
-      this.projectImplementations.forEach(item => {
-        item.places = this.implementation.places;
-        item.subPlaces = this.implementation.subPlaces;
-        item.beneficiaries = this.implementation.beneficiaries;
-        item.budget = this.implementation.budget;
-        item.description = this.implementation.description;
-      });
-    }
-  }
+  // private updateProjImplementations() {
+  //   if (this.places && this.subPlaces && this.projectImplementations) {
+  //     this.projectImplementations.forEach(item => {
+  //       item.places = this.implementation.places;
+  //       item.subPlaces = this.implementation.subPlaces;
+  //       item.beneficiaries = this.implementation.beneficiaries;
+  //       item.budget = this.implementation.budget;
+  //       item.description = this.implementation.description;
+  //     });
+  //   }
+  // }
 
-  private GetProjImpl() {
-    this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
-      (results) => {
-        this.projectImplementations = results;
-        this.updateProjImplementations();
-      },
-      (err) => {
-        //
-      }
-    );
-  }
+  // private GetProjImpl() {
+  //   this._npoProfile.getProjImplByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
+  //     (results) => {
+  //       this.projectImplementations = results;
+  //       this.updateProjImplementations();
+  //     },
+  //     (err) => {
+  //       //
+  //     }
+  //   );
+  // }
 
-  deleteProjImpl(projImpl) {
-    this._confirmationService.confirm({
-      message: 'Are you sure that you want to delete this item?',
-      header: 'Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-        this._npoProfile.deleteProjImpl(projImpl).subscribe(
-          (resp) => {
-            this.GetProjImpl();
-          },
-          (err) => {
-            //
-          }
-        );
-      },
-      reject: () => {
-        //
-      }
-    });
-  }
+  // deleteProjImpl(projImpl) {
+  //   this._confirmationService.confirm({
+  //     message: 'Are you sure that you want to delete this item?',
+  //     header: 'Confirmation',
+  //     icon: 'pi pi-info-circle',
+  //     accept: () => {
+  //       this._npoProfile.deleteProjImpl(projImpl).subscribe(
+  //         (resp) => {
+  //           this.GetProjImpl();
+  //         },
+  //         (err) => {
+  //           //
+  //         }
+  //       );
+  //     },
+  //     reject: () => {
+  //       //
+  //     }
+  //   });
+  // }
 
   nextPage() {
 
