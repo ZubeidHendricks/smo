@@ -26,7 +26,7 @@ export class FinancialMattersComponent implements OnInit {
 
   @Input() isReadOnly: boolean;
   @Input() fundingApplicationDetails: IFundingApplicationDetails; 
-  @Input() isSDASelected: boolean;
+  isSDASelected: boolean;
   @Input() application: IApplication;
   @Input() financialMatters: IFinancialMattersIncome[] = [];
   @Input() isEdit: boolean;
@@ -302,6 +302,8 @@ export class FinancialMattersComponent implements OnInit {
 
   private updateBankDetailObjects() {
     if (this.banks && this.accountTypes && this.programBankDetails) {
+      var selectedBanks = this.programBankDetails.filter(x => x.isSelected);
+      this.isSDASelected = selectedBanks.length == 1 ? true : false;
       this.programBankDetails.forEach(item => {
         item.bank = this.banks.find(x => x.id === item.bankId);
         this.loadBranch(item);
