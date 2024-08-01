@@ -20,7 +20,9 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 export class ViewFundingApplicationComponent implements OnInit {
 
   @Input() source: string;
-  @Input() programId: number;
+  @Input() ProgramId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {

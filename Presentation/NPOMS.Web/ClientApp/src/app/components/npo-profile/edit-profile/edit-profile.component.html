@@ -289,7 +289,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                 <tr class="default-font" [ngClass]="{'selected-row': selectedRowIndex === rowIndex}">
-                  <td (click)="onFirstTdClick(rowIndex); toggleBankingDetailsPanel(rowData.programme)">{{rowData.programme.name}}</td>
+                  <td (click)="onFirstTdClick(rowIndex); toggleBankingDetailsPanel(rowData.programme,rowData.subProgramme,rowData.subProgrammeType)">{{rowData.programme.name}}</td>
                   <td>{{rowData.subProgramme.name}}</td>
                   <td>{{rowData.subProgrammeType.name}}</td>
                   <td style="text-align: center;">

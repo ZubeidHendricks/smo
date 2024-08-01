@@ -8,12 +8,14 @@ using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository;
 using NPOMS.Repository.Implementation.Dropdown;
+using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Implementation.Mapping;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,7 +66,8 @@ namespace NPOMS.Services.Implementation
         private IActivityManicipalityRepository _activityManicipalityRepository;
         private IActivitySubDistrictRepository _activitySubDistrictRepository;
         private IActivitySubStructureRepository _activitySubStructureRepository;
-
+        private IProjectImplementationPlaceRepository _implementationPlaceRepository;
+        private IProjectImplementationSubPlaceRepository _implementationSubPlaceRepository;
         private RepositoryContext _repositoryContext;
 
 		#endregion
@@ -111,8 +114,9 @@ namespace NPOMS.Services.Implementation
             IActivityDistrictRepository activityDistrictRepository,
             IActivityManicipalityRepository activityManicipalityRepository,
             IActivitySubDistrictRepository activitySubDistrictRepository,
-            IActivitySubStructureRepository activitySubStructureRepository
-
+            IActivitySubStructureRepository activitySubStructureRepository,
+            IProjectImplementationSubPlaceRepository implementationSubPlaceRepository, 
+			IProjectImplementationPlaceRepository implementationPlaceRepository
             )
 		{
             _applicationRepository = applicationRepository;
@@ -155,6 +159,8 @@ namespace NPOMS.Services.Implementation
 			_activityManicipalityRepository = activityManicipalityRepository;
 			_activitySubDistrictRepository = activitySubDistrictRepository;
 			_activitySubStructureRepository = activitySubStructureRepository;
+            _implementationSubPlaceRepository = implementationSubPlaceRepository;
+            _implementationPlaceRepository = implementationPlaceRepository;
         }
 
 		#endregion
@@ -683,7 +689,116 @@ namespace NPOMS.Services.Implementation
 			await _fundingApplicationDetailsRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}
 
-		private async Task UpdateGeoDetails(FundAppSDADetail model, FundAppSDADetail existingRegionsAndSdas)
+		//public async Task AddProjectImplementation(ProjectImplementationViewModel model, string userIdentifier)
+		//{
+  //          var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+  //          var imp = _mapper.Map<ProjectImplementation>(model);
+  //          foreach (var placeDTO in model.Places)
+  //          {
+  //              var impPlace = new ProjectImplementationPlace
+  //              {
+
+  //                  ImplementationId = model.ID,
+  //                  IsActive = true,
+  //                  PlaceId = placeDTO.Id
+  //              };
+
+  //              imp.ImplementationPlaces.Add(impPlace);
+  //          }
+
+  //          foreach (var subPlaceDTO in model.SubPlaces)
+  //          {
+  //              var impSubPlace = new ProjectImplementationSubPlace
+  //              {
+  //                  SubPlace = await _subPlaceRepository.GetById(subPlaceDTO.Id),
+  //                  SubPlaceId = subPlaceDTO.Id,
+  //                  ImplementationId = model.ID,
+  //                  IsActive = true
+  //              };
+
+  //              imp.ImplementationSubPlaces.Add(impSubPlace);
+  //          }
+  //          await _projectImplementationRepository.CreateEntity(imp);
+
+  //      }
+
+  //      public async Task UpdateProjectImplementation(ProjectImplementationViewModel model, string userIdentifier)
+  //      {
+  //          var subPlace = await _implementationSubPlaceRepository.GetAllImplementationSubPlaceByImplementationId(model.ID);
+  //          var place = await _implementationPlaceRepository.GetAllImplementationPlaceByImplementationId(model.ID);
+
+
+  //          var implementation = model;
+  //          _mapper.Map(model, implementation);
+
+  //         // implementation.SubPlaces = subPlace.ToList();
+
+  //         // implementation.Places = place.ToList();
+
+  //          // Create new mappings
+  //          //foreach (var plac in model.Places)
+  //          //{
+  //          //    if (plac != null)
+  //          //    {
+
+  //          //        var mapping = await _implementationPlaceRepository.GetById(plac.Id, model.ID);
+  //          //        if (mapping == null)
+
+  //          //            implementation.Places(new ProjectImplementationPlace
+  //          //            {
+  //          //                Place = null,
+  //          //                PlaceId = plac.Id,
+  //          //                ImplementationId = model.ID,
+  //          //            });
+  //          //    }
+  //          //}
+
+  //          //// Update is active state
+  //          //var newIds = model.Places.Select(x => x.Id);
+
+  //          //foreach (var mapping in implementation.Places)
+  //          //{
+  //          //    mapping.Place = null;
+
+  //          //    mapping.IsActive = newIds.Contains(mapping.PlaceId) ? true : false;
+  //          //}
+
+  //          //// sub place mapping
+  //          //foreach (var sub in imple.SubPlaces)
+  //          //{
+
+  //          //    var map = await _implementationSubPlaceRepository.GetById(sub.Id, imple.ID);
+  //          //    if (map == null)
+  //          //        implementation.ImplementationSubPlaces.Add(new ProjectImplementationSubPlace
+  //          //        {
+
+  //          //            SubPlaceId = sub.Id,
+  //          //            ImplementationId = imple.ID,
+  //          //            IsActive = true,
+  //          //            SubPlace = null
+
+  //          //        });
+  //          //}
+
+  //          //// Update is active state
+  //          //var frontEndIds = imple.SubPlaces.Select(x => x.Id);
+
+  //          //foreach (var mapping in implementation.ImplementationSubPlaces)
+  //          //{
+  //          //    mapping.SubPlace = null;
+  //          //    mapping.IsActive = frontEndIds.Contains(mapping.SubPlaceId) ? true : false;
+
+  //          //}
+
+  //          //var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+  //          //model.UpdatedUserId = loggedInUser.Id;
+  //          //model.UpdatedDateTime = DateTime.Now;
+
+  //          //await _projectImplementationRepository.UpdateAsync(model);
+  //      }
+
+        private async Task UpdateGeoDetails(FundAppSDADetail model, FundAppSDADetail existingRegionsAndSdas)
 		{
 			// Create new mappings
 			foreach (var region in model.Regions)

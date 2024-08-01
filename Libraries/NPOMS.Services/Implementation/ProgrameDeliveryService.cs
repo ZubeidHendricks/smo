@@ -56,7 +56,9 @@ namespace NPOMS.Services.Implementation
         {
             var viewModel = new ProgrammeServiceDeliveryVM
             {
-                ProgramId = entity.ProgramId
+                ProgramId = entity.ProgramId,
+                SubProgrammeId = entity.SubProgrammeId,
+                SubProgrammeTypeId = entity.SubProgrammeTypeId
             };
 
             if (entity.DistrictCouncilId.HasValue)

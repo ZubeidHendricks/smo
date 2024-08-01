@@ -3,7 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Table } from 'primeng/table';
-import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
+import { retry } from 'rxjs/operators';
+import { AccessStatusEnum, ApplicationTypeEnum, DepartmentEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IApplicationPeriod, IFinancialYear, INpo, IUser } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
@@ -38,11 +39,15 @@ export class ApplicationPeriodListComponent implements OnInit {
   cols: any[];
   allApplicationPeriods: IApplicationPeriod[];
   applicationPeriodId: number;
+  programmeId: number;
+  subProgrammeId: number;
+  subProgrammeTypeId: number;
   displayDialog: boolean;
-
+  departmentId: number;
   isSystemAdmin: boolean = true;
   isAdmin: boolean = false;
   hasAdminRole: boolean = false;
+  isApplicant: boolean = false;
 
   allNpos: INpo[];
   selectedNPO: INpo;
@@ -80,6 +85,7 @@ export class ApplicationPeriodListComponent implements OnInit {
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+        this.isApplicant = profile.roles.some(function (role) { return role.id === RoleEnum.Applicant });
 
         if (this.isSystemAdmin || this.isAdmin)
           this.hasAdminRole = true;
@@ -112,7 +118,9 @@ export class ApplicationPeriodListComponent implements OnInit {
     this._spinner.show();
     this._npoRepo.getAllNpos(AccessStatusEnum.Approved).subscribe(
       (results) => {
+       
         this.allNpos = results;
+         
         this._spinner.hide();
       },
       (err) => {
@@ -130,7 +138,7 @@ export class ApplicationPeriodListComponent implements OnInit {
           this.setStatus(period);
         });
 
-        this.allApplicationPeriods = results;
+        this.allApplicationPeriods = !this.profile.isB2C ? results.sort((a,b) => b.status.localeCompare(a.status)) : results.filter(x => x.status === 'Open');
         this._spinner.hide();
       },
       (err) => {
@@ -180,10 +188,14 @@ export class ApplicationPeriodListComponent implements OnInit {
   onRowSelect(applicationPeriod: IApplicationPeriod) {
     this.selectedApplicationPeriod = applicationPeriod;
     this.applicationPeriodId = applicationPeriod.id;
+    this.programmeId = applicationPeriod.programmeId;
+    this.subProgrammeId = applicationPeriod.subProgrammeId;
+    this.subProgrammeTypeId = applicationPeriod.subProgrammeTypeId;
     this.selectedOption = true;
     this.selectedFinancialYear = null;
     this.selectedNPO = null;
     this.displayDialog = true;
+    this.departmentId = applicationPeriod.departmentId;
   }
 
   disableSelect() {
@@ -206,17 +218,50 @@ export class ApplicationPeriodListComponent implements OnInit {
   private autoCreateApplication() {
     this.application.npoId = this.selectedNPO.id;
     this.application.applicationPeriodId = this.applicationPeriodId;
+    this.application.programmeId = this.programmeId;
+    this.application.subProgrammeId = this.subProgrammeId;
+    this.application.subProgrammeTypeId = this.subProgrammeTypeId;
     this.application.statusId = StatusEnum.New;
-
-    this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
-      (resp) => {
-        this._router.navigateByUrl('application/create/' + resp.id);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
+alert(this.departmentId);
+      if(this.departmentId === 7)
+      {
+        this._applicationRepo.createFunApplication(this.application, this.selectedOption, this.selectedFinancialYear, this.departmentId).subscribe(
+          (resp) => {
+              if(resp.id == undefined)
+              {
+                alert(resp.message);
+                this._spinner.hide();
+                return false;           
+              }
+              else{
+                this._router.navigateByUrl('application/create/' + resp.id);
+              }        
+          },
+          (err) => {
+            this._loggerService.logException(err);       
+            this._spinner.hide();
+          }
+        );
       }
-    );
+      else{
+        this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
+          (resp) => {
+              if(resp.id == undefined)
+              {
+               
+                this._spinner.hide();
+                return false;           
+              }
+              else{
+                this._router.navigateByUrl('application/create/' + resp.id);
+              }        
+          },
+          (err) => {
+            this._loggerService.logException(err);       
+            this._spinner.hide();
+          }
+        );
+      }
   }
 
   search(event) {

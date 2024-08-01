@@ -7,6 +7,8 @@
             <app-view-profile 
             [npoId]="application.npoId" 
             [programId]="application.applicationPeriod.programmeId" 
+            [subProgramId] = "application.applicationPeriod.subProgrammeId"
+            [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
             [source]="source"  
             (retrievedNpoProfile)="updateNpoProfile($event)">
             </app-view-profile>
@@ -16,6 +18,8 @@
     <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
         <app-view-funding-application [npoId]="application.npoId" 
         [programId]="application.applicationPeriod.programmeId" 
+        [subProgramId] = "application.applicationPeriod.subProgrammeId"
+        [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
         [source]="source" 
          (retrievedNpo)="updateNpo($event)">
         </app-view-funding-application>

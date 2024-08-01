@@ -11,5 +11,6 @@ namespace NPOMS.Repository.Interfaces.Entities
 		Task DeleteEntity(int id, int currentUserId);
 
 		Task<ServicesRendered> GetByProperties(ServicesRendered model);
+		Task<ServicesRendered> GetByProperties(int npoProfileId, int programmeId, int subProgrammeId, int subProgrammeTypeId);
     }
 }

@@ -25,7 +25,9 @@ import * as internal from 'stream';
 export class FinancialMattersComponent implements OnInit {
 
   @Input() isReadOnly: boolean;
-  @Input() fundingApplicationDetails: IFundingApplicationDetails; @Input() application: IApplication;
+  @Input() fundingApplicationDetails: IFundingApplicationDetails; 
+  isSDASelected: boolean;
+  @Input() application: IApplication;
   @Input() financialMatters: IFinancialMattersIncome[] = [];
   @Input() isEdit: boolean;
   @Output() financialMattersChange = new EventEmitter<any>();
@@ -42,7 +44,7 @@ export class FinancialMattersComponent implements OnInit {
   newFinancialMatter: boolean;
   menuItem: any[];
   propertyObj: PropertyType = {} as PropertyType;
-  financialMattersIncome: IFinancialMattersIncome[];
+  @Input() financialMattersIncome: IFinancialMattersIncome[];
   financialMattersExpenditure: IFinancialMattersExpenditure[];
   financialMattersOthers: IFinancialMattersOthers[];
   menuActions: MenuItem[];
@@ -105,7 +107,7 @@ export class FinancialMattersComponent implements OnInit {
   newBankDetail: boolean;
   bankDetail: IBankDetail = {} as IBankDetail;
   selectedBankDetail: IBankDetail;
-  isSDASelected: boolean;
+  //isSDASelected: boolean;
   banks: IBank[];
   selectedBank: IBank;
   branches: IBranch[];
@@ -300,6 +302,8 @@ export class FinancialMattersComponent implements OnInit {
 
   private updateBankDetailObjects() {
     if (this.banks && this.accountTypes && this.programBankDetails) {
+      var selectedBanks = this.programBankDetails.filter(x => x.isSelected);
+      this.isSDASelected = selectedBanks.length == 1 ? true : false;
       this.programBankDetails.forEach(item => {
         item.bank = this.banks.find(x => x.id === item.bankId);
         this.loadBranch(item);
@@ -757,10 +761,16 @@ export class FinancialMattersComponent implements OnInit {
 
 
   nextPage() {
-
-    this.activeStep = this.activeStep + 1;
-    this.bidForm(StatusEnum.Saved);
-    this.activeStepChange.emit(this.activeStep);
+    if(this.isSDASelected === true)
+      {
+        this.activeStep = this.activeStep + 1;
+        this.bidForm(StatusEnum.Saved);
+        this.activeStepChange.emit(this.activeStep);
+      }
+      else{
+        alert('Please select bank account or add bank account in profile section');
+        return false;
+      }   
   }
 
 

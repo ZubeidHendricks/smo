@@ -134,17 +134,17 @@ namespace NPOMS.Services.Implementation
 
             var application = await _applicationService.GetApplicationById(model.ApplicationId);
             // var geoDetails = GetGeoDetails(model.GeographicalDetails);
-            var appDetail = await GetAppDetails(model.ApplicationDetails, model.ProgrammeId, application.Id);
-			var projectInfo = GetProjectInfoViewModel(model.ProjectInformation);
-			var monotoring = GetMonitoringEvaluationViewModel(model.MonitoringEvaluation);
+            var appDetail = await GetAppDetails(model.ApplicationDetails, model.ProgramId, model.subProgramId, model.subProgramTypeId, application.Id);
+			var projectInfo = GetProjectInfoViewModel(model.ProjectInformation, application.Id);
+			var monitoring = GetMonitoringEvaluationViewModel(model.MonitoringEvaluation, application.Id);
 			var bid = new FundingApplicationDetail
 			{
 
 				ApplicationPeriodId = model.ApplicationPeriodId,
 				ApplicationId = model.ApplicationId,
-				MonitoringEvaluation = monotoring,
+				MonitoringEvaluation = monitoring,
 				ProjectInformation = projectInfo,
-
+				
 				ApplicationDetails = appDetail
 			};
 
@@ -155,39 +155,42 @@ namespace NPOMS.Services.Implementation
 				bid.FinancialMatters.Add(financialMatter);
 			}
 
-			foreach (var imple in model.Implementations)
+			if (model.Implementations != null)
 			{
-
-				var imp = _mapper.Map<ProjectImplementation>(imple);
-
-				foreach (var placeDTO in imple.Places)
+				foreach (var imple in model.Implementations)
 				{
-					var impPlace = new ProjectImplementationPlace
+
+					var imp = _mapper.Map<ProjectImplementation>(imple);
+
+					foreach (var placeDTO in imple.Places)
 					{
+						var impPlace = new ProjectImplementationPlace
+						{
 
-						ImplementationId = imple.ID,
-						IsActive = true,
-						PlaceId = placeDTO.Id
-					};
+							ImplementationId = imple.ID,
+							IsActive = true,
+							PlaceId = placeDTO.Id
+						};
 
-					imp.ImplementationPlaces.Add(impPlace);
-				}
+						imp.ImplementationPlaces.Add(impPlace);
+					}
 
-				foreach (var subPlaceDTO in imple.SubPlaces)
-				{
-					var impSubPlace = new ProjectImplementationSubPlace
+					foreach (var subPlaceDTO in imple.SubPlaces)
 					{
-						SubPlace = await _subPlaceRepository.GetById(subPlaceDTO.Id),
-						SubPlaceId = subPlaceDTO.Id,
-						ImplementationId = imple.ID,
-						IsActive = true
-					};
+						var impSubPlace = new ProjectImplementationSubPlace
+						{
+							SubPlace = await _subPlaceRepository.GetById(subPlaceDTO.Id),
+							SubPlaceId = subPlaceDTO.Id,
+							ImplementationId = imple.ID,
+							IsActive = true
+						};
 
-					imp.ImplementationSubPlaces.Add(impSubPlace);
+						imp.ImplementationSubPlaces.Add(impSubPlace);
+					}
+
+					bid.Implementations.Add(imp);
+
 				}
-
-				bid.Implementations.Add(imp);
-
 			}
 
 
@@ -268,27 +271,23 @@ namespace NPOMS.Services.Implementation
 			return this._mapper.Map<FundAppDetailViewModel>(bid);
 		}
 
-		private async Task<ApplicationDetail> GetAppDetails(ApplicationDetailViewModel model, int programmeId, int npoId)
+		private async Task<ApplicationDetail> GetAppDetails(ApplicationDetailViewModel model, int programmeId, int subProgrammeId, int subProgrammeTypeId, int applicationId)
 		{
-
-
-            var npo = await _applicationService.GetApplicationById(npoId);
-            var npoProfile = await _npoProfilService.GetByNpoId(npo.NpoId);
-
+            var application = await _applicationService.GetApplicationById(applicationId);
+            var npoProfile = await _npoProfilService.GetByNpoId(application.NpoId);
             var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId, npoProfile.Id);
-            // var geographicalDetails = new GeographicalDetails();
+			var filteredResults = results.Where(x => x.SubProgrammeId == subProgrammeId && x.SubProgrammeTypeId == subProgrammeTypeId);
             var applicationDetails = new ApplicationDetail();
 			var geo = new FundAppSDADetail();
 			applicationDetails.FundAppSDADetail = geo;
 			applicationDetails.AmountApplyingFor = model.AmountApplyingFor;
-            
-			var districtCouncil = results.Select(x => x.DistrictCouncil).FirstOrDefault();
-            var localMunicipality = results.Select(x => x.LocalMunicipality).FirstOrDefault();
-            var regions = results.Select(x => x.Regions).FirstOrDefault();
-			var serviceDeliveryAreas = results.Select(x => x.ServiceDeliveryAreas).FirstOrDefault();
+			applicationDetails.ApplicationId = applicationId;
+            var districtCouncil = filteredResults.Select(x => x.DistrictCouncil).FirstOrDefault();
+            var localMunicipality = filteredResults.Select(x => x.LocalMunicipality).FirstOrDefault();
+            var regions = filteredResults.Select(x => x.Regions).FirstOrDefault();
+			var serviceDeliveryAreas = filteredResults.Select(x => x.ServiceDeliveryAreas).FirstOrDefault();
 
-
-            int districtId = districtCouncil.Id; //  model.FundAppSDADetail.DistrictCouncil.Id;
+            int districtId = districtCouncil.Id;
 			var district = await _districtRepository.GetById(districtId);
 
 			applicationDetails.FundAppSDADetail.DistrictCouncil = district;
@@ -306,10 +305,8 @@ namespace NPOMS.Services.Implementation
 			{
 				var bidRegion = new FundAppSDADetail_Region
 				{
-					//  Region = await _regionRepository.GetById(item.ID),
 					RegionId = item.ID,
 					IsActive = true
-
 				};
 
 				applicationDetails.FundAppSDADetail.Regions.Add(bidRegion);
@@ -319,7 +316,6 @@ namespace NPOMS.Services.Implementation
 			{
 				var bidServiceDeliveryArea = new FundAppServiceDeliveryArea()
 				{
-					// ServiceDeliveryArea = await _serviceDeliveryAreaRepository.GetById(item.ID),
 					ServiceDeliveryAreaId = item.ID,
 					IsActive = true
 				};
@@ -330,7 +326,7 @@ namespace NPOMS.Services.Implementation
 			return applicationDetails;
 		}
 
-		private ProjectInformation GetProjectInfoViewModel(ProjectInformationViewModel viewModel)
+		private ProjectInformation GetProjectInfoViewModel(ProjectInformationViewModel viewModel, int applicationId)
 		{
 			if (viewModel == null) return null;
 			else
@@ -344,11 +340,9 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
-		private MonitoringEvaluation GetMonitoringEvaluationViewModel(MonitoringEvaluationViewModel viewModel)
+		private MonitoringEvaluation GetMonitoringEvaluationViewModel(MonitoringEvaluationViewModel viewModel, int applicationId)
 		{
 			if (viewModel == null) return null;
-
-
 			else
 			{
 				var monitoring = new MonitoringEvaluation();
@@ -664,114 +658,117 @@ namespace NPOMS.Services.Implementation
 
 			bid.ApplicationDetails.AmountApplyingFor = model.ApplicationDetails.AmountApplyingFor;
 
-
-			foreach (var imple in model.Implementations)
+			if(model.Implementations != null)
 			{
+                foreach (var imple in model.Implementations)
+                {
 
-				var subPlace = await _implementationSubPlaceRepository.GetAllImplementationSubPlaceByImplementationId(imple.ID);
-				var place = await _implementationPlaceRepository.GetAllImplementationPlaceByImplementationId(imple.ID);
+                    var subPlace = await _implementationSubPlaceRepository.GetAllImplementationSubPlaceByImplementationId(imple.ID);
+                    var place = await _implementationPlaceRepository.GetAllImplementationPlaceByImplementationId(imple.ID);
 
-				if (imple.ID == 0)
-				{
+                    if (imple.ID == 0)
+                    {
 
-					var imp = _mapper.Map<ProjectImplementation>(imple);
+                        var imp = _mapper.Map<ProjectImplementation>(imple);
 
-					foreach (var placeDTO in imple.Places)
-					{
-						var impPlace = new ProjectImplementationPlace
-						{
+                        foreach (var placeDTO in imple.Places)
+                        {
+                            var impPlace = new ProjectImplementationPlace
+                            {
 
-							ImplementationId = imple.ID,
-							IsActive = true,
-							PlaceId = placeDTO.Id
-						};
+                                ImplementationId = imple.ID,
+                                IsActive = true,
+                                PlaceId = placeDTO.Id
+                            };
 
-						imp.ImplementationPlaces.Add(impPlace);
-					}
+                            imp.ImplementationPlaces.Add(impPlace);
+                        }
 
-					foreach (var subPlaceDTO in imple.SubPlaces)
-					{
-						var impSubPlace = new ProjectImplementationSubPlace
-						{
-							SubPlace = null,
-							SubPlaceId = subPlaceDTO.Id,
-							ImplementationId = imple.ID,
-							IsActive = true
-						};
+                        foreach (var subPlaceDTO in imple.SubPlaces)
+                        {
+                            var impSubPlace = new ProjectImplementationSubPlace
+                            {
+                                SubPlace = null,
+                                SubPlaceId = subPlaceDTO.Id,
+                                ImplementationId = imple.ID,
+                                IsActive = true
+                            };
 
-						imp.ImplementationSubPlaces.Add(impSubPlace);
-					}
+                            imp.ImplementationSubPlaces.Add(impSubPlace);
+                        }
 
-					bid.Implementations.Add(imp);
+                        bid.Implementations.Add(imp);
 
-				}
-				else
-				{
+                    }
+                    else
+                    {
 
-					var implementation = bid.Implementations.FirstOrDefault(p => p.Id == imple.ID);
-					_mapper.Map(imple, implementation);
+                        var implementation = bid.Implementations.FirstOrDefault(p => p.Id == imple.ID);
+                        _mapper.Map(imple, implementation);
 
-					implementation.ImplementationSubPlaces = subPlace.ToList();
+                        implementation.ImplementationSubPlaces = subPlace.ToList();
 
-					implementation.ImplementationPlaces = place.ToList();
+                        implementation.ImplementationPlaces = place.ToList();
 
-					// Create new mappings
-					foreach (var plac in imple.Places)
-					{
-						if (plac != null)
-						{
+                        // Create new mappings
+                        foreach (var plac in imple.Places)
+                        {
+                            if (plac != null)
+                            {
 
-							var mapping = await _implementationPlaceRepository.GetById(plac.Id, imple.ID);
-							if (mapping == null)
-								implementation.ImplementationPlaces.Add(new ProjectImplementationPlace
-								{
-									Place = null,
-									PlaceId = plac.Id,
-									ImplementationId = imple.ID,
-								});
-						}
-					}
+                                var mapping = await _implementationPlaceRepository.GetById(plac.Id, imple.ID);
+                                if (mapping == null)
+                                    implementation.ImplementationPlaces.Add(new ProjectImplementationPlace
+                                    {
+                                        Place = null,
+                                        PlaceId = plac.Id,
+                                        ImplementationId = imple.ID,
+                                    });
+                            }
+                        }
 
-					// Update is active state
-					var newIds = imple.Places.Select(x => x.Id);
+                        // Update is active state
+                        var newIds = imple.Places.Select(x => x.Id);
 
-					foreach (var mapping in implementation.ImplementationPlaces)
-					{
-						mapping.Place = null;
+                        foreach (var mapping in implementation.ImplementationPlaces)
+                        {
+                            mapping.Place = null;
 
-						mapping.IsActive = newIds.Contains(mapping.PlaceId) ? true : false;
-					}
+                            mapping.IsActive = newIds.Contains(mapping.PlaceId) ? true : false;
+                        }
 
-					// sub place mapping
-					foreach (var sub in imple.SubPlaces)
-					{
+                        // sub place mapping
+                        foreach (var sub in imple.SubPlaces)
+                        {
 
-						var map = await _implementationSubPlaceRepository.GetById(sub.Id, imple.ID);
-						if (map == null)
-							implementation.ImplementationSubPlaces.Add(new ProjectImplementationSubPlace
-							{
+                            var map = await _implementationSubPlaceRepository.GetById(sub.Id, imple.ID);
+                            if (map == null)
+                                implementation.ImplementationSubPlaces.Add(new ProjectImplementationSubPlace
+                                {
 
-								SubPlaceId = sub.Id,
-								ImplementationId = imple.ID,
-								IsActive = true,
-								SubPlace = null
+                                    SubPlaceId = sub.Id,
+                                    ImplementationId = imple.ID,
+                                    IsActive = true,
+                                    SubPlace = null
 
-							});
-					}
+                                });
+                        }
 
-					// Update is active state
-					var frontEndIds = imple.SubPlaces.Select(x => x.Id);
+                        // Update is active state
+                        var frontEndIds = imple.SubPlaces.Select(x => x.Id);
 
-					foreach (var mapping in implementation.ImplementationSubPlaces)
-					{
-						mapping.SubPlace = null;
-						mapping.IsActive = frontEndIds.Contains(mapping.SubPlaceId) ? true : false;
+                        foreach (var mapping in implementation.ImplementationSubPlaces)
+                        {
+                            mapping.SubPlace = null;
+                            mapping.IsActive = frontEndIds.Contains(mapping.SubPlaceId) ? true : false;
 
-					}
+                        }
 
 
-				}
-			}
+                    }
+                }
+            }
+			
 
 			foreach (var f in bid.FinancialMatters)
 			{

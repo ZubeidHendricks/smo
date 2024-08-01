@@ -191,6 +191,7 @@ export class ApplicationListComponent implements OnInit {
   private loadNpos() {
     this._npoRepo.getAllNpos(AccessStatusEnum.AllStatuses).subscribe(
       (results) => {
+        
         this.allNpos = results;
         this.loadApplications();
       },

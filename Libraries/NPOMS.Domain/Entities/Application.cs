@@ -33,6 +33,9 @@ namespace NPOMS.Domain.Entities
         public int InitiateScorecard { get; set; }
         public int CloseScorecard { get; set; }
         public int ScorecardCount { get; set; }
+        public int ProgrammeId { get; set; }
+        public int SubProgrammeId { get; set; }
+        public int SubProgrammeTypeId { get; set; }
         public Npo Npo { get; set; }
         public ApplicationPeriod ApplicationPeriod { get; set; }
         public Status Status { get; set; }

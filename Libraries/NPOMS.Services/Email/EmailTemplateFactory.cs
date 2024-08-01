@@ -94,6 +94,9 @@ namespace NPOMS.Services.Email
                 case EmailTemplateTypeEnum.AmendedScorecard:
                     _template = new AmmendedScorecardEmailTemplate();
                     break;
+                case EmailTemplateTypeEnum.DSDFundingApplicationSubmitted:
+                    _template = new AmmendedScorecardEmailTemplate();
+                    break;
                 default:
 					_template = null;
 					break;

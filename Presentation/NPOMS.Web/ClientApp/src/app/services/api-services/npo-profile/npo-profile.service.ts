@@ -205,8 +205,8 @@ export class NpoProfileService {
     return this._http.post<any>(url, fundingApplicationId, httpOptions);
   }
 
-  public updateFinancialMattersExpenditure(financialMattersExpenditure: IFinancialMattersExpenditure, npoProfileId: string) {
-    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersExpenditure/npoProfileId/${npoProfileId}`;
+  public updateFinancialMattersExpenditure(financialMattersExpenditure: IFinancialMattersExpenditure, applicationId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersExpenditure/applicationId/${applicationId}`;
     return this._http.put<IFinancialMattersExpenditure>(url, financialMattersExpenditure, httpOptions);
   }
 
@@ -220,8 +220,8 @@ export class NpoProfileService {
     return this._http.post<any>(url, fundingApplicationId, httpOptions);
   }
 
-  public updateFinancialMattersOthers(financialMattersOthers: IFinancialMattersOthers, npoProfileId: string) {
-    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersOthers/npoProfileId/${npoProfileId}`;
+  public updateFinancialMattersOthers(financialMattersOthers: IFinancialMattersOthers, applicationId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersOthers/applicationId/${applicationId}`;
     return this._http.put<IFinancialMattersOthers>(url, financialMattersOthers, httpOptions);
   }
 
@@ -309,8 +309,8 @@ export class NpoProfileService {
     return this._http.post<any>(url, fundingApplicationId, httpOptions);
   }
 
-  public updateFinancialMattersIncome(financialMattersIncome: IFinancialMattersIncome, npoProfileId: string) {
-    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersIncome/npoProfileId/${npoProfileId}`;
+  public updateFinancialMattersIncome(financialMattersIncome: IFinancialMattersIncome, applicationId: string) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/updateFinancialMattersIncome/applicationId/${applicationId}`;
     return this._http.put<IFinancialMattersIncome>(url, financialMattersIncome, httpOptions);
   }
 

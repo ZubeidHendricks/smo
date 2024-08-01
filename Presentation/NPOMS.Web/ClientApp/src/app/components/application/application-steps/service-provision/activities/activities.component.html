@@ -86,8 +86,8 @@
                 <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date: 'yyyy-MM-dd'}}</td>
                 <td>{{rowData.target}}</td>
                 <td>{{rowData.facilityListText}}</td>
+                
                 <td>{{rowData?.mappedDistrict }}</td>
-
                 <td>{{rowData?.mappedManicipality}}</td>
                 <td>{{rowData?.mappedSubstructure}}</td>  
                 <td>{{rowData?.mappedSubdistrict}}</td> 
@@ -154,7 +154,7 @@
         
             <div class="p-col-3 dropdown-column">
                 <div class="box">
-                    <span class="mandatory-content">Manicipality</span>
+                    <span class="mandatory-content">Municipality</span>
                 </div>
                 <p-multiSelect 
                     [options]="ManicipalityDemographics" 

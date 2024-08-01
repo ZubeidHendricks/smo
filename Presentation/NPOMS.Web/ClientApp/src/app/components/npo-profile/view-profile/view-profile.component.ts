@@ -20,6 +20,8 @@ export class ViewProfileComponent implements OnInit {
   @Input() npoId: number;
   @Input() source: string;
   @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
   @Output() retrievedNpoProfile = new EventEmitter<INpoProfile>();
 
   npoProfile: INpoProfile;
@@ -106,8 +108,7 @@ export class ViewProfileComponent implements OnInit {
     {
       this.viewHeader = true;
     }
-    
-
+  
     this.loadDocumentTypes();
     this.loadProgrammes();
     this.loadSubProgrammes();
@@ -153,9 +154,9 @@ export class ViewProfileComponent implements OnInit {
     ];
 
     this.serviceRenderedCols = [
-      { header: 'Programme', width: '30%' },
-      { header: 'Sub-Programme', width: '30%' },
-      { header: 'Sub-Programme Type', width: '30%' },
+      { header: 'Programme', width: '33%' },
+      { header: 'Sub-Programme', width: '33%' },
+      { header: 'Sub-Programme Type', width: '33%' },
     ];
 
     this.bankDetailCols = [
@@ -190,6 +191,7 @@ export class ViewProfileComponent implements OnInit {
   private getProgrammeDeliveryDetails(npoProfileId: number) {
     this._npoProfileRepo.getProgrammeContacts(Number(npoProfileId), this.source).subscribe(
       (results) => {
+
         if (results != null) {
           this.programContactInformation1 = results.filter(contact => contact.programmeId === this.programId);
         } this._spinner.hide();//
