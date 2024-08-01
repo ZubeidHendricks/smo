@@ -588,7 +588,7 @@ export class ApplicationDetailsComponent implements OnInit {
     this._npoProfile.getProgrammeDeliveryDetails(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.programId && deliveryDetail.subProgrammeId === this.subProgramId && deliveryDetail.subProgrammeTypeId === this.subProgramTypeId);
+          this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.programId && deliveryDetail.subProgrammeId === this.subProgramId);
           
         } 
         this._spinner.hide();
