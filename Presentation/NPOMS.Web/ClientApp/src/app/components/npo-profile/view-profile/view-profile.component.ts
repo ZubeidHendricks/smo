@@ -108,7 +108,7 @@ export class ViewProfileComponent implements OnInit {
     {
       this.viewHeader = true;
     }
-   
+  
     this.loadDocumentTypes();
     this.loadProgrammes();
     this.loadSubProgrammes();
