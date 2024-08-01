@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem, Message, MessageService } from 'primeng/api';
@@ -19,6 +19,10 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class ViewFundingApplicationComponent implements OnInit {
 
+  @Input() source: string;
+  @Input() ProgramId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {

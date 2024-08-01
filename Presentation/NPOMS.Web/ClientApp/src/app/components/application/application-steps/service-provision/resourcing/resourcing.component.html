@@ -75,7 +75,7 @@
             </div>
         </div>
         <div class="p-col">
-            <p-dropdown [options]="activities" placeholder="Select an Activity" optionLabel="activityList.name" [(ngModel)]="selectedActivity" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
+            <p-dropdown [options]="activities" placeholder="Select an Activity" optionLabel="activityList.name" [filter]="true" filterBy="activityList.name"  [(ngModel)]="selectedActivity" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
         </div>
     </div>
     <div class="p-grid" *ngIf="selectedActivity">

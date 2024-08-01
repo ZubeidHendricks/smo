@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Console } from 'console';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, PermissionsEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IApplicationApproval, IApplicationPeriod, IApplicationReviewerSatisfaction, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationWithUsers, IActivity, IApplication, IApplicationApproval, IApplicationPeriod, IApplicationReviewerSatisfaction, IObjective, IResource, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -17,6 +18,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   providers: [MessageService, ConfirmationService]
 })
 export class ReviewApplicationComponent implements OnInit {
+  applicationWithUsers = {} as ApplicationWithUsers;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -64,6 +66,7 @@ export class ReviewApplicationComponent implements OnInit {
 
   reviewerSatisfactionCols: any;
   applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[];
+  selectedReviewers: { fullName: string, email: string, id: number }[] = [];
 
   constructor(
     private _router: Router,
@@ -101,6 +104,10 @@ export class ReviewApplicationComponent implements OnInit {
       { header: 'Created User', width: '35%' },
       { header: 'Created Date', width: '35%' }
     ];
+  }
+
+  onSelectedReviewersChange(reviewers: { fullName: string, email: string, id: number }[]) {
+    this.selectedReviewers = reviewers;
   }
 
   private loadApplication() {
@@ -208,6 +215,7 @@ export class ReviewApplicationComponent implements OnInit {
   private loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
+        console.log("review",results);
         this.activities = results.filter(x => x.isActive === true);
         this.loadSustainabilityPlans();
       },
@@ -276,7 +284,7 @@ export class ReviewApplicationComponent implements OnInit {
           icon: 'fa fa-thumbs-o-up',
           command: () => {
             if (this.status)
-              this.saveItems(this.status);
+              this.saveItems(this.status,this.selectedReviewers);
             else
               this._messageService.add({ severity: 'error', summary: "Confirmation:", detail: "Please select an option." });
           },
@@ -310,7 +318,7 @@ export class ReviewApplicationComponent implements OnInit {
     this.menuActions[1].visible = false;
   }
 
-  private saveItems(status: StatusEnum) {
+  private saveItems(status: StatusEnum, selectedReviewers: { fullName: string, email: string, id: number }[]) {
     if (this.canContinue()) {
       this._spinner.show();
       this.application.statusId = status;
@@ -321,16 +329,32 @@ export class ReviewApplicationComponent implements OnInit {
 
       this._applicationRepo.updateApplicationApproval(applicationApproval).subscribe(
         (resp) => {
-          this._applicationRepo.updateApplication(this.application).subscribe(
-            (resp) => {
-              this._spinner.hide();
-              this._router.navigateByUrl('applications');
-            },
-            (err) => {
-              this._loggerService.logException(err);
-              this._spinner.hide();
-            }
-          );
+          if(selectedReviewers.length > 0){
+            this.applicationWithUsers.application = this.application;
+            this.applicationWithUsers.userVM = selectedReviewers;
+            this._applicationRepo.updateApplicationWithApprovers(this.applicationWithUsers).subscribe(
+              (resp) => {
+                this._spinner.hide();
+                this._router.navigateByUrl('applications');
+              },
+              (err) => {
+                this._loggerService.logException(err);
+                this._spinner.hide();
+              }
+            );
+          }
+          else{
+            this._applicationRepo.updateApplication(this.application).subscribe(
+              (resp) => {
+                this._spinner.hide();
+                this._router.navigateByUrl('applications');
+              },
+              (err) => {
+                this._loggerService.logException(err);
+                this._spinner.hide();
+              }
+            );
+          }
         },
         (err) => {
           this._loggerService.logException(err);

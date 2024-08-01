@@ -20,6 +20,8 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class ApplicationListComponent implements OnInit {
   displayDialog: boolean;
+  displaySatisfactionReviewDialog: boolean;
+  
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -47,6 +49,7 @@ export class ApplicationListComponent implements OnInit {
   // This is the selected application when clicking on option buttons...
   selectedApplication: IApplication;
   capturedResponses: ICapturedResponse[];
+  capturedResponse: ICapturedResponse[];
   isSystemAdmin: boolean = true;
   isAdmin: boolean = false;
   hasAdminRole: boolean = false;
@@ -57,6 +60,7 @@ export class ApplicationListComponent implements OnInit {
   buttonItems: MenuItem[];
   optionItems: MenuItem[];
   _responses: IResponseOptions[];
+  _response: IResponseOptions[];
   response: number;
 
   // Used for table filtering
@@ -96,7 +100,8 @@ export class ApplicationListComponent implements OnInit {
 
         this.loadNpos();
         this.reviewers();
-
+        this.getAllCapturedResponses();
+        this.getAllResponses();
         var splitUrl = window.location.href.split('/');
         this.headerTitle = splitUrl[5];
 
@@ -128,6 +133,28 @@ export class ApplicationListComponent implements OnInit {
       }
     );
   }
+  submitSatisfactionReviewers(){
+    this.satisfactionReviewers();
+  }
+
+  private satisfactionReviewers() {
+    const users = this.selectedreviewerlist.map(user => ({
+        fullName: user.fullName,
+        email: user.email,
+        id: user.id
+    }));
+    
+    this._applicationRepo.UpdatesatisfactionReviewers(Number(this.selectedApplication.id), users).subscribe(
+      (results) => {
+        this.displaySatisfactionReviewDialog = false;
+        this._router.navigateByUrl('applications');
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+}
 
   submit() {
     this.UpdateInitiateScorecardValue();
@@ -164,6 +191,7 @@ export class ApplicationListComponent implements OnInit {
   private loadNpos() {
     this._npoRepo.getAllNpos(AccessStatusEnum.AllStatuses).subscribe(
       (results) => {
+        
         this.allNpos = results;
         this.loadApplications();
       },
@@ -240,10 +268,15 @@ export class ApplicationListComponent implements OnInit {
   }
 
   private getRejectedInformation(application: IApplication, applicationId: number) {
-    this._evaluationService.getResponse(applicationId).subscribe(
+    this._response = this._responses.filter(x => x.createdUserId === this.profile.id && x.rejectionFlag === 1 && x.fundingApplicationId === applicationId);
+    application.rejectedScorecard = this._responses.length;
+   
+  }
+
+  private getAllResponses() {
+    this._evaluationService.getAllResponses().subscribe(
       (results) => {
-        this._responses = results.filter(x => x.createdUserId === this.profile.id && x.rejectionFlag === 1);
-        application.rejectedScorecard = this._responses.length;
+        this._responses = results;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -252,15 +285,20 @@ export class ApplicationListComponent implements OnInit {
   }
 
   private getSummarySubmissionStatus(application: IApplication, applicationId: number) {
-    this._evaluationService.getCapturedResponses(Number(applicationId)).subscribe(
+
+    this.capturedResponse = this.capturedResponses.filter(x => x.questionCategoryId === 100 && x.isActive === true && x.fundingApplicationId === applicationId);
+    if (this.capturedResponses.length > 0) {
+      application.submittedScorecard = this.capturedResponses.length
+    }
+    else{
+      application.submittedScorecard = 0;
+    }
+  }
+
+  private getAllCapturedResponses() {
+    this._evaluationService.getAllCapturedResponses().subscribe(
       (results) => {
-        this.capturedResponses = results.filter(x => x.questionCategoryId === 100 && x.isActive === true);
-        if (this.capturedResponses.length > 0) {
-          application.submittedScorecard = this.capturedResponses.length
-        }
-        else{
-          application.submittedScorecard = 0;
-        }
+        this.capturedResponses = results;
       })
   }
 
@@ -434,6 +472,17 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Download Workplan',
+          target: 'Workplan',
+          icon: 'fa fa-download',
+          command: () => {
+            this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id, 4] } }]);
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.DownloadAssessmentOption)) {
         this.buttonItems[0].items.push({
           label: 'Download Assessment',
@@ -474,6 +523,17 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-trash',
           command: () => {
             this.deleteApplication();
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewApplication)) {
+        this.buttonItems[0].items.push({
+          label: 'Select Reviewers',
+          target: 'Work Plan',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this.displaySatisfactionReviewDialog = true;
           }
         });
       }
@@ -567,8 +627,6 @@ export class ApplicationListComponent implements OnInit {
       }  
     }
 
-    console.log('this.selectedApplication.initiateScorecard',this.selectedApplication.initiateScorecard);
-
     if(this.selectedApplication.initiateScorecard === 1)
     {
       this.optionItemExists('Initiate Score Card');      
@@ -628,6 +686,24 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
+      
+      if (this.selectedApplication.npoUserSatisfactionTrackings.length > 0) {
+        if (!this.selectedApplication.npoUserSatisfactionTrackings.some(item => item.userId === this.profile.id)) 
+        {
+          this.buttonItemExists('Review Application', 'Service Provision');
+        }  
+      }
+
+      if (this.selectedApplication.npoWorkPlanApproverTrackings.length > 0) {
+        if (!this.selectedApplication.npoWorkPlanApproverTrackings.some(item => item.userId === this.profile.id)) 
+        {
+          this.buttonItemExists('Approve Application', 'Service Provision');
+        }  
+      }
+
+      if (this.selectedApplication.statusId !== StatusEnum.PendingReviewerSatisfaction) {
+        this.buttonItemExists('Select Reviewers', 'Work Plan');
+       }
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
@@ -692,6 +768,8 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
+      this.buttonItemExists('Download Workplan', 'Workplan');
+      this.buttonItemExists('Select Reviewers', 'Work Plan');
       //this.buttonItemExists('Score Card', 'Service Provision');
 
       if (this.selectedApplication.isQuickCapture)
@@ -805,6 +883,8 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Evaluate Application', 'Funding Application');
       this.buttonItemExists('Approve Application', 'Funding Application');
       this.buttonItemExists('Delete Application', 'Funding Application');
+      this.buttonItemExists('Download Workplan', 'Workplan');
+      this.buttonItemExists('Select Reviewers', 'Work Plan');
 
       switch (this.selectedApplication.statusId) {
           case StatusEnum.PendingReview: {

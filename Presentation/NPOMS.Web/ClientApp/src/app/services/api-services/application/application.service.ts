@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationWithUsers, IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IProjectImplementation, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -48,9 +48,28 @@ export class ApplicationService {
     return this._http.post<IApplication>(url, application, httpOptions);
   }
 
+  public createFunApplication(application: IApplication, createNew: boolean, financialYear: IFinancialYear, departmentId: number) {
+    // Set default value for financial year id as it would be null when createNew is true
+    let financialYearId = financialYear != null ? financialYear.id : 0;
+
+    const url = `${this._envUrl.urlAddress}/api/applications/createNewFundingApp/${createNew}/financialYearId/${financialYearId}/departmentId/${departmentId}`;
+    return this._http.post<IApplication>(url, application, httpOptions);
+  }
+
+
   public updateApplication(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications`;
     return this._http.put<IApplication>(url, application, httpOptions);
+  }
+
+  public addProjectImplementation(projectImplementation: IProjectImplementation) {
+    const url = `${this._envUrl.urlAddress}/api/applications/addProjectImplementation`;
+    return this._http.post<IProjectImplementation>(url, projectImplementation, httpOptions);
+  }
+
+  public updateProjectImplementation(projectImplementation: IProjectImplementation) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateProjectImplementation`;
+    return this._http.put<IProjectImplementation>(url, projectImplementation, httpOptions);
   }
 
   public deleteApplicationById(applicationId: number) {
@@ -235,8 +254,27 @@ export class ApplicationService {
     return this._http.get<IUser[]>(url, httpOptions);
   }
 
+  public depReviewers(departmentId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/workplanapprovers/${departmentId}`;
+    return this._http.get<IUser[]>(url, httpOptions);
+  }
+
+  public workplanapprovers(departmentId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/workplanapprovers/${departmentId}`;
+    return this._http.get<IUser[]>(url, httpOptions);
+  }
+
   public UpdateInitiateScorecardValueAndEmail(applicationId: number, users: { fullName: string, email: string, id: number }[]) {
     const url = `${this._envUrl.urlAddress}/api/applications/UpdateInitiateScorecardValueAndEmail/applicationId/${applicationId}`;
     return this._http.put<IApplication>(url, users, httpOptions);
+}
+public UpdatesatisfactionReviewers(applicationId: number, users: { fullName: string, email: string, id: number }[]) {
+  const url = `${this._envUrl.urlAddress}/api/applications/UpdatesatisfactionReviewers/applicationId/${applicationId}`;
+  return this._http.put<IApplication>(url, users, httpOptions);
+}
+
+public updateApplicationWithApprovers(model: ApplicationWithUsers) {
+  const url = `${this._envUrl.urlAddress}/api/applications/PlanApprover`;
+  return this._http.put<IApplication>(url, model, httpOptions);
 }
 }

@@ -10,6 +10,8 @@
     <app-view-profile
         [npoId]="application.npoId"
         [programId]="application.applicationPeriod.programmeId"
+        [subProgramId]="application.applicationPeriod.subProgrammeId"
+        [subProgramTypeId]="application.applicationPeriod.subProgrammeTypeId"
         [source]="source"
         (retrievedNpoProfile)="updateNpoProfile($event)">
     </app-view-profile>

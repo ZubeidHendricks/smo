@@ -50,17 +50,27 @@
         <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
             [(activeStep)]="activeStep" [application]="application" [newApplication]="true"></app-npo-details>
         <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
-        [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails" [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
+        [(activeStep)]="activeStep" [application]="application" [(fundingApplicationDetails)]="fundingApplicationDetails"
+         [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor"
+         [(isSDASelected)] = "fundingApplicationDetails.applicationDetails.isSDASelected"
+         [(programId)]="application.applicationPeriod.programmeId" 
+         [(subProgramId)] = "application.applicationPeriod.subProgrammeId"
+         [(subProgramTypeId)] = "application.applicationPeriod.subProgrammeTypeId"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions"
         [(fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas)]="fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas"
-        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)" [isEdit]="false">
+        (getPlace)="places($event)" (getSubPlace)=" subPlaces($event)" [isEdit]="false"
+        (saveFundingApplication) = "saveFundingApplication()">
         </app-application-details>
 
         <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"  
         [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
-        [(fundingApplicationDetails)]="fundingApplicationDetails">
+        [programId]="application.applicationPeriod.programmeId" 
+        [subProgramId] = "application.applicationPeriod.subProgrammeId"
+        [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
+        [(fundingApplicationDetails)]="fundingApplicationDetails"
+        [(financialMattersIncome)]="financialMattersIncome">
         </app-financial-matters>
 
         <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"

@@ -141,7 +141,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                 <tr class="default-font" [ngClass]="{'selected-row': selectedRowIndex === rowIndex}">
-                  <td (click)="onFirstTdClick(rowIndex); toggleBankingDetailsPanel(rowData.programme)">{{rowData.programme.name}}</td>
+                  <td>{{rowData.programme.name}}</td>
                   <td >{{rowData.subProgramme.name}}</td>
                   <td >{{rowData.subProgrammeType.name}}</td>
                 </tr>
@@ -156,32 +156,59 @@
     </p-panel>
     <div style="height: 10px;"></div>
     <div style="height: 10px;"></div>
-    <p-panel [header]="'Banking Details, Service delivery and Contact Information - ' + (selectedProgram ? selectedProgram.name : '')"  [style]="{'font-size':'12px'}"  *ngIf="displayBankingDetailsPanel && selectedProgram">
+    <p-panel [header]="'Programme Contact Details'">  
+        <p-table [value]="programContactInformation1" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width: 25%;">First Name</th>
+                <th style="width: 25%;">Last Name</th>
+                <th style="width: 25%;">Email</th>
+                <th style="width: 25%;">Phone</th>
+                <!-- <th>Status</th> -->
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-contact>
+              <tr>
+                <td>{{contact.firstName}}</td>
+                <td>{{contact.lastName}}</td>
+                <td>{{contact.emailAddress}}</td>
+                <td>{{contact.cellphone}}</td>
+                <!-- <td>{{contact?.approvalStatus?.name}}</td> -->
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found.</td>
+                </tr>
+            </ng-template>
+          </p-table> 
+      </p-panel>
+    <!-- <p-panel [header]="'Banking Details, Service delivery and Contact Information - ' + (selectedProgram ? selectedProgram.name : '')"  [style]="{'font-size':'12px'}"  *ngIf="displayBankingDetailsPanel && selectedProgram">
         <p-table [value]="programBankDetails" styleClass="p-datatable-sm">
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Bank Name</th>
-              <th>Account Number</th>
-              <th>Branch</th>
-              <th>Status</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-detail>
-            <tr>
-              <td>{{detail?.bank?.name}}</td>
-              <td>{{detail?.accountNumber}}</td>
-              <td>{{detail?.branch?.name}}</td>
-              <td>{{detail?.approvalStatus?.name}}</td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr class="default-font">
-                <td colspan="5" style="text-align: center;">No results found.</td>
-            </tr>
-        </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                <th>Bank Name</th>
+                <th>Account Number</th>
+                <th>Branch</th>
+                <th>Status</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-detail>
+                <tr>
+                <td>{{detail?.bank?.name}}</td>
+                <td>{{detail?.accountNumber}}</td>
+                <td>{{detail?.branch?.name}}</td>
+                <td>{{detail?.approvalStatus?.name}}</td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found.</td>
+                </tr>
+            </ng-template>
         </p-table>
         <div style="height: 10px;"></div>
-        <p-panel [header]="'Contact Details'">  
+        <p-panel [header]="'Program Contact Details'">  
             <p-table [value]="programContactInformation" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header">
                   <tr>
@@ -217,7 +244,7 @@
                   <th>Region</th>
                   <th>District Council</th>
                   <th>Local Municipality</th>
-                  <th>Servive delivery address</th>
+                  <th>Service delivery address</th>
                   <th>Status</th>
                 </tr>
               </ng-template>
@@ -237,7 +264,7 @@
             </ng-template>
             </p-table>
           </p-panel>
-    </p-panel>
+    </p-panel> -->
     <div style="height: 10px;"></div>
     
     <div style="height: 10px;"></div>

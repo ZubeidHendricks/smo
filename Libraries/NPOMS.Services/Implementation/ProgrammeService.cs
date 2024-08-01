@@ -9,6 +9,8 @@ using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Models;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
@@ -27,6 +29,7 @@ namespace NPOMS.Services.Implementation
         private readonly ILocalMunicipalityRepository _localMunicipalityRepository;
         private IProgrammeRepository _programme;
         private IDepartmentRepository _department;
+        private INpoProfileService _npoProfilService;
 
         public ProgrammeService(
             IProgrameBankDetailRepository programeBankDetailRepository,
@@ -38,7 +41,8 @@ namespace NPOMS.Services.Implementation
             ILocalMunicipalityRepository localMunicipalityRepository,
             IProgrammeRepository programme,
             IDepartmentRepository department,
-            RepositoryContext repositoryContext)
+            RepositoryContext repositoryContext,
+            INpoProfileService npoProfilService)
         {
             _programeBankDetailRepository = programeBankDetailRepository;
             _programeContactDetailRepository = programeContactDetailRepository;
@@ -50,12 +54,13 @@ namespace NPOMS.Services.Implementation
             _localMunicipalityRepository = localMunicipalityRepository;
             _programme = programme;
             _department = department;
+            _npoProfilService = npoProfilService;
         }
 
         public async Task CreateBankDetails(ProgramBankDetails model, string userId, int npoProfileId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
-
+            //var npoProfile = await _npoProfilService.GetByNpoId(npoProfileId);
             model.CreatedUserId = loggedInUser.Id;
             model.CreatedDateTime = DateTime.Now;
             model.NpoProfileId = npoProfileId;
@@ -73,16 +78,17 @@ namespace NPOMS.Services.Implementation
 
             await _programeBankDetailRepository.CreateAsync(model);
 
-            var npoProfile = await _npoProfileRepository.GetById(npoProfileId);
-            if (isDSD)
-            {
-                npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
-            }
-            else
-            {
-                npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
-            }
-            await _npoProfileRepository.UpdateAsync(npoProfile);
+            var npoProfile = await _npoProfileRepository.GetByNpoId(npoProfileId);
+            
+            //if (isDSD)
+            //{
+            //    npoProfile.AccessStatusId = (int)AccessStatusEnum.Pending;
+            //}
+            //else
+            //{
+            //    npoProfile.AccessStatusId = (int)AccessStatusEnum.Approved;
+            //}
+            //await _npoProfileRepository.UpdateAsync(npoProfile);
         }
         public async Task UpdateBankDetails(ProgramBankDetails model, string userId, int npoProfileId)
         {
@@ -223,6 +229,62 @@ namespace NPOMS.Services.Implementation
 
             await _npoProfileRepository.UpdateAsync(npoProfile);
         }
+
+        public async Task UpdateBankSelection(string userId, int id, bool selection, int npoId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
+
+            // Fetch the existing entity
+            var existingEntity = await _repositoryContext.ProgramBankDetails
+                .Where(x => x.NpoProfileId == npoId).ToListAsync();
+
+            if (existingEntity == null)
+            {
+                throw new Exception("Entity not found");
+            }
+
+            foreach (var entity in existingEntity)
+            {
+                entity.IsSelected = false;
+                await _repositoryContext.SaveChangesAsync();
+            }
+
+            var existingEntityUpdate = await _repositoryContext.ProgramBankDetails
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            // Set existing entity properties
+            existingEntityUpdate.UpdatedUserId = loggedInUser.Id;
+            existingEntityUpdate.UpdatedDateTime = DateTime.Now;
+            existingEntityUpdate.IsSelected = selection;
+
+            // Save the updated entity to mark old regions and areas as inactive
+            await _repositoryContext.SaveChangesAsync();
+
+        }
+
+        public async Task UpdateDeliveryAreaSelection(string userId, int id, bool selection)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
+
+            // Fetch the existing entity
+            var existingEntity = await _repositoryContext.ProgrammeServiceDelivery
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (existingEntity == null)
+            {
+                throw new Exception("Entity not found");
+            }
+
+            // Set existing entity properties
+            existingEntity.UpdatedUserId = loggedInUser.Id;
+            existingEntity.UpdatedDateTime = DateTime.Now;
+            existingEntity.IsSelected = selection;
+
+            // Save the updated entity to mark old regions and areas as inactive
+            await _repositoryContext.SaveChangesAsync();
+
+        }
+
         public async Task UpdateDelivery(ProgrammeServiceDeliveryVM programmeServiceDeliveryVM, string userId, int npoProfileId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userId);
@@ -319,6 +381,8 @@ namespace NPOMS.Services.Implementation
 
             // Set the new values for other properties
             existingEntity.ProgramId = programmeServiceDeliveryVM.ProgramId;
+            existingEntity.SubProgrammeId = programmeServiceDeliveryVM.SubProgrammeId;
+            existingEntity.SubProgrammeTypeId = programmeServiceDeliveryVM.SubProgrammeTypeId;
             existingEntity.DistrictCouncilId = programmeServiceDeliveryVM.DistrictCouncil.Id;
             existingEntity.LocalMunicipalityId = programmeServiceDeliveryVM.LocalMunicipality.ID;
 
@@ -384,7 +448,8 @@ namespace NPOMS.Services.Implementation
             var programmeServiceDeliveryDetails = new ProgrammeServiceDelivery();
 
             programmeServiceDeliveryDetails.ProgramId = model.ProgramId;
-
+            programmeServiceDeliveryDetails.SubProgrammeId = model.SubProgrammeId;
+            programmeServiceDeliveryDetails.SubProgrammeTypeId = model.SubProgrammeTypeId;
             int districtId = model.DistrictCouncil.Id;
             var district = await _districtRepository.GetById(districtId);
 
@@ -429,6 +494,27 @@ namespace NPOMS.Services.Implementation
             var prog = await _programme.GetById(programId);
             var depart = await _department.GetDepartmentById(prog.DepartmentId);
             return depart.Abbreviation.ToLower() == "dsd";
+        }
+
+        public async Task<IEnumerable<ProgramBankDetails>> GetBankDetailsByIds(int programmeId, int npoProfileId, int subProgramId, int subProgramTypeId)
+        {
+            var bankDetail = await _programeBankDetailRepository.GetBankDetailsByIds(programmeId,npoProfileId, subProgramId, subProgramTypeId);
+            
+            return bankDetail;
+        }
+
+        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByIds(int programmeId, int npoProfileId, int subProgramId, int subProgramTypeId)
+        {
+            var deliveryDetails = await _programeDeliveryRepository.GetDeliveryDetailsByIds(programmeId, npoProfileId, subProgramId, subProgramTypeId);
+
+            return deliveryDetails;
+        }
+
+        public async Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByIds(int programmeId, int npoProfileId, int subProgramId, int subProgramTypeId)
+        {
+            var contactDetails = await _programeContactDetailRepository.GetContactDetailsByIds(programmeId, npoProfileId, subProgramId, subProgramTypeId);
+
+            return contactDetails;
         }
 
     }

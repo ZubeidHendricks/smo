@@ -1,5 +1,5 @@
 import { IApplicationDetails, IDistrictCouncil, IFundAppSDADetail, ILocalMunicipality, IPlace, IProjectInformation, IQuickCaptureDetails, IRegion, ISDA, ISubPlace } from './../../../models/interfaces';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'; 
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
@@ -12,6 +12,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 import { FundingApplicationStepsEnum } from '../../../models/enums';
 import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
+import { IFinancialMattersIncome } from 'src/app/models/FinancialMatters';
 
 @Component({
   selector: 'app-create-application',
@@ -24,7 +25,7 @@ export class CreateApplicationComponent implements OnInit {
   applicationIdOnBid: any;
   // subPlacesAll: ISubPlace[];
   // place: IPlace[];
-
+  
   placesAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
   /* Permission logic */
@@ -65,7 +66,7 @@ export class CreateApplicationComponent implements OnInit {
   items: MenuItem[];
   faItems: MenuItem[];
   qcItems: MenuItem[];
-
+  financialMattersIncome: IFinancialMattersIncome[];
   activeStep: number = 0;
   application: IApplication;
   applicationPeriod: IApplicationPeriod;
@@ -173,11 +174,11 @@ export class CreateApplicationComponent implements OnInit {
         this.faItems = [
           { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
           { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Financial Matters' },
-          { label: 'Project Information' },
-          { label: 'Monitoring and Evaluation'},
-          { label: 'Project Implementation Plan'},
-          { label: 'Application Document'}
+          { label: 'Financial Matters', disabled: true },
+          { label: 'Project Information' , disabled: true},
+          { label: 'Monitoring and Evaluation', disabled: true},
+          { label: 'Project Implementation Plan', disabled: true},
+          { label: 'Application Document', disabled: true}
         ];
       }
     }
@@ -370,7 +371,11 @@ export class CreateApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
+    
     this.application.status = null;
+    this.fundingApplicationDetails.programId = this.application.applicationPeriod.programmeId
+    this.fundingApplicationDetails.subProgramId = this.application.applicationPeriod.subProgrammeId
+    this.fundingApplicationDetails.subProgramTypeId = this.application.applicationPeriod.subProgrammeTypeId
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
     }
@@ -383,22 +388,23 @@ export class CreateApplicationComponent implements OnInit {
         this._applicationRepo.updateApplication(this.application).subscribe();
       }
       if (!this.applicationIdOnBid) {
+        this.fundingApplicationDetails.implementations = null;
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
           this.menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-         // //this._router.navigateByUrl('applications');
          this._router.navigateByUrl(`application/create/${this.application.id}`);
-       //   this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
           resp;
         });
       }
       else {
+        this.fundingApplicationDetails.implementations = null;
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
 
       }
 
       if (status == StatusEnum.PendingReview) {
+        
         this.application.status.name = "PendingReview";
         this._applicationRepo.updateApplication(this.application).subscribe();
 
@@ -471,23 +477,19 @@ export class CreateApplicationComponent implements OnInit {
     }
 
     if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length == 0 || this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
-        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please capture Application info and save." });
-      if (this.fundingApplicationDetails.financialMatters.length === 0)
-        this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
+      if (this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
+        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please specify the Rand amount you applying for." });
+      // if (this.financialMattersIncome.length === 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
 
       if (this.fundingApplicationDetails.implementations.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
-      if (this.fundingApplicationDetails.projectInformation?.initiatedQuestion == undefined &&
-        this.fundingApplicationDetails.projectInformation?.considerQuestion == undefined &&
-        this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
+      if (this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
 
       if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
-
     }
-
 
     if (this.validationErrors.length == 0) {
       this.menuActions[3].disabled = false;
@@ -551,5 +553,9 @@ export class CreateApplicationComponent implements OnInit {
 
   subPlaces(subPlacesAll: ISubPlace[]) {
     this.subPlacesAll = subPlacesAll;
+  }
+  public saveFundingApplication()
+  {
+    this.bidForm(StatusEnum.Saved);
   }
 }

@@ -1,5 +1,5 @@
 import { ProjectImplementationComponent } from './../application-steps/funding-application/project-implementation/project-implementation.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
@@ -26,6 +26,7 @@ export class WorkflowApplicationComponent implements OnInit {
   isAdmin: boolean;
   hasAdminRole: boolean;
  
+  @Input() programId: number;
 
    /* Permission logic */
    public IsAuthorized(permission: PermissionsEnum): boolean {

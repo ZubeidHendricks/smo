@@ -33,13 +33,14 @@ namespace NPOMS.Domain.Entities
         public int InitiateScorecard { get; set; }
         public int CloseScorecard { get; set; }
         public int ScorecardCount { get; set; }
+        public int ProgrammeId { get; set; }
+        public int SubProgrammeId { get; set; }
+        public int SubProgrammeTypeId { get; set; }
         public Npo Npo { get; set; }
-
         public ApplicationPeriod ApplicationPeriod { get; set; }
-
         public Status Status { get; set; }
-
-
         public virtual List<NpoUserTracking> NpoUserTrackings { get; set; } = new List<NpoUserTracking>();
+        public virtual List<NpoUserSatisfactionTracking> NpoUserSatisfactionTrackings { get; set; } = new List<NpoUserSatisfactionTracking>();
+        public virtual List<NpoWorkPlanApproverTracking> NpoWorkPlanApproverTrackings { get; set; } = new List<NpoWorkPlanApproverTracking>();
     }
 }

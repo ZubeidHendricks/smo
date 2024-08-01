@@ -218,7 +218,17 @@ namespace NPOMS.Repository
         public DbSet<ProgramContactInformation> ProgramContactInformation { get; set; }
         public DbSet<ProgrammeServiceDelivery> ProgrammeServiceDelivery { get; set; }
         public DbSet<NpoUserTracking> NpoUserTrackings { get; set; }
-
+        public DbSet<NpoUserSatisfactionTracking> NpoUserSatisfactionTrackings { get; set; } 
+        public DbSet<FacilitySubStructure> FacilitySubStructures { get; set; }
+        public DbSet<ActivityDistrict> ActivityDistricts { get; set; }
+        public DbSet<ActivitySubDistrict> ActivitySubDistricts { get; set; }    
+        public DbSet<ActivitySubStructure> ActivitySubStructures { get; set; }
+        public DbSet<ActivityManicipality> ActivityManicipalities { get; set; }
+        public DbSet<NpoWorkPlanApproverTracking> NpoWorkPlanApproverTrackings { get; set; }
+        public DbSet<DistrictDemographic> DistrictDemographics { get; set; }
+        public DbSet<ManicipalityDemographic> ManicipalityDemographics { get; set; }
+        public DbSet<SubDistrictDemographic> SubDistrictDemographics { get; set; }
+        public DbSet<SubstructureDemographic> SubstructureDemographics { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

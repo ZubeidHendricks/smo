@@ -16,11 +16,15 @@ export interface IDepartment {
 export interface IProgramBankDetails {
     id: number;
     programId: number;
+    subProgrammeId: number;
+    subProgrammeTypeId: number;
     bankId: number;
     branchId: number;
     accountTypeId: number;
     accountNumber: string;
     isActive: boolean;
+    isSelected: boolean;
+    isSubmitted: boolean;
     createdUserId: number;
     createdDateTime: Date;
     updatedUserId?: number;
@@ -36,8 +40,12 @@ export interface IProgramBankDetails {
   export interface IProgrammeServiceDelivery {
     id: number;
     programId: number;
+    subProgrammeId: number;
+    subProgrammeTypeId: number;
     npoProfileId: number;
     isActive: boolean;
+    isSelected: boolean;
+    isSubmitted: boolean;
     createdUserId: number;
     createdDateTime: Date;
     updatedUserId?: number;
@@ -55,6 +63,8 @@ export interface IProgramBankDetails {
 export interface IProgramContactInformation {
     id: number;
     programmeId: number;
+    subProgrammeId: number;
+    subProgrammeTypeId: number;
     npoProfileId: number;
     titleId: number;
     raceId: number;
@@ -74,6 +84,7 @@ export interface IProgramContactInformation {
     addressInformation: string;
     isPrimaryContact: boolean;
     isDisabled: boolean;
+    isSubmitted: boolean;
     isSignatory: boolean;
     isWrittenAgreementSignatory: boolean;
     isBoardMember: boolean;
@@ -218,6 +229,7 @@ export interface IFacilityDistrict {
     id: number;
     name: string;
     isActive: boolean;
+    activityId: number;
 }
 
 export interface IFacilitySubDistrict {
@@ -225,10 +237,67 @@ export interface IFacilitySubDistrict {
     facilityDistrictId: number;
     name: string;
     isActive: boolean;
-
+    activityId: number;
     facilityDistrict: IFacilityDistrict;
 }
 
+
+export interface IDistrictDemographic {
+    id: number;
+    name: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number | null;
+    updatedDateTime?: Date | null;
+}
+
+export interface IManicipalityDemographic {
+    id: number;
+    districtDemographicId: number;
+    name: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number | null;
+    updatedDateTime?: Date | null;
+    districtDemographic: IDistrictDemographic;
+}
+
+export interface ISubstructureDemographic {
+    id: number;
+    manicipalityDemographicId: number;
+    name: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number | null;
+    updatedDateTime?: Date | null;
+    manicipalityDemographic: IManicipalityDemographic;
+}
+
+
+export interface ISubDistrictDemographic {
+    id: number;
+    subSctrcureDemographicId: number;
+    name: string;
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number | null;
+    updatedDateTime?: Date | null;
+    subSctrcureDemographic: ISubstructureDemographic;
+}
+
+
+export interface IFacilitySubStructure {
+    id: number;
+    activityId: number;
+    facilityDistrictId: number;
+    name: string;
+    isActive: boolean;
+    facilityDistrict: IFacilityDistrict;
+}
 
 export interface IFacilityType {
     id: number;
@@ -443,6 +512,47 @@ export interface IActivity {
     activityList: IActivityList;
     activityFacilityLists: IActivityFacilityList[];
     activityRecipients: IActivityRecipient[];
+    activityDistrict: IActivityDistrict[];
+    activitySubDistrict: IActivitySubDistrict[];
+    activitySubStructure: IActivitySubStructure[];
+    activityManicipality: IActivityManicipality[];
+
+    mappedDistrict?: any;
+    mappedSubdistrict?: any;
+    mappedSubstructure?: any;
+    mappedManicipality?: any;
+}
+
+export interface IActivityDistrict {
+    id: number;
+    demographicDistrictId : number;
+    name: string;
+    isActive: boolean;
+    activityId: number;
+}
+
+export interface IActivityManicipality {
+    id: number;
+    demographicDistrictId : number;
+    name: string;
+    isActive: boolean;
+    activityId: number;
+}
+
+export interface IActivitySubDistrict {
+    id: number;
+    name: string;
+    substructureId : number;
+    isActive: boolean;
+    activityId: number;
+}
+
+export interface IActivitySubStructure {
+    id: number;
+    name: string;
+    municipalityId : number;
+    isActive: boolean;
+    activityId: number;
 }
 
 export interface IAddressInformation {
@@ -451,6 +561,12 @@ export interface IAddressInformation {
     physicalAddress: string;
     postalSameAsPhysical: boolean;
     postalAddress: string;
+}
+
+export interface ApplicationWithUsers
+{
+    application: IApplication;
+    userVM : any;
 }
 
 export interface IApplication {
@@ -470,11 +586,27 @@ export interface IApplication {
     scorecardCount: number;
     rejectedScorecard: number;
     submittedScorecard: number;
+    programmeId: number;
+    subProgrammeId: number;
+    subProgrammeTypeId: number;
     applicationPeriod: IApplicationPeriod;
     status: IStatus;
     createdUser: IUser;
     updatedUser: IUser;
     npoUserTrackings: INpoUserTracking[];
+    npoUserSatisfactionTrackings: INpoUserTracking[];
+    npoWorkPlanApproverTrackings: INpoUserTracking[];
+    message: string;
+}
+export interface IUserSatisfactionTracking {
+    id: number;
+    applicationId: number;
+    userId: number;
+}
+export interface IWorkPlanApproverTracking {
+    id: number;
+    applicationId: number;
+    userId: number;
 }
 export interface INpoUserTracking {
     id: number;
@@ -559,6 +691,7 @@ export interface IApplicationPeriod {
     departmentId: number;
     programmeId: number;
     subProgrammeId: number;
+    subProgrammeTypeId: number;
     applicationTypeId: number;
     name: string;
     description: string;
@@ -572,6 +705,7 @@ export interface IApplicationPeriod {
     department: IDepartment;
     programme: IProgramme;
     subProgramme: ISubProgramme;
+    subProgrammeType: ISubProgrammeType
     financialYear: IFinancialYear;
     applicationType: IApplicationType;
     createdUser: IUser;
@@ -700,6 +834,7 @@ export interface IObjective {
 export interface IFundingApplicationDetails {
     id: number;
     applicationId: number;
+    programmeId: number;
     applicationPeriodId: number;
     projectInformation: IProjectInformation;
     monitoringEvaluation: IMonitoringAndEvaluation;
@@ -709,6 +844,9 @@ export interface IFundingApplicationDetails {
     expenses: Budget[],
     financialMatters: FinancialMatters[];
     applicationDetails: IApplicationDetails;
+    programId: number;
+    subProgramId: number;
+    subProgramTypeId: number;
     //fundAppDeclaration :IFundAppDeclaration;     
 }
 
@@ -722,16 +860,14 @@ export interface IQuickCaptureDetails {
     npo: INpo;
 }
 
-
-
 export interface IProjectInformation {
     id: number;
     applicationId: number;
     isActive: boolean;
     changeRequired: boolean;
     isNew: boolean;
-    //initiatedQuestion: string;
-    //considerQuestion: string;
+    initiatedQuestion: string;
+    considerQuestion: string;
     purposeQuestion: string;
 }
 export interface IMonitoringAndEvaluation {
@@ -741,6 +877,7 @@ export interface IMonitoringAndEvaluation {
     changeRequired: boolean;
     isNew: boolean;
     monEvalDescription: string;
+    createdUserId: number;
 }
 export interface IResource {
     id: number;
@@ -1462,9 +1599,13 @@ export interface IRegion {
 
 export interface IApplicationDetails {
     id: number;
+    applicationId: number;
     amountApplyingFor: number;
+    isSDASelected: boolean;
+    programmeSDId: number;
     fundAppSDADetailId: number;
     fundAppSDADetail: IFundAppSDADetail;
+  
 }
 
 export interface IFundAppSDADetail {
@@ -1472,7 +1613,9 @@ export interface IFundAppSDADetail {
     districtCouncil: IDistrictCouncil;
     localMunicipality: ILocalMunicipality;
     regions: IRegion[];
+    region: IRegion;
     serviceDeliveryAreas: ISDA[];
+    serviceDeliveryArea: ISDA;
 }
 
 export interface ISubPlace {
@@ -1504,9 +1647,11 @@ export interface IDistrictCouncil {
 }
 
 export interface IProjectInformation {
-    initiatedQuestion: string;
-    considerQuestion: string;
+    applicationId: number;
+    isNew: boolean;
+    isActive: boolean;
     purposeQuestion: string;
+    createdUserId: number;
 }
 
 export interface Budget {
@@ -1533,6 +1678,7 @@ export interface IProjectImplementation {
     budget: number;
     fundingApplicationDetailId;
     npoProfileId: number;
+    applicationId: number;
 }
 
 export interface IFundAppDeclaration {

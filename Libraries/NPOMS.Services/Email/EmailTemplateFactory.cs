@@ -82,10 +82,19 @@ namespace NPOMS.Services.Email
                 case EmailTemplateTypeEnum.InitiateScorecard:
                     _template = new InitiateScorecardEmailTemplates();
                     break;
+                case EmailTemplateTypeEnum.SatisficationApprovalEmail:
+                    _template = new SatisficationEmailTemplates();
+                    break;
+                case EmailTemplateTypeEnum.AddworkplanapproversEmails:
+                    _template = new AddworkplanapproversEmailsTemplates();
+                    break;
                 case EmailTemplateTypeEnum.RejectedScorecard:
                     _template = new RejectedScorecardEmailTemplate();
                     break;
                 case EmailTemplateTypeEnum.AmendedScorecard:
+                    _template = new AmmendedScorecardEmailTemplate();
+                    break;
+                case EmailTemplateTypeEnum.DSDFundingApplicationSubmitted:
                     _template = new AmmendedScorecardEmailTemplate();
                     break;
                 default:

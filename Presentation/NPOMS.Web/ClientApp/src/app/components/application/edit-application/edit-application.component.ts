@@ -1,12 +1,12 @@
 import { NpoProfileService } from './../../../services/api-services/npo-profile/npo-profile.service';
 import { FundingApplicationService } from './../../../services/api-services/funding-application/funding-application.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Console } from 'console';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { FinancialMatters } from 'src/app/models/FinancialMatters';
+import { FinancialMatters, IFinancialMattersIncome } from 'src/app/models/FinancialMatters';
 import { ApplicationTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, 
   IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, 
@@ -49,11 +49,13 @@ export class EditApplicationComponent implements OnInit {
   public get FundingApplicationStepsEnum(): typeof FundingApplicationStepsEnum {
     return FundingApplicationStepsEnum;
   }
-
+  @Input() source: string;
+  @Input() programId: number;
+  
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
-
+  financialMattersIncome: IFinancialMattersIncome[];
   bidId: number;
   placeAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
@@ -123,7 +125,6 @@ export class EditApplicationComponent implements OnInit {
     this.loadfundingSteps();
     this.applicationPeriodId = +this.id;
     this.fundingApplicationDetails.applicationPeriodId = +this.id;
-
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -352,9 +353,15 @@ export class EditApplicationComponent implements OnInit {
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       const applicationIdOnBid = this.fundingApplicationDetails;
-
-      this._applicationRepo.updateApplication(this.application).subscribe(resp => { this._applicationRepo.getApplicationById(Number(this.id)) });
-      this.application.statusId = status;
+      this.fundingApplicationDetails.programId = this.application.applicationPeriod.programmeId;
+      this.fundingApplicationDetails.subProgramId = this.application.applicationPeriod.subProgrammeId
+      this.fundingApplicationDetails.subProgramTypeId = this.application.applicationPeriod.subProgrammeTypeId
+      this.fundingApplicationDetails.applicationPeriodId = this.application.applicationPeriodId;
+      this.fundingApplicationDetails.applicationId = Number(this.id);
+      this._applicationRepo.updateApplication(this.application).subscribe(resp => 
+      { 
+        this._applicationRepo.getApplicationById(Number(this.id)) });
+        this.application.statusId = status;    
 
       if (applicationIdOnBid.id == null) {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
@@ -377,7 +384,6 @@ export class EditApplicationComponent implements OnInit {
       }
 
       if (status == StatusEnum.PendingReview) {
-
         this.application.statusId = status;
         this._applicationRepo.updateApplication(this.application).subscribe();
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
@@ -399,7 +405,6 @@ export class EditApplicationComponent implements OnInit {
 
   //funding drop downs
   private loadfundingSteps() {
-
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
@@ -421,10 +426,8 @@ export class EditApplicationComponent implements OnInit {
 
   private getFundingApplicationDetails(data) {
     this._bidService.getBid(data.id).subscribe(response => {
-
-      this.getBidFullObject(response)
+      this.getBidFullObject(response);
     });
-
   }
 
   private getBidFullObject(data) {
@@ -542,15 +545,28 @@ export class EditApplicationComponent implements OnInit {
 
     if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
 
+      // if (this.fundingApplicationDetails.implementations.length === 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+      // if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
+      //   this.fundingApplicationDetails.projectInformation.purposeQuestion == null)
+      //   this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
+
+      // if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
+      //   this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+      if (this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
+        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please specify the Rand amount you applying for." });
+      // if (this.financialMattersIncome.length === 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
+
       if (this.fundingApplicationDetails.implementations.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
-      if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
-        this.fundingApplicationDetails.projectInformation.purposeQuestion == null)
+      if (this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
 
-      if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
+      if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
-
+  
+    
     }
 
     // if (this.validationErrors.length == 0)

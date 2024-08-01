@@ -193,6 +193,13 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "AmendedScorecard",
                     Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for <strong>{organisationName}</strong> with reference number <strong>{ApplicationRefNo}</strong> has been resubmitted.</p><p>To review the amended scorecard, please <a href=\"{url}/#/reviewScorecard/{ApplicationId}\">click here</a> to access.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
                     Subject = "Amended Scorecard Notification - {NPO}"
+                },
+                new EmailTemplate
+                {
+                    Id = 27,
+                    Name = "DSDFundingApplicationSubmitted",
+                    Body = "<p>Dear Applicant - {OrganizationName}</p><p>We acknowledge receipt of your submitted application with ref no: <strong>{ApplicationRefNo}.</strong></p><p>This application will now undergo review, and the outcome will be communicated in due course.</p>Kind Regards,</p><p>NPO MS Team</p>",
+                    Subject = "DSD Funding Application Acknowledgement Confirmation – (Submitted Pending Review Status)"
                 }
 
             );

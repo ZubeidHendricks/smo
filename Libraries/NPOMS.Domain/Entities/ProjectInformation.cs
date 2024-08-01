@@ -10,9 +10,17 @@ namespace NPOMS.Domain.Entities
     public class ProjectInformation : BaseEntity
     {
 
-        //public string InitiatedQuestion { get; set; }
-        //public string considerQuestion { get; set; }
-        public string purposeQuestion { get; set; }
+        public int ApplicationId { get; set; }
 
+        public bool? IsNew { get; set; }
+        public bool IsActive { get; set; }
+        public string purposeQuestion { get; set; }
+        public int? CreatedUserId { get; set; }
+
+        public DateTime? CreatedDateTime { get; set; }
+
+        public int? UpdatedUserId { get; set; }
+
+        public DateTime? UpdatedDateTime { get; set; }
     }
 }

@@ -335,25 +335,25 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-        [HttpPut("updateFinancialMattersOthers/npoProfileId/{npoProfileId}", Name = "updateFinancialMattersOthers")]
-        public async Task<IActionResult> updateFinancialMattersOthers([FromBody] FinancialMattersOthers model, string npoProfileId)
+        [HttpPut("updateFinancialMattersOthers/applicationId/{applicationId}", Name = "updateFinancialMattersOthers")]
+        public async Task<IActionResult> updateFinancialMattersOthers([FromBody] FinancialMattersOthers model, string applicationId)
         {
-            await _npoProfileService.UpdateOthers(model, base.GetUserIdentifier(), npoProfileId);
+            await _npoProfileService.UpdateOthers(model, base.GetUserIdentifier(), applicationId);
             return Ok(model);
         }
 
-        [HttpPut("updateFinancialMattersExpenditure/npoProfileId/{npoProfileId}", Name = "updateFinancialMattersExpenditure")]
-        public async Task<IActionResult> updateFinancialMattersExpenditure([FromBody] FinancialMattersExpenditure model, string npoProfileId)
+        [HttpPut("updateFinancialMattersExpenditure/applicationId/{applicationId}", Name = "updateFinancialMattersExpenditure")]
+        public async Task<IActionResult> updateFinancialMattersExpenditure([FromBody] FinancialMattersExpenditure model, string applicationId)
         {
-            await _npoProfileService.UpdateExpenditure(model, base.GetUserIdentifier(), npoProfileId);
+            await _npoProfileService.UpdateExpenditure(model, base.GetUserIdentifier(), applicationId);
             return Ok(model);
         }
 
 
-        [HttpPut("updateFinancialMattersIncome/npoProfileId/{npoProfileId}", Name = "updateFinancialMattersIncome")]
-        public async Task<IActionResult> updateFinancialMattersIncome([FromBody] FinancialMattersIncome model, string npoProfileId)
+        [HttpPut("updateFinancialMattersIncome/applicationId/{applicationId}", Name = "updateFinancialMattersIncome")]
+        public async Task<IActionResult> updateFinancialMattersIncome([FromBody] FinancialMattersIncome model, string applicationId)
         {
-            await _npoProfileService.UpdateIncome(model, base.GetUserIdentifier(), npoProfileId);
+            await _npoProfileService.UpdateIncome(model, base.GetUserIdentifier(), applicationId);
             return Ok();
         }
 

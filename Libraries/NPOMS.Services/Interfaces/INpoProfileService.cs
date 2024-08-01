@@ -10,7 +10,7 @@ namespace NPOMS.Services.Interfaces
         Task<IEnumerable<NpoProfile>> Get(string userIdentifier);
 
         Task<NpoProfile> GetById(int id);
-
+        Task<ServicesRendered> GetServiceRenderedByProperties(int npoProfileId, int programmeId, int subProgrammeId, int subProgrammeTypeId);
         Task Create(NpoProfile profile, string userIdentifier);
 
         Task Update(NpoProfile profile, string userIdentifier);

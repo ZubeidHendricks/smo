@@ -2,17 +2,20 @@ import { FinancialMatters, IFinancialMattersExpenditure, IFinancialMattersIncome
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { CalculatedFinMatters } from 'src/app/models/CalculatedFinMatters';
 import { IPreviousFinancialYear } from 'src/app/models/FinancialMatters';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { PropertyType } from 'src/app/models/PropertyType';
 import { DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, FinYear, IFundingApplicationDetails, IBankDetail, IBank, IBranch, IAccountType } from 'src/app/models/interfaces';
+import { IApplication, FinYear, IFundingApplicationDetails, IBankDetail, IBank, IBranch, IAccountType, IFinancialYear, IProgramBankDetails } from 'src/app/models/interfaces';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
+import { style } from '@angular/animations';
+import { NgxSpinnerService } from 'ngx-spinner';
+import * as internal from 'stream';
 
 @Component({
   selector: 'app-financial-matters',
@@ -22,14 +25,17 @@ import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 export class FinancialMattersComponent implements OnInit {
 
   @Input() isReadOnly: boolean;
-  @Input() fundingApplicationDetails: IFundingApplicationDetails; @Input() application: IApplication;
+  @Input() fundingApplicationDetails: IFundingApplicationDetails; 
+  isSDASelected: boolean;
+  @Input() application: IApplication;
   @Input() financialMatters: IFinancialMattersIncome[] = [];
   @Input() isEdit: boolean;
   @Output() financialMattersChange = new EventEmitter<any>();
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() currentUserId: number;
-
+  @Input() programId: number;
+  
   previousFinancialYear: IPreviousFinancialYear[];
   totalIncome: number;
   totalExpenditure: number;
@@ -38,7 +44,7 @@ export class FinancialMattersComponent implements OnInit {
   newFinancialMatter: boolean;
   menuItem: any[];
   propertyObj: PropertyType = {} as PropertyType;
-  financialMattersIncome: IFinancialMattersIncome[];
+  @Input() financialMattersIncome: IFinancialMattersIncome[];
   financialMattersExpenditure: IFinancialMattersExpenditure[];
   financialMattersOthers: IFinancialMattersOthers[];
   menuActions: MenuItem[];
@@ -56,7 +62,7 @@ export class FinancialMattersComponent implements OnInit {
   financialmatterIncome: IFinancialMattersIncome = {} as IFinancialMattersIncome;
   financialmatterExpenditure: IFinancialMattersExpenditure = {} as IFinancialMattersExpenditure;
   financialmatterOther: IFinancialMattersOthers = {} as IFinancialMattersOthers;
-
+  programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
   financicalMattersOthrSourceFunding: IFinancialMattersOthers[];
 
   selectedFinancialMatterIncome: IFinancialMattersIncome;
@@ -101,7 +107,7 @@ export class FinancialMattersComponent implements OnInit {
   newBankDetail: boolean;
   bankDetail: IBankDetail = {} as IBankDetail;
   selectedBankDetail: IBankDetail;
-
+  //isSDASelected: boolean;
   banks: IBank[];
   selectedBank: IBank;
   branches: IBranch[];
@@ -109,6 +115,10 @@ export class FinancialMattersComponent implements OnInit {
   accountTypes: IAccountType[];
   selectedAccountType: IAccountType;
   bankDetails: IBankDetail[];
+  programBankDetails : IProgramBankDetails [];
+  previous_year: any;
+  private _loggerService: any;
+  isDisabledButton: boolean;
   constructor(private dropDownService: DropdownService,
     private _confirmationService: ConfirmationService,
     private _bidServie: BidService,
@@ -118,6 +128,7 @@ export class FinancialMattersComponent implements OnInit {
     private _npoProfile: NpoProfileService,
     private _bidService: BidService,
     private _router: Router,
+    private _spinner: NgxSpinnerService,
     private messageService: MessageService) { }
 
 
@@ -126,10 +137,12 @@ export class FinancialMattersComponent implements OnInit {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.selectedApplicationId = params.get('id');
 
-    });
+      this.loadProgrammeDetails();
+     // this.current_year = new Date("YYYY").toString();
+
+    }); 
 
     this.GetPreviousYearFinanceData();
-    this.GetBankDetail();
 
     if (this.previousFinancialYear != null && this.previousFinancialYear.length > 0)
       this.calculatePreviousYearTotals();
@@ -176,16 +189,17 @@ export class FinancialMattersComponent implements OnInit {
     this.financialMattersOthers = [];
     this.financicalMattersOthrSourceFunding = [];
     // }
-
+    
     var subscription = this.dropDownService.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(res => {
       this.finYears = res;
-
+      this.previous_year = this.finYears[this.application.applicationPeriod.financialYearId - 2].name;
+      
       this.cols = [
         { field: 'property', header: 'Item Description', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
-        { field: 'year1', header: this.finYears[2].name, width: '15%' },
-        { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },
-        { field: 'year3', header: this.finYears[4].name + '[estimated]', width: '15%' },
+        { field: 'year1', header: this.finYears[this.application.applicationPeriod.financialYearId - 1].name, width: '15%' },
+        { field: 'year2', header: this.finYears[this.application.applicationPeriod.financialYearId].name + '[estimated]', width: '15%' },
+        { field: 'year3', header: this.finYears[this.application.applicationPeriod.financialYearId + 1].name + '[estimated]', width: '15%' },
         { field: 'total', header: 'Total Funding ', width: '10%' },
         { field: 'action', header: 'Action ', width: '5%' }
 
@@ -193,9 +207,9 @@ export class FinancialMattersComponent implements OnInit {
       this.colsOther = [
         { field: 'property', header: 'Name of Organisation from whom funding has been received', width: '40%' },
         // { field: 'subproperty', header: 'Sub Property' },
-        { field: 'year1', header: this.finYears[2].name, width: '15%' },
-        { field: 'year2', header: this.finYears[3].name + '[estimated]', width: '15%' },
-        { field: 'year3', header: this.finYears[4].name + '[estimated]', width: '15%' },
+        { field: 'year1', header: this.finYears[this.application.applicationPeriod.financialYearId -1].name, width: '15%' },
+        { field: 'year2', header: this.finYears[this.application.applicationPeriod.financialYearId].name + '[estimated]', width: '15%' },
+        { field: 'year3', header: this.finYears[this.application.applicationPeriod.financialYearId + 1].name + '[estimated]', width: '15%' },
         { field: 'total', header: 'Total Funding ', width: '10%' },
         { field: 'action', header: 'Action ', width: '5%' }
 
@@ -218,6 +232,38 @@ export class FinancialMattersComponent implements OnInit {
     this.loadAccountTypes();
   }
 
+  private loadProgrammeDetails() {
+    this._npoProfile.getProgrammeBankDetails(this.application.id).subscribe(
+      (results) => {
+        this.programBankDetails = results.filter(x=> x.programId == this.programId); // x.approvalStatus.id === 2 && 
+        this.updateBankDetailObjects();
+      }, 
+      (err) => {
+      }
+    );
+  }  
+  
+  setValue(event, value) {  
+
+      if(event.target.checked)//
+      {
+        this.isSDASelected = true;
+        this._npoProfile.updateProgrammeBankSelection(value, this.isSDASelected, this.application.npoId).subscribe(resp => {
+          this.loadProgrammeDetails();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+        });
+        
+      }
+  }
+
+  disableSaveProgramBankDetail() {
+    if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.programBankDetail.accountNumber)
+      return true;
+
+    return false;
+  }
   private loadBanks() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Banks, false).subscribe(
       (results) => {
@@ -255,8 +301,10 @@ export class FinancialMattersComponent implements OnInit {
   }
 
   private updateBankDetailObjects() {
-    if (this.banks && this.accountTypes && this.bankDetails) {
-      this.bankDetails.forEach(item => {
+    if (this.banks && this.accountTypes && this.programBankDetails) {
+      var selectedBanks = this.programBankDetails.filter(x => x.isSelected);
+      this.isSDASelected = selectedBanks.length == 1 ? true : false;
+      this.programBankDetails.forEach(item => {
         item.bank = this.banks.find(x => x.id === item.bankId);
         this.loadBranch(item);
         item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
@@ -293,17 +341,16 @@ export class FinancialMattersComponent implements OnInit {
     return true;
   }
 
-  addBankDetail() {
+  addProgrammeBankDetail() {
     this.isBankDetailEdit = false;
     this.newBankDetail = true;
-    this.bankDetail = {} as IBankDetail;
+    this.programBankDetail = {} as IProgramBankDetails;
     this.selectedBank = null;
     this.branches = [];
     this.selectedBranch = null;
     this.selectedAccountType = null;
     this.displayBankDetailDialog = true;
   }
-
 
   editBankDetail(data: IBankDetail) {
     this.selectedBankDetail = data;
@@ -328,72 +375,36 @@ export class FinancialMattersComponent implements OnInit {
     return bankDetail;
   }
 
-
-  deleteBankDetail(bankDetail) {
-    this._confirmationService.confirm({
-      message: 'Are you sure that you want to delete this item?',
-      header: 'Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-        this._npoProfile.deleteBankDetail(bankDetail).subscribe(
-          (resp) => {
-            this.GetBankDetail();
-          },
-          (err) => {
-            //
-          }
-        );
-      },
-      reject: () => {
-        //
-      }
-    });
+ 
+  branchProgrammeChange() {
+    if (this.selectedBranch) {
+      this.programBankDetail.branchCode = this.selectedBranch.branchCode != null ? this.selectedBranch.branchCode : this.selectedBank.code;
+    }
   }
-
-  saveBankDetail() {
-    this.bankDetail.npoProfileId = Number(this.selectedApplicationId);
-    this.bankDetail.bankId = this.selectedBank.id;
-    this.bankDetail.branchId = this.selectedBranch.id;
-    this.bankDetail.accountTypeId = this.selectedAccountType.id;
-
-    this.newBankDetail ? this.createBankDetail(this.bankDetail) : this.updateBankDetail(this.bankDetail);
+  saveProgrammeBankDetail() {
+    this.programBankDetail.programId = Number(this.application.applicationPeriod.programmeId);
+    this.programBankDetail.bankId = this.selectedBank.id;
+    this.programBankDetail.branchId = this.selectedBranch.id;
+    this.programBankDetail.accountTypeId = this.selectedAccountType.id;
+    this.programBankDetail.isActive = true;
+    
+    this.createProgrameBankDetail(this.programBankDetail)
+    //this.newBankDetail ? this.createProgrameBankDetail(this.programBankDetail) : this.updateProgrameBankDetail(this.programBankDetail);
     this.displayBankDetailDialog = false;
   }
 
-  private createBankDetail(bankDetail: IBankDetail) {
-    this._npoProfile.createBankDetail(bankDetail).subscribe(
+  private createProgrameBankDetail(bankDetail: IProgramBankDetails) {
+    this._npoProfile.createProgrammeBankDetails(Number(this.application.id),bankDetail).subscribe(
       (resp) => {
-        this.GetBankDetail();
+        this.loadProgrammeDetails();
       },
-      (err) => {//
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
       }
     );
   }
 
-  private updateBankDetail(bankDetail: IBankDetail) {
-    this._npoProfile.updateBankDetail(bankDetail).subscribe(
-      (resp) => {
-        this.loadBankDetails(Number(this.npoProfileId));
-      },
-      (err) => {
-        // this._loggerService.logException(err);
-        // this._spinner.hide();
-      }
-    );
-  }
-
-  private loadBankDetails(npoProfileId: number) {
-    this._npoProfile.getBankDetailByNpoProfileId(this.application.id).subscribe(
-      (results) => {
-        this.bankDetails = results;
-        this.updateBankDetailObjects();
-      },
-      (err) => {
-        // this._loggerService.logException(err);
-        // this._spinner.hide();
-      }
-    );
-  }
 
   disableSaveBankDetail() {
     if (!this.selectedBank || !this.selectedBranch || !this.selectedAccountType || !this.bankDetail.accountNumber)
@@ -750,10 +761,16 @@ export class FinancialMattersComponent implements OnInit {
 
 
   nextPage() {
-
-    this.activeStep = this.activeStep + 1;
-    this.bidForm(StatusEnum.Saved);
-    this.activeStepChange.emit(this.activeStep);
+    if(this.isSDASelected === true)
+      {
+        this.activeStep = this.activeStep + 1;
+        this.bidForm(StatusEnum.Saved);
+        this.activeStepChange.emit(this.activeStep);
+      }
+      else{
+        alert('Please select bank account or add bank account in profile section');
+        return false;
+      }   
   }
 
 
@@ -869,18 +886,6 @@ export class FinancialMattersComponent implements OnInit {
           document.getElementById('previousFinancialYear').hidden = false;
         }
         this.calculatePreviousYearTotals();
-      },
-      (err) => {
-        //
-      }
-    );
-  }
-
-  private GetBankDetail() {
-    this._npoProfile.getBankDetailByNpoProfileId(Number(this.selectedApplicationId)).subscribe(
-      (results) => {
-        this.bankDetails = results;
-        this.updateBankDetailObjects();
       },
       (err) => {
         //
