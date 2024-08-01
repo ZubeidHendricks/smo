@@ -247,15 +247,18 @@ export class FinancialMattersComponent implements OnInit {
 
       if(event.target.checked)//
       {
-        this.isSDASelected = true;
-        this._npoProfile.updateProgrammeBankSelection(value, this.isSDASelected, this.application.npoId).subscribe(resp => {
-          this.loadProgrammeDetails();
-        },
-        (err) => {
-          this._loggerService.logException(err);
-        });
-        
+        this.isSDASelected = true;      
       }
+      else{
+        this.isSDASelected = false; 
+      }
+
+      this._npoProfile.updateProgrammeBankSelection(value, this.isSDASelected, this.application.npoId).subscribe(resp => {
+        this.loadProgrammeDetails();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      });
   }
 
   disableSaveProgramBankDetail() {

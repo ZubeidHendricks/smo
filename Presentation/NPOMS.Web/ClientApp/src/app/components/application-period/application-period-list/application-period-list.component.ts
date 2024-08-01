@@ -222,7 +222,7 @@ export class ApplicationPeriodListComponent implements OnInit {
     this.application.subProgrammeId = this.subProgrammeId;
     this.application.subProgrammeTypeId = this.subProgrammeTypeId;
     this.application.statusId = StatusEnum.New;
-alert(this.departmentId);
+
       if(this.departmentId === 7)
       {
         this._applicationRepo.createFunApplication(this.application, this.selectedOption, this.selectedFinancialYear, this.departmentId).subscribe(
