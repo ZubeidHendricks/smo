@@ -268,8 +268,14 @@ export class ApplicationListComponent implements OnInit {
   }
 
   private getRejectedInformation(application: IApplication, applicationId: number) {
-    this._response = this._responses.filter(x => x.createdUserId === this.profile.id && x.rejectionFlag === 1 && x.fundingApplicationId === applicationId);
+   if(this._response !== undefined)
+   {
+    this._response = this._responses?.filter(x => x.createdUserId === this.profile.id && x.rejectionFlag === 1 && x.fundingApplicationId === applicationId);
     application.rejectedScorecard = this._responses.length;
+   }    
+   else{
+    application.rejectedScorecard = 0;
+   }
    
   }
 
