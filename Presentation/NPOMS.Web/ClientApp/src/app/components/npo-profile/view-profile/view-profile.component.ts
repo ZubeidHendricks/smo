@@ -193,7 +193,7 @@ export class ViewProfileComponent implements OnInit {
       (results) => {
 
         if (results != null) {
-          this.programContactInformation1 = results.filter(contact => contact.programmeId === this.programId && contact.subProgrammeId === this.subProgramId && contact.subProgrammeTypeId === this.subProgramTypeId);
+          this.programContactInformation1 = results.filter(contact => contact.programmeId === this.programId);
         } this._spinner.hide();//
       },
       (err) => {
@@ -356,7 +356,7 @@ export class ViewProfileComponent implements OnInit {
         this.servicesRendered = results;
         if(this.programId != null && this.programId > 0)
         {
-            this.servicesRendered = results.filter(service => service.programmeId === this.programId && service.subProgrammeId === this.subProgramId && service.subProgrammeTypeId === this.subProgramTypeId);
+            this.servicesRendered = results.filter(service => service.programmeId === this.programId);
         }
         this.updateServicesRenderedObjects();
       },
