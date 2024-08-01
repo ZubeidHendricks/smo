@@ -122,19 +122,51 @@ namespace NPOMS.API.Controllers
         }
 
         [HttpPost("createNew/{createNew}/financialYearId/{financialYearId}", Name = "CreateApplication")]
-        public async Task<IActionResult> CreateApplication([FromBody] Application model, bool createNew, int financialYearId)
+        public async Task<IActionResult> CreateApplication([FromBody] Application model, bool createNew, int financialYearId, int departmentId)
         {
             try
             {
-                var npo = await _npoProfileService.GetByNpoId(model.NpoId);
-                var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npo.Id, model.ProgrammeId, model.SubProgrammeId,model.SubProgrammeTypeId);
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
+
+                if (application == null)
+                {
+                    model.IsCloned = !createNew;
+                    await _applicationService.CreateApplication(model, base.GetUserIdentifier());
+                    await CreateApplicationAudit(model);
+
+                    if (!createNew)
+                    {
+                        await _applicationService.CloneWorkplan(model, financialYearId, base.GetUserIdentifier());
+                        await _applicationService.CreateActivityRecipients(model, financialYearId);
+                    }
+                }
+                else
+                    await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
+
+                var modelToReturn = application == null ? model : application;
+                return Ok(modelToReturn);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("createNewFundingApp/{createNew}/financialYearId/{financialYearId}/departmentId/{departmentId}", Name = "CreateNewFundingApp")]
+        public async Task<IActionResult> CreateNewFundingApp([FromBody] Application model, bool createNew, int financialYearId, int departmentId)
+        {
+            try
+            {
+                var npoProfile = await _npoProfileService.GetByNpoId(model.NpoId);
+                var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
 
                 if (servicesRendered == null)
                 {
                     var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
                     return Ok(data);
                 }
-                
+
                 var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
 
                 if (application == null)
