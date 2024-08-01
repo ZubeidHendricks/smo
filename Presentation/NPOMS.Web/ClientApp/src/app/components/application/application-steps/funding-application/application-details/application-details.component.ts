@@ -48,6 +48,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
   @Input() amount: number;
   @Output() amountChange: EventEmitter<number> = new EventEmitter<number>();
+  @Output() saveFundingApplication = new EventEmitter();
 
   dropdownTouched: boolean = false;
   /* Permission logic */
@@ -227,7 +228,7 @@ export class ApplicationDetailsComponent implements OnInit {
         if (results != null) {
           this.application = results;
           this._bidService.getApplicationBiId(results.id).subscribe(response => {
-            if (response.id != null) {
+            if (response && response.id != null) {
               this.getFundingApplicationDetails(response);
             }
           });
@@ -673,7 +674,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
 
   nextPage() {
-   // if (this.canContinue()) {
+    if (this.Amount > 0) {
       if(this.programDeliveryDetails != undefined)
       { 
         this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.Amount;
@@ -696,10 +697,14 @@ export class ApplicationDetailsComponent implements OnInit {
         alert('Service area missing');
         return false;
       }
+      this.saveFundingApplication.emit();
       this.activeStep = this.activeStep + 1;
       this.bidForm(StatusEnum.Saved);
       this.activeStepChange.emit(this.activeStep);
-  //  }
+    }
+    else{
+      alert('Please enter the Rand amount you are applying for');
+    }
   }
 
   prevPage() {

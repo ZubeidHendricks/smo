@@ -174,11 +174,11 @@ export class CreateApplicationComponent implements OnInit {
         this.faItems = [
           { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
           { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Financial Matters' },
-          { label: 'Project Information' },
-          { label: 'Monitoring and Evaluation'},
-          { label: 'Project Implementation Plan'},
-          { label: 'Application Document'}
+          { label: 'Financial Matters', disabled: true },
+          { label: 'Project Information' , disabled: true},
+          { label: 'Monitoring and Evaluation', disabled: true},
+          { label: 'Project Implementation Plan', disabled: true},
+          { label: 'Application Document', disabled: true}
         ];
       }
     }
@@ -553,5 +553,9 @@ export class CreateApplicationComponent implements OnInit {
 
   subPlaces(subPlacesAll: ISubPlace[]) {
     this.subPlacesAll = subPlacesAll;
+  }
+  public saveFundingApplication()
+  {
+    this.bidForm(StatusEnum.Saved);
   }
 }
