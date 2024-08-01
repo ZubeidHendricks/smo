@@ -337,19 +337,19 @@ namespace NPOMS.Services.Implementation
 
             await _financialMattersIncomeRepository.UpdateAsync(model);
 
-            var fMatters = new FinancialMatters();
+            //var fMatters = new FinancialMatters();
 
-            fMatters.FundingApplicationDetailId = model.FundingApplicationDetailId;
-            fMatters.AmountOne = model.AmountOneI;
-            fMatters.AmountTwo = model.AmountTwoI;
-            fMatters.AmountThree = model.AmountThreeI;
-            fMatters.Property = "Income";
-            fMatters.IsActive = true;
-            fMatters.TotalFundingAmount = model.TotalFundingAmountI;
-            fMatters.UpdatedUserId = loggedInUser.Id;
-            fMatters.UpdatedDateTime = DateTime.Now;
+            //fMatters.FundingApplicationDetailId = model.FundingApplicationDetailId;
+            //fMatters.AmountOne = model.AmountOneI;
+            //fMatters.AmountTwo = model.AmountTwoI;
+            //fMatters.AmountThree = model.AmountThreeI;
+            //fMatters.Property = "Income";
+            //fMatters.IsActive = true;
+            //fMatters.TotalFundingAmount = model.TotalFundingAmountI;
+            //fMatters.UpdatedUserId = loggedInUser.Id;
+            //fMatters.UpdatedDateTime = DateTime.Now;
 
-            await _financialMattersRepository.UpdateAsync(fMatters);
+            //await _financialMattersRepository.UpdateAsync(fMatters);
         }
 
         public async Task UpdateExpenditure(FinancialMattersExpenditure model, string userIdentifier, string id)
@@ -361,18 +361,18 @@ namespace NPOMS.Services.Implementation
 
             await _financialMattersExpenditureRepository.UpdateAsync(model);
 
-            var fMatters = new FinancialMatters();
+            //var fMatters = new FinancialMatters();
 
-            fMatters.FundingApplicationDetailId = model.FundingApplicationDetailId;
-            fMatters.AmountOne = model.AmountOneE;
-            fMatters.AmountTwo = model.AmountTwoE;
-            fMatters.AmountThree = model.AmountThreeE;
-            fMatters.Property = "Expenditure";
-            fMatters.IsActive = true;
-            fMatters.TotalFundingAmount = model.TotalFundingAmountE;
-            fMatters.UpdatedUserId = loggedInUser.Id;
-            fMatters.UpdatedDateTime = DateTime.Now;
-            await _financialMattersRepository.UpdateAsync(fMatters);
+            //fMatters.FundingApplicationDetailId = model.FundingApplicationDetailId;
+            //fMatters.AmountOne = model.AmountOneE;
+            //fMatters.AmountTwo = model.AmountTwoE;
+            //fMatters.AmountThree = model.AmountThreeE;
+            //fMatters.Property = "Expenditure";
+            //fMatters.IsActive = true;
+            //fMatters.TotalFundingAmount = model.TotalFundingAmountE;
+            //fMatters.UpdatedUserId = loggedInUser.Id;
+            //fMatters.UpdatedDateTime = DateTime.Now;
+            //await _financialMattersRepository.UpdateAsync(fMatters);
         }
 
         public async Task UpdateOthers(FinancialMattersOthers model, string userIdentifier, string id)
@@ -384,18 +384,18 @@ namespace NPOMS.Services.Implementation
 
             await _financialMattersOthersRepository.UpdateAsync(model);
 
-            var fMatters = new FinancialMatters();
+            //var fMatters = new FinancialMatters();
 
-            fMatters.FundingApplicationDetailId = model.FundingApplicationDetailId;
-            fMatters.AmountOne = model.AmountOneO;
-            fMatters.AmountTwo = model.AmountTwoO;
-            fMatters.AmountThree = model.AmountThreeO;
-            fMatters.Property = "Other";
-            fMatters.IsActive = true;
-            fMatters.TotalFundingAmount = model.TotalFundingAmountO;
-            fMatters.UpdatedUserId = loggedInUser.Id;
-            fMatters.UpdatedDateTime = DateTime.Now;
-            await _financialMattersRepository.UpdateAsync(fMatters);
+            //fMatters.FundingApplicationDetailId = model.FundingApplicationDetailId;
+            //fMatters.AmountOne = model.AmountOneO;
+            //fMatters.AmountTwo = model.AmountTwoO;
+            //fMatters.AmountThree = model.AmountThreeO;
+            //fMatters.Property = "Other";
+            //fMatters.IsActive = true;
+            //fMatters.TotalFundingAmount = model.TotalFundingAmountO;
+            //fMatters.UpdatedUserId = loggedInUser.Id;
+            //fMatters.UpdatedDateTime = DateTime.Now;
+            //await _financialMattersRepository.UpdateAsync(fMatters);
         }
 
         public async Task CreatePreviousYearFinance(int fundingApplicationId, string userIdentifier)
