@@ -61,8 +61,6 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-
-
                 var userIdentifier = GetUserIdentifier();
                 var bid = await _bidService.Create(userIdentifier, value);
 
