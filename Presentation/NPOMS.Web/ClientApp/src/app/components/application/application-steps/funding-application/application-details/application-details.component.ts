@@ -697,7 +697,7 @@ export class ApplicationDetailsComponent implements OnInit {
         alert('Service area missing');
         return false;
       }
-      this.saveFundingApplication.emit();
+      //this.saveFundingApplication.emit();
       this.activeStep = this.activeStep + 1;
       this.bidForm(StatusEnum.Saved);
       this.activeStepChange.emit(this.activeStep);
