@@ -15,7 +15,7 @@
     <tr [pSelectableRow]="rowData">
       <td>{{rowData.description}}</td>
       <td>{{rowData.beneficiaries}}</td>
-      <td>{{rowData.budget}}</td> 
+      <td>R {{rowData.budget | number: '1.0':'en-US'}}</td> 
       <td style="text-align: center;">
         <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"
         (click)="editProjImpl(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
