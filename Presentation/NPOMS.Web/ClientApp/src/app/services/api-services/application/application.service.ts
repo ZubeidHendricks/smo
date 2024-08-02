@@ -48,15 +48,6 @@ export class ApplicationService {
     return this._http.post<IApplication>(url, application, httpOptions);
   }
 
-  public createFunApplication(application: IApplication, createNew: boolean, financialYear: IFinancialYear, departmentId: number) {
-    // Set default value for financial year id as it would be null when createNew is true
-    let financialYearId = financialYear != null ? financialYear.id : 0;
-
-    const url = `${this._envUrl.urlAddress}/api/applications/createNewFundingApp/${createNew}/financialYearId/${financialYearId}/departmentId/${departmentId}`;
-    return this._http.post<IApplication>(url, application, httpOptions);
-  }
-
-
   public updateApplication(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications`;
     return this._http.put<IApplication>(url, application, httpOptions);
