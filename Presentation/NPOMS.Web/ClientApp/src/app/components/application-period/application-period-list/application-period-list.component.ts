@@ -223,45 +223,23 @@ export class ApplicationPeriodListComponent implements OnInit {
     this.application.subProgrammeTypeId = this.subProgrammeTypeId;
     this.application.statusId = StatusEnum.New;
 
-      if(this.departmentId === 7)
-      {
-        this._applicationRepo.createFunApplication(this.application, this.selectedOption, this.selectedFinancialYear, this.departmentId).subscribe(
-          (resp) => {
-              if(resp.id == undefined)
-              {
-                alert(resp.message);
-                this._spinner.hide();
-                return false;           
-              }
-              else{
-                this._router.navigateByUrl('application/create/' + resp.id);
-              }        
-          },
-          (err) => {
-            this._loggerService.logException(err);       
+    this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
+      (resp) => {
+          if(resp.id == undefined)
+          {
+            alert(resp.message);
             this._spinner.hide();
+            return false;           
           }
-        );
+          else{
+            this._router.navigateByUrl('application/create/' + resp.id);
+          }        
+      },
+      (err) => {
+        this._loggerService.logException(err);       
+        this._spinner.hide();
       }
-      else{
-        this._applicationRepo.createApplication(this.application, this.selectedOption, this.selectedFinancialYear).subscribe(
-          (resp) => {
-              if(resp.id == undefined)
-              {
-               
-                this._spinner.hide();
-                return false;           
-              }
-              else{
-                this._router.navigateByUrl('application/create/' + resp.id);
-              }        
-          },
-          (err) => {
-            this._loggerService.logException(err);       
-            this._spinner.hide();
-          }
-        );
-      }
+    );
   }
 
   search(event) {
