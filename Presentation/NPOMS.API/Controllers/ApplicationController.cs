@@ -221,6 +221,22 @@ namespace NPOMS.API.Controllers
             try
             {
                 var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
+                
+                if (applicationPeriod.ApplicationType.Id == (int)ApplicationTypeEnum.FundingApplication)
+                {
+                    StatusEnum status = (StatusEnum)model.StatusId;
+
+                    switch (status)
+                    {
+                        case StatusEnum.PendingReview:
+                            var newDSDApplication = EmailTemplateFactory
+                                    .Create(EmailTemplateTypeEnum.DSDFundingApplicationSubmitted)
+                                    .Get<DSDFundingApplicationSubmitted>()
+                                    .Init(model);
+                            await newDSDApplication.SubmitToQueue();
+                            break;
+                    }
+                }
 
                 if (applicationPeriod.ApplicationType.Id == (int)ApplicationTypeEnum.ServiceProvision)
                 {
