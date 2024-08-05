@@ -27,6 +27,8 @@
         <app-view-financial-matters 
             [(activeStep)]="activeStep" [application]="application" [isAdmin]=false
             [programId]="application.applicationPeriod.programmeId" 
+            [subProgramId] = "application.applicationPeriod.subProgrammeId"
+            [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
             [source]="source" 
             [(fundingApplicationDetails)]="fundingApplicationDetails" (financialMattersChange)="getfinFund($event)">
         </app-view-financial-matters>
