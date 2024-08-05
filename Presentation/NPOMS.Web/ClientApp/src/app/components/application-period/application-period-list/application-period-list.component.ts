@@ -96,12 +96,12 @@ export class ApplicationPeriodListComponent implements OnInit {
     });
 
     this.cols = [
-      // { field: 'refNo', header: 'Ref. No.', width: '10%' },
+      // { field: 'refNo', header: 'Ref. No.', width: '10%' },//
       { field: 'department.name', header: 'Department', width: '13%' },
       { field: 'applicationType.name', header: 'Type', width: '10%' },
       { field: 'programme.name', header: 'Programme', width: '12%' },
       { field: 'subProgramme.name', header: 'Sub-Programme', width: '15%' },
-      // { field: 'subProgrammeType.name', header: 'Sub-ProgrammeType', width: '17%' },
+      { field: 'subProgrammeType.name', header: 'Sub-ProgrammeType', width: '17%' },
       { field: 'financialYear.name', header: 'Financial Year', width: '12%' },
       { field: 'openingDate', header: 'Opening Date', width: '12%' },
       { field: 'closingDate', header: 'Closing Date', width: '12%' },
@@ -159,45 +159,19 @@ export class ApplicationPeriodListComponent implements OnInit {
       applicationPeriod.status = 'Closed';
   }
 
-  // getCellData(row: any, col: any): any {
-  //   const nestedProperties: string[] = col.field.split('.');
-  //   let value: any = row;
-
-  //   for (const prop of nestedProperties) {
-  //     value = value[prop];
-
-  //     if (col.field == 'openingDate' || col.field == 'closingDate')
-  //       value = this._datepipe.transform(value, 'yyyy-MM-dd HH:mm:ss');
-  //   }
-
-  //   return value;
-  // }
-
   getCellData(row: any, col: any): any {
     const nestedProperties: string[] = col.field.split('.');
     let value: any = row;
-  
+
     for (const prop of nestedProperties) {
-      if (value && prop in value) {
-        value = value[prop];
-      } else {
-        console.error(`Property '${prop}' not found in`, value);
-        return null; // or handle the error as needed
-      }
-    }
-  
-    if (col.field === 'openingDate' || col.field === 'closingDate') {
-      if (value) {
+      value = value[prop];
+
+      if (col.field == 'openingDate' || col.field == 'closingDate')
         value = this._datepipe.transform(value, 'yyyy-MM-dd HH:mm:ss');
-      } else {
-        console.error(`Invalid date value for field '${col.field}':`, value);
-        return null; // or handle the error as needed
-      }
     }
-  
+
     return value;
   }
-  
 
   add() {
     this._router.navigateByUrl('application-period/create');
