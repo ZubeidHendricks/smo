@@ -96,7 +96,7 @@ export class ApplicationPeriodListComponent implements OnInit {
     });
 
     this.cols = [
-      // { field: 'refNo', header: 'Ref. No.', width: '10%' },
+      // { field: 'refNo', header: 'Ref. No.', width: '10%' },//
       { field: 'department.name', header: 'Department', width: '13%' },
       { field: 'applicationType.name', header: 'Type', width: '10%' },
       { field: 'programme.name', header: 'Programme', width: '12%' },
