@@ -24,6 +24,8 @@ export class ConfirmationComponent implements OnInit {
   @Output() approvalFromChange: EventEmitter<string> = new EventEmitter<string>();
   @Input() approveApplication: boolean;
   @Output() selectedReviewersChange: EventEmitter<{ fullName: string, email: string, id: number }[]> = new EventEmitter();
+  //main
+  @Output() selectedMainReviewersChange: EventEmitter<{ fullName: string, email: string, id: number }[]> = new EventEmitter();
 
   auditCols: any[];
   statuses: any[] = [];
@@ -47,6 +49,12 @@ export class ConfirmationComponent implements OnInit {
   selectedreviewerlist: IUser[] = [];
   displayDialog: boolean;
   reviewerForm: FormGroup;
+
+  //main
+  mainReviewerlist: IUser[];
+  selectedMainreviewerlist: IUser[] = [];
+  displaySatisfactionDialog: boolean;
+  mainReviewerForm: FormGroup;
 
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
@@ -85,12 +93,14 @@ export class ConfirmationComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
     this.reviewerForm = this._formBuilder.group({});
+    this.mainReviewerForm = this._formBuilder.group({});
     this.loadApplicationApprovals();
     this.reviewers();
+    this.mainReviewers();
   }
 
   reviewers() {
-    this._applicationRepo.workplanapprovers(this.application.applicationPeriod.departmentId).subscribe(
+    this._applicationRepo.depReviewers(this.application.applicationPeriod.departmentId).subscribe(
      (results) => {
        this.reviewerlist = results;
      },
@@ -100,6 +110,18 @@ export class ConfirmationComponent implements OnInit {
      }
    );
  }
+
+ mainReviewers() {
+  this._applicationRepo.workplanMainReviewers(this.application.applicationPeriod.departmentId).subscribe(
+   (results) => {
+     this.mainReviewerlist = results;
+   },
+   (err) => {
+     this._loggerService.logException(err);
+     this._spinner.hide();
+   }
+ );
+}
 
   private loadApplicationApprovals() {
     this._applicationRepo.getApplicationApprovals(this.application.id).subscribe(
@@ -145,21 +167,47 @@ export class ConfirmationComponent implements OnInit {
     }));
     this.selectedReviewersChange.emit(users);
     this.statusChange.emit(this.selectedStatus);
+    this.displayDialog = false;
   }
 
-disableSubmit() {
+  //main
+  submitMainReviewers() {
+    const users = this.selectedMainreviewerlist.map(user => ({
+      fullName: user.fullName,
+      email: user.email,
+      id: user.id
+  }));
+  this.selectedReviewersChange.emit(users);
+  this.statusChange.emit(this.selectedStatus);
+  this.displaySatisfactionDialog = false;
+}
 
+disableSubmit() {
   if (this.selectedreviewerlist.length == 0)
     return true;
 
   return false;
 }
 
+disableMainReviewerSubmit() {
+
+  if (this.selectedMainreviewerlist.length == 0)
+    return true;
+
+  return false;
+}
+
+//main
 statusEnumChange(status: any) {
     this.selectedreviewerlist = [];
+    this.selectedMainreviewerlist = [];
     if(status.value === StatusEnum.PendingApproval) {
       this.selectedStatus = status.value;
       this.displayDialog = true;
+    }
+    else if(status.value === StatusEnum.PendingReviewerSatisfaction) {
+      this.selectedStatus = status.value;
+      this.displaySatisfactionDialog = true;
     }
     else{
         const users = this.selectedreviewerlist.map(user => ({

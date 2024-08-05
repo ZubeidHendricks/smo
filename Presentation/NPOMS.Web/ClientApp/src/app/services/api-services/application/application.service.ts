@@ -250,7 +250,7 @@ export class ApplicationService {
     return this._http.get<IUser[]>(url, httpOptions);
   }
 
-  public workplanapprovers(departmentId: number) {
+  public workplanMainReviewers(departmentId: number) {
     const url = `${this._envUrl.urlAddress}/api/applications/workplanapprovers/${departmentId}`;
     return this._http.get<IUser[]>(url, httpOptions);
   }
@@ -264,8 +264,13 @@ public UpdatesatisfactionReviewers(applicationId: number, users: { fullName: str
   return this._http.put<IApplication>(url, users, httpOptions);
 }
 
+public UpdateReviewers(applicationId: number, users: { fullName: string, email: string, id: number }[]) {
+  const url = `${this._envUrl.urlAddress}/api/applications/UpdateReviewers/applicationId/${applicationId}`;
+  return this._http.put<IApplication>(url, users, httpOptions);
+}
+
 public updateApplicationWithApprovers(model: ApplicationWithUsers) {
-  const url = `${this._envUrl.urlAddress}/api/applications/PlanApprover`;
+  const url = `${this._envUrl.urlAddress}/api/applications/Addworkplanapprovers`;
   return this._http.put<IApplication>(url, model, httpOptions);
 }
 }
