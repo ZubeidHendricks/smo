@@ -200,6 +200,13 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "DSDFundingApplicationSubmitted",
                     Body = "<p>Dear Applicant - {OrganizationName}</p><p>We acknowledge receipt of your submitted application with ref no: <strong>{ApplicationRefNo}.</strong></p><p>This application will now undergo review, and the outcome will be communicated in due course.</p>Kind Regards,</p><p>NPO MS Team</p>",
                     Subject = "DSD Funding Application Acknowledgement Confirmation – (Submitted Pending Review Status)"
+                },
+                 new EmailTemplate
+                {
+                    Id = 28,
+                    Name = "NpoReviewer",
+                    Body = "<p>Dear {ToUserFullName},</p><p>The Work plan with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been submitted for you to review.</p><p>Please <a href=\"{url}/#/applications\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                    Subject = "Amended Scorecard Notification - {NPO}"
                 }
 
             );
