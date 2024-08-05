@@ -633,4 +633,10 @@ export class EditApplicationComponent implements OnInit {
 
     return false;
   }
+
+  public saveFundingApplication()
+  {
+    this.bidForm(StatusEnum.Saved);
+  }
+  
 }

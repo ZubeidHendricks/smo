@@ -1044,7 +1044,7 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
   }
 
   public getColspan() {
-    return this.application.isCloned && this.isReview ? 7 : 10;
+    return this.application.isCloned && this.isReview ? 11 : 14;
   }
 
   public viewDeletedActivities() {

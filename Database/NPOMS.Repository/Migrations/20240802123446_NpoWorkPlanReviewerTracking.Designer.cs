@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,11 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20240802123446_NpoWorkPlanReviewerTracking")]
+    partial class NpoWorkPlanReviewerTracking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1219,15 +1222,6 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 27,
-                            Body = "<p>Dear Applicant - {OrganizationName}</p><p>We acknowledge receipt of your submitted application with ref no: <strong>{ApplicationRefNo}.</strong></p><p>This application will now undergo review, and the outcome will be communicated in due course.</p>Kind Regards,</p><p>NPO MS Team</p>",
-                            EmailAccountId = 0,
-                            IsActive = false,
-                            Name = "DSDFundingApplicationSubmitted",
-                            Subject = "DSD Funding Application Acknowledgement Confirmation – (Submitted Pending Review Status)"
-                        },
-                         new
-                        {
-                            Id = 28,
                             Body = "<p>Dear {ToUserFullName},</p><p>The Work plan with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been submitted for you to review.</p><p>Please <a href=\"{url}/#/applications\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
                             EmailAccountId = 0,
                             IsActive = false,
@@ -15056,9 +15050,6 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int>("NpoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProgrammeId")
-                        .HasColumnType("int");
-
                     b.Property<string>("RefNo")
                         .HasColumnType("char(15)");
 
@@ -15069,12 +15060,6 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Step")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubProgrammeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubProgrammeTypeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedDateTime")
@@ -15201,22 +15186,7 @@ namespace NPOMS.Repository.Migrations
                     b.Property<decimal>("AmountApplyingFor")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
                     b.Property<int>("FundAppSDADetailId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -15774,9 +15744,6 @@ namespace NPOMS.Repository.Migrations
                     b.Property<decimal>("AmountTwoE")
                         .HasColumnType("numeric(18,6)");
 
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
@@ -15831,9 +15798,6 @@ namespace NPOMS.Repository.Migrations
                     b.Property<decimal>("AmountTwoI")
                         .HasColumnType("numeric(18,6)");
 
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
@@ -15887,9 +15851,6 @@ namespace NPOMS.Repository.Migrations
 
                     b.Property<decimal>("AmountTwoO")
                         .HasColumnType("numeric(18,6)");
-
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -16038,22 +15999,10 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int>("ApplicationPeriodId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("MonitoringEvaluationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ProjectInformationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UpdatedUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -16549,19 +16498,10 @@ namespace NPOMS.Repository.Migrations
                     b.Property<bool>("IsSelected")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSubmitted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("NpoProfileId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProgramId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubProgrammeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubProgrammeTypeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedDateTime")
@@ -16633,9 +16573,6 @@ namespace NPOMS.Repository.Migrations
                     b.Property<bool?>("IsSignatory")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSubmitted")
-                        .HasColumnType("bit");
-
                     b.Property<bool?>("IsWrittenAgreementSignatory")
                         .HasColumnType("bit");
 
@@ -16664,12 +16601,6 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("RaceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubProgrammeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubProgrammeTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Telephone")
@@ -16730,9 +16661,6 @@ namespace NPOMS.Repository.Migrations
                     b.Property<bool>("IsSelected")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSubmitted")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("LocalMunicipalityId")
                         .HasColumnType("int");
 
@@ -16740,12 +16668,6 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ProgramId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubProgrammeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubProgrammeTypeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedDateTime")
@@ -16773,19 +16695,10 @@ namespace NPOMS.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Beneficiaries")
                         .HasColumnType("int");
 
                     b.Property<int>("BudgetAmount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("CreatedUserId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -16812,12 +16725,6 @@ namespace NPOMS.Repository.Migrations
                     b.Property<string>("TimeframeTo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FundingApplicationDetailId");
@@ -16832,27 +16739,6 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("CreatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsNew")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
 
                     b.Property<string>("purposeQuestion")
                         .HasColumnType("nvarchar(max)");

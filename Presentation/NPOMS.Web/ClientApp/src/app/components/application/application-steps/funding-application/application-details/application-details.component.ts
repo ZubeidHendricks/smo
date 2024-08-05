@@ -591,8 +591,8 @@ export class ApplicationDetailsComponent implements OnInit {
     this._npoProfile.getProgrammeDeliveryDetails(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.programId);
-          this.selectedProgramDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.programId && deliveryDetail.isSelected === true);
+          this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.programId && deliveryDetail.subProgrammeId === this.subProgramId && deliveryDetail.subProgrammeTypeId === this.subProgramTypeId);
+          this.selectedProgramDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.programId && deliveryDetail.subProgrammeId === this.subProgramId && deliveryDetail.subProgrammeTypeId === this.subProgramTypeId && deliveryDetail.isSelected === true);
         } 
         this._spinner.hide();
       },
@@ -702,7 +702,7 @@ export class ApplicationDetailsComponent implements OnInit {
       }
       this.saveFundingApplication.emit();
       this.activeStep = this.activeStep + 1;
-      this.bidForm(StatusEnum.Saved);
+    //  this.bidForm(StatusEnum.Saved);
       this.activeStepChange.emit(this.activeStep);
     }
     else{

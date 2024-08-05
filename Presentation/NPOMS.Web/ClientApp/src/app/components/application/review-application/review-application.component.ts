@@ -332,6 +332,8 @@ export class ReviewApplicationComponent implements OnInit {
           if(selectedReviewers.length > 0){
             this.applicationWithUsers.application = this.application;
             this.applicationWithUsers.userVM = selectedReviewers;
+
+          if(status != StatusEnum.PendingReviewerSatisfaction){
             this._applicationRepo.updateApplicationWithApprovers(this.applicationWithUsers).subscribe(
               (resp) => {
                 this._spinner.hide();
@@ -342,6 +344,19 @@ export class ReviewApplicationComponent implements OnInit {
                 this._spinner.hide();
               }
             );
+          }
+          else{
+            this._applicationRepo.UpdatesatisfactionReviewers(this.applicationWithUsers.application.id, this.applicationWithUsers.userVM).subscribe(
+              (resp) => {
+                this._spinner.hide();
+                this._router.navigateByUrl('applications');
+              },
+              (err) => {
+                this._loggerService.logException(err);
+                this._spinner.hide();
+              }
+            );
+          }
           }
           else{
             this._applicationRepo.updateApplication(this.application).subscribe(

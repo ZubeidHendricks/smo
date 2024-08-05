@@ -20,7 +20,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 })
 export class ApplicationListComponent implements OnInit {
   displayDialog: boolean;
-  displaySatisfactionReviewDialog: boolean;
+  displayReviewDialog: boolean;
   
 
   /* Permission logic */
@@ -52,6 +52,7 @@ export class ApplicationListComponent implements OnInit {
   capturedResponse: ICapturedResponse[];
   isSystemAdmin: boolean = true;
   isAdmin: boolean = false;
+  isMainReviewer: boolean = false;
   hasAdminRole: boolean = false;
   headerTitle: string;
   statusName: string;
@@ -94,6 +95,7 @@ export class ApplicationListComponent implements OnInit {
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+        this.isMainReviewer = profile.roles.some(function (role) { return role.id === RoleEnum.MainReviewer });
 
         if (this.isSystemAdmin || this.isAdmin)
           this.hasAdminRole = true;
@@ -133,20 +135,21 @@ export class ApplicationListComponent implements OnInit {
       }
     );
   }
-  submitSatisfactionReviewers(){
-    this.satisfactionReviewers();
+
+  btnSubmitReviewers(){
+    this.submitReviewers();
   }
 
-  private satisfactionReviewers() {
+  private submitReviewers() {
     const users = this.selectedreviewerlist.map(user => ({
         fullName: user.fullName,
         email: user.email,
         id: user.id
     }));
     
-    this._applicationRepo.UpdatesatisfactionReviewers(Number(this.selectedApplication.id), users).subscribe(
+    this._applicationRepo.UpdateReviewers(Number(this.selectedApplication.id), users).subscribe(
       (results) => {
-        this.displaySatisfactionReviewDialog = false;
+        this.displayReviewDialog = false;
         this._router.navigateByUrl('applications');
       },
       (err) => {
@@ -533,13 +536,14 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ReviewApplication)) {
+      //mainreviwer
+      if (this.IsAuthorized(PermissionsEnum.ReviewApplication) && this.isMainReviewer) {
         this.buttonItems[0].items.push({
           label: 'Select Reviewers',
           target: 'Work Plan',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            this.displaySatisfactionReviewDialog = true;
+            this.displayReviewDialog = true;
           }
         });
       }
@@ -693,8 +697,8 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
       
-      if (this.selectedApplication.npoUserSatisfactionTrackings.length > 0) {
-        if (!this.selectedApplication.npoUserSatisfactionTrackings.some(item => item.userId === this.profile.id)) 
+      if (this.selectedApplication.npoWorkPlanReviewerTrackings.length > 0) {
+        if (!this.selectedApplication.npoWorkPlanReviewerTrackings.some(item => item.userId === this.profile.id)) 
         {
           this.buttonItemExists('Review Application', 'Service Provision');
         }  
@@ -707,7 +711,7 @@ export class ApplicationListComponent implements OnInit {
         }  
       }
 
-      if (this.selectedApplication.statusId !== StatusEnum.PendingReviewerSatisfaction) {
+      if (this.selectedApplication.statusId !== StatusEnum.PendingReview) {
         this.buttonItemExists('Select Reviewers', 'Work Plan');
        }
 
