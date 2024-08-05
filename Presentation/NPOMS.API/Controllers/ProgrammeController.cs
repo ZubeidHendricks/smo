@@ -131,12 +131,12 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpGet("delivery/npoProfileId/{npoProfileId}", Name = "GetDeliveryDetails")]
-        public async Task<IActionResult> GetDeliveryDetails(int programmeId, int npoProfileId)
+        [HttpGet("delivery/selectedApplicationId/{selectedApplicationId}", Name = "GetDeliveryDetails")]
+        public async Task<IActionResult> GetDeliveryDetails(int selectedApplicationId)
         {
             try
             {
-                var npo = await _applicationService.GetApplicationById(npoProfileId);
+                var npo = await _applicationService.GetApplicationById(selectedApplicationId);
                 var npoProfile = await _npoProfilService.GetByNpoId(npo.NpoId);
                 var results = await _programeDeliveryService.GetDeliveryDetails(npoProfile.Id);
                 return Ok(results);
