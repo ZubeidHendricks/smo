@@ -352,12 +352,22 @@ export class EditApplicationComponent implements OnInit {
     this.application.status = null;
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
+      this.fundingApplicationDetails.implementations = null;
       const applicationIdOnBid = this.fundingApplicationDetails;
       this.fundingApplicationDetails.programId = this.application.applicationPeriod.programmeId;
       this.fundingApplicationDetails.subProgramId = this.application.applicationPeriod.subProgrammeId
       this.fundingApplicationDetails.subProgramTypeId = this.application.applicationPeriod.subProgrammeTypeId
       this.fundingApplicationDetails.applicationPeriodId = this.application.applicationPeriodId;
       this.fundingApplicationDetails.applicationId = Number(this.id);
+
+      if (status == StatusEnum.PendingReview) {
+        this.application.statusId = status;
+        this._applicationRepo.updateApplication(this.application).subscribe();
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+        this._router.navigateByUrl('applications');
+        this.fundingApplicationDetails.implementations = null;
+      };
+
       this._applicationRepo.updateApplication(this.application).subscribe(resp => 
       { 
         this._applicationRepo.getApplicationById(Number(this.id)) });
@@ -370,26 +380,24 @@ export class EditApplicationComponent implements OnInit {
           resp;
         });
       }
-
       else {
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
           if (resp) {
-            this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
-            this.loadfundingSteps();
-            //this.getBidFullObject(resp);            
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-            this.fundingApplicationDetails.implementations = null;
+            if(status === StatusEnum.PendingReview)
+            {
+              this._router.navigateByUrl('applications');
+            }
+            else{
+              this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
+              this.loadfundingSteps();
+              //this.getBidFullObject(resp);  //          
+              this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+              this.fundingApplicationDetails.implementations = null;
+            }
+           
           }
         });
-      }
-
-      if (status == StatusEnum.PendingReview) {
-        this.application.statusId = status;
-        this._applicationRepo.updateApplication(this.application).subscribe();
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._router.navigateByUrl('applications');
-        this.fundingApplicationDetails.implementations = null;
-      };
+      }      
     }
   }
   // bid continue form
@@ -625,4 +633,10 @@ export class EditApplicationComponent implements OnInit {
 
     return false;
   }
+
+  public saveFundingApplication()
+  {
+    this.bidForm(StatusEnum.Saved);
+  }
+  
 }

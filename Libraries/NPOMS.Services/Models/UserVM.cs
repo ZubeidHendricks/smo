@@ -16,7 +16,7 @@ namespace NPOMS.Services.Models
 
     public class ApplicationWithUsers
     {
-        public Application model { get; set; }
-        public UserVM[] users { get; set; }
+        public Application application { get; set; }
+        public UserVM[] userVM { get; set; }
     }
 }

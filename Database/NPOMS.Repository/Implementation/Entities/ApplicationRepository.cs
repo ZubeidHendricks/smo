@@ -28,6 +28,7 @@ namespace NPOMS.Repository.Implementation.Entities
                             .Include(x => x.NpoUserTrackings)
                             .Include(x => x.NpoUserSatisfactionTrackings)
                             .Include(x => x.NpoWorkPlanApproverTrackings)
+                            .Include(x => x.NpoWorkPlanReviewerTrackings)
                             .Include(x => x.ApplicationPeriod)
                                 .ThenInclude(x => x.ApplicationType)
                             .Include(x => x.ApplicationPeriod)
@@ -43,6 +44,7 @@ namespace NPOMS.Repository.Implementation.Entities
             return await FindByCondition(x => x.Id.Equals(id))
                 .Include(x => x.NpoUserTrackings)
                 .Include(x => x.NpoUserSatisfactionTrackings)
+                .Include(x => x.NpoWorkPlanReviewerTrackings)
                 .Include(x => x.NpoWorkPlanApproverTrackings)
                 .Include(x => x.ApplicationPeriod)
                 .ThenInclude(x => x.FinancialYear).AsNoTracking().FirstOrDefaultAsync();
@@ -93,6 +95,11 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task CreateNpoWorkPlanApproverTracking(IEnumerable<NpoWorkPlanApproverTracking> npoWorkPlanApproverTracking)
         {
             await this.RepositoryContext.NpoWorkPlanApproverTrackings.AddRangeAsync(npoWorkPlanApproverTracking);
+        }
+
+        public async Task CreateNpoUserReviewerTracking(IEnumerable<NpoWorkPlanReviewerTracking> npoWorkPlanReviewerTrackingList)
+        {
+            await this.RepositoryContext.NpoWorkPlanReviewerTrackings.AddRangeAsync(npoWorkPlanReviewerTrackingList);
         }
 
         #endregion

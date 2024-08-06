@@ -131,6 +131,7 @@ export class ApplicationDetailsComponent implements OnInit {
   selectedSdas: ISDA[];
   selected: ISDA[] = [];
   programDeliveryDetails : IProgrammeServiceDelivery[];
+  selectedProgramDeliveryDetails : IProgrammeServiceDelivery[];
 
   places: IPlace[] = [];
   subPlacesAll: ISubPlace[];
@@ -283,6 +284,7 @@ export class ApplicationDetailsComponent implements OnInit {
     this.application.status = null;
     this.application.statusId = status;
     this.fundingApplicationDetails.programmeId = this.programId;
+   // this.fundingApplicationDetails.implementations = null;
     const applicationIdOnBid = this.fundingApplicationDetails;
     this.fundingApplicationDetails.programmeId = this.application.applicationPeriod.programmeId;
     this.fundingApplicationDetails.applicationPeriodId = this.application.applicationPeriodId;
@@ -577,7 +579,8 @@ export class ApplicationDetailsComponent implements OnInit {
         this.isSDASelected = false;
       }  
       
-      this._npoProfile.updateProgrammeDeliveryServiceSelection(value, this.isSDASelected).subscribe(resp => {        
+      this._npoProfile.updateProgrammeDeliveryServiceSelection(value, this.isSDASelected).subscribe(resp => {    
+        this.getProgrammeDeliveryDetails();    
       },
       (err) => {
         this._loggerService.logException(err);
@@ -588,8 +591,8 @@ export class ApplicationDetailsComponent implements OnInit {
     this._npoProfile.getProgrammeDeliveryDetails(Number(this.selectedApplicationId)).subscribe(
       (results) => {
         if (results != null) {
-          this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.programId && deliveryDetail.subProgrammeId === this.subProgramId);
-          
+          this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.programId && deliveryDetail.subProgrammeId === this.subProgramId && deliveryDetail.subProgrammeTypeId === this.subProgramTypeId);
+          this.selectedProgramDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.programId && deliveryDetail.subProgrammeId === this.subProgramId && deliveryDetail.subProgrammeTypeId === this.subProgramTypeId && deliveryDetail.isSelected === true);
         } 
         this._spinner.hide();
       },
@@ -674,7 +677,7 @@ export class ApplicationDetailsComponent implements OnInit {
 
 
   nextPage() {
-    if (this.Amount > 0) {
+    if (this.Amount > 0 && this.selectedProgramDeliveryDetails.length !== 0) {
       if(this.programDeliveryDetails != undefined)
       { 
         this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.Amount;
@@ -697,13 +700,13 @@ export class ApplicationDetailsComponent implements OnInit {
         alert('Service area missing');
         return false;
       }
-      //this.saveFundingApplication.emit();
+      this.saveFundingApplication.emit();
       this.activeStep = this.activeStep + 1;
-      this.bidForm(StatusEnum.Saved);
+    //  this.bidForm(StatusEnum.Saved);
       this.activeStepChange.emit(this.activeStep);
     }
     else{
-      alert('Please enter the Rand amount you are applying for');
+      alert('Please enter the Rand amount you are applying for and check if you have selected atleast one service delivery area');
     }
   }
 

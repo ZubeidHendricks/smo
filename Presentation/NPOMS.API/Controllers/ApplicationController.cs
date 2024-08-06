@@ -221,6 +221,22 @@ namespace NPOMS.API.Controllers
             try
             {
                 var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
+                
+                if (applicationPeriod.ApplicationType.Id == (int)ApplicationTypeEnum.FundingApplication)
+                {
+                    StatusEnum status = (StatusEnum)model.StatusId;
+
+                    switch (status)
+                    {
+                        case StatusEnum.PendingReview:
+                            var newDSDApplication = EmailTemplateFactory
+                                    .Create(EmailTemplateTypeEnum.DSDFundingApplicationSubmitted)
+                                    .Get<DSDFundingApplicationSubmitted>()
+                                    .Init(model);
+                            await newDSDApplication.SubmitToQueue();
+                            break;
+                    }
+                }
 
                 if (applicationPeriod.ApplicationType.Id == (int)ApplicationTypeEnum.ServiceProvision)
                 {
@@ -1049,16 +1065,56 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("UpdateReviewers/applicationId/{applicationId}", Name = "UpdateReviewers")]
+        public async Task<IActionResult> UpdateReviewers(int applicationId, [FromBody] UserVM[] users)
+        {
+            try
+            {
+                var fundingApplication = await _applicationService.GetById(applicationId);
+                await UpdateReviewers(fundingApplication, users);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateInitiateScorecardValueAndEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        private async Task UpdateReviewers(Application fundingApplication, UserVM[] users)
+        {
+            try
+            {
+                var initiateScorecardEmail = EmailTemplateFactory
+                            .Create(EmailTemplateTypeEnum.NpoReviewer)
+                            .Get<NpoReviewerEmailTemplates>()
+                            .Init(fundingApplication, users);
+
+                await initiateScorecardEmail.SubmitToQueue();
+
+                await _emailService.SendEmailFromQueue();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside EvaluationController-ConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
+
+
+
+
         [HttpPut("Addworkplanapprovers", Name = "Addworkplanapprovers")]
         public async Task<IActionResult> Addworkplanapprovers([FromBody] ApplicationWithUsers model)
         {
             try
             {
-                await _applicationService.UpdateApplication(model.model, base.GetUserIdentifier());
-                await CreateApplicationAudit(model.model);
+                await _applicationService.UpdateApplication(model.application, base.GetUserIdentifier());
+                await CreateApplicationAudit(model.application);
 
-                await AddworkplanapproversEmails(model.model, model.users);
-                return Ok(model.model);
+                await AddworkplanapproversEmails(model.application, model.userVM);
+                return Ok(model.application);
             }
             catch (Exception ex)
             {
@@ -1106,7 +1162,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var users = await _userService.GetByRoleAndDepartmentId((int)RoleEnum.Approver, departmentId);
+                var users = await _userService.GetByRoleAndDepartmentId((int)RoleEnum.MainReviewer, departmentId);
 
                 return Ok(users);
             }
