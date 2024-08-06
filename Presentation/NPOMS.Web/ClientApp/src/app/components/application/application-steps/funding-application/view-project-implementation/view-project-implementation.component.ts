@@ -21,6 +21,9 @@ export class ViewProjectImplementationComponent implements OnInit {
   @Input() implementations: IProjectImplementation[];
   @Output() implementationsChange = new EventEmitter();
 
+  @Output() getPlace = new EventEmitter<IPlace[]>(); // try to send data from child to child via parent
+  @Output() getSubPlace = new EventEmitter<ISubPlace[]>();
+
   pint: RegExp = /^[0-9]\d*$/;
   yearRange: string;
   displayDialogImpl: boolean;
@@ -95,6 +98,8 @@ export class ViewProjectImplementationComponent implements OnInit {
     this.selectedSubPlaces = [];
     this.newImplementation = false;
     this.implementation = this.cloneImplementation(data);
+    console.log('this.implementation',this.implementation);
+    console.log('this.implementation',this.implementation);
     // this.implementation.timeframe = [];
     //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
     // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
@@ -196,47 +201,48 @@ export class ViewProjectImplementationComponent implements OnInit {
 
   }
 
-  save() {
+  // save() {
 
-    this.displayDialogImpl = false;
-    this.implementation.beneficiaries = Number(this.implementation.beneficiaries).valueOf();
-    this.implementation.budget = Number(this.implementation.budget).valueOf();
+  //   this.displayDialogImpl = false;
+  //   this.implementation.beneficiaries = Number(this.implementation.beneficiaries).valueOf();
+  //   this.implementation.budget = Number(this.implementation.budget).valueOf();
 
-    this.implementation.npoProfileId = Number(this.selectedApplicationId);
+  //   this.implementation.npoProfileId = Number(this.selectedApplicationId);
 
-    let implementation = [...this.implementations];
-    if (this.newImplementation) {
+  //   let implementation = [...this.implementations];
+  //   if (this.newImplementation) {
 
-      implementation.push(this.implementation);
+  //     implementation.push(this.implementation);
 
-    }
-    else {
-      implementation[this.implementations.indexOf(this.selectedImplementation)] = this.implementation;
-    }
+  //   }
+  //   else {
+  //     implementation[this.implementations.indexOf(this.selectedImplementation)] = this.implementation;
+  //   }
 
-    this.implementations = implementation;
-    this.fundingApplicationDetails.implementations.length = 0;
-    this.fundingApplicationDetails.implementations = this.implementations;
-    this.implementationsChange.emit(this.implementations);
-    this.implementation = null;
-  }
+  //   this.implementations = implementation;
+  //   this.fundingApplicationDetails.implementations.length = 0;
+  //   this.fundingApplicationDetails.implementations = this.implementations;
+  //   this.implementationsChange.emit(this.implementations);
+  //   this.implementation = null;
+  // }
 
 
-  onRowSelect(event) {
-    this.selectedPlaces = [];
-    this.selectedSubPlaces = [];
-    this.newImplementation = false;
-    this.implementation = this.cloneImplementation(event.data);
-    // this.implementation.timeframe = [];
-    //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
-    // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
-    this.implementation.places = this.implementation.places;
-    this.implementation.subPlaces = this.implementation.subPlaces;
-    this.placesChange(this.implementation.places);
-    this.subPlacesChange(this.implementation.subPlaces);
-    //if(this.application.statusId == 3 || 22||23){ this.displayDialogImpl = false;}
-    this.displayDialogImpl = true;
-  }
+  // onRowSelect(event) {
+  //   this.selectedPlaces = [];
+  //   this.selectedSubPlaces = [];
+  //   this.newImplementation = false;
+  //   this.implementation = this.cloneImplementation(event.data);
+    
+  //   // this.implementation.timeframe = [];
+  //   //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
+  //   // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
+  //   this.implementation.places = this.implementation.places;
+  //   this.implementation.subPlaces = this.implementation.subPlaces;
+  //   this.placesChange(this.implementation.places);
+  //   this.subPlacesChange(this.implementation.subPlaces);
+  //   //if(this.application.statusId == 3 || 22||23){ this.displayDialogImpl = false;}
+  //   this.displayDialogImpl = true;
+  // }
 
   // updateTimeframe(value: any) {
 
