@@ -832,7 +832,7 @@ private loadTitles() {
     //   this.displayBankingDetailsPanel = true;
     // }
     this.selectedProgram = program;
-    this.loadProgrammeDetails(program.id);
+    this.loadProgrammeDetails(program.id, subProgram.id, subProgramType.id);
     this.selectedSubProgram = subProgram;
     this.selectedSubProgramType = subProgramType;
     this.displayBankingDetailsPanel = true;
@@ -848,16 +848,16 @@ private loadTitles() {
     return names; // Return the joined names as a string
   }
   
-  loadProgrammeDetails(progId: number): void {
+  loadProgrammeDetails(progId: number, subProgId: number, subProgTypeId: number): void {
     forkJoin({
       contacts: this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfileId)),
       bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfileId)),
       deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfileId))
     }).subscribe({
       next: (result) => {
-        this.programContactInformation = result.contacts;
-        this.programBankDetails = result.bankDetails;
-        this.programDeliveryDetails = result.deliveryDetails;
+        this.programContactInformation = result.contacts.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
+        this.programBankDetails = result.bankDetails.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
+        this.programDeliveryDetails = result.deliveryDetails.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
         this.updateProgramBankDetailObjects();
       },
       error: (err) => {
@@ -866,10 +866,10 @@ private loadTitles() {
     });
   }
 
-  loadProgrammeContactInformation(progId: number): void {
+  loadProgrammeContactInformation(progId: number, subProgId: number, subProgTypeId: number): void {
     this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfileId)).subscribe({
       next: (data) => {
-        this.programContactInformation = data;
+        this.programContactInformation = data.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);;
         this.updateProgramBankDetailObjects();
       },
       error: (err) => {
@@ -878,10 +878,10 @@ private loadTitles() {
     });
   }
   
-  loadProgrammeBankDetails(progId: number): void {
+  loadProgrammeBankDetails(progId: number, subProgId: number, subProgTypeId: number): void {
     this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfileId)).subscribe({
       next: (data) => {
-        this.programBankDetails = data;
+        this.programBankDetails = data.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
         this.updateProgramBankDetailObjects();
       },
       error: (err) => {
@@ -1006,7 +1006,7 @@ private loadTitles() {
   private createProgrammeServiceDelivery(serviceDelivery: IProgrammeServiceDelivery) {
     this._npoProfileRepo.createProgrammeDeliveryDetails(Number(this.npoProfile.id),serviceDelivery).subscribe(
       (resp) => {
-        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id));
+        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1018,7 +1018,7 @@ private loadTitles() {
   private updateProgrammeServiceDelivery(serviceDelivery: IProgrammeServiceDelivery) {
     this._npoProfileRepo.updateProgrammeDeliveryDetails(Number(this.npoProfile.id),serviceDelivery).subscribe(
       (resp) => {
-        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id));
+        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1457,10 +1457,10 @@ private loadTitles() {
     );
   }
 
-  private getProgrammeDeliveryDetailsById(selectedProgramme: number) {
+  private getProgrammeDeliveryDetailsById(selectedProgramme: number, selectedSubProgramme: number, selectedSubProgrammeType: number) {
     this._npoProfileRepo.getProgrammeDeliveryDetailsById(selectedProgramme,Number(this.npoProfileId)).subscribe(
       (results) => {
-        this.programDeliveryDetails = results;
+        this.programDeliveryDetails = results.filter(x=> x.subProgrammeId === selectedSubProgramme && x.subProgrammeTypeId === selectedSubProgrammeType );
         this.updateServicesRenderedObjects();
       },
       (err) => {
@@ -2445,6 +2445,7 @@ private loadTitles() {
     this.programBankDetail.accountTypeId = this.selectedAccountType.id;
     this.programBankDetail.isActive = true;
     this.programBankDetail.subProgrammeId = Number(this.selectedSubProgram.id);
+   
     this.programBankDetail.subProgrammeTypeId = Number(this.selectedSubProgramType.id);
 
     this.newBankDetail ? this.createProgrameBankDetail(this.programBankDetail) : this.updateProgrameBankDetail(this.programBankDetail);
@@ -2455,7 +2456,7 @@ private loadTitles() {
   private createProgrameBankDetail(bankDetail: IProgramBankDetails) {
     this._npoProfileRepo.createProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
       (resp) => {
-        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -2467,7 +2468,7 @@ private loadTitles() {
   private updateProgrameBankDetail(bankDetail: IProgramBankDetails) {
     this._npoProfileRepo.updateProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
       (resp) => {
-        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -2496,7 +2497,7 @@ private loadTitles() {
   private createProgrameContactDetail(contact: IProgramContactInformation) {
     this._npoProfileRepo.createProgrammeContact(Number(this.npoProfile.id),contact).subscribe(
       (resp) => {
-        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
+        this.loadProgrammeContactInformation(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -2508,7 +2509,7 @@ private loadTitles() {
   private updateProgrameContactDetail(contact: IProgramContactInformation) {
     this._npoProfileRepo.updateProgrammeContact(Number(this.npoProfile.id),contact).subscribe(
       (resp) => {
-        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
+        this.loadProgrammeContactInformation(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -2557,7 +2558,7 @@ private loadTitles() {
   private updateProgrammeBankDetail(bankDetail: IProgramBankDetails) {
     this._npoProfileRepo.updateProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
       (resp) => {
-        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id),Number(this.selectedSubProgram.id),Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);

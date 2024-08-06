@@ -34,8 +34,10 @@ export class FinancialMattersComponent implements OnInit {
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() currentUserId: number;
-  @Input() programId: number;
-  
+  @Input() programId: number; 
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
+
   previousFinancialYear: IPreviousFinancialYear[];
   totalIncome: number;
   totalExpenditure: number;
@@ -233,9 +235,10 @@ export class FinancialMattersComponent implements OnInit {
   }
 
   private loadProgrammeDetails() {
+   
     this._npoProfile.getProgrammeBankDetails(this.application.id).subscribe(
       (results) => {
-        this.programBankDetails = results.filter(x=> x.programId == this.programId); // x.approvalStatus.id === 2 && 
+        this.programBankDetails = results.filter(x=> x.programId === this.programId && x.subProgrammeId === this.subProgramId && x.subProgrammeTypeId === this.subProgramTypeId); // x.approvalStatus.id === 2 && 
         this.updateBankDetailObjects();
       }, 
       (err) => {

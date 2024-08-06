@@ -52,8 +52,8 @@ export class NpoProfileService {
     return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);
   }
 
-  public getProgrammeDeliveryDetails(npoProfileId: number) {
-    const url = `${this._envUrl.urlAddress}/api/programme/delivery/npoProfileId/${npoProfileId}`;
+  public getProgrammeDeliveryDetails(selectedApplicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/delivery/selectedApplicationId/${selectedApplicationId}`;
     return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);
   }
 

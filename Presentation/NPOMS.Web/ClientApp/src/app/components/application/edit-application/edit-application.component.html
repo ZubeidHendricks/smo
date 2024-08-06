@@ -35,7 +35,7 @@
             [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
             (getPlace)="places($event)"
             (getSubPlace)=" subPlaces($event)"
-            [isEdit]="true">
+            [isEdit]="true" (saveFundingApplication) = "saveFundingApplication()">
         </app-application-details>
         <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
             [(activeStep)]="activeStep" [application]="application"
