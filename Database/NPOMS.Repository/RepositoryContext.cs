@@ -225,6 +225,7 @@ namespace NPOMS.Repository
         public DbSet<ActivitySubStructure> ActivitySubStructures { get; set; }
         public DbSet<ActivityManicipality> ActivityManicipalities { get; set; }
         public DbSet<NpoWorkPlanApproverTracking> NpoWorkPlanApproverTrackings { get; set; }
+        public DbSet<NpoWorkPlanReviewerTracking> NpoWorkPlanReviewerTrackings { get; set; }
         public DbSet<DistrictDemographic> DistrictDemographics { get; set; }
         public DbSet<ManicipalityDemographic> ManicipalityDemographics { get; set; }
         public DbSet<SubDistrictDemographic> SubDistrictDemographics { get; set; }

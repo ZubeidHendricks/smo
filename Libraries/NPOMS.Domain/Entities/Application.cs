@@ -42,5 +42,7 @@ namespace NPOMS.Domain.Entities
         public virtual List<NpoUserTracking> NpoUserTrackings { get; set; } = new List<NpoUserTracking>();
         public virtual List<NpoUserSatisfactionTracking> NpoUserSatisfactionTrackings { get; set; } = new List<NpoUserSatisfactionTracking>();
         public virtual List<NpoWorkPlanApproverTracking> NpoWorkPlanApproverTrackings { get; set; } = new List<NpoWorkPlanApproverTracking>();
+
+        public virtual List<NpoWorkPlanReviewerTracking> NpoWorkPlanReviewerTrackings { get; set; } = new List<NpoWorkPlanReviewerTracking>();
     }
 }

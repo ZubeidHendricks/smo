@@ -105,7 +105,7 @@
 </p-dialog>
 
 
-<p-dialog header="Select Satisfaction Reviewers" [(visible)]="displaySatisfactionReviewDialog" [modal]="true" [style]="{width: '50vw'}"
+<p-dialog header="Select Satisfaction Reviewers" [(visible)]="displayReviewDialog" [modal]="true" [style]="{width: '50vw'}"
     [maximizable]="false" [resizable]="false" *ngIf="reviewerForm">
     <form novalidate [formGroup]="reviewerForm">
         <div class="form-group">
@@ -123,7 +123,7 @@
         </div>
     </form>
     <p-footer *ngIf="IsAuthorized(PermissionsEnum.ShowUserActions)">
-        <button type="submit" [disabled]="disableSubmit()" pButton icon="fa fa-thumbs-o-up" (click)="submitSatisfactionReviewers()"
+        <button type="submit" [disabled]="disableSubmit()" pButton icon="fa fa-thumbs-o-up" (click)="btnSubmitReviewers()"
             class="ui-button-success" label="Submit"></button>
     </p-footer>
 </p-dialog>

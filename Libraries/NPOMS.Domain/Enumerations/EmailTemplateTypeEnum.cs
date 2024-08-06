@@ -37,6 +37,7 @@
         AmendedScorecard = 33,
         SatisficationApprovalEmail = 34,
         AddworkplanapproversEmails = 35,
-        DSDFundingApplicationSubmitted = 36
+        DSDFundingApplicationSubmitted = 36,
+        NpoReviewer = 37
     }
 }

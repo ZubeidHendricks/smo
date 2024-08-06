@@ -597,6 +597,7 @@ export interface IApplication {
     npoUserSatisfactionTrackings: INpoUserTracking[];
     npoWorkPlanApproverTrackings: INpoUserTracking[];
     message: string;
+    npoWorkPlanReviewerTrackings : INpoUserTracking[];  
 }
 export interface IUserSatisfactionTracking {
     id: number;
