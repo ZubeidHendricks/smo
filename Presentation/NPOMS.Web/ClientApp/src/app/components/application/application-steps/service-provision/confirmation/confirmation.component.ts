@@ -201,23 +201,24 @@ disableMainReviewerSubmit() {
 statusEnumChange(status: any) {
     this.selectedreviewerlist = [];
     this.selectedMainreviewerlist = [];
-    if(status.value === StatusEnum.PendingApproval) {
-      this.selectedStatus = status.value;
-      this.displayDialog = true;
-    }
-    else if(status.value === StatusEnum.PendingReviewerSatisfaction) {
-      this.selectedStatus = status.value;
-      this.displaySatisfactionDialog = true;
-    }
-    else{
-        const users = this.selectedreviewerlist.map(user => ({
-          fullName: user.fullName,
-          email: user.email,
-          id: user.id
-      }));
-      this.selectedReviewersChange.emit(users);
-      this.statusChange.emit(status.value);
-    }
+    this.statusChange.emit(status.value);
+    // if(status.value === StatusEnum.PendingApproval) {
+    //   this.selectedStatus = status.value;
+    //   this.displayDialog = true;
+    // }
+    // else if(status.value === StatusEnum.PendingReviewerSatisfaction) {
+    //   this.selectedStatus = status.value;
+    //   this.displaySatisfactionDialog = true;
+    // }
+    // else{
+    //     const users = this.selectedreviewerlist.map(user => ({
+    //       fullName: user.fullName,
+    //       email: user.email,
+    //       id: user.id
+    //   }));
+    //   this.selectedReviewersChange.emit(users);
+    //   this.statusChange.emit(status.value);
+    // }
 }
 
   approvedFromChange(item: any) {
