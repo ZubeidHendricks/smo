@@ -223,17 +223,17 @@ namespace NPOMS.API.Controllers
         }
 
         [HttpPost]
-        [Route("places/applicationId/{applicationId}/programId/{programId}")]
-        public async Task<IActionResult> GetPlaces([FromBody] IEnumerable<ServiceDeliveryArea> sdas, int applicationId, int programId)
+        [Route("places/applicationId/{applicationId}/programId/{programId}/subProgramId/{subProgramId}/subProgramTypeId/{subProgramTypeId}")]
+        public async Task<IActionResult> GetPlaces([FromBody] IEnumerable<ServiceDeliveryArea> sdas, int applicationId, int programId, int subProgramId, int subProgramTypeId)
         {
             try
             {
                 var npo = await _applicationService.GetApplicationById(applicationId);
                 var npoProfile = await _npoProfilService.GetByNpoId(npo.NpoId);
                 var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programId, npoProfile.Id);
-
+                var filteredResult = results.Where(x => x.SubProgrammeId == subProgramId && x.SubProgrammeTypeId == subProgramTypeId);
                 var lists = new List<int>();
-                foreach (var res in results)
+                foreach (var res in filteredResult)
                 {
                    if(res.IsSelected == true)
                     {

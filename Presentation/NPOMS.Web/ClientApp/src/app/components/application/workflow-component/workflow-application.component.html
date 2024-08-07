@@ -1,7 +1,7 @@
 <div *ngIf="isApplicationAvailable">        
     <div>      
         <p-panel [style]="{'font-size':'12px'}" header="Organisation Details" [toggleable]= "true">
-            <app-view-npo [npoId]="application.npoId" (retrievedNpo)="updateNpo($event)">
+            <app-view-npo [npoId]="application.npoId">
             </app-view-npo>
             <div style="height: 10px;"></div>
             <app-view-profile 
@@ -10,7 +10,7 @@
             [subProgramId] = "application.applicationPeriod.subProgrammeId"
             [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
             [source]="source"  
-            (retrievedNpoProfile)="updateNpoProfile($event)">
+            >
             </app-view-profile>
         </p-panel>
     </div>
@@ -21,7 +21,7 @@
         [subProgramId] = "application.applicationPeriod.subProgrammeId"
         [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
         [source]="source" 
-         (retrievedNpo)="updateNpo($event)">
+        >
         </app-view-funding-application>
     </div>
     <div style="height: 10px;"></div>

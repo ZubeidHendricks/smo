@@ -25,6 +25,8 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   @Input() implementations: IProjectImplementation[];
   @Output() implementationsChange = new EventEmitter();
   @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
   _menuActions: MenuItem[];
   
   projImpls: IProjectImplementation[] = [];
@@ -230,8 +232,10 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
       !this.implementation.results! || !this.implementation.projectObjective ||
       !this.implementation.resources ||
       !this.implementation.description ||
-      (this.places.length > 0 && this.selectedPlaces.length == 0) ||
-      (this.allsubPlaces.length > 0 && this.selectedSubPlaces.length == 0)
+      // (this.places.length > 0 && this.selectedPlaces.length == 0) ||
+      // (this.allsubPlaces.length > 0 && this.selectedSubPlaces.length == 0)
+      this.selectedPlaces.length == 0 ||
+      this.selectedSubPlaces.length == 0
     )
       return true;
 
@@ -278,7 +282,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   placesChange(p: IPlace[]) {
     this.selectedPlaces = [];
-    p.forEach(item => {
+    p.filter(x => x.isActive).forEach(item => {
       this.selectedPlaces = this.selectedPlaces.concat(this.places.find(x => x.id === item.id));
     });
     this.implementation.places = this.selectedPlaces;
@@ -297,7 +301,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   subPlacesChange(sub: ISubPlace[]) { 
     // create dropdown with data for subPlaces
     this.selectedSubPlaces = [];
-    sub.forEach(item => {
+    sub.filter(x => x.isActive).forEach(item => {
       this.selectedSubPlaces = this.selectedSubPlaces.concat(this.subPlacesAll.find(x => x.id == item.id))
     });
     this.implementation.subPlaces = this.selectedSubPlaces;
@@ -347,7 +351,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   private setPlaces(sdas: ISDA[]): void {
     //if (sdas && sdas.length != 0) {     
-      this._bidService.getSdaPlaces(sdas, this.application.id, this.programId).subscribe(res => {
+      this._bidService.getSdaPlaces(sdas, this.application.id, this.programId, this.subProgramId, this.subProgramTypeId).subscribe(res => {
         this.places = res;
         this.getPlace.emit(this.places)
         this._bidService.getSubPlaces(this.places).subscribe(res => {        
@@ -402,7 +406,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
     else {
       this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
         if (resp) {
-          resp;
+          this.fundingApplicationDetails.implementations = resp.implementations;
           this.implementation = null;
           this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });

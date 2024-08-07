@@ -54,56 +54,12 @@
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Sub Program Type</label>
                 <div class="p-col-12 p-md-10">
-                    <!-- <p-dropdown [options]="filteredSubProgrammeType" defaultLabel="Select SubProgramType" 
-                    optionLabel="name" optionValue="id" [(ngModel)]="applicationPeriod.name" 
-                    [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
-                    appendTo="body" selectedItemsLabel="{0} items selected" required [disabled]="true"></p-dropdown> -->
                     <input type="text" class="form-text" pInputText [(ngModel)]="applicationPeriod.name"
                     [ngModelOptions]="{standalone: true}" #applicationName="ngModel"
                     [ngClass]="{'ng-dirty': (applicationName.invalid && validated) || (applicationName.dirty && applicationName.invalid)}"
                     required [disabled]="true">
                 </div>
-                <!-- <input type="text"  class="form-text" pInputText [(ngModel)]="applicationPeriod.name"
-                    [ngModelOptions]="{standalone: true}" #applicationName="ngModel"
-                    [ngClass]="{'ng-dirty': (applicationName.invalid && validated) || (applicationName.dirty && applicationName.invalid)}"
-                    required [disabled]="true">
-                <small
-                    *ngIf="(applicationName.invalid && validated) || (applicationName.dirty && applicationName.invalid)"
-                    class="p-error">Name is required.</small> -->
             </div>
-            <!-- <div class="p-field p-col-12 p-md-3">
-                <label class="mandatory-content">District Council</label>
-                <p-dropdown [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name"
-                    [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}"
-                    [style]="{'width':'100%'}" appendTo="body" (onChange)="OnDistrictCouncilChange($event.value)"
-                    [disabled]="true"></p-dropdown>
-
-            </div>
-
-            <div class="p-field p-col-12 p-md-3">
-                <label class="mandatory-content">Local Municipalities</label>
-                <p-dropdown [options]="localMunicipalities" defaultLabel="Select option(s)" optionLabel="name"
-                    [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}"
-                    placeholder="Select Local Municipalities" [style]="{'width':'100%'}" appendTo="body"
-                    (onChange)="onLocalMunicipalityChange($event.value)" selectedItemsLabel="{0} items selected"
-                    [disabled]="true"></p-dropdown>
-            </div>
-
-            <div class="p-field p-col-12 p-md-3">
-                <label class="mandatory-content">Region</label>
-                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="regions"
-                    [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body"
-                    (onChange)="onRegionChange($event.value)" [style]="{'width':'100%'}"
-                    [disabled]="true"></p-multiSelect>
-            </div>
-
-
-            <div class="p-field p-col-12 p-md-3">
-                <label class="mandatory-content">Service Delivery Area</label>
-                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
-                    [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="onSdaChange($event.value)"
-                    [style]="{'width':'100%'}"[disabled]="true"></p-multiSelect>
-            </div> -->
         </div>
 
         <div style="height: 10px;"></div>
