@@ -120,6 +120,8 @@ export class ApplicationDetailsComponent implements OnInit {
 
   regionsAll: IRegion[];
   regions: IRegion[] = [];
+  selectedLocalMunicipalitiesAll: ILocalMunicipality[];
+  selectedLocalMunicipalities: ILocalMunicipality[] = [];
   selectedRegions: IRegion[];
   selectedRegs: IRegion[] = [];
   selectedLocalMunicipalitiesText: string;
@@ -197,9 +199,7 @@ export class ApplicationDetailsComponent implements OnInit {
         this.getProgrammeDeliveryDetails();
       }
     });
-// alert(this.programId);
-// alert(this.subProgramId);
-// alert(this.subProgramTypeId);
+
     this.stateOptions = [
       {
         label: 'Yes',
@@ -284,7 +284,6 @@ export class ApplicationDetailsComponent implements OnInit {
     this.application.status = null;
     this.application.statusId = status;
     this.fundingApplicationDetails.programmeId = this.programId;
-   // this.fundingApplicationDetails.implementations = null;
     const applicationIdOnBid = this.fundingApplicationDetails;
     this.fundingApplicationDetails.programmeId = this.application.applicationPeriod.programmeId;
     this.fundingApplicationDetails.applicationPeriodId = this.application.applicationPeriodId;
@@ -292,7 +291,6 @@ export class ApplicationDetailsComponent implements OnInit {
     
     if (applicationIdOnBid.id == null) {
       this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-      //  this._menuActions[1].visible = false;
       this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`); 
       this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
         resp;
@@ -577,6 +575,11 @@ export class ApplicationDetailsComponent implements OnInit {
       else
       {
         this.isSDASelected = false;
+        // if(this.fundingApplicationDetails.implementations.length > 0)
+        // {
+        //   alert('Please delete the project activity linked to this SDA before deselecting');
+        //   return false;
+        // }        
       }  
       
       this._npoProfile.updateProgrammeDeliveryServiceSelection(value, this.isSDASelected).subscribe(resp => {    
@@ -621,7 +624,7 @@ export class ApplicationDetailsComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DistrictCouncil, false).subscribe(
       (results) => {
         this.allDistrictCouncils = results;
-        this.allDropdownsLoaded();
+       // this.allDropdownsLoaded();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -656,7 +659,7 @@ export class ApplicationDetailsComponent implements OnInit {
   private loadServiceDeliveryAreas() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.ServiceDeliveryArea, false).subscribe(
       (results) => {
-        this.sdasAll = results;
+      //  this.sdasAll = results;
         this.allDropdownsLoaded();
 
       },
@@ -684,15 +687,21 @@ export class ApplicationDetailsComponent implements OnInit {
         this.selectedDistrictCouncil = this.allDistrictCouncils.find(x => x.id === this.programDeliveryDetails[0].districtCouncil.id);
         this.selectedLocalMunicipality = this.localMunicipalitiesAll.find(x => x.id === this.programDeliveryDetails[0].localMunicipality.id);
         
+        // this.programDeliveryDetails.forEach(programDeliveryDetail => {          
+        //   this.selectedLocalMunicipalitiesAll = this.selectedLocalMunicipalities.concat(x => x.localMunicipalityId === )
+        // }
+
+        // )
+
         this.programDeliveryDetails[0].regions.forEach(item => {
           
-        this.selectedRegions = this.regionsAll.filter(x => x.id === item.id);
+      //  this.selectedRegions = this.regionsAll.filter(x => x.id === item.id);
 
         });
 
         this.programDeliveryDetails[0].serviceDeliveryAreas.forEach(item => {
           
-          this.selectedSdas = this.sdas.concat(this.sdasAll.find(x => x.id === item.id));
+         // this.selectedSdas = this.sdas.concat(this.sdasAll.find(x => x.id === item.id));
         });
         
       }
@@ -720,17 +729,17 @@ export class ApplicationDetailsComponent implements OnInit {
       this.localMunicipalitiesAll?.length > 0 &&
       this.regionsAll?.length > 0 && this.sdasAll?.length > 0) {
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil.id != undefined)
-        this.OnDistrictCouncilChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil);
+      //if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil.id != undefined)
+      //  this.OnDistrictCouncilChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil);
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality.id != undefined)
-        this.onLocalMunicipalityChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality);
+     // if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality.id != undefined)
+    //    this.onLocalMunicipalityChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality);
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions?.length > 0)
-        this.onRegionChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions);
+     // if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions?.length > 0)
+      //  this.onRegionChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions);
 
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas?.length > 0)
-        this.onSdaChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
+      // if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas?.length > 0)
+      //   this.onSdaChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
     }
   }
 

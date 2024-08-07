@@ -25,6 +25,8 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
   @Input() implementations: IProjectImplementation[];
   @Output() implementationsChange = new EventEmitter();
   @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
   _menuActions: MenuItem[];
   
   projImpls: IProjectImplementation[] = [];
@@ -349,7 +351,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   private setPlaces(sdas: ISDA[]): void {
     //if (sdas && sdas.length != 0) {     
-      this._bidService.getSdaPlaces(sdas, this.application.id, this.programId).subscribe(res => {
+      this._bidService.getSdaPlaces(sdas, this.application.id, this.programId, this.subProgramId, this.subProgramTypeId).subscribe(res => {
         this.places = res;
         this.getPlace.emit(this.places)
         this._bidService.getSubPlaces(this.places).subscribe(res => {        
