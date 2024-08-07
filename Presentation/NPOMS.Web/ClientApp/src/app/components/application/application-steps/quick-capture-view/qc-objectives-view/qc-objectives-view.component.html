@@ -197,7 +197,7 @@
                     <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteSR(recipient)" pTooltip="Delete SR" tooltipPosition="top"></button>
                 </td>
             </tr>
-            <!-- <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)">
+            <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)">
                 <td><span class="p-text-bold">{{subSubRecipient.organisationName}}</span></td>
                 <td><span class="p-text-bold" *ngIf="subSubRecipient.recipientType">{{subSubRecipient.recipientType.name}}</span></td>
                 <td><span class="p-text-bold">{{subSubRecipient.fundingPeriodStartDate}} to {{subSubRecipient.fundingPeriodEndDate}}</span></td>
@@ -206,8 +206,8 @@
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editSSR(subSubRecipient, recipient)" pTooltip="{{tooltip}} SSR" tooltipPosition="top"></button>
                     <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteSSR(subSubRecipient)" pTooltip="Delete SSR" tooltipPosition="top"></button>
                 </td>
-            </tr> -->
-            <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)" class="default-font">
+            </tr>
+            <!-- <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)" class="default-font">
                 <td style="text-align: right;">{{subSubRecipient.organisationName}}</td>
                 <td style="text-align: right;" *ngIf="subSubRecipient.recipientType">{{subSubRecipient.recipientType.name}}</td>
                 <td style="text-align: right;">{{subSubRecipient.fundingPeriodStartDate}} to {{subSubRecipient.fundingPeriodEndDate}}</td>
@@ -216,7 +216,7 @@
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editSSR(subSubRecipient, recipient)" pTooltip="{{tooltip}} SSR" tooltipPosition="top"></button>
                     <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteSSR(subSubRecipient)" pTooltip="Delete SSR" tooltipPosition="top"></button>
                 </td>
-            </tr>
+            </tr> -->
         </ng-template>
         <ng-template pTemplate="emptymessage">
             <tr class="default-font">
