@@ -98,8 +98,6 @@ export class ViewProjectImplementationComponent implements OnInit {
     this.selectedSubPlaces = [];
     this.newImplementation = false;
     this.implementation = this.cloneImplementation(data);
-    console.log('this.implementation',this.implementation);
-    console.log('this.implementation',this.implementation);
     // this.implementation.timeframe = [];
     //this.implementation.timeframe.push(new Date(event.data.timeframeFrom));
     // this.implementation.timeframe.push(new Date(event.data.timeframeTo));
