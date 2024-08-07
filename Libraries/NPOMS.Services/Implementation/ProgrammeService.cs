@@ -503,7 +503,7 @@ namespace NPOMS.Services.Implementation
             return bankDetail;
         }
 
-        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByIds(int programmeId, int npoProfileId, int subProgramId, int subProgramTypeId)
+        public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByIds(int programmeId, int subProgramId, int subProgramTypeId, int npoProfileId)
         {
             var deliveryDetails = await _programeDeliveryRepository.GetDeliveryDetailsByIds(programmeId, npoProfileId, subProgramId, subProgramTypeId);
 
