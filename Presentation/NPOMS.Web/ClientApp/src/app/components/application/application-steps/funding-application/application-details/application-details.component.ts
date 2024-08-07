@@ -977,24 +977,6 @@ export class ApplicationDetailsComponent implements OnInit {
     );
   }
 
-  // subProgrammeChange(subProgram: any[])
-  // {
-  //   let selectedSubProgrammes = [];
-  //   selectedSubProgrammes.push(subProgram); 
-  //   if (selectedSubProgrammes.length > 0)
-  //   {
-  //     this.selectedSubProgram = selectedSubProgrammes.join(",");
-  //     this.filterSubProgramIds = this.selectedSubProgram;
-  //     const subProgrammeIds = this.filterSubProgramIds.split(',').map(Number);
-      
-  //     this.filteredSubProgrammeType = this.subProgrammeType.filter(item =>
-  //       subProgrammeIds.includes(item.subProgrammeId)
-  //     );     
-  //   }  
-  //   else
-  //   this.filterSubProgramIds = "0";
-  // }
-
   private setStatus(applicationPeriod: IApplicationPeriod) {
     let openingDate = new Date(applicationPeriod.openingDate);
     let closingDate = new Date(applicationPeriod.closingDate);
