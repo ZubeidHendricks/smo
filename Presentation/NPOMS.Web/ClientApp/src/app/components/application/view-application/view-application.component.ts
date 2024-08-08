@@ -217,10 +217,10 @@ export class ViewApplicationComponent implements OnInit {
       { header: 'Timeline', width: '15%' },
       { header: 'Target', width: '10%' },
       { header: 'Facilities and/or Community Places', width: '38%' },
-      { header: 'District Name', width: '10%' },
-      { header: 'Municipalities', width: '10%' },
-      { header: 'Sub Structures ', width: '10%' },
-      { header: 'Sub Districts', width: '10%' }
+      // { header: 'District Name', width: '10%' },
+      // { header: 'Municipalities', width: '10%' },
+      // { header: 'Sub Structures ', width: '10%' },
+      // { header: 'Sub Districts', width: '10%' }
     ];
 
     this.sustainabilityPlanCols = [
