@@ -177,7 +177,6 @@ export class ViewApplicationComponent implements OnInit {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.loadApplication();
-      this.buildMenu();
     });
 
     this._authService.profile$.subscribe(profile => {
@@ -270,45 +269,7 @@ export class ViewApplicationComponent implements OnInit {
 
   }
 
-  private buildMenu() {
-    if (this.profile) {
-      this.menuActions = [
-        {
-          label: 'Download',
-          icon: 'fa fa-step-backward',
-          command: () => {
-            this.downloadAsPdf();
-          },
-          visible: true
-        },
-     
-
-   
-      ];
-    }
-  }
-
-  printDocument() {
-    setTimeout(() => {
-      document.title = "Work Plan";
-      window.print();
-      this._router.navigate([{ outlets: { print: null } }]);
-    }, 2500);
-  }
-
-  downloadAsPdf() {
-    const element = document.getElementById('print-section'); // The section you want to download as PDF
-
-    const opt = {
-      margin:       0.5,
-      filename:     'Work_Plan.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-
-   // html2pdf().from(element).set(opt).save();
-  }
+  
   
 
   private loadApplication() {

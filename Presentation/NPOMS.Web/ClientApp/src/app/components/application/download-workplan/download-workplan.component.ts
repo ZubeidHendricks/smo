@@ -207,7 +207,11 @@ export class DownloadWorkplanComponent implements OnInit {
       { header: 'Activity Type', width: '10%' },
       { header: 'Timeline', width: '15%' },
       { header: 'Target', width: '10%' },
-      { header: 'Facilities and/or Community Places', width: '38%' }
+      { header: 'Facilities and/or Community Places', width: '38%' },
+      { header: 'District Name', width: '10%' },
+      { header: 'Municipalities', width: '10%' },
+      { header: 'Sub Structures ', width: '10%' },
+      { header: 'Sub Districts', width: '10%' }
     ];
 
     this.sustainabilityPlanCols = [
@@ -344,10 +348,34 @@ export class DownloadWorkplanComponent implements OnInit {
     );
   }
 
+  // private loadActivities() {
+  //   this._applicationRepo.getAllActivities(this.application).subscribe(
+  //     (results) => {
+  //       this.activities = results.filter(x => x.isActive === true);
+  //       this.getFacilityListText(results);
+  //       this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Activities);
+  //       this.isActivitiesAvailable = true;
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
+
   private loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
+        console.log(
+          'activities',results);
         this.activities = results.filter(x => x.isActive === true);
+        this.activities.forEach(item => {
+          item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),
+          item.mappedManicipality = this.getSubDistrictNames(item?.activityManicipality),
+          item.mappedSubstructure = this.getSubDistrictNames(item?.activitySubStructure),
+          item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict)
+        });
+
         this.getFacilityListText(results);
         this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Activities);
         this.isActivitiesAvailable = true;
@@ -357,6 +385,14 @@ export class DownloadWorkplanComponent implements OnInit {
         this._spinner.hide();
       }
     );
+  }
+
+  getSubDistrictNames(activityDemoName: any): string {
+    if (!activityDemoName || !activityDemoName) {
+      return '';
+    }
+
+    return activityDemoName.map((subDistrict: any) => subDistrict.name).join(', ');
   }
 
   private getFacilityListText(activities: IActivity[]) {
