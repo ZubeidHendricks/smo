@@ -100,7 +100,10 @@
       </div>
     </div>
     <div class="p-col">
-      <p-inputNumber inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
+      <!-- <p-inputNumber inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"
+        [style]="{'width':'100%'}" [(ngModel)]="implementation.budget" [disabled]="readonly()"
+        (onselect)="verifyDialog($event)" autocomplete="off"></p-inputNumber> -->
+        <p-inputNumber inputId="integeronly"
         [style]="{'width':'100%'}" [(ngModel)]="implementation.budget" [disabled]="readonly()"
         (onselect)="verifyDialog($event)" autocomplete="off"></p-inputNumber>
     </div>

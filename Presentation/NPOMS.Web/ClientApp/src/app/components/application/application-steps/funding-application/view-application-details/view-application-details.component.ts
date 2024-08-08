@@ -392,7 +392,15 @@ export class ViewApplicationDetailsComponent implements OnInit {
       (results) => {
         if (results != null) {
           this.programDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.application.applicationPeriod.programmeId && deliveryDetail.subProgrammeId === this.subProgramId && deliveryDetail.subProgrammeTypeId === this.subProgramTypeId);
-        } this._spinner.hide();
+         console.log(' this.programDeliveryDetails ',  this.programDeliveryDetails );
+          var selectedSDAs = [];
+          this.programDeliveryDetails.forEach(item => {
+            if(item.isActive && item.isSelected)
+              selectedSDAs.push(item.serviceDeliveryAreas[0]);
+          });
+          this.onSdaChange(selectedSDAs);
+        } 
+        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -593,7 +601,7 @@ export class ViewApplicationDetailsComponent implements OnInit {
       this.onRegionChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions);
 
       //if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas?.length > 0)
-      this.onSdaChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
+     // this.onSdaChange(this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas);
     }
   }
 

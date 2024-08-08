@@ -785,17 +785,17 @@ onDemographicSubStructuresChange() {
 this.activity.activityRecipients = this.selectedRecipients;
 
 // Initialize the array
-//this.activity.activityDistrict = [];
+// this.activity.activityDistrict = [];
 
-// Check if selectedIDistrictDemographics is not null
+//Check if selectedIDistrictDemographics is not null
 // if (this.selectedIDistrictDemographics) {
-//   // Create the IActivityDistrict object from the selected district
-//   let activityDistrict = {
-//     demographicDistrictId: this.selectedIDistrictDemographics.id,
-//     name: this.selectedIDistrictDemographics.name,
-//     isActive: this.selectedIDistrictDemographics.isActive,
-//     activityId: this.activity.id
-//   } as IActivityDistrict;
+  // Create the IActivityDistrict object from the selected district
+  // let activityDistrict = {
+  //   demographicDistrictId: this.selectedIDistrictDemographics.id,
+  //   name: this.selectedIDistrictDemographics.name,
+  //   isActive: this.selectedIDistrictDemographics.isActive,
+  //   activityId: this.activity.id
+  // } as IActivityDistrict;
 
 //   // Push the object into the array
 //   this.activity.activityDistrict.push(activityDistrict);

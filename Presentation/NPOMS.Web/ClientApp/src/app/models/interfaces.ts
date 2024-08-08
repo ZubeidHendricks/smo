@@ -1623,12 +1623,14 @@ export interface ISubPlace {
     placeId: number;
     id: number;
     name: string;
+    isActive: boolean;
 }
 
 export interface IPlace {
     id: number;
     name: string;
     serviceDeliveryAreaId: number;
+    isActive: boolean;
 }
 export interface ISDA {
     id: number;
