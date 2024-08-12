@@ -310,7 +310,7 @@ export class CreateApplicationComponent implements OnInit {
           command: () => {
             this.formValidate();
           },
-          visible: false
+          // visible: false
         },
         {
           label: 'Clear Messages',
@@ -426,13 +426,19 @@ export class CreateApplicationComponent implements OnInit {
     return false;
   }
 
-
   private formValidate() {
     this.validationErrors = [];
-    if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {
+    if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
 
       if (this.objectives.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
+
+      if (this.objectives.length > 0) {
+        let changesRequiredOnObjectives = this.objectives.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnObjectives.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Objectives:", detail: "New comments added." });
+      }
 
       if (this.activities.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Activities:", detail: "Activity table cannot be empty." });
@@ -446,6 +452,13 @@ export class CreateApplicationComponent implements OnInit {
 
         if (hasActivityErrors.includes(false))
           this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "Please capture an activity for each objective." });
+      }
+
+      if (this.activities.length > 0) {
+        let changesRequiredOnActivities = this.activities.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnActivities.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "New comments added." });
       }
 
       if (this.sustainabilityPlans.length === 0)
@@ -462,6 +475,13 @@ export class CreateApplicationComponent implements OnInit {
           this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "Please capture a sustainability plan for each activity." });
       }
 
+      if (this.sustainabilityPlans.length > 0) {
+        let changesRequiredOnSustainabilityPlans = this.sustainabilityPlans.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnSustainabilityPlans.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "New comments added." });
+      }
+
       if (this.resources.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Resourcing:", detail: "Resourcing table cannot be empty." });
       else {
@@ -475,9 +495,27 @@ export class CreateApplicationComponent implements OnInit {
         if (hasResourcingErrors.includes(false))
           this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "Please capture a resource for each activity." });
       }
+
+      if (this.resources.length > 0) {
+        let changesRequiredOnResources = this.resources.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnResources.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "New comments added." });
+      }
+
     }
 
-    if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
+
+    if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+
+      // if (this.fundingApplicationDetails.implementations.length === 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+      // if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
+      //   this.fundingApplicationDetails.projectInformation.purposeQuestion == null)
+      //   this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
+
+      // if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
+      //   this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
       if (this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please specify the Rand amount you applying for." });
       // if (this.financialMattersIncome.length === 0)
@@ -490,8 +528,14 @@ export class CreateApplicationComponent implements OnInit {
 
       if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+  
+    
     }
 
+    // if (this.validationErrors.length == 0)
+    //   this.menuActions[1].visible = false;
+    // else
+    //   this.menuActions[1].visible = true;
     if (this.validationErrors.length == 0) {
       this.menuActions[3].disabled = false;
       this.menuActions[1].visible = false;
@@ -500,8 +544,83 @@ export class CreateApplicationComponent implements OnInit {
       this.menuActions[3].disabled = true;
       this.menuActions[1].visible = true;
     }
-
   }
+
+  // private formValidate() {
+  //   this.validationErrors = [];
+  //   if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {
+
+  //     if (this.objectives.length === 0)
+  //       this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
+
+  //     if (this.activities.length === 0)
+  //       this.validationErrors.push({ severity: 'error', summary: "Activities:", detail: "Activity table cannot be empty." });
+  //     else {
+  //       let hasActivityErrors: boolean[] = [];
+
+  //       this.objectives.forEach(item => {
+  //         var isPresent = this.activities.some(function (activity) { return activity.objectiveId === item.id });
+  //         hasActivityErrors.push(isPresent);
+  //       });
+
+  //       if (hasActivityErrors.includes(false))
+  //         this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "Please capture an activity for each objective." });
+  //     }
+
+  //     if (this.sustainabilityPlans.length === 0)
+  //       this.validationErrors.push({ severity: 'error', summary: "Sustainability:", detail: "Sustainability Plan table cannot be empty." });
+  //     else {
+  //       let hasSustainabilityErrors: boolean[] = [];
+
+  //       this.activities.forEach(item => {
+  //         var isPresent = this.sustainabilityPlans.some(function (sustainabilityPlan) { return sustainabilityPlan.activityId === item.id });
+  //         hasSustainabilityErrors.push(isPresent);
+  //       });
+
+  //       if (hasSustainabilityErrors.includes(false))
+  //         this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "Please capture a sustainability plan for each activity." });
+  //     }
+
+  //     if (this.resources.length === 0)
+  //       this.validationErrors.push({ severity: 'error', summary: "Resourcing:", detail: "Resourcing table cannot be empty." });
+  //     else {
+  //       let hasResourcingErrors: boolean[] = [];
+
+  //       this.activities.forEach(item => {
+  //         var isPresent = this.resources.some(function (resource) { return resource.activityId === item.id });
+  //         hasResourcingErrors.push(isPresent);
+  //       });
+
+  //       if (hasResourcingErrors.includes(false))
+  //         this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "Please capture a resource for each activity." });
+  //     }
+  //   }
+
+  //   if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
+  //     if (this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
+  //       this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please specify the Rand amount you applying for." });
+  //     // if (this.financialMattersIncome.length === 0)
+  //     //   this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
+
+  //     if (this.fundingApplicationDetails.implementations.length === 0)
+  //       this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+  //     if (this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
+  //       this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
+
+  //     if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
+  //       this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+  //   }
+
+  //   if (this.validationErrors.length == 0) {
+  //     this.menuActions[3].disabled = false;
+  //     this.menuActions[1].visible = false;
+  //   }
+  //   else {
+  //     this.menuActions[3].disabled = true;
+  //     this.menuActions[1].visible = true;
+  //   }
+
+  // }
 
   private clearMessages() {
     this.validationErrors = [];
