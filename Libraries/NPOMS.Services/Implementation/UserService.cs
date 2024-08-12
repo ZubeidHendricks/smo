@@ -20,6 +20,7 @@ using Azure.Storage.Blobs.Models;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Repository.Implementation.Mapping;
 using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
+using NPOMS.Repository.Implementation.Core;
 
 namespace NPOMS.Services.Implementation
 {
@@ -468,6 +469,12 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<User>> GetByRoleAndDepartmentId(int roleId, int departmentId)
         {
             return await _userRepository.GetByRoleAndDepartmentId(roleId, departmentId);
+        }
+
+        public async Task<IEnumerable<User>> WorkplanApprovers(int roleId, int departmentId)
+        {
+            return  await _userRepository.GetByIds((int)RoleEnum.Approver, departmentId);
+
         }
 
 

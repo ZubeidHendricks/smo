@@ -21,5 +21,7 @@ namespace NPOMS.Services.Interfaces
 
         Task<UserViewModel> GetById(int id);
         Task<IEnumerable<User>> GetByRoleAndDepartmentId(int roleId, int departmentId);
+
+        Task<IEnumerable<User>> WorkplanApprovers(int roleId, int departmentId);
     }
 }
