@@ -329,7 +329,8 @@ export class ReviewApplicationComponent implements OnInit {
 
       this._applicationRepo.updateApplicationApproval(applicationApproval).subscribe(
         (resp) => {
-          if(selectedReviewers.length > 0){
+
+      if(selectedReviewers.length > 0){
             this.applicationWithUsers.application = this.application;
             this.applicationWithUsers.userVM = selectedReviewers;
 

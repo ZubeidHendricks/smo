@@ -473,7 +473,7 @@ namespace NPOMS.Services.Implementation
 
         public async Task<IEnumerable<User>> WorkplanApprovers(int roleId, int departmentId)
         {
-            return  await _userRepository.GetByIds((int)RoleEnum.Approver, departmentId);
+            return  await _userRepository.GetByIds((int)RoleEnum.DOHApprover, departmentId);
 
         }
 
