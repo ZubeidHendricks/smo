@@ -62,6 +62,8 @@ export class ReviewApplicationComponent implements OnInit {
   isMainReviewer: boolean;
   isSystemAdmin: boolean;
   isAdmin: boolean;
+  isDOHApprover: boolean;
+
   canReviewOrApprove: boolean = false;
 
   reviewerSatisfactionCols: any;
@@ -188,9 +190,10 @@ export class ReviewApplicationComponent implements OnInit {
       this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
       this.isAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
       this.isMainReviewer = this.profile.roles.some(function (role) { return role.id === RoleEnum.MainReviewer });
+      this.isDOHApprover = this.profile.roles.some(function (role) { return role.id === RoleEnum.DOHApprover });
    
       // Add confirmation step if Main Reviewer
-      if (this.isSystemAdmin || this.isAdmin || this.isMainReviewer ) { 
+      if (this.isSystemAdmin || this.isAdmin || this.isMainReviewer  || this.isDOHApprover) { 
         this.items.push({ label: 'Confirmation' });
         this.canReviewOrApprove = true;
       }
