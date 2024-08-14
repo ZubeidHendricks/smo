@@ -91,7 +91,7 @@ namespace NPOMS.Services.Email.EmailTemplates
                                     .Replace("{url}", origin)
                                     .Replace("{ApplicationId}", application.Id.ToString())
                                     .Replace("{npoId}", id.ToString())
-                                    .Replace("{organisationName}", npo.Name)
+                                    .Replace("{{NPO}}", npo.Name)
                                     .Replace("{financialYear}", application.ApplicationPeriod.FinancialYear.Name);
 
             return returnResult;

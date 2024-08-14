@@ -38,7 +38,7 @@ namespace NPOMS.Services.Email.EmailTemplates
             var httpContextAccessor = EngineContext.Current.Resolve<IHttpContextAccessor>();
             var statusRepository = EngineContext.Current.Resolve<IStatusRepository>();
             var contactPerson = await contactInformationRepository.GetByNpoId(this._application.Id);
-            var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.InitiateScorecard);
+            var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.SatisficationApprovalEmail);
             var application = await applicationRepository.GetById(this._application.Id);
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
@@ -91,7 +91,7 @@ namespace NPOMS.Services.Email.EmailTemplates
                                     .Replace("{url}", origin)
                                     .Replace("{ApplicationId}", application.Id.ToString())
                                     .Replace("{npoId}", id.ToString())
-                                    .Replace("{organisationName}", npo.Name)
+                                    .Replace("{NPO}", npo.Name)
                                     .Replace("{financialYear}", application.ApplicationPeriod.FinancialYear.Name);
 
             return returnResult;

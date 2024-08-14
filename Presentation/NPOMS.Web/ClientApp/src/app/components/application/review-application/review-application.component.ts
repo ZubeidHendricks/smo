@@ -191,7 +191,7 @@ export class ReviewApplicationComponent implements OnInit {
       this.isAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
       this.isMainReviewer = this.profile.roles.some(function (role) { return role.id === RoleEnum.MainReviewer });
       this.isDOHApprover = this.profile.roles.some(function (role) { return role.id === RoleEnum.DOHApprover });
-   
+
       // Add confirmation step if Main Reviewer
       if (this.isSystemAdmin || this.isAdmin || this.isMainReviewer  || this.isDOHApprover) { 
         this.items.push({ label: 'Confirmation' });

@@ -42,34 +42,26 @@ namespace NPOMS.Services.Email.EmailTemplates
             var userContactPrimary = npo.ContactInformation.Where(n => n.IsPrimaryContact == true).FirstOrDefault();
             var createdUser = await userRepository.GetActiveUserById(application.CreatedUserId);
 
-            var createdUsers = new List<User>();
+            var users = new List<User>();
 
-            createdUsers.Add(await userRepository.GetActiveUserById(application.CreatedUserId));
+            users.Add(await userRepository.GetActiveUserById(application.CreatedUserId));
 
             var mainReveiwers = await userRepository.GetByIds((int)RoleEnum.MainReviewer, application.ApplicationPeriod.DepartmentId);
 
+            users.AddRange(mainReveiwers);
+
             try
             {
-                EmailQueue emailQueue = new EmailQueue()
+                foreach (var user in users)
                 {
-                    CreatedDateTime = DateTime.Now,
-                    EmailTemplateId = emailTemplate.Id,
-                    FromEmailAddress = emailTemplate.EmailAccount.FromEmail,
-                    FromEmailName = emailTemplate.EmailAccount.FromDisplayName
-                };
+                    EmailQueue emailQueue = new EmailQueue()
+                    {
+                        CreatedDateTime = DateTime.Now,
+                        EmailTemplateId = emailTemplate.Id,
+                        FromEmailAddress = emailTemplate.EmailAccount.FromEmail,
+                        FromEmailName = emailTemplate.EmailAccount.FromDisplayName
+                    };
 
-                foreach (var user in mainReveiwers)
-                {
-                    emailQueue.Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, user, npo);
-                    emailQueue.Subject = ReplacePlaceholders(emailTemplate.Subject, application, requestOrigin, user, npo);
-                    emailQueue.RecipientEmail = user.Email;
-                    emailQueue.RecipientName = user.FullName;
-
-                    await emailQueueService.Create(emailQueue);
-                }
-
-                foreach (var user in createdUsers)
-                {
                     emailQueue.Message = ReplacePlaceholders(emailTemplate.Body, application, requestOrigin, user, npo);
                     emailQueue.Subject = ReplacePlaceholders(emailTemplate.Subject, application, requestOrigin, user, npo);
                     emailQueue.RecipientEmail = user.Email;
