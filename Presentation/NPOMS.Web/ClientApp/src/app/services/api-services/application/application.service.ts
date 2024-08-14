@@ -246,7 +246,7 @@ export class ApplicationService {
   }
 
   public depReviewers(departmentId: number) {
-    const url = `${this._envUrl.urlAddress}/api/applications/workplanapprovers/${departmentId}`;
+    const url = `${this._envUrl.urlAddress}/api/applications/depReviewers/${departmentId}`;
     return this._http.get<IUser[]>(url, httpOptions);
   }
 
