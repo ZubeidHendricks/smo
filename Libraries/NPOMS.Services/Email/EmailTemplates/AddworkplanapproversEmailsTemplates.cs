@@ -38,7 +38,7 @@ namespace NPOMS.Services.Email.EmailTemplates
             var npoRepository = EngineContext.Current.Resolve<INpoRepository>();
             var userRepository = EngineContext.Current.Resolve<IUserRepository>();
 
-            var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.StatusChangedPendingApproval);
+            var emailTemplate = await emailTemplateService.GetByType(EmailTemplateTypeEnum.AddworkplanapproversEmails);
             var application = await applicationRepository.GetById(this._application.Id);
             var npo = await npoRepository.GetById(application.NpoId);
             var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();

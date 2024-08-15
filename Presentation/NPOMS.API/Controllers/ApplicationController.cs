@@ -1162,7 +1162,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var users = await _userService.GetByRoleAndDepartmentId((int)RoleEnum.MainReviewer, departmentId);
+                var users = await _userService.WorkplanApprovers((int)RoleEnum.Approver, departmentId);
 
                 return Ok(users);
             }

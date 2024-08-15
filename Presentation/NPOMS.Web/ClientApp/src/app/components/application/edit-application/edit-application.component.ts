@@ -473,8 +473,7 @@ export class EditApplicationComponent implements OnInit {
 
   private formValidate() {
     this.validationErrors = [];
-    if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {
-
+    if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
       if (this.objectives.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
 

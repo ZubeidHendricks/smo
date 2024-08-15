@@ -17,6 +17,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   providers: [MessageService, ConfirmationService]
 })
 export class ApproveApplicationComponent implements OnInit {
+  DOHApprover: boolean;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -181,9 +182,10 @@ export class ApproveApplicationComponent implements OnInit {
       this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
       this.isAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
       this.isApprover = this.profile.roles.some(function (role) { return role.id === RoleEnum.Approver });
+      this.DOHApprover = this.profile.roles.some(function (role) { return role.id === RoleEnum.DOHApprover });
 
       // Add confirmation step if Approver
-      if (this.isSystemAdmin || this.isAdmin || this.isApprover) {
+      if (this.isSystemAdmin || this.isAdmin || this.isApprover || this.DOHApprover) {
         this.items.push({ label: 'Confirmation' });
         this.canReviewOrApprove = true;
       }
