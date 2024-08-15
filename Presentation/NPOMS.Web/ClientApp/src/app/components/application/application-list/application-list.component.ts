@@ -483,16 +483,16 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
-        this.buttonItems[0].items.push({
-          label: 'Download Workplan',
-          target: 'Workplan',
-          icon: 'fa fa-download',
-          command: () => {
-            this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id, 4] } }]);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Download Workplan',
+      //     target: 'Workplan',
+      //     icon: 'fa fa-download',
+      //     command: () => {
+      //       this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id, 4] } }]);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.DownloadAssessmentOption)) {
         this.buttonItems[0].items.push({
@@ -539,16 +539,16 @@ export class ApplicationListComponent implements OnInit {
       }
 
       //mainreviwer
-      if (this.IsAuthorized(PermissionsEnum.ReviewApplication) && this.isMainReviewer) {
-        this.buttonItems[0].items.push({
-          label: 'Select Reviewers',
-          target: 'Work Plan',
-          icon: 'fa fa-pencil-square-o',
-          command: () => {
-            this.displayReviewDialog = true;
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.ReviewApplication) && this.isMainReviewer) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Select Reviewers',
+      //     target: 'Work Plan',
+      //     icon: 'fa fa-pencil-square-o',
+      //     command: () => {
+      //       this.displayReviewDialog = true;
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
         this.buttonItems[0].items.push({
