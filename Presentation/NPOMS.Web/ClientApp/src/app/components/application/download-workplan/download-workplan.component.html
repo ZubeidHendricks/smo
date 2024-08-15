@@ -443,18 +443,18 @@
                 <td><span class="p-text-bold">{{recipient.fundingPeriodStartDate}} to {{recipient.fundingPeriodEndDate}}</span></td>
                 <td><span class="p-text-bold">{{recipient.budget   | currency:'ZAR'}}</span></td>
             </tr>
-            <!-- <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)">
+            <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)">
                 <td><span class="p-text-bold">{{subSubRecipient.organisationName}}</span></td>
                 <td><span class="p-text-bold" *ngIf="subSubRecipient.recipientType">{{subSubRecipient.recipientType.name}}</span></td>
                 <td><span class="p-text-bold">{{subSubRecipient.fundingPeriodStartDate}} to {{subSubRecipient.fundingPeriodEndDate}}</span></td>
                 <td><span class="p-text-bold">{{subSubRecipient.budget  | currency:'ZAR' }}</span></td>
-            </tr> -->
-            <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)" class="default-font">
+            </tr>
+            <!-- <tr *ngFor="let subSubRecipient of getActiveSSRs(recipient.subSubRecipients)" class="default-font">
                 <td style="text-align: right;">{{subSubRecipient.organisationName}}</td>
                 <td style="text-align: right;" *ngIf="subSubRecipient.recipientType">{{subSubRecipient.recipientType.name}}</td>
                 <td style="text-align: right;">{{subSubRecipient.fundingPeriodStartDate}} to {{subSubRecipient.fundingPeriodEndDate}}</td>
                 <td style="text-align: right;">{{subSubRecipient.budget}}</td>
-            </tr>
+            </tr> -->
         </ng-template>
         <ng-template pTemplate="emptymessage">
             <tr class="default-font">
