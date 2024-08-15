@@ -93,6 +93,8 @@ export class ApplicationListComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.ViewApplications))
           this._router.navigate(['401']);
 
+        console.log('ReviewApplication', this.IsAuthorized(PermissionsEnum.ReviewApplication));
+
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
         this.isMainReviewer = profile.roles.some(function (role) { return role.id === RoleEnum.MainReviewer });
@@ -700,7 +702,10 @@ export class ApplicationListComponent implements OnInit {
       if (this.selectedApplication.npoWorkPlanReviewerTrackings.length > 0) {
         if (!this.selectedApplication.npoWorkPlanReviewerTrackings.some(item => item.userId === this.profile.id)) 
         {
-          this.buttonItemExists('Review Application', 'Service Provision');
+          if(!this.isMainReviewer)
+            {
+              this.buttonItemExists('Review Application', 'Service Provision');
+            }
         }  
       }
 
