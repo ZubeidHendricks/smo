@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { PermissionsEnum, QCStepsEnum, StatusEnum, QuickCaptureFundedStepsEnum, QCStepsFundedEnum } from 'src/app/models/enums';
+import { PermissionsEnum, QCStepsEnum, StatusEnum, QuickCaptureFundedStepsEnum, QCStepsFundedEnum, DropdownTypeEnum } from 'src/app/models/enums';
 import { IUser, INpo, IContactInformation, IApplicationPeriod, IApplication, IDistrictCouncil, ILocalMunicipality, IRegion, ISDA, IFundingApplicationDetails, IFundAppSDADetail, IApplicationDetails, IObjective, IActivity, IProjectInformation, IProgrammeServiceDelivery } from 'src/app/models/interfaces';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MenuItem, Message, MessageService } from 'primeng/api';
@@ -12,6 +12,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 
 @Component({
   selector: 'app-quick-capture-list',
@@ -51,10 +52,21 @@ export class QuickCaptureListComponent implements OnInit {
   objectives: IObjective[] = [];
   activities: IActivity[] = [];
 
-  districtCouncil: IDistrictCouncil;
-  localMunicipality: ILocalMunicipality;
-  regions: IRegion[];
-  sdas: ISDA[];
+  allDistrictCouncils: IDistrictCouncil[];
+  selectedDistrictCouncil: IDistrictCouncil;
+
+  allLocalMunicipalities: ILocalMunicipality[];
+  filteredLocalMunicipalities: ILocalMunicipality[];
+  selectedLocalMunicipality: ILocalMunicipality;
+
+  allRegions: IRegion[];
+  filteredRegions: IRegion[];
+  selectedRegions: IRegion[];
+
+  allServiceDeliveryAreas: ISDA[];
+  filteredServiceDeliveryAreas: ISDA[];
+  selectedSDAs: ISDA[];
+
   purposeQuestion: string;
   menuActions: MenuItem[];
   validationErrors: Message[];
@@ -94,7 +106,8 @@ export class QuickCaptureListComponent implements OnInit {
     private _npoProfile: NpoProfileService,
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
-    private _fundAppService: FundingApplicationService
+    private _fundAppService: FundingApplicationService,
+    private _dropdownRepo: DropdownService
   ) { }
 
   ngOnInit(): void {
@@ -118,7 +131,9 @@ export class QuickCaptureListComponent implements OnInit {
         this.buildMenu();
       }
     });
-    this.getProgrammeDeliveryDetails();
+
+    this.loadDistrictCouncils();
+    
   }
 
   private buildMenu() {
@@ -165,8 +180,8 @@ export class QuickCaptureListComponent implements OnInit {
     }
   }
 
-  private getProgrammeDeliveryDetails() {
-    this._npoProfile.getProgrammeDeliveryDetailsQC(Number(this.npo.id)).subscribe(
+  private getProgrammeDeliveryDetails(applicationId: number) {
+    this._npoProfile.getProgrammeDeliveryDetails(applicationId).subscribe(
       (results) => {
         if (results != null) {
          this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.applicationPeriod.programmeId && deliveryDetail.subProgrammeId === this.applicationPeriod.subProgrammeId && deliveryDetail.subProgrammeTypeId === this.applicationPeriod.subProgrammeTypeId);
@@ -182,7 +197,7 @@ export class QuickCaptureListComponent implements OnInit {
   private bidForm(status: StatusEnum) {
 
     if (this.bidCanContinue(status)) {
-      this._spinner.show();
+    //  this._spinner.show();
       let data = this.npo;
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
@@ -196,15 +211,29 @@ export class QuickCaptureListComponent implements OnInit {
         (resp) => {
 
           this.application.statusId = status;
+          this.application.isQuickCapture = true;
+          this.applicationPeriod = this.applicationPeriod;
+          this.application.programmeId = this.applicationPeriod.programmeId;
+          this.application.subProgrammeId = this.applicationPeriod.subProgrammeId;
+          this.application.subProgrammeTypeId = this.applicationPeriod.subProgrammeTypeId;
 
-          this._applicationRepo.createApplication(this.application, true, null).subscribe(
+          this._applicationRepo.createQCApplication(this.application).subscribe(
             (resp) => {
+            // if(resp.id == undefined)
+            // {
+            //   return false;           
+            // }
+            // else{
 
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.districtCouncil;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.localMunicipality;
-             //// this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.regions;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.sdas;
+              this.getProgrammeDeliveryDetails(resp.id);
 
+              this.fundingApplicationDetails.applicationId = resp.id;
+              this.fundingApplicationDetails.applicationPeriodId = this.applicationPeriod.id;
+              this.fundingApplicationDetails.applicationDetails.amountApplyingFor = this.amount;
+              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.allDistrictCouncils.find(x => x.id === this.programDeliveryDetails[0].districtCouncil.id);
+              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.allLocalMunicipalities.find(x => x.id === this.programDeliveryDetails[0].localMunicipality.id);
+              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions =  this.allRegions.filter(x => x.localMunicipalityId === this.programDeliveryDetails[0].localMunicipalityId);
+              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.allServiceDeliveryAreas.filter(x => x.regionId === this.programDeliveryDetails[0].regionId);
               if (!this.fundingApplicationDetails.id) {
 
                 this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
@@ -240,6 +269,7 @@ export class QuickCaptureListComponent implements OnInit {
                   }
                 );
               }
+          //  }              
             },
             (err) => {
               this._loggerService.logException(err);
@@ -255,6 +285,58 @@ export class QuickCaptureListComponent implements OnInit {
     }
   }
 
+  private loadDistrictCouncils() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DistrictCouncil, false).subscribe(
+      (results) => {
+        this.allDistrictCouncils = results;
+        this.loadMunicipalities();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadMunicipalities() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.LocalMunicipality, false).subscribe(
+      (results) => {
+        this.allLocalMunicipalities = results;
+        this.loadRegions();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadRegions() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Region, false).subscribe(
+      (results) => {
+        this.allRegions = results;
+        this.loadServiceDeliveryAreas();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadServiceDeliveryAreas() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.ServiceDeliveryArea, false).subscribe(
+      (results) => {
+        this.allServiceDeliveryAreas = results;
+      //  this.updateDropdownSelections();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+  
   private bidCanContinue(status: StatusEnum) {
     this.validationErrors = [];
 
