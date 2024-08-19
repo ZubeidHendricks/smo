@@ -7,7 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Message, MenuItem, ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { PermissionsEnum, StatusEnum, DropdownTypeEnum, DocumentUploadLocationsEnum, EntityTypeEnum, EntityEnum } from 'src/app/models/enums';
-import { IFundingApplicationDetails, IApplication, IUser, IDocumentStore, IDocumentType } from 'src/app/models/interfaces';
+import { IFundingApplicationDetails, IApplication, IUser, IDocumentStore, IDocumentType, IApplicationPeriod } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -31,7 +31,7 @@ export class QcDocumentUploadEditComponent implements OnInit {
   }
   @ViewChild('fileAdDoc') el: ElementRef;
 
-
+  @Input() applicationPeriod: IApplicationPeriod;
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
   acutalGrid: string;

@@ -3,12 +3,14 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum, StaffCategoryEnum, StatusEnum } from 'src/app/models/enums';
-import { IApplication, IApplicationPeriod, IContactInformation, IGender, ILanguage, INpo, INpoProfile, IOrganisationType, IPosition, IRace, IRegistrationStatus, IStaffCategory, IStaffMemberProfile, ITitle, IUser } from 'src/app/models/interfaces';
+import { IApplication, IApplicationPeriod, IContactInformation, IDistrictCouncil, IFundingApplicationDetails, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, IOrganisationType, IPosition, IProgrammeServiceDelivery, IRace, IRegion, IRegistrationStatus, ISDA, IStaffCategory, IStaffMemberProfile, ITitle, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
+import { ApplicationService } from 'src/app/services/api-services/application/application.service';
+import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 
 @Component({
   selector: 'app-create-quick-capture',
@@ -21,7 +23,7 @@ export class CreateQuickCaptureComponent implements OnInit {
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() npo: INpo;
   @Output() npoChange: EventEmitter<INpo> = new EventEmitter<INpo>();
-
+  @Input() applicationPeriod: IApplicationPeriod;
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -86,6 +88,31 @@ export class CreateQuickCaptureComponent implements OnInit {
   staffCategories: IStaffCategory[];
 
   npoProfile: INpoProfile;
+  programDeliveryDetails : IProgrammeServiceDelivery[];
+  selectedProgramDeliveryDetails : IProgrammeServiceDelivery[];
+  fundingApplicationDetails: IFundingApplicationDetails;
+
+
+  allDistrictCouncils: IDistrictCouncil[];
+  selectedDistrictCouncil: IDistrictCouncil;
+
+  allLocalMunicipalities: ILocalMunicipality[];
+  filteredLocalMunicipalities: ILocalMunicipality[];
+  selectedLocalMunicipality: ILocalMunicipality;
+
+  allRegions: IRegion[];
+  filteredRegions: IRegion[];
+  selectedRegions: IRegion[];
+
+  allServiceDeliveryAreas: ISDA[];
+  filteredServiceDeliveryAreas: ISDA[];
+  selectedSDAs: ISDA[];
+
+  
+
+  @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
 
   constructor(
     private _router: Router,
@@ -94,9 +121,11 @@ export class CreateQuickCaptureComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _confirmationService: ConfirmationService,
     private _npoRepo: NpoService,
-     private _npoProfileRepo: NpoProfileService,
+    private _npoProfileRepo: NpoProfileService,
     private _loggerService: LoggerService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _applicationRepo: ApplicationService,
+    private _fundAppService: FundingApplicationService,
     // private _addressLookupService: AddressLookupService
   ) { }
 
@@ -124,10 +153,10 @@ export class CreateQuickCaptureComponent implements OnInit {
         this.loadGender();
         this.loadRaces();
         this.loadLanguages();
+        this.loadDistrictCouncils();
         //     this.buildMenu();
       }
     });
-
     this.stateOptions = [
       { label: 'Yes', value: true },
       { label: 'No', value: false }
@@ -170,6 +199,58 @@ export class CreateQuickCaptureComponent implements OnInit {
   //     ];
   //   }
   // }
+
+  private loadDistrictCouncils() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DistrictCouncil, false).subscribe(
+      (results) => {
+        this.allDistrictCouncils = results;
+        this.loadMunicipalities();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadMunicipalities() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.LocalMunicipality, false).subscribe(
+      (results) => {
+        this.allLocalMunicipalities = results;
+        this.loadRegions();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadRegions() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Region, false).subscribe(
+      (results) => {
+        this.allRegions = results;
+        this.loadServiceDeliveryAreas();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadServiceDeliveryAreas() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.ServiceDeliveryArea, false).subscribe(
+      (results) => {
+        this.allServiceDeliveryAreas = results;
+      //  this.updateDropdownSelections();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 
   private loadOrganisationTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.OrganisationTypes, false).subscribe(
@@ -548,12 +629,12 @@ export class CreateQuickCaptureComponent implements OnInit {
 
   selectNPO() {
     this.displayDialog = false;
-    this.addOrganisation();
+    this.createOrganisation();
   }
 
   private addOrganisation() {
     this.application.npoId = this.selectedNPO.id;
-    this.application.applicationPeriodId = this.applicationPeriodId;
+    this.application.applicationPeriodId = this.applicationPeriod.id;
     this.application.statusId = StatusEnum.New;
 
     if (this.selectedNPO.id != null) {
@@ -570,6 +651,33 @@ export class CreateQuickCaptureComponent implements OnInit {
       );
     }
    }
+
+  private createOrganisation() {
+    this.application.npoId = this.selectedNPO.id;
+    this.application.applicationPeriodId = this.applicationPeriod.id;
+    this.application.programmeId = this.applicationPeriod.programmeId;
+    this.application.subProgrammeId = this.applicationPeriod.subProgrammeId;
+    this.application.subProgrammeTypeId = this.applicationPeriod.subProgrammeTypeId;
+    this.application.statusId = StatusEnum.New;
+    
+    this._applicationRepo.validateBeforeCreateQCApplication(this.application).subscribe(
+      (resp) => {
+        if(resp.message === 'Create')
+        {
+          this.addOrganisation();
+        }
+        else{
+          alert(resp.message);
+          this._spinner.hide();
+          return false;  
+        }       
+      },
+      (err) => {
+        this._loggerService.logException(err);       
+        this._spinner.hide();
+      }
+    );
+  }
 
    disableSelect() {
     if (!this.selectedNPO)

@@ -3,7 +3,7 @@ import { Table } from 'primeng/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PermissionsEnum, AccessStatusEnum, ApplicationTypeEnum, QCStepsEnum, FundingApplicationStepsEnum, StatusEnum, DropdownTypeEnum } from 'src/app/models/enums';
-import { IUser, INpo, IApplicationPeriod, IFundingApplicationDetails, IDistrictCouncil, ILocalMunicipality, IFundAppSDADetail, IApplicationDetails, IApplication, IPlace, ISubPlace, ISDA, IRegion, IObjective, IActivity, ISustainabilityPlan, IResource, IQuickCaptureDetails, IFinancialYear } from 'src/app/models/interfaces';
+import { IUser, INpo, IApplicationPeriod, IFundingApplicationDetails, IDistrictCouncil, ILocalMunicipality, IFundAppSDADetail, IApplicationDetails, IApplication, IPlace, ISubPlace, ISDA, IRegion, IObjective, IActivity, ISustainabilityPlan, IResource, IQuickCaptureDetails, IFinancialYear, IProgrammeServiceDelivery } from 'src/app/models/interfaces';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -26,25 +26,12 @@ import { UserService } from 'src/app/services/api-services/user/user.service';
 })
 export class QuickCaptureEditListComponent implements OnInit {
 
-  // canEdit: boolean = false;
-  // applicationIdOnBid: any;
-  // subPlacesAll: ISubPlace[];
-  // place: IPlace[];
-
-  // placesAll: IPlace[] = [];
-  // subPlacesAll: ISubPlace[] = [];
-
-  // dropdownTouched: boolean = false;
-
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
   }
-  // public get ApplicationTypeEnum(): typeof ApplicationTypeEnum {
-  //   return ApplicationTypeEnum;
-  // }
 
   public get PermissionsEnum(): typeof PermissionsEnum {
     return PermissionsEnum;
@@ -53,10 +40,6 @@ export class QuickCaptureEditListComponent implements OnInit {
   public get QCStepsEnum(): typeof QCStepsEnum {
     return QCStepsEnum;
   }
-
-  // public get FundingApplicationStepsEnum(): typeof FundingApplicationStepsEnum {
-  //   return FundingApplicationStepsEnum;
-  // }
 
   profile: IUser;
 
@@ -88,64 +71,8 @@ export class QuickCaptureEditListComponent implements OnInit {
 
   isDataAvailable: boolean;
 
-  // cols: any[];
-  // allNPOs: INpo[];
-
-  // paramSubcriptions: Subscription;
-  // npoId: string;
-  // applicationPeriodId: number;
-  // id: string;
-
-  // menuActions: MenuItem[];
-  // validationErrors: Message[];
-
-  // applicationPeriod: IApplicationPeriod;
-  // isApplicationAvailable: boolean;
-  // placeAll: IPlace[] = [];
-
-  // funding dropdowns
-  // districtCouncils: IDistrictCouncil[] = [];
-  // localMunicipalitiesAll: ILocalMunicipality[] = [];
-  // localMunicipalities: ILocalMunicipality[] = [];
-  // regions: IRegion[] = [];
-  // regionsAll: IRegion[] = [];
-  // sdasAll: ISDA[] = [];
-  // sdas: ISDA[] = [];
-  // end of funding dropdowns
-
-  // items: MenuItem[];
-  // faItems: MenuItem[];
-  // qcItems: MenuItem[];
-
-  // activeStep: number = 0;
-  // application: IApplication;
-
-  // selectedOption: boolean;
-
-  // financialYears: IFinancialYear[];
-  // selectedFinancialYear: IFinancialYear;
-
-  // Used for table filtering
-  // @ViewChild('dt') dt: Table | undefined;
-
-  // funding dropdowns
-
-  // fundingApplicationDetails: IFundingApplicationDetails = {
-  //   applicationDetails: {
-  //     fundAppSDADetail: {
-  //       districtCouncil: {} as IDistrictCouncil,
-  //       localMunicipality: {} as ILocalMunicipality,
-  //       regions: [],
-  //       serviceDeliveryAreas: [],
-  //     } as IFundAppSDADetail,
-  //   } as IApplicationDetails,
-
-  //   financialMatters: [],
-  //   implementations: [],
-
-  // } as IFundingApplicationDetails;
-
-
+  programDeliveryDetails : IProgrammeServiceDelivery[];
+  selectedProgramDeliveryDetails : IProgrammeServiceDelivery[];
 
   constructor(
     private _router: Router,
@@ -159,7 +86,6 @@ export class QuickCaptureEditListComponent implements OnInit {
     private _fundAppService: FundingApplicationService,
     private _npoProfile: NpoProfileService,
     private _userRepo: UserService
-    // private _bidService: BidService
   ) { }
 
   ngOnInit(): void {
@@ -170,8 +96,6 @@ export class QuickCaptureEditListComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-        this._spinner.show();
-
         if (!this.IsAuthorized(PermissionsEnum.EditApplication))
           this._router.navigate(['401']);
 
@@ -179,7 +103,8 @@ export class QuickCaptureEditListComponent implements OnInit {
         this.qCSteps();
         this.buildMenu();
       }
-    });
+    }); 
+    
   }
 
   private loadApplication() {
@@ -190,6 +115,7 @@ export class QuickCaptureEditListComponent implements OnInit {
           this.applicationPeriod = this.application.applicationPeriod;
           this.loadNpo();
           this.loadCreatedUser();
+          this.getProgrammeDeliveryDetails(this.application.id, this.application.applicationPeriod.programmeId, this.application.applicationPeriod.subProgrammeId, this.application.applicationPeriod.subProgrammeTypeId);
         },
         (err) => {
           this._loggerService.logException(err);
@@ -249,9 +175,6 @@ export class QuickCaptureEditListComponent implements OnInit {
         this.amount = this.fundingApplicationDetails.applicationDetails.amountApplyingFor;
         this.districtCouncil = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil;
         this.localMunicipality = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality;
-
-        // this.regions = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions;
-        // this.sdas = this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas;
 
         this.loadRegions();
       },
@@ -315,6 +238,20 @@ export class QuickCaptureEditListComponent implements OnInit {
     );
   }
 
+  private getProgrammeDeliveryDetails(applicationId: Number, programmeId: Number, subProgrammeId: Number, subProgrammeTypeId: Number) {
+    this._npoProfile.getProgrammeDeliveryDetails(Number(applicationId)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === programmeId && deliveryDetail.subProgrammeId === subProgrammeId && deliveryDetail.subProgrammeTypeId === subProgrammeTypeId);
+          this.selectedProgramDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === programmeId && deliveryDetail.subProgrammeId === subProgrammeId && deliveryDetail.subProgrammeTypeId === subProgrammeTypeId && deliveryDetail.isSelected === true);
+        } 
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      });
+  }
+
   private buildMenu() {
     if (this.profile) {
       this.menuActions = [
@@ -363,71 +300,19 @@ export class QuickCaptureEditListComponent implements OnInit {
 
     if (this.bidCanContinue(status)) {
       this._spinner.show();
-
-      let data = this.npo;
-
-      data.contactInformation.forEach(item => {
-        item.titleId = item.title.id;
-        item.positionId = item.position.id;
-        item.genderId = item.gender ? item.gender.id : null;
-        item.raceId = item.race ? item.race.id : null;
-        item.languageId = item.language ? item.language.id : null;
-      });
-
-      this._npoRepo.createNpo(data).subscribe(
-        (resp) => {
-
           this.application.statusId = status;
-
-          this._applicationRepo.createApplication(this.application, true, null).subscribe(
+          this.application.isQuickCapture = true;
+          this.applicationPeriod = this.applicationPeriod;
+          this._applicationRepo.updateApplication(this.application).subscribe(
             (resp) => {
-
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.districtCouncil;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.localMunicipality;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.regions;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.sdas;
-
-              if (!this.fundingApplicationDetails.id) {
-                this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-                  (resp) => {
-                    this._spinner.hide();
-
-                    if (status === StatusEnum.Saved)
-                      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-                    if (status === StatusEnum.PendingReview)
-                      this._router.navigateByUrl('applications');
-                  },
-                  (err) => {
-                    this._loggerService.logException(err);
-                    this._spinner.hide();
-                  }
-                );
-              }
-              else {
-                this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-                  (resp) => {
-                    this._spinner.hide();
-
-                    if (status === StatusEnum.Saved)
-                      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-                    if (status === StatusEnum.PendingReview)
-                      this._router.navigateByUrl('applications');
-                  },
-                  (err) => {
-                    this._loggerService.logException(err);
-                    this._spinner.hide();
-                  }
-                );
-              }
-            },
-            (err) => {
-              this._loggerService.logException(err);
               this._spinner.hide();
-            }
-          );
-        },
+
+              if (status === StatusEnum.Saved)
+                this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+
+              if (status === StatusEnum.PendingReview)
+                this._router.navigateByUrl('applications');
+            },   
         (err) => {
           this._loggerService.logException(err);
           this._spinner.hide();
@@ -497,10 +382,11 @@ export class QuickCaptureEditListComponent implements OnInit {
 
   private validateApplicationDetails() {
     let applicationDetailsError: string[] = [];
-
-    if (!this.districtCouncil || !this.localMunicipality || this.regions.length === 0 || this.sdas.length === 0)
-      applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
-
+    if(this.selectedProgramDeliveryDetails.length === 0)
+    {
+      applicationDetailsError.push("Please select a Service Delivery Area");
+    }
+    
     if (!this.amount)
       applicationDetailsError.push("Please specify the Rand amount you applying for");
 
@@ -513,116 +399,37 @@ export class QuickCaptureEditListComponent implements OnInit {
     this.organisationDetails.setValidated(false);
   }
 
-  // private bidForm(status: StatusEnum) {
-  //   this.application.status = null;
-  //   if (status === StatusEnum.Saved) {
-  //     this.application.statusId = status;
-  //   }
-  //   if (status === StatusEnum.PendingReview) {
-  //     this.application.statusId = status;
-  //   }
-  //   if (this.bidCanContinue(status)) {
-  //     this.application.statusId = status;
-  //     if (this.validationErrors.length == 0) {
-  //       this._applicationRepo.updateApplication(this.application).subscribe();
-  //     }
-  //     this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-  //     this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-  //     if (status == StatusEnum.PendingReview) {
-  //       this.application.status.name = "PendingReview";
-  //       this._applicationRepo.updateApplication(this.application).subscribe();
-
-  //       this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-  //       this._router.navigateByUrl('applications');
-  //     };
-  //   }
-  // }
-
-
-  // private bidCanContinue(status: StatusEnum) {
-  //   this.validationErrors = [];
-  //   if (status === StatusEnum.PendingReview)
-  //     this.formValidate();
-  //   if (this.validationErrors.length == 0)
-  //     return true;
-
-  //   return false;
-  // }
-
-
-  // private formValidate() {
-  //   this.validationErrors = [];
-  // }
-
-  // private clearMessages() {
-  //   this.validationErrors = [];
-  //   this.menuActions[1].visible = false;
-  // }
-
-
-
-
-  // private canContinue(status: StatusEnum) {
-  //   this.validationErrors = [];
-
-  //   if (status === StatusEnum.PendingReview)
-  //     this.formValidate();
-
-  //   if (this.validationErrors.length == 0)
-  //     return true;
-
-  //   return false;
-  // }
-
-
-
-  // places(place: IPlace[]) {
-  //   this.placeAll = place;
-  // }
-
-  // subPlaces(subPlaces: ISubPlace[]) {
-  //   this.subPlacesAll = subPlaces;
-  // }
-
-
-  // getCellData(row: any, col: any): any {
-  //   const nestedProperties: string[] = col.field.split('.');
-  //   let value: any = row;
-
-  //   for (const prop of nestedProperties) {
-  //     value = value[prop];
-  //   }
-
-  //   return value;
-  // }
-
-  // applyFilterGlobal($event: any, stringVal: any) {
-  //   this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
-  // }
-
-  // add() {
-  //   this._router.navigateByUrl('npo/create');
-  // }
-
-  // edit(npo: INpo) {
-  //   this._router.navigateByUrl('npo/edit/' + npo.id);
-  // }
-
   private qCSteps() {
     this.qcItems = [
-      { label: 'Organisation Details' },
       { label: 'Applications' },
+      { label: 'Organisation Details' },      
       { label: 'Application Details' },
       { label: 'Application Document' }
     ];
   }
-
   public validateStep(goToStep: number, currentStep: number) {
     if (goToStep > currentStep) {
       switch (currentStep) {
+        case QCStepsEnum.Applications: {
+          var applicationError = this.validateApplications();
+
+          if (orgDetailsError.length > 0 || applicationError.length > 0) {
+
+            if (applicationError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+
+            break;
+          }
+
+          this.activeStep = goToStep;
+          break;
+        }
         case QCStepsEnum.NpoCreate: {
-          var orgDetailsError = this.validateOrganisationDetails();
+          var applicationError = this.validateApplications();
+          var orgDetailsError = this.validateOrganisationDetails(); 
+
+          if (applicationError.length > 0)
+            this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
 
           if (orgDetailsError.length > 0) {
             this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
@@ -632,37 +439,20 @@ export class QuickCaptureEditListComponent implements OnInit {
 
           this.activeStep = goToStep;
           break;
-        }
-        case QCStepsEnum.Applications: {
-          var orgDetailsError = this.validateOrganisationDetails();
-          var applicationError = this.validateApplications();
-
-          if (orgDetailsError.length > 0 || applicationError.length > 0) {
-
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-
-            if (applicationError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
-
-            break;
-          }
-
-          this.activeStep = goToStep;
-          break;
-        }
+        }       
         case QCStepsEnum.AmountYouApplyingFor: {
-          var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();
+          var orgDetailsError = this.validateOrganisationDetails();         
           var applicationDetailsError = this.validateApplicationDetails();
 
           if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
 
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-
+            
             if (applicationError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+
+            if (orgDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
 
             if (applicationDetailsError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });

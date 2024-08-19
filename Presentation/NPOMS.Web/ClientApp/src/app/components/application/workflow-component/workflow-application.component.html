@@ -20,8 +20,15 @@
         [programId]="application.applicationPeriod.programmeId" 
         [subProgramId] = "application.applicationPeriod.subProgrammeId"
         [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
-        [source]="source" 
-        >
+        [source]="source">
+        </app-view-funding-application>
+    </div>
+    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.QC">
+        <app-view-funding-application [npoId]="application.npoId" 
+        [programId]="application.applicationPeriod.programmeId" 
+        [subProgramId] = "application.applicationPeriod.subProgrammeId"
+        [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
+        [source]="source">
         </app-view-funding-application>
     </div>
     <div style="height: 10px;"></div>
