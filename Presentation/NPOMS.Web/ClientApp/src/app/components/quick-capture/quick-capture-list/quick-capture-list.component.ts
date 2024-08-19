@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PermissionsEnum, QCStepsEnum, StatusEnum, QuickCaptureFundedStepsEnum, QCStepsFundedEnum } from 'src/app/models/enums';
-import { IUser, INpo, IContactInformation, IApplicationPeriod, IApplication, IDistrictCouncil, ILocalMunicipality, IRegion, ISDA, IFundingApplicationDetails, IFundAppSDADetail, IApplicationDetails, IObjective, IActivity, IProjectInformation } from 'src/app/models/interfaces';
+import { IUser, INpo, IContactInformation, IApplicationPeriod, IApplication, IDistrictCouncil, ILocalMunicipality, IRegion, ISDA, IFundingApplicationDetails, IFundAppSDADetail, IApplicationDetails, IObjective, IActivity, IProjectInformation, IProgrammeServiceDelivery } from 'src/app/models/interfaces';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MenuItem, Message, MessageService } from 'primeng/api';
 import { CreateQuickCaptureComponent } from '../create-quick-capture/create-quick-capture.component';
@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
+import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 
 @Component({
   selector: 'app-quick-capture-list',
@@ -18,7 +19,6 @@ import { FundingApplicationService } from 'src/app/services/api-services/funding
   styleUrls: ['./quick-capture-list.component.css']
 })
 export class QuickCaptureListComponent implements OnInit {
-
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -66,6 +66,8 @@ export class QuickCaptureListComponent implements OnInit {
   amount: number;
   sourceOfInformation: ISourceOfInformation[];
   affliatedOrganisationInfo: IAffiliatedOrganisation[];
+  programDeliveryDetails : IProgrammeServiceDelivery[];
+  selectedProgramDeliveryDetails : IProgrammeServiceDelivery[];
 
   fundingApplicationDetails: IFundingApplicationDetails = {
     applicationDetails: {
@@ -89,7 +91,7 @@ export class QuickCaptureListComponent implements OnInit {
     private _npoRepo: NpoService,
     private _spinner: NgxSpinnerService,
     private _loggerService: LoggerService,
-    // private _activeRouter: ActivatedRoute,
+    private _npoProfile: NpoProfileService,
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
     private _fundAppService: FundingApplicationService
@@ -116,6 +118,7 @@ export class QuickCaptureListComponent implements OnInit {
         this.buildMenu();
       }
     });
+    this.getProgrammeDeliveryDetails();
   }
 
   private buildMenu() {
@@ -162,13 +165,25 @@ export class QuickCaptureListComponent implements OnInit {
     }
   }
 
+  private getProgrammeDeliveryDetails() {
+    this._npoProfile.getProgrammeDeliveryDetailsQC(Number(this.npo.id)).subscribe(
+      (results) => {
+        if (results != null) {
+         this.programDeliveryDetails =  results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.applicationPeriod.programmeId && deliveryDetail.subProgrammeId === this.applicationPeriod.subProgrammeId && deliveryDetail.subProgrammeTypeId === this.applicationPeriod.subProgrammeTypeId);
+         this.selectedProgramDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.applicationPeriod.programmeId && deliveryDetail.subProgrammeId === this.applicationPeriod.subProgrammeId && deliveryDetail.subProgrammeTypeId === this.applicationPeriod.subProgrammeTypeId && deliveryDetail.isSelected === true);
+        } 
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+      });
+  }
+
   private bidForm(status: StatusEnum) {
 
     if (this.bidCanContinue(status)) {
       this._spinner.show();
-
       let data = this.npo;
-
       data.contactInformation.forEach(item => {
         item.titleId = item.title.id;
         item.positionId = item.position.id;
@@ -187,7 +202,7 @@ export class QuickCaptureListComponent implements OnInit {
 
               this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.districtCouncil;
               this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.localMunicipality;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.regions;
+             //// this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.regions;
               this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.sdas;
 
               if (!this.fundingApplicationDetails.id) {
@@ -247,9 +262,10 @@ export class QuickCaptureListComponent implements OnInit {
       var orgDetailsError = this.validateOrganisationDetails();
 
     if (status === StatusEnum.PendingReview) {
-      var orgDetailsError = this.validateOrganisationDetails();
       var applicationError = this.validateApplications();
-      var applicationDetailsError = this.validateApplicationDetails();
+      var orgDetailsError = this.validateOrganisationDetails();
+     
+     // var applicationDetailsError = this.validateApplicationDetails();
     }
 
     if (orgDetailsError.length > 0) {
@@ -262,8 +278,8 @@ export class QuickCaptureListComponent implements OnInit {
         this.validationErrors.push({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
       }
 
-      if (applicationDetailsError.length > 0)
-        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+     // if (applicationDetailsError.length > 0)
+      //  this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
     }
 
     if (this.validationErrors.length > 0)
@@ -312,8 +328,12 @@ export class QuickCaptureListComponent implements OnInit {
   private validateApplicationDetails() {
     let applicationDetailsError: string[] = [];
 
-    if (!this.districtCouncil || !this.localMunicipality || this.regions.length === 0 || this.sdas.length === 0)
-      applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
+    if(this.selectedProgramDeliveryDetails.length === 0)
+    {
+      applicationDetailsError.push("Please select a Service Delivery Area");
+    }
+    // if (!this.districtCouncil || !this.localMunicipality || this.regions.length === 0 || this.sdas.length === 0)
+    //   applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
 
     return applicationDetailsError;
   }
@@ -325,17 +345,17 @@ export class QuickCaptureListComponent implements OnInit {
   }
   private qCSteps() {
     this.qcItems = [
-      { label: 'Organisation Details' },
       { label: 'Applications' },
+      { label: 'Organisation Details' },     
       { label: 'Application Details' },
       { label: 'Application Document' }
     ];
   }
 
   private qCStepsFunded() {
-    this.qcItemsFunded = [
-      { label: 'Organisation Details' },   
-      { label: 'Applications' },  
+    this.qcItemsFunded = [     
+      { label: 'Organisation Details' },  
+      { label: 'Applications' },        
       { label: 'Application Detail' },
       { label: 'Objectives' },
       { label: 'Activities' },
@@ -346,18 +366,6 @@ export class QuickCaptureListComponent implements OnInit {
   public validateStep(goToStep: number, currentStep: number) {
     if (goToStep > currentStep) {
       switch (currentStep) {
-        case QCStepsEnum.NpoCreate: {
-          var orgDetailsError = this.validateOrganisationDetails();
-
-          if (orgDetailsError.length > 0) {
-            this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-            this.organisationDetails.setValidated(true);
-            break;
-          }
-
-          this.activeStep = goToStep;
-          break;
-        }
         case QCStepsEnum.Applications: {
           var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();
@@ -376,6 +384,18 @@ export class QuickCaptureListComponent implements OnInit {
           this.activeStep = goToStep;
           break;
         }
+        case QCStepsEnum.NpoCreate: {
+          var orgDetailsError = this.validateOrganisationDetails();
+
+          if (orgDetailsError.length > 0) {
+            this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+            this.organisationDetails.setValidated(true);
+            break;
+          }
+
+          this.activeStep = goToStep;
+          break;
+        }       
         case QCStepsEnum.AmountYouApplyingFor: {
           var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();

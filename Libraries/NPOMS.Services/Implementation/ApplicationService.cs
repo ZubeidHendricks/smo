@@ -674,8 +674,8 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId = model.ApplicationDetails.FundAppSDADetail.DistrictCouncil.Id;
-			model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId = model.ApplicationDetails.FundAppSDADetail.LocalMunicipality.Id;
+			model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId = model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId;
+			model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId = model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId;
 
 			model.ApplicationDetails.FundAppSDADetail.DistrictCouncil = null;
 			model.ApplicationDetails.FundAppSDADetail.LocalMunicipality = null;

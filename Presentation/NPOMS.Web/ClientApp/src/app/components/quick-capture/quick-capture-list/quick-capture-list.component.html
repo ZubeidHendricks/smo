@@ -11,10 +11,6 @@
 
     <div style="height: 10px;"></div>
     <div *ngIf = "this.qcFunded == 0">
-        <app-create-quick-capture *ngIf="activeStep == QCStepsEnum.NpoCreate"
-            [(activeStep)]="activeStep"
-            [(npo)]="npo">
-        </app-create-quick-capture>
         <app-qc-application-periods *ngIf="activeStep == QCStepsEnum.Applications"
             [(activeStep)]="activeStep"
             [npo]="npo"
@@ -22,6 +18,11 @@
             [(application)]="application"
             [isEdit]="false">
         </app-qc-application-periods>
+        <app-create-quick-capture *ngIf="activeStep == QCStepsEnum.NpoCreate"
+            [(activeStep)]="activeStep"
+            [(npo)]="npo"
+            [(applicationPeriod)]="applicationPeriod">
+        </app-create-quick-capture>      
         <app-qc-application-details *ngIf="activeStep == QCStepsEnum.AmountYouApplyingFor"
             [(activeStep)]="activeStep"
             [applicationPeriod]="applicationPeriod"
@@ -31,9 +32,13 @@
             [(regions)]="regions"
             [(sdas)]="sdas"
             [(amount)]="amount"
+            [(programId)]="applicationPeriod.programmeId" 
+            [(subProgramId)] = "applicationPeriod.subProgrammeId"
+            [(subProgramTypeId)] = "applicationPeriod.subProgrammeTypeId"
             [(sourceOfInformation)]="sourceOfInformation"
             [(affliatedOrganisationInfo)]="affliatedOrganisationInfo"
-            [(fundingApplicationDetails)]="fundingApplicationDetails">
+            [(fundingApplicationDetails)]="fundingApplicationDetails"
+            [(npo)]="npo">
         </app-qc-application-details>
         <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
             [(activeStep)]="activeStep"
@@ -41,19 +46,18 @@
             [isView]="false">            
         </app-qc-document-upload>
     </div>
-
     <div *ngIf = "this.qcFunded == 1">
-        <app-create-quick-capture *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"
+    <app-create-quick-capture *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"
         [(activeStep)]="activeStep"
         [(npo)]="npo">
-    </app-create-quick-capture>
+    </app-create-quick-capture>  
     <app-qc-application-periods *ngIf="activeStep == QCStepsFundedEnum.Applications"
         [(activeStep)]="activeStep"
         [npo]="npo"
         [(applicationPeriod)]="applicationPeriod"
         [(application)]="application"
         [isEdit]="false">
-    </app-qc-application-periods>
+    </app-qc-application-periods>   
     <app-qc-application-detail *ngIf="activeStep == QCStepsFundedEnum.ApplicationDetail"
         [(activeStep)]="activeStep"
         [applicationPeriod]="applicationPeriod"

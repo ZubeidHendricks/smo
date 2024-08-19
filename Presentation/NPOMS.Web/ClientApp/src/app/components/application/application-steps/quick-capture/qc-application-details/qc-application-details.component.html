@@ -1,4 +1,4 @@
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Application Details" *ngIf="isDataAvailable">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Application Details">
     <div class="p-fluid p-formgrid p-grid">
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Department</label>
@@ -21,11 +21,42 @@
             <input type="text" class="form-text" pInputText [(ngModel)]="subProgramme.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
         <div class="p-field p-col-12 p-md-6">
-            <label class="mandatory-content">Name</label>
+            <label class="mandatory-content">Sub-ProgrammeType</label>
             <input type="text" class="form-text" pInputText [(ngModel)]="applicationPeriod.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
-
-        <br>
+        <div style="height: 10px;"></div>
+        <p-panel [header]="'Service Delivery Areas'">
+          <p-table [value]="programDeliveryDetails" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Select the service area</th>
+                <th>Region</th>
+                <th>District Council</th>
+                <th>Local Municipality</th>
+                <th>Service delivery address</th>
+                <!-- <th>Status</th> -->
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-delivery>
+              <tr>
+                <td>
+                      <input type="checkbox" [(ngModel)]="delivery.isSelected" (change)="setValue($event, delivery.id)">
+                </td>
+                <td>{{getNames(delivery?.regions)}}</td>
+                <td>{{delivery.districtCouncil?.name}}</td>
+                <td>{{delivery.localMunicipality?.name}}</td>
+                <td>{{getNames(delivery?.serviceDeliveryAreas)}}</td>
+                <!-- <td>{{delivery?.approvalStatus?.name}}</td> -->
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr class="default-font">
+                  <td colspan="5" style="text-align: center;">No results found.</td>
+              </tr>
+          </ng-template>
+          </p-table>
+        </p-panel>
+        <!-- <br>
 
         <div class="p-field p-col-12 p-md-3">
             <label class="mandatory-content">District Council</label>
@@ -42,7 +73,7 @@
         <div class="p-field p-col-12 p-md-3">
             <label class="mandatory-content">Service Delivery Area</label>
             <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredServiceDeliveryAreas" [ngModelOptions]="{standalone: true}" appendTo="body" [(ngModel)]="selectedSDAs" (onChange)="sdaDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
-        </div>
+        </div> -->
     </div>
 
     <div class="p-field p-col-12 p-md-6">
