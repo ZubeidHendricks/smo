@@ -104,7 +104,7 @@ export class ApplicationListComponent implements OnInit {
 
         this.loadNpos();
         this.reviewers();
-        this.getAllCapturedResponses();
+       // this.getAllCapturedResponses();
         this.getAllResponses();
         var splitUrl = window.location.href.split('/');
         this.headerTitle = splitUrl[5];
@@ -227,11 +227,11 @@ export class ApplicationListComponent implements OnInit {
           }
         )
 
-        results.forEach(
-          application => {
-           this.getSummarySubmissionStatus(application, application.id);     
-          }
-        )
+        // results.forEach(
+        //   application => {
+        //    this.getSummarySubmissionStatus(application, application.id);     
+        //   }
+        // )
         
         this.allApplications = results;       
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
@@ -295,23 +295,23 @@ export class ApplicationListComponent implements OnInit {
     );
   }
 
-  private getSummarySubmissionStatus(application: IApplication, applicationId: number) {
+  // private getSummarySubmissionStatus(application: IApplication, applicationId: number) {
 
-    this.capturedResponse = this.capturedResponses.filter(x => x.questionCategoryId === 100 && x.isActive === true && x.fundingApplicationId === applicationId);
-    if (this.capturedResponses.length > 0) {
-      application.submittedScorecard = this.capturedResponses.length
-    }
-    else{
-      application.submittedScorecard = 0;
-    }
-  }
+  //   this.capturedResponse = this.capturedResponses.filter(x => x.questionCategoryId === 100 && x.isActive === true && x.fundingApplicationId === applicationId);
+  //   if (this.capturedResponses.length > 0) {
+  //     application.submittedScorecard = this.capturedResponses.length
+  //   }
+  //   else{
+  //     application.submittedScorecard = 0;
+  //   }
+  // }
 
-  private getAllCapturedResponses() {
-    this._evaluationService.getAllCapturedResponses().subscribe(
-      (results) => {
-        this.capturedResponses = results;
-      })
-  }
+  // private getAllCapturedResponses() {
+  //   this._evaluationService.getAllCapturedResponses().subscribe(
+  //     (results) => {
+  //       this.capturedResponses = results;
+  //     })
+  // }
 
   public selectedResponses(fid: number) {
     this._evaluationService.getResponse(Number(fid)).subscribe(
