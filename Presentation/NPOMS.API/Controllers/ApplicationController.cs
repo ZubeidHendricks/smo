@@ -170,6 +170,87 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPost("validateNew", Name = "ValidateBeforeCreateQCApplication")]
+        public async Task<IActionResult> ValidateBeforeCreateQCApplication([FromBody] Application model)
+        {
+            try
+            {
+                var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
+
+                var npoProfile = await _npoProfileService.GetByNpoId(model.NpoId);
+                var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
+                if (servicesRendered == null)
+                {
+                    var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
+                    return Ok(data);
+                }
+
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
+
+                if (application != null)
+                {
+                    var data = new { Message = "Application already captured for the selected programme. Please go to 'Submissions' to access this application." };
+                    return Ok(data);
+                }
+                else
+                {
+                    //await _applicationService.CreateApplication(model, base.GetUserIdentifier());
+                    
+                    //await CreateApplicationAudit(model);
+
+                    //var modelToReturn = application == null ? model : application;
+
+                    var data = new { Message = "Create" };
+                    return Ok(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("createQC", Name = "CreateQCApplication")]
+        public async Task<IActionResult> CreateQCApplication([FromBody] Application model)
+        {
+            try
+            {
+                var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
+
+                var npoProfile = await _npoProfileService.GetByNpoId(model.NpoId);
+                var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
+                if (servicesRendered == null)
+                {
+                    var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
+                    return Ok(data);
+                }
+
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
+
+                if (application != null)
+                {
+                  //  var data = new { Message = "Application already captured for the selected programme. Please go to 'Submissions' to access this application." };
+                    return Ok(application);
+                }
+                else
+                {
+                    await _applicationService.CreateApplication(model, base.GetUserIdentifier());
+
+                    await CreateApplicationAudit(model);
+
+                    var modelToReturn = application == null ? model : application;
+
+                    return Ok(modelToReturn);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPut(Name = "UpdateApplication")]
         public async Task<IActionResult> UpdateApplication([FromBody] Application model)
         {

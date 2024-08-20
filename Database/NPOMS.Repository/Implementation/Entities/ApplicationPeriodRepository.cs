@@ -42,7 +42,7 @@ namespace NPOMS.Repository.Implementation.Entities
                             .Include(x => x.SubProgrammeType)
                             .Include(x => x.FinancialYear)
 							.Include(x => x.ApplicationType)
-							.AsNoTracking()
+                            .AsNoTracking()
 							.FirstOrDefaultAsync();
 		}
 

@@ -49,21 +49,27 @@
                 [application]="application"
                 [(fundingApplicationDetails)]="fundingApplicationDetails">
             </app-view-document-upload>
-        </div>
+        </div>       
+    </div>
+    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.QC">
         <div *ngIf="application.isQuickCapture">
             <app-view-application-details 
                 [(activeStep)]="activeStep"
                 [application]="application"
                 [(fundingApplicationDetails)]="fundingApplicationDetails"
+                [programId]="application.applicationPeriod.programmeId" 
+                [subProgramId] = "application.applicationPeriod.subProgrammeId"
+                [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
                 [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
                 (getPlace)="places($event)"
                 (getSubPlace)=" subPlaces($event)">
             </app-view-application-details>
             <div style="height: 10px;"></div>
-            <app-qc-document-upload [(activeStep)]="activeStep"
+           <app-view-document-upload 
+                [(activeStep)]="activeStep"
                 [application]="application"
-                [isView]="true">
-            </app-qc-document-upload>
+                [(fundingApplicationDetails)]="fundingApplicationDetails">
+            </app-view-document-upload>
         </div>        
     </div>
 </div>

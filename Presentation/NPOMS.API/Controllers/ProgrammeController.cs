@@ -131,6 +131,21 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        //[HttpGet("delivery", Name = "GetProgrammeDeliveryArea")]
+        //public async Task<IActionResult> GetProgrammeDeliveryArea()
+        //{
+        //    try
+        //    {
+        //        var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId, npoProfileId);
+        //        return Ok(results);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside GetDeliveryDetailsByProgramId action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
         [HttpGet("delivery/selectedApplicationId/{selectedApplicationId}", Name = "GetDeliveryDetails")]
         public async Task<IActionResult> GetDeliveryDetails(int selectedApplicationId)
         {
@@ -138,6 +153,23 @@ namespace NPOMS.API.Controllers
             {
                 var npo = await _applicationService.GetApplicationById(selectedApplicationId);
                 var npoProfile = await _npoProfilService.GetByNpoId(npo.NpoId);
+                var results = await _programeDeliveryService.GetDeliveryDetails(npoProfile.Id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDeliveryDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        
+
+        [HttpGet("deliveryDetailQC/npoId/{npoId}", Name = "GetDeliveryDetailsQC")]
+        public async Task<IActionResult> GetDeliveryDetailsQC(int npoId)
+        {
+            try
+            {
+                var npoProfile = await _npoProfilService.GetByNpoId(npoId);
                 var results = await _programeDeliveryService.GetDeliveryDetails(npoProfile.Id);
                 return Ok(results);
             }

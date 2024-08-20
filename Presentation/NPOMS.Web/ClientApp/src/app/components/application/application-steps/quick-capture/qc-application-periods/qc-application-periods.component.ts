@@ -241,7 +241,7 @@ export class QcApplicationPeriodsComponent implements OnInit {
           this.setStatus(period);
         });
 
-        this.allApplicationPeriods = results;
+        this.allApplicationPeriods = results.filter(x => x.applicationTypeId === ApplicationTypeEnum.QC);
         this._spinner.hide();
       },
       (err) => {

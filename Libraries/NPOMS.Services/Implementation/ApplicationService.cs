@@ -523,8 +523,8 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
-		}
+            await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
+        }
 
 		public async Task DeleteApplicationById(int id, string userIdentifier)
 		{
@@ -630,8 +630,8 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			//model.CreatedUserId = loggedInUser.Id;
-			//model.CreatedDateTime = DateTime.Now;
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
 
 			await _projectInformationRepository.CreateEntity(model);
 		}
@@ -646,8 +646,8 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			//model.CreatedUserId = loggedInUser.Id;
-			//model.CreatedDateTime = DateTime.Now;
+			model.CreatedUserId = loggedInUser.Id;
+			model.CreatedDateTime = DateTime.Now;
 
 			model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId = model.ApplicationDetails.FundAppSDADetail.DistrictCouncil.Id;
 			model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId = model.ApplicationDetails.FundAppSDADetail.LocalMunicipality.Id;
@@ -674,8 +674,8 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId = model.ApplicationDetails.FundAppSDADetail.DistrictCouncil.Id;
-			model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId = model.ApplicationDetails.FundAppSDADetail.LocalMunicipality.Id;
+			model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId = model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId;
+			model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId = model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId;
 
 			model.ApplicationDetails.FundAppSDADetail.DistrictCouncil = null;
 			model.ApplicationDetails.FundAppSDADetail.LocalMunicipality = null;

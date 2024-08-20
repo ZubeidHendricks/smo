@@ -48,6 +48,20 @@ export class ApplicationService {
     return this._http.post<IApplication>(url, application, httpOptions);
   }
 
+  public validateBeforeCreateQCApplication(application: IApplication) {
+    // Set default value for financial year id as it would be null when createNew is true
+
+    const url = `${this._envUrl.urlAddress}/api/applications/validateNew`;
+    return this._http.post<IApplication>(url, application, httpOptions);
+  }
+
+  public createQCApplication(application: IApplication) {
+    // Set default value for financial year id as it would be null when createNew is true
+
+    const url = `${this._envUrl.urlAddress}/api/applications/createQC`;
+    return this._http.post<IApplication>(url, application, httpOptions);
+  }
+
   public updateApplication(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications`;
     return this._http.put<IApplication>(url, application, httpOptions);

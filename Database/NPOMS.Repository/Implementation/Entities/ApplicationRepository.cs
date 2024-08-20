@@ -82,6 +82,11 @@ namespace NPOMS.Repository.Implementation.Entities
             await UpdateAsync(oldEntity, model, true, currentUserId);
         }
 
+        public async Task UpdateEntityQC(Application model, int currentUserId)
+        {
+            await UpdateAsync(model, false, currentUserId);
+        }
+
         public async Task CreateNpoUserTracking(IEnumerable<NpoUserTracking> npoUserTrackings)
         {
             await this.RepositoryContext.NpoUserTrackings.AddRangeAsync(npoUserTrackings);
