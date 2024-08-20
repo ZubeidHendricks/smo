@@ -523,16 +523,8 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-			if(model.IsQuickCapture)
-			{
-                await _applicationRepository.UpdateEntityQC(model, loggedInUser.Id);
-            }
-			else
-			{
-                await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
-            }
-			
-		}
+            await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
+        }
 
 		public async Task DeleteApplicationById(int id, string userIdentifier)
 		{
