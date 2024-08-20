@@ -40,11 +40,12 @@
             [(fundingApplicationDetails)]="fundingApplicationDetails"
             [(npo)]="npo">
         </app-qc-application-details>
-        <app-qc-document-upload *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
+        <app-qc-document-upload-edit *ngIf="activeStep == QCStepsEnum.ApplicationDocument"
             [(activeStep)]="activeStep"
             [application]="application"
-            [isView]="false">            
-        </app-qc-document-upload>
+            [isView]="false"
+            [(applicationPeriod)]="applicationPeriod">            
+        </app-qc-document-upload-edit>
     </div>
     <div *ngIf = "this.qcFunded == 1">
     <app-create-quick-capture *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"

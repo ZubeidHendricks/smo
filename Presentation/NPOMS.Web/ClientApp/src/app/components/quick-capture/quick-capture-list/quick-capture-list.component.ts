@@ -180,73 +180,21 @@ export class QuickCaptureListComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
-
     if (this.bidCanContinue(status)) {
       this._spinner.show();
-      let data = this.npo;
-      data.contactInformation.forEach(item => {
-        item.titleId = item.title.id;
-        item.positionId = item.position.id;
-        item.genderId = item.gender ? item.gender.id : null;
-        item.raceId = item.race ? item.race.id : null;
-        item.languageId = item.language ? item.language.id : null;
-      });
-
-      this._npoRepo.createNpo(data).subscribe(
-        (resp) => {
-
           this.application.statusId = status;
-
-          this._applicationRepo.createApplication(this.application, true, null).subscribe(
+          this.application.isQuickCapture = true;
+          this.applicationPeriod = this.applicationPeriod;
+          this._applicationRepo.updateApplication(this.application).subscribe(
             (resp) => {
-
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.districtCouncil;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.localMunicipality;
-             //// this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.regions;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.sdas;
-
-              if (!this.fundingApplicationDetails.id) {
-
-                this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-                  (resp) => {
-                    this._spinner.hide();
-
-                    if (status === StatusEnum.Saved)
-                      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-                    if (status === StatusEnum.PendingReview)
-                      this._router.navigateByUrl('applications');
-                  },
-                  (err) => {
-                    this._loggerService.logException(err);
-                    this._spinner.hide();
-                  }
-                );
-              }
-              else {
-                this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-                  (resp) => {
-                    this._spinner.hide();
-
-                    if (status === StatusEnum.Saved)
-                      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-                    if (status === StatusEnum.PendingReview)
-                      this._router.navigateByUrl('applications');
-                  },
-                  (err) => {
-                    this._loggerService.logException(err);
-                    this._spinner.hide();
-                  }
-                );
-              }
-            },
-            (err) => {
-              this._loggerService.logException(err);
               this._spinner.hide();
-            }
-          );
-        },
+
+              if (status === StatusEnum.Saved)
+                this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+
+              if (status === StatusEnum.PendingReview)
+                this._router.navigateByUrl('applications');
+            },   
         (err) => {
           this._loggerService.logException(err);
           this._spinner.hide();
@@ -254,6 +202,80 @@ export class QuickCaptureListComponent implements OnInit {
       );
     }
   }
+
+  // private bidForm(status: StatusEnum) {
+
+  //   if (this.bidCanContinue(status)) {
+  //     this._spinner.show();
+  //     let data = this.npo;
+  //     data.contactInformation.forEach(item => {
+  //       item.titleId = item.title.id;
+  //       item.positionId = item.position.id;
+  //       item.genderId = item.gender ? item.gender.id : null;
+  //       item.raceId = item.race ? item.race.id : null;
+  //       item.languageId = item.language ? item.language.id : null;
+  //     });
+
+  //     this._npoRepo.createNpo(data).subscribe(
+  //       (resp) => {
+
+  //         this.application.statusId = status;
+
+  //         this._applicationRepo.createApplication(this.application, true, null).subscribe(
+  //           (resp) => {
+
+  //             this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.districtCouncil;
+  //             this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.localMunicipality;
+
+  //             if (!this.fundingApplicationDetails.id) {
+
+  //               this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
+  //                 (resp) => {
+  //                   this._spinner.hide();
+
+  //                   if (status === StatusEnum.Saved)
+  //                     this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+
+  //                   if (status === StatusEnum.PendingReview)
+  //                     this._router.navigateByUrl('applications');
+  //                 },
+  //                 (err) => {
+  //                   this._loggerService.logException(err);
+  //                   this._spinner.hide();
+  //                 }
+  //               );
+  //             }
+  //             else {
+  //               this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
+  //                 (resp) => {
+  //                   this._spinner.hide();
+
+  //                   if (status === StatusEnum.Saved)
+  //                     this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+
+  //                   if (status === StatusEnum.PendingReview)
+  //                     this._router.navigateByUrl('applications');
+  //                 },
+  //                 (err) => {
+  //                   this._loggerService.logException(err);
+  //                   this._spinner.hide();
+  //                 }
+  //               );
+  //             }
+  //           },
+  //           (err) => {
+  //             this._loggerService.logException(err);
+  //             this._spinner.hide();
+  //           }
+  //         );
+  //       },
+  //       (err) => {
+  //         this._loggerService.logException(err);
+  //         this._spinner.hide();
+  //       }
+  //     );
+  //   }
+  // }
 
   private bidCanContinue(status: StatusEnum) {
     this.validationErrors = [];
