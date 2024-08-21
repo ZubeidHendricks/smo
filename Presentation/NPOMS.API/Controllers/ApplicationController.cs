@@ -128,7 +128,7 @@ namespace NPOMS.API.Controllers
             {
                 var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
 
-                if (applicationPeriod.ApplicationTypeId == (int)ApplicationTypeEnum.FundingApplication)
+                if ((applicationPeriod.ApplicationTypeId == (int)ApplicationTypeEnum.FundingApplication) && (applicationPeriod.DepartmentId != (int)DepartmentEnum.DOH))
                 {
                     var npoProfile = await _npoProfileService.GetByNpoId(model.NpoId);
                     var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);

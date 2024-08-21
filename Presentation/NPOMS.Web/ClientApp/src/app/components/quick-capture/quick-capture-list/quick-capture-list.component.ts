@@ -104,8 +104,7 @@ export class QuickCaptureListComponent implements OnInit {
 
         if (!this.IsAuthorized(PermissionsEnum.AddApplication))
           this._router.navigate(['401']);
-       
-        if(this.profile.departments[0].name === 'Health')
+        if(this.profile.departments[0].name === 'Health and Wellness')
         {
           this.qCStepsFunded();
           this.qcFunded = 1;
@@ -327,15 +326,15 @@ export class QuickCaptureListComponent implements OnInit {
     return orgDetailsError;
   }
 
-  private validateApplication() {
-    let data = this.applicationPeriod;
-    let applicationError: string[] = [];
+  // private validateApplication() {
+  //   let data = this.applicationPeriod;
+  //   let applicationError: string[] = [];
 
-    if (!data)
-      applicationError.push("Please select a programme from the list provided");
+  //   if (!data)
+  //     applicationError.push("Please select a programme from the list provided");
 
-    return applicationError;
-  }
+  //   return applicationError;
+  // }
 
   private validateApplications() {
     let data = this.applicationPeriod;
@@ -375,9 +374,9 @@ export class QuickCaptureListComponent implements OnInit {
   }
 
   private qCStepsFunded() {
-    this.qcItemsFunded = [     
-      { label: 'Organisation Details' },  
-      { label: 'Applications' },        
+    this.qcItemsFunded = [   
+      { label: 'Applications' },    
+      { label: 'Organisation Details' },             
       { label: 'Application Detail' },
       { label: 'Objectives' },
       { label: 'Activities' },
@@ -453,39 +452,38 @@ export class QuickCaptureListComponent implements OnInit {
   public validateStepFunded(goToStep: number, currentStep: number) {
     if (goToStep > currentStep) {
       switch (currentStep) {
+        case QCStepsFundedEnum.Applications: {
+         
+          var applicationError = this.validateApplications();
+
+          if (orgDetailsError.length > 0 || applicationError.length > 0) {
+
+           if (applicationError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });           
+            break;
+          }
+
+          this.activeStep = goToStep;
+          break;
+        }
         case QCStepsFundedEnum.NpoCreate: {
-         var orgDetailsError = this.validateOrganisationDetails();
+        
+          var orgDetailsError = this.validateOrganisationDetails();
+          var orgDetailsError = this.validateOrganisationDetails();
 
           if (orgDetailsError.length > 0) {
             this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+
             this.organisationDetails.setValidated(true);
             break;
           }
 
           this.activeStep = goToStep;
           break;
-        }
-        case QCStepsFundedEnum.Applications: {
-          var orgDetailsError = this.validateOrganisationDetails();
-          var applicationError = this.validateApplications();
-
-          if (orgDetailsError.length > 0 || applicationError.length > 0) {
-
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
-
-            if (applicationError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
-           
-            break;
-          }
-
-          this.activeStep = goToStep;
-          break;
-        }
+        }      
         case QCStepsFundedEnum.ApplicationDetail: {
-          var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();
+          var orgDetailsError = this.validateOrganisationDetails();         
           var applicationDetailsError = this.validateApplicationDetails();
 
           if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
@@ -510,17 +508,17 @@ export class QuickCaptureListComponent implements OnInit {
           break;
         }
         case QCStepsFundedEnum.Activities: {
-          var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();
+          var orgDetailsError = this.validateOrganisationDetails();         
           var applicationDetailsError = this.validateApplicationDetails();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
-
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+          if (applicationError.length > 0 || orgDetailsError.length > 0 || applicationDetailsError.length > 0) {
 
             if (applicationError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
+           
+            if (orgDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
 
             if (applicationDetailsError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
