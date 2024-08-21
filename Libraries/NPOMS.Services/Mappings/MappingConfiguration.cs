@@ -47,13 +47,15 @@ namespace NPOMS.Services.Mappings
 				.ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
 				.ForMember(d => d.Name, op => op.MapFrom(s => s.Name))
 				.ForMember(d => d.SystemName, op => op.MapFrom(s => s.SystemName))
-				.ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
+				.ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive))
+                .ForMember(d => d.DepartmentCode, op => op.MapFrom(s => s.DepartmentCode));
 
 			CreateMap<RoleViewModel, Role>()
 				.ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
 				.ForMember(d => d.Name, op => op.MapFrom(s => s.Name))
 				.ForMember(d => d.SystemName, op => op.MapFrom(s => s.SystemName))
-				.ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
+				.ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive))
+                .ForMember(d => d.DepartmentCode, op => op.MapFrom(s => s.DepartmentCode));
 
 			CreateMap<Department, DepartmentViewModel>()
 				.ForMember(d => d.Id, op => op.MapFrom(s => s.Id))

@@ -402,7 +402,14 @@ export enum PermissionsEnum {
     /* Quick Capture*/
     ViewQC = "QC.View",
     EditQC = "QC.Edit",
-    DownloadQC = "QC.Download"
+    DownloadQC = "QC.Download",
+
+    /* Funding Capture */
+    UpdateFundingCapture = "FC.Update",
+    ViewFundingCapture = "FC.View",
+    ApproveFundingCapture = "FC.Approve",
+    DownloadFundingCapture = "FC.Download",
+    FundingCaptureOption = "FC.Option"
 }
 
 export enum ReportTypeEnum {

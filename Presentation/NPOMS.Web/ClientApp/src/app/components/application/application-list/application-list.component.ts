@@ -21,7 +21,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 export class ApplicationListComponent implements OnInit {
   displayDialog: boolean;
   displayReviewDialog: boolean;
-  
+
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -93,8 +93,6 @@ export class ApplicationListComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.ViewApplications))
           this._router.navigate(['401']);
 
-        console.log('ReviewApplication', this.IsAuthorized(PermissionsEnum.ReviewApplication));
-
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
         this.isMainReviewer = profile.roles.some(function (role) { return role.id === RoleEnum.MainReviewer });
@@ -127,7 +125,7 @@ export class ApplicationListComponent implements OnInit {
   }
 
   reviewers() {
-     this._applicationRepo.reviewers().subscribe(
+    this._applicationRepo.reviewers().subscribe(
       (results) => {
         this.reviewerlist = results;
       },
@@ -138,17 +136,17 @@ export class ApplicationListComponent implements OnInit {
     );
   }
 
-  btnSubmitReviewers(){
+  btnSubmitReviewers() {
     this.submitReviewers();
   }
 
   private submitReviewers() {
     const users = this.selectedreviewerlist.map(user => ({
-        fullName: user.fullName,
-        email: user.email,
-        id: user.id
+      fullName: user.fullName,
+      email: user.email,
+      id: user.id
     }));
-    
+
     this._applicationRepo.UpdateReviewers(Number(this.selectedApplication.id), users).subscribe(
       (results) => {
         this.displayReviewDialog = false;
@@ -159,7 +157,7 @@ export class ApplicationListComponent implements OnInit {
         this._spinner.hide();
       }
     );
-}
+  }
 
   submit() {
     this.UpdateInitiateScorecardValue();
@@ -167,11 +165,11 @@ export class ApplicationListComponent implements OnInit {
 
   private UpdateInitiateScorecardValue() {
     const users = this.selectedreviewerlist.map(user => ({
-        fullName: user.fullName,
-        email: user.email,
-        id: user.id
+      fullName: user.fullName,
+      email: user.email,
+      id: user.id
     }));
-    
+
     this._applicationRepo.UpdateInitiateScorecardValueAndEmail(Number(this.selectedApplication.id), users).subscribe(
       (results) => {
         this.displayDialog = false;
@@ -182,7 +180,7 @@ export class ApplicationListComponent implements OnInit {
         this._spinner.hide();
       }
     );
-}
+  }
 
 
   disableSubmit() {
@@ -196,7 +194,7 @@ export class ApplicationListComponent implements OnInit {
   private loadNpos() {
     this._npoRepo.getAllNpos(AccessStatusEnum.AllStatuses).subscribe(
       (results) => {
-        
+
         this.allNpos = results;
         this.loadApplications();
       },
@@ -210,35 +208,36 @@ export class ApplicationListComponent implements OnInit {
   private loadApplications() {
     this._applicationRepo.getAllApplications().subscribe(
       (results) => {
-
         results.forEach(application => {
           this.setStatus(application.applicationPeriod);
         });
 
         results.forEach(
           application => {
-           this.updateStatus(application.status, application.statusId, application.applicationPeriod.applicationType.name);     
+            this.updateStatus(application.status, application.statusId, application.applicationPeriod.applicationType.name);
           }
         )
 
         results.forEach(
           application => {
-           this.getRejectedInformation(application, application.id);     
+            this.getRejectedInformation(application, application.id);
           }
         )
 
         results.forEach(
           application => {
-           this.getSummarySubmissionStatus(application, application.id);     
+            this.getSummarySubmissionStatus(application, application.id);
           }
         )
-        
-        this.allApplications = results;       
-        this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
-        this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
-          && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && item.applicationPeriod.departmentId === 11});
-              
-        
+
+        this.allApplications = results;
+        this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA });
+        this.canShowOptionsNpo = this.allApplications.some(function (item) {
+          return item.statusId === StatusEnum.Approved
+            && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && item.applicationPeriod.departmentId === 11
+        });
+
+
         this.buildButtonItems();
         this.buildOptionItems();
 
@@ -263,25 +262,22 @@ export class ApplicationListComponent implements OnInit {
   }
 
   private updateStatus(status: IStatus, statusId: number, appType: string) {
-    if(appType != 'Service Provision')
-    {
-      if(statusId === 6 || statusId === 13 || statusId === 22)
-      {
+    if (appType != 'Service Provision') {
+      if (statusId === 6 || statusId === 13 || statusId === 22) {
         status.name = 'In Progress';
       }
-    }   
+    }
   }
 
   private getRejectedInformation(application: IApplication, applicationId: number) {
-   if(this._response !== undefined)
-   {
-    this._response = this._responses?.filter(x => x.createdUserId === this.profile.id && x.rejectionFlag === 1 && x.fundingApplicationId === applicationId);
-    application.rejectedScorecard = this._responses.length;
-   }    
-   else{
-    application.rejectedScorecard = 0;
-   }
-   
+    if (this._response !== undefined) {
+      this._response = this._responses?.filter(x => x.createdUserId === this.profile.id && x.rejectionFlag === 1 && x.fundingApplicationId === applicationId);
+      application.rejectedScorecard = this._responses.length;
+    }
+    else {
+      application.rejectedScorecard = 0;
+    }
+
   }
 
   private getAllResponses() {
@@ -301,7 +297,7 @@ export class ApplicationListComponent implements OnInit {
     if (this.capturedResponses.length > 0) {
       application.submittedScorecard = this.capturedResponses.length
     }
-    else{
+    else {
       application.submittedScorecard = 0;
     }
   }
@@ -330,10 +326,17 @@ export class ApplicationListComponent implements OnInit {
     this.buttonItems = [];
 
     if (this.profile) {
-      this.buttonItems = [{
-        label: 'Actions',
-        items: []
-      }];
+      this.buttonItems = [
+        {
+          label: 'Actions',
+          items: []
+        },
+        {
+          label: 'Funding Capture',
+          items: [],
+          visible: false
+        }
+      ];
 
       /* Service Provision Actions */
       if (this.IsAuthorized(PermissionsEnum.EditApplication)) {
@@ -522,7 +525,7 @@ export class ApplicationListComponent implements OnInit {
           target: 'Funded Npo',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('quick-captures-editList-doh/edit/' + this.selectedApplication.id );
+            this._router.navigateByUrl('quick-captures-editList-doh/edit/' + this.selectedApplication.id);
           }
         });
       }
@@ -582,6 +585,46 @@ export class ApplicationListComponent implements OnInit {
           }
         });
       }
+
+      if (this.IsAuthorized(PermissionsEnum.UpdateFundingCapture)) {
+        this.buttonItems[1].items.push({
+          label: 'Update',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            alert('update funding capture');
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveFundingCapture)) {
+        this.buttonItems[1].items.push({
+          label: 'Approve',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            alert('approve funding capture');
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewFundingCapture)) {
+        this.buttonItems[1].items.push({
+          label: 'View',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            alert('view funding capture');
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.DownloadFundingCapture)) {
+        this.buttonItems[1].items.push({
+          label: 'Download',
+          icon: 'fa fa-download',
+          command: () => {
+            alert('download funding capture');
+          }
+        });
+      }
     }
   }
 
@@ -609,66 +652,55 @@ export class ApplicationListComponent implements OnInit {
     });
   }
 
-  public updateOptionItems()
-  {
-     // Show all options
-     this.optionItems[0].items.forEach(option => {
+  public updateOptionItems() {
+    // Show all options
+    this.optionItems[0].items.forEach(option => {
       option.visible = true;
     });
 
-    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11)
-    {
-      this.optionItemExists('Manage Indicators');  
-      this.optionItemExists('Capture Scorecard');  
-      this.optionItemExists('Review Score Card');  
-      this.optionItemExists('Initiate Score Card');  
-      this.optionItemExists('Conclude Scorecard');  
-      this.optionItemExists('Summary');  
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11) {
+      this.optionItemExists('Manage Indicators');
+      this.optionItemExists('Capture Scorecard');
+      this.optionItemExists('Review Score Card');
+      this.optionItemExists('Initiate Score Card');
+      this.optionItemExists('Conclude Scorecard');
+      this.optionItemExists('Summary');
     }
-    else{
-      this.optionItemExists('Adjudicate Funded Npo');  
-      this.optionItemExists('Review Adjudicated Funded Npo'); 
-      this.optionItemExists('Businessplan Indicators'); 
-      this.optionItemExists('BusinessPlan Summary');   
+    else {
+      this.optionItemExists('Adjudicate Funded Npo');
+      this.optionItemExists('Review Adjudicated Funded Npo');
+      this.optionItemExists('Businessplan Indicators');
+      this.optionItemExists('BusinessPlan Summary');
     }
 
     if (this.selectedApplication.npoUserTrackings.length > 0) {
-      if (!this.selectedApplication.npoUserTrackings.some(item => item.userId === this.profile.id)) 
-      {
-          this.optionItemExists('Capture Scorecard'); 
-      }  
+      if (!this.selectedApplication.npoUserTrackings.some(item => item.userId === this.profile.id)) {
+        this.optionItemExists('Capture Scorecard');
+      }
     }
 
-    if(this.selectedApplication.initiateScorecard === 1)
-    {
-      this.optionItemExists('Initiate Score Card');      
-    } 
-     
-    if(this.selectedApplication.closeScorecard === 0)
-    {
+    if (this.selectedApplication.initiateScorecard === 1) {
+      this.optionItemExists('Initiate Score Card');
+    }
+
+    if (this.selectedApplication.closeScorecard === 0) {
       this.optionItemExists('Conclude Scorecard');
-    }  
-    
-    if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount > 0)
-    { 
-      if(this.selectedApplication.rejectedScorecard === 0)
-      {
+    }
+
+    if (this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount > 0) {
+      if (this.selectedApplication.rejectedScorecard === 0) {
         this.optionItemExists('Capture Scorecard');
       }
     }
 
-    if(this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount === 0)
-    {
-      if(this.selectedApplication.rejectedScorecard === 0)
-      {
+    if (this.selectedApplication.initiateScorecard === 0 && this.selectedApplication.scorecardCount === 0) {
+      if (this.selectedApplication.rejectedScorecard === 0) {
         this.optionItemExists('Capture Scorecard');
       }
     }
 
-    if((this.profile.roles[0].id !== Number(RoleEnum.SystemAdmin)) || (this.profile.roles[0].id !== Number(RoleEnum.SystemAdmin)))
-    {
-      if(this.selectedApplication.submittedScorecard === 0)
-      {
+    if ((this.profile.roles[0].id !== Number(RoleEnum.SystemAdmin)) || (this.profile.roles[0].id !== Number(RoleEnum.SystemAdmin))) {
+      if (this.selectedApplication.submittedScorecard === 0) {
         this.optionItemExists('Review Score Card');
       }
     }
@@ -698,27 +730,27 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
-      
+
+      // Hide the funding capture actions
+      this.toggleVisibility('Funding Capture');
+
       if (this.selectedApplication.npoWorkPlanReviewerTrackings.length > 0) {
-        if (!this.selectedApplication.npoWorkPlanReviewerTrackings.some(item => item.userId === this.profile.id)) 
-        {
-          if(!this.isMainReviewer)
-            {
-              this.buttonItemExists('Review Application', 'Service Provision');
-            }
-        }  
+        if (!this.selectedApplication.npoWorkPlanReviewerTrackings.some(item => item.userId === this.profile.id)) {
+          if (!this.isMainReviewer) {
+            this.buttonItemExists('Review Application', 'Service Provision');
+          }
+        }
       }
 
       if (this.selectedApplication.npoWorkPlanApproverTrackings.length > 0) {
-        if (!this.selectedApplication.npoWorkPlanApproverTrackings.some(item => item.userId === this.profile.id)) 
-        {
+        if (!this.selectedApplication.npoWorkPlanApproverTrackings.some(item => item.userId === this.profile.id)) {
           this.buttonItemExists('Approve Application', 'Service Provision');
-        }  
+        }
       }
 
       if (this.selectedApplication.statusId !== StatusEnum.PendingReview) {
         this.buttonItemExists('Select Reviewers', 'Work Plan');
-       }
+      }
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
@@ -765,7 +797,7 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Upload SLA', 'Service Provision');
           break;
         }
-      }
+      }      
     }
 
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA || (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId !== 11)) {
@@ -856,6 +888,13 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
+
+          if (this.capturedResponses && this.selectedApplication) {
+            var isRecommended = this.capturedResponses.filter(x => x.fundingApplicationId === this.selectedApplication.id && x.statusId === StatusEnum.Approved && (x.selectedStatus === StatusEnum.Recommended || x.selectedStatus === StatusEnum.StronglyRecommended) && x.isActive).length > 0 ? true : false;
+            var isVisible = this.IsAuthorized(PermissionsEnum.FundingCaptureOption) && isRecommended ? true : false
+            this.toggleVisibility('Funding Capture', isVisible);
+          }
+
           break;
         }
         case StatusEnum.NonCompliance: {
@@ -901,32 +940,35 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Download Workplan', 'Workplan');
       this.buttonItemExists('Select Reviewers', 'Work Plan');
 
+      // Hide the funding capture actions
+      this.toggleVisibility('Funding Capture');
+
       switch (this.selectedApplication.statusId) {
-          case StatusEnum.PendingReview: {
-            this.buttonItemExists('Delete Application', 'Funded Npo');
-            this.buttonItemExists('Edit Application', 'Funded Npo');
+        case StatusEnum.PendingReview: {
+          this.buttonItemExists('Delete Application', 'Funded Npo');
+          this.buttonItemExists('Edit Application', 'Funded Npo');
           break;
         }
       }
 
       switch (this.selectedApplication.statusId) {
         case StatusEnum.Saved:
-          case StatusEnum.Approved:
-            case StatusEnum.Declined: {
-          this.buttonItemExists('Review Application', 'Funded Npo');
-        break;
-      }
-   }
-
-   switch (this.selectedApplication.statusId) {
-      case StatusEnum.Approved:
+        case StatusEnum.Approved:
         case StatusEnum.Declined: {
-      this.buttonItemExists('Edit Application', 'Funded Npo');
-     break;
-   }
- }
+          this.buttonItemExists('Review Application', 'Funded Npo');
+          break;
+        }
+      }
 
-  }
+      switch (this.selectedApplication.statusId) {
+        case StatusEnum.Approved:
+        case StatusEnum.Declined: {
+          this.buttonItemExists('Edit Application', 'Funded Npo');
+          break;
+        }
+      }
+
+    }
   }
 
   private buttonItemExists(label: string, target: string) {
@@ -936,11 +978,20 @@ export class ApplicationListComponent implements OnInit {
       buttonItem.visible = false;
   }
 
+  // This will either hide or show the Funding Capture actions
+  private toggleVisibility(label: string, isVisible = false) {
+    let buttonItem = this.buttonItems.find(x => x.label === label);
+
+    if (buttonItem) {
+      buttonItem.visible = isVisible;
+    }
+  }
+
   private optionItemExists(label: string) {
     let optionItem = this.optionItems[0].items.find(x => x.label === label);
 
     if (optionItem)
-    optionItem.visible = false;
+      optionItem.visible = false;
   }
 
   private buildOptionItems() {
@@ -994,13 +1045,13 @@ export class ApplicationListComponent implements OnInit {
       }
 
       if (this.IsAuthorized(PermissionsEnum.InitiateScorecard)) {
-          this.optionItems[0].items.push({
-            label: 'Initiate Score Card',
-            icon: 'fa fa-envelope-open-o',
-            command: () => {
-              this.displayDialog = true;
-            }
-          });
+        this.optionItems[0].items.push({
+          label: 'Initiate Score Card',
+          icon: 'fa fa-envelope-open-o',
+          command: () => {
+            this.displayDialog = true;
+          }
+        });
       }
 
       if (this.IsAuthorized(PermissionsEnum.CloseScorecard)) {

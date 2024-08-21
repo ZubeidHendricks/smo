@@ -159,6 +159,7 @@ export interface IRole {
     systemName: string,
     isActive: boolean;
     tempId: string; // generated client side
+    departmentCode: string;
 }
 
 export interface IUser {
