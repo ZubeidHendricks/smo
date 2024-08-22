@@ -171,7 +171,7 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var applications = await _applicationRepository.GetEntities();
-			var results = applications.Where(x => !x.StatusId.Equals((int)StatusEnum.New));
+			var results = applications; //.Where(x => !x.StatusId.Equals((int)StatusEnum.New));
 
             var departmentIds = await _departmentRepository.GetDepartmentIdOfLogggedInUserAsync(loggedInUser.Id);
 

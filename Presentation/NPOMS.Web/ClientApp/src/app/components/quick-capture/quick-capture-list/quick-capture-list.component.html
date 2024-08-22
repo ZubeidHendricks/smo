@@ -48,13 +48,13 @@
         </app-qc-document-upload-edit>
     </div>
     <div *ngIf = "this.qcFunded == 1">
-    <app-qc-application-periods *ngIf="activeStep == QCStepsFundedEnum.Applications"
+    <app-qc-application-periods-doh *ngIf="activeStep == QCStepsFundedEnum.Applications"
         [(activeStep)]="activeStep"
         [npo]="npo"
         [(applicationPeriod)]="applicationPeriod"
         [(application)]="application"
         [isEdit]="false">
-    </app-qc-application-periods> 
+    </app-qc-application-periods-doh> 
     <app-create-quick-capture *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"
         [(activeStep)]="activeStep"
         [(npo)]="npo">

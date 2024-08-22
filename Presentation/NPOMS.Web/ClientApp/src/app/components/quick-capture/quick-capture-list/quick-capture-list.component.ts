@@ -113,7 +113,6 @@ export class QuickCaptureListComponent implements OnInit {
           this.qCSteps();
           this.qcFunded = 0;
         }
-
         this.buildMenu();
       }
     });

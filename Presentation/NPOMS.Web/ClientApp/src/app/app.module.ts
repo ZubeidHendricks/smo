@@ -147,6 +147,8 @@ import { QcApplicationDetailsComponent } from './components/application/applicat
 import { QcDocumentUploadComponent } from './components/application/application-steps/quick-capture/qc-document-upload/qc-document-upload.component';
 import { QcFundedDocumentUploadComponent } from './components/application/application-steps/quick-capture/qc-funded-document-upload/qc-funded-document-upload.component';
 import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
+import { QcApplicationPeriodsDohComponent } from './components/application/application-steps/quick-capture/qc-application-periods-doh/qc-application-periods-doh.component';
+import { QcApplicationPeriodsDohViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-periods-doh-view/qc-application-periods-doh-view.component';
 import { QcApplicationDetailComponent } from './components/application/application-steps/quick-capture/qc-application-detail/qc-application-detail.component';
 import { QCActivitiesComponent } from './components/application/application-steps/quick-capture/qc-activities/qc-activities.component';
 import { QcObjectivesComponent } from './components/application/application-steps/quick-capture/qc-objectives/qc-objectives.component';
@@ -173,7 +175,7 @@ import { QuickCaptureEditListComponent } from './components/quick-capture/quick-
 import { EditQuickCaptureDohListComponent } from './components/quick-capture/edit-quick-capture-doh-list/edit-quick-capture-doh-list.component';
 import { ReviewQuickCaptureDohComponent } from './components/quick-capture/review-quick-capture-doh/review-quick-capture-doh.component';
 import { ViewQuickCaptureDohComponent } from './components/quick-capture/view-quick-capture-doh/view-quick-capture-doh.component';
-import{DownloadQuickCaptureDohComponent} from './components/quick-capture/download-quick-capture-doh/download-quick-capture-doh.component';
+import { DownloadQuickCaptureDohComponent} from './components/quick-capture/download-quick-capture-doh/download-quick-capture-doh.component';
 import { QcApplicationDetailsEditComponent } from './components/application/application-steps/quick-capture/qc-application-details-edit/qc-application-details-edit.component';
 import { QcDocumentUploadEditComponent } from './components/application/application-steps/quick-capture/qc-document-upload-edit/qc-document-upload-edit.component';
 import { ScorecardComponent } from './components/application/scorecard/scorecard.component';
@@ -384,7 +386,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ReviewAdjudicatedNpoComponent,
     BudgetSummaryComponent,
     UploadBudgetComponent,
-    DownloadWorkplanComponent
+    DownloadWorkplanComponent,
+    QcApplicationPeriodsDohComponent,
+    QcApplicationPeriodsDohViewComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

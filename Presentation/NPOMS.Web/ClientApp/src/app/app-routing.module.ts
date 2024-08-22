@@ -79,6 +79,8 @@ import { CreateQuickCaptureComponent } from './components/quick-capture/create-q
 import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick-capture/edit-quick-capture.component';
 import { ApplicationDetailsComponent } from './components/application/application-steps/funding-application/application-details/application-details.component';
 import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
+import { QcApplicationPeriodsDohComponent } from './components/application/application-steps/quick-capture/qc-application-periods-doh/qc-application-periods-doh.component';
+import { QcApplicationPeriodsDohViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-periods-doh-view/qc-application-periods-doh-view.component';
 
 import { QuestionComponent } from './components/admin/utilities/question/question.component';
 import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
@@ -150,6 +152,7 @@ const routes: Routes = [
   { path: 'applications', component: ApplicationListComponent },
   { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },
   { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
+  { path: 'qcOpenApplicationDohList', component: QcApplicationPeriodsDohComponent },
 
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },

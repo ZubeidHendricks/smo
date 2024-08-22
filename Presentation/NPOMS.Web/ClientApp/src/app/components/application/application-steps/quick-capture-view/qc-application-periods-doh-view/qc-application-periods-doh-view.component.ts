@@ -14,11 +14,11 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-qc-application-periods-view',
-  templateUrl: './qc-application-periods-view.component.html',
-  styleUrls: ['./qc-application-periods-view.component.css']
+  selector: 'app-qc-application-periods-doh-view',
+  templateUrl: './qc-application-periods-doh-view.component.html',
+  styleUrls: ['./qc-application-periods-doh-view.component.css']
 })
-export class QcApplicationPeriodsViewComponent implements OnInit {
+export class QcApplicationPeriodsDohViewComponent implements OnInit {
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
@@ -243,7 +243,7 @@ export class QcApplicationPeriodsViewComponent implements OnInit {
           this.setStatus(period);
         });
 
-        this.allApplicationPeriods = results.filter(x => x.applicationTypeId === ApplicationTypeEnum.QC);
+        this.allApplicationPeriods = results.filter(x => x.applicationTypeId === ApplicationTypeEnum.BP);;
         this._spinner.hide();
       },
       (err) => {
