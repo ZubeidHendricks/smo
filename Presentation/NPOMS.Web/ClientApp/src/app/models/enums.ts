@@ -246,6 +246,7 @@ export enum PermissionsEnum {
     ViewDashboardMenu = "TN.VDM",
     ViewTrainingMenu = "TN.VTM",
     ViewFundingMenu = "TN.VFM",
+    ViewFundingCaptureMenu = "TN.VFCM",
 
     /* USER ADMINISTRATION */
     AddUsers = "UA.AU",
@@ -405,11 +406,12 @@ export enum PermissionsEnum {
     DownloadQC = "QC.Download",
 
     /* Funding Capture */
-    UpdateFundingCapture = "FC.Update",
+    AddFundingCapture = "FC.Add",
+    EditFundingCapture = "FC.Edit",
     ViewFundingCapture = "FC.View",
     ApproveFundingCapture = "FC.Approve",
     DownloadFundingCapture = "FC.Download",
-    FundingCaptureOption = "FC.Option"
+    ShowFundingCaptureActions = "FC.SFCA"
 }
 
 export enum ReportTypeEnum {
@@ -618,4 +620,12 @@ export enum RecipientEntityEnum {
     Objective = 'Objective',
     SubRecipient = 'SubRecipient',
     SubSubRecipient = 'SubSubRecipient'
+}
+
+export enum FundingCaptureStepsEnum {
+    Funding = 0,
+    SDA = 1,
+    PaymentSchedule = 2,
+    BankDetail = 3,
+    Document = 4
 }

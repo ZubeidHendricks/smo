@@ -33,6 +33,11 @@ namespace NPOMS.Repository.Implementation.Entities
 							.Where(x => x.IsActive).OrderBy(x => x.Name).AsNoTracking().ToListAsync();
 		}
 
+        public async Task<IEnumerable<Npo>> GetEntitiesWithoutDetails()
+        {
+            return await FindAll().Where(x => x.IsActive).OrderBy(x => x.Name).AsNoTracking().ToListAsync();
+        }
+
         public async Task<IEnumerable<Npo>> GetQuickCapturers()
         {
             return await FindAll().Include(x => x.OrganisationType)

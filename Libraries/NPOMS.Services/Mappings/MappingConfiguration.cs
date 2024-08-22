@@ -2,6 +2,7 @@ using AutoMapper;
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
+using NPOMS.Domain.FundingManagement;
 using NPOMS.Domain.Mapping;
 using NPOMS.Services.Models;
 using System.Security.Cryptography;
@@ -425,6 +426,72 @@ namespace NPOMS.Services.Mappings
 
 
             /**************************************************END OF BID PROFILE**************************************/
+
+
+            #region Funding Management
+
+            CreateMap<Npo, NpoViewModel>()
+                .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
+                .ForMember(d => d.RefNo, op => op.MapFrom(s => s.RefNo))
+                .ForMember(d => d.Name, op => op.MapFrom(s => s.Name))
+                .ForMember(d => d.CCode, op => op.MapFrom(s => s.CCode))
+                .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive))
+                .ForMember(d => d.FundingCaptureViewModels, op => op.Ignore());
+
+            CreateMap<FundingCapture, FundingCaptureViewModel>()
+                .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
+                .ForMember(d => d.RefNo, op => op.MapFrom(s => s.RefNo))
+                .ForMember(d => d.NpoId, op => op.MapFrom(s => s.NpoId))
+                .ForMember(d => d.FinancialYearId, op => op.MapFrom(s => s.FinancialYearId))
+                .ForMember(d => d.FinancialYearName, op => op.MapFrom(s => s.FinancialYear.Name))
+                .ForMember(d => d.StatusId, op => op.MapFrom(s => s.StatusId))
+                .ForMember(d => d.StatusName, op => op.MapFrom(s => s.Status.Name))
+                .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
+
+            CreateMap<FundingDetail, FundingDetailViewModel>()
+                .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
+                .ForMember(d => d.FundingCaptureId, op => op.MapFrom(s => s.FundingCaptureId))
+                .ForMember(d => d.FinancialYearId, op => op.MapFrom(s => s.FinancialYearId))
+                .ForMember(d => d.FinancialYearName, op => op.MapFrom(s => s.FinancialYear.Name))
+                .ForMember(d => d.StartDate, op => op.MapFrom(s => s.StartDate))
+                .ForMember(d => d.FundingTypeId, op => op.MapFrom(s => s.FundingTypeId))
+                .ForMember(d => d.FundingTypeName, op => op.MapFrom(s => s.FundingType.Name))
+                .ForMember(d => d.FrequencyId, op => op.MapFrom(s => s.FrequencyId))
+                .ForMember(d => d.FrequencyName, op => op.MapFrom(s => s.Frequency.Name))
+                .ForMember(d => d.AllowVariableFunding, op => op.MapFrom(s => s.AllowVariableFunding))
+                .ForMember(d => d.AllowClaims, op => op.MapFrom(s => s.AllowClaims))
+                .ForMember(d => d.ProgrammeId, op => op.MapFrom(s => s.ProgrammeId))
+                .ForMember(d => d.ProgrammeName, op => op.MapFrom(s => s.Programme.Name))
+                .ForMember(d => d.SubProgrammeId, op => op.MapFrom(s => s.SubProgrammeId))
+                .ForMember(d => d.SubProgrammeName, op => op.MapFrom(s => s.SubProgramme.Name))
+                .ForMember(d => d.SubProgrammeTypeId, op => op.MapFrom(s => s.SubProgrammeTypeId))
+                .ForMember(d => d.SubProgrammeTypeName, op => op.MapFrom(s => s.SubProgrammeType.Name))
+                .ForMember(d => d.AmountAwarded, op => op.MapFrom(s => s.AmountAwarded))
+                .ForMember(d => d.CalculationTypeId, op => op.MapFrom(s => s.CalculationTypeId))
+                .ForMember(d => d.CalculationTypeName, op => op.MapFrom(s => s.CalculationType.Name))
+                .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
+
+            CreateMap<SDA, SDAViewModel>()
+                .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
+                .ForMember(d => d.FundingCaptureId, op => op.MapFrom(s => s.FundingCaptureId))
+                .ForMember(d => d.ServiceDeliveryAreaId, op => op.MapFrom(s => s.ServiceDeliveryAreaId))
+                .ForMember(d => d.PlaceId, op => op.MapFrom(s => s.PlaceId))
+                .ForMember(d => d.PlaceName, op => op.MapFrom(s => s.Place.Name))
+                .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
+
+            CreateMap<Domain.FundingManagement.BankDetail, BankDetailViewModel>()
+                .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
+                .ForMember(d => d.FundingCaptureId, op => op.MapFrom(s => s.FundingCaptureId))
+                .ForMember(d => d.ProgrammeBankDetailId, op => op.MapFrom(s => s.ProgrammeBankDetailId))
+                .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
+
+            CreateMap<Document, DocumentViewModel>()
+                .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
+                .ForMember(d => d.FundingCaptureId, op => op.MapFrom(s => s.FundingCaptureId))
+                .ForMember(d => d.TPALink, op => op.MapFrom(s => s.TPALink))
+                .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
+
+            #endregion
         }
     }
 }

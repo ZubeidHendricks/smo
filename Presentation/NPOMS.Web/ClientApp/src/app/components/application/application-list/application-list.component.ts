@@ -330,11 +330,6 @@ export class ApplicationListComponent implements OnInit {
         {
           label: 'Actions',
           items: []
-        },
-        {
-          label: 'Funding Capture',
-          items: [],
-          visible: false
         }
       ];
 
@@ -585,46 +580,6 @@ export class ApplicationListComponent implements OnInit {
           }
         });
       }
-
-      if (this.IsAuthorized(PermissionsEnum.UpdateFundingCapture)) {
-        this.buttonItems[1].items.push({
-          label: 'Update',
-          icon: 'fa fa-pencil-square-o',
-          command: () => {
-            alert('update funding capture');
-          }
-        });
-      }
-
-      if (this.IsAuthorized(PermissionsEnum.ApproveFundingCapture)) {
-        this.buttonItems[1].items.push({
-          label: 'Approve',
-          icon: 'fa fa-pencil-square-o',
-          command: () => {
-            alert('approve funding capture');
-          }
-        });
-      }
-
-      if (this.IsAuthorized(PermissionsEnum.ViewFundingCapture)) {
-        this.buttonItems[1].items.push({
-          label: 'View',
-          icon: 'fa fa-file-text-o',
-          command: () => {
-            alert('view funding capture');
-          }
-        });
-      }
-
-      if (this.IsAuthorized(PermissionsEnum.DownloadFundingCapture)) {
-        this.buttonItems[1].items.push({
-          label: 'Download',
-          icon: 'fa fa-download',
-          command: () => {
-            alert('download funding capture');
-          }
-        });
-      }
     }
   }
 
@@ -730,9 +685,6 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
-
-      // Hide the funding capture actions
-      this.toggleVisibility('Funding Capture');
 
       if (this.selectedApplication.npoWorkPlanReviewerTrackings.length > 0) {
         if (!this.selectedApplication.npoWorkPlanReviewerTrackings.some(item => item.userId === this.profile.id)) {
@@ -888,13 +840,6 @@ export class ApplicationListComponent implements OnInit {
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
           this.buttonItemExists('Evaluate Application', 'Funding Application');
           this.buttonItemExists('Approve Application', 'Funding Application');
-
-          if (this.capturedResponses && this.selectedApplication) {
-            var isRecommended = this.capturedResponses.filter(x => x.fundingApplicationId === this.selectedApplication.id && x.statusId === StatusEnum.Approved && (x.selectedStatus === StatusEnum.Recommended || x.selectedStatus === StatusEnum.StronglyRecommended) && x.isActive).length > 0 ? true : false;
-            var isVisible = this.IsAuthorized(PermissionsEnum.FundingCaptureOption) && isRecommended ? true : false
-            this.toggleVisibility('Funding Capture', isVisible);
-          }
-
           break;
         }
         case StatusEnum.NonCompliance: {
@@ -940,9 +885,6 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Download Workplan', 'Workplan');
       this.buttonItemExists('Select Reviewers', 'Work Plan');
 
-      // Hide the funding capture actions
-      this.toggleVisibility('Funding Capture');
-
       switch (this.selectedApplication.statusId) {
         case StatusEnum.PendingReview: {
           this.buttonItemExists('Delete Application', 'Funded Npo');
@@ -976,15 +918,6 @@ export class ApplicationListComponent implements OnInit {
 
     if (buttonItem)
       buttonItem.visible = false;
-  }
-
-  // This will either hide or show the Funding Capture actions
-  private toggleVisibility(label: string, isVisible = false) {
-    let buttonItem = this.buttonItems.find(x => x.label === label);
-
-    if (buttonItem) {
-      buttonItem.visible = isVisible;
-    }
   }
 
   private optionItemExists(label: string) {

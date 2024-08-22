@@ -111,6 +111,11 @@ import { QcObjectivesViewComponent } from './components/application/application-
 import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
 import { UploadBudgetComponent } from './components/admin/budgets/upload-budget/upload-budget.component';
 import { DownloadWorkplanComponent } from './components/application/download-workplan/download-workplan.component';
+import { ApproveFundingCaptureComponent } from './components/funding-capture/approve-funding-capture/approve-funding-capture.component';
+import { ViewFundingCaptureComponent } from './components/funding-capture/view-funding-capture/view-funding-capture.component';
+import { DownloadFundingCaptureComponent } from './components/funding-capture/download-funding-capture/download-funding-capture.component';
+import { FundingCaptureListComponent } from './components/funding-capture/funding-capture-list/funding-capture-list.component';
+import { CreateFundingCaptureComponent } from './components/funding-capture/create-funding-capture/create-funding-capture.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -246,6 +251,13 @@ const routes: Routes = [
 
   // Payment Schedule
   { path: 'admin/payment-schedule', component: PaymentSchedulesComponent },
+
+  // Funding Capture
+  { path: 'funding-capture', component: FundingCaptureListComponent },
+  { path: 'funding-capture/create/:npoId', component: CreateFundingCaptureComponent },
+  // { path: 'funding-capture/approve/:id', component: ApproveFundingCaptureComponent },
+  // { path: 'funding-capture/view/:id', component: ViewFundingCaptureComponent },
+  // { path: 'funding-capture/download/:id', component: DownloadFundingCaptureComponent }
 ];
 
 @NgModule({

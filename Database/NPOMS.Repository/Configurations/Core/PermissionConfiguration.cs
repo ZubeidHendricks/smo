@@ -887,37 +887,51 @@ namespace NPOMS.Repository.Configurations.Core
                 new Permission
                 {
                     Id = 126,
-                    Name = "Update Funding Capture",
-                    SystemName = "FC.Update",
+                    Name = "Add Funding Capture",
+                    SystemName = "FC.Add",
                     CategoryName = "Funding Capture"
                 },
                 new Permission
                 {
                     Id = 127,
+                    Name = "Edit Funding Capture",
+                    SystemName = "FC.Edit",
+                    CategoryName = "Funding Capture"
+                },
+                new Permission
+                {
+                    Id = 128,
                     Name = "View Funding Capture",
                     SystemName = "FC.View",
                     CategoryName = "Funding Capture"
                 },
                 new Permission
                 {
-                    Id = 128,
+                    Id = 129,
                     Name = "Approve Funding Capture",
                     SystemName = "FC.Approve",
                     CategoryName = "Funding Capture"
                 },
                 new Permission
                 {
-                    Id = 129,
+                    Id = 130,
                     Name = "Download Funding Capture",
                     SystemName = "FC.Download",
                     CategoryName = "Funding Capture"
                 },
                 new Permission
                 {
-                    Id = 130,
-                    Name = "View Funding Capture Options (actions)",
-                    SystemName = "FC.Option",
+                    Id = 131,
+                    Name = "Show Funding Capture Action Buttons",
+                    SystemName = "FC.SFCA",
                     CategoryName = "Funding Capture"
+                },
+                new Permission
+                {
+                    Id = 132,
+                    Name = "View Funding Capture Menu",
+                    SystemName = "TN.VFCM",
+                    CategoryName = "Top Navigation"
                 }
             );
         }

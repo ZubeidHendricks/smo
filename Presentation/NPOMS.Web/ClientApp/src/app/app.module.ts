@@ -196,6 +196,18 @@ import { QcNpoDetailsViewComponent } from './components/application/application-
 import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
 import { UploadBudgetComponent } from './components/admin/budgets/upload-budget/upload-budget.component';
 import { DownloadWorkplanComponent } from './components/application/download-workplan/download-workplan.component';
+import { ApproveFundingCaptureComponent } from './components/funding-capture/approve-funding-capture/approve-funding-capture.component';
+import { ViewFundingCaptureComponent } from './components/funding-capture/view-funding-capture/view-funding-capture.component';
+import { DownloadFundingCaptureComponent } from './components/funding-capture/download-funding-capture/download-funding-capture.component';
+import { FCSDAComponent } from './components/funding-capture/fc-steps/fc-sda/fc-sda.component';
+import { FCPaymentScheduleComponent } from './components/funding-capture/fc-steps/fc-payment-schedule/fc-payment-schedule.component';
+import { FCBankDetailComponent } from './components/funding-capture/fc-steps/fc-bank-detail/fc-bank-detail.component';
+import { FCDocumentComponent } from './components/funding-capture/fc-steps/fc-document/fc-document.component';
+import { FundingCaptureListComponent } from './components/funding-capture/funding-capture-list/funding-capture-list.component';
+import { CreateFundingCaptureComponent } from './components/funding-capture/create-funding-capture/create-funding-capture.component';
+import { EditFundingCaptureComponent } from './components/funding-capture/edit-funding-capture/edit-funding-capture.component';
+import { FCFundingDetailComponent } from './components/funding-capture/fc-steps/fc-funding-detail/fc-funding-detail.component';
+
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -384,7 +396,18 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ReviewAdjudicatedNpoComponent,
     BudgetSummaryComponent,
     UploadBudgetComponent,
-    DownloadWorkplanComponent
+    DownloadWorkplanComponent,
+    ApproveFundingCaptureComponent,
+    ViewFundingCaptureComponent,
+    DownloadFundingCaptureComponent,
+    FCSDAComponent,
+    FCPaymentScheduleComponent,
+    FCBankDetailComponent,
+    FCDocumentComponent,
+    FundingCaptureListComponent,
+    CreateFundingCaptureComponent,
+    EditFundingCaptureComponent,
+    FCFundingDetailComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

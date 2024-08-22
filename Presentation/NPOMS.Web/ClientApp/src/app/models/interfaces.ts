@@ -1927,3 +1927,26 @@ export interface IMyContentLink {
     documentType: IDocumentType;
     createdUser: IUser;
 }
+
+
+/* Funding Management */
+export interface INpoViewModel {
+    id: number;
+    refNo: string;
+    name: string;
+    cCode: string;
+    isActive: boolean;
+
+    fundingCaptureViewModels: IFundingCaptureViewModel[];
+}
+
+export interface IFundingCaptureViewModel {
+    id: number;
+    refNo: string;
+    npoId: number;
+    financialYearId: number;
+    financialYearName: string;
+    statusId: number;
+    statusName: string;
+    isActive: boolean;
+}
