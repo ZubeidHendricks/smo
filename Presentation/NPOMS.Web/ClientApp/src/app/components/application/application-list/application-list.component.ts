@@ -297,13 +297,19 @@ export class ApplicationListComponent implements OnInit {
 
   private getSummarySubmissionStatus(application: IApplication, applicationId: number) {
 
-    this.capturedResponse = this.capturedResponses.filter(x => x.questionCategoryId === 100 && x.isActive === true && x.fundingApplicationId === applicationId);
-    if (this.capturedResponses.length > 0) {
-      application.submittedScorecard = this.capturedResponses.length
+    if(this.capturedResponses != undefined)
+    {
+      this.capturedResponse = this.capturedResponses.filter(x => x.questionCategoryId === 100 && x.isActive === true && x.fundingApplicationId === applicationId);
+      
+      if (this.capturedResponse.length > 0) {
+        application.submittedScorecard = this.capturedResponse.length
+      }
+     
     }
     else{
       application.submittedScorecard = 0;
-    }
+    }   
+   
   }
 
   private getAllCapturedResponses() {
@@ -813,6 +819,17 @@ export class ApplicationListComponent implements OnInit {
       }
 
       switch (this.selectedApplication.statusId) {
+        case StatusEnum.New: {
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Download Assessment', 'Workflow Application');
+          this.buttonItemExists('Download Application', 'Funding Application');
+          this.buttonItemExists('Delete Application', 'Funded Npo');
+          break;
+        }
         case StatusEnum.Saved: {
           this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
