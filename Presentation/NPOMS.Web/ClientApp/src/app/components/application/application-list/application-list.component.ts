@@ -102,7 +102,7 @@ export class ApplicationListComponent implements OnInit {
 
         this.loadNpos();
         this.reviewers();
-       // this.getAllCapturedResponses();
+        this.getAllCapturedResponses();
         this.getAllResponses();
         var splitUrl = window.location.href.split('/');
         this.headerTitle = splitUrl[5];
@@ -225,11 +225,11 @@ export class ApplicationListComponent implements OnInit {
           }
         )
 
-        // results.forEach(
-        //   application => {
-        //    this.getSummarySubmissionStatus(application, application.id);     
-        //   }
-        // )
+        results.forEach(
+          application => {
+           this.getSummarySubmissionStatus(application, application.id);     
+          }
+        )
         
         this.allApplications = results;       
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
@@ -293,23 +293,29 @@ export class ApplicationListComponent implements OnInit {
     );
   }
 
-  // private getSummarySubmissionStatus(application: IApplication, applicationId: number) {
+  private getSummarySubmissionStatus(application: IApplication, applicationId: number) {
 
-  //   this.capturedResponse = this.capturedResponses.filter(x => x.questionCategoryId === 100 && x.isActive === true && x.fundingApplicationId === applicationId);
-  //   if (this.capturedResponses.length > 0) {
-  //     application.submittedScorecard = this.capturedResponses.length
-  //   }
-  //   else{
-  //     application.submittedScorecard = 0;
-  //   }
-  // }
+    if(this.capturedResponses != undefined)
+    {
+      this.capturedResponse = this.capturedResponses.filter(x => x.questionCategoryId === 100 && x.isActive === true && x.fundingApplicationId === applicationId);
+      
+      if (this.capturedResponse.length > 0) {
+        application.submittedScorecard = this.capturedResponse.length
+      }
+     
+    }
+    else{
+      application.submittedScorecard = 0;
+    }   
+   
+  }
 
-  // private getAllCapturedResponses() {
-  //   this._evaluationService.getAllCapturedResponses().subscribe(
-  //     (results) => {
-  //       this.capturedResponses = results;
-  //     })
-  // }
+  private getAllCapturedResponses() {
+    this._evaluationService.getAllCapturedResponses().subscribe(
+      (results) => {
+        this.capturedResponses = results;
+      })
+  }
 
   public selectedResponses(fid: number) {
     this._evaluationService.getResponse(Number(fid)).subscribe(
@@ -481,16 +487,16 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      // if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
-      //   this.buttonItems[0].items.push({
-      //     label: 'Download Workplan',
-      //     target: 'Workplan',
-      //     icon: 'fa fa-download',
-      //     command: () => {
-      //       this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id, 4] } }]);
-      //     }
-      //   });
-      // }
+      if (this.IsAuthorized(PermissionsEnum.DownloadOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Download Workplan',
+          target: 'Workplan',
+          icon: 'fa fa-download',
+          command: () => {
+            this._router.navigate(['/', { outlets: { 'print': ['print', this.selectedApplication.id, 4] } }]);
+          }
+        });
+      }
 
       if (this.IsAuthorized(PermissionsEnum.DownloadAssessmentOption)) {
         this.buttonItems[0].items.push({
@@ -537,16 +543,16 @@ export class ApplicationListComponent implements OnInit {
       }
 
       //mainreviwer
-      // if (this.IsAuthorized(PermissionsEnum.ReviewApplication) && this.isMainReviewer) {
-      //   this.buttonItems[0].items.push({
-      //     label: 'Select Reviewers',
-      //     target: 'Work Plan',
-      //     icon: 'fa fa-pencil-square-o',
-      //     command: () => {
-      //       this.displayReviewDialog = true;
-      //     }
-      //   });
-      // }
+      if (this.IsAuthorized(PermissionsEnum.ReviewApplication) && this.isMainReviewer) {
+        this.buttonItems[0].items.push({
+          label: 'Select Reviewers',
+          target: 'Work Plan',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this.displayReviewDialog = true;
+          }
+        });
+      }
 
       if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
         this.buttonItems[0].items.push({
@@ -700,7 +706,10 @@ export class ApplicationListComponent implements OnInit {
       if (this.selectedApplication.npoWorkPlanReviewerTrackings.length > 0) {
         if (!this.selectedApplication.npoWorkPlanReviewerTrackings.some(item => item.userId === this.profile.id)) 
         {
-          this.buttonItemExists('Review Application', 'Service Provision');
+          if(!this.isMainReviewer)
+            {
+              this.buttonItemExists('Review Application', 'Service Provision');
+            }
         }  
       }
 
@@ -808,6 +817,17 @@ export class ApplicationListComponent implements OnInit {
       }
 
       switch (this.selectedApplication.statusId) {
+        case StatusEnum.New: {
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Download Assessment', 'Workflow Application');
+          this.buttonItemExists('Download Application', 'Funding Application');
+          this.buttonItemExists('Delete Application', 'Funded Npo');
+          break;
+        }
         case StatusEnum.Saved: {
           this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
