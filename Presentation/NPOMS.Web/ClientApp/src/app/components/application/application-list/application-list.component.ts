@@ -297,13 +297,19 @@ export class ApplicationListComponent implements OnInit {
 
   private getSummarySubmissionStatus(application: IApplication, applicationId: number) {
 
-    this.capturedResponse = this.capturedResponses.filter(x => x.questionCategoryId === 100 && x.isActive === true && x.fundingApplicationId === applicationId);
-    if (this.capturedResponses.length > 0) {
-      application.submittedScorecard = this.capturedResponses.length
+    if(this.capturedResponses != undefined)
+    {
+      this.capturedResponse = this.capturedResponses.filter(x => x.questionCategoryId === 100 && x.isActive === true && x.fundingApplicationId === applicationId);
+      
+      if (this.capturedResponse.length > 0) {
+        application.submittedScorecard = this.capturedResponse.length
+      }
+     
     }
     else{
       application.submittedScorecard = 0;
-    }
+    }   
+   
   }
 
   private getAllCapturedResponses() {
