@@ -278,6 +278,13 @@
     </p-panel>
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
+        <p-table>
+            <ng-template pTemplate="header">
+                <tr>                   
+                    <th style="color: rgb(72, 13, 154);">To add or amend Programme Bank Details, Service Delivery Area(s) and Contact Details, click on the relevant Programme Name below.</th>
+                </tr>
+            </ng-template>
+        </p-table>
         <p-table [rowHover]="true" [columns]="serviceRenderedCols" [value]="servicesRendered" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
                 <tr>
