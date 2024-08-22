@@ -33,7 +33,7 @@ export class EditProfileComponent implements OnInit {
   ProgrammeApprover: boolean;
   ProgrammeViewOnly: boolean;
   ProgrammeCapturer: boolean;
- 
+ selectedDepartmentId: number;
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (!this.profile) {
         return false;
@@ -414,6 +414,7 @@ export class EditProfileComponent implements OnInit {
   }
 
   loadDepartmentPrograms(id: number = 0) {
+    this.selectedDepartmentId = id;
     this.filteredProgrammes = this.programmes.filter(x => x.departmentId === id); 
     // Filter active programs within the department
    //// this.applicantfilteredProgrammes = this.filteredProgrammes.filter(x => x.department.isActive);
@@ -2200,6 +2201,14 @@ private loadTitles() {
 
     this.newServiceRendered ? this.createServiceRendered(this.serviceRendered) : this.updateServiceRendered(this.serviceRendered);
     this.displayServiceRenderedDialog = false;
+
+  //  alert(this.serviceRendered.programme.departmentId);
+    
+    if(this.selectedDepartmentId === Number(DepartmentEnum.DSD))
+    {
+      alert('In order to complete Services Rendered for this Programme, please click on the Programme you have created to add Banking Details, Service Delivery Area(s) and Contact Details.');
+    }
+   
   }
 
   private createServiceRendered(service: IServicesRendered) {
