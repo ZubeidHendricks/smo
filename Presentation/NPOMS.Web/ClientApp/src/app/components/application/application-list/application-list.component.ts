@@ -813,6 +813,17 @@ export class ApplicationListComponent implements OnInit {
       }
 
       switch (this.selectedApplication.statusId) {
+        case StatusEnum.New: {
+          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Evaluate Application', 'Funding Application');
+          this.buttonItemExists('Approve Application', 'Funding Application');
+          this.buttonItemExists('Adjudicate Application', 'Funding Application');
+          this.buttonItemExists('Download Assessment', 'Workflow Application');
+          this.buttonItemExists('Download Application', 'Funding Application');
+          this.buttonItemExists('Delete Application', 'Funded Npo');
+          break;
+        }
         case StatusEnum.Saved: {
           this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
           this.buttonItemExists('Adjudicate Application', 'Funding Application');
