@@ -6,3 +6,7 @@
 .mandatory-content, .non-mandatory-content {
     font-size: 12px;
 }
+
+.form-text {
+    width: 100%;
+}

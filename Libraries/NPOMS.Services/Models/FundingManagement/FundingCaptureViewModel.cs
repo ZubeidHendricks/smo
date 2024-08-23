@@ -1,4 +1,4 @@
-﻿namespace NPOMS.Services.Models
+﻿namespace NPOMS.Services.Models.FundingManagement
 {
     public class FundingCaptureViewModel
     {
@@ -10,5 +10,10 @@
         public int StatusId { get; set; }
         public string StatusName { get; set; }
         public bool IsActive { get; set; }
+
+        public FundingDetailViewModel FundingDetailViewModel { get; set; }
+        public SDAViewModel SDAViewModel { get; set; }
+        public BankDetailViewModel BankDetailViewModel { get; set; }
+        public DocumentViewModel DocumentViewModel { get; set; }
     }
 }

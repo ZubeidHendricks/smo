@@ -54,10 +54,15 @@ export class FundingCaptureListComponent implements OnInit {
     });
 
     this.cols = [
-      { field: 'refNo', header: 'Ref. No.', width: '15%' },
-      { field: 'name', header: 'Org. Name', width: '55%' },
-      { field: 'organisationType.name', header: 'Financial Year', width: '10%' },
-      { field: 'approvalStatus.name', header: 'Status', width: '10%' }
+      { field: 'refNo', header: 'Ref. No.', width: '10%' },
+      { field: 'refNo', header: 'Financial Year', width: '10%' },
+      { field: 'refNo', header: 'Programme', width: '10%' },
+      { field: 'refNo', header: 'Sub-Programme Type', width: '10%' },
+      { field: 'refNo', header: 'Service Delivery Area', width: '10%' },
+      { field: 'refNo', header: 'Payment Frequency', width: '10%' },
+      { field: 'refNo', header: 'Programme Budget', width: '10%' },
+      { field: 'refNo', header: 'Amount Awarded', width: '10%' },
+      { field: 'refNo', header: 'Amount Paid', width: '10%' }
     ];
   }
 
@@ -65,7 +70,6 @@ export class FundingCaptureListComponent implements OnInit {
     this._spinner.show();
     this._fundingManagementRepo.getAllFundingCaptures().subscribe(
       (results) => {
-        console.log('entities', results);
         this.entities = results;
         this._spinner.hide();
       },

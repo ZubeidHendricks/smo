@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-fc-payment-schedule',
@@ -7,8 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class FCPaymentScheduleComponent implements OnInit {
 
-  @Input() activeStep: number;
-  @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
+  @Input() toggleable: boolean;
 
   constructor() { }
 

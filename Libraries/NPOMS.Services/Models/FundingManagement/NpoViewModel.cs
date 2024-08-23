@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace NPOMS.Services.Models
+namespace NPOMS.Services.Models.FundingManagement
 {
     public class NpoViewModel
     {
         public NpoViewModel()
         {
-            this.FundingCaptureViewModels = this.FundingCaptureViewModels ?? new List<FundingCaptureViewModel>();
+            FundingCaptureViewModels = FundingCaptureViewModels ?? new List<FundingCaptureViewModel>();
         }
 
         public int Id { get; set; }
@@ -14,6 +14,7 @@ namespace NPOMS.Services.Models
         public string Name { get; set; }
         public string CCode { get; set; }
         public bool IsActive { get; set; }
+        public int NpoProfileId { get; set; }
 
         public List<FundingCaptureViewModel> FundingCaptureViewModels { get; set; }
     }

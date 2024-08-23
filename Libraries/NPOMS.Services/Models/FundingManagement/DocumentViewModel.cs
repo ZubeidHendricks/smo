@@ -1,4 +1,4 @@
-﻿namespace NPOMS.Services.Models
+﻿namespace NPOMS.Services.Models.FundingManagement
 {
     public class DocumentViewModel
     {

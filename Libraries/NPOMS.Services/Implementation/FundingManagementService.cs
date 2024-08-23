@@ -2,7 +2,7 @@
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.FundingManagement;
 using NPOMS.Services.Interfaces;
-using NPOMS.Services.Models;
+using NPOMS.Services.Models.FundingManagement;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,6 +14,7 @@ namespace NPOMS.Services.Implementation
 
         private IMapper _mapper;
         private INpoRepository _npoRepository;
+        private INpoProfileRepository _npoProfileRepository;
         private IFundingCaptureRepository _fundingCaptureRepository;
 
         #endregion
@@ -23,11 +24,13 @@ namespace NPOMS.Services.Implementation
         public FundingManagementService(
             IMapper mapper,
             INpoRepository npoRepository,
+            INpoProfileRepository npoProfileRepository,
             IFundingCaptureRepository fundingCaptureRepository
             )
         {
             _mapper = mapper;
             _npoRepository = npoRepository;
+            _npoProfileRepository = npoProfileRepository;
             _fundingCaptureRepository = fundingCaptureRepository;
         }
 
@@ -61,8 +64,13 @@ namespace NPOMS.Services.Implementation
 
         public async Task<NpoViewModel> GetByNpoId(int npoId)
         {
-            var viewModel = await _npoRepository.GetById(npoId);
-            return _mapper.Map<NpoViewModel>(viewModel);
+            var npo = await _npoRepository.GetById(npoId);
+            var profile = await _npoProfileRepository.GetByNpoId(npoId);
+
+            var viewModel = _mapper.Map<NpoViewModel>(npo);
+            viewModel.NpoProfileId = profile.Id;
+
+            return viewModel;
         }
 
         #endregion

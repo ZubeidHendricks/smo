@@ -37,7 +37,7 @@ export interface IProgramBankDetails {
     npoProfileId: number;
 }
 
-  export interface IProgrammeServiceDelivery {
+export interface IProgrammeServiceDelivery {
     id: number;
     programId: number;
     subProgrammeId: number;
@@ -102,7 +102,7 @@ export interface IProgramContactInformation {
     language: ILanguage;
     approvalStatus: IAccessStatus;
 }
-  
+
 export interface IDocumentStore {
     id: number,
     documentTypeId: number;
@@ -526,7 +526,7 @@ export interface IActivity {
 
 export interface IActivityDistrict {
     id: number;
-    demographicDistrictId : number;
+    demographicDistrictId: number;
     name: string;
     isActive: boolean;
     activityId: number;
@@ -534,7 +534,7 @@ export interface IActivityDistrict {
 
 export interface IActivityManicipality {
     id: number;
-    demographicDistrictId : number;
+    demographicDistrictId: number;
     name: string;
     isActive: boolean;
     activityId: number;
@@ -543,7 +543,7 @@ export interface IActivityManicipality {
 export interface IActivitySubDistrict {
     id: number;
     name: string;
-    substructureId : number;
+    substructureId: number;
     isActive: boolean;
     activityId: number;
 }
@@ -551,7 +551,7 @@ export interface IActivitySubDistrict {
 export interface IActivitySubStructure {
     id: number;
     name: string;
-    municipalityId : number;
+    municipalityId: number;
     isActive: boolean;
     activityId: number;
 }
@@ -564,10 +564,9 @@ export interface IAddressInformation {
     postalAddress: string;
 }
 
-export interface ApplicationWithUsers
-{
+export interface ApplicationWithUsers {
     application: IApplication;
-    userVM : any;
+    userVM: any;
 }
 
 export interface IApplication {
@@ -598,7 +597,7 @@ export interface IApplication {
     npoUserSatisfactionTrackings: INpoUserTracking[];
     npoWorkPlanApproverTrackings: INpoUserTracking[];
     message: string;
-    npoWorkPlanReviewerTrackings : INpoUserTracking[];  
+    npoWorkPlanReviewerTrackings: INpoUserTracking[];
 }
 export interface IUserSatisfactionTracking {
     id: number;
@@ -1282,7 +1281,7 @@ export interface IDenodoBudgetWrapper {
     elements: IDenodoBudget[];
 }
 
-export interface IProgrammeBudgets{
+export interface IProgrammeBudgets {
     id: number;
     financialYearId: string;
     departmentId: number;
@@ -1428,8 +1427,7 @@ export interface IDenodoBudget {
     subProgrammeType: string;
 }
 
-export interface ISegmentCode
-{
+export interface ISegmentCode {
     id: number;
     programmeId: number;
     responsibilityCode: string;
@@ -1437,8 +1435,7 @@ export interface ISegmentCode
     objectiveCode: string;
 }
 
-export interface IBudgetAdjustment
-{
+export interface IBudgetAdjustment {
     id: number;
     programmeId: number;
     responsibilityCode: string;
@@ -1607,7 +1604,7 @@ export interface IApplicationDetails {
     programmeSDId: number;
     fundAppSDADetailId: number;
     fundAppSDADetail: IFundAppSDADetail;
-  
+
 }
 
 export interface IFundAppSDADetail {
@@ -1948,5 +1945,57 @@ export interface IFundingCaptureViewModel {
     financialYearName: string;
     statusId: number;
     statusName: string;
+    isActive: boolean;
+
+    fundingDetailViewModel: IFundingDetailViewModel;
+    sdaViewModel: ISDAViewModel;
+    bnkDetailViewModel: IBankDetailViewModel;
+    documentViewModel: IDocumentViewModel;
+}
+
+export interface IFundingDetailViewModel {
+    id: number;
+    fundingCaptureId: number;
+    financialYearId: number;
+    financialYearName: string;
+    startDate: string;
+    fundingTypeId: number;
+    fundingTypeName: string;
+    frequencyId: number;
+    frequencyName: string;
+    allowVariableFunding: boolean;
+    allowClaims: boolean;
+    programmeId: number;
+    programmeName: string;
+    subProgrammeId: number;
+    subProgrammeName: string;
+    subProgrammeTypeId: number;
+    subProgrammeTypeName: string;
+    amountAwarded: number;
+    calculationTypeId: number;
+    calculationTypeName: string;
+    isActive: boolean;
+}
+
+export interface ISDAViewModel {
+    id: number;
+    fundingCaptureId: number;
+    serviceDeliveryAreaId: number;
+    placeId: number;
+    placeName: string;
+    isActive: boolean;
+}
+
+export interface IBankDetailViewModel {
+    id: number;
+    fundingCaptureId: number;
+    programmeBankDetailId: number;
+    isActive: boolean;
+}
+
+export interface IDocumentViewModel {
+    id: number;
+    fundingCaptureId: number;
+    tpaLink: string;
     isActive: boolean;
 }

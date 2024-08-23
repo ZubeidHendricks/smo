@@ -1,4 +1,4 @@
-﻿using NPOMS.Services.Models;
+﻿using NPOMS.Services.Models.FundingManagement;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

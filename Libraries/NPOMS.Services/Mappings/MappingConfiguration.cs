@@ -5,12 +5,13 @@ using NPOMS.Domain.Entities;
 using NPOMS.Domain.FundingManagement;
 using NPOMS.Domain.Mapping;
 using NPOMS.Services.Models;
+using NPOMS.Services.Models.FundingManagement;
 using System.Security.Cryptography;
 
 
 namespace NPOMS.Services.Mappings
 {
-	public class MappingConfiguration : Profile
+    public class MappingConfiguration : Profile
 	{
 		public MappingConfiguration()
 		{
@@ -436,6 +437,7 @@ namespace NPOMS.Services.Mappings
                 .ForMember(d => d.Name, op => op.MapFrom(s => s.Name))
                 .ForMember(d => d.CCode, op => op.MapFrom(s => s.CCode))
                 .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive))
+                .ForMember(d => d.NpoProfileId, op => op.Ignore())
                 .ForMember(d => d.FundingCaptureViewModels, op => op.Ignore());
 
             CreateMap<FundingCapture, FundingCaptureViewModel>()

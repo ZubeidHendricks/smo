@@ -1,61 +1,75 @@
-<p-panel [style]="{'font-size':'12px'}" header="Funding">
+<p-panel [toggleable]="toggleable" [style]="{'font-size':'12px'}" header="Funding">
     <p-panel [style]="{'font-size':'12px'}" header="Funding Details">
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Organisation</label>
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" [disabled]="true"> -->
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-                <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+                <input type="text" class="form-text" pInputText [(ngModel)]="entity.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Allow Variable Funding</label>
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-                <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="fundingDetail.allowVariableFunding" [ngModelOptions]="{standalone: true}"></p-selectButton>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">C-Code</label>
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-                <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+                <input type="text" class="form-text" pInputText [(ngModel)]="entity.cCode" [ngModelOptions]="{standalone: true}" [disabled]="true">
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Allow Claims</label>
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-                <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="fundingDetail.allowClaims" [ngModelOptions]="{standalone: true}"></p-selectButton>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Financial Year</label>
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-                <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange($event.value)" (onChange)="valueChanged()"></p-dropdown>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Programme</label>
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-                <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+                <p-dropdown [options]="filteredProgrammes" placeholder="Select a Programme" optionLabel="name" [(ngModel)]="selectedProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)" (onChange)="valueChanged()"></p-dropdown>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Start Date</label>
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-                <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+                <p-calendar [(ngModel)]="fundingDetail.startDate" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [disabled]="disableStartDate" [minDate]="minDate" [maxDate]="maxDate" [readonlyInput]="true"></p-calendar>
             </div>
             <div class="p-field p-col-12 p-md-6">
-                <label class="mandatory-content">Subsidy Group</label>
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-                <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+                <label class="mandatory-content">Sub-Programme</label>
+                <p-dropdown [options]="filteredSubProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="subProgrammeChange($event.value)" (onChange)="valueChanged()"></p-dropdown>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Payment Frequency</label>
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-                <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+                <p-dropdown [options]="paymentFrequencies" placeholder="Select a Payment Frequency" optionLabel="name" [(ngModel)]="selectedPaymentFrequency" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="valueChanged()"></p-dropdown>
             </div>
             <div class="p-field p-col-12 p-md-6">
-                <label class="mandatory-content">Subsidy Type</label>
-                <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-                <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+                <label class="mandatory-content">Sub-Programme Type</label>
+                <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="valueChanged()"></p-dropdown>
             </div>
         </div>
     </p-panel>
     <div style="height: 10px;"></div>
     <p-panel [style]="{'font-size':'12px'}" header="Amounts">
-
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Programme Budget</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Amount Awarded</label>
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="fundingDetail.amountAwarded" [ngModelOptions]="{standalone: true}"></p-inputNumber>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Allocated Amount</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">TPA Allocated Amount</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Programme Balance</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">TPA Paid</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
     </p-panel>
 </p-panel>
