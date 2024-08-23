@@ -774,7 +774,7 @@ export class FinancialMattersComponent implements OnInit {
         this.activeStepChange.emit(this.activeStep);
       }
       else{
-        alert('Please select bank account or add bank account in profile section');
+        alert('Please select bank account or add bank account in profile section. If the Banking Details does not appear, please update it in the relevant "Services Rendered" in your profile');
         return false;
       }   
   }
