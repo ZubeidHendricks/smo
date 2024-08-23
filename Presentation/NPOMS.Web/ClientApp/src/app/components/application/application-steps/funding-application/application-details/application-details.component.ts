@@ -715,7 +715,7 @@ export class ApplicationDetailsComponent implements OnInit {
       this.activeStepChange.emit(this.activeStep);
     }
     else{
-      alert('Please enter the Rand amount you are applying for and check if you have selected atleast one service delivery area');
+      alert('Please enter the Rand amount you are applying for and check if you have selected at least one service delivery area. If the service delivery area does not appear, please update it in the relevant "Services Rendered" in your profile');
     }
   }
 
