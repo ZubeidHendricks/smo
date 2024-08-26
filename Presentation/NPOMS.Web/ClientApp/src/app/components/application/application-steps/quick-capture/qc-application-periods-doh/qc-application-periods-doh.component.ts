@@ -14,11 +14,11 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-qc-application-periods-view',
-  templateUrl: './qc-application-periods-view.component.html',
-  styleUrls: ['./qc-application-periods-view.component.css']
+  selector: 'app-qc-application-periods-doh',
+  templateUrl: './qc-application-periods-doh.component.html',
+  styleUrls: ['./qc-application-periods-doh.component.css']
 })
-export class QcApplicationPeriodsViewComponent implements OnInit {
+export class QcApplicationPeriodsDohComponent implements OnInit {
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
@@ -55,7 +55,7 @@ export class QcApplicationPeriodsViewComponent implements OnInit {
   // }
 
   profile: IUser;
-  headerTitle: string;
+
   cols: any[];
   allApplicationPeriods: IApplicationPeriod[];
 
@@ -99,8 +99,6 @@ export class QcApplicationPeriodsViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    var splitUrl = window.location.href.split('/');
-    this.headerTitle = splitUrl[4];
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -243,7 +241,7 @@ export class QcApplicationPeriodsViewComponent implements OnInit {
           this.setStatus(period);
         });
 
-        this.allApplicationPeriods = results.filter(x => x.applicationTypeId === ApplicationTypeEnum.QC);
+        this.allApplicationPeriods = results.filter(x => x.applicationTypeId === ApplicationTypeEnum.BP);
         this._spinner.hide();
       },
       (err) => {

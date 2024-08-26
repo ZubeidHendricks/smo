@@ -14,11 +14,11 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 
 @Component({
-  selector: 'app-qc-application-periods-view',
-  templateUrl: './qc-application-periods-view.component.html',
-  styleUrls: ['./qc-application-periods-view.component.css']
+  selector: 'app-qc-application-periods-doh-view',
+  templateUrl: './qc-application-periods-doh-view.component.html',
+  styleUrls: ['./qc-application-periods-doh-view.component.css']
 })
-export class QcApplicationPeriodsViewComponent implements OnInit {
+export class QcApplicationPeriodsDohViewComponent implements OnInit {
 
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
@@ -189,27 +189,29 @@ export class QcApplicationPeriodsViewComponent implements OnInit {
   // }
 
   nextPage() {
-    if (this.canContinue()) {
-      let application = {
-        npoId: this.npo.id,
-        applicationPeriodId: this.applicationPeriod.id,
-        isQuickCapture: true,
-        statusId: StatusEnum.Saved
-      } as IApplication;
+    this.activeStep = this.activeStep + 1;
+    this.activeStepChange.emit(this.activeStep);
+    // if (this.canContinue()) {
+    //   let application = {
+    //     npoId: this.npo.id,
+    //     applicationPeriodId: this.applicationPeriod.id,
+    //     isQuickCapture: true,
+    //     statusId: StatusEnum.Saved
+    //   } as IApplication;
 
-      this._applicationRepo.createApplication(application, true, null).subscribe(
-        (resp) => {
-          this.applicationChange.emit(resp);
-          this.activeStep = this.activeStep + 1;
-          this.activeStepChange.emit(this.activeStep);
-          this.disableSelectApplication = true;
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
-        }
-      );
-    }
+    //   this._applicationRepo.createApplication(application, true, null).subscribe(
+    //     (resp) => {
+    //       this.applicationChange.emit(resp);
+    //       this.activeStep = this.activeStep + 1;
+    //       this.activeStepChange.emit(this.activeStep);
+    //       this.disableSelectApplication = true;
+    //     },
+    //     (err) => {
+    //       this._loggerService.logException(err);
+    //       this._spinner.hide();
+    //     }
+    //   );
+    // }
     //   this.activeStep = this.activeStep + 1;
     //   this.activeStepChange.emit(this.activeStep);
     //   this.newlySavedNpoIdChange.emit(this.activeStep);  
@@ -243,7 +245,7 @@ export class QcApplicationPeriodsViewComponent implements OnInit {
           this.setStatus(period);
         });
 
-        this.allApplicationPeriods = results.filter(x => x.applicationTypeId === ApplicationTypeEnum.QC);
+        this.allApplicationPeriods = results.filter(x => x.applicationTypeId === ApplicationTypeEnum.BP);;
         this._spinner.hide();
       },
       (err) => {

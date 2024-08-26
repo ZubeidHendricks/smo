@@ -128,7 +128,7 @@ namespace NPOMS.API.Controllers
             {
                 var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
 
-                if (applicationPeriod.ApplicationTypeId == (int)ApplicationTypeEnum.FundingApplication)
+                if ((applicationPeriod.ApplicationTypeId == (int)ApplicationTypeEnum.FundingApplication) && (applicationPeriod.DepartmentId != (int)DepartmentEnum.DOH))
                 {
                     var npoProfile = await _npoProfileService.GetByNpoId(model.NpoId);
                     var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
@@ -159,8 +159,17 @@ namespace NPOMS.API.Controllers
                 }
                 else
                 {
-                    var data = new { Message = "Application already captured for the selected programme. Please go to 'Submissions' to access this application." };
-                    return Ok(data);
+                    if(model.StatusId == 3)
+                    {
+                        await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
+                        return Ok(application);
+                    }
+                    else
+                    {
+                        var data = new { Message = "Application already captured for the selected programme. Please go to 'Submissions' to access this application." };
+                        return Ok(data);
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -178,11 +187,13 @@ namespace NPOMS.API.Controllers
                 var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
 
                 var npoProfile = await _npoProfileService.GetByNpoId(model.NpoId);
-                var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
-                if (servicesRendered == null)
-                {
-                    var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
-                    return Ok(data);
+                if (model.ApplicationPeriod.ApplicationTypeId == (int)ApplicationTypeEnum.QuickCapture && (applicationPeriod.DepartmentId != (int)DepartmentEnum.DOH)) {
+                    var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
+                    if (servicesRendered == null)
+                    {
+                        var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
+                        return Ok(data);
+                    }
                 }
 
                 var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
@@ -219,12 +230,16 @@ namespace NPOMS.API.Controllers
                 var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
 
                 var npoProfile = await _npoProfileService.GetByNpoId(model.NpoId);
-                var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
-                if (servicesRendered == null)
+                if (model.ApplicationPeriod.ApplicationTypeId == (int)ApplicationTypeEnum.QuickCapture && (applicationPeriod.DepartmentId != (int)DepartmentEnum.DOH))
                 {
-                    var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
-                    return Ok(data);
+                    var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
+                    if (servicesRendered == null)
+                    {
+                        var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
+                        return Ok(data);
+                    }
                 }
+                    
 
                 var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
 

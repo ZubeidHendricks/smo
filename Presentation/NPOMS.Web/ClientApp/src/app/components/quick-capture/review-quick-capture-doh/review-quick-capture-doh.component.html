@@ -25,17 +25,18 @@
 
     <div style="height: 10px;"></div>
     <div>
-    <app-qc-npo-details-view *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"
-    [(activeStep)]="activeStep" [application]="application"
-    [newApplication]="false">
-    </app-qc-npo-details-view>
-    <app-qc-application-periods-view *ngIf="activeStep == QCStepsFundedEnum.Applications"
+    <app-qc-application-periods-doh-view *ngIf="activeStep == QCStepsFundedEnum.Applications"
         [(activeStep)]="activeStep"
         [npo]="npo"
         [(applicationPeriod)]="applicationPeriod"
         [(application)]="application"
         [isEdit]="false">
-    </app-qc-application-periods-view>
+    </app-qc-application-periods-doh-view>
+    <app-create-quick-capture *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"
+        [(activeStep)]="activeStep"
+        [(npo)]="npo"
+        [isEdit]="false">
+    </app-create-quick-capture> 
     <app-qc-application-detail-view *ngIf="activeStep == QCStepsFundedEnum.ApplicationDetail"
         [(activeStep)]="activeStep"
         [applicationPeriod]="applicationPeriod"
@@ -44,12 +45,9 @@
         [(localMunicipality)]="localMunicipality"
         [(regions)]="regions"
         [(sdas)]="sdas"
-        [(amount)]="amount"
-        [(sourceOfInformation)]="sourceOfInformation"
-        [(affliatedOrganisationInfo)]="affliatedOrganisationInfo"
         [(purposeQuestion)]="purposeQuestion"
-        [(fundingApplicationDetails)]="fundingApplicationDetails"
-        [isEdit]="false">
+        [(npo)]="npo"
+        [(fundingApplicationDetails)]="fundingApplicationDetails">
     </app-qc-application-detail-view>
     <app-qc-objectives-view *ngIf="activeStep == QCStepsFundedEnum.Objectives" [(activeStep)]="activeStep"
     [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"

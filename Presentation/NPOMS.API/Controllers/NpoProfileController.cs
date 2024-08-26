@@ -172,7 +172,23 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpPost("facilities", Name = "CreateFacilityMapping")]
+        [HttpGet("npoFacilities/npoId/{npoId}", Name = "GetFacilitiesByNpoId")]
+        public async Task<IActionResult> GetFacilitiesByNpoId(int npoId)
+        {
+            try
+            {
+				var npoProfile = await _npoProfileService.GetByNpoId(npoId);
+                var results = await _npoProfileService.GetFacilitiesByNpoProfileId(npoProfile.Id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetFacilitiesByNpoProfileId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("facilities", Name = "CreateFacilityMapping")]
 		public async Task<IActionResult> CreateFacilityMapping([FromBody] NpoProfileFacilityList model)
 		{
 			try

@@ -482,7 +482,7 @@ namespace NPOMS.Services.Implementation
 		public async Task CreateApplication(Application model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
+			model.ApplicationPeriod = null;
 			model.IsActive = true;
 			model.CreatedUserId = loggedInUser.Id;
 			model.CreatedDateTime = DateTime.Now;
@@ -525,8 +525,8 @@ namespace NPOMS.Services.Implementation
 			model.UpdatedUserId = loggedInUser.Id;
 			model.UpdatedDateTime = DateTime.Now;
 
-            await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
-        }
+			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
+		}
 
 		public async Task DeleteApplicationById(int id, string userIdentifier)
 		{
@@ -632,8 +632,8 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			model.CreatedUserId = loggedInUser.Id;
-			model.CreatedDateTime = DateTime.Now;
+			//model.CreatedUserId = loggedInUser.Id;
+			//model.CreatedDateTime = DateTime.Now;
 
 			await _projectInformationRepository.CreateEntity(model);
 		}
@@ -648,8 +648,8 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			model.CreatedUserId = loggedInUser.Id;
-			model.CreatedDateTime = DateTime.Now;
+			//model.CreatedUserId = loggedInUser.Id;
+			//model.CreatedDateTime = DateTime.Now;
 
 			model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId = model.ApplicationDetails.FundAppSDADetail.DistrictCouncil.Id;
 			model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId = model.ApplicationDetails.FundAppSDADetail.LocalMunicipality.Id;
@@ -676,8 +676,8 @@ namespace NPOMS.Services.Implementation
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
-			model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId = model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId;
-			model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId = model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId;
+			model.ApplicationDetails.FundAppSDADetail.DistrictCouncilId = model.ApplicationDetails.FundAppSDADetail.DistrictCouncil.Id;
+			model.ApplicationDetails.FundAppSDADetail.LocalMunicipalityId = model.ApplicationDetails.FundAppSDADetail.LocalMunicipality.Id;
 
 			model.ApplicationDetails.FundAppSDADetail.DistrictCouncil = null;
 			model.ApplicationDetails.FundAppSDADetail.LocalMunicipality = null;
@@ -686,7 +686,7 @@ namespace NPOMS.Services.Implementation
 			var bidSDAs = await _BidServiceDeliveryAreaRepository.GetBidServiceDeliveryAreaByGeographicalDetailId(model.ApplicationDetails.FundAppSDADetail.Id);
 
 			await UpdateGeoDetails(model.ApplicationDetails.FundAppSDADetail, new FundAppSDADetail { Regions = bidRegions.ToList(), ServiceDeliveryAreas = bidSDAs.ToList() });
-
+			model.ApplicationDetails = null;
 			var oldEntity = await this._repositoryContext.FundingApplicationDetails.FindAsync(model.Id);
 			await _fundingApplicationDetailsRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}

@@ -232,6 +232,13 @@ export class ApplicationPeriodListComponent implements OnInit {
             return false;           
           }
           else{
+            if(this.departmentId === Number(DepartmentEnum.DOH))
+            {
+
+            }
+            else{
+              
+            }
             this._router.navigateByUrl('application/create/' + resp.id);
           }        
       },

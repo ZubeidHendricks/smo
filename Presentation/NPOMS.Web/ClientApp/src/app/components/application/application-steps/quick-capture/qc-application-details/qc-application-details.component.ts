@@ -656,7 +656,7 @@ export class QcApplicationDetailsComponent implements OnInit {
         this.application.subProgrammeId = this.applicationPeriod.subProgrammeId;
         this.application.subProgrammeTypeId = this.applicationPeriod.subProgrammeTypeId;
         this.application.statusId = StatusEnum.Saved;
-
+        this.application.applicationPeriod = this.applicationPeriod;
         this._applicationRepo.createQCApplication(this.application).subscribe(
           (resp) => {
             if(resp.id == undefined)

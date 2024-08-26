@@ -22,7 +22,8 @@ export enum QuestionCategoryEnum {
 export enum ApplicationTypeEnum {
     FA = 1,
     SP = 2,
-    QC = 3
+    QC = 3,
+    BP = 4
 }
 
 export enum DocumentTypeEnum {
@@ -496,8 +497,8 @@ export enum QuickCaptureFundedStepsEnum {
 }
 
 export enum QCStepsFundedEnum {
-    NpoCreate = 0,
-    Applications = 1,
+    Applications = 0,
+    NpoCreate = 1,
     ApplicationDetail = 2,
     Objectives = 3,
     Activities = 4,

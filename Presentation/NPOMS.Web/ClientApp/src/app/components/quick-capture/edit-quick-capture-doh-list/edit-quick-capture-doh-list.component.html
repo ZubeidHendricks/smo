@@ -2,7 +2,7 @@
     <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
 <p-toast></p-toast>
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Quick Capture" *ngIf="isDataAvailable">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Quick Capture">
 
     <div class="p-grid p-nogutter p-justify-between" *ngIf="application.createdUser && application.updatedUser">
         <div>
@@ -25,17 +25,17 @@
 
     <div style="height: 10px;"></div>
     <div>
-    <app-create-quick-capture *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"
-        [(activeStep)]="activeStep"
-        [(npo)]="npo">
-    </app-create-quick-capture>
-    <app-qc-application-periods *ngIf="activeStep == QCStepsFundedEnum.Applications"
+    <app-qc-application-periods-doh *ngIf="activeStep == QCStepsFundedEnum.Applications"
         [(activeStep)]="activeStep"
         [npo]="npo"
         [(applicationPeriod)]="applicationPeriod"
         [(application)]="application"
         [isEdit]="true">
-    </app-qc-application-periods>
+    </app-qc-application-periods-doh>
+    <app-create-quick-capture *ngIf="activeStep == QCStepsFundedEnum.NpoCreate"
+        [(activeStep)]="activeStep"
+        [(npo)]="npo">
+    </app-create-quick-capture>   
     <app-qc-application-detail *ngIf="activeStep == QCStepsFundedEnum.ApplicationDetail"
         [(activeStep)]="activeStep"
         [applicationPeriod]="applicationPeriod"

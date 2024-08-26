@@ -5,7 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ActionSequence } from 'protractor';
-import { AccessStatusEnum, ApplicationTypeEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
+import { AccessStatusEnum, ApplicationTypeEnum, DepartmentEnum, PermissionsEnum, RoleEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IApplicationPeriod, ICapturedResponse, INpo, IResponseOptions, IStatus, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
@@ -92,8 +92,6 @@ export class ApplicationListComponent implements OnInit {
 
         if (!this.IsAuthorized(PermissionsEnum.ViewApplications))
           this._router.navigate(['401']);
-
-        console.log('ReviewApplication', this.IsAuthorized(PermissionsEnum.ReviewApplication));
 
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
@@ -236,7 +234,7 @@ export class ApplicationListComponent implements OnInit {
         this.allApplications = results;       
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
         this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
-          && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && item.applicationPeriod.departmentId === 11});
+          && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP && item.applicationPeriod.departmentId === DepartmentEnum.DOH});
               
         
         this.buildButtonItems();
@@ -774,6 +772,34 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
+    // if(this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP)
+    // {
+    //   switch (this.selectedApplication.statusId) {
+    //     case StatusEnum.Saved: {
+    //       this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+    //       this.buttonItemExists('Adjudicate Application', 'Funding Application');
+    //       this.buttonItemExists('Evaluate Application', 'Funding Application');
+    //       this.buttonItemExists('Approve Application', 'Funding Application');
+    //       this.buttonItemExists('Adjudicate Application', 'Funding Application');
+    //       this.buttonItemExists('Download Assessment', 'Workflow Application');
+    //       this.buttonItemExists('Download Application', 'Funding Application');
+    //       this.buttonItemExists('Download Workplan', 'Workplan');
+    //       this.buttonItemExists('Edit Application', 'Service Provision');
+    //       this.buttonItemExists('Review Application', 'Service Provision');
+    //       this.buttonItemExists('Approve Application', 'Service Provision');
+    //       this.buttonItemExists('Upload SLA', 'Service Provision');
+    //       this.buttonItemExists('Approve Application', 'Service Provision');
+    //       this.buttonItemExists('View Application', 'Service Provision');
+    //       this.buttonItemExists('Edit Application', 'Funded Npo');
+    //       this.buttonItemExists('Review Application', 'Funded Npo');
+    //       this.buttonItemExists('Delete Application', 'Funded Npo');
+    //       this.buttonItemExists('View Application', 'Funded Npo');
+    //       this.buttonItemExists('Download Application', 'Funded Npo');
+    //       break;
+    //     }
+    //   }
+    // }
+ 
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA || (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId !== 11)) {
 
       // Hide Service Provision actions
@@ -892,7 +918,7 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11) {
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP && this.selectedApplication.applicationPeriod.departmentId === 11) {
 
       // Hide Service Provision actions
       this.buttonItemExists('Edit Application', 'Service Provision');
