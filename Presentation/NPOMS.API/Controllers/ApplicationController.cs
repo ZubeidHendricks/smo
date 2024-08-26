@@ -159,8 +159,17 @@ namespace NPOMS.API.Controllers
                 }
                 else
                 {
-                    var data = new { Message = "Application already captured for the selected programme. Please go to 'Submissions' to access this application." };
-                    return Ok(data);
+                    if(model.StatusId == 3)
+                    {
+                        await _applicationService.UpdateApplication(model, base.GetUserIdentifier());
+                        return Ok(application);
+                    }
+                    else
+                    {
+                        var data = new { Message = "Application already captured for the selected programme. Please go to 'Submissions' to access this application." };
+                        return Ok(data);
+                    }
+                    
                 }
             }
             catch (Exception ex)

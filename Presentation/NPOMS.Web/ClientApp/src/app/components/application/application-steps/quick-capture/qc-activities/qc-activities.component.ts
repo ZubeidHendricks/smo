@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { Router } from '@angular/router';
+import { Table } from 'exceljs';
 
 @Component({
   selector: 'app-qc-activities',
@@ -151,7 +152,7 @@ export class QCActivitiesComponent implements OnInit {
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
-
+  @ViewChild('dt') dt: Table | undefined;
   constructor(
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
@@ -197,11 +198,11 @@ export class QCActivitiesComponent implements OnInit {
     this.loadDemographicSubDistricts();
 
     this.activityCols = [
-      { header: 'Activity Name', width: '20%' },
+      { header: 'Activity Name', width: '15%' },
       { header: 'Activity Type', width: '10%' },
-      { header: 'Success Indicator', width: '36%' },
-      { header: 'FinancialYear', width: '10%' },
-      { header: 'Quarter', width: '10%' }
+      { header: 'Timeline', width: '10%' },
+      { header: 'Target', width: '10%' },
+      { header: 'Facilities and/or Community Places', width: '15%' },
     ];
 
     this.commentCols = [
@@ -218,6 +219,10 @@ export class QCActivitiesComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
+
+  // applyFilterGlobal($event: any, stringVal: any) {
+  //   this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  // }
 
   private loadNpo() {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(

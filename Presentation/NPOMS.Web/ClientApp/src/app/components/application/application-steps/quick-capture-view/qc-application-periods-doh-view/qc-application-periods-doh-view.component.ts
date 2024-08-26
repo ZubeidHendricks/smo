@@ -189,27 +189,29 @@ export class QcApplicationPeriodsDohViewComponent implements OnInit {
   // }
 
   nextPage() {
-    if (this.canContinue()) {
-      let application = {
-        npoId: this.npo.id,
-        applicationPeriodId: this.applicationPeriod.id,
-        isQuickCapture: true,
-        statusId: StatusEnum.Saved
-      } as IApplication;
+    this.activeStep = this.activeStep + 1;
+    this.activeStepChange.emit(this.activeStep);
+    // if (this.canContinue()) {
+    //   let application = {
+    //     npoId: this.npo.id,
+    //     applicationPeriodId: this.applicationPeriod.id,
+    //     isQuickCapture: true,
+    //     statusId: StatusEnum.Saved
+    //   } as IApplication;
 
-      this._applicationRepo.createApplication(application, true, null).subscribe(
-        (resp) => {
-          this.applicationChange.emit(resp);
-          this.activeStep = this.activeStep + 1;
-          this.activeStepChange.emit(this.activeStep);
-          this.disableSelectApplication = true;
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
-        }
-      );
-    }
+    //   this._applicationRepo.createApplication(application, true, null).subscribe(
+    //     (resp) => {
+    //       this.applicationChange.emit(resp);
+    //       this.activeStep = this.activeStep + 1;
+    //       this.activeStepChange.emit(this.activeStep);
+    //       this.disableSelectApplication = true;
+    //     },
+    //     (err) => {
+    //       this._loggerService.logException(err);
+    //       this._spinner.hide();
+    //     }
+    //   );
+    // }
     //   this.activeStep = this.activeStep + 1;
     //   this.activeStepChange.emit(this.activeStep);
     //   this.newlySavedNpoIdChange.emit(this.activeStep);  

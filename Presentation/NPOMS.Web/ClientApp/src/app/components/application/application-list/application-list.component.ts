@@ -93,8 +93,6 @@ export class ApplicationListComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.ViewApplications))
           this._router.navigate(['401']);
 
-        console.log('ReviewApplication', this.IsAuthorized(PermissionsEnum.ReviewApplication));
-
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
         this.isMainReviewer = profile.roles.some(function (role) { return role.id === RoleEnum.MainReviewer });
@@ -774,33 +772,33 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    if(this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP)
-    {
-      switch (this.selectedApplication.statusId) {
-        case StatusEnum.Saved: {
-          this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
-          this.buttonItemExists('Adjudicate Application', 'Funding Application');
-          this.buttonItemExists('Evaluate Application', 'Funding Application');
-          this.buttonItemExists('Approve Application', 'Funding Application');
-          this.buttonItemExists('Adjudicate Application', 'Funding Application');
-          this.buttonItemExists('Download Assessment', 'Workflow Application');
-          this.buttonItemExists('Download Application', 'Funding Application');
-          this.buttonItemExists('Download Workplan', 'Workplan');
-          this.buttonItemExists('Edit Application', 'Service Provision');
-          this.buttonItemExists('Review Application', 'Service Provision');
-          this.buttonItemExists('Approve Application', 'Service Provision');
-          this.buttonItemExists('Upload SLA', 'Service Provision');
-          this.buttonItemExists('Approve Application', 'Service Provision');
-          this.buttonItemExists('View Application', 'Service Provision');
-          this.buttonItemExists('Edit Application', 'Funded Npo');
-          this.buttonItemExists('Review Application', 'Funded Npo');
-          this.buttonItemExists('Delete Application', 'Funded Npo');
-          this.buttonItemExists('View Application', 'Funded Npo');
-          this.buttonItemExists('Download Application', 'Funded Npo');
-          break;
-        }
-      }
-    }
+    // if(this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP)
+    // {
+    //   switch (this.selectedApplication.statusId) {
+    //     case StatusEnum.Saved: {
+    //       this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+    //       this.buttonItemExists('Adjudicate Application', 'Funding Application');
+    //       this.buttonItemExists('Evaluate Application', 'Funding Application');
+    //       this.buttonItemExists('Approve Application', 'Funding Application');
+    //       this.buttonItemExists('Adjudicate Application', 'Funding Application');
+    //       this.buttonItemExists('Download Assessment', 'Workflow Application');
+    //       this.buttonItemExists('Download Application', 'Funding Application');
+    //       this.buttonItemExists('Download Workplan', 'Workplan');
+    //       this.buttonItemExists('Edit Application', 'Service Provision');
+    //       this.buttonItemExists('Review Application', 'Service Provision');
+    //       this.buttonItemExists('Approve Application', 'Service Provision');
+    //       this.buttonItemExists('Upload SLA', 'Service Provision');
+    //       this.buttonItemExists('Approve Application', 'Service Provision');
+    //       this.buttonItemExists('View Application', 'Service Provision');
+    //       this.buttonItemExists('Edit Application', 'Funded Npo');
+    //       this.buttonItemExists('Review Application', 'Funded Npo');
+    //       this.buttonItemExists('Delete Application', 'Funded Npo');
+    //       this.buttonItemExists('View Application', 'Funded Npo');
+    //       this.buttonItemExists('Download Application', 'Funded Npo');
+    //       break;
+    //     }
+    //   }
+    // }
  
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA || (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId !== 11)) {
 
@@ -920,7 +918,7 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11) {
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP && this.selectedApplication.applicationPeriod.departmentId === 11) {
 
       // Hide Service Provision actions
       this.buttonItemExists('Edit Application', 'Service Provision');
