@@ -198,6 +198,7 @@
                     [ngModelOptions]="{standalone: true}" 
                     [style]="{'width':'100%'}"
                     appendTo="body" 
+                    (onChange)=filterFacilityDistrict($event.value) 
                     selectedItemsLabel="{0} items selected">
                 </p-multiSelect>
             </div>
@@ -335,8 +336,10 @@
             </div>
         </div>
         <div class="p-col" *ngIf="canEdit">
-            <p-multiSelect [options]="facilities" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedFacilities" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
+            <textarea style="min-height: 30px;" class="form-text" [rows]="3" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="canEdit" autoResize="autoResize"></textarea>
+            <!-- <p-multiSelect [options]="facilities" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedFacilities" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect> -->
         </div>
+        
         <div class="p-col" *ngIf="!canEdit">
             <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" autoResize="autoResize"></textarea>
         </div>

@@ -786,7 +786,7 @@ export class ViewApplicationComponent implements OnInit {
     this._applicationRepo.getApplicationApprovals(this.application.id).subscribe(
       (results) => {
         this.approveFromCoCT = results.filter(x => x.approvedFrom === 'CoCT')[0];
-        this.approveFromDoH = results.filter(x => x.approvedFrom === 'DoH')[0];
+        this.approveFromDoH = results.filter(x => x.approvedFrom === 'DHW')[0];
       },
       (err) => {
         this._loggerService.logException(err);

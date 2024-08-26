@@ -75,6 +75,11 @@ export class ActivitiesComponent implements OnInit {
 
   facilities: IFacilityList[];
   selectedFacilities: IFacilityList[];
+
+
+  filteredFacilities: IFacilityList[] = [];
+
+
   selectedFacilitiesText: string;
 
   allSubProgrammes: ISubProgramme[];
@@ -267,6 +272,39 @@ export class ActivitiesComponent implements OnInit {
       }
     );
   }
+
+  filterFacilityDistrict(selectedSubDistricts: any): void {
+    this.loadFacilities();
+
+    if (selectedSubDistricts && selectedSubDistricts.length > 0) {
+        // Extract LinkIds from the selected ISubDistrictDemographic objects
+        const selectedLinkIds = selectedSubDistricts.map(subDistrict => subDistrict.linkId);
+        // Filter facilities based on the selected LinkIds
+        this.selectedFacilities = this.facilities.filter(facility =>
+            selectedLinkIds.includes(facility.facilitySubDistrictId)
+        );
+        if (this.selectedFacilities.length === 0) {
+            // If no facilities are found, reset the selected facilities
+            this.facilities = [];
+        }
+
+        
+    let allFacilities: string = "";
+    this.selectedFacilities.forEach(item => {
+      allFacilities += item.name + "\n";
+    });
+    this.selectedFacilitiesText = allFacilities;
+
+
+    } else {
+
+    }
+}
+
+preventChange(event: any): void {
+  event.originalEvent.preventDefault(); 
+  event.value = [...this.selectedFacilities];
+}
 
   private loadDemographicSubDistricts() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubDistrict, false).subscribe(
@@ -844,6 +882,12 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
     this.activity.activityListId = resp.id;
     this.newActivity ? this.createActivity() : this.updateActivity();
     this.displayActivityDialog = false;
+
+    let allFacilities: string = "";
+    this.selectedFacilities.forEach(item => {
+      allFacilities += item.name + "\n";
+    });
+    this.selectedFacilitiesText = allFacilities;
   },
   (err) => {
     this._loggerService.logException(err);
