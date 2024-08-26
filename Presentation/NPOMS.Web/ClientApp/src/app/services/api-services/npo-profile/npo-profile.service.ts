@@ -150,6 +150,11 @@ export class NpoProfileService {
     return this._http.get<INpoProfileFacilityList[]>(url, httpOptions);
   }
 
+  public getFacilitiesByNpoId(npoId: number) {
+    const url = `${this._envUrl.urlAddress}/api/npo-profiles/npoFacilities/npoId/${npoId}`;
+    return this._http.get<INpoProfileFacilityList[]>(url, httpOptions);
+  }
+
   public createFacilityMapping(mapping: INpoProfileFacilityList) {
     const url = `${this._envUrl.urlAddress}/api/npo-profiles/facilities`;
     return this._http.post<INpoProfileFacilityList>(url, mapping, httpOptions);

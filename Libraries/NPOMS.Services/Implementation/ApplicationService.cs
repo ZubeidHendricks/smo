@@ -482,7 +482,7 @@ namespace NPOMS.Services.Implementation
 		public async Task CreateApplication(Application model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
+			model.ApplicationPeriod = null;
 			model.IsActive = true;
 			model.CreatedUserId = loggedInUser.Id;
 			model.CreatedDateTime = DateTime.Now;
@@ -686,7 +686,7 @@ namespace NPOMS.Services.Implementation
 			var bidSDAs = await _BidServiceDeliveryAreaRepository.GetBidServiceDeliveryAreaByGeographicalDetailId(model.ApplicationDetails.FundAppSDADetail.Id);
 
 			await UpdateGeoDetails(model.ApplicationDetails.FundAppSDADetail, new FundAppSDADetail { Regions = bidRegions.ToList(), ServiceDeliveryAreas = bidSDAs.ToList() });
-
+			model.ApplicationDetails = null;
 			var oldEntity = await this._repositoryContext.FundingApplicationDetails.FindAsync(model.Id);
 			await _fundingApplicationDetailsRepository.UpdateAsync(oldEntity, model, true, loggedInUser.Id);
 		}

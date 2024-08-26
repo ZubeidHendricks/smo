@@ -385,7 +385,7 @@ export class EditQuickCaptureDohListComponent implements OnInit {
     if (status === StatusEnum.PendingReview) {
       var orgDetailsError = this.validateOrganisationDetails();
       var applicationError = this.validateApplications();
-      var applicationDetailsError = this.validateApplicationDetails();
+     // var applicationDetailsError = this.validateApplicationDetails();
     }
 
     if (orgDetailsError.length > 0) {
@@ -398,8 +398,8 @@ export class EditQuickCaptureDohListComponent implements OnInit {
         this.validationErrors.push({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
       }
 
-      if (applicationDetailsError.length > 0)
-        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+      // if (applicationDetailsError.length > 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
     }
 
     if (this.validationErrors.length > 0)
@@ -435,14 +435,14 @@ export class EditQuickCaptureDohListComponent implements OnInit {
     return applicationError;
   }
 
-  private validateApplicationDetails() {
-    let applicationDetailsError: string[] = [];
+  // private validateApplicationDetails() {
+  //   let applicationDetailsError: string[] = [];
 
-    if (!this.districtCouncil || !this.localMunicipality || this.regions.length === 0 || this.sdas.length === 0)
-      applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
+  //   if (!this.districtCouncil || !this.localMunicipality || this.regions.length === 0 || this.sdas.length === 0)
+  //     applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
 
-    return applicationDetailsError;
-  }
+  //   return applicationDetailsError;
+  // }
 
   private clearMessages() {
     this.validationErrors = [];
@@ -498,9 +498,9 @@ export class EditQuickCaptureDohListComponent implements OnInit {
         case QCStepsFundedEnum.ApplicationDetail: {
           var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();
-          var applicationDetailsError = this.validateApplicationDetails();
+        //  var applicationDetailsError = this.validateApplicationDetails();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+          if (orgDetailsError.length > 0 || applicationError.length > 0) {
 
             if (orgDetailsError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
@@ -508,8 +508,8 @@ export class EditQuickCaptureDohListComponent implements OnInit {
             if (applicationError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
 
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+            // if (applicationDetailsError.length > 0)
+            //   this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
 
             break;
           }
@@ -525,9 +525,9 @@ export class EditQuickCaptureDohListComponent implements OnInit {
         case QCStepsFundedEnum.Activities: {
           var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();
-          var applicationDetailsError = this.validateApplicationDetails();
+         // var applicationDetailsError = this.validateApplicationDetails();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+          if (orgDetailsError.length > 0 || applicationError.length > 0) {
 
             if (orgDetailsError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
@@ -535,8 +535,8 @@ export class EditQuickCaptureDohListComponent implements OnInit {
             if (applicationError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
 
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+            // if (applicationDetailsError.length > 0)
+            //   this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
 
             break;
           }

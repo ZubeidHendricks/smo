@@ -1,4 +1,4 @@
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Application Details" *ngIf="isDataAvailable">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Application Details">
     <div class="p-fluid p-formgrid p-grid">
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Department</label>
@@ -21,37 +21,54 @@
             <input type="text" class="form-text" pInputText [(ngModel)]="subProgramme.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
         <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Sub-ProgrammeType</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="applicationPeriod.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Name</label>
             <input type="text" class="form-text" pInputText [(ngModel)]="applicationPeriod.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
+        <div style="height: 10px;"></div>
 
-        <!-- <div class="p-field p-col-12 p-md-6">
-            <label class="mandatory-content">Person</label>
-            <input type="text" class="form-text" pInputText [(ngModel)]="programme.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
-        </div>
-        <div class="p-field p-col-12 p-md-6">
-            <label class="mandatory-content">Contact Name</label>
-            <input type="text" class="form-text" pInputText [(ngModel)]="financialYear.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
-        </div> -->
-
-        <br>
-
-        <div class="p-field p-col-12 p-md-3">
-            <label class="mandatory-content">District Council</label>
-            <p-dropdown [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name" [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="districtCouncilDropdownChange($event.value)" [disabled]="readonly()"></p-dropdown>
-        </div>
-        <div class="p-field p-col-12 p-md-3">
-            <label class="mandatory-content">Local Municipalities</label>
-            <p-dropdown [options]="filteredLocalMunicipalities" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" placeholder="Select Local Municipalities" [style]="{'width':'100%'}" appendTo="body" (onChange)="localMunicipalityDropdownChange($event.value)" selectedItemsLabel="{0} items selected" [disabled]="readonly()"></p-dropdown>
-        </div>
-        <div class="p-field p-col-12 p-md-3">
-            <label class="mandatory-content">Region</label>
-            <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredRegions" [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="regionDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
-        </div>
-        <div class="p-field p-col-12 p-md-3">
-            <label class="mandatory-content">Service Delivery Area</label>
-            <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredServiceDeliveryAreas" [ngModelOptions]="{standalone: true}" appendTo="body" [(ngModel)]="selectedSDAs" (onChange)="sdaDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
-        </div>
+        <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Facility and/or Community Place Information">
+            <p-table [rowHover]="true" [columns]="facilityInfoCols" [value]="npoProfileFacilityLists" *ngIf="npoProfileFacilityLists" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                        <!-- <th style="width: 7%;">Actions</th> -->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                    <tr class="heading">
+                        <td *ngIf="rowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="4">
+                            <span class="p-text-bold">{{rowData.facilityList.facilityType.name}}</span>
+                        </td>
+                    </tr>
+                    <tr class="default-font">                    
+                        <td>{{rowData.facilityList.facilitySubDistrict.name}}</td>
+                        <td>{{rowData.facilityList.name}}</td>
+                        <td>{{rowData.facilityList.facilityClass.name}}</td>
+                        <td>{{rowData.facilityList.address}}</td>
+                        <!-- <td style="text-align: center;">
+                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editFacilityInformation(rowData)" pTooltip="Edit" tooltipPosition="top"></button>
+                            <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteFacilityInformation(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                        </td> -->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="4" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+                <!-- <ng-template pTemplate="summary" let-rowData>
+                    <div style="text-align:left">
+                        <button pButton pRipple type="button" label="Add Facility or Community Place Information" class="p-button-text" icon="fa fa-plus" (click)="addFacilityInformation()"></button>
+                    </div>
+                </ng-template> -->
+            </p-table>
+        </p-panel>     
     </div>
 
 

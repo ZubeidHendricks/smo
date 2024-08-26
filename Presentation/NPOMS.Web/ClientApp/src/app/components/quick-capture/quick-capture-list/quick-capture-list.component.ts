@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { PermissionsEnum, QCStepsEnum, StatusEnum, QuickCaptureFundedStepsEnum, QCStepsFundedEnum } from 'src/app/models/enums';
-import { IUser, INpo, IContactInformation, IApplicationPeriod, IApplication, IDistrictCouncil, ILocalMunicipality, IRegion, ISDA, IFundingApplicationDetails, IFundAppSDADetail, IApplicationDetails, IObjective, IActivity, IProjectInformation, IProgrammeServiceDelivery } from 'src/app/models/interfaces';
+import { PermissionsEnum, QCStepsEnum, StatusEnum, QuickCaptureFundedStepsEnum, QCStepsFundedEnum, RoleEnum, DropdownTypeEnum, DepartmentEnum } from 'src/app/models/enums';
+import { IUser, INpo, IContactInformation, IApplicationPeriod, IApplication, IDistrictCouncil, ILocalMunicipality, IRegion, ISDA, IFundingApplicationDetails, IFundAppSDADetail, IApplicationDetails, IObjective, IActivity, IProjectInformation, IProgrammeServiceDelivery, IDepartment } from 'src/app/models/interfaces';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MenuItem, Message, MessageService } from 'primeng/api';
 import { CreateQuickCaptureComponent } from '../create-quick-capture/create-quick-capture.component';
@@ -12,6 +12,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
+import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 
 @Component({
   selector: 'app-quick-capture-list',
@@ -19,11 +20,15 @@ import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo
   styleUrls: ['./quick-capture-list.component.css']
 })
 export class QuickCaptureListComponent implements OnInit {
+  
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
       return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
     }
+
+    const roles = this.profile.roles || [];
+    const permissions = this.profile.permissions || [];
   }
 
   public get PermissionsEnum(): typeof PermissionsEnum {
@@ -64,11 +69,22 @@ export class QuickCaptureListComponent implements OnInit {
   qcFunded: number;
 
   amount: number;
+
+  departments: IDepartment[];
+  selectedDepartment: IDepartment;
+  selectedProfileDepartment: any;
+  departments1: IDepartment[];
+  displayDepartmentDialog: boolean;
   sourceOfInformation: ISourceOfInformation[];
   affliatedOrganisationInfo: IAffiliatedOrganisation[];
   programDeliveryDetails : IProgrammeServiceDelivery[];
   selectedProgramDeliveryDetails : IProgrammeServiceDelivery[];
-
+  selectedDepartmentId: number;
+  isSystemAdmin: boolean;
+  isDepartmentAdmin: boolean;
+  isAdmin: boolean;
+  isApplicant: boolean;
+  
   fundingApplicationDetails: IFundingApplicationDetails = {
     applicationDetails: {
       fundAppSDADetail: {
@@ -88,13 +104,12 @@ export class QuickCaptureListComponent implements OnInit {
   constructor(
     private _router: Router,
     private _authService: AuthService,
-    private _npoRepo: NpoService,
     private _spinner: NgxSpinnerService,
     private _loggerService: LoggerService,
     private _npoProfile: NpoProfileService,
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
-    private _fundAppService: FundingApplicationService
+    private _dropdownRepo: DropdownService
   ) { }
 
   ngOnInit(): void {
@@ -113,10 +128,24 @@ export class QuickCaptureListComponent implements OnInit {
           this.qCSteps();
           this.qcFunded = 0;
         }
+
+        this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        this.isDepartmentAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+        this.isApplicant = profile.roles.some(function (role) { return role.id === RoleEnum.Applicant });
+
+        if(this.isSystemAdmin)
+        {
+          this.displayDepartmentDialog = true;
+        }
+
         this.buildMenu();
       }
     });
-    this.getProgrammeDeliveryDetails();
+    this.loadDepartments1();
+    if(this.qcFunded === 0)
+    {
+      this.getProgrammeDeliveryDetails();
+    }    
   }
 
   private buildMenu() {
@@ -163,6 +192,49 @@ export class QuickCaptureListComponent implements OnInit {
     }
   }
 
+  selectedDept(id: number = 0)
+  {
+    this.selectedDepartmentId = id;
+  }
+
+  onSelectedDepartment() {   
+    if(this.selectedDepartmentId === Number(DepartmentEnum.DSD))
+    {
+      this.qCSteps();
+      this.qcFunded = 0;
+    }
+    else{
+      this.qCStepsFunded();
+      this.qcFunded = 1;
+    }
+    this.displayDepartmentDialog = false;
+  }
+
+  onCloseDialog()
+  {
+    this._router.navigateByUrl('/');
+  }
+
+  private loadDepartments1() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
+      (results) => {
+        this.departments1 = results;
+        this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+ 
+  disableButton()
+ {
+  if (!this.selectedDepartment)
+    return true;
+
+  return false;
+ }
   private getProgrammeDeliveryDetails() {
     this._npoProfile.getProgrammeDeliveryDetailsQC(Number(this.npo.id)).subscribe(
       (results) => {

@@ -67,6 +67,75 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
+
+          <div class="p-grid p-nogutter" style="margin-bottom: 0.5rem;">
+            <div class="p-col-3 dropdown-column">
+                <div class="box">
+                    <span class="mandatory-content">District</span>
+                </div>
+                <p-dropdown 
+                    [options]="allIDistrictDemographics" 
+                    placeholder="Select District" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedIDistrictDemographics" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    (onChange)="onDemographicDistrictChange()">
+                </p-dropdown>
+            </div>
+        
+            <div class="p-col-3 dropdown-column">
+                <div class="box">
+                    <span class="mandatory-content">Municipality</span>
+                </div>
+                <p-multiSelect 
+                    [options]="ManicipalityDemographics" 
+                    defaultLabel="Select Manicipality Demographics"
+                    optionLabel="name" 
+                    [(ngModel)]="selectedManicipalityDemographics" 
+                    [ngModelOptions]="{standalone: true}"
+                    [style]="{'width':'100%'}" 
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected"
+                    (onChange)="onDemographicManicipalitiesChange()">
+                </p-multiSelect>
+            </div>
+        
+            <div class="p-col-3 dropdown-column">
+                <div class="box">
+                    <span class="mandatory-content">Sub Structures</span>
+                </div>
+                <p-multiSelect 
+                    [options]="SubstructureDemographics" 
+                    defaultLabel="Select Sub Structures" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedSubstructureDemographics" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected"
+                    (onChange)="onDemographicSubStructuresChange()">
+                </p-multiSelect>
+            </div>
+        
+            <div class="p-col-3 dropdown-column">
+                <div class="box">
+                    <span class="mandatory-content">Sub District</span>
+                </div>
+                <p-multiSelect 
+                    [options]="SubDistrictDemographics" 
+                    defaultLabel="Select Sub District(s)" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedSubDistrictDemographics" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected">
+                </p-multiSelect>
+            </div>
+        </div>
+        
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">

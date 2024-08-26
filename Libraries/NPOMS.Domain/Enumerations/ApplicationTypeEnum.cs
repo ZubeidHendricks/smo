@@ -3,6 +3,8 @@
 	public enum ApplicationTypeEnum
 	{
 		FundingApplication = 1,
-		ServiceProvision = 2
+		ServiceProvision = 2,
+		QuickCapture = 3,
+		BusinessPlan = 4
 	}
 }
