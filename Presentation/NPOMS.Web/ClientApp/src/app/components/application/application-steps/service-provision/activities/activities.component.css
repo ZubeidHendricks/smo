@@ -60,3 +60,20 @@
 .box {
     margin-bottom: 0.5rem;
 }
+
+
+.readonly-multiselect-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.readonly-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    cursor: not-allowed;
+    background: transparent;
+}

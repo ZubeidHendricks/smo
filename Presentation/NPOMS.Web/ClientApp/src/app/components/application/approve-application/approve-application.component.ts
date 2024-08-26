@@ -325,7 +325,7 @@ export class ApproveApplicationComponent implements OnInit {
       this._applicationRepo.createApplicationApproval(applicationApproval).subscribe(
         (resp) => {
           let approvedByCoCT = resp.some(function (approval) { return approval.approvedFrom === 'CoCT' });
-          let approvedByDoH = resp.some(function (approval) { return approval.approvedFrom === 'DoH' });
+          let approvedByDoH = resp.some(function (approval) { return approval.approvedFrom === 'DHW' });
 
           if (approvedByCoCT && approvedByDoH)
             this.application.statusId = StatusEnum.PendingSLA;
