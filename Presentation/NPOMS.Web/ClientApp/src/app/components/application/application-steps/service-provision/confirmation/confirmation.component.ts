@@ -83,7 +83,7 @@ export class ConfirmationComponent implements OnInit {
 
     this.approvalFromOptions = [
       { name: 'City of Cape Town', value: 'CoCT' },
-      { name: 'Department of Health', value: 'DoH' }
+      { name: 'Department of Health', value: 'DHW' }
     ];
 
     this.reviewerSatisfactionCols = [
