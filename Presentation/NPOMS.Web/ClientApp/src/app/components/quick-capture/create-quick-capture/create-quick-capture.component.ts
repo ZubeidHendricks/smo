@@ -653,9 +653,6 @@ export class CreateQuickCaptureComponent implements OnInit {
    }
 
   private createOrganisation() {
-    alert(this.selectedNPO.id);
-    alert(this.applicationPeriod.id);
-    alert(this.applicationPeriod.applicationTypeId);
     this.application.npoId = this.selectedNPO.id;
     this.application.applicationPeriodId = this.applicationPeriod.id;
     this.application.programmeId = this.applicationPeriod.programmeId;

@@ -295,7 +295,6 @@ export class QcApplicationDetailComponent implements OnInit {
               return false;           
             }
             else{
-              alert(resp.id);
               this.fundingApplicationDetails.applicationId = resp.id;
               this.fundingApplicationDetails.applicationPeriodId = this.applicationPeriod.id;
               this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.allDistrictCouncils[0];
