@@ -411,7 +411,8 @@ export enum PermissionsEnum {
     ViewFundingCapture = "FC.View",
     ApproveFundingCapture = "FC.Approve",
     DownloadFundingCapture = "FC.Download",
-    ShowFundingCaptureActions = "FC.SFCA"
+    ShowFundingCaptureActions = "FC.SFCA",
+    DeleteFundingCapture = "FC.Delete"
 }
 
 export enum ReportTypeEnum {

@@ -1,6 +1,9 @@
-﻿namespace NPOMS.Repository.Interfaces.FundingManagement
+﻿using NPOMS.Domain.FundingManagement;
+
+namespace NPOMS.Repository.Interfaces.FundingManagement
 {
-    public interface IBankDetailRepository
+    public interface IBankDetailRepository : IBaseRepository<BankDetail>
     {
+        Task<BankDetail> GetByFundingCaptureId(int fundingCaptureId);
     }
 }

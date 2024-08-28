@@ -1,4 +1,5 @@
-﻿using NPOMS.Domain.FundingManagement;
+﻿using Microsoft.EntityFrameworkCore;
+using NPOMS.Domain.FundingManagement;
 using NPOMS.Repository.Interfaces.FundingManagement;
 
 namespace NPOMS.Repository.Implementation.FundingManagement
@@ -17,18 +18,12 @@ namespace NPOMS.Repository.Implementation.FundingManagement
 
         #region Methods
 
-        //public async Task<IEnumerable<BankDetail>> GetByWorkplanActualId(int workplanActualId)
-        //{
-        //    return await FindByCondition(x => x.WorkplanActualId.Equals(workplanActualId))
-        //                    .Include(x => x.StatusId)
-        //                    .Include(x => x.CreatedUser)
-        //                    .OrderByDescending(x => x.CreatedDateTime).AsNoTracking().ToListAsync();
-        //}
-
-        //public async Task CreateEntity(BankDetail model)
-        //{
-        //    await CreateAsync(model);
-        //}
+        public async Task<BankDetail> GetByFundingCaptureId(int fundingCaptureId)
+        {
+            return await FindByCondition(x => x.FundingCaptureId.Equals(fundingCaptureId))
+                            .Include(x => x.ProgramBankDetails)
+                            .AsNoTracking().FirstOrDefaultAsync();
+        }
 
         #endregion
     }

@@ -18,14 +18,17 @@ namespace NPOMS.Repository.Implementation.FundingManagement
 
         #region Methods
 
-        public async Task<FundingCapture> GetById(int id)
+        public async Task<IEnumerable<FundingCapture>> GetAll()
         {
-            return await FindByCondition(sp => sp.Id.Equals(id)).FirstOrDefaultAsync();
+            return await FindAll().Where(x => x.IsActive)
+                            .Include(x => x.FinancialYear)
+                            .Include(x => x.Status)
+                            .AsNoTracking().ToListAsync();
         }
 
-        public async Task<FundingCapture> GetByNpoId(int npoId)
+        public async Task<FundingCapture> GetById(int id)
         {
-            return await FindByCondition(sp => sp.NpoId.Equals(npoId)).FirstOrDefaultAsync();
+            return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
         }
 
         #endregion

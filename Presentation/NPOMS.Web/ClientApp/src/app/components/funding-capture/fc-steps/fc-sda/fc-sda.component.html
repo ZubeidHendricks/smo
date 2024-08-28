@@ -1,15 +1,13 @@
-<p-panel [toggleable]="toggleable" [style]="{'font-size':'12px'}" header="Service Delivery Area">
+<div style="height: 10px;"></div>
+<p-panel [style]="{'font-size':'12px'}" header="Service Delivery Area" [toggleable]="toggleable">
     <div class="p-fluid p-formgrid p-grid">
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Service Delivery Area</label>
-            <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" [disabled]="true"> -->
-            <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-            <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+            <p-dropdown [options]="sdas" placeholder="Select a Service Delivery Area" optionLabel="name" [(ngModel)]="selectedSDA" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="sdaChange($event.value)" #sda="ngModel" [ngClass]="{'ng-dirty': (sda.invalid && validated) || (sda.dirty && sda.invalid)}" required></p-dropdown>
         </div>
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Place</label>
-            <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-            <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+            <p-dropdown [options]="filteredPlaces" placeholder="Select a Place" optionLabel="name" [(ngModel)]="selectedPlace" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="valueChanged()" #place="ngModel" [ngClass]="{'ng-dirty': (place.invalid && validated) || (place.dirty && place.invalid)}" required></p-dropdown>
         </div>
     </div>
 </p-panel>

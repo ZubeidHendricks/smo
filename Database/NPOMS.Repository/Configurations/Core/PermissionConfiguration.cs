@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NPOMS.Domain.Core;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 namespace NPOMS.Repository.Configurations.Core
 {
@@ -932,6 +929,13 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "View Funding Capture Menu",
                     SystemName = "TN.VFCM",
                     CategoryName = "Top Navigation"
+                },
+                new Permission
+                {
+                    Id = 133,
+                    Name = "Delete Funding Capture",
+                    SystemName = "FC.Delete",
+                    CategoryName = "Funding Capture"
                 }
             );
         }

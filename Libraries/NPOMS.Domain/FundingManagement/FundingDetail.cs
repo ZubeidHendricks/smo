@@ -13,11 +13,11 @@ namespace NPOMS.Domain.FundingManagement
         public int FinancialYearId { get; set; }
 
         [Column(TypeName = "nvarchar(50)")]
-        public string StartDate { get; set; }
+        public string? StartDate { get; set; }
 
         public int FundingTypeId { get; set; }
 
-        public int FrequencyId { get; set; }
+        public int? FrequencyId { get; set; }
 
         public bool AllowVariableFunding { get; set; }
 
@@ -29,7 +29,7 @@ namespace NPOMS.Domain.FundingManagement
 
         public int SubProgrammeTypeId { get; set; }
 
-        public double AmountAwarded { get; set; }
+        public double? AmountAwarded { get; set; }
 
         public int CalculationTypeId { get; set; }
 

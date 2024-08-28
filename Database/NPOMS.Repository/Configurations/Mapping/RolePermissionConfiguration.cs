@@ -110,7 +110,8 @@ namespace NPOMS.Repository.Configurations.Mapping
                 new RolePermission { RoleId = 1, PermissionId = 129 },
                 new RolePermission { RoleId = 1, PermissionId = 130 },
                 new RolePermission { RoleId = 1, PermissionId = 131 },
-                new RolePermission { RoleId = 1, PermissionId = 132 }
+                new RolePermission { RoleId = 1, PermissionId = 132 },
+                new RolePermission { RoleId = 1, PermissionId = 133 }
             );
 		}
 	}

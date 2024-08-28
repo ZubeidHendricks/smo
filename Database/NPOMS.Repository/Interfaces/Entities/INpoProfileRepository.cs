@@ -1,14 +1,14 @@
 ﻿using NPOMS.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Interfaces.Entities
 {
-	public interface INpoProfileRepository : IBaseRepository<NpoProfile>
+    public interface INpoProfileRepository : IBaseRepository<NpoProfile>
 	{
 		Task<IEnumerable<NpoProfile>> GetEntities();
 
-		Task<NpoProfile> GetById(int id);
+        Task<IEnumerable<NpoProfile>> GetEntitiesForFundingCapture();
+
+        Task<NpoProfile> GetById(int id);
 
 		Task CreateEntity(NpoProfile model);
 

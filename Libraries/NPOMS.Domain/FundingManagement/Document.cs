@@ -9,7 +9,7 @@ namespace NPOMS.Domain.FundingManagement
         public int FundingCaptureId { get; set; }
 
         [Column(TypeName = "nvarchar(2000)")]
-        public string TPALink { get; set; }
+        public string? TPALink { get; set; }
 
         public bool IsActive { get; set; }
 

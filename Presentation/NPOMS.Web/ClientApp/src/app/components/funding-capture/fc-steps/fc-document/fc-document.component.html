@@ -1,3 +1,9 @@
-<p-panel [toggleable]="toggleable" [style]="{'font-size':'12px'}" header="Documents">
-
+<div style="height: 10px;"></div>
+<p-panel [style]="{'font-size':'12px'}" header="Documents" [toggleable]="toggleable">
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+            <label class="non-mandatory-content">TPA Link</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="document.tpaLink" [ngModelOptions]="{standalone: true}" (change)="valueChanged()">
+        </div>
+    </div>
 </p-panel>

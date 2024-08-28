@@ -392,7 +392,6 @@ export class ViewApplicationDetailsComponent implements OnInit {
       (results) => {
         if (results != null) {
           this.programDeliveryDetails = results.filter(deliveryDetail => deliveryDetail.isActive && deliveryDetail.programId === this.application.applicationPeriod.programmeId && deliveryDetail.subProgrammeId === this.subProgramId && deliveryDetail.subProgrammeTypeId === this.subProgramTypeId);
-        //  console.log(' this.programDeliveryDetails ',  this.programDeliveryDetails );
           var selectedSDAs = [];
           this.programDeliveryDetails.forEach(item => {
             if(item.isActive && item.isSelected)

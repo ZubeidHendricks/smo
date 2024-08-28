@@ -366,8 +366,6 @@ export class DownloadWorkplanComponent implements OnInit {
   private loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        // console.log(
-        //   'activities',results);
         this.activities = results.filter(x => x.isActive === true);
         this.activities.forEach(item => {
           item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),

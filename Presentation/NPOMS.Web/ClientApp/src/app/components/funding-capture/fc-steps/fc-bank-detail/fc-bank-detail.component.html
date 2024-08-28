@@ -1,24 +1,21 @@
-<p-panel [toggleable]="toggleable" [style]="{'font-size':'12px'}" header="Bank Details">
+<div style="height: 10px;"></div>
+<p-panel [style]="{'font-size':'12px'}" header="Bank Details" [toggleable]="toggleable">
     <div class="p-fluid p-formgrid p-grid">
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Bank</label>
-            <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-            <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+            <p-dropdown [options]="filteredBanks" placeholder="Select a Bank" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="bankChange($event.value)" #bank="ngModel" [ngClass]="{'ng-dirty': (bank.invalid && validated) || (bank.dirty && bank.invalid)}" required></p-dropdown>
         </div>
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Account Type</label>
-            <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-            <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+            <p-dropdown [options]="filteredAccountTypes" placeholder="Select an Account Type" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="accountTypeChange($event.value)" #accountType="ngModel" [ngClass]="{'ng-dirty': (accountType.invalid && validated) || (accountType.dirty && accountType.invalid)}" required></p-dropdown>
         </div>
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Branch</label>
-            <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-            <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+            <p-dropdown [options]="filteredBranches" placeholder="Select a Branch" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="branchChange($event.value)" #branch="ngModel" [ngClass]="{'ng-dirty': (branch.invalid && validated) || (branch.dirty && branch.invalid)}" required></p-dropdown>
         </div>
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Account Number</label>
-            <!-- <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" #npoName="ngModel" [ngClass]="{'ng-dirty': (npoName.invalid && validated) || (npoName.dirty && npoName.invalid)}" [disabled]="true"> -->
-            <!-- <small *ngIf="(npoName.invalid && validated) || (npoName.dirty && npoName.invalid)" class="p-error">Organisation Name is required.</small> -->
+            <p-dropdown [options]="filteredBankDetails" placeholder="Select an Account Number" optionLabel="accountNumber" [(ngModel)]="selectedBankDetail" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="valueChanged()" #accountNumber="ngModel" [ngClass]="{'ng-dirty': (accountNumber.invalid && validated) || (accountNumber.dirty && accountNumber.invalid)}" required></p-dropdown>
         </div>
-    </div>
+    </div>    
 </p-panel>

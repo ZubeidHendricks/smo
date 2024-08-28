@@ -2,11 +2,8 @@ using AutoMapper;
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
-using NPOMS.Domain.FundingManagement;
 using NPOMS.Domain.Mapping;
 using NPOMS.Services.Models;
-using NPOMS.Services.Models.FundingManagement;
-using System.Security.Cryptography;
 
 
 namespace NPOMS.Services.Mappings
@@ -429,7 +426,7 @@ namespace NPOMS.Services.Mappings
             /**************************************************END OF BID PROFILE**************************************/
 
 
-            #region Funding Management
+            /*#region Funding Management
 
             CreateMap<Npo, NpoViewModel>()
                 .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
@@ -448,7 +445,11 @@ namespace NPOMS.Services.Mappings
                 .ForMember(d => d.FinancialYearName, op => op.MapFrom(s => s.FinancialYear.Name))
                 .ForMember(d => d.StatusId, op => op.MapFrom(s => s.StatusId))
                 .ForMember(d => d.StatusName, op => op.MapFrom(s => s.Status.Name))
-                .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
+                .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive))
+                .ForMember(d => d.FundingDetailViewModel, op => op.Ignore())
+                .ForMember(d => d.SDAViewModel, op => op.Ignore())
+                .ForMember(d => d.BankDetailViewModel, op => op.Ignore())
+                .ForMember(d => d.DocumentViewModel, op => op.Ignore());
 
             CreateMap<FundingDetail, FundingDetailViewModel>()
                 .ForMember(d => d.Id, op => op.MapFrom(s => s.Id))
@@ -493,7 +494,7 @@ namespace NPOMS.Services.Mappings
                 .ForMember(d => d.TPALink, op => op.MapFrom(s => s.TPALink))
                 .ForMember(d => d.IsActive, op => op.MapFrom(s => s.IsActive));
 
-            #endregion
+            #endregion*/
         }
     }
 }

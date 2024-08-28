@@ -1,14 +1,10 @@
 ﻿using NPOMS.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Interfaces.Entities
 {
-	public interface INpoRepository : IBaseRepository<Npo>
+    public interface INpoRepository : IBaseRepository<Npo>
 	{
 		Task<IEnumerable<Npo>> GetEntities();
-
-		Task<IEnumerable<Npo>> GetEntitiesWithoutDetails();
 
         Task<IEnumerable<Npo>> GetQuickCapturers();
 

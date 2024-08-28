@@ -2,10 +2,10 @@
 
 namespace NPOMS.Repository.Interfaces.FundingManagement
 {
-    public interface IFundingCaptureRepository
+    public interface IFundingCaptureRepository : IBaseRepository<FundingCapture>
     {
-        Task<FundingCapture> GetById(int id);
+        Task<IEnumerable<FundingCapture>> GetAll();
 
-        Task<FundingCapture> GetByNpoId(int npoId);
+        Task<FundingCapture> GetById(int id);
     }
 }

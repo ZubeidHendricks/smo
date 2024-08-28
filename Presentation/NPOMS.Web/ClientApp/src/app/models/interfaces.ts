@@ -1933,6 +1933,7 @@ export interface INpoViewModel {
     name: string;
     cCode: string;
     isActive: boolean;
+    npoProfileId: number;
 
     fundingCaptureViewModels: IFundingCaptureViewModel[];
 }
@@ -1949,7 +1950,7 @@ export interface IFundingCaptureViewModel {
 
     fundingDetailViewModel: IFundingDetailViewModel;
     sdaViewModel: ISDAViewModel;
-    bnkDetailViewModel: IBankDetailViewModel;
+    bankDetailViewModel: IBankDetailViewModel;
     documentViewModel: IDocumentViewModel;
 }
 
@@ -1958,6 +1959,8 @@ export interface IFundingDetailViewModel {
     fundingCaptureId: number;
     financialYearId: number;
     financialYearName: string;
+    financialYearStartDate: Date;
+    financialYearEndDate: Date;
     startDate: string;
     fundingTypeId: number;
     fundingTypeName: string;
@@ -1981,6 +1984,7 @@ export interface ISDAViewModel {
     id: number;
     fundingCaptureId: number;
     serviceDeliveryAreaId: number;
+    serviceDeliveryAreaName: string;
     placeId: number;
     placeName: string;
     isActive: boolean;
@@ -1989,7 +1993,7 @@ export interface ISDAViewModel {
 export interface IBankDetailViewModel {
     id: number;
     fundingCaptureId: number;
-    programmeBankDetailId: number;
+    programBankDetailsId: number;
     isActive: boolean;
 }
 

@@ -204,7 +204,6 @@ import { FCPaymentScheduleComponent } from './components/funding-capture/fc-step
 import { FCBankDetailComponent } from './components/funding-capture/fc-steps/fc-bank-detail/fc-bank-detail.component';
 import { FCDocumentComponent } from './components/funding-capture/fc-steps/fc-document/fc-document.component';
 import { FundingCaptureListComponent } from './components/funding-capture/funding-capture-list/funding-capture-list.component';
-import { CreateFundingCaptureComponent } from './components/funding-capture/create-funding-capture/create-funding-capture.component';
 import { EditFundingCaptureComponent } from './components/funding-capture/edit-funding-capture/edit-funding-capture.component';
 import { FCFundingDetailComponent } from './components/funding-capture/fc-steps/fc-funding-detail/fc-funding-detail.component';
 
@@ -405,7 +404,6 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     FCBankDetailComponent,
     FCDocumentComponent,
     FundingCaptureListComponent,
-    CreateFundingCaptureComponent,
     EditFundingCaptureComponent,
     FCFundingDetailComponent
   ],

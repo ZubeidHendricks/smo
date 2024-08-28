@@ -1,6 +1,9 @@
-﻿namespace NPOMS.Repository.Interfaces.FundingManagement
+﻿using NPOMS.Domain.FundingManagement;
+
+namespace NPOMS.Repository.Interfaces.FundingManagement
 {
-    public interface ISDARepository
+    public interface ISDARepository : IBaseRepository<SDA>
     {
+        Task<SDA> GetByFundingCaptureId(int fundingCaptureId);
     }
 }

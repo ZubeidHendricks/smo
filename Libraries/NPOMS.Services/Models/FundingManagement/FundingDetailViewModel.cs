@@ -1,4 +1,6 @@
-﻿namespace NPOMS.Services.Models.FundingManagement
+﻿using System;
+
+namespace NPOMS.Services.Models.FundingManagement
 {
     public class FundingDetailViewModel
     {
@@ -6,10 +8,12 @@
         public int FundingCaptureId { get; set; }
         public int FinancialYearId { get; set; }
         public string FinancialYearName { get; set; }
-        public string StartDate { get; set; }
+        public DateTime? FinancialYearStartDate { get; set; }
+        public DateTime? FinancialYearEndDate { get; set; }
+        public string? StartDate { get; set; }
         public int FundingTypeId { get; set; }
         public string FundingTypeName { get; set; }
-        public int FrequencyId { get; set; }
+        public int? FrequencyId { get; set; }
         public string FrequencyName { get; set; }
         public bool AllowVariableFunding { get; set; }
         public bool AllowClaims { get; set; }
@@ -19,7 +23,7 @@
         public string SubProgrammeName { get; set; }
         public int SubProgrammeTypeId { get; set; }
         public string SubProgrammeTypeName { get; set; }
-        public double AmountAwarded { get; set; }
+        public double? AmountAwarded { get; set; }
         public int CalculationTypeId { get; set; }
         public string CalculationTypeName { get; set; }
         public bool IsActive { get; set; }

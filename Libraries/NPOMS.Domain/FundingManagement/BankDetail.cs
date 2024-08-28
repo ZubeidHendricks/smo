@@ -9,7 +9,7 @@ namespace NPOMS.Domain.FundingManagement
     {
         public int FundingCaptureId { get; set; }
 
-        public int ProgrammeBankDetailId { get; set; }
+        public int? ProgramBankDetailsId { get; set; }
 
         public bool IsActive { get; set; }
 

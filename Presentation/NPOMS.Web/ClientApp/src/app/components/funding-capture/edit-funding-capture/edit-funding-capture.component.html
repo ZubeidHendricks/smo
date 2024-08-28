@@ -1,1 +1,12 @@
-<p>edit-funding-capture works!</p>
+<p-toast></p-toast>
+<p-panel [style]="{'font-size':'12px'}" header="Edit Funding Capture">
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowFundingCaptureActions)"></p-menubar>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+
+    <app-fc-funding-detail [toggleable]="true" [npo]="npo" [fundingDetail]="fundingDetail" [validated]="validated" *ngIf="npo && fundingDetail"></app-fc-funding-detail>
+    <app-fc-sda [toggleable]="true" [sda]="sda" [npo]="npo" [fundingDetail]="fundingDetail" [validated]="validated" *ngIf="sda && npo && fundingDetail"></app-fc-sda>
+    <app-fc-payment-schedule [toggleable]="true" [validated]="validated"></app-fc-payment-schedule>
+    <app-fc-bank-detail [toggleable]="true" [bankDetail]="bankDetail" [npo]="npo" [fundingDetail]="fundingDetail" [validated]="validated" *ngIf="bankDetail && npo && fundingDetail"></app-fc-bank-detail>
+    <app-fc-document [toggleable]="true" [document]="document" [validated]="validated" *ngIf="document"></app-fc-document>
+</p-panel>

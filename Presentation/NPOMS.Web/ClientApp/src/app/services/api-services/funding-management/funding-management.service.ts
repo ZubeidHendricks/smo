@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
-import { INpoViewModel } from 'src/app/models/interfaces';
+import { IBankDetailViewModel, IDocumentViewModel, IFundingCaptureViewModel, IFundingDetailViewModel, INpoViewModel, ISDAViewModel } from 'src/app/models/interfaces';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -21,18 +21,48 @@ export class FundingManagementService {
     this.fundingManagementUrl = `${this._envUrl.urlAddress}/api/funding-management`;
   }
 
-  public getAllFundingCaptures() {
+  public getNposForFunding() {
     const url = `${this.fundingManagementUrl}`;
     return this._http.get<INpoViewModel[]>(url, httpOptions);
   }
 
-  public getFundingCaptureById(id: number) {
+  public canCaptureFunding(fundingDetail: IFundingDetailViewModel) {
+    const url = `${this.fundingManagementUrl}/financialYearId/${fundingDetail.financialYearId}/programmeId/${fundingDetail.programmeId}/subProgrammeId/${fundingDetail.subProgrammeId}/subProgrammeTypeId/${fundingDetail.subProgrammeTypeId}`;
+    return this._http.get<boolean>(url, httpOptions);
+  }
+
+  public createFundingCapture(fundingCapture: IFundingCaptureViewModel) {
+    const url = `${this.fundingManagementUrl}`;
+    return this._http.post<IFundingCaptureViewModel>(url, fundingCapture, httpOptions);
+  }
+
+  public getFundingById(id: number) {
     const url = `${this.fundingManagementUrl}/id/${id}`;
     return this._http.get<INpoViewModel>(url, httpOptions);
   }
 
-  public getFundingCaptureByNpoId(npoId: number) {
-    const url = `${this.fundingManagementUrl}/npoId/${npoId}`;
-    return this._http.get<INpoViewModel>(url, httpOptions);
+  public updateFundingCapture(fundingCapture: IFundingCaptureViewModel) {
+    const url = `${this.fundingManagementUrl}/funding-capture`;
+    return this._http.put<IFundingCaptureViewModel>(url, fundingCapture, httpOptions);
+  }
+
+  public updateFundingDetail(fundingDetail: IFundingDetailViewModel) {
+    const url = `${this.fundingManagementUrl}/funding-detail`;
+    return this._http.put<IFundingDetailViewModel>(url, fundingDetail, httpOptions);
+  }
+
+  public updateSDA(sda: ISDAViewModel) {
+    const url = `${this.fundingManagementUrl}/service-delivery-area`;
+    return this._http.put<ISDAViewModel>(url, sda, httpOptions);
+  }
+
+  public updateBankDetails(bankDetail: IBankDetailViewModel) {
+    const url = `${this.fundingManagementUrl}/bank-detail`;
+    return this._http.put<IBankDetailViewModel>(url, bankDetail, httpOptions);
+  }
+
+  public updateDocument(document: IDocumentViewModel) {
+    const url = `${this.fundingManagementUrl}/document`;
+    return this._http.put<IDocumentViewModel>(url, document, httpOptions);
   }
 }
