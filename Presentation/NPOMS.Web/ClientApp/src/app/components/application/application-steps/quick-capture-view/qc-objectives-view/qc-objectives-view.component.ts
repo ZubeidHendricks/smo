@@ -291,7 +291,8 @@ export class QcObjectivesViewComponent implements OnInit {
   editObjective(data: IObjective) {
     this.newObjective = false;
     this.objective = this.cloneObjective(data);
-
+    this.selectedFinancialYear = this.financialYears.find(x => x.name === data.financialYear);
+    this.selectedQuarterlyPeriod = this.quarterlyPeriod.find(x=> x.name === data.quarter);
     this.updateRowGroupMetaData(this.objective);
 
     if (this.application.isCloned)
