@@ -299,9 +299,10 @@ export class QcApplicationDetailComponent implements OnInit {
               this.fundingApplicationDetails.applicationPeriodId = this.applicationPeriod.id;
               this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.allDistrictCouncils[0];
               this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.allLocalMunicipalities[0];
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.allRegions;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.allServiceDeliveryAreas;        
+              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.allRegions.filter(x => x.isActive && x.localMunicipalityId === this.allLocalMunicipalities[0].id);
+              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.allServiceDeliveryAreas.filter(x => x.isActive && x.regionId === this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions[0].id);        
               this.fundingApplicationDetails.projectInformation.purposeQuestion = this.purposeQuestion;
+              this.fundingApplicationDetails.applicationDetails.amountApplyingFor = 1;
               this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
                 (resp) => {
                   this._spinner.hide();

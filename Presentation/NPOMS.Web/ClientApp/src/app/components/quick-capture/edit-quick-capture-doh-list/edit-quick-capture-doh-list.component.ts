@@ -116,6 +116,7 @@ export class EditQuickCaptureDohListComponent implements OnInit {
         this.buildMenu();
       }
     });
+    alert(this.application.createdUserId);
   }
 
   private loadApplication() {
