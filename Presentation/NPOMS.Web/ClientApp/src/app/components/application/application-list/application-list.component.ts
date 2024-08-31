@@ -630,8 +630,8 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('Summary');  
     }
     else{
-      this.optionItemExists('Adjudicate Funded Npo');  
-      this.optionItemExists('Review Adjudicated Funded Npo'); 
+      //this.optionItemExists('Adjudicate Funded Npo');  
+      //this.optionItemExists('Review Adjudicated Funded Npo'); 
       this.optionItemExists('Businessplan Indicators'); 
       this.optionItemExists('BusinessPlan Summary');   
     }

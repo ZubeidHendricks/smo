@@ -11,15 +11,15 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 import { Subscription } from 'rxjs';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Table } from 'exceljs';
 
 @Component({
-  selector: 'app-qc-activities',
-  templateUrl: './qc-activities.component.html',
-  styleUrls: ['./qc-activities.component.css']
+  selector: 'app-qc-activities-edit',
+  templateUrl: './qc-activities-edit.component.html',
+  styleUrls: ['./qc-activities-edit.component.css']
 })
-export class QCActivitiesComponent implements OnInit {
+export class QCActivitiesEditComponent implements OnInit {
 
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
@@ -165,9 +165,15 @@ export class QCActivitiesComponent implements OnInit {
     private _npoProfile: NpoProfileService,
     private _bidService: BidService,
     private _router: Router,
+    private _activeRouter: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
+
+    this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+      this.selectedApplicationId = params.get('id');
+    });
+
     this._spinner.show();
 
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
@@ -182,6 +188,8 @@ export class QCActivitiesComponent implements OnInit {
     this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
+    this.loadApplication();
+   
     this.loadNpo();
     this.loadActivityTypes();
     this.loadFacilities();
@@ -223,6 +231,20 @@ export class QCActivitiesComponent implements OnInit {
   // applyFilterGlobal($event: any, stringVal: any) {
   //   this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   // }
+
+  private loadApplication() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.application = results;
+          this.loadObjectives();         
+        }
+        this._spinner.hide();
+      },
+      (err) => this._spinner.hide()
+    );
+  }
 
   private loadNpo() {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(

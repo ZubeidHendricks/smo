@@ -87,6 +87,7 @@
     <app-qc-funded-document-upload *ngIf="activeStep == QCStepsFundedEnum.ApplicationFundedDocument"
         [(activeStep)]="activeStep"
         [application]="application"
+        [(npo)]="npo"
         [isView]="false">            
     </app-qc-funded-document-upload>
     </div>

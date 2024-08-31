@@ -113,6 +113,7 @@ import { QcObjectivesViewComponent } from './components/application/application-
 import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
 import { UploadBudgetComponent } from './components/admin/budgets/upload-budget/upload-budget.component';
 import { DownloadWorkplanComponent } from './components/application/download-workplan/download-workplan.component';
+import { QcApplicationDetailEditComponent } from './components/application/application-steps/quick-capture/qc-application-detail-edit/qc-application-detail-edit.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },

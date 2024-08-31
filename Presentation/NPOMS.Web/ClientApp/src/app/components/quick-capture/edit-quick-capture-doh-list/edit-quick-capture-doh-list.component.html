@@ -36,7 +36,7 @@
         [(activeStep)]="activeStep"
         [(npo)]="npo">
     </app-create-quick-capture>   
-    <app-qc-application-detail *ngIf="activeStep == QCStepsFundedEnum.ApplicationDetail"
+    <app-qc-application-detail-edit *ngIf="activeStep == QCStepsFundedEnum.ApplicationDetail"
         [(activeStep)]="activeStep"
         [applicationPeriod]="applicationPeriod"
         [application]="application"
@@ -47,13 +47,13 @@
         [(amount)]="amount"
         [(purposeQuestion)]="purposeQuestion"
         [(fundingApplicationDetails)]="fundingApplicationDetails">
-    </app-qc-application-detail>
-    <app-qc-objectives *ngIf="activeStep == QCStepsFundedEnum.Objectives" [(activeStep)]="activeStep"
+    </app-qc-application-detail-edit>
+    <app-qc-objectives-edit *ngIf="activeStep == QCStepsFundedEnum.Objectives" [(activeStep)]="activeStep"
     [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"
-    [isReview]="false" [currentUserId]="profile.id"></app-qc-objectives>
-    <app-qc-activities *ngIf="activeStep == QCStepsFundedEnum.Activities" [(activeStep)]="activeStep"
+    [isView]="false" [currentUserId]="profile.id"></app-qc-objectives-edit>
+    <app-qc-activities-edit *ngIf="activeStep == QCStepsFundedEnum.Activities" [(activeStep)]="activeStep"
     [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
-    [isReview]="false"></app-qc-activities>
+    [isView]="false"></app-qc-activities-edit>
     <app-qc-funded-document-upload *ngIf="activeStep == QCStepsFundedEnum.ApplicationFundedDocument"
         [(activeStep)]="activeStep"
         [application]="application"

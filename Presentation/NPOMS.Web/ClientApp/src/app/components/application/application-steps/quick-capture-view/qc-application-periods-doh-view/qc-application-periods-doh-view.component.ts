@@ -123,13 +123,16 @@ export class QcApplicationPeriodsDohViewComponent implements OnInit {
       this.disableSelectApplication = true;
 
     this.cols = [
-      { field: 'refNo', header: 'Ref. No.', width: '10%' },
-      { field: 'name', header: 'Name', width: '30%' },
-      { field: 'applicationType.name', header: 'Type', width: '15%' },
-      { field: 'financialYear.name', header: 'Financial Year', width: '8%' },
-      { field: 'openingDate', header: 'Opening Date', width: '10%' },
-      { field: 'closingDate', header: 'Closing Date', width: '10%' },
-      { field: 'status', header: 'Status', width: '5%' }
+         // { field: 'refNo', header: 'Ref. No.', width: '10%' },//
+         { field: 'department.name', header: 'Department', width: '10%' },
+         { field: 'applicationType.name', header: 'Type', width: '18%' },
+         { field: 'programme.name', header: 'Programme', width: '12%' },
+         { field: 'subProgramme.name', header: 'Sub-Programme', width: '19%' },
+         { field: 'subProgrammeType.name', header: 'Sub-ProgrammeType', width: '22%' },
+         { field: 'financialYear.name', header: 'Financial Year', width: '10%' },
+         { field: 'openingDate', header: 'Opening Date', width: '12%' },
+         { field: 'closingDate', header: 'Closing Date', width: '12%' },
+         { field: 'status', header: 'Status', width: '10%' }
     ];
 
     // this.stateOptions = [
