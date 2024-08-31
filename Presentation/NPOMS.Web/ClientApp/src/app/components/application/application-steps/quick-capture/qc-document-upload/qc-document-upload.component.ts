@@ -7,7 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Message, MenuItem, ConfirmationService, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { PermissionsEnum, StatusEnum, DropdownTypeEnum, DocumentUploadLocationsEnum, EntityTypeEnum, EntityEnum } from 'src/app/models/enums';
-import { IFundingApplicationDetails, IApplication, IUser, IDocumentStore, IDocumentType, IProjectInformation, IMonitoringAndEvaluation, IMyContentLink } from 'src/app/models/interfaces';
+import { IFundingApplicationDetails, IApplication, IUser, IDocumentStore, IDocumentType, IProjectInformation, IMonitoringAndEvaluation, IMyContentLink, INpo } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -27,6 +27,7 @@ export class QcDocumentUploadComponent implements OnInit {
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() application: IApplication;
   @Input() isView: boolean;
+  @Input() npo: INpo;
 
   // @Input() newlySavedApplicationId: number;
   // @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();

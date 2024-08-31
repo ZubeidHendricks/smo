@@ -4,7 +4,7 @@
     </div>
 </div>
 <div style="height: 10px;"></div>
-<div>
+<div *ngIf = "this.qcFunded == 0">
     <app-qc-npo-details-view 
         [application]="application"
         [newApplication]="false">
@@ -14,7 +14,7 @@
         [(application)]="application"
         [isEdit]="false">
     </app-qc-application-periods-view>
-   <app-qc-application-detail-view 
+   <app-qc-application-details-view 
         [applicationPeriod]="applicationPeriod"
         [application]="application"
         [(districtCouncil)]="districtCouncil"
@@ -24,7 +24,33 @@
         [(amount)]="amount"
         [(sourceOfInformation)]="sourceOfInformation"
         [(affliatedOrganisationInfo)]="affliatedOrganisationInfo"
+        [(fundingApplicationDetails)]="fundingApplicationDetails"
+        [isEdit]="false">
+    </app-qc-application-details-view>
+    <app-qc-funded-document-upload-view
+        [application]="application"
+        [isView]="true">            
+    </app-qc-funded-document-upload-view>
+</div>
+<div *ngIf = "this.qcFunded == 1">
+    <app-qc-npo-details-view 
+        [application]="application"
+        [newApplication]="false">
+    </app-qc-npo-details-view>
+    <app-qc-application-periods-doh-view 
+        [(applicationPeriod)]="applicationPeriod"
+        [(application)]="application"
+        [isEdit]="false">
+    </app-qc-application-periods-doh-view>
+   <app-qc-application-detail-view 
+        [applicationPeriod]="applicationPeriod"
+        [application]="application"
+        [(districtCouncil)]="districtCouncil"
+        [(localMunicipality)]="localMunicipality"
+        [(regions)]="regions"
+        [(sdas)]="sdas"
         [(purposeQuestion)]="purposeQuestion"
+        [(npo)]="npo"
         [(fundingApplicationDetails)]="fundingApplicationDetails"
         [isEdit]="false">
     </app-qc-application-detail-view>

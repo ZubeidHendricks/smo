@@ -25,6 +25,7 @@
     [newApplication]="false">
     </app-qc-npo-details-view>
     <app-qc-application-periods-doh-view 
+        [(activeStep)]="activeStep"
         [npo]="npo"
         [(applicationPeriod)]="applicationPeriod"
         [(application)]="application"
@@ -37,10 +38,8 @@
         [(localMunicipality)]="localMunicipality"
         [(regions)]="regions"
         [(sdas)]="sdas"
-        [(amount)]="amount"
-        [(sourceOfInformation)]="sourceOfInformation"
-        [(affliatedOrganisationInfo)]="affliatedOrganisationInfo"
         [(purposeQuestion)]="purposeQuestion"
+        [(npo)]="npo"
         [(fundingApplicationDetails)]="fundingApplicationDetails"
         [isEdit]="false">
     </app-qc-application-detail-view>

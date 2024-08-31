@@ -297,7 +297,6 @@ export class QuickCaptureEditListComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
-
     if (this.bidCanContinue(status)) {
       this._spinner.show();
           this.application.statusId = status;
@@ -319,6 +318,7 @@ export class QuickCaptureEditListComponent implements OnInit {
         }
       );
     }
+    
   }
 
   private bidCanContinue(status: StatusEnum) {

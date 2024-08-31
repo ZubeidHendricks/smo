@@ -143,7 +143,7 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
   name: IResp[] = [];
   _name: IResp[] = [];
   userId: number;
-
+  qcFunded: number;
 
   isMainReviewer: boolean;
   canReviewOrApprove: boolean = false;
@@ -235,6 +235,8 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
       { header: 'Created Date', width: '20%' }
     ];
 
+   
+
   }
 
   private loadApplication() {
@@ -242,10 +244,17 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
       (results) => {
         this.application = results;
         this.npoId = this.application.npoId;
-        this.applicationPeriod = this.application.applicationPeriod;
+        this.applicationPeriod = this.application.applicationPeriod;       
         this.loadNpo();
         this.loadCreatedUser();
 
+        if(this.application.applicationPeriod.applicationTypeId === 4)
+        {
+          this.qcFunded = 1;
+        }
+        else{
+          this.qcFunded = 0;
+        }
       },
     );
   }

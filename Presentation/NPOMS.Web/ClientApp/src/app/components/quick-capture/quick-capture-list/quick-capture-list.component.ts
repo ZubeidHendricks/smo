@@ -84,7 +84,7 @@ export class QuickCaptureListComponent implements OnInit {
   isDepartmentAdmin: boolean;
   isAdmin: boolean;
   isApplicant: boolean;
-  
+  step: number;
   fundingApplicationDetails: IFundingApplicationDetails = {
     applicationDetails: {
       fundAppSDADetail: {
@@ -145,7 +145,8 @@ export class QuickCaptureListComponent implements OnInit {
     if(this.qcFunded === 0)
     {
       this.getProgrammeDeliveryDetails();
-    }    
+    }  
+    
   }
 
   private buildMenu() {
@@ -174,18 +175,19 @@ export class QuickCaptureListComponent implements OnInit {
             this.bidForm(StatusEnum.Saved);
           }
         },
-        {
-          label: 'Submit',
-          icon: 'fa fa-thumbs-o-up',
-          command: () => {
-            this.bidForm(StatusEnum.PendingReview);
-          }
-        },
+        // {
+        //   label: 'Submit',
+        //   icon: 'fa fa-thumbs-o-up',
+        //   command: () => {
+        //     this.bidForm(StatusEnum.PendingReview);
+        //   }
+        // },
         {
           label: 'Go Back',
           icon: 'fa fa-step-backward',
           command: () => {
-            this._router.navigateByUrl('application-periods');
+            //this._router.navigateByUrl('application-periods');
+            this._router.navigateByUrl('/');
           }
         }
       ];
@@ -250,8 +252,24 @@ export class QuickCaptureListComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
+
+    if(this.application === undefined)
+    {
+      this._messageService.add({ severity: 'error', summary: 'missing compulsory steps', detail: 'Complete Applications, Organisation Details, Application Detail steps' });
+      return false;
+    }
+    
+    switch (this.activeStep) {
+      case 0:
+          case 1:
+            case 2: {
+              this._messageService.add({ severity: 'error', summary: 'missing compulsory steps', detail: 'Click on next button before saving the data' });
+              return false;
+      }
+    }
+
     if (this.bidCanContinue(status)) {
-      this._spinner.show();
+      this._spinner.show();     
           this.application.statusId = status;
           this.application.isQuickCapture = true;
           this.applicationPeriod = this.applicationPeriod;
@@ -262,7 +280,7 @@ export class QuickCaptureListComponent implements OnInit {
               if (status === StatusEnum.Saved)
                 this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
 
-              if (status === StatusEnum.PendingReview)
+            //  if (status === StatusEnum.PendingReview)
                 this._router.navigateByUrl('applications');
             },   
         (err) => {
@@ -273,91 +291,20 @@ export class QuickCaptureListComponent implements OnInit {
     }
   }
 
-  // private bidForm(status: StatusEnum) {
-
-  //   if (this.bidCanContinue(status)) {
-  //     this._spinner.show();
-  //     let data = this.npo;
-  //     data.contactInformation.forEach(item => {
-  //       item.titleId = item.title.id;
-  //       item.positionId = item.position.id;
-  //       item.genderId = item.gender ? item.gender.id : null;
-  //       item.raceId = item.race ? item.race.id : null;
-  //       item.languageId = item.language ? item.language.id : null;
-  //     });
-
-  //     this._npoRepo.createNpo(data).subscribe(
-  //       (resp) => {
-
-  //         this.application.statusId = status;
-
-  //         this._applicationRepo.createApplication(this.application, true, null).subscribe(
-  //           (resp) => {
-
-  //             this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.districtCouncil;
-  //             this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.localMunicipality;
-
-  //             if (!this.fundingApplicationDetails.id) {
-
-  //               this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-  //                 (resp) => {
-  //                   this._spinner.hide();
-
-  //                   if (status === StatusEnum.Saved)
-  //                     this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-  //                   if (status === StatusEnum.PendingReview)
-  //                     this._router.navigateByUrl('applications');
-  //                 },
-  //                 (err) => {
-  //                   this._loggerService.logException(err);
-  //                   this._spinner.hide();
-  //                 }
-  //               );
-  //             }
-  //             else {
-  //               this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-  //                 (resp) => {
-  //                   this._spinner.hide();
-
-  //                   if (status === StatusEnum.Saved)
-  //                     this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-  //                   if (status === StatusEnum.PendingReview)
-  //                     this._router.navigateByUrl('applications');
-  //                 },
-  //                 (err) => {
-  //                   this._loggerService.logException(err);
-  //                   this._spinner.hide();
-  //                 }
-  //               );
-  //             }
-  //           },
-  //           (err) => {
-  //             this._loggerService.logException(err);
-  //             this._spinner.hide();
-  //           }
-  //         );
-  //       },
-  //       (err) => {
-  //         this._loggerService.logException(err);
-  //         this._spinner.hide();
-  //       }
-  //     );
-  //   }
-  // }
 
   private bidCanContinue(status: StatusEnum) {
+    
     this.validationErrors = [];
-
     if (status === StatusEnum.Saved)
+    {
       var orgDetailsError = this.validateOrganisationDetails();
 
+     }
+      
     if (status === StatusEnum.PendingReview) {
       var applicationError = this.validateApplications();
       var orgDetailsError = this.validateOrganisationDetails();
-     
-     // var applicationDetailsError = this.validateApplicationDetails();
+
     }
 
     if (orgDetailsError.length > 0) {
@@ -365,14 +312,13 @@ export class QuickCaptureListComponent implements OnInit {
       this.organisationDetails.setValidated(true);
     }
 
+
     if (status === StatusEnum.PendingReview) {
       if (applicationError.length > 0) {
         this.validationErrors.push({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
       }
 
-     // if (applicationDetailsError.length > 0)
-      //  this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
-    }
+     }
 
     if (this.validationErrors.length > 0)
       this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please scroll to top to view errors.' });
@@ -386,26 +332,10 @@ export class QuickCaptureListComponent implements OnInit {
     let orgDetailsError: string[] = [];
 
     if (!data.name || !data.organisationTypeId || !data.registrationStatusId)
-      orgDetailsError.push("Missing detail required under General Information");
-
-    if (data.contactInformation.length === 0)
-      orgDetailsError.push("The Organisation Contact List cannot be empty under Contact / Stakeholder Details");
-
-    if (data.contactInformation.length > 0 && data.contactInformation.filter(x => x.isPrimaryContact === true).length === 0)
-      orgDetailsError.push("Please specify the primary contact under Contact / Stakeholder Details");
+      orgDetailsError.push("Organisation detail missing");
 
     return orgDetailsError;
   }
-
-  // private validateApplication() {
-  //   let data = this.applicationPeriod;
-  //   let applicationError: string[] = [];
-
-  //   if (!data)
-  //     applicationError.push("Please select a programme from the list provided");
-
-  //   return applicationError;
-  // }
 
   private validateApplications() {
     let data = this.applicationPeriod;
@@ -415,19 +345,6 @@ export class QuickCaptureListComponent implements OnInit {
       applicationError.push("Please select a programme from the list provided");
 
     return applicationError;
-  }
-
-  private validateApplicationDetails() {
-    let applicationDetailsError: string[] = [];
-
-    if(this.selectedProgramDeliveryDetails.length === 0)
-    {
-      applicationDetailsError.push("Please select a Service Delivery Area");
-    }
-    // if (!this.districtCouncil || !this.localMunicipality || this.regions.length === 0 || this.sdas.length === 0)
-    //   applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
-
-    return applicationDetailsError;
   }
 
   private clearMessages() {
@@ -491,18 +408,14 @@ export class QuickCaptureListComponent implements OnInit {
         case QCStepsEnum.AmountYouApplyingFor: {
           var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();
-          var applicationDetailsError = this.validateApplicationDetails();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+            if (orgDetailsError.length > 0 || applicationError.length > 0) {
 
             if (orgDetailsError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
 
             if (applicationError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
-
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
 
             break;
           }
@@ -521,6 +434,7 @@ export class QuickCaptureListComponent implements OnInit {
   }
 
   public validateStepFunded(goToStep: number, currentStep: number) {
+    this.step = currentStep;
     if (goToStep > currentStep) {
       switch (currentStep) {
         case QCStepsFundedEnum.Applications: {
@@ -555,19 +469,15 @@ export class QuickCaptureListComponent implements OnInit {
         case QCStepsFundedEnum.ApplicationDetail: {
           var applicationError = this.validateApplications();
           var orgDetailsError = this.validateOrganisationDetails();         
-          var applicationDetailsError = this.validateApplicationDetails();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+          if (orgDetailsError.length > 0 || applicationError.length > 0) {
 
             if (orgDetailsError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
 
             if (applicationError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
-
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
-
+            
             break;
           }
 
@@ -581,9 +491,8 @@ export class QuickCaptureListComponent implements OnInit {
         case QCStepsFundedEnum.Activities: {
           var applicationError = this.validateApplications();
           var orgDetailsError = this.validateOrganisationDetails();         
-          var applicationDetailsError = this.validateApplicationDetails();
 
-          if (applicationError.length > 0 || orgDetailsError.length > 0 || applicationDetailsError.length > 0) {
+          if (applicationError.length > 0 || orgDetailsError.length > 0) {
 
             if (applicationError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
@@ -591,9 +500,7 @@ export class QuickCaptureListComponent implements OnInit {
             if (orgDetailsError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
 
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
-
+            
             break;
           }
 

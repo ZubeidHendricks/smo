@@ -1,5 +1,5 @@
 <p-toast></p-toast>
-<p-panel [style]="{'font-size':'12px'}" header="Activities" *ngIf="activeActivities">
+<p-panel [style]="{'font-size':'12px'}" header="Activities">
     <div class="p-grid p-nogutter p-justify-end">
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>    
@@ -29,7 +29,7 @@
                 <td>{{rowData.quarter}}</td>
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActivity(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
-                    <!-- <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button> -->
+                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
                 </td>
                 <td *ngIf="application.isCloned && isReview">
@@ -44,19 +44,19 @@
         </ng-template>
         <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
             <div style="text-align:left">
-                <!-- <button pButton pRipple type="button" label="Add Activity" class="p-button-text" icon="fa fa-plus" (click)="addActivity()"></button> -->
+                <button pButton pRipple type="button" label="Add Activity" class="p-button-text" icon="fa fa-plus" (click)="addActivity()"></button>
             </div>
         </ng-template>
         <ng-template pTemplate="summary" let-rowData *ngIf="application.isCloned && isReview">
             <div style="text-align:left">
-                <!-- <button pButton pRipple type="button" label="View Deleted Activities" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedActivities()"></button> -->
+                <button pButton pRipple type="button" label="View Deleted Activities" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedActivities()"></button>
             </div>
         </ng-template>
     </p-table>
     <div style="height: 10px;"></div>
-    <div class="p-grid p-nogutter p-justify-between" *ngIf="headerTitle !== 'reviewAdjudicatedNpo'">
-        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left" *ngIf ="headerTitle !== 'view'"></p-button>
-        <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right" *ngIf ="headerTitle !== 'view'"></p-button>
+    <div class="p-grid p-nogutter p-justify-between">
+        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+        <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
     </div>
 </p-panel>
 
@@ -176,7 +176,47 @@
             <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
         </div>
     </div>
-    
+    <!-- <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Sub-Programme</span>
+            </div>
+        </div>
+        <div class="p-col" *ngIf="canEdit">
+            <p-multiSelect [options]="subProgrammes" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedSubProgrammes" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgramme()" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+        <div class="p-col" *ngIf="!canEdit">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Activity Lookup</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-autoComplete appendTo="body" id="selectedActivity"                      
+                [(ngModel)]="selectedActivity"
+                [style]="{'width':'100%'}"
+                [inputStyle]="{'width':'100%'}"
+                [suggestions]="activityList"
+                field="name"
+                (completeMethod)="search($event)"
+                [size]="20"
+                placeholder="Find Activity (type 4 letters)"
+                [forceSelection]="true"
+                [minLength]="4"
+                [showTransitionOptions]="'0ms'"
+                [hideTransitionOptions]="'0ms'"
+                emptyMessage="No results found"
+                name="facility"
+                [showEmptyMessage]="true"
+                (onSelect)="selectActivity($event)"
+                [disabled]="!canEdit">
+            </p-autoComplete>
+        </div>
+    </div> -->
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -208,7 +248,18 @@
             <p-dropdown [options]="activityTypes" placeholder="Select an Activity Type" optionLabel="name" [(ngModel)]="selectedActivityType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
         </div>
     </div>
-   
+    <!-- <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Timeline</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-calendar [(ngModel)]="activity.timelineStartDate" placeholder="Select a Start Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
+            &nbsp; to &nbsp;
+            <p-calendar [(ngModel)]="activity.timelineEndDate" placeholder="Select a End Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
+        </div>
+    </div> -->
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -229,8 +280,34 @@
             <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit">
         </div>
     </div>
+    <!-- <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Facility and Community Place</span>
+            </div>
+        </div>
+        <div class="p-col" *ngIf="canEdit">
+            <p-multiSelect [options]="facilities" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedFacilities" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+        <div class="p-col" *ngIf="!canEdit">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" autoResize="autoResize"></textarea>
+        </div>
+    </div> -->
+    <!-- <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Recipient(s)</span>
+            </div>
+        </div>
+        <div class="p-col" *ngIf="canEdit">
+            <p-multiSelect [options]="recipients" defaultLabel="Select option(s)" optionLabel="recipientName" [(ngModel)]="selectedRecipients" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" [maxSelectedLabels]="2"></p-multiSelect>
+        </div>
+        <div class="p-col" *ngIf="!canEdit">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedRecipientsText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" autoResize="autoResize"></textarea>
+        </div>
+    </div> -->
     <ng-template pTemplate="footer">
-        <!-- <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveActivity() (click)="saveActivity()"></button> -->
+        <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveActivity() (click)="saveActivity()"></button>
          <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
     </ng-template>
 </p-dialog>

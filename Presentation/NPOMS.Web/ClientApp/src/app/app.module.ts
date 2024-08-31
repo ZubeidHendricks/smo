@@ -150,8 +150,11 @@ import { QcApplicationPeriodsComponent } from './components/application/applicat
 import { QcApplicationPeriodsDohComponent } from './components/application/application-steps/quick-capture/qc-application-periods-doh/qc-application-periods-doh.component';
 import { QcApplicationPeriodsDohViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-periods-doh-view/qc-application-periods-doh-view.component';
 import { QcApplicationDetailComponent } from './components/application/application-steps/quick-capture/qc-application-detail/qc-application-detail.component';
+import { QcApplicationDetailEditComponent } from './components/application/application-steps/quick-capture/qc-application-detail-edit/qc-application-detail-edit.component';
 import { QCActivitiesComponent } from './components/application/application-steps/quick-capture/qc-activities/qc-activities.component';
 import { QcObjectivesComponent } from './components/application/application-steps/quick-capture/qc-objectives/qc-objectives.component';
+import { QCActivitiesEditComponent } from './components/application/application-steps/quick-capture/qc-activities-edit/qc-activities-edit.component';
+import { QcObjectivesEditComponent } from './components/application/application-steps/quick-capture/qc-objectives-edit/qc-objectives-edit.component';
 
 import { QuestionComponent } from './components/admin/utilities/question/question.component';
 import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
@@ -388,7 +391,10 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     UploadBudgetComponent,
     DownloadWorkplanComponent,
     QcApplicationPeriodsDohComponent,
-    QcApplicationPeriodsDohViewComponent
+    QcApplicationPeriodsDohViewComponent,
+    QcApplicationDetailEditComponent,
+    QCActivitiesEditComponent,
+    QcObjectivesEditComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
