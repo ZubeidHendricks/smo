@@ -4,9 +4,9 @@
     <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
     <div style="height: 10px;"></div>
 
-    <app-fc-funding-detail [toggleable]="true" [npo]="npo" [fundingDetail]="fundingDetail" [validated]="validated" *ngIf="npo && fundingDetail"></app-fc-funding-detail>
+    <app-fc-funding-detail [toggleable]="true" [npo]="npo" [fundingDetail]="fundingDetail" (paymentFrequencyChanged)="updatePaymentFrequency($event)" (startDateChanged)="updateStartDate($event)" (amountAwardedChanged)="updateAmountAwarded($event)" [validated]="validated" *ngIf="npo && fundingDetail"></app-fc-funding-detail>
     <app-fc-sda [toggleable]="true" [sda]="sda" [npo]="npo" [fundingDetail]="fundingDetail" [validated]="validated" *ngIf="sda && npo && fundingDetail"></app-fc-sda>
-    <app-fc-payment-schedule [toggleable]="true" [validated]="validated"></app-fc-payment-schedule>
+    <app-fc-payment-schedule [toggleable]="true" [paymentSchedule]="paymentSchedule" (paymentScheduleChanged)="updatePaymentSchedule($event)" [fundingCapture]="fundingCapture" [paymentFrequencyId]="paymentFrequencyId" [startDate]="startDate" [amountAwarded]="amountAwarded" [validated]="validated" *ngIf="paymentSchedule && fundingCapture"></app-fc-payment-schedule>
     <app-fc-bank-detail [toggleable]="true" [bankDetail]="bankDetail" [npo]="npo" [fundingDetail]="fundingDetail" [validated]="validated" *ngIf="bankDetail && npo && fundingDetail"></app-fc-bank-detail>
     <app-fc-document [toggleable]="true" [document]="document" [validated]="validated" *ngIf="document"></app-fc-document>
 </p-panel>

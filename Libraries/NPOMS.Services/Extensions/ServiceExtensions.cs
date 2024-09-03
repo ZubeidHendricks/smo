@@ -143,7 +143,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<Repository.Interfaces.Entities.IBankDetailRepository, Repository.Implementation.Entities.BankDetailRepository>();
             services.AddScoped<ICompliantCycleRuleRepository, CompliantCycleRuleRepository>();
             services.AddScoped<ICompliantCycleRepository, CompliantCycleRepository>();
-            services.AddScoped<IPaymentScheduleRepository, PaymentScheduleRepository>();
+            services.AddScoped<Repository.Interfaces.Entities.IPaymentScheduleRepository, Repository.Implementation.Entities.PaymentScheduleRepository>();
             services.AddScoped<IFundingApplicationDetailsRepository, FundingApplicationDetailsRepository>();
             //services.AddScoped<IFinancialDetailRepository, FinancialDetailRepository>();
             services.AddScoped<IProjectInformationRepository, ProjectInformationRepository>();
@@ -246,6 +246,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IFundingCaptureRepository, FundingCaptureRepository>();
             services.AddScoped<IFundingDetailRepository, FundingDetailRepository>();
             services.AddScoped<ISDARepository, SDARepository>();
+            services.AddScoped<Repository.Interfaces.FundingManagement.IPaymentScheduleRepository, Repository.Implementation.FundingManagement.PaymentScheduleRepository>();
 
             #endregion
 

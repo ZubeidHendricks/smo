@@ -48,7 +48,7 @@
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Programme Budget</label>
-                <input type="text" class="form-text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="fundingDetail.programmeBudget" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-inputNumber>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Amount Awarded</label>
@@ -56,19 +56,19 @@
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Allocated Amount</label>
-                <input type="text" class="form-text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-inputNumber>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">TPA Allocated Amount</label>
-                <input type="text" class="form-text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-inputNumber>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Programme Balance</label>
-                <input type="text" class="form-text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-inputNumber>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">TPA Paid</label>
-                <input type="text" class="form-text" pInputText [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-inputNumber>
             </div>
         </div>
     </p-panel>

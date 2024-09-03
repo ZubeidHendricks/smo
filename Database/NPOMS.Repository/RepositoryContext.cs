@@ -230,7 +230,8 @@ namespace NPOMS.Repository
         public DbSet<Document> Documents { get; set; }
         public DbSet<FundingDetail> Fundings { get; set; }
         public DbSet<FundingCapture> FundingCaptures { get; set; }
-        //public DbSet<Domain.FundingManagement.PaymentSchedule> FMPaymentSchedules { get; set; }
+        public DbSet<Domain.FundingManagement.PaymentSchedule> FMPaymentSchedules { get; set; }
+        public DbSet<PaymentScheduleItem> PaymentScheduleItems { get; set; }
         public DbSet<SDA> SDAs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MessageService } from 'primeng/api';
 import { DropdownTypeEnum } from 'src/app/models/enums';
@@ -19,6 +19,9 @@ export class FCFundingDetailComponent implements OnInit {
   @Input() toggleable: boolean;
   @Input() npo: INpoViewModel;
   @Input() fundingDetail: IFundingDetailViewModel;
+  @Output() paymentFrequencyChanged: EventEmitter<number> = new EventEmitter<number>();
+  @Output() startDateChanged: EventEmitter<string> = new EventEmitter<string>();
+  @Output() amountAwardedChanged: EventEmitter<number> = new EventEmitter<number>();
 
   private _validated: boolean;
   @Input()
@@ -86,5 +89,9 @@ export class FCFundingDetailComponent implements OnInit {
     this.fundingDetail.frequencyId = this.selectedPaymentFrequency ? this.selectedPaymentFrequency.id : null;
     this.fundingDetail.amountAwarded = this.fundingDetail.amountAwarded ? this.fundingDetail.amountAwarded : 0;
     this._fundingManagementRepo.updateFundingDetail(this.fundingDetail).subscribe();
+
+    this.paymentFrequencyChanged.emit(this.fundingDetail.frequencyId);
+    this.startDateChanged.emit(this.fundingDetail.startDate);
+    this.amountAwardedChanged.emit(this.fundingDetail.amountAwarded);
   }
 }

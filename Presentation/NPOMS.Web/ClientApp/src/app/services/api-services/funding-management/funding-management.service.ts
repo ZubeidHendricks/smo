@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
-import { IBankDetailViewModel, IDocumentViewModel, IFundingCaptureViewModel, IFundingDetailViewModel, INpoViewModel, ISDAViewModel } from 'src/app/models/interfaces';
+import { IBankDetailViewModel, IDocumentViewModel, IFundingCaptureViewModel, IFundingDetailViewModel, INpoViewModel, IPaymentScheduleViewModel, ISDAViewModel } from 'src/app/models/interfaces';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -54,6 +54,16 @@ export class FundingManagementService {
   public updateSDA(sda: ISDAViewModel) {
     const url = `${this.fundingManagementUrl}/service-delivery-area`;
     return this._http.put<ISDAViewModel>(url, sda, httpOptions);
+  }
+
+  public generatePaymentSchedule(fundingCaptureId: number, frequencyId: number) {
+    const url = `${this.fundingManagementUrl}/fundingCaptureId/${fundingCaptureId}/frequencyId/${frequencyId}`;
+    return this._http.get<IPaymentScheduleViewModel>(url, httpOptions);
+  }
+
+  public updatePaymentSchedules(paymentSchedule: IPaymentScheduleViewModel) {
+    const url = `${this.fundingManagementUrl}/payment-schedule`;
+    return this._http.put<IPaymentScheduleViewModel>(url, paymentSchedule, httpOptions);
   }
 
   public updateBankDetails(bankDetail: IBankDetailViewModel) {

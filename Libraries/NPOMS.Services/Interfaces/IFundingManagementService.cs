@@ -6,7 +6,7 @@ namespace NPOMS.Services.Interfaces
 {
     public interface IFundingManagementService
     {
-        Task<IEnumerable<NpoViewModel>> GetNposForFunding();
+        Task<IEnumerable<NpoViewModel>> GetNposForFunding(string userIdentifier);
 
         Task<bool> CanCaptureFunding(int financialYearId, int programmeId, int subProgrammeId, int subProgrammeTypeId);
 
@@ -19,6 +19,10 @@ namespace NPOMS.Services.Interfaces
         Task UpdateFundingDetail(FundingDetailViewModel model, string userIdentifier);
 
         Task UpdateSDA(SDAViewModel model, string userIdentifier);
+
+        Task<PaymentScheduleViewModel> GeneratePaymentSchedule(int fundingCaptureId, int frequencyId);
+
+        Task UpdatePaymentSchedules(PaymentScheduleViewModel model, string userIdentifier);
 
         Task UpdateBankDetail(BankDetailViewModel model, string userIdentifier);
 

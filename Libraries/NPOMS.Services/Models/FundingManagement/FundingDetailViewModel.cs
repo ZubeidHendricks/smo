@@ -27,5 +27,6 @@ namespace NPOMS.Services.Models.FundingManagement
         public int CalculationTypeId { get; set; }
         public string CalculationTypeName { get; set; }
         public bool IsActive { get; set; }
+        public decimal? ProgrammeBudget { get; set; }
     }
 }

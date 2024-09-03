@@ -13,6 +13,7 @@
 
         public FundingDetailViewModel FundingDetailViewModel { get; set; }
         public SDAViewModel SDAViewModel { get; set; }
+        public PaymentScheduleViewModel PaymentScheduleViewModel { get; set; }
         public BankDetailViewModel BankDetailViewModel { get; set; }
         public DocumentViewModel DocumentViewModel { get; set; }
     }

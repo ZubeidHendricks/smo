@@ -87,15 +87,15 @@ export class FundingCaptureListComponent implements OnInit {
     });
 
     this.cols = [
-      { header: 'Financial Year', width: '10%' },
-      { header: 'Programme', width: '10%' },
+      { header: 'Fin. Year', width: '8%' },
+      { header: 'Programme', width: '12%' },
       { header: 'Sub-Programme Type', width: '10%' },
       { header: 'Service Delivery Area', width: '10%' },
       { header: 'Payment Frequency', width: '10%' },
       { header: 'Programme Budget', width: '10%' },
       { header: 'Amount Awarded', width: '10%' },
       { header: 'Amount Paid', width: '10%' },
-      { header: 'Status', width: '7%' }
+      { header: 'Status', width: '10%' }
     ];
   }
 
@@ -392,6 +392,31 @@ export class FundingCaptureListComponent implements OnInit {
   }
 
   public updateButtonItems() {
+    // Show all buttons
+    this.buttonItems[0].items.forEach(option => {
+      option.visible = true;
+    });
 
+    // Hide buttons based on status
+    switch (this.selectedFundingCapture.statusId) {
+      case StatusEnum.Saved:
+        this.buttonItemExists('Approve Funding');
+        break;
+      case StatusEnum.PendingApproval:
+        this.buttonItemExists('Edit Funding');
+        break;
+      case StatusEnum.Approved:
+      case StatusEnum.Declined:
+        this.buttonItemExists('Edit Funding');
+        this.buttonItemExists('Approve Funding');
+        break;
+    }
+  }
+
+  private buttonItemExists(label: string) {
+    let buttonItem = this.buttonItems[0].items.find(x => x.label === label);
+
+    if (buttonItem)
+      buttonItem.visible = false;
   }
 }

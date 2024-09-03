@@ -403,6 +403,7 @@ export interface IFrequency {
     name: string;
     systemName: string;
     isActive: boolean;
+    frequencyNumber: number;
 }
 
 export interface IFrequencyPeriod {
@@ -1950,6 +1951,7 @@ export interface IFundingCaptureViewModel {
 
     fundingDetailViewModel: IFundingDetailViewModel;
     sdaViewModel: ISDAViewModel;
+    paymentScheduleViewModel: IPaymentScheduleViewModel;
     bankDetailViewModel: IBankDetailViewModel;
     documentViewModel: IDocumentViewModel;
 }
@@ -1978,6 +1980,7 @@ export interface IFundingDetailViewModel {
     calculationTypeId: number;
     calculationTypeName: string;
     isActive: boolean;
+    programmeBudget: number;
 }
 
 export interface ISDAViewModel {
@@ -1987,6 +1990,33 @@ export interface ISDAViewModel {
     serviceDeliveryAreaName: string;
     placeId: number;
     placeName: string;
+    isActive: boolean;
+}
+
+export interface IPaymentScheduleViewModel {
+    id: number;
+    fundingCaptureId: number;
+    allocatedAmountTotal: string;
+    approvedAmountTotal: string;
+    paidAmountTotal: string;
+    allocatedAmountBalance: string;
+    approvedAmountBalance: string;
+    paidAmountBalance: string;
+    isActive: boolean;
+
+    paymentScheduleItemViewModels: IPaymentScheduleItemViewModel[];
+}
+
+export interface IPaymentScheduleItemViewModel {
+    id: number;
+    paymentScheduleId: number;
+    compliantCycleId: number;
+    cycleNumber: number;
+    paymentDate: string;
+    paymentStatus: string;
+    allocatedAmount: string;
+    approvedAmount: string;
+    paidAmount: string;
     isActive: boolean;
 }
 

@@ -38,7 +38,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var results = await _fundingManagementService.GetNposForFunding();
+                var results = await _fundingManagementService.GetNposForFunding(base.GetUserIdentifier());
                 return Ok(results);
             }
             catch (Exception ex)
@@ -134,6 +134,36 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside UpdateSDA action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("fundingCaptureId/{fundingCaptureId}/frequencyId/{frequencyId}", Name = "GeneratePaymentSchedule")]
+        public async Task<IActionResult> GeneratePaymentSchedule(int fundingCaptureId, int frequencyId)
+        {
+            try
+            {
+                var results = await this._fundingManagementService.GeneratePaymentSchedule(fundingCaptureId, frequencyId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GeneratePaymentSchedule action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("payment-schedule", Name = "UpdatePaymentSchedules")]
+        public async Task<IActionResult> UpdatePaymentSchedules([FromBody] PaymentScheduleViewModel model)
+        {
+            try
+            {
+                await this._fundingManagementService.UpdatePaymentSchedules(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdatePaymentSchedules action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

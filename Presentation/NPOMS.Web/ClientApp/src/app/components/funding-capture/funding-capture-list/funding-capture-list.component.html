@@ -22,7 +22,7 @@
                     {{col.header}}
                     <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                 </th>
-                <th style="width: 8%;">Actions</th>
+                <th style="width: 5%;">Actions</th>
             </tr>
             <tr>
                 <th></th>
@@ -44,7 +44,7 @@
                     <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                     <span class="p-text-bold p-ml-2"><b>{{rowData.name}} ({{rowData.refNo}})</b></span>
                 </td>
-                <td style="text-align: center;">
+                <td>
                     <button pButton pRipple type="button" label="Add" class="p-button-text" icon="fa fa-plus" (click)="add(rowData)" *ngIf="IsAuthorized(PermissionsEnum.AddFundingCapture)" pTooltip="Add Funding" tooltipPosition="top"></button>
                 </td>
             </tr>
@@ -57,7 +57,7 @@
                 <td>{{funding.fundingDetailViewModel.subProgrammeTypeName}}</td>
                 <td>{{funding.sdaViewModel.serviceDeliveryAreaName}}</td>
                 <td>{{funding.fundingDetailViewModel.frequencyName}}</td>
-                <td>{{0.00 | currency: 'R'}}</td>
+                <td>{{funding.fundingDetailViewModel.programmeBudget | currency: 'R'}}</td>
                 <td>{{funding.fundingDetailViewModel.amountAwarded | currency: 'R'}}</td>
                 <td>{{0.00 | currency: 'R'}}</td>
                 <td>{{funding.statusName}}</td>
