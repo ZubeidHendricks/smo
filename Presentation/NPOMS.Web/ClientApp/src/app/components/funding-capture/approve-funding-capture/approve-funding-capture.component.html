@@ -5,7 +5,7 @@
     <app-fc-funding-detail [toggleable]="false" [isEdit]="false" [npo]="npo" [fundingDetail]="fundingDetail" *ngIf="npo && fundingDetail"></app-fc-funding-detail>
     <app-fc-sda [toggleable]="false" [isEdit]="false" [sda]="sda" [npo]="npo" [fundingDetail]="fundingDetail" *ngIf="sda && npo && fundingDetail"></app-fc-sda>
     <app-fc-payment-schedule [toggleable]="false" [isEdit]="false" [paymentSchedule]="paymentSchedule" [paymentFrequencyId]="paymentFrequencyId" [startDate]="startDate" [amountAwarded]="amountAwarded" *ngIf="paymentSchedule"></app-fc-payment-schedule>
-    <app-fc-bank-detail [toggleable]="false" [isEdit]="false" [bankDetail]="bankDetail" [npo]="npo" [fundingDetail]="fundingDetail" [validated]="validated" *ngIf="bankDetail && npo && fundingDetail"></app-fc-bank-detail>
+    <app-fc-bank-detail [toggleable]="false" [isEdit]="false" [bankDetail]="bankDetail" [npo]="npo" [fundingDetail]="fundingDetail" *ngIf="bankDetail && npo && fundingDetail"></app-fc-bank-detail>
     <app-fc-document [toggleable]="false" [isEdit]="false" [document]="document" *ngIf="document"></app-fc-document>
     <app-fc-approval [isApproval]="true" [fundingCapture]="fundingCapture" *ngIf="fundingCapture"></app-fc-approval>
 </p-panel>
