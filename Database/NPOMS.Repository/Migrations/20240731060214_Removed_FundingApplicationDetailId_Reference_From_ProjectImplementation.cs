@@ -337,23 +337,23 @@ namespace NPOMS.Repository.Migrations
                 column: "CreatedDateTime",
                 value: new DateTime(2024, 7, 31, 8, 1, 59, 244, DateTimeKind.Local).AddTicks(5624));
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProjectImplementations_FundingApplicationDetails_FundingApplicationDetailId",
-                schema: "fa",
-                table: "ProjectImplementations",
-                column: "FundingApplicationDetailId",
-                principalSchema: "fa",
-                principalTable: "FundingApplicationDetails",
-                principalColumn: "Id");
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_ProjectImplementations_FundingApplicationDetails_FundingApplicationDetailId",
+            //    schema: "fa",
+            //    table: "ProjectImplementations",
+            //    column: "FundingApplicationDetailId",
+            //    principalSchema: "fa",
+            //    principalTable: "FundingApplicationDetails",
+            //    principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_ProjectImplementations_FundingApplicationDetails_FundingApplicationDetailId",
-                schema: "fa",
-                table: "ProjectImplementations");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_ProjectImplementations_FundingApplicationDetails_FundingApplicationDetailId",
+            //    schema: "fa",
+            //    table: "ProjectImplementations");
 
             migrationBuilder.AlterColumn<int>(
                 name: "FundingApplicationDetailId",
@@ -678,15 +678,15 @@ namespace NPOMS.Repository.Migrations
                 column: "CreatedDateTime",
                 value: new DateTime(2024, 7, 31, 1, 41, 45, 564, DateTimeKind.Local).AddTicks(8992));
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_ProjectImplementations_FundingApplicationDetails_FundingApplicationDetailId",
-                schema: "fa",
-                table: "ProjectImplementations",
-                column: "FundingApplicationDetailId",
-                principalSchema: "fa",
-                principalTable: "FundingApplicationDetails",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_ProjectImplementations_FundingApplicationDetails_FundingApplicationDetailId",
+            //    schema: "fa",
+            //    table: "ProjectImplementations",
+            //    column: "FundingApplicationDetailId",
+            //    principalSchema: "fa",
+            //    principalTable: "FundingApplicationDetails",
+            //    principalColumn: "Id",
+            //    onDelete: ReferentialAction.Cascade);
         }
     }
 }

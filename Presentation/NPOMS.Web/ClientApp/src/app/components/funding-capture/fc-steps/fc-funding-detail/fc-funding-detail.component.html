@@ -1,0 +1,76 @@
+<p-panel [style]="{'font-size':'12px'}" header="Funding" [toggleable]="toggleable">
+    <p-panel [style]="{'font-size':'12px'}" header="Funding Details">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Organisation</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Allow Variable Funding</label>
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="fundingDetail.allowVariableFunding" [ngModelOptions]="{standalone: true}" (onChange)="valueChanged()" [disabled]="!isEdit"></p-selectButton>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">C-Code</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="npo.cCode" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Allow Claims</label>
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="fundingDetail.allowClaims" [ngModelOptions]="{standalone: true}" (onChange)="valueChanged()" [disabled]="!isEdit"></p-selectButton>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Financial Year</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="fundingDetail.financialYearName" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Programme</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="fundingDetail.programmeName" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Start Date</label>
+                <p-calendar [(ngModel)]="fundingDetail.startDate" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [minDate]="minDate" [maxDate]="maxDate" [readonlyInput]="true" (onSelect)="valueChanged()" #startDate="ngModel" [ngClass]="{'ng-dirty': (startDate.invalid && validated) || (startDate.dirty && startDate.invalid)}" required [disabled]="!isEdit"></p-calendar>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Sub-Programme</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="fundingDetail.subProgrammeName" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Payment Frequency</label>
+                <p-dropdown *ngIf="isEdit" [options]="paymentFrequencies" placeholder="Select a Payment Frequency" optionLabel="name" [(ngModel)]="selectedPaymentFrequency" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="valueChanged()" #frequency="ngModel" [ngClass]="{'ng-dirty': (frequency.invalid && validated) || (frequency.dirty && frequency.invalid)}" required></p-dropdown>
+                <input *ngIf="!isEdit" type="text" class="form-text" pInputText [(ngModel)]="fundingDetail.frequencyName" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Sub-Programme Type</label>
+                <input type="text" class="form-text" pInputText [(ngModel)]="fundingDetail.subProgrammeTypeName" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+    </p-panel>
+    <div style="height: 10px;"></div>
+    <p-panel [style]="{'font-size':'12px'}" header="Amounts">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Programme Budget</label>
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="fundingDetail.programmeBudget" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-inputNumber>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="mandatory-content">Amount Awarded</label>
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="fundingDetail.amountAwarded" [ngModelOptions]="{standalone: true}" (onInput)="valueChanged()" (onBlur)="valueChanged()" #amountAwarded="ngModel" [ngClass]="{'ng-dirty': (amountAwarded.invalid && validated) || (amountAwarded.dirty && amountAwarded.invalid)}" required [disabled]="!isEdit"></p-inputNumber>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Allocated Amount</label>
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-inputNumber>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">TPA Allocated Amount</label>
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-inputNumber>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Programme Balance</label>
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-inputNumber>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">TPA Paid</label>
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" [disabled]="true"></p-inputNumber>
+            </div>
+        </div>
+    </p-panel>
+</p-panel>

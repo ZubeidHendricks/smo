@@ -9,5 +9,7 @@ namespace NPOMS.Services.Models
 		public string SystemName { get; set; }
 
 		public bool IsActive { get; set; }
+
+		public string DepartmentCode { get; set; }
 	}
 }

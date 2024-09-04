@@ -122,7 +122,6 @@ export class ViewFundingApplicationComponent implements OnInit {
   }
 
   getfinFund(event: FinancialMatters) {
-    // console.log('event from Edit', JSON.stringify(event));
   }
 
   private loadApplication() {

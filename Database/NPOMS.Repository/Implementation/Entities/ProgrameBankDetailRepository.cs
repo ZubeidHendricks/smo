@@ -41,5 +41,10 @@ namespace NPOMS.Repository.Implementation.Entities
                              .Include(x => x.ApprovalStatus)
                              .AsNoTracking().ToListAsync();
         }
+
+        public async Task<ProgramBankDetails> GetById(int id)
+        {
+            return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+        }
     }
 }

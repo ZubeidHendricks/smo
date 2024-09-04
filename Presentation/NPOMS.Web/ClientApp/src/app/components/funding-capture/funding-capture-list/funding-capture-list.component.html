@@ -1,0 +1,125 @@
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="List of Funding Capture for Organisations">
+    <div class="p-grid">
+        <div class="p-col-fixed">
+            
+        </div>
+        <div class="p-col">
+            <div class="p-d-flex">
+                <span class="p-input-icon-left p-ml-auto">
+                    <i class="fa fa-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Search Keyword" />
+                </span>
+            </div>
+        </div>
+    </div>
+    <p-table [rowHover]="true" #dt [style]="{'border':'none'}" sortMode="multiple" [columns]="cols" [paginator]="true" [rows]="10" [value]="npos" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" 
+    [globalFilterFields]="['refNo','name','organisationType.name','approvalStatus.name']" dataKey="name">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th style="width: 5%;"></th>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                </th>
+                <th style="width: 5%;">Actions</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th><p-columnFilter type="text" matchMode="contains" field="refNo"></p-columnFilter></th>
+                <th><p-columnFilter type="text" matchMode="contains" field="refNo"></p-columnFilter></th>
+                <th><p-columnFilter type="text" matchMode="contains" field="refNo"></p-columnFilter></th>
+                <th><p-columnFilter type="text" matchMode="contains" field="refNo"></p-columnFilter></th>
+                <th><p-columnFilter type="text" matchMode="contains" field="refNo"></p-columnFilter></th>
+                <th><p-columnFilter type="text" matchMode="contains" field="refNo"></p-columnFilter></th>
+                <th><p-columnFilter type="text" matchMode="contains" field="refNo"></p-columnFilter></th>
+                <th><p-columnFilter type="text" matchMode="contains" field="refNo"></p-columnFilter></th>
+                <th><p-columnFilter type="text" matchMode="contains" field="refNo"></p-columnFilter></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
+            <tr>
+                <td colspan="10">
+                    <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                    <span class="p-text-bold p-ml-2"><b>{{rowData.name}} ({{rowData.refNo}})</b></span>
+                </td>
+                <td>
+                    <button pButton pRipple type="button" label="Add" class="p-button-text" icon="fa fa-plus" (click)="add(rowData)" *ngIf="IsAuthorized(PermissionsEnum.AddFundingCapture)" pTooltip="Add Funding" tooltipPosition="top"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-rowData let-rowIndex="rowIndex">
+            <tr class="default-font" *ngFor="let funding of rowData.fundingCaptureViewModels; let i = index">
+                <td style="text-align: center;">{{i + 1}}</td>
+                <td>{{funding.financialYearName}}</td>
+                <td>{{funding.fundingDetailViewModel.programmeName}}</td>
+                <td>{{funding.fundingDetailViewModel.subProgrammeTypeName}}</td>
+                <td>{{funding.sdaViewModel.serviceDeliveryAreaName}}</td>
+                <td>{{funding.fundingDetailViewModel.frequencyName}}</td>
+                <td>{{funding.fundingDetailViewModel.programmeBudget | currency: 'R'}}</td>
+                <td>{{funding.fundingDetailViewModel.amountAwarded | currency: 'R'}}</td>
+                <td>{{0.00 | currency: 'R'}}</td>
+                <td>{{funding.statusName}}</td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedFundingCapture=funding; menu.toggle($event); updateButtonItems();" pTooltip="Actions" tooltipPosition="left"></button>
+                    <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="11" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
+
+<p-dialog header="New Funding Capture" 
+          [(visible)]="displayDialog" 
+          [style]="{width: '75vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-fluid p-formgrid p-grid">
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Organisation</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedNpo.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Programme</label>
+            <p-dropdown [options]="filteredProgrammes" placeholder="Select a Programme" optionLabel="name" [(ngModel)]="selectedProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)"></p-dropdown>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="non-mandatory-content">C-Code</label>
+            <input type="text" class="form-text" pInputText [(ngModel)]="selectedNpo.cCode" [ngModelOptions]="{standalone: true}" [disabled]="true">
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Sub-Programme</label>
+            <p-dropdown [options]="filteredSubProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="subProgrammeChange($event.value)"></p-dropdown>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Financial Year</label>
+            <p-dropdown [options]="financialYears" placeholder="Select an Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <label class="mandatory-content">Sub-Programme Type</label>
+            <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSave() (click)="save()"></button>
+    </ng-template>
+</p-dialog>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>
+
+<app-download-funding-capture></app-download-funding-capture>

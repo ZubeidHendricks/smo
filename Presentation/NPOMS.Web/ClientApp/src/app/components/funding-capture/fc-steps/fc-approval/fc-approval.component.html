@@ -1,0 +1,39 @@
+<div style="height: 10px;"></div>
+<p-panel [style]="{'font-size':'12px'}" header="Approval">
+    <div class="p-fluid">
+        <div class="p-field p-grid">
+            <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 mandatory-content">Approve/Decline:</label>
+            <div class="p-col-12 p-md-10">
+                <p-dropdown *ngIf="isApproval" [options]="acceptDeclineDropdown" placeholder="Select an option" optionLabel="label" [(ngModel)]="selectedOption" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+                <input *ngIf="!isApproval" type="text" class="form-text" pInputText [(ngModel)]="fundingCapture.statusName" [ngModelOptions]="{standalone: true}" [disabled]="true">
+            </div>
+        </div>
+        <div class="p-field p-grid">
+            <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0" [ngClass]="getClassName('approver')">Comment:</label>
+            <div class="p-col-12 p-md-10">
+                <textarea rows="5" cols="30" pInputTextarea autoResize="autoResize" class="form-text" [(ngModel)]="fundingCapture.approverComment" [disabled]="!isApproval"></textarea>                
+            </div>
+        </div>
+        <div *ngIf="!isApproval">
+            <div class="p-field p-grid">
+                <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 non-mandatory-content">Approved By:</label>
+                <div class="p-col-12 p-md-10">
+                    <input type="text" class="form-text" pInputText [(ngModel)]="fundingCapture.approverUserName" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                </div>
+            </div>
+            <div class="p-field p-grid">
+                <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 non-mandatory-content">Date:</label>
+                <div class="p-col-12 p-md-10">
+                    <input type="text" class="form-text" pInputText [(ngModel)]="fundingCapture.approvedDate" [ngModelOptions]="{standalone: true}" [disabled]="true">
+                </div>
+            </div>
+        </div>        
+    </div>
+    <div *ngIf="isApproval">
+        <div class="p-grid p-nogutter p-justify-end">
+            <p-button label="Submit" icon="pi pi-thumbs-up" [disabled]=disableSubmit() (onClick)="updateApproverDetails()"></p-button>
+            &nbsp;
+            <p-button label="Cancel" icon="pi pi-times" (onClick)="cancel()"></p-button>
+        </div> 
+    </div>
+</p-panel>

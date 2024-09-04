@@ -1,0 +1,199 @@
+<div *ngIf="_showViewer">
+    <div id="pdfContent">
+        <div class="container">
+            <div id="navbar-container">
+                <div class="navbar-header">
+                    <img src="../../assets/Images/wc_logo-small.png" class="d-none d-lg-block" alt="" style="width: 150px"/>
+                    <span class="navbar-text" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: bold; font-size: 1.5em">{{headerText}}</span>
+                    <br>
+                </div>
+            </div>
+            <br>
+            <p-table [value]="_emptyArray" *ngIf="npo && fundingDetail" [tableStyle]="{ 'font-size': '10px'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="4">Funding Details</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-funding>
+                    <tr>
+                        <td style="width: 25%;"><b>Organisation</b></td>
+                        <td style="width: 25%">{{npo.name}}</td>
+                        <td style="width: 25%;"><b>Allow Variable Funding</b></td>
+                        <td style="width: 25%">{{fundingDetail.allowVariableFunding ? 'Yes' : 'No'}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%;"><b>C-Code</b></td>
+                        <td style="width: 25%">{{npo.cCode}}</td>
+                        <td style="width: 25%;"><b>Allow Claims</b></td>
+                        <td style="width: 25%">{{fundingDetail.allowClaims ? 'Yes' : 'No'}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%;"><b>Financial Year</b></td>
+                        <td style="width: 25%">{{fundingDetail.financialYearName}}</td>
+                        <td style="width: 25%;"><b>Programme</b></td>
+                        <td style="width: 25%">{{fundingDetail.programmeName}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%;"><b>Start Date</b></td>
+                        <td style="width: 25%">{{fundingDetail.startDate}}</td>
+                        <td style="width: 25%;"><b>Sub-Programme</b></td>
+                        <td style="width: 25%">{{fundingDetail.subProgrammeName}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%;"><b>Payment Frequency</b></td>
+                        <td style="width: 25%">{{fundingDetail.frequencyName}}</td>
+                        <td style="width: 25%;"><b>Sub-Programme Type</b></td>
+                        <td style="width: 25%">{{fundingDetail.subProgrammeTypeName}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <br>
+            <p-table [value]="_emptyArray" *ngIf="fundingDetail" [tableStyle]="{ 'font-size': '10px'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="4">Amounts</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-funding>
+                    <tr>
+                        <td style="width: 25%;"><b>Programme Budget</b></td>
+                        <td style="width: 25%">{{fundingDetail.programmeBudget | currency: 'R'}}</td>
+                        <td style="width: 25%;"><b>Amount Awarded</b></td>
+                        <td style="width: 25%">{{fundingDetail.amountAwarded | currency: 'R'}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%;"><b>Allocated Amount</b></td>
+                        <td style="width: 25%">{{0.00 | currency: 'R'}}</td>
+                        <td style="width: 25%;"><b>TPA Allocated Amount</b></td>
+                        <td style="width: 25%">{{0.00 | currency: 'R'}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%;"><b>Programme Balance</b></td>
+                        <td style="width: 25%">{{0.00 | currency: 'R'}}</td>
+                        <td style="width: 25%;"><b>TPA Paid</b></td>
+                        <td style="width: 25%">{{0.00 | currency: 'R'}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <br>
+            <p-table [value]="_emptyArray" *ngIf="sda" [tableStyle]="{ 'font-size': '10px'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="4">Service Delivery Area</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-service>
+                    <tr>
+                        <td style="width: 25%;"><b>Service Delivery Area</b></td>
+                        <td style="width: 25%">{{sda.serviceDeliveryAreaName}}</td>
+                        <td style="width: 25%;"><b>Place</b></td>
+                        <td style="width: 25%">{{sda.placeName}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <br>
+            <p-table [value]="paymentSchedule.paymentScheduleItemViewModels" *ngIf="paymentSchedule" [tableStyle]="{ 'font-size': '10px'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="13">Payment Schedule</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th colspan="2">Compliant Cycle</th>
+                        <th colspan="2">Payment Date</th>
+                        <th colspan="2">Payment Status</th>
+                        <th colspan="2">Allocated Amount</th>
+                        <th colspan="2">Approved Amount</th>
+                        <th colspan="2">Paid Amount</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-schedule let-rowIndex="rowIndex">
+                    <tr>
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td colspan="2">{{schedule.cycleNumber}}</td>
+                        <td colspan="2">{{schedule.paymentDate | date : "yyyy-MM-dd"}}</td>
+                        <td colspan="2">{{schedule.paymentStatus}}</td>
+                        <td colspan="2">{{schedule.allocatedAmount | currency: 'R'}}</td>
+                        <td colspan="2">{{schedule.approvedAmount | currency: 'R'}}</td>
+                        <td colspan="2">{{schedule.paidAmount | currency: 'R'}}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <tr>
+                        <td colspan="7" style="text-align: right;">Total Allocated</td>
+                        <td colspan="2">{{paymentSchedule.allocatedAmountTotal | currency: 'R'}}</td>
+                        <td colspan="2">{{paymentSchedule.approvedAmountTotal | currency: 'R'}}</td>
+                        <td colspan="2">{{paymentSchedule.paidAmountTotal | currency: 'R'}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" style="text-align: right;">Balance</td>
+                        <td colspan="2">{{paymentSchedule.allocatedAmountBalance | currency: 'R'}}</td>
+                        <td colspan="2">{{paymentSchedule.approvedAmountBalance | currency: 'R'}}</td>
+                        <td colspan="2">{{paymentSchedule.paidAmountBalance | currency: 'R'}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <br>
+            <p-table [value]="_emptyArray" *ngIf="bankDetail" [tableStyle]="{ 'font-size': '10px'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="4">Bank Details</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-bank>
+                    <tr>
+                        <td style="width: 25%;"><b>Bank</b></td>
+                        <td style="width: 25%">{{bankDetail.bankName}}</td>
+                        <td style="width: 25%;"><b>Account Type</b></td>
+                        <td style="width: 25%">{{bankDetail.accountTypeName}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%;"><b>Branch</b></td>
+                        <td style="width: 25%">{{bankDetail.branchName}}</td>
+                        <td style="width: 25%;"><b>Account Number</b></td>
+                        <td style="width: 25%">{{bankDetail.accountNumber}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <br>
+            <p-table [value]="_emptyArray" *ngIf="document" [tableStyle]="{ 'font-size': '10px'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="4">Documents</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-doc>
+                    <tr>
+                        <td style="width: 25%;"><b>TPA Link</b></td>
+                        <td style="width: 25%">{{document.tpaLink}}</td>
+                        <td style="width: 25%;"><b></b></td>
+                        <td style="width: 25%"></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+            <br>
+            <p-table [value]="_emptyArray" *ngIf="fundingCapture" [tableStyle]="{ 'font-size': '10px'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th colspan="4">Approval</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-approver>
+                    <tr>
+                        <td style="width: 25%;"><b>Approve/Decline</b></td>
+                        <td style="width: 25%">{{fundingCapture.statusName}}</td>
+                        <td style="width: 25%;"><b>Comment</b></td>
+                        <td style="width: 25%">{{fundingCapture.approverComment}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%;"><b>Approved By</b></td>
+                        <td style="width: 25%">{{fundingCapture.approverUserName}}</td>
+                        <td style="width: 25%;"><b>Date</b></td>
+                        <td style="width: 25%">{{fundingCapture.approvedDate}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

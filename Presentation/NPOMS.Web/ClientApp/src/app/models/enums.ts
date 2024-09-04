@@ -148,7 +148,7 @@ export enum RoleEnum {
     ProgrammeCapturer = 11,
     ProgrammeApprover = 12,
     ProgrammeViewOnly = 13,
-    DOHApprover =15
+    DOHApprover = 15
 }
 
 export enum ServiceProvisionStepsEnum {
@@ -219,7 +219,7 @@ export enum StatusEnum {
     Recommended = 20,
     StronglyRecommended = 21,
     NonCompliance = 22,
-    PendingReviewerSatisfaction = 23    
+    PendingReviewerSatisfaction = 23
 }
 
 export enum AuditorOrAffiliationEntityTypeEnum {
@@ -247,6 +247,7 @@ export enum PermissionsEnum {
     ViewDashboardMenu = "TN.VDM",
     ViewTrainingMenu = "TN.VTM",
     ViewFundingMenu = "TN.VFM",
+    ViewFundingCaptureMenu = "TN.VFCM",
 
     /* USER ADMINISTRATION */
     AddUsers = "UA.AU",
@@ -403,7 +404,16 @@ export enum PermissionsEnum {
     /* Quick Capture*/
     ViewQC = "QC.View",
     EditQC = "QC.Edit",
-    DownloadQC = "QC.Download"
+    DownloadQC = "QC.Download",
+
+    /* Funding Capture */
+    AddFundingCapture = "FC.Add",
+    EditFundingCapture = "FC.Edit",
+    ViewFundingCapture = "FC.View",
+    ApproveFundingCapture = "FC.Approve",
+    DownloadFundingCapture = "FC.Download",
+    ShowFundingCaptureActions = "FC.SFCA",
+    DeleteFundingCapture = "FC.Delete"
 }
 
 export enum ReportTypeEnum {
@@ -612,4 +622,22 @@ export enum RecipientEntityEnum {
     Objective = 'Objective',
     SubRecipient = 'SubRecipient',
     SubSubRecipient = 'SubSubRecipient'
+}
+
+export enum FundingCaptureStepsEnum {
+    Funding = 0,
+    SDA = 1,
+    PaymentSchedule = 2,
+    BankDetail = 3,
+    Document = 4
+}
+
+export enum FundingTypeEnum {
+    Adhoc = 1,
+    Annual = 2
+}
+
+export enum CalculationTypeEnum {
+    Detailed = 1,
+    Summary = 2
 }

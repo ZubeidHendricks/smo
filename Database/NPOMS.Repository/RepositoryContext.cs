@@ -9,20 +9,12 @@ using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Evaluation;
+using NPOMS.Domain.FundingManagement;
 using NPOMS.Domain.Indicator;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
-using NPOMS.Repository.Configurations.Core;
-using NPOMS.Repository.Configurations.Dropdown;
-using NPOMS.Repository.Configurations.Entities;
-using NPOMS.Repository.Configurations.Lookup;
-using NPOMS.Repository.Configurations.Mapping;
 using NPOMS.Repository.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository
 {
@@ -113,7 +105,7 @@ namespace NPOMS.Repository
         public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
         public DbSet<Directorate> Directorates { get; set; }
         public DbSet<Bank> Banks { get; set; }
-        public DbSet<BankDetail> BankDetail { get; set; }
+        public DbSet<Domain.Entities.BankDetail> BankDetail { get; set; }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<AccountType> AccountTypes { get; set; }
         public DbSet<RegistrationStatus> RegistrationStatuses { get; set; }
@@ -124,6 +116,8 @@ namespace NPOMS.Repository
         public DbSet<PropertyType> PropertyTypes { get; set; }
         public DbSet<PropertySubType> PropertySubTypes { get; set; }
         public DbSet<StaffCategory> StaffCategories { get; set; }
+        public DbSet<CalculationType> CalculationTypes { get; set; }
+        public DbSet<FundingType> FundingTypes { get; set; }
 
         /* Entities */
         public DbSet<AccessStatus> AccessStatuses { get; set; }
@@ -154,10 +148,10 @@ namespace NPOMS.Repository
         //public DbSet<Status> Statuses { get; set; }
         public DbSet<SustainabilityPlan> SustainabilityPlans { get; set; }
         public DbSet<ServicesRendered> ServicesRendered { get; set; }
-        public DbSet<BankDetail> BankDetails { get; set; }
+        public DbSet<Domain.Entities.BankDetail> BankDetails { get; set; }
         public DbSet<CompliantCycleRule> CompliantCycleRules { get; set; }
         public DbSet<CompliantCycle> CompliantCycles { get; set; }
-        public DbSet<PaymentSchedule> PaymentSchedules { get; set; }
+        public DbSet<Domain.Entities.PaymentSchedule> PaymentSchedules { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<AuditorOrAffiliation> AuditorOrAffiliations { get; set; }
         public DbSet<StaffMemberProfile> StaffMemberProfiles { get; set; }
@@ -230,6 +224,15 @@ namespace NPOMS.Repository
         public DbSet<ManicipalityDemographic> ManicipalityDemographics { get; set; }
         public DbSet<SubDistrictDemographic> SubDistrictDemographics { get; set; }
         public DbSet<SubstructureDemographic> SubstructureDemographics { get; set; }
+
+        /* Funding Management*/
+        public DbSet<Domain.FundingManagement.BankDetail> FMBankDetails { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<FundingDetail> Fundings { get; set; }
+        public DbSet<FundingCapture> FundingCaptures { get; set; }
+        public DbSet<Domain.FundingManagement.PaymentSchedule> FMPaymentSchedules { get; set; }
+        public DbSet<PaymentScheduleItem> PaymentScheduleItems { get; set; }
+        public DbSet<SDA> SDAs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -17,79 +17,92 @@ namespace NPOMS.Repository.Configurations.Core
 				{
 					Id = 1,
 					Name = "System Administrator",
-					SystemName = "SystemAdmin"
+					SystemName = "SystemAdmin",
+					DepartmentCode = "ALL"
 				},
 				new Role
 				{
 					Id = 2,
 					Name = "Administrator",
-					SystemName = "Admin"
-				},
+					SystemName = "Admin",
+                    DepartmentCode = "ALL"
+                },
 				new Role
 				{
 					Id = 3,
 					Name = "Applicant",
-					SystemName = "Applicant"
-				},
+					SystemName = "Applicant",
+                    DepartmentCode = "ALL"
+                },
 				new Role
 				{
 					Id = 4,
 					Name = "Reviewer",
-					SystemName = "Reviewer"
-				},
+					SystemName = "Reviewer",
+                    DepartmentCode = "DOH"
+                },
 				new Role
 				{
 					Id = 5,
 					Name = "Main Reviewer",
-					SystemName = "MainReviewer"
-				},
+					SystemName = "MainReviewer",
+                    DepartmentCode = "DOH"
+                },
 				new Role
 				{
 					Id = 6,
 					Name = "PreEvaluator",
-					SystemName = "PreEvaluator"
+					SystemName = "PreEvaluator",
+                    DepartmentCode = "DSD"
                 },
                 new Role
                 {
                     Id = 7,
                     Name = "Evaluator",
-                    SystemName = "Evaluator"
+                    SystemName = "Evaluator",
+                    DepartmentCode = "DSD"
                 },
                 new Role
                 {
                     Id = 8,
                     Name = "Adjudicator",
-                    SystemName = "Adjudicator"
+                    SystemName = "Adjudicator",
+                    DepartmentCode = "DSD"
                 },
                 new Role
                 {
                     Id = 9,
                     Name = "Approver",
-                    SystemName = "Approver"
+                    SystemName = "Approver",
+                    DepartmentCode = "DSD"
                 },
 				new Role
 				{
 					Id = 10,
 					Name = "View Only",
-					SystemName = "ViewOnly"
-				},
+					SystemName = "ViewOnly",
+                    DepartmentCode = "DOH"
+                },
                 new Role
                 {
                     Id = 11,
                     Name = "Programme Capturer",
-                    SystemName = "ProgrammeCapturer"
+                    SystemName = "ProgrammeCapturer",
+                    DepartmentCode = "DSD"
                 },
                 new Role
                 {
                     Id = 12,
                     Name = "Programme Approver",
-                    SystemName = "ProgrammeApprover"
+                    SystemName = "ProgrammeApprover",
+                    DepartmentCode = "DSD"
                 },
                 new Role
                 {
                     Id = 13,
                     Name = "Programme viewer",
-                    SystemName = "ProgrammeViewOnly"
+                    SystemName = "ProgrammeViewOnly",
+                    DepartmentCode = "DSD"
                 }
             );
 		}

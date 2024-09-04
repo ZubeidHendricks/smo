@@ -100,6 +100,15 @@ namespace NPOMS.Services.Email
                 case EmailTemplateTypeEnum.DSDFundingApplicationSubmitted:
                     _template = new DSDFundingApplicationSubmitted();
                     break;
+                case EmailTemplateTypeEnum.NewFunding:
+                    _template = new NewFundingEmailTemplate();
+                    break;
+                case EmailTemplateTypeEnum.FundingStatusChangedPending:
+                    _template = new FundingStatusChangedPendingEmailTemplate();
+                    break;
+                case EmailTemplateTypeEnum.FundingStatusChanged:
+                    _template = new FundingStatusChangedEmailTemplate();
+                    break;
                 default:
 					_template = null;
 					break;

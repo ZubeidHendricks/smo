@@ -218,7 +218,6 @@ export class ReviewApplicationComponent implements OnInit {
   private loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-        console.log("review",results);
         this.activities = results.filter(x => x.isActive === true);
         this.loadSustainabilityPlans();
       },

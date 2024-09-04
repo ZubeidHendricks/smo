@@ -11,7 +11,7 @@ namespace NPOMS.Repository.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
+            /*migrationBuilder.DropForeignKey(
                 name: "FK_ProjectImplementations_FundingApplicationDetails_FundingApplicationDetailId",
                 schema: "fa",
                 table: "ProjectImplementations");
@@ -347,13 +347,13 @@ namespace NPOMS.Repository.Migrations
                 principalSchema: "fa",
                 principalTable: "FundingApplicationDetails",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade);*/
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
+            /*migrationBuilder.DropForeignKey(
                 name: "FK_ProjectImplementations_FundingApplicationDetails_FundingApplicationDetailId",
                 schema: "fa",
                 table: "ProjectImplementations");
@@ -686,7 +686,7 @@ namespace NPOMS.Repository.Migrations
                 column: "FundingApplicationDetailId",
                 principalSchema: "fa",
                 principalTable: "FundingApplicationDetails",
-                principalColumn: "Id");
+                principalColumn: "Id");*/
         }
     }
 }

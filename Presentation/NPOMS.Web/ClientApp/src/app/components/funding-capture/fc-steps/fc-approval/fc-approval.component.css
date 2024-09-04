@@ -1,0 +1,13 @@
+.mandatory-content::after {
+    content: "*";
+    color: rgb(195, 17, 47);
+}
+
+.mandatory-content, .non-mandatory-content {
+    font-size: 12px;
+    text-align: right;
+}
+
+.form-text {
+    width: 100%;
+}

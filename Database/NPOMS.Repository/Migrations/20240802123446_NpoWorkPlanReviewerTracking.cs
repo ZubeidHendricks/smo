@@ -11,7 +11,7 @@ namespace NPOMS.Repository.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
+            /*migrationBuilder.CreateTable(
                 name: "NpoWorkPlanReviewerTrackings",
                 schema: "dbo",
                 columns: table => new
@@ -356,13 +356,13 @@ namespace NPOMS.Repository.Migrations
                 name: "IX_NpoWorkPlanReviewerTrackings_ApplicationId",
                 schema: "dbo",
                 table: "NpoWorkPlanReviewerTrackings",
-                column: "ApplicationId");
+                column: "ApplicationId");*/
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+            /*migrationBuilder.DropTable(
                 name: "NpoWorkPlanReviewerTrackings",
                 schema: "dbo");
 
@@ -682,7 +682,7 @@ namespace NPOMS.Repository.Migrations
                 keyColumn: "Id",
                 keyValue: 8,
                 column: "CreatedDateTime",
-                value: new DateTime(2024, 7, 24, 13, 54, 49, 826, DateTimeKind.Local).AddTicks(963));
+                value: new DateTime(2024, 7, 24, 13, 54, 49, 826, DateTimeKind.Local).AddTicks(963));*/
         }
     }
 }
