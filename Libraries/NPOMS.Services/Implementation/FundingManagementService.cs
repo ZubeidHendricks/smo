@@ -34,7 +34,8 @@ namespace NPOMS.Services.Implementation
         private Repository.Interfaces.Entities.IPaymentScheduleRepository _paymentScheduleRepository;
         private IFrequencyRepository _frequencyRepository;
         private Repository.Interfaces.FundingManagement.IPaymentScheduleRepository _fundingPaymentScheduleRepository;
-        private IStatusRepository _statusRepository;
+        private IDropdownService _dropdownService;
+        private IProgrameBankDetailRepository _programeBankDetailRepository;
 
         #endregion
 
@@ -56,7 +57,8 @@ namespace NPOMS.Services.Implementation
             Repository.Interfaces.Entities.IPaymentScheduleRepository paymentScheduleRepository,
             IFrequencyRepository frequencyRepository,
             Repository.Interfaces.FundingManagement.IPaymentScheduleRepository fundingPaymentScheduleRepository,
-            IStatusRepository statusRepository
+            IDropdownService dropdownService,
+            IProgrameBankDetailRepository programeBankDetailRepository
             )
         {
             _npoRepository = npoRepository;
@@ -74,7 +76,8 @@ namespace NPOMS.Services.Implementation
             _paymentScheduleRepository = paymentScheduleRepository;
             _frequencyRepository = frequencyRepository;
             _fundingPaymentScheduleRepository = fundingPaymentScheduleRepository;
-            _statusRepository = statusRepository;
+            _dropdownService = dropdownService;
+            _programeBankDetailRepository = programeBankDetailRepository;
         }
 
         #endregion
@@ -227,7 +230,14 @@ namespace NPOMS.Services.Implementation
 
             var programmeBudget = await _programmeBudgetRepository.GetByIds(fundingDetail.Programme.DepartmentId, $"{fundingDetail.FinancialYear.Year}/{fundingDetail.FinancialYear.Year + 1}", fundingDetail.ProgrammeId, fundingDetail.SubProgrammeId, fundingDetail.SubProgrammeTypeId);
             var approvedBy = await _userRepository.GetUserByIdAsync(Convert.ToInt32(fundingCapture.ApproverUserId));
-            var status = await _statusRepository.GetById(fundingCapture.StatusId);
+            var status = await _dropdownService.GetStatusById(fundingCapture.StatusId);
+
+            var programmeBankDetail = await _programeBankDetailRepository.GetById(Convert.ToInt32(bankDetail.ProgramBankDetailsId));
+            var bank = programmeBankDetail != null ? await _dropdownService.GetBankById(programmeBankDetail.BankId) : null;
+            var branch = programmeBankDetail != null ? await _dropdownService.GetBranchById(programmeBankDetail.BranchId) : null;
+            var accountType = programmeBankDetail != null ? await _dropdownService.GetAccountTypeById(programmeBankDetail.AccountTypeId) : null;
+
+            var serviceDeliveryArea = await _dropdownService.GetServiceDeliveryAreaById(Convert.ToInt32(sda.ServiceDeliveryAreaId));
 
             var funding = new FundingCaptureViewModel
             {
@@ -271,6 +281,7 @@ namespace NPOMS.Services.Implementation
                     Id = sda.Id,
                     FundingCaptureId = sda.FundingCaptureId,
                     ServiceDeliveryAreaId = sda.ServiceDeliveryAreaId ?? null,
+                    ServiceDeliveryAreaName = serviceDeliveryArea != null ? serviceDeliveryArea.Name : string.Empty,
                     PlaceId = sda.PlaceId ?? null,
                     PlaceName = sda.Place != null ? sda.Place.Name : string.Empty,
                     IsActive = sda.IsActive
@@ -292,6 +303,10 @@ namespace NPOMS.Services.Implementation
                     Id = bankDetail.Id,
                     FundingCaptureId = bankDetail.FundingCaptureId,
                     ProgramBankDetailsId = bankDetail.ProgramBankDetailsId ?? null,
+                    BankName = bank != null ? bank.Name : string.Empty,
+                    BranchName = branch != null ? branch.Name : string.Empty,
+                    AccountTypeName = accountType != null ? accountType.Name : string.Empty,
+                    AccountNumber = programmeBankDetail != null ? programmeBankDetail.AccountNumber : string.Empty,
                     IsActive = bankDetail.IsActive
                 },
                 DocumentViewModel = new()

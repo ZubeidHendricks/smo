@@ -2030,6 +2030,10 @@ export interface IBankDetailViewModel {
     id: number;
     fundingCaptureId: number;
     programBankDetailsId: number;
+    bankName: string;
+    branchName: string;
+    accountTypeName: string;
+    accountNumber: string;
     isActive: boolean;
 }
 

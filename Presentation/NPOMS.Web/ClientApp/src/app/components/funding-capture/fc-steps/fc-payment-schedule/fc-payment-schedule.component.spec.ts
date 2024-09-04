@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FcPaymentScheduleComponent } from './fc-payment-schedule.component';
+import { FCPaymentScheduleComponent } from './fc-payment-schedule.component';
 
 describe('FcPaymentScheduleComponent', () => {
-  let component: FcPaymentScheduleComponent;
-  let fixture: ComponentFixture<FcPaymentScheduleComponent>;
+  let component: FCPaymentScheduleComponent;
+  let fixture: ComponentFixture<FCPaymentScheduleComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FcPaymentScheduleComponent ]
+      declarations: [FCPaymentScheduleComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FcPaymentScheduleComponent);
+    fixture = TestBed.createComponent(FCPaymentScheduleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

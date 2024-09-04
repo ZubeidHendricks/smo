@@ -33,5 +33,10 @@ namespace NPOMS.Repository.Implementation.Dropdown
                                 .ToListAsync();
             }
         }
+
+        public async Task<ServiceDeliveryArea> GetById(int id)
+        {
+            return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+        }
     }
 }

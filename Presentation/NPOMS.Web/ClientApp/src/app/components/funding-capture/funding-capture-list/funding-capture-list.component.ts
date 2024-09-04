@@ -10,6 +10,7 @@ import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { DownloadFundingCaptureComponent } from '../download-funding-capture/download-funding-capture.component';
 
 @Component({
   selector: 'app-funding-capture-list',
@@ -18,6 +19,8 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   providers: [MessageService, ConfirmationService]
 })
 export class FundingCaptureListComponent implements OnInit {
+
+  @ViewChild(DownloadFundingCaptureComponent) downloadFundingCaptureComponent: DownloadFundingCaptureComponent;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -168,8 +171,7 @@ export class FundingCaptureListComponent implements OnInit {
           label: 'Download Funding',
           icon: 'fa fa-download',
           command: () => {
-            // this._router.navigateByUrl('application/edit/' + this.selectedApplication.id + '/0');
-            alert('Download Funding feature under construction');
+            this.downloadFunding();
           }
         });
       }
@@ -188,6 +190,30 @@ export class FundingCaptureListComponent implements OnInit {
           (resp) => {
             this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Funding Capture successfully deleted.' });
             this.loadNpos();
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  private downloadFunding() {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to download this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this._spinner.show();
+        
+        this._fundingManagementRepo.getFundingById(this.selectedFundingCapture.id).subscribe(
+          (results) => {
+            this._spinner.hide();
+            this.downloadFundingCaptureComponent.generatePDF(results);
           },
           (err) => {
             this._loggerService.logException(err);
@@ -399,6 +425,7 @@ export class FundingCaptureListComponent implements OnInit {
     switch (this.selectedFundingCapture.statusId) {
       case StatusEnum.Saved:
         this.buttonItemExists('Approve Funding');
+        this.buttonItemExists('Download Funding');
         break;
       case StatusEnum.PendingApproval:
         this.buttonItemExists('Edit Funding');
