@@ -48,6 +48,10 @@ export class PrintWorkflowApplicationComponent implements OnInit {
     return FacilityTypeEnum;
   }
 
+  public get QuestionCategoryEnum(): typeof QuestionCategoryEnum {
+    return QuestionCategoryEnum;
+  }
+
   _recommendation: boolean = false;
   isChecked: boolean = false;
   isEvalDeclarationChecked: boolean = false;
@@ -1559,4 +1563,15 @@ onAprCheckboxChange(event: any) {
     return status;
   }
 
+  public onSaveResponse(value, question) {
+
+  }
+
+  public onSaveComment(value, question) {
+
+  }
+
+  public onSelectViewHistory(question) {
+    
+  }
 }

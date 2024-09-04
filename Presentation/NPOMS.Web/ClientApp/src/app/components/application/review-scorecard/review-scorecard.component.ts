@@ -187,6 +187,8 @@ export class ReviewScorecardComponent implements OnInit {
   cardlistCount: number;
   scorerOverallAvgScores: number[] = [];
 
+  ReviewerUpdatedDateTime: Date;
+
   constructor(
     private _router: Router,
     private _authService: AuthService,

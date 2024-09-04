@@ -74,6 +74,8 @@ export class PrintFundingApplicatonComponent implements OnInit {
     applicationDetails: {} as IApplicationDetails
   } as IFundingApplicationDetails;
 
+  source: string;
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -200,4 +202,23 @@ export class PrintFundingApplicatonComponent implements OnInit {
 
   }
 
+  public getfinFund(value) {
+
+  }
+
+  public loadObjectives() {
+
+  }
+
+  public loadActivities() {
+
+  }
+
+  public loadSustainabilityPlans() {
+
+  }
+
+  public loadResources() {
+    
+  }
 }
