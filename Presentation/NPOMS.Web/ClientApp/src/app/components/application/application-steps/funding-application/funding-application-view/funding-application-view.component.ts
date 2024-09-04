@@ -602,4 +602,11 @@ export class FundingApplicationViewComponent implements OnInit {
     this.activeStepChange.emit(this.activeStep);
   }
 
+  public addNewRow() {
+    
+  }
+
+  public showTable(value) {
+
+  }
 }

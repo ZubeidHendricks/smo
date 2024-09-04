@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="p-col">
-                    <input type="text" class="form-text" pInputText [(ngModel)]="npoProfile.addressInformation.physicalAddress" [ngModelOptions]="{standalone: true}" #physicalAddress="ngModel" [ngClass]="{'ng-dirty': (physicalAddress.invalid && validated) || (physicalAddress.dirty && npoName.invalid)}" [disabled]="true">
+                    <input type="text" class="form-text" pInputText [(ngModel)]="npoProfile.addressInformation.physicalAddress" [ngModelOptions]="{standalone: true}" #physicalAddress="ngModel" [ngClass]="{'ng-dirty': (physicalAddress.invalid && validated) || (physicalAddress.dirty && physicalAddress.invalid)}" [disabled]="true">
                     <small *ngIf="(physicalAddress.invalid && validated) || (physicalAddress.dirty && physicalAddress.invalid)" class="p-error">Physical Address is required.</small>
                 </div>
             </div>
@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <div class="p-col">
-                    <input type="text" class="form-text" pInputText [(ngModel)]="npoProfile.addressInformation.postalAddress" [ngModelOptions]="{standalone: true}" #postalAddress="ngModel" [ngClass]="{'ng-dirty': (postalAddress.invalid && validated) || (postalAddress.dirty && npoName.invalid)}" [disabled]="true">
+                    <input type="text" class="form-text" pInputText [(ngModel)]="npoProfile.addressInformation.postalAddress" [ngModelOptions]="{standalone: true}" #postalAddress="ngModel" [ngClass]="{'ng-dirty': (postalAddress.invalid && validated) || (postalAddress.dirty && postalAddress.invalid)}" [disabled]="true">
                     <small *ngIf="(postalAddress.invalid && validated) || (postalAddress.dirty && postalAddress.invalid)" class="p-error">Postal Address is required.</small>
                 </div>
             </div>

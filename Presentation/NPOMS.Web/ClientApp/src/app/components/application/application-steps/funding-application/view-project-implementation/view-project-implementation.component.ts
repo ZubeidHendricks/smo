@@ -308,6 +308,10 @@ export class ViewProjectImplementationComponent implements OnInit {
       }
     }
   }
+
+  public verifyDialog(value) {
+    
+  }
 }
 
 

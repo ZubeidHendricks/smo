@@ -51,6 +51,10 @@ export class WorkflowApplicationComponent implements OnInit {
     return FacilityTypeEnum;
   }
 
+  public get QuestionCategoryEnum(): typeof QuestionCategoryEnum {
+    return QuestionCategoryEnum;
+  }
+
   _recommendation: boolean = false;
   isChecked: boolean = false;
   isEvalDeclarationChecked: boolean = false;
@@ -1741,4 +1745,7 @@ onAprCheckboxChange(event: any) {
     this.displayHistory = true;
   }
 
+  public onDownloadDocument(value) {
+
+  }
 }

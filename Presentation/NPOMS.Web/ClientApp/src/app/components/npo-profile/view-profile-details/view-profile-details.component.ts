@@ -631,4 +631,12 @@ export class ViewProfileDetailsComponent implements OnInit {
   updateNpo(event) {
     this.npo = event
   }
+
+  public facilityFoundChange(value) {
+    
+  }
+
+  public updatePostalAddress(value) {
+    
+  }
 }

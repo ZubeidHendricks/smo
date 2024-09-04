@@ -24,7 +24,7 @@
             <div class="p-field p-grid">
                 <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 mandatory-content">Accept Sign-Off</label>
                 <div class="p-col-12 p-md-10">
-                    <p-checkbox [(ngModel)]="review.acceptSignOff" binary="true" inputId="binary" (onChange)="update()" [disabled]="isDisabled"></p-checkbox>
+                    <p-checkbox [(ngModel)]="review.acceptDeclaration" binary="true" inputId="binary" (onChange)="update()" [disabled]="isDisabled"></p-checkbox>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
             <div class="p-field p-grid">
                 <label class="p-col-12 p-mb-2 p-md-2 p-mb-md-0 non-mandatory-content">Accept Sign-Off</label>
                 <div class="p-col-12 p-md-10">
-                    <p-checkbox [(ngModel)]="review.acceptSignOff" binary="true" inputId="binary" [disabled]="isDisabled"></p-checkbox>
+                    <p-checkbox [(ngModel)]="review.acceptDeclaration" binary="true" inputId="binary" [disabled]="isDisabled"></p-checkbox>
                 </div>
             </div>
             <div class="p-field p-grid">

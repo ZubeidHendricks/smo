@@ -517,7 +517,7 @@ export class QuickCaptureListComponent implements OnInit {
       this.activeStep = goToStep;
   }
 
-  private loadObjectives() {
+  public loadObjectives() {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results.filter(x => x.isActive === true);
@@ -529,7 +529,7 @@ export class QuickCaptureListComponent implements OnInit {
     );
   }
 
-  private loadActivities() {
+  public loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);

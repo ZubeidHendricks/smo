@@ -446,4 +446,12 @@ export class ViewQuickCaptureDohComponent implements OnInit {
     else
       this.activeStep = goToStep;
   }
+
+  public loadActivities() {
+
+  }
+
+  public loadObjectives() {
+    
+  }
 }

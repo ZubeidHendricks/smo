@@ -874,7 +874,7 @@
                             <div *ngIf="!hasCapturedPreEvaluation">
                                 <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
                                 [disabled]="disableElement(preEvaluationQuestionnaire, 'PreEvaluation')" 
-                                (click)="submit(preEvaluationQuestionnaire, 'PreEvaluation')"
+                                (click)="submit(preEvaluationQuestionnaire, QuestionCategoryEnum.PreEvaluation)"
                                ></button>                                
                             </div>
                         </td>
@@ -1029,7 +1029,7 @@
                     <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedEvaluation">
                         <button pButton type="button" label="Submit" icon="fa fa-floppy-o" 
                         [disabled]="disableEvaluateElement(evaluationQuestionnaire)"
-                        (click)="submit(evaluationQuestionnaire,  'Evaluation')"></button>
+                        (click)="submit(evaluationQuestionnaire,  QuestionCategoryEnum.Evaluation)"></button>
                     </div>
                 </p-panel>
             </p-panel> 
@@ -1110,7 +1110,7 @@
                         </div>
                         <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedAdjudication">
                             <button pButton type="button" label="Submit" icon="fa fa-floppy-o"
-                            (click)="submit(evaluationQuestionnaire,  'Adjudication')" [disabled]="isAdjudicationDisable"></button>
+                            (click)="submit(evaluationQuestionnaire,  QuestionCategoryEnum.Adjudication)" [disabled]="isAdjudicationDisable"></button>
                         </div>
                     </p-panel>
             </p-panel>
@@ -1191,7 +1191,7 @@
                     </div>
                     <div class="p-grid p-nogutter p-justify-end" *ngIf="!hasCapturedApproval">
                         <button pButton type="button" label="Submit" icon="fa fa-floppy-o" [disabled]="isApprovalDisable"
-                        (click)="submit(evaluationQuestionnaire,  'Approval')"></button>
+                        (click)="submit(evaluationQuestionnaire,  QuestionCategoryEnum.Approval)"></button>
                     </div>
                 </p-panel>
             </p-panel>
