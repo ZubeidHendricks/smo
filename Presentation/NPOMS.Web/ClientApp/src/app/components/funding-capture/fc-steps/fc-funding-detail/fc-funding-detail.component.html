@@ -7,7 +7,7 @@
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Allow Variable Funding</label>
-                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="fundingDetail.allowVariableFunding" [ngModelOptions]="{standalone: true}" (onChange)="valueChanged()"></p-selectButton>
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="fundingDetail.allowVariableFunding" [ngModelOptions]="{standalone: true}" (onChange)="valueChanged()" [disabled]="!isEdit"></p-selectButton>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">C-Code</label>
@@ -15,7 +15,7 @@
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Allow Claims</label>
-                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="fundingDetail.allowClaims" [ngModelOptions]="{standalone: true}" (onChange)="valueChanged()"></p-selectButton>
+                <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="fundingDetail.allowClaims" [ngModelOptions]="{standalone: true}" (onChange)="valueChanged()" [disabled]="!isEdit"></p-selectButton>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Financial Year</label>
@@ -27,7 +27,7 @@
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Start Date</label>
-                <p-calendar [(ngModel)]="fundingDetail.startDate" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [minDate]="minDate" [maxDate]="maxDate" [readonlyInput]="true" (onSelect)="valueChanged()" #startDate="ngModel" [ngClass]="{'ng-dirty': (startDate.invalid && validated) || (startDate.dirty && startDate.invalid)}" required></p-calendar>
+                <p-calendar [(ngModel)]="fundingDetail.startDate" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" [minDate]="minDate" [maxDate]="maxDate" [readonlyInput]="true" (onSelect)="valueChanged()" #startDate="ngModel" [ngClass]="{'ng-dirty': (startDate.invalid && validated) || (startDate.dirty && startDate.invalid)}" required [disabled]="!isEdit"></p-calendar>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Sub-Programme</label>
@@ -35,7 +35,8 @@
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Payment Frequency</label>
-                <p-dropdown [options]="paymentFrequencies" placeholder="Select a Payment Frequency" optionLabel="name" [(ngModel)]="selectedPaymentFrequency" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="valueChanged()" #frequency="ngModel" [ngClass]="{'ng-dirty': (frequency.invalid && validated) || (frequency.dirty && frequency.invalid)}" required></p-dropdown>
+                <p-dropdown *ngIf="isEdit" [options]="paymentFrequencies" placeholder="Select a Payment Frequency" optionLabel="name" [(ngModel)]="selectedPaymentFrequency" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="valueChanged()" #frequency="ngModel" [ngClass]="{'ng-dirty': (frequency.invalid && validated) || (frequency.dirty && frequency.invalid)}" required></p-dropdown>
+                <input *ngIf="!isEdit" type="text" class="form-text" pInputText [(ngModel)]="fundingDetail.frequencyName" [ngModelOptions]="{standalone: true}" [disabled]="true">
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Sub-Programme Type</label>
@@ -52,7 +53,7 @@
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Amount Awarded</label>
-                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="fundingDetail.amountAwarded" [ngModelOptions]="{standalone: true}" (onInput)="valueChanged()" (onBlur)="valueChanged()" #amountAwarded="ngModel" [ngClass]="{'ng-dirty': (amountAwarded.invalid && validated) || (amountAwarded.dirty && amountAwarded.invalid)}" required></p-inputNumber>
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="fundingDetail.amountAwarded" [ngModelOptions]="{standalone: true}" (onInput)="valueChanged()" (onBlur)="valueChanged()" #amountAwarded="ngModel" [ngClass]="{'ng-dirty': (amountAwarded.invalid && validated) || (amountAwarded.dirty && amountAwarded.invalid)}" required [disabled]="!isEdit"></p-inputNumber>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Allocated Amount</label>

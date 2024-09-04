@@ -16,6 +16,7 @@ export class FCPaymentScheduleComponent implements OnInit {
   @Input() paymentSchedule: IPaymentScheduleViewModel;
   @Output() paymentScheduleChanged: EventEmitter<IPaymentScheduleViewModel> = new EventEmitter<IPaymentScheduleViewModel>();
   @Input() fundingCapture: IFundingCaptureViewModel;
+  @Input() isEdit: boolean;
 
   private _validated: boolean;
   @Input()
@@ -61,9 +62,9 @@ export class FCPaymentScheduleComponent implements OnInit {
   }
 
   private generateFundingPaymentSchedules() {
-    if (this.paymentFrequencyId && this.startDate && this.amountAwarded) {
+    if (this.paymentFrequencyId && this.startDate && this.amountAwarded && this.isEdit) {
       this._spinner.show();
-      this._fundingManagementRepo.generatePaymentSchedule(this.fundingCapture.id, this.paymentFrequencyId).subscribe(
+      this._fundingManagementRepo.generatePaymentSchedule(this.fundingCapture.id, this.paymentFrequencyId, this.startDate, this.amountAwarded).subscribe(
         (results) => {
           this.paymentSchedule = results;
           this.paymentScheduleChanged.emit(this.paymentSchedule);

@@ -38,6 +38,9 @@
         SatisficationApprovalEmail = 34,
         AddworkplanapproversEmails = 35,
         DSDFundingApplicationSubmitted = 36,
-        NpoReviewer = 37
+        NpoReviewer = 37,
+		NewFunding = 38,
+		FundingStatusChanged = 39,
+        FundingStatusChangedPending = 40
     }
 }

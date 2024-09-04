@@ -18,6 +18,7 @@ export class FCBankDetailComponent implements OnInit {
   @Input() bankDetail: IBankDetailViewModel;
   @Input() npo: INpoViewModel;
   @Input() fundingDetail: IFundingDetailViewModel;
+  @Input() isEdit: boolean;
 
   private _validated: boolean;
   @Input()

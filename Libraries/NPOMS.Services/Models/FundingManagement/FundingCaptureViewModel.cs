@@ -11,6 +11,10 @@
         public string StatusName { get; set; }
         public bool IsActive { get; set; }
 
+        public string? ApproverUserName { get; set; }
+        public string? ApprovedDate { get; set; }
+        public string? ApproverComment { get; set; }
+
         public FundingDetailViewModel FundingDetailViewModel { get; set; }
         public SDAViewModel SDAViewModel { get; set; }
         public PaymentScheduleViewModel PaymentScheduleViewModel { get; set; }

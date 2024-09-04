@@ -22,6 +22,7 @@ export class FCFundingDetailComponent implements OnInit {
   @Output() paymentFrequencyChanged: EventEmitter<number> = new EventEmitter<number>();
   @Output() startDateChanged: EventEmitter<string> = new EventEmitter<string>();
   @Output() amountAwardedChanged: EventEmitter<number> = new EventEmitter<number>();
+  @Input() isEdit: boolean;
 
   private _validated: boolean;
   @Input()

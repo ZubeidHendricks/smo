@@ -20,12 +20,14 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateSDA(SDAViewModel model, string userIdentifier);
 
-        Task<PaymentScheduleViewModel> GeneratePaymentSchedule(int fundingCaptureId, int frequencyId);
+        Task<PaymentScheduleViewModel> GeneratePaymentSchedule(int fundingCaptureId, int frequencyId, string startDate, double amountAwarded);
 
         Task UpdatePaymentSchedules(PaymentScheduleViewModel model, string userIdentifier);
 
         Task UpdateBankDetail(BankDetailViewModel model, string userIdentifier);
 
         Task UpdateDocument(DocumentViewModel model, string userIdentifier);
+
+        Task UpdateApproverDetail(FundingCaptureViewModel model, string userIdentifier);
     }
 }

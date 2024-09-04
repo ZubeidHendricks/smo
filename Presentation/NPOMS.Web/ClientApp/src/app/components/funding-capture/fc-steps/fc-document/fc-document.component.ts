@@ -11,6 +11,7 @@ export class FCDocumentComponent implements OnInit {
 
   @Input() toggleable: boolean;
   @Input() document: IDocumentViewModel;
+  @Input() isEdit: boolean;
 
   private _validated: boolean;
   @Input()

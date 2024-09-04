@@ -3,7 +3,7 @@
     <div class="p-fluid p-formgrid p-grid">
         <div class="p-field p-col-12 p-md-6">
             <label class="non-mandatory-content">TPA Link</label>
-            <input type="text" class="form-text" pInputText [(ngModel)]="document.tpaLink" [ngModelOptions]="{standalone: true}" (change)="valueChanged()">
+            <input type="text" class="form-text" pInputText [(ngModel)]="document.tpaLink" [ngModelOptions]="{standalone: true}" (change)="valueChanged()" [disabled]="!isEdit">
         </div>
     </div>
 </p-panel>

@@ -3,19 +3,23 @@
     <div class="p-fluid p-formgrid p-grid">
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Bank</label>
-            <p-dropdown [options]="filteredBanks" placeholder="Select a Bank" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="bankChange($event.value)" #bank="ngModel" [ngClass]="{'ng-dirty': (bank.invalid && validated) || (bank.dirty && bank.invalid)}" required></p-dropdown>
+            <p-dropdown *ngIf="isEdit" [options]="filteredBanks" placeholder="Select a Bank" optionLabel="name" [(ngModel)]="selectedBank" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="bankChange($event.value)" #bank="ngModel" [ngClass]="{'ng-dirty': (bank.invalid && validated) || (bank.dirty && bank.invalid)}" required></p-dropdown>
+            <input *ngIf="!isEdit && selectedBank" type="text" class="form-text" pInputText [(ngModel)]="selectedBank.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Account Type</label>
-            <p-dropdown [options]="filteredAccountTypes" placeholder="Select an Account Type" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="accountTypeChange($event.value)" #accountType="ngModel" [ngClass]="{'ng-dirty': (accountType.invalid && validated) || (accountType.dirty && accountType.invalid)}" required></p-dropdown>
+            <p-dropdown *ngIf="isEdit" [options]="filteredAccountTypes" placeholder="Select an Account Type" optionLabel="name" [(ngModel)]="selectedAccountType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="accountTypeChange($event.value)" #accountType="ngModel" [ngClass]="{'ng-dirty': (accountType.invalid && validated) || (accountType.dirty && accountType.invalid)}" required></p-dropdown>
+            <input *ngIf="!isEdit && selectedBranch" type="text" class="form-text" pInputText [(ngModel)]="selectedBranch.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Branch</label>
-            <p-dropdown [options]="filteredBranches" placeholder="Select a Branch" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="branchChange($event.value)" #branch="ngModel" [ngClass]="{'ng-dirty': (branch.invalid && validated) || (branch.dirty && branch.invalid)}" required></p-dropdown>
+            <p-dropdown *ngIf="isEdit" [options]="filteredBranches" placeholder="Select a Branch" optionLabel="name" [(ngModel)]="selectedBranch" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="branchChange($event.value)" #branch="ngModel" [ngClass]="{'ng-dirty': (branch.invalid && validated) || (branch.dirty && branch.invalid)}" required></p-dropdown>
+            <input *ngIf="!isEdit && selectedAccountType" type="text" class="form-text" pInputText [(ngModel)]="selectedAccountType.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
         <div class="p-field p-col-12 p-md-6">
             <label class="mandatory-content">Account Number</label>
-            <p-dropdown [options]="filteredBankDetails" placeholder="Select an Account Number" optionLabel="accountNumber" [(ngModel)]="selectedBankDetail" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="valueChanged()" #accountNumber="ngModel" [ngClass]="{'ng-dirty': (accountNumber.invalid && validated) || (accountNumber.dirty && accountNumber.invalid)}" required></p-dropdown>
+            <p-dropdown *ngIf="isEdit" [options]="filteredBankDetails" placeholder="Select an Account Number" optionLabel="accountNumber" [(ngModel)]="selectedBankDetail" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="valueChanged()" #accountNumber="ngModel" [ngClass]="{'ng-dirty': (accountNumber.invalid && validated) || (accountNumber.dirty && accountNumber.invalid)}" required></p-dropdown>
+            <input *ngIf="!isEdit && selectedBankDetail" type="text" class="form-text" pInputText [(ngModel)]="selectedBankDetail.accountNumber" [ngModelOptions]="{standalone: true}" [disabled]="true">
         </div>
     </div>    
 </p-panel>

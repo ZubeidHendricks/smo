@@ -27,6 +27,12 @@ namespace NPOMS.Domain.FundingManagement
 
         public DateTime? UpdatedDateTime { get; set; }
 
+        public string ApproverComment { get; set; }
+
+        public int? ApproverUserId { get; set; }
+
+        public DateTime? ApprovedDateTime { get; set; }
+
         public Npo Npo { get; set; }
 
         public FinancialYear FinancialYear { get; set; }

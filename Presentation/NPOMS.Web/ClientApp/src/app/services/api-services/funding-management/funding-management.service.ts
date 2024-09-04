@@ -56,8 +56,8 @@ export class FundingManagementService {
     return this._http.put<ISDAViewModel>(url, sda, httpOptions);
   }
 
-  public generatePaymentSchedule(fundingCaptureId: number, frequencyId: number) {
-    const url = `${this.fundingManagementUrl}/fundingCaptureId/${fundingCaptureId}/frequencyId/${frequencyId}`;
+  public generatePaymentSchedule(fundingCaptureId: number, frequencyId: number, startDate: string, amountAwarded: number) {
+    const url = `${this.fundingManagementUrl}/fundingCaptureId/${fundingCaptureId}/frequencyId/${frequencyId}/startDate/${startDate}/amountAwarded/${amountAwarded}`;
     return this._http.get<IPaymentScheduleViewModel>(url, httpOptions);
   }
 
@@ -74,5 +74,10 @@ export class FundingManagementService {
   public updateDocument(document: IDocumentViewModel) {
     const url = `${this.fundingManagementUrl}/document`;
     return this._http.put<IDocumentViewModel>(url, document, httpOptions);
+  }
+
+  public updateApproverDetail(fundingCapture: IFundingCaptureViewModel) {
+    const url = `${this.fundingManagementUrl}/approver-detail`;
+    return this._http.put<IFundingCaptureViewModel>(url, fundingCapture, httpOptions);
   }
 }

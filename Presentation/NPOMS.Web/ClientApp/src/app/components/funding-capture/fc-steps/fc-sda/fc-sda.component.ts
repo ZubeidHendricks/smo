@@ -18,6 +18,7 @@ export class FCSDAComponent implements OnInit {
   @Input() sda: ISDAViewModel;
   @Input() npo: INpoViewModel;
   @Input() fundingDetail: IFundingDetailViewModel;
+  @Input() isEdit: boolean;
 
   private _validated: boolean;
   @Input()
@@ -59,6 +60,7 @@ export class FCSDAComponent implements OnInit {
         });
 
         this.selectedSDA = this.sda.serviceDeliveryAreaId ? this.sdas.find(x => x.id === this.sda.serviceDeliveryAreaId) : null;
+        this.sda.serviceDeliveryAreaName = this.selectedSDA ? this.selectedSDA.name : null;
         this.loadPlaces();
       },
       (err) => {

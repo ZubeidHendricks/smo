@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MenuItem, Message, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { PermissionsEnum, StatusEnum } from 'src/app/models/enums';
 import { IBankDetailViewModel, IDocumentViewModel, IFundingCaptureViewModel, IFundingDetailViewModel, INpoViewModel, IPaymentScheduleViewModel, ISDAViewModel, IUser } from 'src/app/models/interfaces';
 import { FundingManagementService } from 'src/app/services/api-services/funding-management/funding-management.service';
@@ -12,7 +12,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   selector: 'app-edit-funding-capture',
   templateUrl: './edit-funding-capture.component.html',
   styleUrls: ['./edit-funding-capture.component.css'],
-  providers: [MessageService]
+  providers: [MessageService, ConfirmationService]
 })
 export class EditFundingCaptureComponent implements OnInit {
 
@@ -54,7 +54,8 @@ export class EditFundingCaptureComponent implements OnInit {
     private _activeRouter: ActivatedRoute,
     private _fundingManagementRepo: FundingManagementService,
     private _loggerService: LoggerService,
-    private _messageService: MessageService
+    private _messageService: MessageService,
+    private _confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
@@ -93,7 +94,16 @@ export class EditFundingCaptureComponent implements OnInit {
           label: 'Submit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.saveItems(StatusEnum.PendingApproval);
+            this._confirmationService.confirm({
+              message: `Are you sure that you want to submit this funding for ${this.npo.name}?`,
+              header: 'Confirmation',
+              icon: 'pi pi-info-circle',
+              accept: () => {
+                this.saveItems(StatusEnum.PendingApproval);
+              },
+              reject: () => {
+              }
+            });
           }
         },
         {

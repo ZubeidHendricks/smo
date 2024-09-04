@@ -1949,6 +1949,12 @@ export interface IFundingCaptureViewModel {
     statusName: string;
     isActive: boolean;
 
+    approverComment: string;
+    approverUserId: number;
+    approverUserName: string;
+    approvedDateTime: Date;
+    approvedDate: string;
+
     fundingDetailViewModel: IFundingDetailViewModel;
     sdaViewModel: ISDAViewModel;
     paymentScheduleViewModel: IPaymentScheduleViewModel;

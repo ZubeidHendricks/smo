@@ -206,6 +206,7 @@ import { FCDocumentComponent } from './components/funding-capture/fc-steps/fc-do
 import { FundingCaptureListComponent } from './components/funding-capture/funding-capture-list/funding-capture-list.component';
 import { EditFundingCaptureComponent } from './components/funding-capture/edit-funding-capture/edit-funding-capture.component';
 import { FCFundingDetailComponent } from './components/funding-capture/fc-steps/fc-funding-detail/fc-funding-detail.component';
+import { FCApprovalComponent } from './components/funding-capture/fc-steps/fc-approval/fc-approval.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -405,7 +406,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     FCDocumentComponent,
     FundingCaptureListComponent,
     EditFundingCaptureComponent,
-    FCFundingDetailComponent
+    FCFundingDetailComponent,
+    FCApprovalComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

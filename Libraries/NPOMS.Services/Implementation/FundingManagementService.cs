@@ -1,5 +1,4 @@
-﻿using NPOMS.Domain.Entities;
-using NPOMS.Domain.Enumerations;
+﻿using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.FundingManagement;
 using NPOMS.Repository.Extensions;
 using NPOMS.Repository.Interfaces.Budget;
@@ -35,6 +34,7 @@ namespace NPOMS.Services.Implementation
         private Repository.Interfaces.Entities.IPaymentScheduleRepository _paymentScheduleRepository;
         private IFrequencyRepository _frequencyRepository;
         private Repository.Interfaces.FundingManagement.IPaymentScheduleRepository _fundingPaymentScheduleRepository;
+        private IStatusRepository _statusRepository;
 
         #endregion
 
@@ -55,7 +55,8 @@ namespace NPOMS.Services.Implementation
             ICompliantCycleRepository compliantCycleRepository,
             Repository.Interfaces.Entities.IPaymentScheduleRepository paymentScheduleRepository,
             IFrequencyRepository frequencyRepository,
-            Repository.Interfaces.FundingManagement.IPaymentScheduleRepository fundingPaymentScheduleRepository
+            Repository.Interfaces.FundingManagement.IPaymentScheduleRepository fundingPaymentScheduleRepository,
+            IStatusRepository statusRepository
             )
         {
             _npoRepository = npoRepository;
@@ -73,6 +74,7 @@ namespace NPOMS.Services.Implementation
             _paymentScheduleRepository = paymentScheduleRepository;
             _frequencyRepository = frequencyRepository;
             _fundingPaymentScheduleRepository = fundingPaymentScheduleRepository;
+            _statusRepository = statusRepository;
         }
 
         #endregion
@@ -224,13 +226,19 @@ namespace NPOMS.Services.Implementation
             var npoProfile = await _npoProfileRepository.GetByNpoId(fundingCapture.NpoId);
 
             var programmeBudget = await _programmeBudgetRepository.GetByIds(fundingDetail.Programme.DepartmentId, $"{fundingDetail.FinancialYear.Year}/{fundingDetail.FinancialYear.Year + 1}", fundingDetail.ProgrammeId, fundingDetail.SubProgrammeId, fundingDetail.SubProgrammeTypeId);
+            var approvedBy = await _userRepository.GetUserByIdAsync(Convert.ToInt32(fundingCapture.ApproverUserId));
+            var status = await _statusRepository.GetById(fundingCapture.StatusId);
 
             var funding = new FundingCaptureViewModel
             {
                 Id = id,
                 StatusId = fundingCapture.StatusId,
+                StatusName = status.Name,
                 IsActive = fundingCapture.IsActive,
                 FinancialYearId = fundingCapture.FinancialYearId,
+                ApproverUserName = approvedBy != null ? $"{approvedBy.FullName} ({approvedBy.Email})" : string.Empty,
+                ApprovedDate = Convert.ToDateTime(fundingCapture.ApprovedDateTime).ToString("yyyy-MM-dd HH:mm:ss") ?? string.Empty,
+                ApproverComment = fundingCapture.ApproverComment ?? string.Empty,
                 FundingDetailViewModel = new()
                 {
                     Id = fundingDetail.Id,
@@ -363,7 +371,7 @@ namespace NPOMS.Services.Implementation
             await _sdaRepository.UpdateAsync(sda);
         }
 
-        public async Task<PaymentScheduleViewModel> GeneratePaymentSchedule(int fundingCaptureId, int frequencyId)
+        public async Task<PaymentScheduleViewModel> GeneratePaymentSchedule(int fundingCaptureId, int frequencyId, string startDate, double amountAwarded)
         {
             var fundingCapture = await _fundingCaptureRepository.GetById(fundingCaptureId);
             var fundingDetail = await _fundingDetailRepository.GetByFundingCaptureId(fundingCaptureId);
@@ -379,10 +387,10 @@ namespace NPOMS.Services.Implementation
                 var compliantCycleRules = await _compliantCycleRuleRepository.GetEntities(false);
                 var compliantCycles = await _compliantCycleRepository.GetCompliantCyclesByIds(fundingDetail.Programme.DepartmentId, Convert.ToInt32(fundingCapture.FinancialYearId));
                 var departmentPaymentSchedules = await _paymentScheduleRepository.GetPaymentSchedulesByIds(fundingDetail.Programme.DepartmentId, Convert.ToInt32(fundingCapture.FinancialYearId));
-                var paymentSchedules = departmentPaymentSchedules.OrderBy(x => x.StartDate).Where(x => x.StartDate > Convert.ToDateTime(fundingDetail.StartDate) && x.StartDate.Date >= DateTime.Now.Date);
+                var paymentSchedules = departmentPaymentSchedules.OrderBy(x => x.StartDate).Where(x => x.StartDate > Convert.ToDateTime(startDate) && x.StartDate.Date >= DateTime.Now.Date);
 
                 // Get months between funding detail start date and financial year end date
-                var financialYearMonths = MonthsBetween(Convert.ToDateTime(fundingDetail.StartDate), fundingDetail.FinancialYear.EndDate).ToArray();
+                var financialYearMonths = MonthsBetween(Convert.ToDateTime(startDate), fundingDetail.FinancialYear.EndDate).ToArray();
 
                 var monthStartDates = new List<DateTime>();
                 for (int i = 0; i < financialYearMonths.Count(); i += intervals)
@@ -404,7 +412,7 @@ namespace NPOMS.Services.Implementation
 
                         applicableSchedule = applicableSchedules.Last();
 
-                        var amount = monthStartDate == monthStartDates.Last() ? fundingDetail.AmountAwarded - paymentScheduleItems.Sum(item => item.AllocatedAmount) : Convert.ToDouble(Math.Floor((decimal)fundingDetail.AmountAwarded / monthStartDates.Count()));
+                        var amount = monthStartDate == monthStartDates.Last() ? amountAwarded - paymentScheduleItems.Sum(item => item.AllocatedAmount) : Convert.ToDouble(Math.Floor((decimal)amountAwarded / monthStartDates.Count()));
                         var compliantCycle = compliantCycles.FirstOrDefault(x => x.Id.Equals(applicableSchedule.CompliantCycleId));
 
                         var paymentScheduleItem = new PaymentScheduleItemViewModel()
@@ -430,9 +438,9 @@ namespace NPOMS.Services.Implementation
                     AllocatedAmountTotal = paymentScheduleItems.Sum(item => item.AllocatedAmount),
                     ApprovedAmountTotal = paymentScheduleItems.Sum(item => item.ApprovedAmount),
                     PaidAmountTotal = paymentScheduleItems.Sum(item => item.PaidAmount),
-                    AllocatedAmountBalance = fundingDetail.AmountAwarded - paymentScheduleItems.Sum(item => item.AllocatedAmount),
-                    ApprovedAmountBalance = fundingDetail.AmountAwarded - paymentScheduleItems.Sum(item => item.ApprovedAmount),
-                    PaidAmountBalance = fundingDetail.AmountAwarded - paymentScheduleItems.Sum(item => item.PaidAmount),
+                    AllocatedAmountBalance = amountAwarded - paymentScheduleItems.Sum(item => item.AllocatedAmount),
+                    ApprovedAmountBalance = amountAwarded - paymentScheduleItems.Sum(item => item.ApprovedAmount),
+                    PaidAmountBalance = amountAwarded - paymentScheduleItems.Sum(item => item.PaidAmount),
                     IsActive = true,
                     PaymentScheduleItemViewModels = paymentScheduleItems
                 };
@@ -507,6 +515,20 @@ namespace NPOMS.Services.Implementation
             document.UpdatedDateTime = DateTime.Now;
 
             await _documentRepository.UpdateAsync(document);
+        }
+
+        public async Task UpdateApproverDetail(FundingCaptureViewModel model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var fundingCapture = await _fundingCaptureRepository.GetById(model.Id);
+
+            fundingCapture.StatusId = model.StatusId;
+            fundingCapture.ApproverUserId = loggedInUser.Id;
+            fundingCapture.ApprovedDateTime = DateTime.Now;
+            fundingCapture.ApproverComment = model.ApproverComment;
+            fundingCapture.FinancialYear = null;
+
+            await _fundingCaptureRepository.UpdateAsync(fundingCapture);
         }
 
         #endregion

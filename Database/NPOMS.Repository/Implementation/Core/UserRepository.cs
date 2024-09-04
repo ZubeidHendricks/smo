@@ -157,7 +157,12 @@ namespace NPOMS.Repository.Implementation.Core
         }
         public async Task<IEnumerable<User>> GetUsersByRoleId(int roleId)
         {
-            return await FindByCondition(x => x.Roles.Any(x => x.RoleId.Equals(roleId))).AsNoTracking().ToListAsync();
+            return await FindByCondition(x => x.Roles.Any(y => y.RoleId.Equals(roleId))).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetUsersByPermissionId(int permissionId)
+        {
+            return await FindByCondition(x => x.IsActive && x.Roles.Any(y => y.IsActive && y.Role.Permissions.Any(z => z.PermissionId.Equals(permissionId)))).AsNoTracking().ToListAsync();
         }
 
         #endregion

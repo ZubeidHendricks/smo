@@ -138,8 +138,7 @@ export class FundingCaptureListComponent implements OnInit {
           label: 'Approve Funding',
           icon: 'fa fa-pencil-square-o',
           command: () => {
-            // this._router.navigateByUrl('application/edit/' + this.selectedApplication.id + '/0');
-            alert('Approve Funding feature under construction');
+            this._router.navigateByUrl(`funding-capture/approve/${this.selectedFundingCapture.id}`);
           }
         });
       }
@@ -149,8 +148,7 @@ export class FundingCaptureListComponent implements OnInit {
           label: 'View Funding',
           icon: 'fa fa-file-text-o',
           command: () => {
-            // this._router.navigateByUrl('application/edit/' + this.selectedApplication.id + '/0');
-            alert('View Funding feature under construction');
+            this._router.navigateByUrl(`funding-capture/view/${this.selectedFundingCapture.id}`);
           }
         });
       }
