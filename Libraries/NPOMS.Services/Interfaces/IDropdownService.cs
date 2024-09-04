@@ -172,6 +172,8 @@ namespace NPOMS.Services.Interfaces
 
         Task<IEnumerable<Status>> GetStatuses(bool returnInactive);
 
+        Task<Status> GetStatusById(int id);
+
         Task CreateStatus(Status model, string userIdentifier);
 
         Task UpdateStatus(Status model, string userIdentifier);
@@ -231,6 +233,8 @@ namespace NPOMS.Services.Interfaces
 
         Task<IEnumerable<Bank>> GetBanks(bool returnInactive);
 
+        Task<Bank> GetBankById(int id);
+
         Task CreateBank(Bank model, string userIdentifier);
 
         Task UpdateBank(Bank model, string userIdentifier);
@@ -268,6 +272,8 @@ namespace NPOMS.Services.Interfaces
         Task<IEnumerable<Region>> GetRegions(bool returnInactive);
 
         Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(bool returnInactive);
+
+        Task<ServiceDeliveryArea> GetServiceDeliveryAreaById(int id);
 
         Task<IEnumerable<PropertyType>> GetPropertyTypes(bool returnInactive);
 

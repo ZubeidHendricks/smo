@@ -34,7 +34,7 @@ namespace NPOMS.Domain.Entities
         public int FundingApplicationDetailId { get; set; }
         
         public int ApplicationId { get; set; }
-        public virtual FundingApplicationDetail FundingApplicationDetail { get; set; }
+        //public virtual FundingApplicationDetail FundingApplicationDetail { get; set; }
         public virtual ICollection<ProjectImplementationPlace> ImplementationPlaces
         {
             get => _implementationPlaces ?? (_implementationPlaces = new List<ProjectImplementationPlace>());

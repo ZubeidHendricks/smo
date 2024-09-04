@@ -50,6 +50,7 @@ export class PermissionsComponent implements OnInit {
 
   profile: IUser;
   rowGroupMetadata: any;
+  departmentCodes: Array<{ value: string, count: number }> = [];
 
   constructor(
     private _repo: PermissionService,
@@ -80,6 +81,19 @@ export class PermissionsComponent implements OnInit {
         this.originalMappings = [...x.mappings];
         this.featurePermissionRoleSubject$.next(x);
         this.updateRowGroupMetaData(x);
+
+         // Get department names from permission matrix...
+         this.featurePermissionRole$.subscribe(matrix => {
+          matrix.availableRoles.forEach(role => {
+            const found = this.departmentCodes.find(x => x.value === role.departmentCode);
+
+            if (!found) {
+              const count = matrix.availableRoles.filter(x => x.departmentCode === role.departmentCode).length;
+              this.departmentCodes.push({ value: role.departmentCode, count: count });
+            }
+          });
+        });
+        
         this._spinner.hide();
       },
       (err) => {

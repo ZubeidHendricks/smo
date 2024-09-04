@@ -1,5 +1,6 @@
 ﻿using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
+using NPOMS.Domain.FundingManagement;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -65,5 +66,7 @@ namespace NPOMS.Domain.Entities
 		public User ApprovalUser { get; set; }
 
 		public RegistrationStatus RegistrationStatus { get; set; }
+
+		public List<FundingCapture> FundingCaptures { get; set; } = new List<FundingCapture>();
 	}
 }

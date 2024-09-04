@@ -4,9 +4,14 @@
       <p-table [value]="featurePermissionRoleMatrix.availableFeaturePermissions" [(selection)]="selectedPermissionRoles" styleClass="p-datatable-striped" [rowHover]="true">
         <ng-template pTemplate="header">
           <tr>
+            <th style="width: 3%;"></th>
+            <th style="width: 15%;"></th>
+            <th *ngFor="let code of departmentCodes" [attr.colspan]="code.count" style="text-align: center;">{{code.value}}</th>
+          </tr>
+          <tr>
             <th style="width: 50px; text-align: center;">#</th>
             <th>Activities</th>
-            <th style="width: 110px; text-align: center;" *ngFor="let role of featurePermissionRoleMatrix.availableRoles">{{role.name}}</th>
+            <th style="text-align: center;" *ngFor="let role of featurePermissionRoleMatrix.availableRoles">{{role.name}}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-permission let-rowIndex="rowIndex">

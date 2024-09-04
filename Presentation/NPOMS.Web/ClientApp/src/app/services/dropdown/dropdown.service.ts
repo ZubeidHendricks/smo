@@ -1,15 +1,17 @@
-import { IDistrictDemographic, IFacilitySubStructure, ILanguage, IManicipalityDemographic, IProgrammes, ISegmentCode, IStaffCategory, ISubstructureDemographic } from '../../models/interfaces';
+import { IDistrictDemographic, IFacilitySubStructure, ILanguage, IManicipalityDemographic, IPlace, IProgrammes, ISegmentCode, IStaffCategory, ISubstructureDemographic } from '../../models/interfaces';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DropdownTypeEnum } from 'src/app/models/enums';
-import { IAccessStatus, IAccountType, IActivityList, IActivityType, IAllocationType, IApplicationType, IBank, IBranch, 
+import {
+  IAccessStatus, IAccountType, IActivityList, IActivityType, IAllocationType, IApplicationType, IBank, IBranch,
   ICompliantCycleRule, IDenodoFacilityWrapper, IDepartment, IDirectorate, IDistrictCouncil, IDocumentType, IFacilityClass,
-   IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod,
-    IGender, ILocalMunicipality, IOrganisationType, IPosition, IProgramme, IProvisionType, IRace, IRecipientType, IRegion,
-     IRegistrationStatus, IResourceList, IResourceType, IRole, ISDA, IServiceType, IStatus, ISubProgramme, 
-     ISubProgrammeType, ITitle, ITrainingMaterial, IUtility,IWorkflowAssessment,IFundingTemplateType,
-     IQuestion, IQuestionCategory, IQuestionProperty, IQuestionSection, IResponseOption, IResponseType } from 'src/app/models/interfaces';
+  IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IFinancialYear, IFrequency, IFrequencyPeriod,
+  IGender, ILocalMunicipality, IOrganisationType, IPosition, IProgramme, IProvisionType, IRace, IRecipientType, IRegion,
+  IRegistrationStatus, IResourceList, IResourceType, IRole, ISDA, IServiceType, IStatus, ISubProgramme,
+  ISubProgrammeType, ITitle, ITrainingMaterial, IUtility, IWorkflowAssessment, IFundingTemplateType,
+  IQuestion, IQuestionCategory, IQuestionProperty, IQuestionSection, IResponseOption, IResponseType
+} from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../environment-url/environment-url.service';
 import { PropertyType } from 'src/app/models/PropertyType';
 
@@ -179,8 +181,8 @@ export class DropdownService {
         data = this._http.get<IStaffCategory[]>(url, httpOptions);
         break;
       case DropdownTypeEnum.FundingTemplateType:
-          data = this._http.get<IFundingTemplateType[]>(url, httpOptions);
-          break;
+        data = this._http.get<IFundingTemplateType[]>(url, httpOptions);
+        break;
       case DropdownTypeEnum.Question:
         data = this._http.get<IQuestion[]>(url, httpOptions);
         break;
@@ -203,32 +205,31 @@ export class DropdownService {
         break;
       case DropdownTypeEnum.SegmentCode:
         data = this._http.get<ISegmentCode[]>(url, httpOptions);
-        break;   
+        break;
       case DropdownTypeEnum.FacilitySubStructure:
         data = this._http.get<IFacilitySubStructure[]>(url, httpOptions);
         break;
-
       case DropdownTypeEnum.DemographicSubStructure:
         data = this._http.get<ISubstructureDemographic[]>(url, httpOptions);
         break;
-
       case DropdownTypeEnum.DemographicDistrict:
         data = this._http.get<IDistrictDemographic[]>(url, httpOptions);
         break;
-
       case DropdownTypeEnum.DemographicManicipality:
         data = this._http.get<IManicipalityDemographic[]>(url, httpOptions);
         break;
-
       case DropdownTypeEnum.DemographicSubDistrict:
         data = this._http.get<ISubstructureDemographic[]>(url, httpOptions);
+        break;
+      case DropdownTypeEnum.Places:
+        data = this._http.get<IPlace[]>(url, httpOptions);
         break;
     }
 
     return data;
   }
 
-  public GetEntitiesForDoc(dropdownType: DropdownTypeEnum, id:number, returnInactive: boolean) {
+  public GetEntitiesForDoc(dropdownType: DropdownTypeEnum, id: number, returnInactive: boolean) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}/id/${id}/returnInactive/${returnInactive}`;
     var data;
 
@@ -243,8 +244,8 @@ export class DropdownService {
     return data;
   }
 
-  
-  public GetProgramsByDepartment(dropdownType: DropdownTypeEnum, id:number) {
+
+  public GetProgramsByDepartment(dropdownType: DropdownTypeEnum, id: number) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}/id/${id}/programmes`;
     var data;
 
@@ -260,7 +261,7 @@ export class DropdownService {
   }
 
 
-  public GetRolesByDepartment(filteredRolesByDepartment: DropdownTypeEnum, id:number) {
+  public GetRolesByDepartment(filteredRolesByDepartment: DropdownTypeEnum, id: number) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${filteredRolesByDepartment}/id/${id}/roles`;
     var data;
 
@@ -532,7 +533,7 @@ export class DropdownService {
   public delete(data: any, dropdownType: DropdownTypeEnum) {
     const url = `${this._envUrl.urlAddress}/api/dropdown/dropdownTypeEnum/${dropdownType}/id/${data.id}`;
 
-    switch (dropdownType) {      
+    switch (dropdownType) {
       case DropdownTypeEnum.Question:
         return this._http.delete(url);
         break;

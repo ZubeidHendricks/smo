@@ -44,6 +44,17 @@ namespace NPOMS.Repository.Implementation.Budget
                             .AsNoTracking().FirstOrDefaultAsync();
         }
 
+		public async Task<ProgrammeBudget> GetByIds(int departmentId, string financialYear, int programmeId, int subProgrammeId, int subProgrammeTypeId)
+		{
+			return await FindByCondition(x => x.DepartmentId.Equals(departmentId) && 
+											  x.FinancialYearId.Equals(financialYear) &&
+											  x.ProgrammeId.Equals(programmeId) &&
+											  x.SubProgrammeId.Equals(subProgrammeId) &&
+											  x.SubProgrammeTypeId.Equals(subProgrammeTypeId) &&
+											  x.IsActive)
+							.AsNoTracking().FirstOrDefaultAsync();
+		}
+
         #endregion
     }
 }

@@ -7,7 +7,10 @@ namespace NPOMS.Repository.Extensions
 	{
 		public static string GenerateNewCode(string abbreviation)
 		{
-			int resultSize = 11;
+			var maxLength = 4;
+			var abbrev = abbreviation.Length <= maxLength ? abbreviation : abbreviation.Substring(0, maxLength);
+
+			int resultSize = 14 - abbrev.Length;
 			char[] chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".ToCharArray();
 			var result = new StringBuilder(resultSize);
 			byte[] data = new byte[resultSize];
@@ -19,7 +22,7 @@ namespace NPOMS.Repository.Extensions
 				result.Append(chars[item % (chars.Length - 1)]);
 			}
 
-			return string.Format("{0}/{1}", abbreviation, result.ToString());
+			return string.Format("{0}/{1}", abbrev, result.ToString());
 		}
 	}
 }

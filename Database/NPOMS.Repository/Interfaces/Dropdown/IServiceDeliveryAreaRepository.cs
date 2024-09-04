@@ -10,5 +10,7 @@ namespace NPOMS.Repository.Interfaces.Dropdown
     public interface IServiceDeliveryAreaRepository : IBaseRepository<ServiceDeliveryArea>
     {
         Task<IEnumerable<ServiceDeliveryArea>> GetEntities(bool returnInactive);
+
+        Task<ServiceDeliveryArea> GetById(int id);
     }
 }
