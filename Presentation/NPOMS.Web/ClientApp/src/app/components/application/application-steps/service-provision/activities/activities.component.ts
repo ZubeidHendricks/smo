@@ -75,11 +75,6 @@ export class ActivitiesComponent implements OnInit {
 
   facilities: IFacilityList[];
   selectedFacilities: IFacilityList[];
-
-
-  filteredFacilities: IFacilityList[] = [];
-
-
   selectedFacilitiesText: string;
 
   allSubProgrammes: ISubProgramme[];
@@ -205,17 +200,17 @@ export class ActivitiesComponent implements OnInit {
     this.loadDemographicSubDistricts();
 
     this.activityCols = [
-      { header: 'Activity Name', width: '15%' },
-      { header: 'Activity Type', width: '10%' },
-      { header: 'Timeline', width: '10%' },
-      { header: 'Target', width: '10%' },
-      { header: 'Facilities and/or Community Places', width: '15%' },
+      { header: 'Activity Name', width: '30%' },
+      { header: 'Activity Type', width: '15%' },
+      { header: 'Timeline', width: '15%' },
+      { header: 'Target', width: '15%' },
+      { header: 'Facilities and/or Community Places', width: '30%' },
 
 
-      { header: 'District Name', width: '10%' },
-      { header: 'Municipalities', width: '10%' },
-      { header: 'Sub Structures ', width: '10%' },
-      { header: 'Sub Districts', width: '10%' },
+      // { header: 'District Name', width: '10%' },
+      // { header: 'Municipalities', width: '10%' },
+      // { header: 'Sub Structures ', width: '10%' },
+      // { header: 'Sub Districts', width: '10%' },
     ];
 
     this.commentCols = [
@@ -272,39 +267,6 @@ export class ActivitiesComponent implements OnInit {
       }
     );
   }
-
-  filterFacilityDistrict(selectedSubDistricts: any): void {
-    this.loadFacilities();
-
-    if (selectedSubDistricts && selectedSubDistricts.length > 0) {
-        // Extract LinkIds from the selected ISubDistrictDemographic objects
-        const selectedLinkIds = selectedSubDistricts.map(subDistrict => subDistrict.linkId);
-        // Filter facilities based on the selected LinkIds
-        this.selectedFacilities = this.facilities.filter(facility =>
-            selectedLinkIds.includes(facility.facilitySubDistrictId)
-        );
-        if (this.selectedFacilities.length === 0) {
-            // If no facilities are found, reset the selected facilities
-            this.facilities = [];
-        }
-
-        
-    let allFacilities: string = "";
-    this.selectedFacilities.forEach(item => {
-      allFacilities += item.name + "\n";
-    });
-    this.selectedFacilitiesText = allFacilities;
-
-
-    } else {
-
-    }
-}
-
-preventChange(event: any): void {
-  event.originalEvent.preventDefault(); 
-  event.value = [...this.selectedFacilities];
-}
 
   private loadDemographicSubDistricts() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubDistrict, false).subscribe(
@@ -823,58 +785,58 @@ onDemographicSubStructuresChange() {
 this.activity.activityRecipients = this.selectedRecipients;
 
 // Initialize the array
-this.activity.activityDistrict = [];
+// this.activity.activityDistrict = [];
 
 //Check if selectedIDistrictDemographics is not null
-if (this.selectedIDistrictDemographics) {
+// if (this.selectedIDistrictDemographics) {
   // Create the IActivityDistrict object from the selected district
-  let activityDistrict = {
-    demographicDistrictId: this.selectedIDistrictDemographics.id,
-    name: this.selectedIDistrictDemographics.name,
-    isActive: this.selectedIDistrictDemographics.isActive,
-    activityId: this.activity.id
-  } as IActivityDistrict;
+  // let activityDistrict = {
+  //   demographicDistrictId: this.selectedIDistrictDemographics.id,
+  //   name: this.selectedIDistrictDemographics.name,
+  //   isActive: this.selectedIDistrictDemographics.isActive,
+  //   activityId: this.activity.id
+  // } as IActivityDistrict;
 
 //   // Push the object into the array
-  this.activity.activityDistrict.push(activityDistrict);
-}
+//   this.activity.activityDistrict.push(activityDistrict);
+// }
 
-  this.activity.activityManicipality = [];
+  // this.activity.activityManicipality = [];
 
-  this.selectedManicipalityDemographics.forEach(item => {
-    let activityManicipality = {
-      demographicDistrictId: item.districtDemographicId,
-      name: item.name,
-      isActive: item.isActive,
-      activityId: this.activity.id
-    } as IActivityManicipality;
+  // this.selectedManicipalityDemographics.forEach(item => {
+  //   let activityManicipality = {
+  //     demographicDistrictId: item.districtDemographicId,
+  //     name: item.name,
+  //     isActive: item.isActive,
+  //     activityId: this.activity.id
+  //   } as IActivityManicipality;
 
-    this.activity.activityManicipality.push(activityManicipality);
-  });
+  //   this.activity.activityManicipality.push(activityManicipality);
+  // });
   
-  this.activity.activitySubStructure = [];
-  this.selectedSubstructureDemographics.forEach(item => {
-    let selectedSubStructure = {
-      name: item.name,
-      municipalityId: item.manicipalityDemographicId,
-      isActive: item.isActive,
-      activityId: this.activity.id
-    } as IActivitySubStructure;
+  // this.activity.activitySubStructure = [];
+  // this.selectedSubstructureDemographics.forEach(item => {
+  //   let selectedSubStructure = {
+  //     name: item.name,
+  //     municipalityId: item.manicipalityDemographicId,
+  //     isActive: item.isActive,
+  //     activityId: this.activity.id
+  //   } as IActivitySubStructure;
 
-    this.activity.activitySubStructure.push(selectedSubStructure);
-  });
+  //   this.activity.activitySubStructure.push(selectedSubStructure);
+  // });
   
-  this.activity.activitySubDistrict = [];
-  this.selectedSubDistrictDemographics.forEach(item => {
-    let selectedSubDistrict = {
-      name: item.name,
-      substructureId: item.subSctrcureDemographicId,
-      isActive: item.isActive,
-      activityId: this.activity.id
-    } as IActivitySubDistrict;
+  // this.activity.activitySubDistrict = [];
+  // this.selectedSubDistrictDemographics.forEach(item => {
+  //   let selectedSubDistrict = {
+  //     name: item.name,
+  //     substructureId: item.subSctrcureDemographicId,
+  //     isActive: item.isActive,
+  //     activityId: this.activity.id
+  //   } as IActivitySubDistrict;
 
-    this.activity.activitySubDistrict.push(selectedSubDistrict);
-  });
+  //   this.activity.activitySubDistrict.push(selectedSubDistrict);
+  // });
 
 
 this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(
@@ -882,12 +844,6 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
     this.activity.activityListId = resp.id;
     this.newActivity ? this.createActivity() : this.updateActivity();
     this.displayActivityDialog = false;
-
-    let allFacilities: string = "";
-    this.selectedFacilities.forEach(item => {
-      allFacilities += item.name + "\n";
-    });
-    this.selectedFacilitiesText = allFacilities;
   },
   (err) => {
     this._loggerService.logException(err);
