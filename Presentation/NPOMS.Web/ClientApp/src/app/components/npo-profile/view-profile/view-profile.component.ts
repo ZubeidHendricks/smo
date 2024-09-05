@@ -556,4 +556,12 @@ export class ViewProfileComponent implements OnInit {
 
     return object;
   }
+
+  public facilityFoundChange(value) {
+
+  }
+
+  public updatePostalAddress(value) {
+
+  }
 }

@@ -1,13 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Repository.Interfaces.Dropdown;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Implementation.Dropdown
 {
-	public  class FrequencyRepository : BaseRepository<Frequency>, IFrequencyRepository
+    public  class FrequencyRepository : BaseRepository<Frequency>, IFrequencyRepository
 	{
 		#region Constructors
 
@@ -38,6 +35,11 @@ namespace NPOMS.Repository.Implementation.Dropdown
 								.OrderBy(x => x.Name)
 								.ToListAsync();
 			}
+		}
+
+		public async Task<Frequency> GetById(int id)
+		{
+			return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
 		}
 
 		#endregion

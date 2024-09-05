@@ -40,6 +40,11 @@ namespace NPOMS.Repository.Implementation.Dropdown
 			}
 		}
 
-		#endregion
-	}
+		public async Task<Bank> GetById(int id)
+		{
+            return await FindByCondition(x => x.Id.Equals(id)).AsNoTracking().FirstOrDefaultAsync();
+        }
+
+        #endregion
+    }
 }

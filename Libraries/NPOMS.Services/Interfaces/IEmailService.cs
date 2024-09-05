@@ -4,6 +4,6 @@ namespace NPOMS.Services.Interfaces
 {
 	public interface IEmailService
 	{
-		Task SendEmailFromQueue();
+		Task SendEmailFromQueue(bool useNewFormat = false);
 	}
 }

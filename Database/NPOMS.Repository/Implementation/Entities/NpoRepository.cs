@@ -3,13 +3,10 @@ using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Repository.Extensions;
 using NPOMS.Repository.Interfaces.Entities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Implementation.Entities
 {
-	public class NpoRepository : BaseRepository<Npo>, INpoRepository
+    public class NpoRepository : BaseRepository<Npo>, INpoRepository
 	{
 		#region Constructors
 

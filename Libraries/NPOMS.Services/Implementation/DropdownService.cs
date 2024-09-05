@@ -882,6 +882,11 @@ namespace NPOMS.Services.Implementation
             return await _serviceDeliveryAreaRepository.GetEntities(returnInactive);
         }
 
+        public async Task<ServiceDeliveryArea> GetServiceDeliveryAreaById(int id)
+        {
+            return await _serviceDeliveryAreaRepository.GetById(id);
+        }
+
         public async Task<IEnumerable<Place>> GetPlaces(bool returnInactive)
         {
             return await _placeRepository.GetEntities(returnInactive);
@@ -1035,6 +1040,11 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<Status>> GetStatuses(bool returnInactive)
         {
             return await _statusRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<Status> GetStatusById(int id)
+        {
+            return await _statusRepository.GetById(id);
         }
 
         public async Task CreateStatus(Status model, string userIdentifier)
@@ -1334,6 +1344,11 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<Bank>> GetBanks(bool returnInactive)
         {
             return await _bankRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<Bank> GetBankById(int id)
+        {
+            return await _bankRepository.GetById(id);
         }
 
         public async Task CreateBank(Bank model, string userIdentifier)

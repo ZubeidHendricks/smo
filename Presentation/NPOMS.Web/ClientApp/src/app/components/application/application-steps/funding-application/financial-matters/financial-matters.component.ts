@@ -121,6 +121,9 @@ export class FinancialMattersComponent implements OnInit {
   previous_year: any;
   private _loggerService: any;
   isDisabledButton: boolean;
+
+  unifiedFederation: any;
+
   constructor(private dropDownService: DropdownService,
     private _confirmationService: ConfirmationService,
     private _bidServie: BidService,

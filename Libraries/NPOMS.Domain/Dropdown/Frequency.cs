@@ -15,6 +15,8 @@ namespace NPOMS.Domain.Dropdown
 		[Column(TypeName = "nvarchar(255)")]
 		public string SystemName { get; set; }
 
+		public int? FrequencyNumber { get; set; }
+
 		public bool IsActive { get; set; }
 
 		public int CreatedUserId { get; set; }

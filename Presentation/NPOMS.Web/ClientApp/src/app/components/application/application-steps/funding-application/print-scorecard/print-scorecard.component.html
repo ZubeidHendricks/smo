@@ -56,7 +56,7 @@
                         <td style="text-align: center;" class="{{getRagColour1(question.responsesO[8])}}">{{question.responsesO[8]}}</td>  
                         <td style="text-align: center;" class="{{getRagColour1(question.responsesO[9])}}">{{question.responsesO[9]}}</td>
                         <td style="text-align: center;" class="{{getRagColour1(question.responsesO[10])}}">{{question.responsesO[10]}}</td>                        
-                        <td style="text-align: center;" class="{{getRagColour1((question.sumOfResponse/question.responsesO.length).toFixed(2))}}" *ngIf="question.sumOfResponse > 0 && question.responsesO.length > 0">
+                        <td style="text-align: center;" class="{{getRagColour1((question.sumOfResponse/question.responsesO.length))}}" *ngIf="question.sumOfResponse > 0 && question.responsesO.length > 0">
                             {{(question.sumOfResponse/question.responsesO.length).toFixed(2)}}
                         </td>
                         <!-- <td style="text-align: center;">

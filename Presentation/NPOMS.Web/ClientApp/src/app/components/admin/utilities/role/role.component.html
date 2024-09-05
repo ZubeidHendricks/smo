@@ -74,6 +74,16 @@
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
+                <span class="mandatory-content">Department Code</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="departmentCodes" placeholder="Select a Department Code" optionLabel="name" [(ngModel)]="selectedDepartmentCode" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
                 <span class="non-mandatory-content">Inactive</span>
             </div>
         </div>

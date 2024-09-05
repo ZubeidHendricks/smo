@@ -16,7 +16,7 @@
             <ng-template pTemplate="header" let-columns>
                 <tr>
                   <th style="width: 5%;"></th>
-                  <th *ngFor="let col of columns" [ngStyle]="{'width': fit-content}" [pSortableColumn]="col.field">
+                  <th *ngFor="let col of columns" [ngStyle]="{'width': 'fit-content'}" [pSortableColumn]="col.field">
                       {{col.header}}
                       <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" ariaLabelDesc="Activate to sort in descending order" ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
                   </th>

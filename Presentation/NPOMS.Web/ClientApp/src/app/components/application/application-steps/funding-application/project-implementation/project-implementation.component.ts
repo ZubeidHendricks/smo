@@ -243,7 +243,7 @@ export class ProjectImplementationComponent implements OnInit, OnDestroy {
 
   }
 
-  save() {
+  save(data) {
 
     this.displayDialogImpl = false;
     this.implementation.beneficiaries = Number(this.implementation.beneficiaries).valueOf();
