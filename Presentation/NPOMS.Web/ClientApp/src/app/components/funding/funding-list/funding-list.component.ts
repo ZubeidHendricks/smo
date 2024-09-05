@@ -233,6 +233,7 @@ export class FundingListComponent implements OnInit {
   }
 
   private getFunding(npoId: number) {
+
   }
 
   private filterFunding() {
@@ -245,6 +246,15 @@ export class FundingListComponent implements OnInit {
     }
 
     if (this.selectedProgramme) {
+
+    }
+
+    if (this.selectedFinancialYear) {
+
+    }
+
+    if (this.selectedProgramme) {
+
     }
   }
 
