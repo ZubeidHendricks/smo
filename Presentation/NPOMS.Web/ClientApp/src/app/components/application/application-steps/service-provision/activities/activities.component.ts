@@ -74,6 +74,7 @@ export class ActivitiesComponent implements OnInit {
   deletedRowGroupMetadata: any[];
 
   facilities: IFacilityList[];
+  facilitiesList: IFacilityList[];
   selectedFacilities: IFacilityList[];
 
 
@@ -143,6 +144,10 @@ export class ActivitiesComponent implements OnInit {
   ManicipalityDemographics: IManicipalityDemographic[];
   selectedManicipalityDemographics: IManicipalityDemographic[];
 
+  //activeActivities: any[] = []; // All activities
+  filteredActivities: any[] = []; // Filtered activities
+  filteredData: any[] = [];
+
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
@@ -164,19 +169,47 @@ export class ActivitiesComponent implements OnInit {
 
   ngOnInit(): void {
     this._spinner.show();
+    this.registerCustomFilters();
+
+    // this.filterService.register('custom', (value: any, filter: any) => {
+    //   if (!filter || filter.length === 0) {
+    //       return true; // No filter applied, show all rows
+    //   }
+      
+    //   if (!value) {
+    //       return false; // No value, exclude this row
+    //   }
     
-    this.filterService.register('custom', (value: any, filter: any) => {
-      if (!filter || filter.length === 0) {
-          return true;
-      }
-      if (!value) {
-          return false; 
-      }
-      const selectedMunicipalities = filter.map((item: any) => item.name);
-      const rowMunicipalities = value.split(',').map((m: string) => m.trim());
-      const result = selectedMunicipalities.some(m => rowMunicipalities.includes(m));
-      return result;
-  });
+    //   // Extract the selected substructures or municipalities from the filter
+    //   const selectedItems = filter.map((item: any) => item.name);
+      
+    //   // Split the row value based on commas or your specific delimiter, and trim extra spaces
+    //   const rowItems = value.split(',').map((item: string) => item.trim());
+
+          
+    //   console.log('FilterdResult', rowItems);
+    
+    //   // Check if any selected item is present in the row data
+    //   const result = selectedItems.some(selectedItem => 
+    //     rowItems.includes(selectedItem)
+    //   );
+
+    //   return result;
+    // });
+    
+    
+  //   this.filterService.register('custom', (value: any, filter: any) => {
+  //     if (!filter || filter.length === 0) {
+  //         return true;
+  //     }
+  //     if (!value) {
+  //         return false; 
+  //     }
+  //     const selectedMunicipalities = filter.map((item: any) => item.name);
+  //     const rowMunicipalities = value.split(',').map((m: string) => m.trim());
+  //     const result = selectedMunicipalities.some(m => rowMunicipalities.includes(m));
+  //     return result;
+  // });
 
 
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
@@ -232,6 +265,38 @@ export class ActivitiesComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
+  
+  registerCustomFilters() {
+    this.filterService.register('custom', (value: string, filter: any[]) => {
+      // If no filter selected, allow all results (true)
+      if (!filter || filter.length === 0) {
+        return true;
+      }
+  
+      // If the value being filtered is a string, it needs to be handled as such
+      if (!value || typeof value !== 'string') {
+        return false;
+      }
+  
+      // Convert the value into an array of items (e.g., if values are comma-separated)
+      const rowItems = value.split(',').map((item: string) => item.trim());
+  
+      // Compare the selected filter values (array) to the row items (array of strings)
+      return filter.some(selectedItem => rowItems.includes(selectedItem.name));
+    });
+  }
+
+  onCustomFilterChange(selectedItems: any[], field: string) {
+    const filterFields = [field];
+    this.filteredData = this.filterService.filter(this.activeActivities, filterFields, selectedItems || [], 'custom');
+
+    this.applyCustomFilters();
+  }
+  
+  applyCustomFilters() {
+    this.activeActivities = this.filteredData;
+    this.updateRowGroupMetaData();  // Update metadata based on the filtered data
+  }
 
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
@@ -275,25 +340,22 @@ export class ActivitiesComponent implements OnInit {
 
   filterFacilityDistrict(selectedSubDistricts: any): void {
     this.loadFacilities();
-
     if (selectedSubDistricts && selectedSubDistricts.length > 0) {
         // Extract LinkIds from the selected ISubDistrictDemographic objects
         const selectedLinkIds = selectedSubDistricts.map(subDistrict => subDistrict.linkId);
         // Filter facilities based on the selected LinkIds
-        this.selectedFacilities = this.facilities.filter(facility =>
+        this.facilitiesList = this.facilities.filter(facility =>
             selectedLinkIds.includes(facility.facilitySubDistrictId)
         );
-        if (this.selectedFacilities.length === 0) {
-            // If no facilities are found, reset the selected facilities
-            this.facilities = [];
-        }
-
+        // if (this.selectedFacilities.length === 0) {
+        //     this.facilities = [];
+        // }
         
-    let allFacilities: string = "";
-    this.selectedFacilities.forEach(item => {
-      allFacilities += item.name + "\n";
-    });
-    this.selectedFacilitiesText = allFacilities;
+    // let allFacilities: string = "";
+    // this.selectedFacilities.forEach(item => {
+    //   allFacilities += item.name + "\n";
+    // });
+    // this.selectedFacilitiesText = allFacilities;
 
 
     } else {

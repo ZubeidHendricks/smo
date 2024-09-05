@@ -356,7 +356,6 @@ export class ViewApplicationComponent implements OnInit {
   private loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
-       
         this.activities = results.filter(x => x.isActive === true);
         this.activities.forEach(item => {
           item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),

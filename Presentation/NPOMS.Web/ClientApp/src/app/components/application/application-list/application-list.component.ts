@@ -92,7 +92,6 @@ export class ApplicationListComponent implements OnInit {
 
         if (!this.IsAuthorized(PermissionsEnum.ViewApplications))
           this._router.navigate(['401']);
-
         this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
         this.isAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
         this.isMainReviewer = profile.roles.some(function (role) { return role.id === RoleEnum.MainReviewer });

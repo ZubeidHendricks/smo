@@ -4,9 +4,7 @@
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>    
     <div style="height: 10px;"></div>
-   
-    <p-table [rowHover]="true" [columns]="activityCols" [value]="activeActivities" styleClass="p-datatable-sm"
-    [globalFilterFields]="['activityList.name','ctivityType.name','timelineStartDate','target','facilityListText','mappedDistrict','mappedManicipality','mappedSubstructure','mappedSubdistrict']">
+    <p-table [rowHover]="true" [columns]="activityCols" [value]="activeActivities" styleClass="p-datatable-sm" [globalFilterFields]="['activityList.name','ctivityType.name','timelineStartDate','target','facilityListText','mappedDistrict','mappedManicipality','mappedSubstructure','mappedSubdistrict']">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -44,7 +42,7 @@
                                 [style]="{'width':'100%'}"
                                 appendTo="body" 
                                 selectedItemsLabel="{0} items selected"
-                                (onChange)="filter($event.value)">
+                                (onChange)="onCustomFilterChange($event.value, 'mappedManicipality')">
                             </p-multiSelect>
                         </ng-template>
                     </p-columnFilter>
@@ -59,7 +57,8 @@
                             </p-multiSelect> -->
                             <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
                                  [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)">
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)"
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onCustomFilterChange($event.value, 'mappedSubstructure')">
                             </p-multiSelect>
                         </ng-template>
                     </p-columnFilter>
@@ -73,7 +72,8 @@
                             </p-multiSelect> -->
                             <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
                             [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)">
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)"
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onCustomFilterChange($event.value, 'mappedSubdistrict')">
                             </p-multiSelect>
                         </ng-template>
                     </p-columnFilter>
@@ -344,8 +344,8 @@
             </div>
         </div>
         <div class="p-col" *ngIf="canEdit">
-            <textarea style="min-height: 30px;" class="form-text" [rows]="3" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="canEdit" autoResize="autoResize"></textarea>
-            <!-- <p-multiSelect [options]="facilities" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedFacilities" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect> -->
+            <!-- <textarea style="min-height: 30px;" class="form-text" [rows]="3" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="canEdit" autoResize="autoResize"></textarea> -->
+            <p-multiSelect [options]="facilitiesList" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedFacilities" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect> 
         </div>
         
         <div class="p-col" *ngIf="!canEdit">
