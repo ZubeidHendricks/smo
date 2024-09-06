@@ -99,6 +99,8 @@ namespace NPOMS.Services.Implementation
                     RefNo = profile.Npo.RefNo,
                     Name = profile.Npo.Name,
                     CCode = profile.Npo.CCode,
+                    OrganisationTypeId = profile.Npo.OrganisationTypeId,
+                    OrganisationTypeName = profile.Npo.OrganisationType.Name,
                     IsActive = profile.Npo.IsActive,
                     NpoProfileId = profile.Id
                 };
