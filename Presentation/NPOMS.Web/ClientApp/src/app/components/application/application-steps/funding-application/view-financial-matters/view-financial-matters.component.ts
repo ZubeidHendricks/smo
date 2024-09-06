@@ -115,6 +115,8 @@ export class ViewFinancialMattersComponent implements OnInit {
   programBankDetails : IProgramBankDetails[];
   previous_year: string;
 
+  unifiedFederation: any;
+
   constructor(private dropDownService: DropdownService,
     private _confirmationService: ConfirmationService,
     private _bidServie: BidService,
@@ -908,4 +910,7 @@ export class ViewFinancialMattersComponent implements OnInit {
     );
   }
 
+  public setValue(event, data) {
+
+  }
 }

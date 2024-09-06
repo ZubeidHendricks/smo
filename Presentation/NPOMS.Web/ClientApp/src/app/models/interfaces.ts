@@ -581,7 +581,9 @@ export interface IApplication {
     isCloned: boolean;
     isQuickCapture: boolean;
     createdUserId: number;
+    createdDateTime: Date;
     updatedUserId: number;
+    updatedDateTime: Date;
     closeScorecard: number;
     initiateScorecard: number;
     scorecardCount: number;
@@ -702,7 +704,9 @@ export interface IApplicationPeriod {
     closingDate: Date;
     status: string;
     createdUserId: number;
+    createdDateTime: Date;
     updatedUserId: number;
+    updatedDateTime: Date;
 
     department: IDepartment;
     programme: IProgramme;
@@ -778,7 +782,9 @@ export interface INpo {
     approvalUserId: number;
     approvalDateTime: Date;
     createdUserId: number;
+    createdDateTime: Date;
     updatedUserId: number;
+    updatedDateTime: Date;
 
     registrationStatusId: number;
     pboNumber: string;
@@ -808,7 +814,9 @@ export interface INpoProfile {
     servicesRendered: IServicesRendered[];
     bankDetails: IBankDetail[];*/
     createdUser: IUser;
+    createdDateTime: Date;
     updatedUser: IUser;
+    updatedDateTime: Date;
 }
 
 export interface IObjective {

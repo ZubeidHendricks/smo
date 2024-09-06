@@ -53,9 +53,13 @@
                 <th>
                     <p-columnFilter field="mappedSubstructure" matchMode="custom">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
+                            <!-- <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
                                  [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
                                 appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
+                            </p-multiSelect> -->
+                            <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
+                                 [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)">
                             </p-multiSelect>
                         </ng-template>
                     </p-columnFilter>
@@ -63,9 +67,13 @@
                    <th>
                     <p-columnFilter field="mappedSubdistrict" matchMode="custom">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
+                            <!-- <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
                             [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
                                 appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
+                            </p-multiSelect> -->
+                            <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
+                            [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)">
                             </p-multiSelect>
                         </ng-template>
                     </p-columnFilter>

@@ -811,4 +811,8 @@ export class ViewApplicationDetailsComponent implements OnInit {
     today.setHours(nextTwoHours);
     return today;
   }
+
+  public setValue(event, data) {
+    
+  }
 }
