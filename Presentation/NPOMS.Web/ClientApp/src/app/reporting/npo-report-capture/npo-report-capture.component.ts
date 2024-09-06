@@ -220,7 +220,7 @@ export class NpoReportCaptureComponent implements OnInit {
     }
   }
 
-  private loadObjectives() {
+  public loadObjectives() {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results.filter(x => x.isActive === true);
@@ -232,7 +232,7 @@ export class NpoReportCaptureComponent implements OnInit {
     );
   }
 
-  private loadActivities() {
+  public loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
@@ -244,7 +244,7 @@ export class NpoReportCaptureComponent implements OnInit {
     );
   }
 
-  private loadSustainabilityPlans() {
+  public loadSustainabilityPlans() {
     this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
       (results) => {
         this.sustainabilityPlans = results.filter(x => x.isActive === true);
@@ -256,7 +256,7 @@ export class NpoReportCaptureComponent implements OnInit {
     );
   }
 
-  private loadResources() {
+  public loadResources() {
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
         this.resources = results.filter(x => x.isActive === true);
@@ -268,7 +268,7 @@ export class NpoReportCaptureComponent implements OnInit {
     );
   }
 
-  private loadDocumentTypes() {
+  public loadDocumentTypes() {
 
     this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.id), false).subscribe(
       (results) => {
@@ -282,7 +282,7 @@ export class NpoReportCaptureComponent implements OnInit {
     );
   }
 
-  private fASteps(applicationPeriod: IApplicationPeriod) {
+  public fASteps(applicationPeriod: IApplicationPeriod) {
 
     if (applicationPeriod != null) {
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {

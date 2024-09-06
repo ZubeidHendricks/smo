@@ -1,1 +1,118 @@
-<p>post-report works!</p>
+
+<p-panel header="Engagement" [style]="{'font-size':'12px', 'width':'100%'}" >
+    <p-table [value]="data" *ngIf="data" [rowHover]="false" styleClass="p-datatable-striped" sortMode="single" dataKey="column1">
+        <ng-template pTemplate="header">
+            <!-- First row with no columns -->
+            <tr>
+                <td colspan="7" style="height: 20px;">Posts</td> <!-- Empty first row -->
+            </tr>
+            <!-- Second row with headers -->
+            <tr>
+                <th style="width: 14%;">Post Classification</th>
+                <th style="width: 14%;">Number of Posts</th>
+                <th style="width: 14%;">Number Filler and months in which filled</th>
+                <th style="width: 14%;">Vacant</th>
+                <th style="width: 14%;">Date of vacancies</th>
+                <th style="width: 14%;">Reason for vacancies</th>
+                <th style="width: 14%;">Plan to fill vacancies</th>
+            </tr>
+        </ng-template>
+    
+        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+            <!-- Body rows for 4 data entries -->
+            <tr *ngIf="rowIndex < 4">
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.column1" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.column1 }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.column2" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.column2 }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.column3" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.column3 }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.column4" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.column4 }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.column5" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.column5 }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.column6" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.column6 }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.column7" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.column7 }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+            </tr>
+        </ng-template>
+    
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</p-panel>
+
+<div style="height: 10px;"></div>
+<div class="p-grid p-nogutter p-justify-between">
+    <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+    <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
+</div>

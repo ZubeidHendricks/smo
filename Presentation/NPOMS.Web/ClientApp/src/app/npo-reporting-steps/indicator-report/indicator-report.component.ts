@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
@@ -15,6 +15,9 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
   styleUrls: ['./indicator-report.component.css']
 })
 export class IndicatorReportComponent implements OnInit {
+
+  @Input() activeStep: number;
+  @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
 
   data = [
     { column1: 'Output Title', column2: 'Select Indicator Type to Report on', column3: '', column4: '',column5: '' },
@@ -448,30 +451,15 @@ export class IndicatorReportComponent implements OnInit {
     let end = this.financialYears[this.financialYears.length - 1];
     this.finYearRange = `${start.year}:${end.year}`;
   }
-
   nextPage() {
-    // if (this.activeActivities.length > 0) {
-    //   let canContinue: boolean[] = [];
-
-    //   this.objectives.forEach(item => {
-    //     var isPresent = this.activeActivities.some(function (activity) { return activity.objectiveId === item.id });
-    //     canContinue.push(isPresent);
-    //   });
-
-    //   if (!canContinue.includes(false)) {
-    //     this.activeStep = this.activeStep + 1;
-    //     this.activeStepChange.emit(this.activeStep);
-    //   }
-    //   else
-    //     this._messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Please capture an activity for each objective.' });
-    // }
-    // else
-    //   this._messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Activity table cannot be empty.' });
+    this.activeStep = this.activeStep + 1;
+    this.activeStepChange.emit(this.activeStep);
   }
+  
 
   prevPage() {
-    // this.activeStep = this.activeStep - 1;
-    // this.activeStepChange.emit(this.activeStep);
+    this.activeStep = this.activeStep - 1;
+    this.activeStepChange.emit(this.activeStep);
   }
 
 

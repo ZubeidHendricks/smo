@@ -235,8 +235,9 @@ export class NavigationComponent implements OnInit {
       }
     }
   }
+}
 
-  private buildSideMenu() {
+    private buildSideMenu() {
     this.sideMenu = [];
 
     if (this.profile && !this.profile.isB2C) {
@@ -386,6 +387,7 @@ export class NavigationComponent implements OnInit {
         }
       }
     }
+  
   }
 
   login() {
