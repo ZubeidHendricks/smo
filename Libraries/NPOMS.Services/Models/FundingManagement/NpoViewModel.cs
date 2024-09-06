@@ -13,6 +13,8 @@ namespace NPOMS.Services.Models.FundingManagement
         public string RefNo { get; set; }
         public string Name { get; set; }
         public string CCode { get; set; }
+        public int OrganisationTypeId { get; set; }
+        public string OrganisationTypeName { get; set; }
         public bool IsActive { get; set; }
         public int NpoProfileId { get; set; }
 
