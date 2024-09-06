@@ -112,6 +112,7 @@ import { FundingCaptureListComponent } from './components/funding-capture/fundin
 import { EditFundingCaptureComponent } from './components/funding-capture/edit-funding-capture/edit-funding-capture.component';
 import { ApproveFundingCaptureComponent } from './components/funding-capture/approve-funding-capture/approve-funding-capture.component';
 import { ViewFundingCaptureComponent } from './components/funding-capture/view-funding-capture/view-funding-capture.component';
+import { NpoReportCaptureComponent } from './reporting/npo-report-capture/npo-report-capture.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -152,6 +153,8 @@ const routes: Routes = [
   { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },
   { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
   { path: 'qcOpenApplicationDohList', component: QcApplicationPeriodsDohComponent },
+
+  { path: 'reports', component: NpoReportCaptureComponent },
 
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },

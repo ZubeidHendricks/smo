@@ -204,6 +204,7 @@ export class NavigationComponent implements OnInit {
       }
 
       if (this.IsAuthorized(PermissionsEnum.ViewFundingCaptureMenu)) {
+      if (this.IsAuthorized(PermissionsEnum.ViewQC)) {
         this.mainMenu.push({
           label: 'Funding Capture',
           icon: 'fa fa-list wcg-icon',
@@ -219,6 +220,16 @@ export class NavigationComponent implements OnInit {
           icon: 'fa fa-cogs wcg-icon',
           command: () => {
             this.displaySideMenu = true;
+          }
+        });
+      }
+      
+      if (this.IsAuthorized(PermissionsEnum.ViewQC)) {
+        this.mainMenu.push({
+          label: '11.Report',
+          icon: 'fa fa-camera wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('reports');
           }
         });
       }

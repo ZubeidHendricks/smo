@@ -1,5 +1,6 @@
-import { NpoProfileService } from './../../../services/api-services/npo-profile/npo-profile.service';
-import { FundingApplicationService } from './../../../services/api-services/funding-application/funding-application.service';
+
+
+
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Console } from 'console';
@@ -7,7 +8,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { FinancialMatters, IFinancialMattersIncome } from 'src/app/models/FinancialMatters';
-import { ApplicationTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { ApplicationTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, FundingApplicationStepsEnum, NPOReportingStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, 
   IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, 
   IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser,
@@ -18,15 +19,17 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
+import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
+import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
+
 
 @Component({
-  selector: 'app-edit-application',
-  templateUrl: './edit-application.component.html',
-  styleUrls: ['./edit-application.component.css'],
+  selector: 'app-npo-report-capture',
+  templateUrl: './npo-report-capture.component.html',
+  styleUrls: ['./npo-report-capture.component.css'],
   providers: [MessageService, ConfirmationService]
 })
-export class EditApplicationComponent implements OnInit {
-  
+export class NpoReportCaptureComponent implements OnInit {
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -47,6 +50,9 @@ export class EditApplicationComponent implements OnInit {
     return ServiceProvisionStepsEnum;
   }
 
+  public get NPOReportingStepsEnum(): typeof NPOReportingStepsEnum {
+    return NPOReportingStepsEnum;
+  }
   public get FundingApplicationStepsEnum(): typeof FundingApplicationStepsEnum {
     return FundingApplicationStepsEnum;
   }
@@ -112,7 +118,8 @@ export class EditApplicationComponent implements OnInit {
   }
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      this.id = params.get('id');
+      //this.id = params.get('id');
+      this.id = '572';
       this.loadApplication();
       this.loadDocumentTypes();
       if (Number(params.get('activeStep')) === 2) {
@@ -139,6 +146,7 @@ export class EditApplicationComponent implements OnInit {
   }
 
   getfinFund(event: FinancialMatters) {
+    // console.log('event from Edit', JSON.stringify(event));
   }
 
   private loadApplication() {
@@ -201,17 +209,18 @@ export class EditApplicationComponent implements OnInit {
     if (applicationPeriod != null) {
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
         this.items = [
-          { label: 'Organisation Details' },
-          { label: 'Objectives' },
-          { label: 'Activities' },
-          { label: 'Sustainability' },
-          { label: 'Resourcing' }
+          { label: 'Indicator Report' },
+          { label: 'Post Report' },
+          { label: 'Details of Income and Expenditure' },
+          { label: 'Governance' },
+          { label: 'Any Other Information' },
+          { label: 'Quartely SDIP Reporting' }
         ];
       }
     }
   }
 
-  public loadObjectives() {
+  private loadObjectives() {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results.filter(x => x.isActive === true);
@@ -223,7 +232,7 @@ export class EditApplicationComponent implements OnInit {
     );
   }
 
-  public loadActivities() {
+  private loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
@@ -235,7 +244,7 @@ export class EditApplicationComponent implements OnInit {
     );
   }
 
-  public loadSustainabilityPlans() {
+  private loadSustainabilityPlans() {
     this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
       (results) => {
         this.sustainabilityPlans = results.filter(x => x.isActive === true);
@@ -247,7 +256,7 @@ export class EditApplicationComponent implements OnInit {
     );
   }
 
-  public loadResources() {
+  private loadResources() {
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
         this.resources = results.filter(x => x.isActive === true);
@@ -278,12 +287,12 @@ export class EditApplicationComponent implements OnInit {
     if (applicationPeriod != null) {
       if (applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
         this.faItems = [
-          { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
-          { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Financial Matters', command: (event: any) => { this.activeStep = 2; } },
-          { label: 'Project Information', command: (event: any) => { this.activeStep = 3; } },
-          { label: 'Monitoring and Evaluation', command: (event: any) => { this.activeStep = 4; } },
-          { label: 'Project Implementation Plan', command: (event: any) => { this.activeStep = 5; } },
+          { label: 'Indicator Report', command: (event: any) => { this.activeStep = 0; } },
+          { label: 'Post Report', command: (event: any) => { this.activeStep = 1; } },
+          { label: 'Details of Income and Expenditure', command: (event: any) => { this.activeStep = 2; } },
+          { label: 'Governance', command: (event: any) => { this.activeStep = 3; } },
+          { label: 'Any Other Information', command: (event: any) => { this.activeStep = 4; } },
+          { label: 'Quartely SDIP Reporting', command: (event: any) => { this.activeStep = 5; } },
           { label: 'Application Document', command: (event: any) => { this.activeStep = 6; } }
         ];
       }
@@ -639,3 +648,4 @@ export class EditApplicationComponent implements OnInit {
   }
   
 }
+

@@ -161,6 +161,16 @@ export enum ServiceProvisionStepsEnum {
     OverallWorkplan = 6
 }
 
+export enum NPOReportingStepsEnum {
+    IndicatorReport = 0,
+    PostReport = 1,
+    DetailsOfIncomeAndAndExpenditure = 2,
+    Governance = 3,
+    AnyOtherInformation = 4,
+    QuarterlySDIP = 5,
+
+}
+
 export enum StatusEnum {
     // New = 1,
     // Saved = 2,

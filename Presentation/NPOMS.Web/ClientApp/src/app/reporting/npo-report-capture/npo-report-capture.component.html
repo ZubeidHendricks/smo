@@ -1,0 +1,97 @@
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Edit Application" *ngIf="isApplicationAvailable">
+
+    <div class="p-grid p-nogutter p-justify-between" *ngIf="application.createdUser && application.updatedUser">
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created By: {{application.createdUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Created Date: {{application.createdDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+        <div>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated By: {{application.updatedUser.fullName}}</span>
+                <i style="vertical-align: middle; padding: 10px;"></i>
+            <span class="ui-panel-title text-uppercase text-muted" style="font-size:10px;display:inline-block;margin-top:2px;font-weight: bold;height: 20px;">Updated Date: {{application.updatedDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+        </div>
+    </div>
+    <div style="height: 10px;"></div>
+
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
+        *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+    <p-steps [model]="items" [readonly]="true" [activeIndex]="activeStep"></p-steps>
+    <p-steps [model]="faItems" [readonly]="false" [activeIndex]="activeStep"
+       ></p-steps>
+    <div style="height: 10px;"></div>
+    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.FA">
+        <app-npo-details *ngIf="activeStep == FundingApplicationStepsEnum.NpoConfirmationDetails"
+            [(activeStep)]="activeStep" [application]="application" [newApplication]="false"></app-npo-details>
+        <app-application-details *ngIf="activeStep == FundingApplicationStepsEnum.AmountYouApplyingFor"
+            [(activeStep)]="activeStep" [application]="application"
+            [(fundingApplicationDetails)]="fundingApplicationDetails"
+            [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
+            [programId]="application.applicationPeriod.programmeId" 
+            [subProgramId] = "application.applicationPeriod.subProgrammeId"
+            [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
+            (getPlace)="places($event)"
+            (getSubPlace)=" subPlaces($event)"
+            [isEdit]="true" (saveFundingApplication) = "saveFundingApplication()">
+        </app-application-details>
+        <app-financial-matters *ngIf="activeStep == FundingApplicationStepsEnum.FinancialMatters"
+            [(activeStep)]="activeStep" [application]="application"
+            [programId]="application.applicationPeriod.programmeId" 
+            [subProgramId] = "application.applicationPeriod.subProgrammeId"
+            [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
+            [source]="source" 
+            [isAdmin]=false
+            [(fundingApplicationDetails)]="fundingApplicationDetails"
+            [(financialMattersIncome)]="financialMattersIncome" (financialMattersChange)="getfinFund($event)">
+        </app-financial-matters>
+        <app-project-information *ngIf="activeStep == FundingApplicationStepsEnum.ProjectInformation"
+            [(activeStep)]="activeStep" [application]="application"
+            [(purposeQuestion)]="fundingApplicationDetails.projectInformation.purposeQuestion"
+            [(fundingApplicationDetails)]="fundingApplicationDetails">
+        </app-project-information>
+        <app-monitoring-evaluation-plan *ngIf="activeStep == FundingApplicationStepsEnum.Monitoring_And_Evaluation"
+            [(activeStep)]="activeStep" [application]="application"
+            [(monEvalDescription)]="fundingApplicationDetails.monitoringEvaluation.monEvalDescription"
+            [(fundingApplicationDetails)]="fundingApplicationDetails">
+        </app-monitoring-evaluation-plan>
+        <app-project-implementation *ngIf="activeStep == FundingApplicationStepsEnum.ProjectImplementationPlan"
+            [(activeStep)]="activeStep" [application]="application"
+            [programId]="application.applicationPeriod.programmeId"
+            [subProgramId] = "application.applicationPeriod.subProgrammeId"
+            [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
+            [(implementations)]="fundingApplicationDetails.implementations"
+            [(fundingApplicationDetails)]="fundingApplicationDetails" [places]="placeAll" [allsubPlaces]="subPlacesAll">
+        </app-project-implementation>
+        <app-document-upload *ngIf="activeStep == FundingApplicationStepsEnum.ApplicationDocument"
+            [(activeStep)]="activeStep" [application]="application"
+            [(fundingApplicationDetails)]="fundingApplicationDetails"></app-document-upload>
+    </div>
+
+<div>
+    <app-indicator-report *ngIf="activeStep == NPOReportingStepsEnum.IndicatorReport"[(activeStep)]="activeStep"
+            [application]="application" [newApplication]="false"></app-indicator-report>
+        <app-post-report *ngIf="activeStep == NPOReportingStepsEnum.PostReport" [(activeStep)]="activeStep"
+            [application]="application" (objectiveChange)="loadObjectives()" [canAddComments]="true"
+            [isReview]="false" [currentUserId]="profile.id"></app-post-report>
+        <app-details-of-income-and-and-expenditure-report *ngIf="activeStep == NPOReportingStepsEnum.DetailsOfIncomeAndAndExpenditure" [(activeStep)]="activeStep"
+            [application]="application" (activityChange)="loadActivities()" [canAddComments]="true"
+            [isReview]="false"></app-details-of-income-and-and-expenditure-report>
+        <app-governance-report *ngIf="activeStep == NPOReportingStepsEnum.Governance" [(activeStep)]="activeStep"
+            [application]="application" (sustainabilityPlanChange)="loadSustainabilityPlans()" [canAddComments]="true"
+            [isReview]="false"></app-governance-report>
+        <app-any-other-information-report *ngIf="activeStep == NPOReportingStepsEnum.AnyOtherInformation" [(activeStep)]="activeStep"
+            [application]="application" (resourceChange)="loadResources()" [reviewApplication]="false"
+            [canReviewOrApprove]="false" [canAddComments]="true" [isReview]="false"></app-any-other-information-report>
+
+<app-quarterly-sdip-reporting-report *ngIf="activeStep == NPOReportingStepsEnum.QuarterlySDIP" [(activeStep)]="activeStep"
+            [application]="application" (resourceChange)="loadResources()" [reviewApplication]="false"
+            [canReviewOrApprove]="false" [canAddComments]="true" [isReview]="false"></app-quarterly-sdip-reporting-report> 
+</div>
+    <div style="height: 10px;"></div>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
+        *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
+</p-panel>

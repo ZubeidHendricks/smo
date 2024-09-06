@@ -213,6 +213,13 @@ import { EditFundingCaptureComponent } from './components/funding-capture/edit-f
 import { FCFundingDetailComponent } from './components/funding-capture/fc-steps/fc-funding-detail/fc-funding-detail.component';
 import { FCApprovalComponent } from './components/funding-capture/fc-steps/fc-approval/fc-approval.component';
 
+import { NpoReportCaptureComponent } from './reporting/npo-report-capture/npo-report-capture.component';
+import { IndicatorReportComponent } from './npo-reporting-steps/indicator-report/indicator-report.component';
+import { PostReportComponent } from './npo-reporting-steps/post-report/post-report.component';
+import { DetailsOfIncomeAndAndExpenditureReportComponent } from './npo-reporting-steps/details-of-income-and-and-expenditure-report/details-of-income-and-and-expenditure-report.component';
+import { GovernanceReportComponent } from './npo-reporting-steps/governance-report/governance-report.component';
+import { AnyOtherInformationReportComponent } from './npo-reporting-steps/any-other-information-report/any-other-information-report.component';
+import { QuarterlySDIPReportingReportComponent } from './npo-reporting-steps/quarterly-sdip-reporting-report/quarterly-sdip-reporting-report.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -418,7 +425,14 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     FundingCaptureListComponent,
     EditFundingCaptureComponent,
     FCFundingDetailComponent,
-    FCApprovalComponent
+    FCApprovalComponent,
+    NpoReportCaptureComponent,
+    IndicatorReportComponent,
+    PostReportComponent,
+    DetailsOfIncomeAndAndExpenditureReportComponent,
+    GovernanceReportComponent,
+    AnyOtherInformationReportComponent,
+    QuarterlySDIPReportingReportComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
