@@ -31,7 +31,9 @@ namespace NPOMS.Repository.Implementation.Entities
 		public async Task<IEnumerable<NpoProfile>> GetEntitiesForFundingCapture()
 		{
             return await FindAll().Include(x => x.Npo)
-									.ThenInclude(x => x.FundingCaptures)
+									.ThenInclude(x => x.OrganisationType)
+                                  .Include(x => x.Npo)
+                                    .ThenInclude(x => x.FundingCaptures)
                                   .Where(x => x.Npo.IsActive && x.IsActive)
 								  .OrderBy(x => x.Npo.Name).AsNoTracking().ToListAsync();
         }

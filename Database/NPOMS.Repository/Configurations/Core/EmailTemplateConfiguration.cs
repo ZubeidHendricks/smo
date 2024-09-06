@@ -212,22 +212,22 @@ namespace NPOMS.Repository.Configurations.Core
                 {
                     Id = 31,
                     Name = "NewFunding",
-                    Body = "<p>Dear {ToUserFullName},</p><p>Thank you for submitting the funding for <span style=\"font-weight: bold;\">{NpoName}</span> for the <span style=\"font-weight: bold;\">{FinancialYearName}</span> financial year.</p><p>It has been sent to be approved.</p><p>Please <a href=\"{url}/#/funding-capture\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
-                    Subject = "Funding submitted for Organisation - {NpoName}"
+                    Body = "<p>Dear {ToUserFullName},</p><p>Thank you for submitting the funding for <span style=\"font-weight: bold;\">{NpoName} ({NpoRefNo})</span> for the <span style=\"font-weight: bold;\">{FinancialYearName}</span> financial year.</p><p>It has been sent to be approved.</p><p>Please <a href=\"{url}/#/funding-capture\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                    Subject = "Funding submitted for Organisation - {NpoName} ({NpoRefNo})"
                 },
                 new EmailTemplate
                 {
                     Id = 32,
                     Name = "FundingStatusChanged",
-                    Body = "<p>Dear {ToUserFullName},</p><p>The funding for <span style=\"font-weight: bold;\">{NpoName}</span> for the <span style=\"font-weight: bold;\">{FinancialYearName}</span> financial year has been {action}.</p><p>Please <a href=\"{url}/#/funding-capture\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
-                    Subject = "Funding {StatusName} for Organisation - {NpoName} ({FinancialYearName})"
+                    Body = "<p>Dear {ToUserFullName},</p><p>The funding for <span style=\"font-weight: bold;\">{NpoName} ({NpoRefNo})</span> for the <span style=\"font-weight: bold;\">{FinancialYearName}</span> financial year has been {action}.</p><p>Please <a href=\"{url}/#/funding-capture\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                    Subject = "Funding {StatusName} for Organisation - {NpoName} ({NpoRefNo})"
                 },
                 new EmailTemplate
                 {
                     Id = 33,
                     Name = "FundingStatusChangedPending",
-                    Body = "<p>Dear {ToUserFullName},</p><p>The funding for <span style=\"font-weight: bold;\">{NpoName}</span> for the <span style=\"font-weight: bold;\">{FinancialYearName}</span> financial year has been sent for you to {action}.</p><p>Please <a href=\"{url}/#/funding-capture\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
-                    Subject = "Funding {StatusName} for Organisation - {NpoName} ({FinancialYearName})"
+                    Body = "<p>Dear {ToUserFullName},</p><p>The funding for <span style=\"font-weight: bold;\">{NpoName} ({NpoRefNo})</span> for the <span style=\"font-weight: bold;\">{FinancialYearName}</span> financial year has been sent for you to {action}.</p><p>Please <a href=\"{url}/#/funding-capture\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                    Subject = "Funding {StatusName} for Organisation - {NpoName} ({NpoRefNo})"
                 }
             );
         }

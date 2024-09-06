@@ -99,6 +99,7 @@ namespace NPOMS.Services.Email.EmailTemplates
 
             var returnResult = value.Replace("{ToUserFullName}", user.FullName)
                                     .Replace("{NpoName}", npo.Name)
+                                    .Replace("{NpoRefNo}", npo.RefNo)
                                     .Replace("{FinancialYearName}", financialYear.Name)
                                     .Replace("{url}", requestOrigin)
                                     .Replace("{StatusName}", statusName)
