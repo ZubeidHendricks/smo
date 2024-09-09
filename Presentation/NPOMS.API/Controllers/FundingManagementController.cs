@@ -55,21 +55,6 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpGet("financialYearId/{financialYearId}/programmeId/{programmeId}/subProgrammeId/{subProgrammeId}/subProgrammeTypeId/{subProgrammeTypeId}", Name = "CanCaptureFunding")]
-        public async Task<IActionResult> CanCaptureFunding(int financialYearId, int programmeId, int subProgrammeId, int subProgrammeTypeId)
-        {
-            try
-            {
-                var result = await this._fundingManagementService.CanCaptureFunding(financialYearId, programmeId, subProgrammeId, subProgrammeTypeId);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside CanCaptureFunding action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
         [HttpPost(Name = "CreateFundingCapture")]
         public async Task<IActionResult> CreateFundingCapture([FromBody] FundingCaptureViewModel model)
         {
