@@ -56,6 +56,7 @@ export class ActivitiesComponent implements OnInit {
 
   allActivities: IActivity[];
   activeActivities: IActivity[];
+  originalActiveActivities: IActivity[];
   deletedActivities: IActivity[];
 
   activityCols: any[];
@@ -286,12 +287,29 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+
   onCustomFilterChange(selectedItems: any[], field: string) {
     const filterFields = [field];
-    this.filteredData = this.filterService.filter(this.activeActivities, filterFields, selectedItems || [], 'custom');
-
+  
+    // Reset the table when no items are selected (i.e., deselect all)
+    if (!selectedItems || selectedItems.length === 0) {
+      this.filteredData = [...this.originalActiveActivities];  // Reset to the original data
+    } else {
+      // Apply the filter
+      this.filteredData = this.filterService.filter(this.originalActiveActivities, filterFields, selectedItems, 'custom');
+    }
+  
+    // Reapply filters
     this.applyCustomFilters();
   }
+  
+
+  // onCustomFilterChange(selectedItems: any[], field: string) {
+  //   const filterFields = [field];
+  //   this.filteredData = this.filterService.filter(this.activeActivities, filterFields, selectedItems || [], 'custom');
+
+  //   this.applyCustomFilters();
+  // }
   
   applyCustomFilters() {
     this.activeActivities = this.filteredData;
@@ -563,6 +581,8 @@ onDemographicSubStructuresChange() {
           item.mappedSubstructure = this.getSubDistrictNames(item?.activitySubStructure),
           item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict)
         });
+
+        this.originalActiveActivities =  this.activeActivities;
 
         this.getFacilityListText(results);
         this.updateRowGroupMetaData();

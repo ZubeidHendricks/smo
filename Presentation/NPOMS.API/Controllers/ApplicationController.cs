@@ -1258,7 +1258,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var users = await _userService.WorkplanApprovers((int)RoleEnum.Approver, departmentId);
+                var users = await _userService.WorkplanApprovers((int)RoleEnum.DOHApprover, departmentId);
 
                 return Ok(users);
             }
