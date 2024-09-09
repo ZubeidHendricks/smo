@@ -114,6 +114,7 @@ export class ConfirmationComponent implements OnInit {
  mainReviewers() {
   this._applicationRepo.workplanMainReviewers(this.application.applicationPeriod.departmentId).subscribe(
    (results) => {
+    console.log(results);
      this.mainReviewerlist = results;
    },
    (err) => {
