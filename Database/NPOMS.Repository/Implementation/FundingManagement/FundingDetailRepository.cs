@@ -27,17 +27,6 @@ namespace NPOMS.Repository.Implementation.FundingManagement
                             .AsNoTracking().ToListAsync();
         }
 
-        public async Task<FundingDetail> GetByIds(int financialYearId, int programmeId, int subProgrammeId, int subProgrammeTypeId)
-        {
-            return await FindByCondition(x => x.FinancialYearId.Equals(financialYearId) &&
-                                              x.ProgrammeId.Equals(programmeId) &&
-                                              x.SubProgrammeId.Equals(subProgrammeId) &&
-                                              x.SubProgrammeTypeId.Equals(subProgrammeTypeId))
-                                              .Where(x => x.IsActive)
-                                              .AsNoTracking()
-                                              .FirstOrDefaultAsync();
-        }
-
         public async Task<FundingDetail> GetByFundingCaptureId(int fundingCaptureId)
         {
             return await FindByCondition(x => x.FundingCaptureId.Equals(fundingCaptureId))

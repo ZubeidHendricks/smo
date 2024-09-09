@@ -8,8 +8,6 @@ namespace NPOMS.Services.Interfaces
     {
         Task<IEnumerable<NpoViewModel>> GetNposForFunding(string userIdentifier);
 
-        Task<bool> CanCaptureFunding(int financialYearId, int programmeId, int subProgrammeId, int subProgrammeTypeId);
-
         Task<FundingCaptureViewModel> CreateFundingCapture(FundingCaptureViewModel model, string userIdentifier);
 
         Task<NpoViewModel> GetById(int id);

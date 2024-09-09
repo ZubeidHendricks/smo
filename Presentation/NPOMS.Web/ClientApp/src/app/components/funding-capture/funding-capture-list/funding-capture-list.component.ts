@@ -433,20 +433,7 @@ export class FundingCaptureListComponent implements OnInit {
       } as IFundingDetailViewModel
     } as IFundingCaptureViewModel;
 
-    this._fundingManagementRepo.canCaptureFunding(fundingCapture.fundingDetailViewModel).subscribe(
-      (results) => {
-        if (results)
-          this.createFundingCapture(fundingCapture)
-        else {
-          this._messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Funding already captured...' });
-          this._spinner.hide();
-        }
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+    this.createFundingCapture(fundingCapture);
   }
 
   private createFundingCapture(fundingCapture: IFundingCaptureViewModel) {
