@@ -41,11 +41,11 @@ namespace NPOMS.Services.Email.EmailTemplates
 			var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
 
 			// Combination of reviewers and main reviewers
-			var users = (reviewers ?? Enumerable.Empty<User>()).Concat(mainReviewers ?? Enumerable.Empty<User>());
+			var users = (Enumerable.Empty<User>()).Concat(mainReviewers ?? Enumerable.Empty<User>()?? reviewers );
 
 			try
 			{
-				foreach (var user in users)
+				foreach (var user in mainReviewers)
 				{
 					EmailQueue emailQueue = new EmailQueue()
 					{
