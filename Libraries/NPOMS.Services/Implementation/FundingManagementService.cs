@@ -99,13 +99,15 @@ namespace NPOMS.Services.Implementation
                     RefNo = profile.Npo.RefNo,
                     Name = profile.Npo.Name,
                     CCode = profile.Npo.CCode,
+                    OrganisationTypeId = profile.Npo.OrganisationTypeId,
+                    OrganisationTypeName = profile.Npo.OrganisationType.Name,
                     IsActive = profile.Npo.IsActive,
                     NpoProfileId = profile.Id
                 };
 
                 if (profile.Npo.FundingCaptures.Count > 0)
                 {
-                    var fundings = fundingCaptures.Where(x => x.NpoId.Equals(profile.NpoId) && x.IsActive).ToList();
+                    var fundings = fundingCaptures.Where(x => x.NpoId.Equals(profile.NpoId) && x.IsActive).ToList().OrderByDescending(x => x.FinancialYear.Year);
 
                     foreach (var funding in fundings)
                     {
@@ -152,12 +154,6 @@ namespace NPOMS.Services.Implementation
             }
 
             return viewModel;
-        }
-
-        public async Task<bool> CanCaptureFunding(int financialYearId, int programmeId, int subProgrammeId, int subProgrammeTypeId)
-        {
-            var fundingDetail = await _fundingDetailRepository.GetByIds(financialYearId, programmeId, subProgrammeId, subProgrammeTypeId);
-            return fundingDetail != null ? false : true;
         }
 
         public async Task<FundingCaptureViewModel> CreateFundingCapture(FundingCaptureViewModel model, string userIdentifier)

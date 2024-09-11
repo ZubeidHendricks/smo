@@ -26,11 +26,6 @@ export class FundingManagementService {
     return this._http.get<INpoViewModel[]>(url, httpOptions);
   }
 
-  public canCaptureFunding(fundingDetail: IFundingDetailViewModel) {
-    const url = `${this.fundingManagementUrl}/financialYearId/${fundingDetail.financialYearId}/programmeId/${fundingDetail.programmeId}/subProgrammeId/${fundingDetail.subProgrammeId}/subProgrammeTypeId/${fundingDetail.subProgrammeTypeId}`;
-    return this._http.get<boolean>(url, httpOptions);
-  }
-
   public createFundingCapture(fundingCapture: IFundingCaptureViewModel) {
     const url = `${this.fundingManagementUrl}`;
     return this._http.post<IFundingCaptureViewModel>(url, fundingCapture, httpOptions);

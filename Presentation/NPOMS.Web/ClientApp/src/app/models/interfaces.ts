@@ -1941,6 +1941,8 @@ export interface INpoViewModel {
     refNo: string;
     name: string;
     cCode: string;
+    organisationTypeId: number;
+    organisationTypeName: string;
     isActive: boolean;
     npoProfileId: number;
 

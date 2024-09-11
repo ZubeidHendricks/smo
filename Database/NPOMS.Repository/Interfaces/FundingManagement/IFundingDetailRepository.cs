@@ -6,8 +6,6 @@ namespace NPOMS.Repository.Interfaces.FundingManagement
     {
         Task<IEnumerable<FundingDetail>> GetAll();
 
-        Task<FundingDetail> GetByIds(int financialYearId, int programmeId, int subProgrammeId, int subProgrammeTypeId);
-
         Task<FundingDetail> GetByFundingCaptureId(int fundingCaptureId);
     }
 }

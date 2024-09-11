@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { CalculationTypeEnum, DropdownTypeEnum, FundingTypeEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IFinancialYear, IFundingCaptureViewModel, IFundingDetailViewModel, INpoViewModel, IProgramme, IServicesRendered, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
+import { IFinancialYear, IFrequency, IFundingCaptureViewModel, IFundingDetailViewModel, INpoViewModel, IProgramme, IServicesRendered, IStatus, ISubProgramme, ISubProgrammeType, IUser } from 'src/app/models/interfaces';
 import { FundingManagementService } from 'src/app/services/api-services/funding-management/funding-management.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -34,6 +34,7 @@ export class FundingCaptureListComponent implements OnInit {
   }
 
   profile: IUser;
+  npoCols: any[];
   cols: any[];
 
   npos: INpoViewModel[];
@@ -42,6 +43,7 @@ export class FundingCaptureListComponent implements OnInit {
   displayDialog: boolean;
   servicesRendered: IServicesRendered[];
 
+  allFinancialYears: IFinancialYear[];
   financialYears: IFinancialYear[];
   selectedFinancialYear: IFinancialYear;
 
@@ -64,6 +66,9 @@ export class FundingCaptureListComponent implements OnInit {
   selectedFundingCapture: IFundingCaptureViewModel;
   buttonItems: MenuItem[];
 
+  paymentFrequencies: IFrequency[];
+  statuses: IStatus[];
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -85,20 +90,27 @@ export class FundingCaptureListComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.loadFinancialYears();
+        this.loadFrequencies();
+        this.loadStatuses();
         this.buildButtonItems();
       }
     });
 
+    this.npoCols = [
+      { field: 'refNo', header: 'Ref. No.', width: '15%' },
+      { field: 'name', header: 'Organisation Name', width: '60%' },
+      { field: 'organisationTypeName', header: 'Organisation Type', width: '15%' }
+    ];
+
     this.cols = [
-      { header: 'Fin. Year', width: '8%' },
-      { header: 'Programme', width: '12%' },
-      { header: 'Sub-Programme Type', width: '10%' },
-      { header: 'Service Delivery Area', width: '10%' },
-      { header: 'Payment Frequency', width: '10%' },
-      { header: 'Programme Budget', width: '10%' },
+      { field: 'financialYearName', header: 'Fin. Year', width: '8%' },
+      { field: 'fundingDetailViewModel.programmeName', header: 'Programme', width: '17%' },
+      { field: 'fundingDetailViewModel.subProgrammeTypeName', header: 'Sub-Programme Type', width: '15%' },
+      { field: 'sdaViewModel.serviceDeliveryAreaName', header: 'Service Delivery Area', width: '10%' },
+      { field: 'fundingDetailViewModel.frequencyName', header: 'Payment Frequency', width: '10%' },
       { header: 'Amount Awarded', width: '10%' },
       { header: 'Amount Paid', width: '10%' },
-      { header: 'Status', width: '10%' }
+      { field: 'statusName', header: 'Status', width: '10%' }
     ];
   }
 
@@ -209,7 +221,7 @@ export class FundingCaptureListComponent implements OnInit {
       icon: 'pi pi-info-circle',
       accept: () => {
         this._spinner.show();
-        
+
         this._fundingManagementRepo.getFundingById(this.selectedFundingCapture.id).subscribe(
           (results) => {
             this._spinner.hide();
@@ -250,12 +262,47 @@ export class FundingCaptureListComponent implements OnInit {
     });
   }
 
+  private loadFrequencies() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Frequencies, false).subscribe(
+      (results) => {
+        this.paymentFrequencies = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadStatuses() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Statuses, false).subscribe(
+      (results) => {
+        this.statuses = results;
+        this.statuses = this.statuses.filter(x => x.id === StatusEnum.Saved || x.id === StatusEnum.PendingApproval || x.id === StatusEnum.Approved || x.id === StatusEnum.Declined);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadFinancialYears() {
     this._spinner.show();
     this._dropdownRepo.getFromCurrentFinYear().subscribe(
       (results) => {
         this.financialYears = results;
         this.loadProgrammes();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
+      (results) => {
+        this.allFinancialYears = results;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -386,20 +433,7 @@ export class FundingCaptureListComponent implements OnInit {
       } as IFundingDetailViewModel
     } as IFundingCaptureViewModel;
 
-    this._fundingManagementRepo.canCaptureFunding(fundingCapture.fundingDetailViewModel).subscribe(
-      (results) => {
-        if (results)
-          this.createFundingCapture(fundingCapture)
-        else {
-          this._messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Funding already captured...' });
-          this._spinner.hide();
-        }
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+    this.createFundingCapture(fundingCapture);
   }
 
   private createFundingCapture(fundingCapture: IFundingCaptureViewModel) {
