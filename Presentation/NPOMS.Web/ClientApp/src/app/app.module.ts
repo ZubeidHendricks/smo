@@ -220,6 +220,7 @@ import { DetailsOfIncomeAndAndExpenditureReportComponent } from './npo-reporting
 import { GovernanceReportComponent } from './npo-reporting-steps/governance-report/governance-report.component';
 import { AnyOtherInformationReportComponent } from './npo-reporting-steps/any-other-information-report/any-other-information-report.component';
 import { QuarterlySDIPReportingReportComponent } from './npo-reporting-steps/quarterly-sdip-reporting-report/quarterly-sdip-reporting-report.component';
+import { IndicatorsComponent } from './reporting/indicators/indicators.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -432,7 +433,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     DetailsOfIncomeAndAndExpenditureReportComponent,
     GovernanceReportComponent,
     AnyOtherInformationReportComponent,
-    QuarterlySDIPReportingReportComponent
+    QuarterlySDIPReportingReportComponent,
+    IndicatorsComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

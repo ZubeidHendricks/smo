@@ -1,1 +1,448 @@
-<p>any-other-information-report works!</p>
+<p-toast></p-toast>
+<p-panel [style]="{'font-size':'12px'}" header=" Any Other Information" *ngIf="activeActivities">
+    <!-- <div class="p-grid p-nogutter p-justify-end">
+        <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
+    </div>     -->
+    <div style="height: 10px;"></div>
+    <p-table [rowHover]="true" [columns]="anyOtherCols" [value]="activeActivities" styleClass="p-datatable-sm" [globalFilterFields]="['activityList.name','ctivityType.name','timelineStartDate','target','facilityListText','mappedDistrict','mappedManicipality','mappedSubstructure','mappedSubdistrict']">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field" ariaLabel="Activate to sort" 
+                  ariaLabelDesc="Activate to sort in descending order"
+                   ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                </th>
+                <th style="width: 7%;">Actions</th>
+                <th style="width: 7%;" *ngIf="application.isCloned && isReview">Difference</th>
+           
+                <th><p-columnFilter type="text" field="activityList.name"></p-columnFilter></th>
+               <th><p-columnFilter type="text" field="activityType.name"></p-columnFilter></th>
+                 <th><p-columnFilter type="text" field="timelineStartDate"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="target"></p-columnFilter></th>                
+                <th><p-columnFilter type="text" field="facilityListText"></p-columnFilter></th>
+                 <th>
+                    <p-columnFilter field="mappedDistrict" matchMode="contains">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <input pInputText type="text" (input)="filter($event.target.value, 'mappedDistrict', 'contains')" placeholder="Filter by District" />
+                        </ng-template>
+                    </p-columnFilter>
+                </th>  
+                <th>
+                    <p-columnFilter field="mappedSubstructure" matchMode="custom">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
+                                 [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)"
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onCustomFilterChange($event.value, 'mappedSubstructure')">
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>          
+                   <th>
+                    <p-columnFilter field="mappedSubdistrict" matchMode="custom">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
+                            [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)"
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onCustomFilterChange($event.value, 'mappedSubdistrict')">
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>
+        </tr>
+           
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex"> 
+            <tr>
+                <td>None </td>
+                <td>Financial</td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActivity(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
+                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                    <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
+                    <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
+                </td>
+                <td *ngIf="application.isCloned && isReview">
+                    {{GetDifference(rowData.isNew)}}
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="10" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData >
+            <div style="text-align:left">
+                <button pButton pRipple type="button" label="Add Governance Report" class="p-button-text" icon="fa fa-plus" (click)="addActivity()"></button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData *ngIf="application.isCloned && isReview">
+            <div style="text-align:left">
+                <button pButton pRipple type="button" label="View Deleted Activities" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedActivities()"></button>
+            </div>
+        </ng-template>
+    </p-table>
+    
+    <div style="height: 10px;"></div>
+    <div class="p-grid p-nogutter p-justify-between">
+        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
+        <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
+    </div>
+</p-panel>
+
+<p-dialog header="Any Other Information Report" 
+          [(visible)]="displayActivityDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+
+          <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Highlights</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Challenges</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+            </div>
+        </div>
+
+       
+    <ng-template pTemplate="footer" >
+        <button  pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o"  (click)="saveActivity()"></button>
+        <!-- <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button> -->
+    </ng-template>
+</p-dialog>
+
+
+<!-- <p-dialog header="Activity" 
+          [(visible)]="displayActivityDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid p-nogutter">
+        <div class="p-col form-label">
+            <div class="box">
+                <span class="mandatory-content">District</span>
+            </div>
+            <p-multiSelect [options]="districts" defaultLabel="Select District(s)" optionLabel="name" [(ngModel)]="selectedDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onDistrictChange()"></p-multiSelect>
+        </div>
+        <div class="p-col form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub District</span>
+            </div>
+            <p-multiSelect [options]="subDistricts" defaultLabel="Select Sub District(s)" optionLabel="name" [(ngModel)]="selectedSubDistricts" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onSubDistrictChange()"></p-multiSelect>
+        </div>
+        <div class="p-col form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub Structures</span>
+            </div>
+            <p-multiSelect [options]="subStructures" defaultLabel="Select Sub Structure(s)" optionLabel="name" [(ngModel)]="selectedSubStructures" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+    </div>
+    <div class="p-grid">
+         <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Objective</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="objectives" placeholder="Select an Objective" optionLabel="name" [(ngModel)]="selectedObjective" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="objectiveChange($event.value)" [disabled]="!canEdit"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="selectedObjective">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Objective Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Sub-Programme</span>
+            </div>
+        </div>
+        <div class="p-col" *ngIf="canEdit">
+            <p-multiSelect [options]="subProgrammes" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedSubProgrammes" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgramme()" selectedItemsLabel="{0} items selected"></p-multiSelect>
+        </div>
+        <div class="p-col" *ngIf="!canEdit">
+            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Activity Lookup</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-autoComplete appendTo="body" id="selectedActivity"                      
+                [(ngModel)]="selectedActivity"
+                [style]="{'width':'100%'}"
+                [inputStyle]="{'width':'100%'}"
+                [suggestions]="activityList"
+                field="name"
+                (completeMethod)="search($event)"
+                [size]="20"
+                placeholder="Find Activity (type 4 letters)"
+                [forceSelection]="true"
+                [minLength]="4"
+                [showTransitionOptions]="'0ms'"
+                [hideTransitionOptions]="'0ms'"
+                emptyMessage="No results found"
+                name="facility"
+                [showEmptyMessage]="true"
+                (onSelect)="selectActivity($event)"
+                [disabled]="!canEdit">
+            </p-autoComplete>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Name</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.name" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" [maxlength]="maxChars">
+            <span *ngIf="canEdit">Characters Remaining: <span *ngIf="activity.name">{{activity.name.length}}</span>/{{maxChars}}</span>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Description</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="activity.description" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Activity Type</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-dropdown [options]="activityTypes" placeholder="Select an Activity Type" optionLabel="name" [(ngModel)]="selectedActivityType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Timeline</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-calendar [(ngModel)]="activity.timelineStartDate" placeholder="Select a Start Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
+            &nbsp; to &nbsp;
+            <p-calendar [(ngModel)]="activity.timelineEndDate" placeholder="Select a End Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Target</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-inputNumber [(ngModel)]="activity.target" inputId="integeronly" [style]="{'width':'100%'}" [disabled]="!canEdit"></p-inputNumber>
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Indicators of Success</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit">
+        </div>
+    </div>
+    <div class="p-grid" *ngIf="activityTypeDetails && selectedActivityType">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Activity Type Details</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="activityTypeDetails" [ngModelOptions]="{standalone: true}" [disabled]="true"></textarea>
+        </div>
+    </div>
+    <p-footer>
+        <p-button label="Save" icon="pi pi-check" (onClick)="saveActivity()" *ngIf="canEdit"></p-button>
+        <p-button label="Cancel" icon="pi pi-times" (onClick)="cancelActivity()"></p-button>
+    </p-footer>
+</p-dialog> -->
+
+
+
+<p-dialog header="Add Comment" 
+          [(visible)]="displayCommentDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Comment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="comment" [ngModelOptions]="{standalone: true}"></textarea>
+        </div>
+    </div>        
+    <ng-template pTemplate="footer">
+        <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
+        <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="View Comments" 
+          [(visible)]="displayAllCommentDialog" 
+          [style]="{width: '70vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="applicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.comment}}</td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
+            <div style="text-align:right">
+                <button pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Reviewer Satisfaction" 
+          [(visible)]="displayReviewerSatisfactionDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [paginator]="true" [rows]="10" [value]="applicationReviewerSatisfaction" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td style="text-align: center;" [ngClass]="rowData.isSatisfied === true ? 'green' : 'default' && rowData.isSatisfied === false ? 'red' : 'default'">
+                    <span>{{rowData.isSatisfied ? 'Yes' : 'No'}}</span>
+                </td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData>
+            <div class="p-grid p-nogutter p-justify-between">
+                <span class="mandatory-content">Are you satisfied with the details contained in this Activity?</span>
+
+                <div>
+                    <p-button label="Yes" icon="fa fa-thumbs-o-up" styleClass="p-button-success" (onClick)="createReviewerSatisfaction(true)"></p-button>
+                    &nbsp; &nbsp;
+                    <p-button label="No" icon="fa fa-thumbs-o-down" styleClass="p-button-danger" (onClick)="createReviewerSatisfaction(false)"></p-button>
+                </div>
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Deleted Activities" 
+          [(visible)]="displayDeletedActivityDialog" 
+          [style]="{width: '90vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [columns]="anyOtherCols" [value]="deletedActivities" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="heading">
+                <td *ngIf="deletedRowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
+                    <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
+                </td>
+            </tr>
+            <tr class="default-font">
+                <td>{{rowData.activityList.name}}</td>
+                <td>{{rowData.activityType.name}}</td>
+                <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date: 'yyyy-MM-dd'}}</td>
+                <td>{{rowData.target}}</td>
+                <td>{{rowData.facilityListText}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="5" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>
