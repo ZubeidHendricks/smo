@@ -27,47 +27,9 @@ export class QcDocumentUploadComponent implements OnInit {
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() application: IApplication;
   @Output() applicationChange: EventEmitter<IApplication> = new EventEmitter<IApplication>();
-  // @Input() newlySavedApplicationId: number;
-  // @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
-
-  // @Input() applnPeriodId: number;
-  // @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
-
-  /* Permission logic */
-  // public IsAuthorized(permission: PermissionsEnum): boolean {
-  //   if (this.profile != null && this.profile.permissions.length > 0) {
-  //     return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
-  //   }
-  // }
-  // @ViewChild('fileAdDoc') el: ElementRef;
-
-
-  // Used for table filtering
-  // @ViewChild('dt') dt: Table | undefined;
-  // acutalGrid: string;
-  // downloadButtonColor: string;
-  // uploadButtonDisabled: boolean = false;
-
-  // Document upload element
-  // @ViewChild('addDoc') element: ElementRef;
-
-  // displayUploadedFilesDialog: boolean;
-
-  // public get PermissionsEnum(): typeof PermissionsEnum {
-  //   return PermissionsEnum;
-  // }
-
-  // @Input() activeStep: number;
-  // @Input() fundingApplicationDetails: IFundingApplicationDetails;
-  // @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
-  // application: IApplication;
 
   profile: IUser;
-  // documents: IDocumentStore[] = [];
-  // fundAppdocuments: IDocumentStore[] = [];
   documentCols: any[];
-  // uploadedFileCols: any[];
-  // documentTypeCols: any[];
   documentTypes: IDocumentType[];
   uploadedFileCols: any[];
   documentTypeCols: any[];
@@ -77,23 +39,7 @@ export class QcDocumentUploadComponent implements OnInit {
   userId: number;
   _profile: IUser;
   isViewMode: boolean;
-  // compulsoryDocuments: IDocumentType[] = [];
-  // nonCompulsoryDocuments: IDocumentType[] = [];
-  // docTypeNames: any[];
-  // documentTypeName: string;
-
-  // validationErrors: Message[];
-  // menuActions: MenuItem[];
-  // getFiles: any;
-  // //uploadedFiles: boolean = false;
-  // indicatorDetailsId: number;
-  // selectedDocTypeId: number;
-  // selectedDocumentType: IDocumentType;
-  // userId: number;
-  // _profile: IUser;
-  // list: any[];
-  // selectedFile: any;
-  // selectedFilename: string;
+  
 
    selectedApplicationId: string;
    headerTitle: string;
@@ -315,7 +261,6 @@ export class QcDocumentUploadComponent implements OnInit {
   public deleteDocument(document: IMyContentLink) {
     this.updateDocument(document);
    // this.getMyContentLinks();   
-    this.applicationChange.emit(this.application);
     // this._confirmationService.confirm({
     //   message: 'Are you sure that you want to delete this item?',
     //   header: 'Confirmation',
@@ -330,6 +275,7 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   private updateDocument(document: IMyContentLink) {
+    this._spinner.show();
     this._applicationRepo.updateMyContentLinks(document).subscribe(
       (results) => {
         this.loadDocumentTypes();

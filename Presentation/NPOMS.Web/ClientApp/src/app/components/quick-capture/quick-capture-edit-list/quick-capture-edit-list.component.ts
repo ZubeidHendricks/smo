@@ -91,8 +91,13 @@ export class QuickCaptureEditListComponent implements OnInit {
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.applicationId = params.get('id');
-    });
 
+      if (Number(params.get('activeStep')) === 2) {
+        this.activeStep = 3; 
+      }
+
+    });
+    
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -451,10 +456,10 @@ export class QuickCaptureEditListComponent implements OnInit {
 
   private qCSteps() {
     this.qcItems = [
-      { label: 'Applications' },
-      { label: 'Organisation Details' },      
-      { label: 'Application Details' },
-      { label: 'Application Document' }
+      { label: 'Applications', command: (event: any) => { this.activeStep = 0; }},
+      { label: 'Organisation Details' , command: (event: any) => { this.activeStep = 1; }},      
+      { label: 'Application Details' , command: (event: any) => { this.activeStep = 2; }},
+      { label: 'Document Link' , command: (event: any) => { this.activeStep = 3; }}
     ];
   }
   public validateStep(goToStep: number, currentStep: number) {
