@@ -70,7 +70,7 @@ export class QuickCaptureEditListComponent implements OnInit {
   @ViewChild(CreateQuickCaptureComponent) organisationDetails: CreateQuickCaptureComponent;
 
   isDataAvailable: boolean;
-
+  isDocumentAvailable: boolean;
   programDeliveryDetails : IProgrammeServiceDelivery[];
   selectedProgramDeliveryDetails : IProgrammeServiceDelivery[];
 
@@ -100,6 +100,7 @@ export class QuickCaptureEditListComponent implements OnInit {
           this._router.navigate(['401']);
 
         this.loadApplication();
+      
         this.qCSteps();
         this.buildMenu();
       }
@@ -116,6 +117,7 @@ export class QuickCaptureEditListComponent implements OnInit {
           this.loadNpo();
           this.loadCreatedUser();
           this.getProgrammeDeliveryDetails(this.application.id, this.application.applicationPeriod.programmeId, this.application.applicationPeriod.subProgrammeId, this.application.applicationPeriod.subProgrammeTypeId);
+          this.getMyContentLinks();
         },
         (err) => {
           this._loggerService.logException(err);
@@ -124,6 +126,26 @@ export class QuickCaptureEditListComponent implements OnInit {
       );
     }
   }
+
+  private getMyContentLinks() {
+      this._applicationRepo.getMyContentLinks(Number(this.application.id)).subscribe(
+        (results) => {
+          if(results.length > 0)
+          {
+            this.isDocumentAvailable = true;
+          }  
+          else{
+            this.isDocumentAvailable = false;
+          }       
+
+          this._spinner.hide();
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
 
   private loadCreatedUser() {
     this._userRepo.getUserById(this.application.createdUserId).subscribe(
@@ -283,7 +305,8 @@ export class QuickCaptureEditListComponent implements OnInit {
           icon: 'fa fa-thumbs-o-up',
           command: () => {
             this.bidForm(StatusEnum.PendingReview);
-          }
+          },
+          disabled: true
         },
         {
           label: 'Go Back',
@@ -296,12 +319,14 @@ export class QuickCaptureEditListComponent implements OnInit {
     }
   }
 
-  private bidForm(status: StatusEnum) {
+  private bidForm(status: StatusEnum) {  
+   
     if (this.bidCanContinue(status)) {
       this._spinner.show();
           this.application.statusId = status;
           this.application.isQuickCapture = true;
           this.applicationPeriod = this.applicationPeriod;
+          this.loadApplication();
           this._applicationRepo.updateApplication(this.application).subscribe(
             (resp) => {
               this._spinner.hide();
@@ -323,14 +348,15 @@ export class QuickCaptureEditListComponent implements OnInit {
 
   private bidCanContinue(status: StatusEnum) {
     this.validationErrors = [];
-
+    
     if (status === StatusEnum.Saved)
       var orgDetailsError = this.validateOrganisationDetails();
 
     if (status === StatusEnum.PendingReview) {
-      var orgDetailsError = this.validateOrganisationDetails();
       var applicationError = this.validateApplications();
+      var orgDetailsError = this.validateOrganisationDetails();    
       var applicationDetailsError = this.validateApplicationDetails();
+      var validateContentLinkError = this.validateContentLink();
     }
 
     if (orgDetailsError.length > 0) {
@@ -345,12 +371,15 @@ export class QuickCaptureEditListComponent implements OnInit {
 
       if (applicationDetailsError.length > 0)
         this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+
+      if(!validateContentLinkError)
+        this.validationErrors.push({ severity: 'error', summary: "Application document link:", detail: 'Please add content link' });
     }
 
     if (this.validationErrors.length > 0)
       this._messageService.add({ severity: 'error', summary: 'Error', detail: 'Please scroll to top to view errors.' });
 
-    this.menuActions[1].visible = this.validationErrors.length > 0 ? true : false;
+    this.menuActions[3].disabled = this.validationErrors.length > 0 ? true : false;
     return this.validationErrors.length === 0 ? true : false;
   }
 
@@ -391,6 +420,27 @@ export class QuickCaptureEditListComponent implements OnInit {
       applicationDetailsError.push("Please specify the Rand amount you applying for");
 
     return applicationDetailsError;
+  }
+
+  private validateContentLink()
+  {
+    this._applicationRepo.getMyContentLinks(Number(this.application.id)).subscribe(
+      (results) => {
+        if(results.length > 0)
+        {
+          this.isDocumentAvailable = true;
+        }  
+        else{
+          this.isDocumentAvailable = false;
+        }       
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+    return this.isDocumentAvailable;
   }
 
   private clearMessages() {
