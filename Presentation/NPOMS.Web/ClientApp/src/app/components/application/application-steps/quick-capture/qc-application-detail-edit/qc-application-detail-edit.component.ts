@@ -26,7 +26,7 @@ export class QcApplicationDetailEditComponent implements OnInit {
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() applicationPeriod: IApplicationPeriod;
   @Input() application: IApplication;
-
+  @Output() applicationChange: EventEmitter<IApplication> = new EventEmitter<IApplication>();
   @Input() districtCouncil: IDistrictCouncil;
   @Output() districtCouncilChange: EventEmitter<IDistrictCouncil> = new EventEmitter<IDistrictCouncil>();
   @Input() localMunicipality: ILocalMunicipality;
@@ -355,7 +355,7 @@ export class QcApplicationDetailEditComponent implements OnInit {
           (resp) => {
             this._spinner.hide();
             this.fundingApplicationDetailsChange.emit(resp);
-
+            this.applicationChange.emit(this.application);
             this.activeStep = this.activeStep + 1;
             this.activeStepChange.emit(this.activeStep);
           },

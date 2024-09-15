@@ -15,7 +15,7 @@
             <p-table [rowHover]="true" #dt [style]="{'border':'none'}" sortMode="multiple" [value]="documentTypes" 
             [showCurrentPageReport]="true" 
             styleClass="p-datatable-sm" [columns]="documentCols" 
-            [globalFilterFields]="['name']">
+            [globalFilterFields]="['name']"> 
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">

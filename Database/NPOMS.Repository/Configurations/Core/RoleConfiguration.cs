@@ -103,6 +103,13 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "Programme viewer",
                     SystemName = "ProgrammeViewOnly",
                     DepartmentCode = "DSD"
+                },
+                new Role
+                {
+                    Id = 14,
+                    Name = "DHW Approver",
+                    SystemName = "DOHApprover",
+                    DepartmentCode = "DOH"
                 }
             );
 		}
