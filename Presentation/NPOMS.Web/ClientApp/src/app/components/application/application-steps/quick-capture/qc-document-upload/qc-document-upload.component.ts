@@ -114,7 +114,7 @@ export class QcDocumentUploadComponent implements OnInit {
     this.documentCols = [
       // { header: 'Id', width: '5%' },
       // { field: 'name', header: 'Document Type', width: '35%' },
-      { header: 'url', width: '45%' },
+      { header: 'URL', width: '45%' },
       // { header: 'Size', width: '10%' },
       // { header: 'Uploaded Date', width: '10%' },
        { header: 'Actions', width: '10%' }
