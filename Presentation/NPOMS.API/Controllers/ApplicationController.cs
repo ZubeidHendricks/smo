@@ -1107,6 +1107,22 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("my-content-links", Name = "UpdateMyContentLinks")]
+        public async Task<IActionResult> UpdateMyContentLinks([FromBody] MyContentLink model)
+        {
+            try
+            {
+                await _applicationService.UpdateMyContentLink(model, base.GetUserIdentifier());
+                var results = await _applicationService.GetMyContentLinks(model.Id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateMyContentLink action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         //[HttpPut("UpdateInitiateScorecardValue/applicationId/{applicationId}", Name = "UpdateInitiateScorecardValue")]
         //public async Task<IActionResult> UpdateInitiateScorecardValue(int applicationId)
         //{
