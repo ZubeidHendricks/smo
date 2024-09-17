@@ -259,7 +259,7 @@ export class PostReportComponent implements OnInit {
     this.loadDemographicSubDistricts();
     this.loadFinancialYears();
     this.loadDepartments();
-    this.loadDepartments1();
+   // this.loadDepartments1();
     this.loadProgrammes();
     this.loadSubProgrammes();
     this.loadSubProgrammeTypes();

@@ -20,6 +20,7 @@ using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Implementation.Dropdown;
+using NPOMS.Repository.Configurations.Dropdown;
 
 namespace NPOMS.Services.Implementation
 {
@@ -92,6 +93,7 @@ namespace NPOMS.Services.Implementation
         private IDistrictDemographicRepository _districtDemographicRepository;
         private IManicipalityDemographicRepository _manicipalityDemographicRepository;
         private ISubDistrictDemographicRepository _subDistrictDemographicRepository;
+        private IIndicatorRepository _indicatorRepository;
         #endregion
 
         #region Constructors
@@ -161,7 +163,8 @@ namespace NPOMS.Services.Implementation
             IFundingTemplateTypeRepository fundingTemplateTypeRepository,
             IQuarterlyPeriodRepository quarterlyPeriodRepository,
             ISegmentCodeRepository segmentCodeRepository,
-            IFacilitySubStructureRepository facilitySubStructuresRepository)
+            IFacilitySubStructureRepository facilitySubStructuresRepository,
+            IIndicatorRepository indicatorRepository)
         {
             _mapper = mapper;
             _demographicSubStructureRepository = demographicSubStructureRepository;
@@ -228,6 +231,7 @@ namespace NPOMS.Services.Implementation
             _departmentRoleRepository = departmentRoleRepository;
             _segmentCodeRepository = segmentCodeRepository;
             _facilitySubStructuresRepository = facilitySubStructuresRepository;
+            _indicatorRepository = indicatorRepository;
         }
 
         #endregion
@@ -1793,6 +1797,12 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<SubDistrictDemographic>> DemographicSubDistricts(bool returnInactive)
         {
             return await _subDistrictDemographicRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<Indicators>> Indicators(bool returnInactive)
+        {
+             var results = await _indicatorRepository.GetEntities(returnInactive);
+            return results;
         }
 
         #endregion

@@ -236,7 +236,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
     this.loadDemographicSubDistricts();
     this.loadFinancialYears();
     this.loadDepartments();
-    this.loadDepartments1();
+    //this.loadDepartments1();
     this.loadProgrammes();
     this.loadSubProgrammes();
     this.loadSubProgrammeTypes();
@@ -246,12 +246,6 @@ export class AnyOtherInformationReportComponent implements OnInit {
     this.anyOtherCols = [
       { header: 'Highlights', width: '50%' },
       { header: 'Challenges', width: '50%' },
- 
-
-
-
-
-
     ];
 
     this.commentCols = [
@@ -411,7 +405,6 @@ export class AnyOtherInformationReportComponent implements OnInit {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
       (results) => {
-        console.log('SubProgrammes', results);
         this.allSubProgrammes = results;
         this._spinner.hide();
       },

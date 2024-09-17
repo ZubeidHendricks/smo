@@ -13,6 +13,7 @@ using NPOMS.Domain.FundingManagement;
 using NPOMS.Domain.Indicator;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
+using NPOMS.Repository.Configurations.Dropdown;
 using NPOMS.Repository.DTO;
 using System.Reflection;
 
@@ -103,6 +104,7 @@ namespace NPOMS.Repository
         public DbSet<Frequency> Frequencies { get; set; }
         public DbSet<FrequencyPeriod> FrequencyPeriods { get; set; }
         public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
+        public DbSet<Indicators> Indicators { get; set; }
         public DbSet<Directorate> Directorates { get; set; }
         public DbSet<Bank> Banks { get; set; }
         public DbSet<Domain.Entities.BankDetail> BankDetail { get; set; }

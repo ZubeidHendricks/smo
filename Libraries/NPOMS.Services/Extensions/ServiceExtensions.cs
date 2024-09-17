@@ -89,6 +89,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IDistrictDemographicRepository, DistrictDemographicRepository>();
             services.AddScoped<IManicipalityDemographicRepository, ManicipalityDemographicRepository>();
             services.AddScoped<ISubDistrictDemographicRepository, SubDistrictDemographicRepository>();
+            services.AddScoped<IIndicatorRepository, IndicatorRepository>();
             services.AddScoped<IFacilityTypeRepository, FacilityTypeRepository>();
             services.AddScoped<IOrganisationTypeRepository, OrganisationTypeRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();

@@ -236,7 +236,7 @@ export class GovernanceReportComponent implements OnInit {
     this.loadDemographicSubDistricts();
     this.loadFinancialYears();
     this.loadDepartments();
-    this.loadDepartments1();
+   // this.loadDepartments1();
     this.loadProgrammes();
     this.loadSubProgrammes();
     this.loadSubProgrammeTypes();
@@ -412,7 +412,6 @@ export class GovernanceReportComponent implements OnInit {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
       (results) => {
-        console.log('SubProgrammes', results);
         this.allSubProgrammes = results;
         this._spinner.hide();
       },

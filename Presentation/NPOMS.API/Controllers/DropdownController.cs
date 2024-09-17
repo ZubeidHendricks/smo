@@ -122,6 +122,10 @@ namespace NPOMS.API.Controllers
                         var demographicSubDistricts = await _dropdownService.DemographicSubDistricts(returnInactive);
                         return Ok(demographicSubDistricts);
 
+                    case DropdownTypeEnum.Indicator:
+                        var indicators = await _dropdownService.Indicators(returnInactive);
+                        return Ok(indicators);
+
                     case DropdownTypeEnum.FacilityClasses:
                         var facilityClasses = await _dropdownService.GetFacilityClasses(returnInactive);
                         return Ok(facilityClasses);

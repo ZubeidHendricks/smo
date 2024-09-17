@@ -490,6 +490,39 @@ export interface IAccessStatus {
     isActive: boolean;
 }
 
+export interface IIndicator {
+    id: number;
+    year: string;
+    subProgrammeTypeId: number;
+    indicatorValue: string;
+    annualTarget: number;
+    q1: string;
+    q2: string;
+    q3: string;
+    q4: string;
+    shortDefinition: string;
+    purpose: string;
+    keyBeneficiaries: string;
+    sourceOfData: string;
+    dataLimitations: string;
+    assumptions: string;
+    meansOfVerification: string;
+    methodOfCalculation: string;
+    calculationType: string;
+    reportingCycle: string;
+    desiredPerformance: string;
+    typeOfIndicatorServiceDelivery: string;
+    typeOfIndicatorDemandDriven: string;
+    typeOfIndicatorStandard: string;
+    spatialLocationOfIndicator: string;
+    indicatorResponsibility: string;
+    spatialTransformation: string;
+    disaggregationOfBeneficiaries: string;
+    psip: string;
+    implementationData: string;
+  }
+  
+
 export interface IActivity {
     id: number;
     applicationId: number;

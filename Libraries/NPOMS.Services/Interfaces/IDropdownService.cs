@@ -4,6 +4,7 @@ using NPOMS.Domain.Entities;
 using NPOMS.Domain.Evaluation;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
+using NPOMS.Repository.Configurations.Dropdown;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -343,5 +344,6 @@ namespace NPOMS.Services.Interfaces
         Task<IEnumerable<SubstructureDemographic>> DemographicSubStructures(bool returnInactive);
         Task<IEnumerable<ManicipalityDemographic>> DemographicManicipalities(bool returnInactive);
         Task<IEnumerable<SubDistrictDemographic>> DemographicSubDistricts(bool returnInactive);
+        Task<IEnumerable<Indicators>> Indicators(bool returnInactive);
     }
 }

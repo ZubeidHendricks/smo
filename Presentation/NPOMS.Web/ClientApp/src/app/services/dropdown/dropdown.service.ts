@@ -1,4 +1,4 @@
-import { IDistrictDemographic, IFacilitySubStructure, ILanguage, IManicipalityDemographic, IPlace, IProgrammes, ISegmentCode, IStaffCategory, ISubstructureDemographic } from '../../models/interfaces';
+import { IDistrictDemographic, IFacilitySubStructure, IIndicator, ILanguage, IManicipalityDemographic, IPlace, IProgrammes, ISegmentCode, IStaffCategory, ISubstructureDemographic } from '../../models/interfaces';
 import { PropertySubType } from 'src/app/models/PropertySubType';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -224,6 +224,9 @@ export class DropdownService {
       case DropdownTypeEnum.Places:
         data = this._http.get<IPlace[]>(url, httpOptions);
         break;
+        case DropdownTypeEnum.Indicator:
+          data = this._http.get<IIndicator[]>(url, httpOptions);
+          break;
     }
 
     return data;

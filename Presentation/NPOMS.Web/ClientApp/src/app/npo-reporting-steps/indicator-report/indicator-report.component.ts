@@ -4,7 +4,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -64,6 +64,7 @@ export class IndicatorReportComponent implements OnInit {
   selectedDepartmentSummary: IDepartment;
 
   selectedQuartersText: string = '';
+  indicators: IIndicator[];
 
   // districts: any[] = [
   //   { name: 'District 1', code: 'D1' },
@@ -122,76 +123,58 @@ export class IndicatorReportComponent implements OnInit {
   facilities: IFacilityList[];
   facilitiesList: IFacilityList[];
   selectedFacilities: IFacilityList[];
-
-
   filteredFacilities: IFacilityList[] = [];
-
-
   selectedFacilitiesText: string;
-
-
   selectedSubProgrammes: ISubProgramme[];
-
   canEdit: boolean;
   selectedSubProgrammesText: string;
-
   displayAllCommentDialog: boolean;
   displayCommentDialog: boolean;
   comment: string;
   commentCols: any;
+  cols: any[];
   applicationComments: IApplicationComment[] = [];
-
   tooltip: string;
-
   activityList: IActivityList[];
   selectedActivity: IActivityList;
-
   maxChars = 50;
-
   showReviewerSatisfaction: boolean;
   applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[] = [];
   displayReviewerSatisfactionDialog: boolean;
   reviewerSatisfactionCols: any;
-
   displayDeletedActivityDialog: boolean;
-
   npo: INpo;
   recipientTypes: IRecipientType[];
-
   recipients: IActivityRecipient[];
   selectedRecipients: IActivityRecipient[] = [];
   selectedRecipientsText: string;
-
   facilityDistricts: IFacilityDistrict[];
   selectedDistricts: IFacilityDistrict;
-
   allFacilitySubDistricts: IFacilitySubDistrict[];
   facilitySubDistricts: IFacilitySubDistrict[];
   selectedSubDistricts: IFacilitySubDistrict[];
-
   allFacilitySubStructures: IFacilitySubStructure[];
   facilitySubStructures: IFacilitySubStructure[];
   selectedFacilitySubStructures: IFacilitySubStructure;
-
-  
   allIDistrictDemographics: IDistrictDemographic[];
   selectedIDistrictDemographics: IDistrictDemographic;
-
   allSubDistrictDemographics: ISubDistrictDemographic[];
   SubDistrictDemographics: ISubDistrictDemographic[];
   selectedSubDistrictDemographics: ISubDistrictDemographic[];
-
   allSubstructureDemographics: ISubstructureDemographic[];
   SubstructureDemographics: ISubstructureDemographic[];
   selectedSubstructureDemographics: ISubstructureDemographic[];
-
   allManicipalityDemographics: IManicipalityDemographic[];
   ManicipalityDemographics: IManicipalityDemographic[];
   selectedManicipalityDemographics: IManicipalityDemographic[];
-
-  //activeActivities: any[] = []; // All activities
-  filteredActivities: any[] = []; // Filtered activities
+  filteredActivities: any[] = [];
   filteredData: any[] = [];
+  applications: IApplication[];
+
+
+  workplanIndicators: IWorkplanIndicator[];
+
+  frequencyPeriods: IFrequencyPeriod[];
 
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
@@ -229,48 +212,6 @@ export class IndicatorReportComponent implements OnInit {
   ngOnInit(): void {
     this._spinner.show();
     this.registerCustomFilters();
-
-    // this.filterService.register('custom', (value: any, filter: any) => {
-    //   if (!filter || filter.length === 0) {
-    //       return true; // No filter applied, show all rows
-    //   }
-      
-    //   if (!value) {
-    //       return false; // No value, exclude this row
-    //   }
-    
-    //   // Extract the selected substructures or municipalities from the filter
-    //   const selectedItems = filter.map((item: any) => item.name);
-      
-    //   // Split the row value based on commas or your specific delimiter, and trim extra spaces
-    //   const rowItems = value.split(',').map((item: string) => item.trim());
-
-          
-    //   console.log('FilterdResult', rowItems);
-    
-    //   // Check if any selected item is present in the row data
-    //   const result = selectedItems.some(selectedItem => 
-    //     rowItems.includes(selectedItem)
-    //   );
-
-    //   return result;
-    // });
-    
-    
-  //   this.filterService.register('custom', (value: any, filter: any) => {
-  //     if (!filter || filter.length === 0) {
-  //         return true;
-  //     }
-  //     if (!value) {
-  //         return false; 
-  //     }
-  //     const selectedMunicipalities = filter.map((item: any) => item.name);
-  //     const rowMunicipalities = value.split(',').map((m: string) => m.trim());
-  //     const result = selectedMunicipalities.some(m => rowMunicipalities.includes(m));
-  //     return result;
-  // });
-
-
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -284,24 +225,23 @@ export class IndicatorReportComponent implements OnInit {
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
     this.loadNpo();
-    this.loadActivityTypes();
-    this.loadFacilities();
-    this.setYearRange();
-    this.loadAllSubProgrammes();
-    this.loadFacilityDistricts();
-    this.loadFacilitySubDistricts();
-    this.loadFacilitySubStructures();
-    this.loadDemographicDistricts();
-    this.loadDemographicSubStructures();
-    this.loadDemographicManicipalities();
-    this.loadDemographicSubDistricts();
-    this.loadFinancialYears();
-    this.loadDepartments();
-    this.loadProgrammes();
-    this.loadSubProgrammes();
-    this.loadSubProgrammeTypes();
-
- 
+    // this.loadActivityTypes();
+   // this.loadFacilities();
+    // this.setYearRange();
+    // this.loadAllSubProgrammes();
+    // this.loadFacilityDistricts();
+    // this.loadFacilitySubDistricts();
+    // this.loadFacilitySubStructures();
+    // this.loadDemographicDistricts();
+    // this.loadDemographicSubStructures();
+    // this.loadDemographicManicipalities();
+    // this.loadDemographicSubDistricts();
+    // this.loadFinancialYears();
+    // this.loadDepartments();
+    // this.loadProgrammes();
+    // this.loadSubProgrammes();
+    // this.loadSubProgrammeTypes();
+    this.loadIndicators();
 
     this.indicatorCols = [
       { header: 'Output Title', width: '10%' },
@@ -330,6 +270,12 @@ export class IndicatorReportComponent implements OnInit {
       { header: 'Is Satisfied', width: '25%' },
       { header: 'Created User', width: '35%' },
       { header: 'Created Date', width: '35%' }
+    ];
+
+    this.cols = [
+      { field: 'activityList.name', header: 'Activity', width: '50%' },
+      { field: 'successIndicator', header: 'Indicator', width: '30%' },
+      { field: 'target', header: 'Target', width: '9%' },
     ];
   }
   
@@ -384,6 +330,76 @@ export class IndicatorReportComponent implements OnInit {
       }
     );
   }
+
+  private loadIndicators() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Indicator, false).subscribe(
+      (results) => {
+        console.log('indicators',results);
+        this.indicators = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public financialYearChange() {
+    this._spinner.show();
+    let application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
+
+    this._applicationRepo.getApplicationById(Number(application.id)).subscribe(
+      (results) => {
+        this.application = results;
+        this.loadActivities();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
+  // private loadActivitiez() {
+  //   this._spinner.show();
+  //   this._applicationRepo.getAllActivities(this.application).subscribe(
+  //     (results) => {
+  //       this.activities = results.filter(x => x.isActive === true);
+  //       this.workplanIndicators = [];
+
+  //       this.activities.forEach(item => {
+  //         this.workplanIndicators.push({
+  //           activity: item,
+  //           workplanTargets: [],
+  //           workplanActuals: []
+  //         } as IWorkplanIndicator);
+  //       });
+
+  //       this._spinner.hide();
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
+
+  captureTargets(activity) {
+    this._router.navigateByUrl('workplan-indicator/targets/' + activity.id + '/financial-year/' + this.selectedFinancialYear.id);
+  }
+
+  getCellData(row: any, col: any): any {
+    const nestedProperties: string[] = col.field.split('.');
+    let value: any = row;
+
+    for (const prop of nestedProperties) {
+      value = value[prop];
+    }
+
+    return value;
+  }
+  
 
   private loadDemographicManicipalities() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicManicipality, false).subscribe(
