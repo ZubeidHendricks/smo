@@ -249,11 +249,6 @@ export class ApplicationService {
     return this._http.put<IMyContentLink[]>(url, model, httpOptions);
   }
 
-  public updateMyContentLinks(model: IMyContentLink) {
-    const url = `${this._envUrl.urlAddress}/api/applications/my-content-links`;
-    return this._http.put<IMyContentLink[]>(url, model, httpOptions);
-  }
-
   public UpdateInitiateScorecardValue(applicationId: number) {
     const url = `${this._envUrl.urlAddress}/api/applications/UpdateInitiateScorecardValue/applicationId/${applicationId}`;
     return this._http.put<IApplication>(url, httpOptions);
