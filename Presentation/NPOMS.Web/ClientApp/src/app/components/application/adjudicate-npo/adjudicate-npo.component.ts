@@ -165,15 +165,8 @@ export class AdjudicateNpoComponent implements OnInit {
       (results) => {
         this.allQuestionnaires = results;
         this.npoAdjudication = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication2");
-        // console.log('npoAdjudication', this.npoAdjudication);
-        // this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
-        // this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
-        // this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
-        // this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
-        // this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
-       // this.updateRowGroupMetaDataAct();
-        // console.log('this.npoAdjudication',this.npoAdjudication);
+        this.updateRowGroupMetaDataAct();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -387,17 +380,20 @@ export class AdjudicateNpoComponent implements OnInit {
     if (Number(questionValue) > 0 && Number(questionValue) <= 20) {
       legend = 'Very Poor';
     }
-    if (Number(questionValue) > 20 && Number(questionValue) <= 40) {
+    else if (Number(questionValue) > 20 && Number(questionValue) <= 40) {
       legend = 'Poor';
     }
-    if (Number(questionValue) > 40 && Number(questionValue) <= 60) {
+    else if (Number(questionValue) > 40 && Number(questionValue) <= 60) {
       legend = 'Average';
     }
-    if (Number(questionValue) > 60 && Number(questionValue) <= 80) {
+    else if (Number(questionValue) > 60 && Number(questionValue) <= 80) {
       legend = 'Good';
     }
-    if (Number(questionValue) > 80) {
+    else if (Number(questionValue) > 80 && Number(questionValue) <= 100) {
       legend = 'Excellent';
+    }
+    else {
+      legend = '';
     }
     
     return legend;
