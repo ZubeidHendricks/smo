@@ -96,6 +96,7 @@ export enum DropdownTypeEnum {
     DemographicDistrict = 62,
     DemographicManicipality = 63,
     DemographicSubDistrict = 64,
+    Area=65,
 }
 
 export enum EntityTypeEnum {

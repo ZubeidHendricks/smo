@@ -28,6 +28,7 @@ namespace NPOMS.Repository.Implementation.Entities
 				.Include(x => x.ActivitySubDistrict)
                 .Include(x => x.ActivitySubStructure)
                 .Include(x => x.ActivityManicipality)
+                .Include(x => x.ActivityArea)
                 .Include(x => x.Objective).Include(x => x.ActivityType)
 				.Include(x => x.ActivityList).AsNoTracking().ToListAsync();
 		}
@@ -59,7 +60,8 @@ namespace NPOMS.Repository.Implementation.Entities
 							.Include(x => x.ActivitySubDistrict)
 							.Include(x => x.ActivitySubStructure)
 							.Include(x => x.ActivityManicipality)
-							.AsNoTracking().FirstOrDefaultAsync();
+                            .Include(x => x.ActivityArea)
+                            .AsNoTracking().FirstOrDefaultAsync();
 		}
 
 		#endregion

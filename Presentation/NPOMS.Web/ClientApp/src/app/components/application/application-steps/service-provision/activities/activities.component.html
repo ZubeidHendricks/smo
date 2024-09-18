@@ -49,12 +49,26 @@
                 </th>
 
                 <th>
+                    <p-columnFilter field="mappedArea" matchMode="custom">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-multiSelect 
+                                [options]="allAreas" 
+                                defaultLabel="Select Area" 
+                                optionLabel="name"
+                                [ngModel]="value"
+                                [ngModelOptions]="{standalone: true}" 
+                                [style]="{'width':'100%'}"
+                                appendTo="body" 
+                                selectedItemsLabel="{0} items selected"
+                                (onChange)="onCustomFilterChange($event.value, 'mappedArea')">
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
+                </th>
+
+                <th>
                     <p-columnFilter field="mappedSubstructure" matchMode="custom">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <!-- <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
-                                 [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
-                            </p-multiSelect> -->
                             <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
                                  [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
                                 appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)"
@@ -62,14 +76,11 @@
                             </p-multiSelect>
                         </ng-template>
                     </p-columnFilter>
-                </th>          
+                </th>  
+
                    <th>
                     <p-columnFilter field="mappedSubdistrict" matchMode="custom">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <!-- <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
-                            [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
-                            </p-multiSelect> -->
                             <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
                             [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
                                 appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)"
@@ -78,7 +89,6 @@
                         </ng-template>
                     </p-columnFilter>
                 </th>
-            <!-- <th></th> -->
         </tr>
            
         </ng-template>
@@ -96,7 +106,8 @@
                 <td>{{rowData.facilityListText}}</td>
                 
                 <td>{{rowData?.mappedDistrict }}</td>
-                <td>{{rowData?.mappedManicipality}}</td>
+                <td>{{rowData?.mappedManicipality}}</td>         
+                <td>{{rowData?.mappedArea}}</td>
                 <td>{{rowData?.mappedSubstructure}}</td>  
                 <td>{{rowData?.mappedSubdistrict}}</td> 
 
@@ -159,7 +170,8 @@
                     (onChange)="onDemographicDistrictChange()">
                 </p-dropdown>
             </div>
-        
+
+     
             <div class="p-col-3 dropdown-column">
                 <div class="box">
                     <span class="mandatory-content">Municipality</span>
@@ -176,8 +188,8 @@
                     (onChange)="onDemographicManicipalitiesChange()">
                 </p-multiSelect>
             </div>
-        
-            <div class="p-col-3 dropdown-column">
+
+            <div class="p-col-3 dropdown-column" *ngIf="showSubstructureDemographics">
                 <div class="box">
                     <span class="mandatory-content">Sub Structures</span>
                 </div>
@@ -193,7 +205,57 @@
                     (onChange)="onDemographicSubStructuresChange()">
                 </p-multiSelect>
             </div>
-        
+            
+            <div class="p-col-3 dropdown-column" *ngIf="showAreaDemographics">
+                <div class="box">
+                    <span class="mandatory-content">Area</span>
+                </div>
+                <p-multiSelect 
+                    [options]="AreaDemographics" 
+                    defaultLabel="Select Area" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedAreas" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected"
+                    (onChange)="onAreaChange()">
+                </p-multiSelect>
+            </div>
+
+            <!-- <div class="p-col-3 dropdown-column">
+                <div class="box">
+                    <span class="mandatory-content">Sub Structures</span>
+                </div>
+                <p-multiSelect 
+                    [options]="SubstructureDemographics" 
+                    defaultLabel="Select Sub Structures" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedSubstructureDemographics" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected"
+                    (onChange)="onDemographicSubStructuresChange()">
+                </p-multiSelect>
+            </div>
+
+            <div class="p-col-3 dropdown-column">
+                <div class="box">
+                    <span class="mandatory-content">Area</span>
+                </div>
+                <p-dropdown 
+                    [options]="AreaDemographics" 
+                    placeholder="Select Area" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedAreas" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    (onChange)="onAreaChange()">
+                </p-dropdown>
+            </div> -->
+    
             <div class="p-col-3 dropdown-column">
                 <div class="box">
                     <span class="mandatory-content">Sub District</span>
