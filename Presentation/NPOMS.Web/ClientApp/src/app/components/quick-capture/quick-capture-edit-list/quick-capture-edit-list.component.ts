@@ -91,13 +91,11 @@ export class QuickCaptureEditListComponent implements OnInit {
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.applicationId = params.get('id');
-
       if (Number(params.get('activeStep')) === 2) {
         this.activeStep = 3; 
       }
-
     });
-    
+ 
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;

@@ -4,7 +4,9 @@
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>    
     <div style="height: 10px;"></div>
-    <p-table [rowHover]="true" [columns]="activityCols" [value]="activeActivities" styleClass="p-datatable-sm" [globalFilterFields]="['activityList.name','ctivityType.name','timelineStartDate','target','facilityListText','mappedDistrict','mappedManicipality','mappedSubstructure','mappedSubdistrict']">
+   
+    <p-table [rowHover]="true" [columns]="activityCols" [value]="activeActivities" styleClass="p-datatable-sm"
+    [globalFilterFields]="['activityList.name','ctivityType.name','timelineStartDate','target','facilityListText','mappedDistrict','mappedManicipality','mappedSubstructure','mappedSubdistrict']">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -22,7 +24,7 @@
                  <th><p-columnFilter type="text" field="timelineStartDate"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="target"></p-columnFilter></th>                
                 <th><p-columnFilter type="text" field="facilityListText"></p-columnFilter></th>
-                 <th>
+                 <!-- <th>
                     <p-columnFilter field="mappedDistrict" matchMode="contains">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                             <input pInputText type="text" (input)="filter($event.target.value, 'mappedDistrict', 'contains')" placeholder="Filter by District" />
@@ -42,7 +44,7 @@
                                 [style]="{'width':'100%'}"
                                 appendTo="body" 
                                 selectedItemsLabel="{0} items selected"
-                                (onChange)="onCustomFilterChange($event.value, 'mappedManicipality')">
+                                (onChange)="filter($event.value)">
                             </p-multiSelect>
                         </ng-template>
                     </p-columnFilter>
@@ -51,14 +53,9 @@
                 <th>
                     <p-columnFilter field="mappedSubstructure" matchMode="custom">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <!-- <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
-                                 [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
-                            </p-multiSelect> -->
                             <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
                                  [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onCustomFilterChange($event.value, 'mappedSubstructure')">
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
                             </p-multiSelect>
                         </ng-template>
                     </p-columnFilter>
@@ -66,18 +63,13 @@
                    <th>
                     <p-columnFilter field="mappedSubdistrict" matchMode="custom">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <!-- <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
-                            [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
-                            </p-multiSelect> -->
                             <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
                             [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="onCustomFilterChange($event.value, 'mappedSubdistrict')">
+                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
                             </p-multiSelect>
                         </ng-template>
                     </p-columnFilter>
-                </th>
+                </th> -->
             <!-- <th></th> -->
         </tr>
            
@@ -95,10 +87,10 @@
                 <td>{{rowData.target}}</td>
                 <td>{{rowData.facilityListText}}</td>
                 
-                <td>{{rowData?.mappedDistrict }}</td>
+                <!-- <td>{{rowData?.mappedDistrict }}</td>
                 <td>{{rowData?.mappedManicipality}}</td>
                 <td>{{rowData?.mappedSubstructure}}</td>  
-                <td>{{rowData?.mappedSubdistrict}}</td> 
+                <td>{{rowData?.mappedSubdistrict}}</td>  -->
 
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActivity(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
@@ -143,7 +135,7 @@
           [transitionOptions]="'0ms'"
           [modal]="true">
 
-          <div class="p-grid p-nogutter" style="margin-bottom: 0.5rem;">
+          <!-- <div class="p-grid p-nogutter" style="margin-bottom: 0.5rem;">
             <div class="p-col-3 dropdown-column">
                 <div class="box">
                     <span class="mandatory-content">District</span>
@@ -206,11 +198,10 @@
                     [ngModelOptions]="{standalone: true}" 
                     [style]="{'width':'100%'}"
                     appendTo="body" 
-                    (onChange)=filterFacilityDistrict($event.value) 
                     selectedItemsLabel="{0} items selected">
                 </p-multiSelect>
             </div>
-        </div>
+        </div> -->
         
         
     <div class="p-grid">
@@ -344,10 +335,8 @@
             </div>
         </div>
         <div class="p-col" *ngIf="canEdit">
-            <!-- <textarea style="min-height: 30px;" class="form-text" [rows]="3" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="canEdit" autoResize="autoResize"></textarea> -->
-            <p-multiSelect [options]="facilitiesList" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedFacilities" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect> 
+            <p-multiSelect [options]="facilities" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedFacilities" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" selectedItemsLabel="{0} items selected"></p-multiSelect>
         </div>
-        
         <div class="p-col" *ngIf="!canEdit">
             <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedFacilitiesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit" autoResize="autoResize"></textarea>
         </div>

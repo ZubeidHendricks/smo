@@ -1,4 +1,4 @@
- <p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Application document link">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Application document link">
 
     <button pButton pRipple label="Add Link" pTooltip="Link a Document" tooltipPosition="left" (click)="add()" *ngIf="!isViewMode"></button>
     <div style="height: 10px;"></div>
@@ -36,8 +36,8 @@
 
     <div style="height: 10px;" *ngIf="!isViewMode"></div>
     <div class="p-grid p-nogutter p-justify-between">
-       <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left" *ngIf="!isViewMode"></p-button>
-    </div>
+        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left" *ngIf="!isViewMode"></p-button>
+     </div>
 </p-panel>
 
 <p-dialog header="Link a Document" 
