@@ -116,6 +116,7 @@ export class QuestionSectionComponent implements OnInit {
 
   public add() {
     this.entity = {} as IQuestionSection;
+    this.isNew = true;
     this.inActive = null;
     this.selectedQuestionCategory = null;
     this.showDialog = true;
@@ -123,6 +124,7 @@ export class QuestionSectionComponent implements OnInit {
 
   public edit(data: IQuestionSection) {
     this.entity = this.cloneEntity(data);
+    this.isNew = false;
     this.showDialog = true;
   }
 
@@ -148,7 +150,6 @@ export class QuestionSectionComponent implements OnInit {
   public save() {
     this.entity.isActive = !this.inActive;
     this.entity.questionCategoryId = this.selectedQuestionCategory.id;
-
     this.isNew ? this.createEntity() : this.updateEntity();
     this.showDialog = false;
   }

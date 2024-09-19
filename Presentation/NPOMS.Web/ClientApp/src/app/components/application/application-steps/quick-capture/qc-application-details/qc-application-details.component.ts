@@ -88,6 +88,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   selectedProgramDeliveryDetails : IProgrammeServiceDelivery[];
 
   constructor(
+    private _router: Router,
     private _authService: AuthService,
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
@@ -679,9 +680,9 @@ export class QcApplicationDetailsComponent implements OnInit {
                   this._spinner.hide();
                   this.fundingApplicationDetails.id = resp.id;
                   this.fundingApplicationDetailsChange.emit(resp);
-      
-                  this.activeStep = this.activeStep + 1;
-                  this.activeStepChange.emit(this.activeStep);
+                  this._router.navigateByUrl(`quick-captures-editList/edit/${this.fundingApplicationDetails.applicationId}/${this.activeStep}`); 
+                  // this.activeStep = this.activeStep + 1;
+                  // this.activeStepChange.emit(this.activeStep);
                 },
                 (err) => {
                   this._loggerService.logException(err);
