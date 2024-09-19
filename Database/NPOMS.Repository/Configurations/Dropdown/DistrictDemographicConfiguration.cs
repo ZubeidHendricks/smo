@@ -16,12 +16,19 @@ namespace NPOMS.Repository.Configurations.Dropdown
                 new DistrictDemographic
                 {
                     Id = 1,
-                    Name = "MHS"
+                    Name = "MHS",
+                    IsSubParent = false,
                 },
                 new DistrictDemographic
                 {
                     Id = 2,
-                    Name = "RHS"
+                    Name = "RHS",
+                    IsSubParent = false,
+                }, new DistrictDemographic
+                {
+                    Id = 3,
+                    Name = "CHS",
+                    IsSubParent = true
                 }
             );
         }

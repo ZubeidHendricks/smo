@@ -160,6 +160,7 @@ namespace NPOMS.Repository
         public DbSet<MyContentLink> MyContentLinks { get; set; }
         public DbSet<SubRecipient> SubRecipients { get; set; }
         public DbSet<SubSubRecipient> SubSubRecipients { get; set; }
+        public DbSet<Area> Areas { get; set; }
 
         /* Lookup */
         public DbSet<FacilityList> ActivityList { get; set; }

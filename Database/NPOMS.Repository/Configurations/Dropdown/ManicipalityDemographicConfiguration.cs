@@ -22,7 +22,8 @@ namespace NPOMS.Repository.Configurations.Dropdown
                 {
                     Id = 1,
                     Name = "City of Cape Town Metropolitan Municipality",
-                    DistrictDemographicId = 1
+                    DistrictDemographicId = 1,
+                    SubParentiId = 3,
                     
                 },
                 new ManicipalityDemographic
