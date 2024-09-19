@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Dropdown;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Configurations.Dropdown
 {
@@ -22,7 +17,8 @@ namespace NPOMS.Repository.Configurations.Dropdown
                 {
                     Id = 1,
                     Name = "Cape Town Eastern Health sub-District",
-                    SubSctrcureDemographicId = 1
+                    SubSctrcureDemographicId = 1,
+                    AreaId = 3,
 
                 },
                 new SubDistrictDemographic
@@ -30,43 +26,50 @@ namespace NPOMS.Repository.Configurations.Dropdown
                     Id = 2,
                     Name = "Khayelitsha Health sub-District",
                     SubSctrcureDemographicId = 1,
+                    AreaId = 3,
 
                 },
                 new SubDistrictDemographic
                 {
                     Id = 3,
                     Name = "Klipfontein Health sub-District",
-                    SubSctrcureDemographicId = 2
+                    SubSctrcureDemographicId = 2,
+                    AreaId = 1,
                 },
                 new SubDistrictDemographic
                 {
                     Id = 4,
                     Name = "Mitchells Plain Health sub-District",
-                    SubSctrcureDemographicId = 2
+                    SubSctrcureDemographicId = 2,
+                    AreaId = 4,
                 },
                 new SubDistrictDemographic
                 {
                     Id = 5,
                     Name = "Cape Town Northern Health sub-District",
-                    SubSctrcureDemographicId = 3
+                    SubSctrcureDemographicId = 3,
+                    AreaId = 2,
                 },
                 new SubDistrictDemographic
                 {
                     Id = 6,
                     Name = "Tygerberg Health sub-District",
-                    SubSctrcureDemographicId = 3
+                    SubSctrcureDemographicId = 3,
+                    AreaId = 1,
                 },
                 new SubDistrictDemographic
                 {
                     Id = 7,
                     Name = "Cape Town Southern Health sub-District",
-                    SubSctrcureDemographicId = 4
+                    SubSctrcureDemographicId = 4,
+                    AreaId = 4,
                 },
                 new SubDistrictDemographic
                 {
                     Id = 8,
                     Name = "Cape Town Western Health sub-District",
-                    SubSctrcureDemographicId = 4
+                    SubSctrcureDemographicId = 4,
+                    AreaId = 2,
                 },
                  new SubDistrictDemographic
                  {

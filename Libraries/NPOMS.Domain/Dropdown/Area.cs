@@ -1,19 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NPOMS.Domain.Dropdown
 {
-
-    [Table("DistrictDemographics", Schema = "dropdown")]
-    public class DistrictDemographic : BaseEntity
+    [Table("Areas", Schema = "dropdown")]
+    public  class Area :BaseEntity
     {
+
         [Required]
         [Column(TypeName = "nvarchar(255)")]
         public string Name { get; set; }
 
+        public int DistrictId { get; set; }
+
         public bool IsActive { get; set; }
-        public bool IsSubParent { get; set; } = false;
+
         public int CreatedUserId { get; set; }
 
         public DateTime CreatedDateTime { get; set; }
@@ -21,5 +27,7 @@ namespace NPOMS.Domain.Dropdown
         public int? UpdatedUserId { get; set; }
 
         public DateTime? UpdatedDateTime { get; set; }
+        public DistrictDemographic DistrictDemographic { get; set; }
+
     }
 }

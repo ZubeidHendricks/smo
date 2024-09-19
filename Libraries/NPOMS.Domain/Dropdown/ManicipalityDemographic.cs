@@ -27,6 +27,8 @@ namespace NPOMS.Domain.Dropdown
 
         public int? UpdatedUserId { get; set; }
 
+        public int? SubParentiId{ get; set; }
+
         public DateTime? UpdatedDateTime { get; set; }
         public DistrictDemographic DistrictDemographic { get; set; }
     }

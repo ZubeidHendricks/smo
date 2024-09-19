@@ -121,6 +121,8 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IStaffCategoryRepository, StaffCategoryRepository>();
             services.AddScoped<ICalculationTypeRepository, CalculationTypeRepository>();
             services.AddScoped<IFundingTypeRepository, FundingTypeRepository>();
+            services.AddScoped<IAreaRepository, AreaRepository>();
+
 
             /* Entities */
             services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
