@@ -354,10 +354,10 @@ export class QuickCaptureListComponent implements OnInit {
   }
   private qCSteps() {
     this.qcItems = [
-      { label: 'Applications' },
-      { label: 'Organisation Details' },     
-      { label: 'Application Details' },
-      { label: 'Application Document' }
+      { label: 'Applications'},
+      { label: 'Organisation Details'},      
+      { label: 'Application Details'},
+      { label: 'Document Link'}
     ];
   }
 
