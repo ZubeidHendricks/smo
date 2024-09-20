@@ -327,7 +327,7 @@ export class ActivitiesComponent implements OnInit {
     this.loadFacilities();
     if (selectedSubDistricts && selectedSubDistricts.length > 0) {
         // Extract LinkIds from the selected ISubDistrictDemographic objects
-        const selectedLinkIds = selectedSubDistricts.map(subDistrict => subDistrict.linkId);
+        const selectedLinkIds = selectedSubDistricts.map(subDistrict => subDistrict.id);
         // Filter facilities based on the selected LinkIds
         this.facilitiesList = this.facilities.filter(facility =>
             selectedLinkIds.includes(facility.facilitySubDistrictId)
