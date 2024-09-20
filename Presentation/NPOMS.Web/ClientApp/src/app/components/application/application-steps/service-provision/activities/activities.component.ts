@@ -159,7 +159,7 @@ export class ActivitiesComponent implements OnInit {
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
-  
+  //
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -327,7 +327,7 @@ export class ActivitiesComponent implements OnInit {
     this.loadFacilities();
     if (selectedSubDistricts && selectedSubDistricts.length > 0) {
         // Extract LinkIds from the selected ISubDistrictDemographic objects
-        const selectedLinkIds = selectedSubDistricts.map(subDistrict => subDistrict.id);
+        const selectedLinkIds = selectedSubDistricts.map(subDistrict => subDistrict.linkId);
         // Filter facilities based on the selected LinkIds
         this.facilitiesList = this.facilities.filter(facility =>
             selectedLinkIds.includes(facility.facilitySubDistrictId)
