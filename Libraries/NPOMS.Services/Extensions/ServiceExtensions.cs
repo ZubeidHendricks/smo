@@ -240,6 +240,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IActivityDistrictRepository, ActivityDistrictRepository>();
             services.AddScoped<IActivityManicipalityRepository, ActivityManicipalityRepository>();
             services.AddScoped<IActivitySubDistrictRepository, ActivitySubDistrictRepository>();
+            services.AddScoped<IActivityAreaRepository, ActivityAreaRepository>();
             services.AddScoped<IActivitySubStructureRepository, ActivitySubStructureRepository>();
 
             /* Funding Management */

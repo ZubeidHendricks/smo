@@ -779,11 +779,12 @@ onDemographicManicipalitiesChange() {
         }
 
       if(this.selectedIDistrictDemographics.isSubParent) {
-        this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
+        this.ManicipalityDemographics = this.allManicipalityDemographics
+        ?.filter(md =>
           md.subParentiId === this.selectedIDistrictDemographics.id
         );
         } else {
-          this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
+          this.ManicipalityDemographics = this.allManicipalityDemographics?.filter(md =>
             md.districtDemographicId === this.selectedIDistrictDemographics.id
           );
         }
@@ -796,39 +797,39 @@ onDemographicManicipalitiesChange() {
     }
 
     const demographicDistrictIds = data?.activityManicipality?.map(({ demographicDistrictId }) => demographicDistrictId);
-    this.selectedManicipalityDemographics = this.ManicipalityDemographics.filter(item =>
+    this.selectedManicipalityDemographics = this.ManicipalityDemographics?.filter(item =>
         demographicDistrictIds.includes(item.districtDemographicId) && 
         data.activityManicipality.some(({ name }) => name === item.name)
     );
     const demographicDistrictIds1 = data?.activityArea?.map(({ demographicDistrictId }) => demographicDistrictId);
-    this.selectedAreas = this.AreaDemographics.filter(item =>
+    this.selectedAreas = this.AreaDemographics?.filter(item =>
       demographicDistrictIds1.includes(item.districtId) && 
-        data.activityArea.some(({ name }) => name === item.name)
+        data.activityArea?.some(({ name }) => name === item.name)
     );
     
     this.onDemographicManicipalitiesChange();
-    if(this.selectedIDistrictDemographics.isSubParent) {
+    if(this.selectedIDistrictDemographics?.isSubParent) {
       this.onAreaChange();
       }
 
     const subStructureIds = data?.activitySubStructure?.map(({ municipalityId }) => municipalityId);
-    this.selectedSubstructureDemographics = this.SubstructureDemographics.filter(item =>
+    this.selectedSubstructureDemographics = this.SubstructureDemographics?.filter(item =>
         subStructureIds.includes(item.manicipalityDemographicId) && 
         data.activitySubStructure.some(({ name }) => name === item.name)
     );
-    if(!this.selectedIDistrictDemographics.isSubParent) {
+    if(!this.selectedIDistrictDemographics?.isSubParent) {
       this.onDemographicSubStructuresChange();
       }
     const substructureId = data?.activitySubDistrict?.map(({ substructureId }) => substructureId);
     const areaid = data?.activitySubDistrict?.map(({ areaId }) => areaId);
 
     if(areaid.length > 0) {
-      this.selectedSubDistrictDemographics = this.SubDistrictDemographics.filter(item =>
+      this.selectedSubDistrictDemographics = this.SubDistrictDemographics?.filter(item =>
         areaid.includes(item.areaId) && 
       data.activitySubDistrict.some(({ name }) => name === item.name)
      );
     }else{
-      this.selectedSubDistrictDemographics = this.SubDistrictDemographics.filter(item =>
+      this.selectedSubDistrictDemographics = this.SubDistrictDemographics?.filter(item =>
         substructureId.includes(item.subSctrcureDemographicId) && 
       data.activitySubDistrict.some(({ name }) => name === item.name)
      );
@@ -968,7 +969,7 @@ if (this.selectedIDistrictDemographics) {
     demographicDistrictId: this.selectedIDistrictDemographics.id,
     name: this.selectedIDistrictDemographics.name,
     isActive: this.selectedIDistrictDemographics.isActive,
-    activityId: this.activity.id
+    activityId: this.activity.id,
   } as IActivityDistrict;
 
 //   // Push the object into the array
@@ -982,7 +983,7 @@ if (this.selectedIDistrictDemographics) {
       demographicDistrictId: item.districtDemographicId,
       name: item.name,
       isActive: item.isActive,
-      activityId: this.activity.id
+      activityId: this.activity.id,
     } as IActivityManicipality;
 
     this.activity.activityManicipality.push(activityManicipality);
@@ -994,7 +995,7 @@ if (this.selectedIDistrictDemographics) {
       name: item.name,
       municipalityId: item.manicipalityDemographicId,
       isActive: item.isActive,
-      activityId: this.activity.id
+      activityId: this.activity.id,
     } as IActivitySubStructure;
 
     this.activity.activitySubStructure.push(selectedSubStructure);
@@ -1005,7 +1006,7 @@ if (this.selectedIDistrictDemographics) {
     let selectedArea = {
       name: item.name,
       isActive: item.isActive,
-      districtId: this.activity.id,
+      activityId: this.activity.id,
       demographicDistrictId: item.districtId,
     } as IArea;
 
@@ -1070,6 +1071,7 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
   }
 
   private updateActivity() {
+    console.log('Activity Updated', this.activity);
     this._applicationRepo.updateActivity(this.activity).subscribe(
       (resp) => {
         this.loadActivities();
