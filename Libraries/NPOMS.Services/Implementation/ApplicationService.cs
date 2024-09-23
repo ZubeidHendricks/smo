@@ -1093,9 +1093,13 @@ namespace NPOMS.Services.Implementation
 			await UpdateActivityFacilityListMappings(activity, loggedInUser.Id);
 
             await UpdateActivityDistrictMappings(activity, loggedInUser.Id);
+
 			await UpdateActivitySubDistrictMappings(activity, loggedInUser.Id);
+
 			await UpdateActivitySubStructureMappings(activity, loggedInUser.Id);
+
 			await UpdateActivityManicipalityMappings(activity, loggedInUser.Id);
+
 			await UpdateActivityAreaMappings(activity, loggedInUser.Id);
 
 			await _activityRecipientRepository.DeleteEntity(model.Id);

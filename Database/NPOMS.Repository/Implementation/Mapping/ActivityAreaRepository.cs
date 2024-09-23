@@ -20,9 +20,12 @@ namespace NPOMS.Repository.Implementation.Mapping
 
         public async Task<ActivityArea> GetByModel(ActivityArea model)
         {
-            return await FindByCondition(x => x.ActivityId.Equals(model.ActivityId) && x.DemographicDistrictId.Equals(model.DemographicDistrictId))
-                                .FirstOrDefaultAsync();
+            return await FindByCondition(x => x.ActivityId.Equals(model.ActivityId) &&
+                                              x.DemographicDistrictId.Equals(model.DemographicDistrictId) &&
+                                              x.Name.Equals(model.Name))
+                                        .FirstOrDefaultAsync();
         }
+
 
         public async Task<IEnumerable<ActivityArea>> GetByActivityId(int activityId, bool isActive)
         {
