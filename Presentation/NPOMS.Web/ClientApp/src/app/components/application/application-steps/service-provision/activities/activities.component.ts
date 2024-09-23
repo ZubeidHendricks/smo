@@ -368,7 +368,6 @@ preventChange(event: any): void {
   private loadAreas() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Area, false).subscribe(
       (results) => {
-        console.log('Areas', results);
         this.allAreas = results;
       },
       (err) => {
@@ -1071,7 +1070,6 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
   }
 
   private updateActivity() {
-    console.log('Activity Updated', this.activity);
     this._applicationRepo.updateActivity(this.activity).subscribe(
       (resp) => {
         this.loadActivities();
