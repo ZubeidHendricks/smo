@@ -140,6 +140,8 @@ namespace NPOMS.Repository
         public DbSet<ProjectInformation> ProjectInformations { get; set; }
         public DbSet<MonitoringEvaluation> MonitoringEvaluations { get; set; }
         public DbSet<ProjectImplementation> ProjectImplementations { get; set; }
+        public DbSet<IndicatorReport> IndicatorReports { get; set; }
+
 
         public DbSet<FinancialMattersIncome> FinancialMattersIncomes { get; set; }
         public DbSet<FinancialMattersExpenditure> FinancialMattersExpenditures { get; set; }

@@ -495,6 +495,8 @@ export interface IIndicator {
     year: string;
     subProgrammeTypeId: number;
     indicatorValue: string;
+    IndicatorDesc : string;
+    OutputTitle : string;
     annualTarget: number;
     q1: string;
     q2: string;
@@ -520,6 +522,27 @@ export interface IIndicator {
     disaggregationOfBeneficiaries: string;
     psip: string;
     implementationData: string;
+  }
+
+  export interface IActuals {
+    programmeId: number;
+    subProgrammeId: number;
+    group: number;
+    subProgrammeTypeId: number;
+    serviceDeliveryArea : string;
+    OutputTitle : string;
+    targets: string;
+    financialYear: number;
+    indicatorId: number;
+    indicatorValue: string;
+    variance: number;
+    deviationReason: string;
+    adjustedActual: number;
+    adjustedVariance: number;
+    applicationId: number;
+    qaurterId: number;
+    actual: number;
+    
   }
   
 
@@ -1143,6 +1166,20 @@ export interface IActivityList {
     description: string;
     isActive: boolean;
 }
+
+export interface IndicatorReport {
+    outputTitle: string;
+    indicatorId: string;
+    outputDescription: string;
+    target: number;
+    actuals: string;
+    variance: string;
+    deviationReason: string;
+    adjustedActual: string;
+    adjustedVariance: string;
+    uploadedDocument: string;
+  }
+  
 
 export interface IFacilityList {
     id: number;

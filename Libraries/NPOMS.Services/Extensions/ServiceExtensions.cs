@@ -122,11 +122,12 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IStaffCategoryRepository, StaffCategoryRepository>();
             services.AddScoped<ICalculationTypeRepository, CalculationTypeRepository>();
             services.AddScoped<IFundingTypeRepository, FundingTypeRepository>();
-
             /* Entities */
             services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
             services.AddScoped<IActivityRepository, ActivityRepository>();
             services.AddScoped<IApplicationRepository, ApplicationRepository>();
+            services.AddScoped<IIndicatorReportRepository, IndicatorReportRepository>();
+
             services.AddScoped<IApplicationApprovalRepository, ApplicationApprovalRepository>();
             services.AddScoped<IApplicationAuditRepository, ApplicationAuditRepository>();
             services.AddScoped<IApplicationCommentRepository, ApplicationCommentRepository>();

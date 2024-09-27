@@ -176,6 +176,9 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.FrequencyPeriods:
                         var frequencyPeriods = await _dropdownService.GetFrequencyPeriods(returnInactive);
                         return Ok(frequencyPeriods);
+                    //case DropdownTypeEnum.QuarterPeriods:
+                    //    var quarterPeriods = await _dropdownService.GetFrequencyPeriods(returnInactive);
+                    //    return Ok(quarterPeriods);
                     case DropdownTypeEnum.SubProgrammeTypes:
                         var subProgrammeTypes = await _dropdownService.GetSubProgrammeTypes(returnInactive);
                         return Ok(subProgrammeTypes);

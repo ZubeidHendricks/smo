@@ -94,6 +94,7 @@ namespace NPOMS.Services.Implementation
         private IManicipalityDemographicRepository _manicipalityDemographicRepository;
         private ISubDistrictDemographicRepository _subDistrictDemographicRepository;
         private IIndicatorRepository _indicatorRepository;
+        private IQuarterlyPeriodRepository _quarterPeriodRepository;
         #endregion
 
         #region Constructors
@@ -164,7 +165,8 @@ namespace NPOMS.Services.Implementation
             IQuarterlyPeriodRepository quarterlyPeriodRepository,
             ISegmentCodeRepository segmentCodeRepository,
             IFacilitySubStructureRepository facilitySubStructuresRepository,
-            IIndicatorRepository indicatorRepository)
+            IIndicatorRepository indicatorRepository,
+            IQuarterlyPeriodRepository quarterPeriodRepository)
         {
             _mapper = mapper;
             _demographicSubStructureRepository = demographicSubStructureRepository;
@@ -232,6 +234,7 @@ namespace NPOMS.Services.Implementation
             _segmentCodeRepository = segmentCodeRepository;
             _facilitySubStructuresRepository = facilitySubStructuresRepository;
             _indicatorRepository = indicatorRepository;
+            _quarterPeriodRepository = quarterPeriodRepository;
         }
 
         #endregion
@@ -1806,7 +1809,7 @@ namespace NPOMS.Services.Implementation
         }
 
         #endregion
-
+        
         #endregion
     }
 }

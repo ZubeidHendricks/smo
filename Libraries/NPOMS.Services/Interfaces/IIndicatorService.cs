@@ -1,4 +1,5 @@
-﻿using NPOMS.Domain.Indicator;
+﻿using NPOMS.Domain.Entities;
+using NPOMS.Domain.Indicator;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -41,5 +42,20 @@ namespace NPOMS.Services.Interfaces
 		Task<IEnumerable<WorkplanActualAudit>> GetWorkplanActualAudits(int workplanActualId);
 
 		Task<IEnumerable<WorkplanActual>> GetWorkplanActualsByIds(List<int> activityIds, int financialYearId, int frequencyPeriodId);
-	}
+
+        Task<IEnumerable<IndicatorReport>> GetIndicatorReports();
+
+        Task<IndicatorReport> GetIndicatorReportById(int id);
+
+        Task<IEnumerable<IndicatorReport>> GetIndicatorReportByPeriodId(int applicationPeriodId);
+
+        Task<IEnumerable<IndicatorReport>> GetIndicatorReportByNpoId(int npoId);
+
+        Task<IndicatorReport> GetByIds(int financialYearId, int applicationTypeId);
+
+        Task CreateIndicatorReportEntity(IndicatorReport model, string userIdentifier);
+
+        Task UpdateIndicatorReportEntity(IndicatorReport model, string currentUserId);
+        Task UpdateIndicatorReportEntityQC(IndicatorReport model, int currentUserId);
+    }
 }

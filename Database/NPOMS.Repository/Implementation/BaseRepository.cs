@@ -30,7 +30,14 @@ namespace NPOMS.Repository.Implementation
 
 		public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
 		{
-			return RepositoryContext.Set<T>().Where(expression).AsNoTracking();
+			try
+			{
+                return RepositoryContext.Set<T>().Where(expression).AsNoTracking();
+            }
+			catch(Exception x) {
+				return null;
+			}
+
 		}
 
 		public void Create(T entity)

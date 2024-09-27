@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApplicationWithUsers, IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IProjectImplementation, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationWithUsers, IActivity, IActuals, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IProjectImplementation, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -117,6 +117,11 @@ export class ApplicationService {
   public getAllActivities(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/activities/npoId/${application.npoId}/applicationPeriodId/${application.applicationPeriodId}`;
     return this._http.get<IActivity[]>(url, httpOptions);
+  }
+
+  public GetIndicatorReportsByAppid(application: IApplication) {
+    const url = `${this._envUrl.urlAddress}/api/applications/getindicatorreportsbyappid/appid/${application.id}`;
+    return this._http.get<IActuals[]>(url, httpOptions);
   }
 
   public getActivityById(activityId: number) {
@@ -287,4 +292,10 @@ public updateApplicationWithApprovers(model: ApplicationWithUsers) {
   const url = `${this._envUrl.urlAddress}/api/applications/Addworkplanapprovers`;
   return this._http.put<IApplication>(url, model, httpOptions);
 }
+
+public createActual(actual: IActuals, ) {
+  const url = `${this._envUrl.urlAddress}/api/applications/CreateIndicatorReport`;
+  return this._http.post<IActuals>(url, actual, httpOptions);
+}
+
 }

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NPOMS.API.Controllers
 {
@@ -31,6 +32,7 @@ namespace NPOMS.API.Controllers
         private IProgrameDeliveryService _programeDeliveryService;
         private INpoService _npoService;
         private INpoProfileService _npoProfileService;
+        private IIndicatorService _indicatorService;
 
         #endregion
 
@@ -44,7 +46,8 @@ namespace NPOMS.API.Controllers
             IProgrammeService programmeService,
             IProgrameDeliveryService programeDeliveryService,
             INpoService npoService,
-            INpoProfileService npoProfileService
+            INpoProfileService npoProfileService,
+             IIndicatorService indicatorService
             )
         {
             _logger = logger;
@@ -55,6 +58,7 @@ namespace NPOMS.API.Controllers
             _programeDeliveryService = programeDeliveryService;
             _npoService = npoService;
             _npoProfileService = npoProfileService;
+            _indicatorService = indicatorService;
         }
 
         #endregion
@@ -120,6 +124,7 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
         [HttpPost("createNew/{createNew}/financialYearId/{financialYearId}", Name = "CreateApplication")]
         public async Task<IActionResult> CreateApplication([FromBody] Application model, bool createNew, int financialYearId)
@@ -222,6 +227,54 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPost("createIndicatorReport", Name = "CreateIndicatorReport")]
+        public async Task<IActionResult> CreateIndicatorReport(IndicatorReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _indicatorService.CreateIndicatorReportEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateIndicatorReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("updateIndicatorReport", Name = "UpdateIndicatorReport")]
+        public async Task<IActionResult> UpdateIndicatorReport(IndicatorReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _indicatorService.UpdateIndicatorReportEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateIndicatorReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("getindicatorreportsbyappid/appid/{appid}", Name = "GetIndicatorReportsByAppid")]
+        public async Task<IActionResult> GeIndicatorReportByAppid(int appid)
+        {
+            try
+            {
+                var results = await _indicatorService.GetIndicatorReportByPeriodId(appid);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GeIndicatorReportByAppid action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPost("createQC", Name = "CreateQCApplication")]
         public async Task<IActionResult> CreateQCApplication([FromBody] Application model)
         {
@@ -311,6 +364,7 @@ namespace NPOMS.API.Controllers
                 _logger.LogError($"Something went wrong inside CreateApplicationAudit action: {ex.Message} Inner Exception: {ex.InnerException}");
             }
         }
+
 
         private async Task ConfigureEmail(Application model)
         {

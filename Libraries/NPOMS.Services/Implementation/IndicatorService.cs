@@ -1,6 +1,9 @@
-﻿using NPOMS.Domain.Indicator;
+﻿using NPOMS.Domain.Entities;
+using NPOMS.Domain.Indicator;
 using NPOMS.Repository;
+using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Interfaces.Core;
+using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.Indicator;
 using NPOMS.Services.Interfaces;
 using System;
@@ -18,8 +21,10 @@ namespace NPOMS.Services.Implementation
 		private IWorkplanActualRepository _workplanActualRepository;
 		private IWorkplanCommentRepository _workplanCommentRepository;
 		private IWorkplanActualAuditRepository _workplanActualAuditRepository;
+        private IIndicatorReportRepository _indicatorReportRepository;
+        
 
-		private RepositoryContext _repositoryContext;
+        private RepositoryContext _repositoryContext;
 
 		#endregion
 
@@ -31,7 +36,8 @@ namespace NPOMS.Services.Implementation
 			IWorkplanActualRepository workplanActualRepository,
 			IWorkplanCommentRepository workplanCommentRepository,
 			IWorkplanActualAuditRepository workplanActualAuditRepository,
-			RepositoryContext repositoryContext
+            IIndicatorReportRepository indicatorReportRepository,
+        RepositoryContext repositoryContext
 			)
 		{
 			_workplanTargetRepository = workplanTargetRepository;
@@ -40,7 +46,9 @@ namespace NPOMS.Services.Implementation
 			_workplanCommentRepository = workplanCommentRepository;
 			_workplanActualAuditRepository = workplanActualAuditRepository;
 			_repositoryContext = repositoryContext;
-		}
+			_indicatorReportRepository = indicatorReportRepository;
+
+        }
 
 		#endregion
 
@@ -146,6 +154,56 @@ namespace NPOMS.Services.Implementation
 			return await _workplanActualRepository.GetByIds(activityIds, financialYearId, frequencyPeriodId);
 		}
 
-		#endregion
-	}
+        public async Task<IEnumerable<IndicatorReport>> GetIndicatorReports()
+        {
+            return await _indicatorReportRepository.GetEntities();
+        }
+
+        public async Task<IndicatorReport> GetIndicatorReportById(int id)
+        {
+            return await _indicatorReportRepository.GetById(id);
+        }
+
+        public async Task<IEnumerable<IndicatorReport>> GetIndicatorReportByPeriodId(int applicationPeriodId)
+        {
+            return await _indicatorReportRepository.GetByPeriodId(applicationPeriodId);
+        }
+
+        public async Task<IEnumerable<IndicatorReport>> GetIndicatorReportByNpoId(int npoId)
+        {
+            return await _indicatorReportRepository.GetByNpoId(npoId);
+        }
+
+        public Task<IndicatorReport> GetByIds(int financialYearId, int applicationTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task CreateIndicatorReportEntity(IndicatorReport model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _indicatorReportRepository.CreateEntity(model);
+        }
+
+        public async Task UpdateIndicatorReportEntity(IndicatorReport model, string currentUserId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
+
+            model.CreatedUserId = loggedInUser.Id;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _indicatorReportRepository.UpdateEntity(model, loggedInUser.Id);
+        }
+
+        public Task UpdateIndicatorReportEntityQC(IndicatorReport model, int currentUserId)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }

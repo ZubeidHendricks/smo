@@ -7,6 +7,8 @@ namespace NPOMS.Domain.Dropdown
     {
         public int SubProgrammeTypeId { get; set; }  // Foreign Key
         public string IndicatorValue { get; set; }
+        public string IndicatorDesc { get; set; }
+        public string OutputTitle { get; set; }
         public string Year { get; set; }
         public bool IsActive { get; set; }  
         public string AnnualTarget { get; set; }

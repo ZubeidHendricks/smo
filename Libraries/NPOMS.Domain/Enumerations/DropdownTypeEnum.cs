@@ -66,6 +66,6 @@
         DemographicDistrict = 62,
         DemographicManicipality = 63,
         DemographicSubDistrict = 64,
-        Indicator = 65,
+        Indicator = 65
     }
 }

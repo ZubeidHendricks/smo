@@ -105,7 +105,7 @@ export class PostReportComponent implements OnInit {
   deletedActivities: IActivity[];
 
   postCols: any[];
-  displayActivityDialog: boolean;
+  displayPostDialog: boolean;
   newActivity: boolean;
   activity: IActivity = {} as IActivity;
 

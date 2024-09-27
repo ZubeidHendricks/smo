@@ -16,6 +16,8 @@ namespace NPOMS.Repository.Configurations.Dropdown
                     Year = "2024/25",
                     SubProgrammeTypeId = 1,
                     IndicatorValue = "2.2.1.1",
+                    IndicatorDesc = "Number of subsidised beds in residential care facilities for Older Persons.",
+                    OutputTitle = "Residential care services/facilities are available for Older Persons.",
                     AnnualTarget = "4661",
                     Q1 = "4661",
                     Q2 = "4661",

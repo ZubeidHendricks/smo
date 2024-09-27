@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,11 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20240925224320_OutputTitle-active")]
+    partial class OutputTitleactive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -11600,7 +11603,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6061),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1055),
                             CreatedUserID = 3,
                             Frequency = 12,
                             HaveComment = false,
@@ -11613,7 +11616,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6077),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1074),
                             CreatedUserID = 3,
                             Frequency = 1,
                             HaveComment = false,
@@ -11626,7 +11629,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6079),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1077),
                             CreatedUserID = 3,
                             Frequency = 264,
                             HaveComment = false,
@@ -11639,7 +11642,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6081),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1079),
                             CreatedUserID = 3,
                             Frequency = 240,
                             HaveComment = false,
@@ -11652,7 +11655,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6083),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1082),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = false,
@@ -11664,7 +11667,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 6,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6084),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1084),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11676,7 +11679,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 7,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6086),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1085),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11688,7 +11691,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 8,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6087),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1087),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11700,7 +11703,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 9,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6089),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1089),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11712,7 +11715,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 10,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6091),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1090),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11724,7 +11727,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 11,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6092),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1092),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11736,7 +11739,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 12,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6094),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1093),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11748,7 +11751,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 13,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6095),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1095),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11760,7 +11763,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 14,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6097),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1098),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11772,7 +11775,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 15,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6099),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1101),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11784,7 +11787,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 16,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6100),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1103),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11796,7 +11799,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 17,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6102),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1104),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11808,7 +11811,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 18,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6103),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1106),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11820,7 +11823,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 19,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6105),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1109),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11832,7 +11835,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 20,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6106),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1111),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11844,7 +11847,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 21,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6108),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1113),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = false,
@@ -11856,7 +11859,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 22,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6109),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1115),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11868,7 +11871,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 23,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6111),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1117),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11880,7 +11883,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 24,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6113),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1119),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11892,7 +11895,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 25,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6114),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1121),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11904,7 +11907,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 26,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6116),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1124),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11916,7 +11919,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 27,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6117),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1126),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11928,7 +11931,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 28,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6128),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1137),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11940,7 +11943,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 29,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6130),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1139),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11952,7 +11955,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 30,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6136),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1153),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11964,7 +11967,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 31,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6148),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1173),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -11976,7 +11979,7 @@ namespace NPOMS.Repository.Migrations
                         new
                         {
                             Id = 32,
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6150),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1176),
                             CreatedUserID = 3,
                             HaveComment = false,
                             IsActive = true,
@@ -12056,7 +12059,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 1,
                             CanDefineName = false,
                             Code = "AdministrationFee",
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6708),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1755),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -12075,7 +12078,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 2,
                             CanDefineName = false,
                             Code = "PostItem",
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6712),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1760),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = false,
@@ -12094,7 +12097,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 3,
                             CanDefineName = true,
                             Code = "UnitItem",
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6714),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1762),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = true,
@@ -12113,7 +12116,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 4,
                             CanDefineName = false,
                             Code = "OperationalItem",
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6717),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1765),
                             CreatedUserID = 3,
                             HaveBreakDown = true,
                             HaveFrequency = false,
@@ -12132,7 +12135,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 6,
                             CanDefineName = false,
                             Code = "RuleForSocialWorkers",
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6719),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1768),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -12151,7 +12154,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 7,
                             CanDefineName = false,
                             Code = "UIFFee",
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6721),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1770),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -12170,7 +12173,7 @@ namespace NPOMS.Repository.Migrations
                             Id = 8,
                             CanDefineName = false,
                             Code = "COIDAFee",
-                            CreatedDateTime = new DateTime(2024, 9, 26, 21, 14, 28, 468, DateTimeKind.Local).AddTicks(6723),
+                            CreatedDateTime = new DateTime(2024, 9, 26, 0, 43, 15, 694, DateTimeKind.Local).AddTicks(1774),
                             CreatedUserID = 3,
                             HaveBreakDown = false,
                             HaveFrequency = false,
@@ -16056,6 +16059,9 @@ namespace NPOMS.Repository.Migrations
                     b.Property<string>("IdNumber")
                         .HasColumnType("nvarchar(13)");
 
+                    b.Property<int?>("IndicatorReportId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -16116,6 +16122,8 @@ namespace NPOMS.Repository.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GenderId");
+
+                    b.HasIndex("IndicatorReportId");
 
                     b.HasIndex("LanguageId");
 
@@ -16504,8 +16512,8 @@ namespace NPOMS.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Actual")
-                        .HasColumnType("int");
+                    b.Property<string>("Actuals")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("AdjustedActual")
                         .HasColumnType("int");
@@ -16513,11 +16521,17 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int?>("AdjustedVariance")
                         .HasColumnType("int");
 
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
+                    b.Property<string>("ApplicationId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ApprovalDateTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("ApprovalStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ApprovalUserId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
@@ -16525,41 +16539,41 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int>("CreatedUserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("DeviationReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FinancialYear")
+                    b.Property<int>("DeviationReason")
                         .HasColumnType("int");
+
+                    b.Property<string>("FinancialYear")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Group")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("IndicatorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IndicatorValue")
+                    b.Property<string>("IndicatorId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("OrganisationTypeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("OutputTitle")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProgrammeId")
-                        .HasColumnType("int");
+                    b.Property<string>("Programme")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("QaurterId")
-                        .HasColumnType("int");
+                    b.Property<string>("QaurterId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ServiceDeliveryArea")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SubProgrammeId")
-                        .HasColumnType("int");
+                    b.Property<string>("SubProgramme")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SubProgrammeTypeId")
-                        .HasColumnType("int");
+                    b.Property<string>("SubProgrammeType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Targets")
                         .HasColumnType("int");
@@ -16575,7 +16589,13 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApprovalStatusId");
+
+                    b.HasIndex("ApprovalUserId");
+
                     b.HasIndex("CreatedUserId");
+
+                    b.HasIndex("OrganisationTypeId");
 
                     b.ToTable("IndicatorReports", "dbo");
                 });
@@ -24310,6 +24330,10 @@ namespace NPOMS.Repository.Migrations
                         .WithMany()
                         .HasForeignKey("GenderId");
 
+                    b.HasOne("NPOMS.Domain.Entities.IndicatorReport", null)
+                        .WithMany("ContactInformation")
+                        .HasForeignKey("IndicatorReportId");
+
                     b.HasOne("NPOMS.Domain.Dropdown.Language", "Language")
                         .WithMany()
                         .HasForeignKey("LanguageId");
@@ -24441,13 +24465,33 @@ namespace NPOMS.Repository.Migrations
 
             modelBuilder.Entity("NPOMS.Domain.Entities.IndicatorReport", b =>
                 {
+                    b.HasOne("NPOMS.Domain.Entities.AccessStatus", "ApprovalStatus")
+                        .WithMany()
+                        .HasForeignKey("ApprovalStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NPOMS.Domain.Core.User", "ApprovalUser")
+                        .WithMany()
+                        .HasForeignKey("ApprovalUserId");
+
                     b.HasOne("NPOMS.Domain.Core.User", "CreatedUser")
                         .WithMany()
                         .HasForeignKey("CreatedUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("NPOMS.Domain.Dropdown.OrganisationType", "OrganisationType")
+                        .WithMany()
+                        .HasForeignKey("OrganisationTypeId");
+
+                    b.Navigation("ApprovalStatus");
+
+                    b.Navigation("ApprovalUser");
+
                     b.Navigation("CreatedUser");
+
+                    b.Navigation("OrganisationType");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.MyContentLink", b =>
@@ -25542,6 +25586,11 @@ namespace NPOMS.Repository.Migrations
                     b.Navigation("FinancialMatters");
 
                     b.Navigation("Implementations");
+                });
+
+            modelBuilder.Entity("NPOMS.Domain.Entities.IndicatorReport", b =>
+                {
+                    b.Navigation("ContactInformation");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Entities.Npo", b =>
