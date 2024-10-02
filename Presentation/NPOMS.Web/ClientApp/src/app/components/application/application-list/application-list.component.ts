@@ -1084,8 +1084,8 @@ export class ApplicationListComponent implements OnInit {
           }
         });
       }
-
-      if (this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)) {
+      // this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)
+      if (true) {
         this.optionItems[0].items.push({
           label: 'Reports',
           icon: 'fa fa-file-text-o',
