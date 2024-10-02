@@ -102,7 +102,8 @@ export enum DropdownTypeEnum {
 export enum EntityTypeEnum {
     SupportingDocuments = 1,
     SLA = 2,
-    WorkplanActuals = 3
+    WorkplanActuals = 3,
+    ReportActuals = 4,
 }
 
 export enum EntityEnum {
@@ -110,7 +111,8 @@ export enum EntityEnum {
     Application = 'Application',
     WorkplanIndicators = 'WorkplanIndicators',
     FundingApplicationDetails = 'FundingApplicationDetails',
-    FundedNpo = 'FundedNpo'
+    FundedNpo = 'FundedNpo',
+    IndicatorReports = 'IndicatorReports'
 }
 
 export enum ResponseTypeEnum {
@@ -534,7 +536,8 @@ export enum DocumentUploadLocationsEnum {
     WorkplanActuals = 'WorkplanActuals',
     FundApp = "FundApp",
     QuickCapture = "QuickCapture",
-    FundedNpo = "FundedNpo"
+    FundedNpo = "FundedNpo",
+    ReportActuals = "ReportActuals"
 }
 
 //export enum FundingTemplateTypeEnum {

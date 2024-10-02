@@ -7,6 +7,7 @@ using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Services.Email;
 using NPOMS.Services.Email.EmailTemplates;
+using NPOMS.Services.Implementation;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Models;
 using System;
@@ -33,7 +34,11 @@ namespace NPOMS.API.Controllers
         private INpoService _npoService;
         private INpoProfileService _npoProfileService;
         private IIndicatorService _indicatorService;
-
+        private IPostService _postService;
+        private IIncomeAndExpenditureService _incomeAndExpenditureService;
+        private IGovernanceService _governanceService;
+        private IAnyOtherService _anyOtherService;
+        
         #endregion
 
         #region Constructors
@@ -47,7 +52,11 @@ namespace NPOMS.API.Controllers
             IProgrameDeliveryService programeDeliveryService,
             INpoService npoService,
             INpoProfileService npoProfileService,
-             IIndicatorService indicatorService
+            IIndicatorService indicatorService,
+            IPostService postService,
+            IIncomeAndExpenditureService incomeAndExpenditureService,
+            IGovernanceService governanceService,
+            IAnyOtherService anyOtherService
             )
         {
             _logger = logger;
@@ -59,6 +68,10 @@ namespace NPOMS.API.Controllers
             _npoService = npoService;
             _npoProfileService = npoProfileService;
             _indicatorService = indicatorService;
+            _postService = postService; 
+            _incomeAndExpenditureService = incomeAndExpenditureService;
+            _governanceService = governanceService;
+            _anyOtherService = anyOtherService;
         }
 
         #endregion
@@ -243,7 +256,139 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpPost("updateIndicatorReport", Name = "UpdateIndicatorReport")]
+        [HttpPost("createPostReport", Name = "CreatePostReport")]
+        public async Task<IActionResult> CreatePostReport(PostReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _postService.CreatePostReportEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreatePostReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("createGovernanceReport", Name = "CreateGovernanceReport")]
+        public async Task<IActionResult> CreateGovernanceReport(GovernanceReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _governanceService.CreateGovernanceReportEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateGovernanceReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("createIncomeReport", Name = "CreateIncomeReport")]
+        public async Task<IActionResult> CreateIncomeReport(IncomeAndExpenditureReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _incomeAndExpenditureService.CreateIncomeReportEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateIncomeReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+        [HttpPost("createAnyOther", Name = "CreateAnyOther")]
+        public async Task<IActionResult> CreateAnyOther(AnyOtherInformationReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _anyOtherService.CreateEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside createAnyOther action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("updatAnyOtherReport", Name = "UpdateAnyOtherReport")]
+        public async Task<IActionResult> UpdateAnyOtherReport(AnyOtherInformationReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _anyOtherService.UpdateEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside updatAnyOtherReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpPut("updatIncomeReport", Name = "UpdateIncomeReport")]
+        public async Task<IActionResult> UpdateIncomeReport(IncomeAndExpenditureReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _incomeAndExpenditureService.UpdateIncomeReportEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateIncomeReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpPut("updatePostReport", Name = "UpdatePostReport")]
+        public async Task<IActionResult> UpdatePostReport(PostReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _postService.UpdatePostReportEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdatePostReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("updateGovernanceReport", Name = "UpdateGovernanceReport")]
+        public async Task<IActionResult> UpdateGovernanceReport(GovernanceReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _governanceService.UpdateGovernanceReportEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateGovernanceReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("updateIndicatorReport", Name = "UpdateIndicatorReport")]
         public async Task<IActionResult> UpdateIndicatorReport(IndicatorReport model)
         {
             try
@@ -259,6 +404,67 @@ namespace NPOMS.API.Controllers
             }
         }
 
+
+        [HttpGet("getanyotherbyappid/appid/{appid}", Name = "GetAnyOtherByAppid")]
+        public async Task<IActionResult> GetAnyOtherByAppid(int appid)
+        {
+            try
+            {
+                var results = await _anyOtherService.GetByPeriodId(appid);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAnyOtherByAppid action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("getpostreportsbyappid/appid/{appid}", Name = "GetPostReportsByAppid")]
+        public async Task<IActionResult> GetPostReportByAppid(int appid)
+        {
+            try
+            {
+                var results = await _postService.GetPostReportByPeriodId(appid);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetPostReportByAppid action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("getincomereportsbyappid/appid/{appid}", Name = "GetIncomeReportsByAppid")]
+        public async Task<IActionResult> GetIncomeReportByAppid(int appid)
+        {
+            try
+            {
+                var results = await _incomeAndExpenditureService.GetIncomeReportByPeriodId(appid);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetIncomeReportByAppid action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("getgovernancereportsbyappid/appid/{appid}", Name = "GetGovernanceReportsByAppid")]
+        public async Task<IActionResult> GetGovernanceReportByAppid(int appid)
+        {
+            try
+            {
+                var results = await _governanceService.GetGovernanceReportByPeriodId(appid);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetGovernanceReportByAppid action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpGet("getindicatorreportsbyappid/appid/{appid}", Name = "GetIndicatorReportsByAppid")]
         public async Task<IActionResult> GeIndicatorReportByAppid(int appid)

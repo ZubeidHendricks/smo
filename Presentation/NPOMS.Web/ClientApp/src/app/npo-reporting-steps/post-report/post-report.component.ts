@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IPosts, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -65,6 +65,9 @@ export class PostReportComponent implements OnInit {
 
   selectedQuartersText: string = '';
 
+  posts: IPosts[];
+  post: IPosts = {} as IPosts;
+
   // districts: any[] = [
   //   { name: 'District 1', code: 'D1' },
   //   { name: 'District 2', code: 'D2' }
@@ -107,6 +110,11 @@ export class PostReportComponent implements OnInit {
   postCols: any[];
   displayPostDialog: boolean;
   newActivity: boolean;
+  newPost: boolean;
+  
+
+  
+
   activity: IActivity = {} as IActivity;
 
   objectives: IObjective[];
@@ -259,6 +267,7 @@ export class PostReportComponent implements OnInit {
     this.loadDemographicSubDistricts();
     this.loadFinancialYears();
     this.loadDepartments();
+    this.loadPosts();
    // this.loadDepartments1();
     this.loadProgrammes();
     this.loadSubProgrammes();
@@ -269,11 +278,10 @@ export class PostReportComponent implements OnInit {
     this.postCols = [
       { header: 'Post Classification', width: '20%' },
       { header: 'Number of Posts', width: '10%' },
-      { header: 'Number Filled and Months in which filled', width: '20%' },
+      { header: 'Number Filled', width: '10%' },
+      { header: 'Months in which filled', width: '10%' },
       { header: 'Vacant', width: '10%' },
       { header: 'Date of Vacancies', width: '10%' },
-
-
       { header: 'Reason for vacancies', width: '10%' },
       { header: 'Plans to fill vacancies', width: '20%' },
 
@@ -674,6 +682,88 @@ onDemographicSubStructuresChange() {
     );
   }
 
+  editPost(data: IPosts) {
+    this.newPost = false;
+    this.post = this.clonePost(data);
+    console.log('Other',this.post);
+    this.displayPostDialog = true;
+  }
+
+  private clonePost(data: IPosts): IPosts {
+    let obj = {} as IPosts;
+
+    for (let prop in data)
+      obj[prop] = data[prop];
+    return obj;
+  }
+
+  savePost(post: IPosts) {
+    // Assign necessary fields
+    this.post.postClassification = this.post.postClassification;
+    this.post.numberOfPosts = this.post.numberOfPosts;
+    this.post.numberFilled = this.post.numberFilled;
+    this.post.monthsFilled = this.post.monthsFilled;
+    this.post.vacant = this.post.vacant;
+    this.post.dateofVacancies = this.post.dateofVacancies;
+    this.post.vacancyReasons = this.post.vacancyReasons;
+    this.post.applicationId = this.application.id;
+    this.post.isActive = true;
+  
+    // Check if it's a new post or an update
+    if (this.newPost) {
+      // Create new post
+      this.createPost(post);
+    } else {
+      // Update existing post
+      this.updatePost(post);
+    }
+  }
+  
+  // Method to create a new post
+  createPost(post: IPosts) {
+    this._applicationRepo.createPost(post).subscribe(
+      (resp) => {
+        this.loadPosts();
+        this.displayPostDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+  
+  // Method to update an existing post
+  updatePost(post: IPosts) {
+    this._applicationRepo.updatePost(post).subscribe(
+      (resp) => {
+        this.loadPosts();
+        this.displayPostDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+  
+
+  private loadPosts() {
+    this._spinner.show();
+    this._applicationRepo.getAllPosts(this.application).subscribe(
+      (results) => {
+        console.log('Posts',results);
+        this.posts = results;
+       
+ 
+        });
+  
+
+        this._spinner.hide();
+      }
+
+  
+
 
   onDistrictChange() {
     this.selectedSubDistricts = [];
@@ -850,185 +940,19 @@ onDemographicSubStructuresChange() {
     this.activeStepChange.emit(this.activeStep);
   }
 
-  addActivity() {
-    this.newActivity = true;
-    this.activity = {
-      activitySubProgrammes: [] as IActivitySubProgramme[],
-      activityFacilityLists: [] as IActivityFacilityList[],
-      activityDistrict: [] as IActivityDistrict[],
-      activityManicipality: [] as IActivityManicipality[],
-      activitySubDistrict: [] as IActivitySubDistrict[],
-      activitySubStructure: [] as IActivitySubStructure[],
-    } as IActivity;
-    
-    this.selectedObjective = null;
-    this.selectedActivityType = null;
-    this.selectedFacilities = [];
-    this.subProgrammes = [];
-    this.selectedSubProgrammes = [];
-    this.selectedActivity = null;
-
-    this.recipients = [];
-    this.selectedRecipients = [];
-
-    this.displayActivityDialog = true;
-
-    if (this.application.isCloned)
-      this.activity.isNew = this.activity.isNew == undefined ? true : this.activity.isNew;
-  }
-
-  editActivity(data: IActivity) {
-    this.newActivity = false;
-    this.activity = this.cloneActivity(data);
-    this.selectedActivity = null;
-
-    if (this.application.isCloned)
-      this.activity.isNew = this.activity.isNew == undefined ? false : this.activity.isNew;
-
-    this.displayActivityDialog = true;
-  }
-
-  private cloneActivity(data: IActivity): IActivity {
-    data.name = data.activityList.name;
-    data.description = data.activityList.description;
-
-    let activity = {} as IActivity;
-
-    for (let prop in data)
-      activity[prop] = data[prop];
-
-    this.selectedObjective = this.objectives.find(x => x.id === data.objectiveId);
-    this.objectiveChange(this.selectedObjective);
-    this.selectedActivityType = data.activityType;
-
-    const facilityListIds = data.activityFacilityLists.map(({ facilityListId }) => facilityListId);
-    this.selectedFacilities = this.facilities.filter(item => facilityListIds.includes(item.id));
-
-    const subProgrammeIds = data.activitySubProgrammes.map(({ subProgrammeId }) => subProgrammeId);
-    this.selectedSubProgrammes = this.subProgrammes.filter(item => subProgrammeIds.includes(item.id));
-
-    this.buildRecipientDropdown(this.selectedObjective, data);
-    
-    this.selectedRecipients = this.recipients.filter(item => {
-      return data.activityRecipients.some(recipient => {
-        return recipient.activityId === item.activityId && recipient.entityId === item.entityId && recipient.recipientTypeId === item.recipientTypeId
-      })
-    });
-
-    this.getTextValues();
-    // Handle selected district
-    const districtId = data?.activityDistrict?.find(district => district.isActive)?.demographicDistrictId;
-    this.selectedIDistrictDemographics = this.allIDistrictDemographics.find(item => item.id === districtId);
-    
-    if (this.selectedIDistrictDemographics) {
-      this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
-        md.districtDemographicId === this.selectedIDistrictDemographics.id
-      );
-      this.SubDistrictDemographics = [];
-      this.SubstructureDemographics = [];
-    } else {
-      this.ManicipalityDemographics = [];
-      this.SubDistrictDemographics = [];
-      this.SubstructureDemographics = [];
-    }
-
-    const demographicDistrictIds = data?.activityManicipality?.map(({ demographicDistrictId }) => demographicDistrictId);
-    this.selectedManicipalityDemographics = this.ManicipalityDemographics.filter(item =>
-        demographicDistrictIds.includes(item.districtDemographicId) && 
-        data.activityManicipality.some(({ name }) => name === item.name)
-    );
-    
-    this.onDemographicManicipalitiesChange();
-
-    const subStructureIds = data?.activitySubStructure?.map(({ municipalityId }) => municipalityId);
-    this.selectedSubstructureDemographics = this.SubstructureDemographics.filter(item =>
-        subStructureIds.includes(item.manicipalityDemographicId) && 
-        data.activitySubStructure.some(({ name }) => name === item.name)
-    );
-
-    this.onDemographicSubStructuresChange();
-
-    const subDistrictIds = data?.activitySubDistrict?.map(({ substructureId }) => substructureId);
-    this.selectedSubDistrictDemographics = this.SubDistrictDemographics.filter(item =>
-    subDistrictIds.includes(item.subSctrcureDemographicId) && 
-    data.activitySubDistrict.some(({ name }) => name === item.name)
-   );
-
-    return activity;
-  }
-
-  getTextValues() {
-    let allSubProgrammes: string = "";
-    let allFacilities: string = "";
-    let allRecipients: string = "";
-
-    this.selectedSubProgrammes.forEach(item => {
-      allSubProgrammes += item.name + ", ";
-    });
-
-    this.selectedFacilities.forEach(item => {
-      allFacilities += item.name + ";\n";
-    });
-
-    this.selectedRecipients.forEach(item => {
-      allRecipients += item.recipientName + ";\n";
-    });
-
-    this.selectedSubProgrammesText = allSubProgrammes.slice(0, -2);
-    this.selectedFacilitiesText = allFacilities;
-    this.selectedRecipientsText = allRecipients;
-  }
-
-  private buildRecipientDropdown(objective: IObjective, activity: IActivity) {
-    this.recipients = [];
-
-    //Primary Recipient
-    this.recipients.push({
-      activityId: activity.id ? activity.id : 0,
-      entity: RecipientEntityEnum.Objective,
-      entityId: objective.id,
-      recipientTypeId: objective.recipientTypeId,
-      recipientName: `${this.npo.name} (${objective.recipientType.name} Recipient)`
-    } as IActivityRecipient);
-
-    objective.subRecipients.forEach(sr => {
-      sr.recipientType = this.recipientTypes.find(x => x.id === sr.recipientTypeId);
-
-      //Sub Recipient
-      this.recipients.push({
-        activityId: activity.id ? activity.id : 0,
-        entity: RecipientEntityEnum.SubRecipient,
-        entityId: sr.id,
-        recipientTypeId: sr.recipientTypeId,
-        recipientName: `${sr.organisationName} (${sr.recipientType.name})`
-      } as IActivityRecipient);
-
-      sr.subSubRecipients.forEach(ssr => {
-        ssr.recipientType = this.recipientTypes.find(x => x.id === ssr.recipientTypeId);
-
-        //Sub Sub Recipient
-        this.recipients.push({
-          activityId: activity.id ? activity.id : 0,
-          entity: RecipientEntityEnum.SubSubRecipient,
-          entityId: ssr.id,
-          recipientTypeId: ssr.recipientTypeId,
-          recipientName: `${ssr.organisationName} (${ssr.recipientType.name})`
-        } as IActivityRecipient);
-      });
-    });
-  }
-
-  deleteActivity(data: IActivity) {
+  deletePost(data: IPosts) {
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        this.activity = this.cloneActivity(data);
-        this.activity.isActive = false;
-        this.updateActivity();
+        this.post = this.clonePost(data);
+        this.post.isActive = false;
+        this.updatePost(this.post);
+        this._confirmationService.close();
       },
       reject: () => {
+        this._confirmationService.close();
       }
     });
   }
@@ -1157,7 +1081,7 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
   (resp) => {
     this.activity.activityListId = resp.id;
     this.newActivity ? this.createActivity() : this.updateActivity();
-    this.displayActivityDialog = false;
+    this.displayPostDialog = false;
 
     let allFacilities: string = "";
     this.selectedFacilities.forEach(item => {
@@ -1224,14 +1148,7 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
     return true;
   }
 
-  objectiveChange(objective: IObjective) {
-    this.subProgrammes = [];
 
-    const subProgrammeIds = objective.objectiveProgrammes.map(({ subProgrammeId }) => subProgrammeId);
-    this.subProgrammes = this.allSubProgrammes.filter(item => subProgrammeIds.includes(item.id));
-
-    this.buildRecipientDropdown(objective, this.activity);
-  }
 
   addComment() {
     this.comment = null;

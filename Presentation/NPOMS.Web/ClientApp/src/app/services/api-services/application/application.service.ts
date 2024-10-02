@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApplicationWithUsers, IActivity, IActuals, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IFacilityList, IFinancialYear, IFundingApplicationDetails, IMyContentLink, IObjective, IPlace, IProjectImplementation, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationWithUsers, IActivity, IActuals, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IExpenditure, IFacilityList, IFinancialYear, IFundingApplicationDetails, IGovernance, IMyContentLink, IObjective, IOtherInfor, IPlace, IPosts, IProjectImplementation, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -119,9 +119,30 @@ export class ApplicationService {
     return this._http.get<IActivity[]>(url, httpOptions);
   }
 
+  
+  public getAllPosts(application: IApplication) {
+    const url = `${this._envUrl.urlAddress}/api/applications/getpostreportsbyappid/appid/${application.id}`;
+    return this._http.get<IPosts[]>(url, httpOptions);
+  }
+
   public GetIndicatorReportsByAppid(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/getindicatorreportsbyappid/appid/${application.id}`;
     return this._http.get<IActuals[]>(url, httpOptions);
+  }
+
+  public GetOtherInforReportsByAppid(application: IApplication) {
+    const url = `${this._envUrl.urlAddress}/api/applications/getanyotherbyappid/appid/${application.id}`;
+    return this._http.get<IOtherInfor[]>(url, httpOptions);
+  }
+  public GetIncomeReportsByAppid(application: IApplication) {
+    const url = `${this._envUrl.urlAddress}/api/applications/getincomereportsbyappid/appid/${application.id}`;
+    return this._http.get<IExpenditure[]>(url, httpOptions);
+  }
+
+  
+  public GetGovernanceReportsByAppid(application: IApplication) {
+    const url = `${this._envUrl.urlAddress}/api/applications/getgovernancereportsbyappid/appid/${application.id}`;
+    return this._http.get<IGovernance[]>(url, httpOptions);
   }
 
   public getActivityById(activityId: number) {
@@ -134,11 +155,37 @@ export class ApplicationService {
     return this._http.post<IActivity>(url, activity, httpOptions);
   }
 
+
   public updateActivity(activity: IActivity) {
     const url = `${this._envUrl.urlAddress}/api/applications/activities`;
     return this._http.put<IActivity>(url, activity, httpOptions);
   }
 
+  
+  public updateOtherInfor(otherInfor: IOtherInfor) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updatAnyOtherReport`;
+    return this._http.put<IOtherInfor>(url, otherInfor, httpOptions);
+  }
+
+  public updateGovernance(governance: IGovernance) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateGovernanceReport`;
+    return this._http.put<IGovernance>(url, governance, httpOptions);
+  }
+
+  public updateExpenditure(expenditure: IExpenditure) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updatIncomeReport`;
+    return this._http.put<IExpenditure>(url, expenditure, httpOptions);
+  }
+
+    public updatePost(post: IPosts) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updatePostReport`;
+    return this._http.put<IPosts>(url, post, httpOptions);
+  }
+
+  public updateActual(actual: IActuals) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateIndicatorReport`;
+    return this._http.put<IActuals>(url, actual, httpOptions);
+  }
   public getAllResources(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/resources/npoId/${application.npoId}/applicationPeriodId/${application.applicationPeriodId}`;
     return this._http.get<IResource[]>(url, httpOptions);
@@ -293,9 +340,29 @@ public updateApplicationWithApprovers(model: ApplicationWithUsers) {
   return this._http.put<IApplication>(url, model, httpOptions);
 }
 
-public createActual(actual: IActuals, ) {
+public createActual(actual: IActuals ) {
   const url = `${this._envUrl.urlAddress}/api/applications/CreateIndicatorReport`;
   return this._http.post<IActuals>(url, actual, httpOptions);
 }
+public createPost(post: IPosts) {
+  const url = `${this._envUrl.urlAddress}/api/applications/createPostReport`;
+  return this._http.post<IPosts>(url, post, httpOptions);
+}
+
+public createExpenditureReport(expenditure: IExpenditure) {
+  const url = `${this._envUrl.urlAddress}/api/applications/createIncomeReport`;
+  return this._http.post<IExpenditure>(url, expenditure, httpOptions);
+}
+
+public createGovernanceReport(governance: IGovernance) {
+  const url = `${this._envUrl.urlAddress}/api/applications/createGovernanceReport`;
+  return this._http.post<IGovernance>(url, governance, httpOptions);
+}
+
+public createOtherInforReport(otherinfor: IOtherInfor) {
+  const url = `${this._envUrl.urlAddress}/api/applications/createAnyOther`;
+  return this._http.post<IOtherInfor>(url, otherinfor, httpOptions);
+}
+
 
 }

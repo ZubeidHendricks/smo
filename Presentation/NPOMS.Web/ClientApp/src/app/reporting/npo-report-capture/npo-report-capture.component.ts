@@ -118,8 +118,7 @@ export class NpoReportCaptureComponent implements OnInit {
   }
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      //this.id = params.get('id');
-      this.id = '572';
+      this.id = params.get('id');
       this.loadApplication();
       this.loadDocumentTypes();
       if (Number(params.get('activeStep')) === 2) {

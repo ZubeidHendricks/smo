@@ -154,8 +154,7 @@ const routes: Routes = [
   { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
   { path: 'qcOpenApplicationDohList', component: QcApplicationPeriodsDohComponent },
 
-  { path: 'reports', component: NpoReportCaptureComponent },
-
+  { path: 'reports/:id', component: NpoReportCaptureComponent },
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },

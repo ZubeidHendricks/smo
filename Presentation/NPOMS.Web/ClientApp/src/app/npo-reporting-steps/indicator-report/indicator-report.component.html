@@ -85,7 +85,7 @@
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                             {{col.header}}
                         </th>
-                        <th style="width: 6%;">Actions</th>
+                        <!-- <th style="width: 6%;">Actions</th> -->
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
@@ -102,8 +102,8 @@
                         <td> {{rowData.shortDefinition}}</td>
                         <td>{{rowData.purpose}}</td>
                         <td style="text-align: center;">
-                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActivity(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
-                            <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                            <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActual(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
+                            <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button> -->
                         </td>
                     </tr>
                 </ng-template>
@@ -169,11 +169,17 @@
                       <td>{{rowData.deviationReason}}</td>
                       <td>{{rowData.adjustedActual}}</td>
                       <td> {{rowData.adjustedVariance}}</td>                       
-                      <td>{{rowData.evidence}}</td>
+                      <!-- <td>{{rowData.evidence}}</td> -->
+                      <td style="text-align: center;">
+                        <button  pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
+                        <button  pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" (click)="uploadDocument(rowData)"></button>
+
+                        <input  type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;">
+                       </td>
                       
                 <td style="text-align: center;">
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActivity(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
-                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActual(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
+                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActual(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
                     <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
                     <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
                 </td>
@@ -181,7 +187,7 @@
               </ng-template>
               <ng-template pTemplate="summary" let-rowData>
                 <div style="text-align:left">
-                  <button pButton pRipple type="button" label="Add Indicator Report" class="p-button-text" icon="fa fa-plus" (click)="displayActualDialog = true"></button>
+                  <button [disabled]="disableAdd()" pButton pRipple type="button" label="Add Indicator Report" class="p-button-text" icon="fa fa-plus" (click)="displayActualDialog = true"></button>
                 </div>
               </ng-template>
               <ng-template pTemplate="emptymessage">
@@ -193,6 +199,45 @@
         </p-tabPanel>
     </p-tabView>
 </p-panel>
+
+<p-dialog header="Uploaded Files" 
+          [(visible)]="displayUploadedFilesDialog" 
+          [style]="{width: '70vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true"
+          [maximizable]="false"
+          [draggable]="false"
+          [resizable]="false">
+        <p-table [rowHover]="true" [value]="actual.documents" styleClass="p-datatable-sm" [columns]="documentCols" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
+                <tr> 
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td>{{document.name}}</td>
+                    <td>{{document.fileSize}}</td>
+                    <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
+                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="onDeleteDocument(document, actual)" pTooltip="Delete" tooltipPosition="top"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+        </p-table>
+</p-dialog>
+
 
 <p-dialog header="Indicator Report" 
           [(visible)]="displayActualDialog" 
@@ -247,26 +292,7 @@
             </div>
         </div>
         
-    <!-- <div class="p-grid" >
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Indicator Id</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}" ></textarea>
-        </div>
-    </div> -->
-    <!-- <div class="p-grid" >
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="mandatory-content">Output Description</span>
-            </div>
-        </div>
-        <div class="p-col">
-             <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="selectedObjective.description" [ngModelOptions]="{standalone: true}" ></textarea>
-        </div>
-    </div> -->
+
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -284,7 +310,12 @@
             </div>
         </div>
         <div class="p-col">
-            <p-inputNumber [(ngModel)]="actual.actual" inputId="integeronly2" [style]="{'width':'100%'}" ></p-inputNumber>
+            <p-inputNumber 
+            [(ngModel)]="actual.actual" 
+            inputId="integeronly2" 
+            [style]="{'width':'100%'}" 
+            (keyup)="onKeyUp($event)">
+          </p-inputNumber>
         </div>
     </div>
 
@@ -295,7 +326,7 @@
             </div>
         </div>
         <div class="p-col">
-            <p-inputNumber [(ngModel)]="actual.variance" inputId="integeronly3" [style]="{'width':'100%'}" ></p-inputNumber>
+            <p-inputNumber [disabled]="true" [(ngModel)]="actual.variance" inputId="integeronly3" [style]="{'width':'100%'}" ></p-inputNumber>
         </div>
     </div>
  
@@ -316,7 +347,7 @@
             </div>
         </div>
         <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="actual.adjustedActual" [ngModelOptions]="{standalone: true}">
+            <p-inputNumber (keyup)="onKeyUpAdjustedActual($event)" class="form-text" pInputText [(ngModel)]="actual.adjustedActual" [ngModelOptions]="{standalone: true}"></p-inputNumber>
         </div>
     </div>
     <div class="p-grid">

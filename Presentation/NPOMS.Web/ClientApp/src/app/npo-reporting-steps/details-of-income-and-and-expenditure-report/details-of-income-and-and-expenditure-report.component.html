@@ -1,10 +1,8 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header=" Details of Income and Expenditure for the quarter Report" *ngIf="activeActivities">
-    <!-- <div class="p-grid p-nogutter p-justify-end">
-        <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
-    </div>     -->
+
     <div style="height: 10px;"></div>
-    <p-table [rowHover]="true" [columns]="expenditureCols" [value]="activeActivities" styleClass="p-datatable-sm" [globalFilterFields]="['activityList.name','ctivityType.name','timelineStartDate','target','facilityListText','mappedDistrict','mappedManicipality','mappedSubstructure','mappedSubdistrict']">
+    <!-- <p-table [rowHover]="true" [columns]="expenditureCols" [value]="activeActivities" styleClass="p-datatable-sm" [globalFilterFields]="['activityList.name','ctivityType.name','timelineStartDate','target','facilityListText','mappedDistrict','mappedManicipality','mappedSubstructure','mappedSubdistrict']">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -29,31 +27,12 @@
                     </p-columnFilter>
                 </th>  
 
-                <!-- <th>
-                    <p-columnFilter field="mappedManicipality" matchMode="custom">
-                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <p-multiSelect 
-                                [options]="allManicipalityDemographics" 
-                                defaultLabel="Select Municipality" 
-                                optionLabel="name"
-                                [ngModel]="value"
-                                [ngModelOptions]="{standalone: true}" 
-                                [style]="{'width':'100%'}"
-                                appendTo="body" 
-                                selectedItemsLabel="{0} items selected"
-                                (onChange)="onCustomFilterChange($event.value, 'mappedManicipality')">
-                            </p-multiSelect>
-                        </ng-template>
-                    </p-columnFilter>
-                </th> -->
+
 
                 <th>
                     <p-columnFilter field="mappedSubstructure" matchMode="custom">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <!-- <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
-                                 [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
-                            </p-multiSelect> -->
+                    
                             <p-multiSelect [options]="allSubstructureDemographics" defaultLabel="Select Sub Structure" optionLabel="name"
                                  [ngModel]="value" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
                                 appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)"
@@ -65,10 +44,7 @@
                    <th>
                     <p-columnFilter field="mappedSubdistrict" matchMode="custom">
                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                            <!-- <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
-                            [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
-                                appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value, filterCallback)">
-                            </p-multiSelect> -->
+                   
                             <p-multiSelect [options]="allSubDistrictDemographics" defaultLabel="Select Sub Districts" optionLabel="name"
                             [ngModel]="value"  [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
                                 appendTo="body" selectedItemsLabel="{0} items selected" (onChange)="filter($event.value)"
@@ -77,7 +53,7 @@
                         </ng-template>
                     </p-columnFilter>
                 </th>
-            <!-- <th></th> -->
+
         </tr>
            
         </ng-template>
@@ -117,17 +93,60 @@
                 <button pButton pRipple type="button" label="View Deleted Activities" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedActivities()"></button>
             </div>
         </ng-template>
-    </p-table>
-    
+    </p-table> -->
+    <p-table [rowHover]="true" [columns]="expenditureCols"  [value]="expenditures"  styleClass="p-datatable-sm">
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+              <th style="width: 5%;"></th>
+              <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                  {{col.header}}
+              </th>
+              <th style="width: 6%;">Actions</th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+          <tr class="default-font">
+              <td style="text-align: center;">{{rowIndex + 1}}</td>
+              <td>{{rowData.costDrivers }}</td>
+              <td>{{rowData.income}}</td>
+              <td>{{rowData.expenditure }}</td>
+              <td>{{rowData.surplus }}</td>
+              <!-- <td>{{rowData.total}}</td> -->
+              <td style="text-align: center;">
+            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editExpenditure(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
+            <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteExpenditure(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+            <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
+            <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
+           </td>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <tr>
+            <td colspan="1" class="p-text-right">Totals</td>
+            <td></td>
+            <td>{{ incomeTotal }}</td>
+            <td>{{ expenditureTotal }}</td>
+            <td>{{ surplusTotal }}</td>
+            <td></td>
+        </tr>
+    </ng-template>
+      <ng-template pTemplate="summary" let-rowData>
+        <div style="text-align:left">
+          <button pButton pRipple type="button" label="Add income and expenditure" class="p-button-text" icon="fa fa-plus" (click)="displayExpenditureDialog = true"></button>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+          <tr class="default-font">
+              <td colspan="12" style="text-align: center;">No results found</td>
+          </tr>
+      </ng-template>
+  </p-table>
     <div style="height: 10px;"></div>
-    <div class="p-grid p-nogutter p-justify-between">
-        <p-button label="Back" (onClick)="prevPage()" icon="fa fa-angle-left"></p-button>
-        <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
-    </div>
+   
 </p-panel>
 
 <p-dialog header="Details of Income and Expenditure for the quarter Report" 
-          [(visible)]="displayActivityDialog" 
+          [(visible)]="displayExpenditureDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
           showEffect="fade"
@@ -141,7 +160,7 @@
                 </div>
             </div>
             <div class="p-col">
-                <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+                <input type="text" class="form-text" pInputText [(ngModel)]="expenditure.costDrivers" [ngModelOptions]="{standalone: true}" >
             </div>
         </div>
         <div class="p-grid">
@@ -151,7 +170,7 @@
                 </div>
             </div>
             <div class="p-col">
-                <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+                <input type="number" class="form-text" pInputText [(ngModel)]="expenditure.income" [ngModelOptions]="{standalone: true}" >
             </div>
         </div>
         <div class="p-grid"> 
@@ -161,7 +180,7 @@
                 </div>
             </div>
             <div class="p-col">
-                <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+                <input type="number" class="form-text" pInputText [(ngModel)]="expenditure.expenditure" [ngModelOptions]="{standalone: true}" >
             </div>
         </div>
         <div class="p-grid">
@@ -171,7 +190,7 @@
                 </div>
             </div>
             <div class="p-col">
-                <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+                <input type="number" class="form-text" pInputText [(ngModel)]="expenditure.surplus" [ngModelOptions]="{standalone: true}" >
             </div>
         </div>
         <div class="p-grid">
@@ -181,19 +200,19 @@
                 </div>
             </div>
             <div class="p-col">
-                <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+                <input type="number" class="form-text" pInputText [(ngModel)]="expenditure.total" [ngModelOptions]="{standalone: true}" >
             </div>
         
         </div>
     <ng-template pTemplate="footer" >
-        <button  pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o"  (click)="saveActivity()"></button>
+        <button  pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o"  (click)="saveExpenditure(expenditure)"></button>
         <!-- <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button> -->
     </ng-template>
 </p-dialog>
 
 
 <!-- <p-dialog header="Activity" 
-          [(visible)]="displayActivityDialog" 
+          [(visible)]="displayExpenditureDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
           showEffect="fade"

@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -82,7 +82,7 @@ export class GovernanceReportComponent implements OnInit {
   deletedActivities: IActivity[];
 
   governanceCols: any[];
-  displayActivityDialog: boolean;
+  displayGovernanceDialog: boolean;
   newActivity: boolean;
   activity: IActivity = {} as IActivity;
 
@@ -182,6 +182,11 @@ export class GovernanceReportComponent implements OnInit {
   ];
 
   selectedQuarters = [];
+
+  
+  governances: IGovernance[];
+  governance: IGovernance = {} as IGovernance;
+  newGovernance: boolean;
   
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
@@ -240,6 +245,7 @@ export class GovernanceReportComponent implements OnInit {
     this.loadProgrammes();
     this.loadSubProgrammes();
     this.loadSubProgrammeTypes();
+    this.loadGovernance();
 
  
 
@@ -437,26 +443,7 @@ export class GovernanceReportComponent implements OnInit {
     );
   }
 
-  // private loadApplicationTypes() {
-  //   this._spinner.show();
-  //   this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
-  //     (results) => {
 
-  //       if(this.profile.departments[0].id === DepartmentEnum.DSD)
-  //         this.applicationTypes = results.filter(x => x.systemName === 'FA' || x.systemName === 'QC');
-  //       else if(this.profile.departments[0].id === DepartmentEnum.DOH)
-  //         this.applicationTypes = results.filter(x => x.systemName === 'SP' || x.systemName === 'BP');
-  //       else
-  //       this.applicationTypes = results;
-
-  //       this._spinner.hide();
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
 
   departmentChange(department: IDepartment) {
     this.selectedProgramme = null;
@@ -847,91 +834,13 @@ onDemographicSubStructuresChange() {
     this.recipients = [];
     this.selectedRecipients = [];
 
-    this.displayActivityDialog = true;
+    this.displayGovernanceDialog = true;
 
     if (this.application.isCloned)
       this.activity.isNew = this.activity.isNew == undefined ? true : this.activity.isNew;
   }
 
-  editActivity(data: IActivity) {
-    this.newActivity = false;
-    this.activity = this.cloneActivity(data);
-    this.selectedActivity = null;
 
-    if (this.application.isCloned)
-      this.activity.isNew = this.activity.isNew == undefined ? false : this.activity.isNew;
-
-    this.displayActivityDialog = true;
-  }
-
-  private cloneActivity(data: IActivity): IActivity {
-    data.name = data.activityList.name;
-    data.description = data.activityList.description;
-
-    let activity = {} as IActivity;
-
-    for (let prop in data)
-      activity[prop] = data[prop];
-
-    this.selectedObjective = this.objectives.find(x => x.id === data.objectiveId);
-    this.objectiveChange(this.selectedObjective);
-    this.selectedActivityType = data.activityType;
-
-    const facilityListIds = data.activityFacilityLists.map(({ facilityListId }) => facilityListId);
-    this.selectedFacilities = this.facilities.filter(item => facilityListIds.includes(item.id));
-
-    const subProgrammeIds = data.activitySubProgrammes.map(({ subProgrammeId }) => subProgrammeId);
-    this.selectedSubProgrammes = this.subProgrammes.filter(item => subProgrammeIds.includes(item.id));
-
-    this.buildRecipientDropdown(this.selectedObjective, data);
-    
-    this.selectedRecipients = this.recipients.filter(item => {
-      return data.activityRecipients.some(recipient => {
-        return recipient.activityId === item.activityId && recipient.entityId === item.entityId && recipient.recipientTypeId === item.recipientTypeId
-      })
-    });
-
-    this.getTextValues();
-    // Handle selected district
-    const districtId = data?.activityDistrict?.find(district => district.isActive)?.demographicDistrictId;
-    this.selectedIDistrictDemographics = this.allIDistrictDemographics.find(item => item.id === districtId);
-    
-    if (this.selectedIDistrictDemographics) {
-      this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
-        md.districtDemographicId === this.selectedIDistrictDemographics.id
-      );
-      this.SubDistrictDemographics = [];
-      this.SubstructureDemographics = [];
-    } else {
-      this.ManicipalityDemographics = [];
-      this.SubDistrictDemographics = [];
-      this.SubstructureDemographics = [];
-    }
-
-    const demographicDistrictIds = data?.activityManicipality?.map(({ demographicDistrictId }) => demographicDistrictId);
-    this.selectedManicipalityDemographics = this.ManicipalityDemographics.filter(item =>
-        demographicDistrictIds.includes(item.districtDemographicId) && 
-        data.activityManicipality.some(({ name }) => name === item.name)
-    );
-    
-    this.onDemographicManicipalitiesChange();
-
-    const subStructureIds = data?.activitySubStructure?.map(({ municipalityId }) => municipalityId);
-    this.selectedSubstructureDemographics = this.SubstructureDemographics.filter(item =>
-        subStructureIds.includes(item.manicipalityDemographicId) && 
-        data.activitySubStructure.some(({ name }) => name === item.name)
-    );
-
-    this.onDemographicSubStructuresChange();
-
-    const subDistrictIds = data?.activitySubDistrict?.map(({ substructureId }) => substructureId);
-    this.selectedSubDistrictDemographics = this.SubDistrictDemographics.filter(item =>
-    subDistrictIds.includes(item.subSctrcureDemographicId) && 
-    data.activitySubDistrict.some(({ name }) => name === item.name)
-   );
-
-    return activity;
-  }
 
   getTextValues() {
     let allSubProgrammes: string = "";
@@ -994,17 +903,19 @@ onDemographicSubStructuresChange() {
     });
   }
 
-  deleteActivity(data: IActivity) {
+  deleteGovernance(data: IGovernance) {
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        this.activity = this.cloneActivity(data);
-        this.activity.isActive = false;
-        this.updateActivity();
+        this.governance = this.cloneGovernance(data);
+        this.governance.isActive = false;
+        this.updateGovernance(this.governance);
+        this._confirmationService.close();
       },
       reject: () => {
+        this._confirmationService.close();
       }
     });
   }
@@ -1036,6 +947,83 @@ onDemographicSubStructuresChange() {
 
     return true;
   }
+
+
+
+
+  editGovernance(data: IGovernance) {
+    this.newGovernance = false;
+    this.governance = this.cloneGovernance(data);
+    console.log('Other',this.governance);
+    this.displayGovernanceDialog = true;
+  }
+
+  private cloneGovernance(data: IGovernance): IGovernance {
+    let obj = {} as IGovernance;
+
+    for (let prop in data)
+      obj[prop] = data[prop];
+    return obj;
+  }
+  saveGovernance(governance: IGovernance) {
+    // Map form values to governance object
+    governance.comments = this.governance.comments;
+    governance.applicationId = this.application.id;
+    governance.lastMeetingDate= this._datepipe.transform(this.governance.lastMeetingDate, 'yyyy-MM-dd');
+    governance.lastSubmissionDateWC= this._datepipe.transform(this.governance.lastSubmissionDateWC, 'yyyy-MM-dd');
+    governance.lastSubmissionDateNat= this._datepipe.transform(this.governance.lastSubmissionDateNat, 'yyyy-MM-dd');
+    governance.isActive = true; 
+  
+    // Check if it's a new governance entry or updating an existing one
+    if (this.newGovernance) {
+      this.createGovernance(governance);
+    } else {
+      this.updateGovernance(governance);
+    }
+  }
+
+
+  
+  createGovernance(governance: IGovernance) {
+    this._applicationRepo.createGovernanceReport(governance).subscribe(
+      (resp) => {
+        this.loadGovernance();
+        this.displayGovernanceDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+  
+  updateGovernance(governance: IGovernance) {
+    this._applicationRepo.updateGovernance(governance).subscribe(
+      (resp) => {
+        this.loadGovernance();
+        this.displayGovernanceDialog = false;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+  
+  
+  private loadGovernance() {
+    this._spinner.show();
+    this._applicationRepo.GetGovernanceReportsByAppid(this.application).subscribe(
+      (results) => {
+        console.log('governance',results);
+        this.governances = results;
+       
+  
+        });
+        this._spinner.hide();
+      }
+  
+  
 
   saveActivity() {
     this.activity.objective = null;
@@ -1133,7 +1121,7 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
   (resp) => {
     this.activity.activityListId = resp.id;
     this.newActivity ? this.createActivity() : this.updateActivity();
-    this.displayActivityDialog = false;
+    this.displayGovernanceDialog = false;
 
     let allFacilities: string = "";
     this.selectedFacilities.forEach(item => {

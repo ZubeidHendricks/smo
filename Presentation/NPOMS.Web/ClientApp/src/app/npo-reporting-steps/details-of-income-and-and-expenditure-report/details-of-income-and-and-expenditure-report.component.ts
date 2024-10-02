@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IExpenditure, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -64,30 +64,11 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   selectedDepartmentSummary: IDepartment;
 
   selectedQuartersText: string = '';
+  expenditureTotal: number;
+  incomeTotal: number;
+  surplusTotal: number;
 
-  // districts: any[] = [
-  //   { name: 'District 1', code: 'D1' },
-  //   { name: 'District 2', code: 'D2' }
-  // ];
-
-  // subDistricts: any[] = [];
-  // subStructures: any[] = [];
-
-  // allSubDistricts: any[] = [
-  //   { name: 'Sub District 1-1', code: 'SD1', districtCode: 'D1' },
-  //   { name: 'Sub District 1-2', code: 'SD2', districtCode: 'D1' },
-  //   { name: 'Sub District 2-1', code: 'SD3', districtCode: 'D2' }
-  // ];
-
-  // allSubStructures: any[] = [
-  //   { name: 'Sub Structure 1-1-1', code: 'SS1', subDistrictCode: 'SD1' },
-  //   { name: 'Sub Structure 1-1-2', code: 'SS2', subDistrictCode: 'SD1' },
-  //   { name: 'Sub Structure 2-1-1', code: 'SS3', subDistrictCode: 'SD3' }
-  // ];
-
-  // selectedDistricts: any[] = [];
-  // selectedSubDistricts: any[] = [];
-  // selectedSubStructures: any[] = [];
+ 
 
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
@@ -105,7 +86,8 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   deletedActivities: IActivity[];
 
   expenditureCols: any[];
-  displayActivityDialog: boolean;
+  displayExpenditureDialog: boolean;
+  newExpenditure: boolean;
   newActivity: boolean;
   activity: IActivity = {} as IActivity;
 
@@ -205,6 +187,9 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   ];
 
   selectedQuarters = [];
+
+  expenditures: IExpenditure[];
+  expenditure: IExpenditure = {} as IExpenditure;
   
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
@@ -263,14 +248,14 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
     this.loadProgrammes();
     this.loadSubProgrammes();
     this.loadSubProgrammeTypes();
+    this.loadExpenditure();
 
 
     this.expenditureCols = [
       { header: 'Cost Drivers', width: '40%' },
       { header: 'Income', width: '15%' },
       { header: 'Expenditure', width: '15%' },
-      { header: 'Surplus', width: '15%' },
-      { header: 'Total', width: '15%' },
+      { header: 'Surplus', width: '15%' }
     ];
 
     this.commentCols = [
@@ -311,6 +296,49 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
       return filter.some(selectedItem => rowItems.includes(selectedItem.name));
     });
   }
+
+  
+private loadExpenditure() {
+  this._spinner.show();
+  this._applicationRepo.GetIncomeReportsByAppid(this.application).subscribe(
+    (results) => {
+      this.expenditures = results;
+      if(this.expenditures.length > 0)
+      {
+        this.calculateEpenditureTotal();
+        this.calculateIncomeTotal();
+        this.calculateSurplusTotal();
+      }
+      });
+      this._spinner.hide();
+    }
+
+calculateEpenditureTotal() {
+    let total = 0;
+    for(let expenditure of this.expenditures) {
+        total += expenditure.expenditure;
+    }
+
+    this.expenditureTotal = total;
+}
+
+calculateIncomeTotal() {
+    let total = 0;
+    for(let expenditure of this.expenditures) {
+      total += expenditure.income;
+  }
+
+  this.incomeTotal = total;
+}
+
+calculateSurplusTotal() {
+  let total = 0;
+  for(let expenditure of this.expenditures) {
+    total += expenditure.surplus;
+}
+
+this.surplusTotal = total;
+}
 
   onCustomFilterChange(selectedItems: any[], field: string) {
     const filterFields = [field];
@@ -455,26 +483,7 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
     );
   }
 
-  // private loadApplicationTypes() {
-  //   this._spinner.show();
-  //   this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
-  //     (results) => {
 
-  //       if(this.profile.departments[0].id === DepartmentEnum.DSD)
-  //         this.applicationTypes = results.filter(x => x.systemName === 'FA' || x.systemName === 'QC');
-  //       else if(this.profile.departments[0].id === DepartmentEnum.DOH)
-  //         this.applicationTypes = results.filter(x => x.systemName === 'SP' || x.systemName === 'BP');
-  //       else
-  //       this.applicationTypes = results;
-
-  //       this._spinner.hide();
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
 
   departmentChange(department: IDepartment) {
     this.selectedProgramme = null;
@@ -865,7 +874,7 @@ onDemographicSubStructuresChange() {
     this.recipients = [];
     this.selectedRecipients = [];
 
-    this.displayActivityDialog = true;
+    this.displayExpenditureDialog = true;
 
     if (this.application.isCloned)
       this.activity.isNew = this.activity.isNew == undefined ? true : this.activity.isNew;
@@ -879,7 +888,7 @@ onDemographicSubStructuresChange() {
     if (this.application.isCloned)
       this.activity.isNew = this.activity.isNew == undefined ? false : this.activity.isNew;
 
-    this.displayActivityDialog = true;
+    this.displayExpenditureDialog = true;
   }
 
   private cloneActivity(data: IActivity): IActivity {
@@ -1012,17 +1021,19 @@ onDemographicSubStructuresChange() {
     });
   }
 
-  deleteActivity(data: IActivity) {
+  deleteExpenditure(data: IExpenditure) {
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        this.activity = this.cloneActivity(data);
-        this.activity.isActive = false;
-        this.updateActivity();
+        this.expenditure = this.cloneExpenditure(data);
+        this.expenditure.isActive = false;
+        this.updateExpenditure(this.expenditure);
+        this._confirmationService.close();
       },
       reject: () => {
+        this._confirmationService.close();
       }
     });
   }
@@ -1068,16 +1079,7 @@ onDemographicSubStructuresChange() {
     this.activity.timelineStartDate = this._datepipe.transform(this.activity.timelineStartDate, 'yyyy-MM-dd');
     this.activity.timelineEndDate = this._datepipe.transform(this.activity.timelineEndDate, 'yyyy-MM-dd');
 
-    // this.activity.activitySubProgrammes = [];
-    // this.selectedSubProgrammes.forEach(item => {
-    //   let activitySubProgramme = {
-    //     activityId: this.activity.id,
-    //     subProgrammeId: item.id,
-    //     isActive: true
-    //   } as IActivitySubProgramme;
 
-    //   this.activity.activitySubProgrammes.push(activitySubProgramme);
-    // });
 
     this.activity.activityFacilityLists = [];
     this.selectedFacilities.forEach(item => {
@@ -1151,7 +1153,7 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
   (resp) => {
     this.activity.activityListId = resp.id;
     this.newActivity ? this.createActivity() : this.updateActivity();
-    this.displayActivityDialog = false;
+    this.displayExpenditureDialog = false;
 
     let allFacilities: string = "";
     this.selectedFacilities.forEach(item => {
@@ -1164,6 +1166,68 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
     this._spinner.hide();
   }
 );
+}
+
+editExpenditure(data: IExpenditure) {
+  this.newExpenditure = false;
+  this.expenditure = this.cloneExpenditure(data);
+  console.log('Other',this.expenditure);
+  this.displayExpenditureDialog = true;
+}
+
+private cloneExpenditure(data: IExpenditure): IExpenditure {
+  let obj = {} as IExpenditure;
+
+  for (let prop in data)
+    obj[prop] = data[prop];
+  return obj;
+}
+
+saveExpenditure(expenditure: IExpenditure) {
+  // Assign necessary fields
+  this.expenditure.costDrivers = this.expenditure.costDrivers;
+  this.expenditure.income = this.expenditure.income;
+  this.expenditure.surplus = this.expenditure.surplus;
+  this.expenditure.total = this.expenditure.total;
+  this.expenditure.applicationId = this.application.id;
+  this.expenditure.isActive = true;
+
+  // Check if it's a new expenditure or an update
+  if (this.newExpenditure) {
+    // Create new expenditure
+    this.createExpenditure(expenditure);
+  } else {
+    // Update existing expenditure
+    this.updateExpenditure(expenditure);
+  }
+}
+
+// Method to create a new expenditure report
+createExpenditure(expenditure: IExpenditure) {
+  this._applicationRepo.createExpenditureReport(expenditure).subscribe(
+    (resp) => {
+      this.loadExpenditure();
+      this.displayExpenditureDialog = false;
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
+
+// Method to update an existing expenditure report
+updateExpenditure(expenditure: IExpenditure) {
+  this._applicationRepo.updateExpenditure(expenditure).subscribe(
+    (resp) => {
+      this.loadExpenditure();
+      this.displayExpenditureDialog = false;
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
 }
 
   private createActivity() {

@@ -1085,6 +1085,16 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)) {
+        this.optionItems[0].items.push({
+          label: 'Reports',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('reports/' + this.selectedApplication.id);
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.ReviewAdjudicatedFundedNpo)) {
         this.optionItems[0].items.push({
           label: 'Review Adjudicated Funded Npo',

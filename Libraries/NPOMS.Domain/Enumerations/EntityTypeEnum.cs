@@ -4,6 +4,7 @@
 	{
 		SupportingDocuments = 1,
 		SLA = 2,
-		WorkplanActuals = 3
-	}
+		WorkplanActuals = 3,
+        ReportActuals = 4
+    }
 }

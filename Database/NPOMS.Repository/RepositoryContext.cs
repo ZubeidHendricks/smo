@@ -165,6 +165,15 @@ namespace NPOMS.Repository
         public DbSet<SubRecipient> SubRecipients { get; set; }
         public DbSet<SubSubRecipient> SubSubRecipients { get; set; }
 
+        public DbSet<PostReport> PostReports { get; set; }
+        public DbSet<IncomeAndExpenditureReport> IncomeAndExpenditureReports { get; set; }
+        public DbSet<AnyOtherInformationReport> AnyOtherInformationReports { get; set; }
+        public DbSet<GovernanceReport> GovernanceReports { get; set; }
+  
+
+
+
+
         /* Lookup */
         public DbSet<FacilityList> ActivityList { get; set; }
         public DbSet<FacilityList> FacilityList { get; set; }

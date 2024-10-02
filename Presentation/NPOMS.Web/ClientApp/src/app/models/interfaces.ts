@@ -525,13 +525,14 @@ export interface IIndicator {
   }
 
   export interface IActuals {
+    id: number;
     programmeId: number;
     subProgrammeId: number;
     group: number;
     subProgrammeTypeId: number;
     serviceDeliveryArea : string;
-    OutputTitle : string;
-    targets: string;
+    outputTitle : string;
+    targets: number;
     financialYear: number;
     indicatorId: number;
     indicatorValue: string;
@@ -542,8 +543,62 @@ export interface IIndicator {
     applicationId: number;
     qaurterId: number;
     actual: number;
+    documents: IDocumentStore[];
+    isActive: boolean;
+  }
+
+ 
+  export interface IPosts {
+    postClassification: string;
+    numberOfPosts: number;
+    numberFilled : number;
+    monthsFilled: number;
+    vacant : string;
+    dateofVacancies : string;
+    vacancyReasons: string;
+    plans: string;
+    applicationId: number;
+    isActive: boolean;
+
+
     
   }
+
+    
+  export interface IGovernance {
+    lastMeetingDate: string;
+    lastSubmissionDateWC : string;
+    lastSubmissionDateNat:string;
+    comments: string;
+    applicationId: number;
+    isActive: boolean;
+
+  }
+
+  export interface IOtherInfor {
+    highlights: string;
+    challenges: string;
+    applicationId: number;
+    isActive: boolean;
+  
+
+  }
+
+
+
+  
+  export interface IExpenditure {
+    costDrivers: string;
+    income : number;
+    expenditure:number;
+    surplus: number;
+    total: number;
+    applicationId: number;
+    isActive: boolean;
+
+    
+  }
+
   
 
 export interface IActivity {

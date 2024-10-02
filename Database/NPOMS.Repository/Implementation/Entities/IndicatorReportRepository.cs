@@ -31,7 +31,9 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public async Task<IEnumerable<IndicatorReport>> GetByPeriodId(int applicationPeriodId)
         {
-            return await FindByCondition(x => x.ApplicationId.Equals(applicationPeriodId)).AsNoTracking().ToListAsync();
+            return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
+                         .AsNoTracking()
+                         .ToListAsync();
         }
 
         public async Task<IEnumerable<IndicatorReport>> GetEntities()
@@ -44,9 +46,9 @@ namespace NPOMS.Repository.Implementation.Entities
             await UpdateAsync(null, model, false, currentUserId);
         }
 
-        public Task UpdateEntityQC(IndicatorReport model, int currentUserId)
+        public async  Task UpdateEntityQC(IndicatorReport model, int currentUserId)
         {
-            throw new NotImplementedException();
+            await UpdateAsync(null, model, false, currentUserId);
         }
     }
 }

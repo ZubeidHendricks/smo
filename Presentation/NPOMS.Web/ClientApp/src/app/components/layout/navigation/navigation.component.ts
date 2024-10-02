@@ -224,15 +224,15 @@ export class NavigationComponent implements OnInit {
         });
       }
       
-      if (this.IsAuthorized(PermissionsEnum.ViewQC)) {
-        this.mainMenu.push({
-          label: '11.Report',
-          icon: 'fa fa-camera wcg-icon',
-          command: () => {
-            this._router.navigateByUrl('reports');
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.ViewQC)) {
+      //   this.mainMenu.push({
+      //     label: '11.Report',
+      //     icon: 'fa fa-camera wcg-icon',
+      //     command: () => {
+      //       this._router.navigateByUrl('reports');
+      //     }
+      //   });
+      // }
     }
   }
 }

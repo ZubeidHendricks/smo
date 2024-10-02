@@ -12,6 +12,7 @@ using NPOMS.Repository.Implementation.FundingManagement;
 using NPOMS.Repository.Implementation.Indicator;
 using NPOMS.Repository.Implementation.Lookup;
 using NPOMS.Repository.Implementation.Mapping;
+using NPOMS.Repository.Interfaces;
 using NPOMS.Repository.Interfaces.Budget;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
@@ -127,6 +128,10 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IActivityRepository, ActivityRepository>();
             services.AddScoped<IApplicationRepository, ApplicationRepository>();
             services.AddScoped<IIndicatorReportRepository, IndicatorReportRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IIncomeAndExpenditureRepository, IncomeAndExpenditureRepository>();
+            services.AddScoped<IGovernanceRepository, GovernanceRepository>();
+            services.AddScoped<IAnyOtherRepository, AnyOtherRepository>();
 
             services.AddScoped<IApplicationApprovalRepository, ApplicationApprovalRepository>();
             services.AddScoped<IApplicationAuditRepository, ApplicationAuditRepository>();
@@ -269,6 +274,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IDocumentStoreService, DocumentStoreService>();
             services.AddScoped<IFundAppDocumentService, FundAppDocumentService>();
             services.AddScoped<IIndicatorService, IndicatorService>();
+            services.AddScoped<IPostService, PostService>();
             services.AddScoped<IBudgetService, BudgetService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBidService, BidService>();
@@ -278,6 +284,9 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IContactService, ContactService>();
             services.AddScoped<IProgrammeService, ProgrammeService>();
             services.AddScoped<IProgrameDeliveryService, ProgrameDeliveryService>();
+            services.AddScoped<IIncomeAndExpenditureService, IncomeAndExpenditureService>();
+            services.AddScoped<IGovernanceService, GovernanceService>();
+            services.AddScoped<IAnyOtherService, AnyOtherService>();
 
             services.AddConfiguration<dtoBlobConfig>(builder.Configuration, "BlobStorageSettings");
             services.AddScoped<IFundingManagementService, FundingManagementService>();

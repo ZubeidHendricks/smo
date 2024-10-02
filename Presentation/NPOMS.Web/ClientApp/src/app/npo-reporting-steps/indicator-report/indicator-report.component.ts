@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { DepartmentEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -13,6 +13,8 @@ import { FilterService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-indicator-report',
@@ -22,6 +24,26 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 
 export class IndicatorReportComponent implements OnInit {
+
+onKeyUp(event: any) {
+  const inputValue = event.target.value;
+  this.actual.actual = inputValue;
+  this.actual.variance = this.actual.targets - this.actual.actual;
+}
+
+
+onKeyUpAdjustedActual(event: any) {
+  const inputValue = event.target.value;
+  this.actual.adjustedActual = inputValue;
+  this.actual.adjustedVariance = this.actual.targets - this.actual.adjustedActual;
+}
+
+disableAdd(): any {
+ if(this.qselected === false || this.yearSelected === false)
+    {
+      return true
+    }
+}
 
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
 
@@ -65,6 +87,14 @@ export class IndicatorReportComponent implements OnInit {
   actuals: IActuals[];
 
   actual: IActuals = {} as IActuals;
+  seletedAactuals: IActuals;
+  
+  @ViewChild('addDoc') element: ElementRef;
+  displayUploadedFilesDialog: boolean;
+  documentCols: any[];
+  newActual: boolean;
+  yearSelected: boolean = false;
+  qselected: boolean = false;
 
   // districts: any[] = [
   //   { name: 'District 1', code: 'D1' },
@@ -119,6 +149,7 @@ export class IndicatorReportComponent implements OnInit {
   actualCols: any[];
   displayActualDialog: boolean;
   newActivity: boolean;
+  newIndicatorReport: boolean;
 
   activity: IActivity = {} as IActivity;
 
@@ -186,6 +217,7 @@ export class IndicatorReportComponent implements OnInit {
   selectedOutputTitle:any={};
   workplanIndicators: IWorkplanIndicator[];
 
+  documentTypes: IDocumentType[] = [];
   quartelyPeriods: IQuarterlyPeriod[];
 
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
@@ -218,13 +250,15 @@ export class IndicatorReportComponent implements OnInit {
     private filterService: FilterService,
     private _router: Router,
     private _authService: AuthService,
-    private _applicationPeriodRepo: ApplicationPeriodService
+    private _applicationPeriodRepo: ApplicationPeriodService,
+    private _documentStore: DocumentStoreService,
     
    
   ) {  }
 
   ngOnInit(): void {
     this._spinner.show();
+    this.loadDocumentTypes();
     this.registerCustomFilters();
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
@@ -302,12 +336,129 @@ export class IndicatorReportComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
 
+    this.documentCols = [
+      { header: '', width: '5%' },
+      { header: 'Document Name', width: '60%' },
+      { header: 'Size', width: '10%' },
+      { header: 'Uploaded Date', width: '15%' },
+      { header: 'Actions', width: '10%' }
+    ];
+
+
     this.cols = [
       { field: 'activityList.name', header: 'Activity', width: '50%' },
       { field: 'successIndicator', header: 'Indicator', width: '30%' },
       { field: 'target', header: 'Target', width: '9%' },
     ];
   }
+
+  private loadDocumentTypes() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
+      (results) => {
+        this.documentTypes = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public uploadDocument(actuals: IActuals) {
+    this.seletedAactuals = actuals;
+    this.element.nativeElement.click();
+  }
+
+  
+  public onUploadChange = (files) => {
+    files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.ReportActuals);
+
+    this._documentStore.upload(files, EntityTypeEnum.ReportActuals, Number(this.seletedAactuals.id), EntityEnum.IndicatorReports, this.application.refNo, files[0].documentType.id).subscribe(
+      event => {
+        if (event.type === HttpEventType.UploadProgress)
+          this._spinner.show();
+        else if (event.type === HttpEventType.Response) {
+          this._spinner.hide();
+          this.getDocuments(this.seletedAactuals);
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'File successfully uploaded.' });
+        }
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public uploadedFiles(actual: IActuals) {
+    this._spinner.show();
+    this.actual = actual;
+    this.getDocuments(actual);
+    this.displayUploadedFilesDialog = true;
+  }
+
+  onDownloadDocument(doc: any) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to download document?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this._spinner.show();
+        this._documentStore.download(doc).subscribe(
+          (event) => {
+            this._spinner.hide();
+            this._confirmationService.close();
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+            this._confirmationService.close();
+          }
+        );
+      },
+      reject: () => {
+        this._confirmationService.close();
+      }
+    });
+  }
+
+  onDeleteDocument(doc: any, actual: IActuals) {
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this document?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this._spinner.show();
+
+        this._documentStore.delete(doc.resourceId).subscribe(
+          (event) => {
+            this.getDocuments(actual);
+            this._spinner.hide();
+          },
+          (err) => {
+            this._loggerService.logException(err);
+            this._spinner.hide();
+          }
+        );
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  private getDocuments(actual: IActuals) {
+    this._documentStore.get(Number(actual.id), EntityTypeEnum.ReportActuals).subscribe(
+      (resp) => {
+        actual.documents = resp.filter(x => x.entity === EntityEnum.IndicatorReports);
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
 
   getProgramValue(): string {
     return this.allProgrammes?.find(x => x.id === this.application.applicationPeriod.programmeId).name; 
@@ -421,6 +572,7 @@ export class IndicatorReportComponent implements OnInit {
   
 
   public financialYearChange() {
+    this.yearSelected =  true;
     // this._spinner.show();
     //this.selectedFinancialYear.id
 
@@ -880,26 +1032,69 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
 );
 }
 
+editActual(data: IActuals) {
+  this.newActual = false;
+  this.actual = this.cloneActual(data);
+  this.outputTitle(this.actual);
+}
+  outputTitle(actual: IActuals) {
+    this.selectedOutputTitle = this.indicators.find(x => x.id === actual.indicatorId);
+    this.displayActualDialog = true;
+  }
+
+private cloneActual(data: IActuals): IActuals {
+  let obj = {} as IActuals;
+
+  for (let prop in data)
+    obj[prop] = data[prop];
+  return obj;
+}
 
 saveActual(actual: IActuals) {
-  this.actual.OutputTitle = this.selectedOutputTitle.outputTitle;
+  // Assign necessary fields
+  this.actual.outputTitle = this.selectedOutputTitle.outputTitle;
   this.actual.financialYear = this.selectedFinancialYear.id;
   this.actual.qaurterId = this.selectedFrequencyPeriod.id;
-
-  this.actual.indicatorId = this.selectedOutputTitle.Id;
+  this.actual.indicatorId = this.selectedOutputTitle.id;
   this.actual.indicatorValue = this.selectedOutputTitle.indicatorValue;
   this.actual.adjustedActual = this.actual.adjustedActual;
   this.actual.adjustedVariance = this.actual.adjustedVariance;
   this.actual.targets = this.actual.targets;
-
   this.actual.applicationId = this.application.id;
   this.actual.subProgrammeId = this.application.applicationPeriod.subProgrammeId;
   this.actual.programmeId = this.application.applicationPeriod.programmeId;
   this.actual.subProgrammeTypeId = this.application.applicationPeriod.subProgrammeTypeId;
+  this.actual.isActive = this.actual.isActive;
 
-  this._applicationRepo.createActual(actual ).subscribe(
+  // Check if it's a new actual or an update
+  if (this.newActual) {
+    // Create new actual
+    this.createActual(actual);
+  } else {
+    // Update existing actual
+    this.updateActual(actual);
+  }
+}
+
+// Method to create a new actual
+createActual(actual: IActuals) {
+  this._applicationRepo.createActual(actual).subscribe(
     (resp) => {
-      this.loadActuals();
+      this.GetIndicatorReportsByAppid()
+      this.displayActualDialog = false;
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
+
+// Method to update an existing actual
+updateActual(actual: IActuals) {
+  this._applicationRepo.updateActual(actual).subscribe(
+    (resp) => {
+      this.GetIndicatorReportsByAppid()
       this.displayActualDialog = false;
     },
     (err) => {
@@ -910,55 +1105,6 @@ saveActual(actual: IActuals) {
 }
 
 
-private loadActuals() {
-  this._spinner.show();
-  this._applicationRepo.getAllActivities(this.application).subscribe(
-    (results) => {
-      this.allActivities = results;
-      this.activeActivities = this.allActivities.filter(x => x.isActive === true);
-      this.activeActivities.forEach(item => {
-        item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),
-        item.mappedManicipality = this.getSubDistrictNames(item?.activityManicipality),
-        item.mappedSubstructure = this.getSubDistrictNames(item?.activitySubStructure),
-        item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict)
-      });
-
-      this.getFacilityListText(results);
-      this.updateRowGroupMetaData();
-      this._spinner.hide();
-    },
-    (err) => {
-      this._loggerService.logException(err);
-      this._spinner.hide();
-    }
-  );
-}
-
-
-  private loadFacilitySubStructures() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubStructure, false).subscribe(
-      (results) => {
-        this.allFacilitySubStructures = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadFacilityDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilityDistricts, false).subscribe(
-      (results) => {
-        this.facilityDistricts = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
   getSubDistrictNames(activityDemoName: any): string {
     if (!activityDemoName || !activityDemoName) {
       return '';
@@ -966,19 +1112,6 @@ private loadActuals() {
 
     return activityDemoName.map((subDistrict: any) => subDistrict.name).join(', ');
   }
-
-  private loadFacilitySubDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubDistricts, false).subscribe(
-      (results) => {
-        this.allFacilitySubDistricts = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
 
   onDistrictChange() {
     this.selectedSubDistricts = [];
@@ -1013,17 +1146,6 @@ private loadActuals() {
     );
   }
 
-  private loadActivityTypes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.ActivityTypes, false).subscribe(
-      (results) => {
-        this.activityTypes = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
 
   private loadRecipientTypes() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.RecipientTypes, false).subscribe(
@@ -1052,7 +1174,8 @@ private loadActuals() {
   }
 
   frequencyPeriodChange() {
-  
+    this.qselected = true;
+    this.QValue();
   }
   QValue() {
       if(this.selectedFrequencyPeriod.name === 'Quarter1')
@@ -1181,107 +1304,11 @@ private loadActuals() {
     this.displayActualDialog = true;
   }
 
-  editActivity(data: IActivity) {
-    this.newActivity = false;
-    this.activity = this.cloneActivity(data);
-    this.selectedActivity = null;
 
-    if (this.application.isCloned)
-      this.activity.isNew = this.activity.isNew == undefined ? false : this.activity.isNew;
 
-    //this.displayActivityDialog = true;
-  }
 
-  private cloneActivity(data: IActivity): IActivity {
-    data.name = data.activityList.name;
-    data.description = data.activityList.description;
 
-    let activity = {} as IActivity;
 
-    for (let prop in data)
-      activity[prop] = data[prop];
-
-    this.selectedObjective = this.objectives.find(x => x.id === data.objectiveId);
-    this.objectiveChange(this.selectedObjective);
-    this.selectedActivityType = data.activityType;
-
-    const facilityListIds = data.activityFacilityLists.map(({ facilityListId }) => facilityListId);
-    this.selectedFacilities = this.facilities.filter(item => facilityListIds.includes(item.id));
-
-    const subProgrammeIds = data.activitySubProgrammes.map(({ subProgrammeId }) => subProgrammeId);
-    this.selectedSubProgrammes = this.subProgrammes.filter(item => subProgrammeIds.includes(item.id));
-
-    this.buildRecipientDropdown(this.selectedObjective, data);
-    
-    this.selectedRecipients = this.recipients.filter(item => {
-      return data.activityRecipients.some(recipient => {
-        return recipient.activityId === item.activityId && recipient.entityId === item.entityId && recipient.recipientTypeId === item.recipientTypeId
-      })
-    });
-
-    this.getTextValues();
-    // Handle selected district
-    const districtId = data?.activityDistrict?.find(district => district.isActive)?.demographicDistrictId;
-    this.selectedIDistrictDemographics = this.allIDistrictDemographics.find(item => item.id === districtId);
-    
-    if (this.selectedIDistrictDemographics) {
-      this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
-        md.districtDemographicId === this.selectedIDistrictDemographics.id
-      );
-      this.SubDistrictDemographics = [];
-      this.SubstructureDemographics = [];
-    } else {
-      this.ManicipalityDemographics = [];
-      this.SubDistrictDemographics = [];
-      this.SubstructureDemographics = [];
-    }
-
-    const demographicDistrictIds = data?.activityManicipality?.map(({ demographicDistrictId }) => demographicDistrictId);
-    this.selectedManicipalityDemographics = this.ManicipalityDemographics.filter(item =>
-        demographicDistrictIds.includes(item.districtDemographicId) && 
-        data.activityManicipality.some(({ name }) => name === item.name)
-    );
-    
-    this.onDemographicManicipalitiesChange();
-
-    const subStructureIds = data?.activitySubStructure?.map(({ municipalityId }) => municipalityId);
-    this.selectedSubstructureDemographics = this.SubstructureDemographics.filter(item =>
-        subStructureIds.includes(item.manicipalityDemographicId) && 
-        data.activitySubStructure.some(({ name }) => name === item.name)
-    );
-
-    this.onDemographicSubStructuresChange();
-
-    const subDistrictIds = data?.activitySubDistrict?.map(({ substructureId }) => substructureId);
-    this.selectedSubDistrictDemographics = this.SubDistrictDemographics.filter(item =>
-    subDistrictIds.includes(item.subSctrcureDemographicId) && 
-    data.activitySubDistrict.some(({ name }) => name === item.name)
-   );
-
-    return activity;
-  }
-
-  getTextValues() {
-    let allSubProgrammes: string = "";
-    let allFacilities: string = "";
-    let allRecipients: string = "";
-
-    this.selectedSubProgrammes.forEach(item => {
-      allSubProgrammes += item.name + ", ";
-    });
-
-    this.selectedFacilities.forEach(item => {
-      allFacilities += item.name + ";\n";
-    });
-
-    this.selectedRecipients.forEach(item => {
-      allRecipients += item.recipientName + ";\n";
-    });
-
-    this.selectedSubProgrammesText = allSubProgrammes.slice(0, -2);
-    this.selectedFacilitiesText = allFacilities;
-    this.selectedRecipientsText = allRecipients;
-  }
 
   private buildRecipientDropdown(objective: IObjective, activity: IActivity) {
     this.recipients = [];
@@ -1322,17 +1349,19 @@ private loadActuals() {
     });
   }
 
-  deleteActivity(data: IActivity) {
+  deleteActual(data: IActuals) {
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
       icon: 'pi pi-info-circle',
       accept: () => {
-        this.activity = this.cloneActivity(data);
-        this.activity.isActive = false;
-        this.updateActivity();
+        this.actual = this.cloneActual(data);
+        this.actual.isActive = false;
+        this.updateActual( this.actual);
+        this._confirmationService.close();
       },
       reject: () => {
+        this._confirmationService.close();
       }
     });
   }
