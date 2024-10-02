@@ -244,8 +244,10 @@ selectedSubStructures: any[] = [];
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
     this.loadNpo();
-     this.loadFinancialYears();
-
+    this.loadProgrammes();
+    this.loadSubProgrammes();
+    this.loadSubProgrammeTypes();   
+    this.loadFinancialYears();
     this.loadFrequencyPeriods();
     this.loadIndicators();
     this.GetIndicatorReportsByAppid();
@@ -306,6 +308,48 @@ selectedSubStructures: any[] = [];
       { field: 'successIndicator', header: 'Indicator', width: '30%' },
       { field: 'target', header: 'Target', width: '9%' },
     ];
+  }
+  
+  private loadProgrammes() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
+      (results) => {
+        this.allProgrammes = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadSubProgrammes() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
+      (results) => {
+        this.allSubProgrammes = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+ 
+  private loadSubProgrammeTypes() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.AllsubProgrammesTypes = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private loadDocumentTypes() {
