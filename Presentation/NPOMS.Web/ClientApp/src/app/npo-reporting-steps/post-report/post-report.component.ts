@@ -68,29 +68,6 @@ export class PostReportComponent implements OnInit {
   posts: IPosts[];
   post: IPosts = {} as IPosts;
 
-  // districts: any[] = [
-  //   { name: 'District 1', code: 'D1' },
-  //   { name: 'District 2', code: 'D2' }
-  // ];
-
-  // subDistricts: any[] = [];
-  // subStructures: any[] = [];
-
-  // allSubDistricts: any[] = [
-  //   { name: 'Sub District 1-1', code: 'SD1', districtCode: 'D1' },
-  //   { name: 'Sub District 1-2', code: 'SD2', districtCode: 'D1' },
-  //   { name: 'Sub District 2-1', code: 'SD3', districtCode: 'D2' }
-  // ];
-
-  // allSubStructures: any[] = [
-  //   { name: 'Sub Structure 1-1-1', code: 'SS1', subDistrictCode: 'SD1' },
-  //   { name: 'Sub Structure 1-1-2', code: 'SS2', subDistrictCode: 'SD1' },
-  //   { name: 'Sub Structure 2-1-1', code: 'SS3', subDistrictCode: 'SD3' }
-  // ];
-
-  // selectedDistricts: any[] = [];
-  // selectedSubDistricts: any[] = [];
-  // selectedSubStructures: any[] = [];
 
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
@@ -254,26 +231,10 @@ export class PostReportComponent implements OnInit {
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
     this.loadNpo();
-    this.loadActivityTypes();
-    this.loadFacilities();
     this.setYearRange();
-    this.loadAllSubProgrammes();
-    this.loadFacilityDistricts();
-    this.loadFacilitySubDistricts();
-    this.loadFacilitySubStructures();
-    this.loadDemographicDistricts();
-    this.loadDemographicSubStructures();
-    this.loadDemographicManicipalities();
-    this.loadDemographicSubDistricts();
-    this.loadFinancialYears();
-    this.loadDepartments();
-    this.loadPosts();
-   // this.loadDepartments1();
-    this.loadProgrammes();
-    this.loadSubProgrammes();
-    this.loadSubProgrammeTypes();
 
- 
+    this.loadFinancialYears();
+    this.loadPosts();
 
     this.postCols = [
       { header: 'Post Classification', width: '20%' },
@@ -326,57 +287,6 @@ export class PostReportComponent implements OnInit {
     });
   }
 
-  onCustomFilterChange(selectedItems: any[], field: string) {
-    const filterFields = [field];
-    this.filteredData = this.filterService.filter(this.activeActivities, filterFields, selectedItems || [], 'custom');
-
-    this.applyCustomFilters();
-  }
-  
-  applyCustomFilters() {
-    this.activeActivities = this.filteredData;
-    this.updateRowGroupMetaData();  // Update metadata based on the filtered data
-  }
-
-  applyFilterGlobal($event: any, stringVal: any) {
-    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
-  }
-
-  private loadDemographicDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicDistrict, false).subscribe(
-      (results) => {
-        this.allIDistrictDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadDemographicManicipalities() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicManicipality, false).subscribe(
-      (results) => {
-        this.allManicipalityDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-  
-  private loadDemographicSubStructures() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubStructure, false).subscribe(
-      (results) => {
-        this.allSubstructureDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
   private loadFinancialYears() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
@@ -390,106 +300,6 @@ export class PostReportComponent implements OnInit {
       }
     );
   }
-
-  private loadDepartments1() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-      (results) => {
-        this.departments1 = results;
-        if(this.isSystemAdmin )
-          {
-            this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
-          }
-          else{
-            this.departments1 = results.filter(x => x.id === this.profile.departments[0].id);
-          }
-          this.selectedDepartmentSummary = null;
-          this.selectedDepartmentSummary = this.departments1.find(x => x.id === this.profile.departments[0].id);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadDepartments() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-      (results) => {
-        this.departments = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
-      (results) => {
-        this.allProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadSubProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
-      (results) => {
-        this.allSubProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  
-  private loadSubProgrammeTypes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
-      (results) => {
-        this.AllsubProgrammesTypes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  // private loadApplicationTypes() {
-  //   this._spinner.show();
-  //   this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
-  //     (results) => {
-
-  //       if(this.profile.departments[0].id === DepartmentEnum.DSD)
-  //         this.applicationTypes = results.filter(x => x.systemName === 'FA' || x.systemName === 'QC');
-  //       else if(this.profile.departments[0].id === DepartmentEnum.DOH)
-  //         this.applicationTypes = results.filter(x => x.systemName === 'SP' || x.systemName === 'BP');
-  //       else
-  //       this.applicationTypes = results;
-
-  //       this._spinner.hide();
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
-
   departmentChange(department: IDepartment) {
     this.selectedProgramme = null;
     this.selectedSubProgramme = null;
@@ -541,30 +351,6 @@ export class PostReportComponent implements OnInit {
     }
   }
 
-  filterFacilityDistrict(selectedSubDistricts: any): void {
-    this.loadFacilities();
-    if (selectedSubDistricts && selectedSubDistricts.length > 0) {
-        // Extract LinkIds from the selected ISubDistrictDemographic objects
-        const selectedLinkIds = selectedSubDistricts.map(subDistrict => subDistrict.linkId);
-        // Filter facilities based on the selected LinkIds
-        this.facilitiesList = this.facilities.filter(facility =>
-            selectedLinkIds.includes(facility.facilitySubDistrictId)
-        );
-        // if (this.selectedFacilities.length === 0) {
-        //     this.facilities = [];
-        // }
-        
-    // let allFacilities: string = "";
-    // this.selectedFacilities.forEach(item => {
-    //   allFacilities += item.name + "\n";
-    // });
-    // this.selectedFacilitiesText = allFacilities;
-
-
-    } else {
-
-    }
-}
 
 preventChange(event: any): void {
   event.originalEvent.preventDefault(); 
@@ -789,69 +575,6 @@ onDemographicSubStructuresChange() {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(
       (results) => {
         this.npo = results;
-        this.loadRecipientTypes();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadActivityTypes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.ActivityTypes, false).subscribe(
-      (results) => {
-        this.activityTypes = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadRecipientTypes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.RecipientTypes, false).subscribe(
-      (results) => {
-        this.recipientTypes = results.filter(x => x.isActive);
-        this.loadObjectives();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadObjectives() {
-    this._applicationRepo.getAllObjectives(this.application).subscribe(
-      (results) => {
-        this.objectives = results.filter(x => x.isActive === true);
-        this.loadActivities();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadActivities() {
-    this._spinner.show();
-    this._applicationRepo.getAllActivities(this.application).subscribe(
-      (results) => {
-        this.allActivities = results;
-        this.activeActivities = this.allActivities.filter(x => x.isActive === true);
-        this.activeActivities.forEach(item => {
-          item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),
-          item.mappedManicipality = this.getSubDistrictNames(item?.activityManicipality),
-          item.mappedSubstructure = this.getSubDistrictNames(item?.activitySubStructure),
-          item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict)
-        });
-
-        this.getFacilityListText(results);
-        this.updateRowGroupMetaData();
-        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -871,29 +594,6 @@ onDemographicSubStructuresChange() {
     }
   }
 
-  private getFacilityListText(activities: IActivity[]) {
-    activities.forEach(activity => {
-      let allFacilityLists: string = "";
-
-      activity.activityFacilityLists.forEach(item => {
-        allFacilityLists += item.facilityList.name + "; ";
-      });
-
-      activity.facilityListText = allFacilityLists.slice(0, -2);
-    });
-  }
-
-  private loadFacilities() {
-    this._applicationRepo.getAssignedFacilities(this.application).subscribe(
-      (results) => {
-        this.facilities = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
 
   private setYearRange() {
     let currentDate = new Date;
@@ -901,18 +601,6 @@ onDemographicSubStructuresChange() {
     let endYear = currentDate.getFullYear() + 5;
 
     this.yearRange = `${startYear}:${endYear}`;
-  }
-
-  private loadAllSubProgrammes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
-      (results) => {
-        this.allSubProgrammes = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
   }
 
   nextPage() {
@@ -1075,80 +763,7 @@ if (this.selectedIDistrictDemographics) {
 
     this.activity.activitySubDistrict.push(selectedSubDistrict);
   });
-
-
-this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(
-  (resp) => {
-    this.activity.activityListId = resp.id;
-    this.newActivity ? this.createActivity() : this.updateActivity();
-    this.displayPostDialog = false;
-
-    let allFacilities: string = "";
-    this.selectedFacilities.forEach(item => {
-      allFacilities += item.name + "\n";
-    });
-    this.selectedFacilitiesText = allFacilities;
-  },
-  (err) => {
-    this._loggerService.logException(err);
-    this._spinner.hide();
   }
-);
-}
-
-  private createActivity() {
-    this._applicationRepo.createActivity(this.activity, this.application).subscribe(
-      (resp) => {
-        this.loadActivities();
-        this.activityChange.emit(this.activity);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private updateActivity() {
-    this._applicationRepo.updateActivity(this.activity).subscribe(
-      (resp) => {
-        this.loadActivities();
-        this.activityChange.emit(this.activity);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private updateRowGroupMetaData() {
-    this.rowGroupMetadata = [];
-
-    this.activeActivities = this.activeActivities.sort((a, b) => a.objectiveId - b.objectiveId);
-
-    if (this.activeActivities) {
-
-      this.activeActivities.forEach(element => {
-
-        var itemExists = this.rowGroupMetadata.some(function (data) { return data.itemName === element.objective.name });
-
-        this.rowGroupMetadata.push({
-          itemName: element.objective.name,
-          itemExists: itemExists
-        });
-      });
-    }
-  }
-
-  disableSubProgramme(): boolean {
-    if (this.subProgrammes.length > 0)
-      return false;
-
-    return true;
-  }
-
-
 
   addComment() {
     this.comment = null;
@@ -1195,8 +810,6 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
 
     this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
       (resp) => {
-        this.loadActivities();
-
         let entity = {
           id: model.entityId
         } as IActivity;
@@ -1261,8 +874,6 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
 
         this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
           (resp) => {
-            this.loadActivities();
-
             let entity = {
               id: model.entityId
             } as IActivity;
@@ -1330,7 +941,6 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
             (resp) => {
 
               if (item === lastObjectInArray) {
-                this.loadActivities();
                 this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Reviewer Satisfaction completed for all activities.' });
               }
             },

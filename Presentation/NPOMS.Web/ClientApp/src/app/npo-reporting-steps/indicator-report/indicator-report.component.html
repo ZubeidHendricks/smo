@@ -393,8 +393,8 @@
         </div>
     </div>        
     <ng-template pTemplate="footer">
-        <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
-        <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button>
+        <!-- <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
+        <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button> -->
     </ng-template>
 </p-dialog>
 

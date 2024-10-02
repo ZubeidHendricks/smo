@@ -95,30 +95,7 @@ disableAdd(): any {
   newActual: boolean;
   yearSelected: boolean = false;
   qselected: boolean = false;
-
-  // districts: any[] = [
-  //   { name: 'District 1', code: 'D1' },
-  //   { name: 'District 2', code: 'D2' }
-  // ];
-
-  // subDistricts: any[] = [];
-  // subStructures: any[] = [];
-
-  // allSubDistricts: any[] = [
-  //   { name: 'Sub District 1-1', code: 'SD1', districtCode: 'D1' },
-  //   { name: 'Sub District 1-2', code: 'SD2', districtCode: 'D1' },
-  //   { name: 'Sub District 2-1', code: 'SD3', districtCode: 'D2' }
-  // ];
-
-  // allSubStructures: any[] = [
-  //   { name: 'Sub Structure 1-1-1', code: 'SS1', subDistrictCode: 'SD1' },
-  //   { name: 'Sub Structure 1-1-2', code: 'SS2', subDistrictCode: 'SD1' },
-  //   { name: 'Sub Structure 2-1-1', code: 'SS3', subDistrictCode: 'SD3' }
-  // ];
-
-  // selectedDistricts: any[] = [];
-  // selectedSubDistricts: any[] = [];
-  // selectedSubStructures: any[] = [];
+selectedSubStructures: any[] = [];
 
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
@@ -130,12 +107,6 @@ disableAdd(): any {
   @Output() activityChange: EventEmitter<IActivity> = new EventEmitter<IActivity>();
   @Input() canAddComments: boolean;
   @Input() isReview: boolean;
-
-  // private _frequencyPeriods: IFrequencyPeriod[];
-  // @Input()
-  // get frequencyPeriods(): IFrequencyPeriod[] { return this._frequencyPeriods; }
-  // set frequencyPeriods(frequencyPeriods: IFrequencyPeriod[]) { this._frequencyPeriods = frequencyPeriods; }
-
   private _financialYears: IFinancialYear[];
   @Input()
   get financialYears(): IFinancialYear[] { return this._financialYears; }
@@ -273,22 +244,7 @@ disableAdd(): any {
     this.tooltip = this.canEdit ? 'Edit' : 'View';
 
     this.loadNpo();
-    // this.loadActivityTypes();
-   // this.loadFacilities();
-    // this.setYearRange();
-    // this.loadAllSubProgrammes();
-    // this.loadFacilityDistricts();
-    // this.loadFacilitySubDistricts();
-    // this.loadFacilitySubStructures();
-    // this.loadDemographicDistricts();
-    // this.loadDemographicSubStructures();
-    // this.loadDemographicManicipalities();
-    // this.loadDemographicSubDistricts();
      this.loadFinancialYears();
-    // this.loadDepartments();
-    this.loadProgrammes();
-    this.loadSubProgrammes();
-    this.loadSubProgrammeTypes();
 
     this.loadFrequencyPeriods();
     this.loadIndicators();
@@ -573,47 +529,7 @@ disableAdd(): any {
 
   public financialYearChange() {
     this.yearSelected =  true;
-    // this._spinner.show();
-    //this.selectedFinancialYear.id
-
-    //let application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
-
-    // this._applicationRepo.getApplicationById(Number(application.id)).subscribe(
-    //   (results) => {
-    //     this.application = results;
-    //     this.loadActivities();
-    //   },
-    //   (err) => {
-    //     this._loggerService.logException(err);
-    //     this._spinner.hide();
-    //   }
-    // );
   }
-
-
-  // private loadActivitiez() {
-  //   this._spinner.show();
-  //   this._applicationRepo.getAllActivities(this.application).subscribe(
-  //     (results) => {
-  //       this.activities = results.filter(x => x.isActive === true);
-  //       this.workplanIndicators = [];
-
-  //       this.activities.forEach(item => {
-  //         this.workplanIndicators.push({
-  //           activity: item,
-  //           workplanTargets: [],
-  //           workplanActuals: []
-  //         } as IWorkplanIndicator);
-  //       });
-
-  //       this._spinner.hide();
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
 
   captureTargets(activity) {
     this._router.navigateByUrl('workplan-indicator/targets/' + activity.id + '/financial-year/' + this.selectedFinancialYear.id);
@@ -629,31 +545,7 @@ disableAdd(): any {
 
     return value;
   }
-  
 
-  private loadDemographicManicipalities() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicManicipality, false).subscribe(
-      (results) => {
-        this.allManicipalityDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-  
-  private loadDemographicSubStructures() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubStructure, false).subscribe(
-      (results) => {
-        this.allSubstructureDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
   private loadFinancialYears() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
@@ -667,105 +559,6 @@ disableAdd(): any {
       }
     );
   }
-
-  private loadDepartments1() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-      (results) => {
-        this.departments1 = results;
-        if(this.isSystemAdmin )
-          {
-            this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
-          }
-          else{
-            this.departments1 = results.filter(x => x.id === this.profile.departments[0].id);
-          }
-          this.selectedDepartmentSummary = null;
-          this.selectedDepartmentSummary = this.departments1.find(x => x.id === this.profile.departments[0].id);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadDepartments() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-      (results) => {
-        this.departments = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
-      (results) => {
-        this.allProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadSubProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
-      (results) => {
-        this.allSubProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  
-  private loadSubProgrammeTypes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
-      (results) => {
-        this.AllsubProgrammesTypes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  // private loadApplicationTypes() {
-  //   this._spinner.show();
-  //   this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
-  //     (results) => {
-
-  //       if(this.profile.departments[0].id === DepartmentEnum.DSD)
-  //         this.applicationTypes = results.filter(x => x.systemName === 'FA' || x.systemName === 'QC');
-  //       else if(this.profile.departments[0].id === DepartmentEnum.DOH)
-  //         this.applicationTypes = results.filter(x => x.systemName === 'SP' || x.systemName === 'BP');
-  //       else
-  //       this.applicationTypes = results;
-
-  //       this._spinner.hide();
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
 
   departmentChange(department: IDepartment) {
     this.selectedProgramme = null;
@@ -827,17 +620,6 @@ disableAdd(): any {
         this.facilitiesList = this.facilities.filter(facility =>
             selectedLinkIds.includes(facility.facilitySubDistrictId)
         );
-        // if (this.selectedFacilities.length === 0) {
-        //     this.facilities = [];
-        // }
-        
-    // let allFacilities: string = "";
-    // this.selectedFacilities.forEach(item => {
-    //   allFacilities += item.name + "\n";
-    // });
-    // this.selectedFacilitiesText = allFacilities;
-
-
     } else {
 
     }
@@ -847,18 +629,6 @@ preventChange(event: any): void {
   event.originalEvent.preventDefault(); 
   event.value = [...this.selectedFacilities];
 }
-
-  private loadDemographicSubDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubDistrict, false).subscribe(
-      (results) => {
-        this.allSubDistrictDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
 
 // Method to handle changes when Demographic District is changed
 onDemographicDistrictChange() {
@@ -921,116 +691,6 @@ onDemographicSubStructuresChange() {
   }
 }
 
-
-saveActivityy() {    this.activity.objective = null;
-  this.activity.activityType = null;
-  this.activity.changesRequired = this.activity.changesRequired == null ? null : false;
-  this.activity.activityList = null;
-
-  this.activity.objectiveId = this.selectedObjective.id;
-  this.activity.activityTypeId = this.selectedActivityType.id;
-  this.activity.isActive = true;
-
-  this.activity.timelineStartDate = this._datepipe.transform(this.activity.timelineStartDate, 'yyyy-MM-dd');
-  this.activity.timelineEndDate = this._datepipe.transform(this.activity.timelineEndDate, 'yyyy-MM-dd');
-
-  // this.activity.activitySubProgrammes = [];
-  // this.selectedSubProgrammes.forEach(item => {
-  //   let activitySubProgramme = {
-  //     activityId: this.activity.id,
-  //     subProgrammeId: item.id,
-  //     isActive: true
-  //   } as IActivitySubProgramme;
-
-  //   this.activity.activitySubProgrammes.push(activitySubProgramme);
-  // });
-
-  this.activity.activityFacilityLists = [];
-  this.selectedFacilities.forEach(item => {
-    let activityFacilityList = {
-      activityId: this.activity.id,
-      facilityListId: item.id,
-      isActive: true
-    } as IActivityFacilityList;
-
-    this.activity.activityFacilityLists.push(activityFacilityList);
-  });
-
-this.activity.activityRecipients = this.selectedRecipients;
-
-// Initialize the array
-this.activity.activityDistrict = [];
-
-//Check if selectedIDistrictDemographics is not null
-if (this.selectedIDistrictDemographics) {
-// Create the IActivityDistrict object from the selected district
-let activityDistrict = {
-  demographicDistrictId: this.selectedIDistrictDemographics.id,
-  name: this.selectedIDistrictDemographics.name,
-  isActive: this.selectedIDistrictDemographics.isActive,
-  activityId: this.activity.id
-} as IActivityDistrict;
-
-//   // Push the object into the array
-this.activity.activityDistrict.push(activityDistrict);
-}
-
-this.activity.activityManicipality = [];
-
-this.selectedManicipalityDemographics.forEach(item => {
-  let activityManicipality = {
-    demographicDistrictId: item.districtDemographicId,
-    name: item.name,
-    isActive: item.isActive,
-    activityId: this.activity.id
-  } as IActivityManicipality;
-
-  this.activity.activityManicipality.push(activityManicipality);
-});
-
-this.activity.activitySubStructure = [];
-this.selectedSubstructureDemographics.forEach(item => {
-  let selectedSubStructure = {
-    name: item.name,
-    municipalityId: item.manicipalityDemographicId,
-    isActive: item.isActive,
-    activityId: this.activity.id
-  } as IActivitySubStructure;
-
-  this.activity.activitySubStructure.push(selectedSubStructure);
-});
-
-this.activity.activitySubDistrict = [];
-this.selectedSubDistrictDemographics.forEach(item => {
-  let selectedSubDistrict = {
-    name: item.name,
-    substructureId: item.subSctrcureDemographicId,
-    isActive: item.isActive,
-    activityId: this.activity.id
-  } as IActivitySubDistrict;
-
-  this.activity.activitySubDistrict.push(selectedSubDistrict);
-});
-
-
-this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(
-(resp) => {
-  this.activity.activityListId = resp.id;
-  this.newActivity ? this.createActivity() : this.updateActivity();
-  //this.displayActivityDialog = false;
-
-  let allFacilities: string = "";
-  this.selectedFacilities.forEach(item => {
-    allFacilities += item.name + "\n";
-  });
-  this.selectedFacilitiesText = allFacilities;
-},
-(err) => {
-  this._loggerService.logException(err);
-  this._spinner.hide();
-}
-);
-}
 
 editActual(data: IActuals) {
   this.newActual = false;
@@ -1137,34 +797,6 @@ updateActual(actual: IActuals) {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(
       (results) => {
         this.npo = results;
-        this.loadRecipientTypes();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-
-  private loadRecipientTypes() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.RecipientTypes, false).subscribe(
-      (results) => {
-        this.recipientTypes = results.filter(x => x.isActive);
-        this.loadObjectives();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadObjectives() {
-    this._applicationRepo.getAllObjectives(this.application).subscribe(
-      (results) => {
-        this.objectives = results.filter(x => x.isActive === true);
-        this.loadActivities();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1194,29 +826,6 @@ updateActual(actual: IActuals) {
       {
         this.actual.targets = this.selectedOutputTitle.q4;
       }
-  }
-  private loadActivities() {
-    this._spinner.show();
-    this._applicationRepo.getAllActivities(this.application).subscribe(
-      (results) => {
-        this.allActivities = results;
-        this.activeActivities = this.allActivities.filter(x => x.isActive === true);
-        this.activeActivities.forEach(item => {
-          item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),
-          item.mappedManicipality = this.getSubDistrictNames(item?.activityManicipality),
-          item.mappedSubstructure = this.getSubDistrictNames(item?.activitySubStructure),
-          item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict)
-        });
-
-        this.getFacilityListText(results);
-        this.updateRowGroupMetaData();
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
   }
 
   public GetDifference(isNew: boolean) {
@@ -1394,32 +1003,6 @@ updateActual(actual: IActuals) {
     return true;
   }
 
-  private createActivity() {
-    this._applicationRepo.createActivity(this.activity, this.application).subscribe(
-      (resp) => {
-        this.loadActivities();
-        this.activityChange.emit(this.activity);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private updateActivity() {
-    this._applicationRepo.updateActivity(this.activity).subscribe(
-      (resp) => {
-        this.loadActivities();
-        this.activityChange.emit(this.activity);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
   private updateRowGroupMetaData() {
     this.rowGroupMetadata = [];
 
@@ -1490,33 +1073,6 @@ updateActual(actual: IActuals) {
     return false;
   }
 
-  saveComment(changesRequired: boolean, origin: string) {
-    let model = {
-      applicationId: this.application.id,
-      serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
-      entityId: this.activity.id,
-      comment: this.comment
-    } as IApplicationComment;
-
-    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
-      (resp) => {
-        this.loadActivities();
-
-        let entity = {
-          id: model.entityId
-        } as IActivity;
-        this.viewComments(entity, origin);
-
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-        this.displayCommentDialog = false;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
   search(event) {
     let query = event.query;
     this._dropdownRepo.getActivityByName(query).subscribe((results) => {
@@ -1566,8 +1122,6 @@ updateActual(actual: IActuals) {
 
         this._applicationRepo.createApplicationReviewerSatisfaction(model).subscribe(
           (resp) => {
-            this.loadActivities();
-
             let entity = {
               id: model.entityId
             } as IActivity;
@@ -1635,7 +1189,6 @@ updateActual(actual: IActuals) {
             (resp) => {
 
               if (item === lastObjectInArray) {
-                this.loadActivities();
                 this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Reviewer Satisfaction completed for all activities.' });
               }
             },

@@ -155,10 +155,6 @@ export class NpoReportCaptureComponent implements OnInit {
         if (results != null) {
           this.application = results;
           this.buildSteps(results.applicationPeriod);
-          this.loadObjectives();
-          this.loadActivities();
-          this.loadSustainabilityPlans();
-          this.loadResources();
           this.loadCreatedUser();
           this.isApplicationAvailable = true;
         }
@@ -268,7 +264,6 @@ export class NpoReportCaptureComponent implements OnInit {
   }
 
   public loadDocumentTypes() {
-
     this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.id), false).subscribe(
       (results) => {
         this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp && x.isCompulsory === true);

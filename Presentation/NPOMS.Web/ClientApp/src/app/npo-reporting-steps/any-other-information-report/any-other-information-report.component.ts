@@ -100,16 +100,9 @@ export class AnyOtherInformationReportComponent implements OnInit {
   facilities: IFacilityList[];
   facilitiesList: IFacilityList[];
   selectedFacilities: IFacilityList[];
-
-
   filteredFacilities: IFacilityList[] = [];
-
-
   selectedFacilitiesText: string;
-
-
   selectedSubProgrammes: ISubProgramme[];
-
   canEdit: boolean;
   selectedSubProgrammesText: string;
 
@@ -210,10 +203,6 @@ export class AnyOtherInformationReportComponent implements OnInit {
   ngOnInit(): void {
     this._spinner.show();
     this.registerCustomFilters();
-
-
-
-
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -229,15 +218,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
     this.loadNpo();
     this.setYearRange();
     this.loadFinancialYears();
-    this.loadDepartments();
-    //this.loadDepartments1();
-    this.loadProgrammes();
-    this.loadSubProgrammes();
-    this.loadSubProgrammeTypes();
     this. loadotherInfor();
-
- 
-
     this.anyOtherCols = [
       { header: 'Highlights', width: '50%' },
       { header: 'Challenges', width: '50%' },
@@ -452,7 +433,6 @@ preventChange(event: any): void {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(
       (results) => {
         this.npo = results;
-        //this.loadRecipientTypes();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -512,12 +492,8 @@ preventChange(event: any): void {
     this._applicationRepo.GetOtherInforReportsByAppid(this.application).subscribe(
       (results) => {
         console.log('Other',results);
-        this.otherInfors = results;
-       
- 
+        this.otherInfors = results;     
         });
-  
-
         this._spinner.hide();
       }
 
@@ -571,8 +547,6 @@ preventChange(event: any): void {
     // Update the text area content with the name of the selected quarter
     this.selectedQuartersText = this.selectedQuarters ? this.selectedQuarters.values.name : '';
   }
-  
-
 
   disableSubProgrammeType(): boolean {
     if (this.filteredSubProgrammeTypes.length > 0)
@@ -580,10 +554,6 @@ preventChange(event: any): void {
 
     return true;
   }
-
-
-
-
 
   private updateRowGroupMetaData() {
     this.rowGroupMetadata = [];
@@ -603,8 +573,6 @@ preventChange(event: any): void {
       });
     }
   }
-
-
 
   addComment() {
     this.comment = null;

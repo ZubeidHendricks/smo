@@ -1,5 +1,5 @@
 <p-toast></p-toast>
-<p-panel [style]="{'font-size':'12px'}" header=" Post Report" *ngIf="activeActivities">
+<p-panel [style]="{'font-size':'12px'}" header=" Post Report">
     <!-- <div class="p-grid p-nogutter p-justify-end">
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>     -->
@@ -19,7 +19,6 @@
               <td style="text-align: center;">{{rowIndex + 1}}</td>
               <td>{{rowData.postClassification }}</td>
               <td>{{rowData.numberOfPosts}}</td>
-              <!-- <td>{{rowData.actual}}</td> -->
               <td>{{rowData.numberFilled }}</td>
               <td>{{rowData.monthsFilled }}</td>
               <td>{{rowData.vacant}}</td>

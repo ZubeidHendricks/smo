@@ -21,6 +21,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 export class ApplicationListComponent implements OnInit {
   displayDialog: boolean;
   displayReviewDialog: boolean;
+  canShowOtherOptions: boolean = false;
   
 
   /* Permission logic */
@@ -232,6 +233,7 @@ export class ApplicationListComponent implements OnInit {
         
         this.allApplications = results;       
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
+        this.canShowOtherOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Adjudicated});
         this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
           && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP && item.applicationPeriod.departmentId === DepartmentEnum.DOH});
               
@@ -632,8 +634,23 @@ export class ApplicationListComponent implements OnInit {
     {
       this.optionItemExists('Businessplan Indicators'); 
       this.optionItemExists('BusinessPlan Summary');  
-      this.optionItemExists('Adjudicate Funded Npo');  
+      this.optionItemExists('Adjudicate Funded Npo'); 
+      this.optionItemExists('Reports');  
       this.optionItemExists('Review Adjudicated Funded Npo');
+    }
+
+    if (this.selectedApplication.statusId === StatusEnum.Adjudicated)
+      {
+        this.optionItemExists('Manage Indicators');  
+        this.optionItemExists('Capture Scorecard');  
+        this.optionItemExists('Review Score Card');  
+        this.optionItemExists('Initiate Score Card');  
+        this.optionItemExists('Conclude Scorecard');  
+        this.optionItemExists('Summary');  
+        this.optionItemExists('Businessplan Indicators'); 
+        this.optionItemExists('BusinessPlan Summary');  
+        this.optionItemExists('Adjudicate Funded Npo');  
+        this.optionItemExists('Review Adjudicated Funded Npo');
     }
    
     if (this.selectedApplication.npoUserTrackings.length > 0) {
