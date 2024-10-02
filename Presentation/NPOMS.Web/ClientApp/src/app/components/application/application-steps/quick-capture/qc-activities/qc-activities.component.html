@@ -119,6 +119,23 @@
                 </p-multiSelect>
             </div>
         
+            <div class="p-col-3 dropdown-column" *ngIf="showAreaDemographics">
+                <div class="box">
+                    <span class="mandatory-content">Area</span>
+                </div>
+                <p-multiSelect 
+                    [options]="AreaDemographics" 
+                    defaultLabel="Select Area" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedAreas" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected"
+                    (onChange)="onAreaChange()">
+                </p-multiSelect>
+            </div>
+
             <div class="p-col-3 dropdown-column">
                 <div class="box">
                     <span class="mandatory-content">Sub District</span>
@@ -131,6 +148,7 @@
                     [ngModelOptions]="{standalone: true}" 
                     [style]="{'width':'100%'}"
                     appendTo="body" 
+                    (onChange)=filterFacilityDistrict($event.value) 
                     selectedItemsLabel="{0} items selected">
                 </p-multiSelect>
             </div>

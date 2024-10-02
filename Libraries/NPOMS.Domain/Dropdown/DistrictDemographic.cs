@@ -13,7 +13,7 @@ namespace NPOMS.Domain.Dropdown
         public string Name { get; set; }
 
         public bool IsActive { get; set; }
-
+        public bool IsSubParent { get; set; } = false;
         public int CreatedUserId { get; set; }
 
         public DateTime CreatedDateTime { get; set; }

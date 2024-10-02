@@ -41,7 +41,7 @@ namespace NPOMS.Services.Email.EmailTemplates
 			var requestOrigin = httpContextAccessor.HttpContext.Request.Headers["Origin"].ToString();
 
 			// Combination of reviewers and main reviewers
-			var users = (Enumerable.Empty<User>()).Concat(mainReviewers ?? Enumerable.Empty<User>()?? reviewers );
+			var users = (Enumerable.Empty<User>()).Concat(mainReviewers ?? Enumerable.Empty<User>() ?? reviewers);
 
 			try
 			{

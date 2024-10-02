@@ -15,6 +15,7 @@ namespace NPOMS.Domain.Mapping
         public string Name { get; set; }
         public int SubstructureId { get; set; }
         public bool IsActive { get; set; }
+        public int AreaId { get; set; }
         public int ActivityId { get; set; }
         public Activity Activity { get; set; }
 

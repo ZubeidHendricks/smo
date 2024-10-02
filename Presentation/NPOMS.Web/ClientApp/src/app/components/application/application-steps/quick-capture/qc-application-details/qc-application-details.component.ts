@@ -26,6 +26,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() applicationPeriod: IApplicationPeriod;
   @Input() application: IApplication;
+  @Output() applicationChange: EventEmitter<IApplication> = new EventEmitter<IApplication>();
   @Input() fundingApplicationDetails: IFundingApplicationDetails;
 
   @Input() districtCouncil: IDistrictCouncil;
@@ -88,6 +89,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   selectedProgramDeliveryDetails : IProgrammeServiceDelivery[];
 
   constructor(
+    private _router: Router,
     private _authService: AuthService,
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
@@ -377,47 +379,8 @@ export class QcApplicationDetailsComponent implements OnInit {
 
   onAmountChange(value) {
     this.amountChange.emit(value);
-    // let amount = Number(event).valueOf();
-    // this.Amount = amount;
-    // this.AmountChange.emit(this.Amount);
   }
 
-  // private buildMenu() {
-  //   if (this.profile) {
-  //     this.menuActions = [
-  //       {
-  //         label: 'Validate',
-  //         icon: 'fa fa-check',
-  //         command: () => {
-  //           this.formValidate();
-  //         },
-  //         visible: false
-  //       },
-  //       {
-  //         label: 'Clear Messages',
-  //         icon: 'fa fa-undo',
-  //         command: () => {
-  //           this.clearMessages();
-  //         },
-  //         visible: false
-  //       },
-  //       {
-  //         label: 'Save',
-  //         icon: 'fa fa-floppy-o',
-  //         command: () => {
-  //           //            this.saveFundingApplicationDetails();
-  //         }
-  //       },
-  //       {
-  //         label: 'Go Back',
-  //         icon: 'fa fa-step-backward',
-  //         command: () => {
-  //           this._router.navigateByUrl('application-periods');
-  //         }
-  //       }
-  //     ];
-  //   }
-  // }
 
   showTable(obj: any) {
     if (obj.value === "Yes")
@@ -426,216 +389,7 @@ export class QcApplicationDetailsComponent implements OnInit {
       document.getElementById('affliatedOrganisationInfoTable').hidden = true;
   }
 
-  // private formValidate() {
-  //   this.validated = true;
-  //   this.validationErrors = [];
-
-  //   let data = this.applicationPeriod;
-
-  //   if (!this.selectedDepartment || !this.selectedProgramme || !this.selectedSubProgramme || !this.selectedApplicationType || !data.name || !data.description || !this.selectedFinancialYear)
-  //     this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Missing detail required." });
-
-  //   if (this.validationErrors.length == 0)
-  //     this.menuActions[1].visible = false;
-  //   else
-  //     this.menuActions[1].visible = true;
-  // }
-
-  // private clearMessages() {
-  //   this.validated = false;
-  //   this.validationErrors = [];
-  //   this.menuActions[1].visible = false;
-  // }
-
-  // private saveItems() {
-  //   if (this.canContinue()) {
-  //     this._spinner.show();
-  //     let data = this.applicationPeriod;
-
-  //     data.departmentId = this.selectedDepartment.id;
-  //     data.programmeId = this.selectedProgramme.id;
-  //     data.subProgrammeId = this.selectedSubProgramme.id;
-  //     data.financialYearId = this.selectedFinancialYear.id;
-  //     data.applicationTypeId = this.selectedApplicationType.id;
-
-
-
-  //     this._applicationPeriodRepo.updateApplicationPeriod(data).subscribe(
-  //       (resp) => {
-  //         this._spinner.hide();
-  //         this._router.navigateByUrl('application-periods');
-  //       },
-  //       (err) => {
-  //         this._loggerService.logException(err);
-  //         this._spinner.hide();
-  //       }
-  //     );
-  //   }
-  // }
-
-  // private canContinue() {
-  //   this.formValidate();
-
-  //   if (this.validationErrors.length == 0)
-  //     return true;
-
-  //   return false;
-  // }
-
-  // private loadFinancialYears(financialYear: IFinancialYear) {
-  //   this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
-  //     (results) => {
-  //       this.financialYears = results;
-  //       this.getFinancialYearRange(financialYear);
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
-
-  // private loadDepartments() {
-  //   this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-  //     (results) => {
-  //       this.departments = results;
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
-
-  // private loadApplicationTypes() {
-  //   this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
-  //     (results) => {
-  //       this.applicationTypes = results;
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
-
-  // private loadProgrammes(departmentId: number) {
-  //   if (departmentId != null) {
-  //     this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
-  //       (results) => {
-  //         this.allProgrammes = results;
-  //         this.programmes = results.filter(x => x.departmentId === departmentId);
-  //       },
-  //       (err) => {
-  //         this._loggerService.logException(err);
-  //         this._spinner.hide();
-  //       }
-  //     );
-  //   }
-  // }
-
-  // private loadSubProgrammes(programmeId: number) {
-  //   if (programmeId != null) {
-  //     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
-  //       (results) => {
-  //         this.allSubProgrammes = results;
-  //         this.subProgrammes = results.filter(x => x.programmeId === programmeId);
-  //       },
-  //       (err) => {
-  //         this._loggerService.logException(err);
-  //         this._spinner.hide();
-  //       }
-  //     );
-  //   }
-  // }
-
-
-
-  // private loadApplicationPeriod() {
-  //   this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
-
-  //     //this._applicationRepo.getApplicationById(this.newlySavedApplicationId).subscribe(
-  //     (results) => {
-  //       if (results != null) {
-  //         this.applicationPeriodId = results.applicationPeriodId;
-  //         this.loadApplicationPeriodById(this.applicationPeriodId);
-  //       } this._spinner.hide();
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //     });
-  // }
-  // private loadApplicationPeriodById(applnPeriodId: number) {
-  //   if (this.applicationPeriodId != null) {
-  //     this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriodId).subscribe(
-  //       (results) => {
-  //         this.loadFinancialYears(results.financialYear);
-  //         this.loadProgrammes(results.departmentId);
-  //         this.loadSubProgrammes(results.programmeId);
-
-  //         this.selectedDepartment = results.department;
-  //         this.selectedProgramme = results.programme;
-  //         this.selectedSubProgramme = results.subProgramme;
-  //         this.selectedFinancialYear = results.financialYear;
-  //         this.selectedApplicationType = results.applicationType;
-
-  //         this.applicationPeriod = results;
-  //         this.isDataAvailable = true;
-  //         this._spinner.hide();
-  //       },
-  //       (err) => {
-  //         this._loggerService.logException(err);
-  //         //this._spinner.hide();
-  //       }
-  //     );
-  //   }
-  // }
-  // departmentChange(department: IDepartment) {
-  //   this.selectedProgramme = null;
-  //   this.selectedSubProgramme = null;
-
-  //   this.programmes = [];
-  //   this.subProgrammes = [];
-
-  //   if (department.id != null) {
-  //     for (var i = 0; i < this.allProgrammes.length; i++) {
-  //       if (this.allProgrammes[i].departmentId == department.id) {
-  //         this.programmes.push(this.allProgrammes[i]);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // programmeChange(programme: IProgramme) {
-  //   this.selectedSubProgramme = null;
-
-  //   this.subProgrammes = [];
-
-  //   if (programme.id != null) {
-  //     for (var i = 0; i < this.allSubProgrammes.length; i++) {
-  //       if (this.allSubProgrammes[i].programmeId == programme.id) {
-  //         this.subProgrammes.push(this.allSubProgrammes[i]);
-  //       }
-  //     }
-  //   }
-  // }
-
-
-  // financialYearChange(finYear: IFinancialYear) {
-
-  //   this.getFinancialYearRange(finYear);
-
-  // }
-
-
-
-  // private getFinancialYearRange(finYear: IFinancialYear) {
-  //   if (this.financialYears.length > 0) {
-  //     let start = this.financialYears.find(x => x.id === finYear.id);
-  //     let end = this.financialYears[this.financialYears.length - 1];
-  //     this.finYearRange = `${start.year}:${end.year}`;
-  //   }
-  // }
+ 
 
   readonly(): boolean {
     // if (this.application.statusId ==StatusEnum.PendingReview ||
@@ -679,9 +433,10 @@ export class QcApplicationDetailsComponent implements OnInit {
                   this._spinner.hide();
                   this.fundingApplicationDetails.id = resp.id;
                   this.fundingApplicationDetailsChange.emit(resp);
-      
-                  this.activeStep = this.activeStep + 1;
-                  this.activeStepChange.emit(this.activeStep);
+                  this._router.navigateByUrl(`quick-captures-editList/edit/${this.fundingApplicationDetails.applicationId}/${this.activeStep}`); 
+                  
+                 // this.activeStep = this.activeStep + 1;
+                 // this.activeStepChange.emit(this.activeStep);
                 },
                 (err) => {
                   this._loggerService.logException(err);

@@ -164,6 +164,7 @@ namespace NPOMS.Repository
         public DbSet<MyContentLink> MyContentLinks { get; set; }
         public DbSet<SubRecipient> SubRecipients { get; set; }
         public DbSet<SubSubRecipient> SubSubRecipients { get; set; }
+        public DbSet<Area> Areas { get; set; }
 
         public DbSet<PostReport> PostReports { get; set; }
         public DbSet<IncomeAndExpenditureReport> IncomeAndExpenditureReports { get; set; }

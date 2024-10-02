@@ -415,7 +415,7 @@ export class ApplicationListComponent implements OnInit {
             if (!this.selectedApplication.isQuickCapture)
               this._router.navigateByUrl('application/edit/' + this.selectedApplication.id + '/0');
             else
-              this._router.navigateByUrl('quick-captures-editList/edit/' + this.selectedApplication.id);
+              this._router.navigateByUrl('quick-captures-editList/edit/' + this.selectedApplication.id + '/0');
           }
         });
       }
@@ -619,7 +619,7 @@ export class ApplicationListComponent implements OnInit {
       option.visible = true;
     });
 
-    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId === 11)
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP)
     {
       this.optionItemExists('Manage Indicators');  
       this.optionItemExists('Capture Scorecard');  
@@ -628,13 +628,14 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('Conclude Scorecard');  
       this.optionItemExists('Summary');  
     }
-    else{
-      //this.optionItemExists('Adjudicate Funded Npo');  
-      //this.optionItemExists('Review Adjudicated Funded Npo'); 
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP)
+    {
       this.optionItemExists('Businessplan Indicators'); 
-      this.optionItemExists('BusinessPlan Summary');   
+      this.optionItemExists('BusinessPlan Summary');  
+      this.optionItemExists('Adjudicate Funded Npo');  
+      this.optionItemExists('Review Adjudicated Funded Npo');
     }
-
+   
     if (this.selectedApplication.npoUserTrackings.length > 0) {
       if (!this.selectedApplication.npoUserTrackings.some(item => item.userId === this.profile.id)) 
       {
@@ -701,6 +702,9 @@ export class ApplicationListComponent implements OnInit {
       this.buttonItemExists('Delete Application', 'Funded Npo');
       this.buttonItemExists('View Application', 'Funded Npo');
       this.buttonItemExists('Download Application', 'Funded Npo');
+
+      this.optionItemExists('Adjudicate Funded Npo');  
+      this.optionItemExists('Review Adjudicated Funded Npo'); 
       
       if (this.selectedApplication.npoWorkPlanReviewerTrackings.length > 0) {
         if (!this.selectedApplication.npoWorkPlanReviewerTrackings.some(item => item.userId === this.profile.id)) 
@@ -771,34 +775,6 @@ export class ApplicationListComponent implements OnInit {
       }
     }
 
-    // if(this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP)
-    // {
-    //   switch (this.selectedApplication.statusId) {
-    //     case StatusEnum.Saved: {
-    //       this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
-    //       this.buttonItemExists('Adjudicate Application', 'Funding Application');
-    //       this.buttonItemExists('Evaluate Application', 'Funding Application');
-    //       this.buttonItemExists('Approve Application', 'Funding Application');
-    //       this.buttonItemExists('Adjudicate Application', 'Funding Application');
-    //       this.buttonItemExists('Download Assessment', 'Workflow Application');
-    //       this.buttonItemExists('Download Application', 'Funding Application');
-    //       this.buttonItemExists('Download Workplan', 'Workplan');
-    //       this.buttonItemExists('Edit Application', 'Service Provision');
-    //       this.buttonItemExists('Review Application', 'Service Provision');
-    //       this.buttonItemExists('Approve Application', 'Service Provision');
-    //       this.buttonItemExists('Upload SLA', 'Service Provision');
-    //       this.buttonItemExists('Approve Application', 'Service Provision');
-    //       this.buttonItemExists('View Application', 'Service Provision');
-    //       this.buttonItemExists('Edit Application', 'Funded Npo');
-    //       this.buttonItemExists('Review Application', 'Funded Npo');
-    //       this.buttonItemExists('Delete Application', 'Funded Npo');
-    //       this.buttonItemExists('View Application', 'Funded Npo');
-    //       this.buttonItemExists('Download Application', 'Funded Npo');
-    //       break;
-    //     }
-    //   }
-    // }
- 
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA || (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && this.selectedApplication.applicationPeriod.departmentId !== 11)) {
 
       // Hide Service Provision actions

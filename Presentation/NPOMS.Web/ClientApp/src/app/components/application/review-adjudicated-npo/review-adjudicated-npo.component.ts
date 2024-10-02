@@ -817,10 +817,10 @@ export class ReviewAdjudicatedNpoComponent implements OnInit {
         this.socrer3OverallTotalScore = scorer3OverallTotalScores;
         this.socrer4OverallTotalScore = scorer4OverallTotalScores;
         this.allSocrerOverallTotalScore = allScorerOverallTotalScores;
-        this.scorer1OverallAvgScore = totalScoreUser1 !== 0? Number(((scorer1OverallTotalScores / totalScoreUser1)*100).toFixed(2)): 0;
-        this.scorer2OverallAvgScore = totalScoreUser2 !== 0? Number(((scorer2OverallTotalScores / totalScoreUser2)*100).toFixed(2)): 0;
-        this.scorer3OverallAvgScore = totalScoreUser3 !== 0? Number(((scorer3OverallTotalScores / totalScoreUser3)*100).toFixed(2)): 0;
-        this.scorer4OverallAvgScore = totalScoreUser4 !== 0? Number(((scorer4OverallTotalScores / totalScoreUser4)*100).toFixed(2)): 0;
+        this.scorer1OverallAvgScore = this.socrer1OverallTotalScore; //totalScoreUser1 !== 0? Number(((scorer1OverallTotalScores / totalScoreUser1)*100).toFixed(2)): 0;
+        this.scorer2OverallAvgScore = this.socrer2OverallTotalScore; //totalScoreUser2 !== 0? Number(((scorer2OverallTotalScores / totalScoreUser2)*100).toFixed(2)): 0;
+        this.scorer3OverallAvgScore = this.socrer3OverallTotalScore; //totalScoreUser3 !== 0? Number(((scorer3OverallTotalScores / totalScoreUser3)*100).toFixed(2)): 0;
+        this.scorer4OverallAvgScore = this.socrer4OverallTotalScore; // !== 0? Number(((scorer4OverallTotalScores / totalScoreUser4)*100).toFixed(2)): 0;
         this.allScorerOverallAvgScore = Number(((this.scorer1OverallAvgScore + this.scorer2OverallAvgScore + this.scorer3OverallAvgScore + this.scorer4OverallAvgScore) / 4).toFixed(2));
         
         if (isNaN(this.allScorerOverallAvgScore)) {

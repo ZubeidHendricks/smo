@@ -123,6 +123,8 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IStaffCategoryRepository, StaffCategoryRepository>();
             services.AddScoped<ICalculationTypeRepository, CalculationTypeRepository>();
             services.AddScoped<IFundingTypeRepository, FundingTypeRepository>();
+            services.AddScoped<IAreaRepository, AreaRepository>();
+
             /* Entities */
             services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
             services.AddScoped<IActivityRepository, ActivityRepository>();
@@ -245,6 +247,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IActivityDistrictRepository, ActivityDistrictRepository>();
             services.AddScoped<IActivityManicipalityRepository, ActivityManicipalityRepository>();
             services.AddScoped<IActivitySubDistrictRepository, ActivitySubDistrictRepository>();
+            services.AddScoped<IActivityAreaRepository, ActivityAreaRepository>();
             services.AddScoped<IActivitySubStructureRepository, ActivitySubStructureRepository>();
 
             /* Funding Management */

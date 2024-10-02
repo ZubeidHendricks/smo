@@ -345,5 +345,6 @@ namespace NPOMS.Services.Interfaces
         Task<IEnumerable<ManicipalityDemographic>> DemographicManicipalities(bool returnInactive);
         Task<IEnumerable<SubDistrictDemographic>> DemographicSubDistricts(bool returnInactive);
         Task<IEnumerable<Indicators>> Indicators(bool returnInactive);
+        Task<IEnumerable<Area>> Areas(bool returnInactive);
     }
 }

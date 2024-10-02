@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NPOMS.Domain.Mapping;
 using NPOMS.Repository.Interfaces.Mapping;
 using System;
@@ -23,11 +24,30 @@ namespace NPOMS.Repository.Implementation.Mapping
 
         #region Methods
 
+        //public async Task<ActivitySubDistrict> GetByModel(ActivitySubDistrict model)
+        //{
+        //    return await FindByCondition(x => x.ActivityId.Equals(model.ActivityId) && x.SubstructureId.Equals(model.SubstructureId) &&
+        //                                      x.SubstructureId.Equals(model.SubstructureId))
+        //                        .FirstOrDefaultAsync();
+        //}
+
+        //public async Task<ActivitySubDistrict> GetByModel(ActivitySubDistrict model)
+        //{
+        //    return await FindByCondition(x => x.ActivityId.Equals(model.ActivityId) &&
+        //                                      (string.IsNullOrEmpty(model.SubstructureId.ToString())
+        //                                          ? x.AreaId.Equals(model.AreaId)
+        //                                          : x.SubstructureId.Equals(model.SubstructureId)))
+        //                                .FirstOrDefaultAsync();
+        //}
+
         public async Task<ActivitySubDistrict> GetByModel(ActivitySubDistrict model)
         {
-            return await FindByCondition(x => x.ActivityId.Equals(model.ActivityId) && x.SubstructureId.Equals(model.SubstructureId) &&
-                                              x.SubstructureId.Equals(model.SubstructureId))
-                                .FirstOrDefaultAsync();
+            return await FindByCondition(x => x.ActivityId.Equals(model.ActivityId) &&
+                                              x.Name.Equals(model.Name) &&
+                                              (model.SubstructureId == 0
+                                                  ? x.AreaId.Equals(model.AreaId)
+                                                  : x.SubstructureId.Equals(model.SubstructureId)))
+                                        .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<ActivitySubDistrict>> GetByActivityId(int activityId, bool isActive)

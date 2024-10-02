@@ -96,7 +96,7 @@ export class ManageBusinessPlanComponent implements OnInit {
     this._applicationRepo.getApplicationsByNpoId(Number(this.npoId)).subscribe(
       (results) => {
         this.financialYears = [];
-        this.applications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.QC && x.statusId === StatusEnum.Approved);
+        this.applications = results.filter(x => x.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP && x.statusId === StatusEnum.Approved);
 
         this.applications.forEach(item => {
           var isPresent = this.financialYears.some(function (financialYear) { return financialYear === item.applicationPeriod.financialYear });

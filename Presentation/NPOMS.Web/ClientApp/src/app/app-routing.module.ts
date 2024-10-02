@@ -134,7 +134,7 @@ const routes: Routes = [
   { path: 'access-review', component: AccessReviewComponent },
 
   { path: 'quick-captures', component: QuickCaptureListComponent },
-  { path: 'quick-captures-editList/edit/:id', component: QuickCaptureEditListComponent },
+  { path: 'quick-captures-editList/edit/:id/:activeStep', component: QuickCaptureEditListComponent },
   { path: 'quick-captures-editList-doh/edit/:id', component: EditQuickCaptureDohListComponent },
   { path: 'quick-captures-doh/review/:id', component: ReviewQuickCaptureDohComponent },
   { path: 'quick-captures-doh/view/:id', component: ViewQuickCaptureDohComponent },

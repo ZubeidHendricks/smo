@@ -247,6 +247,7 @@ export interface IDistrictDemographic {
     id: number;
     name: string;
     isActive: boolean;
+    isSubParent: boolean;
     createdUserId: number;
     createdDateTime: Date;
     updatedUserId?: number | null;
@@ -256,6 +257,7 @@ export interface IDistrictDemographic {
 export interface IManicipalityDemographic {
     id: number;
     districtDemographicId: number;
+    subParentiId: number;
     name: string;
     isActive: boolean;
     createdUserId: number;
@@ -277,10 +279,20 @@ export interface ISubstructureDemographic {
     manicipalityDemographic: IManicipalityDemographic;
 }
 
+export interface IArea {
+    id: number;
+    districtId: number;
+    name: string;
+    isActive: boolean;
+    activityId: number;
+    demographicDistrictId: number;
+}
+
 
 export interface ISubDistrictDemographic {
     id: number;
     subSctrcureDemographicId: number;
+    areaId: number;
     name: string;
     isActive: boolean;
     createdUserId: number;
@@ -629,11 +641,13 @@ export interface IActivity {
     activitySubDistrict: IActivitySubDistrict[];
     activitySubStructure: IActivitySubStructure[];
     activityManicipality: IActivityManicipality[];
+    activityArea: IArea[];
 
     mappedDistrict?: any;
     mappedSubdistrict?: any;
     mappedSubstructure?: any;
     mappedManicipality?: any;
+    mappedArea?: any;
 }
 
 export interface IActivityDistrict {
@@ -658,6 +672,7 @@ export interface IActivitySubDistrict {
     substructureId: number;
     isActive: boolean;
     activityId: number;
+    areaId: number;
 }
 
 export interface IActivitySubStructure {
@@ -2066,6 +2081,8 @@ export interface INpoViewModel {
     refNo: string;
     name: string;
     cCode: string;
+    organisationTypeId: number;
+    organisationTypeName: string;
     isActive: boolean;
     npoProfileId: number;
 

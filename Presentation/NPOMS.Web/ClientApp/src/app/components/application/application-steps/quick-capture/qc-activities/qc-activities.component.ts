@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFundingApplicationDetails, IManicipalityDemographic, INpo, IObjective, IPlace, IProjectImplementation, IQuarterlyPeriod, IRecipientType, ISDA, ISubDistrictDemographic, ISubPlace, ISubProgramme, ISubstructureDemographic } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IArea, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFundingApplicationDetails, IManicipalityDemographic, INpo, IObjective, IPlace, IProjectImplementation, IQuarterlyPeriod, IRecipientType, ISDA, ISubDistrictDemographic, ISubPlace, ISubProgramme, ISubstructureDemographic } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -59,6 +59,10 @@ export class QCActivitiesComponent implements OnInit {
   rangeDates: Date[];
   timeframes: Date[] = [];
 
+  facilities: IFacilityList[];
+  facilitiesList: IFacilityList[];
+  selectedFacilities: IFacilityList[];
+
   allActivities: IActivity[];
   activeActivities: IActivity[];
   deletedActivities: IActivity[];
@@ -77,14 +81,19 @@ export class QCActivitiesComponent implements OnInit {
   rowGroupMetadata: any[];
   deletedRowGroupMetadata: any[];
 
-  facilities: IFacilityList[];
-  selectedFacilities: IFacilityList[];
   selectedFacilitiesText: string;
 
   allSubProgrammes: ISubProgramme[];
   subProgrammes: ISubProgramme[] = [];
   selectedSubProgrammes: ISubProgramme[];
 
+  allAreas : IArea[];
+  selectedAreas: IArea[];
+  AreaDemographics: IArea[];
+  
+  showSubstructureDemographics: boolean = false;  // Control visibility for Sub Structures
+  showAreaDemographics: boolean = false;  // Control visibility for Area
+  
   canEdit: boolean;
   selectedSubProgrammesText: string;
 
@@ -352,6 +361,41 @@ export class QCActivitiesComponent implements OnInit {
     );
   }
 
+  filterFacilityDistrict(selectedSubDistricts: any): void {
+    this.loadFacilities();
+    if (selectedSubDistricts && selectedSubDistricts.length > 0) {
+        // Extract LinkIds from the selected ISubDistrictDemographic objects
+        const selectedLinkIds = selectedSubDistricts.map(subDistrict => subDistrict.linkId);
+        // Filter facilities based on the selected LinkIds
+        this.facilitiesList = this.facilities.filter(facility =>
+            selectedLinkIds.includes(facility.facilitySubDistrictId)
+        );
+        // if (this.selectedFacilities.length === 0) {
+        //     this.facilities = [];
+        // }
+        
+    // let allFacilities: string = "";
+    // this.selectedFacilities.forEach(item => {
+    //   allFacilities += item.name + "\n";
+    // });
+    // this.selectedFacilitiesText = allFacilities;
+
+
+    } else {
+
+    }
+}
+
+onAreaChange() {
+  this.selectedSubDistrictDemographics = [];
+  if (this.selectedAreas && this.selectedAreas.length > 0) {
+    this.SubDistrictDemographics = this.allSubDistrictDemographics.filter(sd =>
+      this.selectedAreas.some(ss => ss.id === sd.areaId)
+    );
+  } else {
+    this.SubDistrictDemographics = [];
+  }
+}
   onDemographicDistrictChange() {
     this.selectedManicipalityDemographics = [];
     this.selectedSubstructureDemographics = [];

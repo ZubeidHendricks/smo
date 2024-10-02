@@ -4,7 +4,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IManicipalityDemographic, INpo, IObjective, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubstructureDemographic } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IArea, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IManicipalityDemographic, INpo, IObjective, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubstructureDemographic } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -56,6 +56,7 @@ export class ActivitiesComponent implements OnInit {
 
   allActivities: IActivity[];
   activeActivities: IActivity[];
+  originalActiveActivities: IActivity[];
   deletedActivities: IActivity[];
 
   activityCols: any[];
@@ -100,6 +101,7 @@ export class ActivitiesComponent implements OnInit {
 
   activityList: IActivityList[];
   selectedActivity: IActivityList;
+  SubDistrictDemographicsBeforeFilter: ISubDistrictDemographic[];
 
   maxChars = 50;
 
@@ -133,6 +135,9 @@ export class ActivitiesComponent implements OnInit {
   selectedIDistrictDemographics: IDistrictDemographic;
 
   allSubDistrictDemographics: ISubDistrictDemographic[];
+  allAreas : IArea[];
+  selectedAreas: IArea[];
+  AreaDemographics: IArea[];
   SubDistrictDemographics: ISubDistrictDemographic[];
   selectedSubDistrictDemographics: ISubDistrictDemographic[];
 
@@ -144,6 +149,9 @@ export class ActivitiesComponent implements OnInit {
   ManicipalityDemographics: IManicipalityDemographic[];
   selectedManicipalityDemographics: IManicipalityDemographic[];
 
+  showSubstructureDemographics: boolean = false;  // Control visibility for Sub Structures
+  showAreaDemographics: boolean = false;  // Control visibility for Area
+
   //activeActivities: any[] = []; // All activities
   filteredActivities: any[] = []; // Filtered activities
   filteredData: any[] = [];
@@ -151,7 +159,7 @@ export class ActivitiesComponent implements OnInit {
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
-  
+  //
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -170,48 +178,6 @@ export class ActivitiesComponent implements OnInit {
   ngOnInit(): void {
     this._spinner.show();
     this.registerCustomFilters();
-
-    // this.filterService.register('custom', (value: any, filter: any) => {
-    //   if (!filter || filter.length === 0) {
-    //       return true; // No filter applied, show all rows
-    //   }
-      
-    //   if (!value) {
-    //       return false; // No value, exclude this row
-    //   }
-    
-    //   // Extract the selected substructures or municipalities from the filter
-    //   const selectedItems = filter.map((item: any) => item.name);
-      
-    //   // Split the row value based on commas or your specific delimiter, and trim extra spaces
-    //   const rowItems = value.split(',').map((item: string) => item.trim());
-
-          
-    //   console.log('FilterdResult', rowItems);
-    
-    //   // Check if any selected item is present in the row data
-    //   const result = selectedItems.some(selectedItem => 
-    //     rowItems.includes(selectedItem)
-    //   );
-
-    //   return result;
-    // });
-    
-    
-  //   this.filterService.register('custom', (value: any, filter: any) => {
-  //     if (!filter || filter.length === 0) {
-  //         return true;
-  //     }
-  //     if (!value) {
-  //         return false; 
-  //     }
-  //     const selectedMunicipalities = filter.map((item: any) => item.name);
-  //     const rowMunicipalities = value.split(',').map((m: string) => m.trim());
-  //     const result = selectedMunicipalities.some(m => rowMunicipalities.includes(m));
-  //     return result;
-  // });
-
-
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -236,6 +202,7 @@ export class ActivitiesComponent implements OnInit {
     this.loadDemographicSubStructures();
     this.loadDemographicManicipalities();
     this.loadDemographicSubDistricts();
+    this.loadAreas();
 
     this.activityCols = [
       { header: 'Activity Name', width: '15%' },
@@ -247,6 +214,7 @@ export class ActivitiesComponent implements OnInit {
 
       { header: 'District Name', width: '10%' },
       { header: 'Municipalities', width: '10%' },
+      { header: 'Areas', width: '10%' },
       { header: 'Sub Structures ', width: '10%' },
       { header: 'Sub Districts', width: '10%' },
     ];
@@ -286,12 +254,29 @@ export class ActivitiesComponent implements OnInit {
     });
   }
 
+
   onCustomFilterChange(selectedItems: any[], field: string) {
     const filterFields = [field];
-    this.filteredData = this.filterService.filter(this.activeActivities, filterFields, selectedItems || [], 'custom');
-
+  
+    // Reset the table when no items are selected (i.e., deselect all)
+    if (!selectedItems || selectedItems.length === 0) {
+      this.filteredData = [...this.originalActiveActivities];  // Reset to the original data
+    } else {
+      // Apply the filter
+      this.filteredData = this.filterService.filter(this.originalActiveActivities, filterFields, selectedItems, 'custom');
+    }
+  
+    // Reapply filters
     this.applyCustomFilters();
   }
+  
+
+  // onCustomFilterChange(selectedItems: any[], field: string) {
+  //   const filterFields = [field];
+  //   this.filteredData = this.filterService.filter(this.activeActivities, filterFields, selectedItems || [], 'custom');
+
+  //   this.applyCustomFilters();
+  // }
   
   applyCustomFilters() {
     this.activeActivities = this.filteredData;
@@ -380,17 +365,51 @@ preventChange(event: any): void {
     );
   }
 
+  private loadAreas() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Area, false).subscribe(
+      (results) => {
+        this.allAreas = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
 // Method to handle changes when Demographic District is changed
 onDemographicDistrictChange() {
+  if(this.selectedIDistrictDemographics.isSubParent)
+  {
+    this.showSubstructureDemographics = false;
+    this.showAreaDemographics = true;
+  }
+  else {
+    this.showSubstructureDemographics = true;
+    this.showAreaDemographics = false;
+  }
+
   this.selectedManicipalityDemographics = [];
   this.selectedSubstructureDemographics = [];
   this.selectedSubDistrictDemographics = [];
+  this.selectedAreas = [];
 
   if (this.selectedIDistrictDemographics) {
     // Filter ManicipalityDemographics based on selected District
+
+  if(this.selectedIDistrictDemographics.isSubParent) {
+      this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
+        md.subParentiId === this.selectedIDistrictDemographics.id
+      );
+  } else {
     this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
       md.districtDemographicId === this.selectedIDistrictDemographics.id
     );
+  }
+
+  this.AreaDemographics = this.allAreas.filter(md =>
+    md.districtId === this.selectedIDistrictDemographics.id
+  );
 
     // Reset other arrays
     this.SubDistrictDemographics = [];
@@ -398,8 +417,32 @@ onDemographicDistrictChange() {
   } else {
     // Reset all arrays if no district is selected
     this.ManicipalityDemographics = [];
+    this.AreaDemographics = [];
     this.SubDistrictDemographics = [];
     this.SubstructureDemographics = [];
+  }
+}
+
+onAreaChange() {
+  this.selectedSubDistrictDemographics = [];
+  if (this.selectedAreas && this.selectedAreas.length > 0) {
+    this.SubDistrictDemographics = this.allSubDistrictDemographics.filter(sd =>
+      this.selectedAreas.some(ss => ss.id === sd.areaId)
+    );
+  } else {
+    this.SubDistrictDemographics = [];
+  }
+}
+
+onDemographicSubStructuresChange() {
+  this.selectedSubDistrictDemographics = [];
+  if (this.selectedSubstructureDemographics && this.selectedSubstructureDemographics.length > 0) {
+    this.SubDistrictDemographics = this.allSubDistrictDemographics.filter(sd =>
+      this.selectedSubstructureDemographics.some(ss => ss.id === sd.subSctrcureDemographicId)
+    );
+  } else {
+    // Reset all arrays if no sub-structure demographic is selected
+    this.SubDistrictDemographics = [];
   }
 }
 
@@ -421,19 +464,6 @@ onDemographicManicipalitiesChange() {
   }
 }
 
-onDemographicSubStructuresChange() {
-  this.selectedSubDistrictDemographics = [];
-
-  if (this.selectedSubstructureDemographics && this.selectedSubstructureDemographics.length > 0) {
-    // Filter SubDistrictDemographics based on selected SubstructureDemographics
-    this.SubDistrictDemographics = this.allSubDistrictDemographics.filter(sd =>
-      this.selectedSubstructureDemographics.some(ss => ss.id === sd.subSctrcureDemographicId)
-    );
-  } else {
-    // Reset all arrays if no sub-structure demographic is selected
-    this.SubDistrictDemographics = [];
-  }
-}
 
   private loadFacilitySubStructures() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubStructure, false).subscribe(
@@ -561,8 +591,11 @@ onDemographicSubStructuresChange() {
           item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),
           item.mappedManicipality = this.getSubDistrictNames(item?.activityManicipality),
           item.mappedSubstructure = this.getSubDistrictNames(item?.activitySubStructure),
-          item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict)
+          item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict),
+          item.mappedArea =this.getSubDistrictNames(item?.activityArea)
         });
+
+        this.originalActiveActivities =  this.activeActivities;
 
         this.getFacilityListText(results);
         this.updateRowGroupMetaData();
@@ -729,6 +762,31 @@ onDemographicSubStructuresChange() {
       this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
         md.districtDemographicId === this.selectedIDistrictDemographics.id
       );
+
+      this.AreaDemographics = this.allAreas.filter(md =>
+        md.districtId === this.selectedIDistrictDemographics.id
+      );
+
+      if(this.selectedIDistrictDemographics.isSubParent)
+        {
+          this.showSubstructureDemographics = false;
+          this.showAreaDemographics = true;
+        }
+        else {
+          this.showSubstructureDemographics = true;
+          this.showAreaDemographics = false;
+        }
+
+      if(this.selectedIDistrictDemographics.isSubParent) {
+        this.ManicipalityDemographics = this.allManicipalityDemographics
+        ?.filter(md =>
+          md.subParentiId === this.selectedIDistrictDemographics.id
+        );
+        } else {
+          this.ManicipalityDemographics = this.allManicipalityDemographics?.filter(md =>
+            md.districtDemographicId === this.selectedIDistrictDemographics.id
+          );
+        }
       this.SubDistrictDemographics = [];
       this.SubstructureDemographics = [];
     } else {
@@ -738,27 +796,43 @@ onDemographicSubStructuresChange() {
     }
 
     const demographicDistrictIds = data?.activityManicipality?.map(({ demographicDistrictId }) => demographicDistrictId);
-    this.selectedManicipalityDemographics = this.ManicipalityDemographics.filter(item =>
+    this.selectedManicipalityDemographics = this.ManicipalityDemographics?.filter(item =>
         demographicDistrictIds.includes(item.districtDemographicId) && 
         data.activityManicipality.some(({ name }) => name === item.name)
     );
+    const demographicDistrictIds1 = data?.activityArea?.map(({ demographicDistrictId }) => demographicDistrictId);
+    this.selectedAreas = this.AreaDemographics?.filter(item =>
+      demographicDistrictIds1.includes(item.districtId) && 
+        data.activityArea?.some(({ name }) => name === item.name)
+    );
     
     this.onDemographicManicipalitiesChange();
+    if(this.selectedIDistrictDemographics?.isSubParent) {
+      this.onAreaChange();
+      }
 
     const subStructureIds = data?.activitySubStructure?.map(({ municipalityId }) => municipalityId);
-    this.selectedSubstructureDemographics = this.SubstructureDemographics.filter(item =>
+    this.selectedSubstructureDemographics = this.SubstructureDemographics?.filter(item =>
         subStructureIds.includes(item.manicipalityDemographicId) && 
         data.activitySubStructure.some(({ name }) => name === item.name)
     );
+    if(!this.selectedIDistrictDemographics?.isSubParent) {
+      this.onDemographicSubStructuresChange();
+      }
+    const substructureId = data?.activitySubDistrict?.map(({ substructureId }) => substructureId);
+    const areaid = data?.activitySubDistrict?.map(({ areaId }) => areaId);
 
-    this.onDemographicSubStructuresChange();
-
-    const subDistrictIds = data?.activitySubDistrict?.map(({ substructureId }) => substructureId);
-    this.selectedSubDistrictDemographics = this.SubDistrictDemographics.filter(item =>
-    subDistrictIds.includes(item.subSctrcureDemographicId) && 
-    data.activitySubDistrict.some(({ name }) => name === item.name)
-   );
-
+    if(areaid.length > 0) {
+      this.selectedSubDistrictDemographics = this.SubDistrictDemographics?.filter(item =>
+        areaid.includes(item.areaId) && 
+      data.activitySubDistrict.some(({ name }) => name === item.name)
+     );
+    }else{
+      this.selectedSubDistrictDemographics = this.SubDistrictDemographics?.filter(item =>
+        substructureId.includes(item.subSctrcureDemographicId) && 
+      data.activitySubDistrict.some(({ name }) => name === item.name)
+     );
+    }
     return activity;
   }
 
@@ -894,7 +968,7 @@ if (this.selectedIDistrictDemographics) {
     demographicDistrictId: this.selectedIDistrictDemographics.id,
     name: this.selectedIDistrictDemographics.name,
     isActive: this.selectedIDistrictDemographics.isActive,
-    activityId: this.activity.id
+    activityId: this.activity.id,
   } as IActivityDistrict;
 
 //   // Push the object into the array
@@ -908,7 +982,7 @@ if (this.selectedIDistrictDemographics) {
       demographicDistrictId: item.districtDemographicId,
       name: item.name,
       isActive: item.isActive,
-      activityId: this.activity.id
+      activityId: this.activity.id,
     } as IActivityManicipality;
 
     this.activity.activityManicipality.push(activityManicipality);
@@ -920,22 +994,46 @@ if (this.selectedIDistrictDemographics) {
       name: item.name,
       municipalityId: item.manicipalityDemographicId,
       isActive: item.isActive,
-      activityId: this.activity.id
+      activityId: this.activity.id,
     } as IActivitySubStructure;
 
     this.activity.activitySubStructure.push(selectedSubStructure);
   });
   
+  this.activity.activityArea = [];
+  this.selectedAreas.forEach(item => {
+    let selectedArea = {
+      name: item.name,
+      isActive: item.isActive,
+      activityId: this.activity.id,
+      demographicDistrictId: item.districtId,
+    } as IArea;
+
+    this.activity.activityArea.push(selectedArea);
+  });
+  
+
   this.activity.activitySubDistrict = [];
   this.selectedSubDistrictDemographics.forEach(item => {
-    let selectedSubDistrict = {
-      name: item.name,
-      substructureId: item.subSctrcureDemographicId,
-      isActive: item.isActive,
-      activityId: this.activity.id
-    } as IActivitySubDistrict;
-
-    this.activity.activitySubDistrict.push(selectedSubDistrict);
+    if(item.areaId > 0)
+    {
+      let selectedSubDistrict = {
+        name: item.name,
+        areaId: item.areaId,
+        isActive: item.isActive,
+        activityId: this.activity.id
+      } as IActivitySubDistrict;
+      this.activity.activitySubDistrict.push(selectedSubDistrict);
+    }
+    else {
+      let selectedSubDistrict = {
+        name: item.name,
+        substructureId: item.subSctrcureDemographicId,
+        isActive: item.isActive,
+        activityId: this.activity.id
+      } as IActivitySubDistrict;
+      this.activity.activitySubDistrict.push(selectedSubDistrict);
+    }
   });
 
 
@@ -1152,7 +1250,7 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
   }
 
   public getColspan() {
-    return this.application.isCloned && this.isReview ? 11 : 14;
+    return this.application.isCloned && this.isReview ? 12 : 15;
   }
 
   public viewDeletedActivities() {
