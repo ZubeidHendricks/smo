@@ -167,7 +167,7 @@ namespace NPOMS.Services.Implementation
             ISegmentCodeRepository segmentCodeRepository,
             IFacilitySubStructureRepository facilitySubStructuresRepository,
             IIndicatorRepository indicatorRepository,
-            IQuarterlyPeriodRepository quarterPeriodRepository
+            IQuarterlyPeriodRepository quarterPeriodRepository,
             IAreaRepository areaRepository)
         {
             _mapper = mapper;
@@ -1818,9 +1818,5 @@ namespace NPOMS.Services.Implementation
         {
             return await _areaRepository.GetEntities(returnInactive);
         }
-
-        #endregion
-
-            #endregion
     }
 }
