@@ -30,6 +30,7 @@ export class UtilitiesComponent implements OnInit {
   systemAdminUtilities: IUtility[];
   utilities: IUtility[];
   evaluationUtilities: IUtility[];
+  performanceUtilities: IUtility[];
   isSystemAdmin: boolean = false;
 
   constructor(
@@ -62,6 +63,7 @@ export class UtilitiesComponent implements OnInit {
         this.systemAdminUtilities = results.filter(x => x.systemAdminUtility === true);
         this.utilities = results.filter(x => x.systemAdminUtility === false && x.isActive && !x.name.includes('Question') && !x.name.includes('Response') && !x.name.includes('Assessments'));
         this.evaluationUtilities = results.filter(x => x.systemAdminUtility === false && x.isActive && (x.name.includes('Question') || x.name.includes('Response') || x.name.includes('Assessments')));
+        this.performanceUtilities = results.filter(x => x.systemAdminUtility === false && x.isActive && (x.name.includes('Performance')));
      
         this._spinner.hide();
       },

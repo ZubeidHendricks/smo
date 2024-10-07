@@ -1,6 +1,4 @@
 
-
-
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Console } from 'console';
@@ -10,9 +8,8 @@ import { Subscription } from 'rxjs';
 import { FinancialMatters, IFinancialMattersIncome } from 'src/app/models/FinancialMatters';
 import { ApplicationTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, FundingApplicationStepsEnum, NPOReportingStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, 
-  IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, 
-  IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser,
-  IDistrictCouncil,ILocalMunicipality,IRegion, IFundAppSDADetail } from 'src/app/models/interfaces';
+  IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, 
+  IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser, } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -24,12 +21,12 @@ import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo
 
 
 @Component({
-  selector: 'app-npo-report-capture',
-  templateUrl: './npo-report-capture.component.html',
-  styleUrls: ['./npo-report-capture.component.css'],
+  selector: 'app-report-review',
+  templateUrl: './report-review.component.html',
+  styleUrls: ['./report-review.component.css'],
   providers: [MessageService, ConfirmationService]
 })
-export class NpoReportCaptureComponent implements OnInit {
+export class ReportReviewComponent implements OnInit {
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -168,8 +165,6 @@ export class NpoReportCaptureComponent implements OnInit {
     );
   }
 
- 
-
   private loadCreatedUser() {
     this._userRepo.getUserById(this.application.createdUserId).subscribe(
       (results) => {
@@ -299,13 +294,13 @@ export class NpoReportCaptureComponent implements OnInit {
   private buildMenu() {
     if (this.profile) {
       this.menuActions = [
-        // {
-        //   label: 'Validate',
-        //   icon: 'fa fa-check',
-        //   command: () => {
-        //     this.formValidate();
-        //   }
-        // },
+        {
+          label: 'Validate',
+          icon: 'fa fa-check',
+          command: () => {
+            this.formValidate();
+          }
+        },
         {
           label: 'Clear Messages',
           icon: 'fa fa-undo',

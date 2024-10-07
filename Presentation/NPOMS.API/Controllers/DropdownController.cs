@@ -51,6 +51,10 @@ namespace NPOMS.API.Controllers
             {
                 switch (dropdownType)
                 {
+                    case DropdownTypeEnum.LowLevelNPO:
+                        var npoindicators = await _dropdownService.NPOIndicators(returnInactive);
+                        return Ok(npoindicators);
+
                     case DropdownTypeEnum.Roles:
                         var roles = await _dropdownService.GetRoles(returnInactive);
                         return Ok(roles);

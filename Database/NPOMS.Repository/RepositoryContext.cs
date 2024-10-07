@@ -105,6 +105,7 @@ namespace NPOMS.Repository
         public DbSet<FrequencyPeriod> FrequencyPeriods { get; set; }
         public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
         public DbSet<Indicators> Indicators { get; set; }
+        public DbSet<NPOIndicators> NPOIndicators { get; set; }   
         public DbSet<Directorate> Directorates { get; set; }
         public DbSet<Bank> Banks { get; set; }
         public DbSet<Domain.Entities.BankDetail> BankDetail { get; set; }

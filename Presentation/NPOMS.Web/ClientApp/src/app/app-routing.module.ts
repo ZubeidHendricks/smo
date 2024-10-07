@@ -113,6 +113,8 @@ import { EditFundingCaptureComponent } from './components/funding-capture/edit-f
 import { ApproveFundingCaptureComponent } from './components/funding-capture/approve-funding-capture/approve-funding-capture.component';
 import { ViewFundingCaptureComponent } from './components/funding-capture/view-funding-capture/view-funding-capture.component';
 import { NpoReportCaptureComponent } from './reporting/npo-report-capture/npo-report-capture.component';
+import { ReportReviewComponent } from './reporting/report-review/report-review.component';
+import { IndicatorImportComponent } from './reporting/indicator-import/indicator-import.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -155,6 +157,10 @@ const routes: Routes = [
   { path: 'qcOpenApplicationDohList', component: QcApplicationPeriodsDohComponent },
 
   { path: 'reports/:id', component: NpoReportCaptureComponent },
+  { path: 'reviewReports/:id', component: ReportReviewComponent },
+  { path: 'utilities/importReports', component: IndicatorImportComponent },
+
+  
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },

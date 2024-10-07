@@ -1,15 +1,20 @@
 ﻿using Azure.Identity;
 using Azure.Storage.Files.DataLake;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using NPOMS.Domain.Core;
+using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.ResourceParameters;
+using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Extensions;
 using NPOMS.Services.Interfaces;
+using OfficeOpenXml;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -30,7 +35,7 @@ namespace NPOMS.API.Controllers
         private IFundAppDocumentRepository _fundAppDocumentRepository;
         private dtoBlobConfig _blobConfiguration;
         private IFundingApplicationDetailsRepository _fundingApplicationDetailsRepository;
-
+        private IIndicatorService _indicatorService;
 
         #endregion
 
@@ -41,7 +46,8 @@ namespace NPOMS.API.Controllers
 			IDocumentStoreService documentStoreService,
             IFundAppDocumentRepository fundAppDocumentRepository,
             IFundingApplicationDetailsRepository fundingApplicationDetailsRepository,
-			dtoBlobConfig blobConfiguration
+			dtoBlobConfig blobConfiguration,
+            IIndicatorService indicatorService
             )
 		{
 			_logger = logger;
@@ -49,6 +55,7 @@ namespace NPOMS.API.Controllers
             _fundAppDocumentRepository = fundAppDocumentRepository;
             _fundingApplicationDetailsRepository = fundingApplicationDetailsRepository;
 			_blobConfiguration = blobConfiguration;
+            _indicatorService = indicatorService;
 		}
 
 		#endregion
@@ -298,6 +305,186 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		#endregion
-	}
+        [HttpPost("uploadIndicator/{year}", Name = "UploadIndicator"), DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadIndicators(string year)
+        {
+            SqlParameter param = new SqlParameter();
+            SqlParameter param1 = new SqlParameter();
+
+            var file = Request.Form.Files[0];
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file was uploaded.");
+            }
+
+            FileInfo fileName = new FileInfo(file.FileName);
+
+            try
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                using (ExcelPackage package = new ExcelPackage(file.OpenReadStream()))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                    int rowCount = worksheet.Dimension.End.Row;
+                    int colCount = worksheet.Dimension.End.Column;
+                    var list = new List<string>();
+                    List<Indicators> rows = new List<Indicators>();
+                    List<List<string>> data1 = new List<List<string>>();
+
+                    string dataImportId = DateTime.Now.ToString("HH:mm:ss").Replace("-", "")
+                       .Replace(" ", "")
+                       .Replace(":", "");
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        List<string> rowValues = new List<string>();
+                        for (int col = 1; col <= colCount; col++)
+                        {
+                            string cellValue = worksheet.Cells[row, col].Value?.ToString() ?? "";
+                            rowValues.Add(cellValue);
+                        }
+                        data1.Add(rowValues);
+                    }
+
+                    var data = new List<Indicators>();
+                    foreach (var r in data1)
+                    {
+                        var dtoRow = new Indicators();
+                        if (!String.IsNullOrEmpty(r.First()))
+                        {
+                            dtoRow.SubProgrammeTypeId =  Convert.ToInt32(r[0]);
+                            dtoRow.IndicatorValue = r[1];
+                            dtoRow.IndicatorDesc = r[2];
+                            dtoRow.OutputTitle = r[3];
+                           dtoRow.AnnualTarget = r[4];
+                            dtoRow.Q1 = r[5];
+                            dtoRow.Q2 = r[6];
+                            dtoRow.Q3 = r[7];
+                            dtoRow.Q4 = r[8];
+                            dtoRow.ShortDefinition = r[9];
+                            dtoRow.Purpose = r[10];
+                            dtoRow.KeyBeneficiaries = r[11];
+                            dtoRow.SourceOfData = r[12];
+                            dtoRow.DataLimitations = r[13];
+                            dtoRow.Assumptions = r[14];
+                            dtoRow.MeansOfVerification = r[15];
+                            dtoRow.MethodOfCalculation = r[16];
+                            dtoRow.CalculationType = r[17];
+                            dtoRow.ReportingCycle = r[18];
+                            dtoRow.DesiredPerformance = r[19];
+                            dtoRow.TypeOfIndicatorServiceDelivery = r[20];
+                            dtoRow.TypeOfIndicatorDemandDriven = r[21];
+                            dtoRow.TypeOfIndicatorStandard = r[22];
+                            dtoRow.SpatialLocationOfIndicator = r[23];
+                            dtoRow.IndicatorResponsibility = r[24];
+                            dtoRow.SpatialTransformation = r[25];
+                            dtoRow.DisaggregationOfBeneficiaries = r[26];
+                            dtoRow.PSIP = r[27];
+                            dtoRow.ImplementationData = r[28];
+                               dtoRow.IsActive = Convert.ToBoolean(r[29]);
+
+                            //dtoRow.DataImportId = Convert.ToInt32(dataImportId);
+                        }
+                        dtoRow.Year = year;
+                        data.Add(dtoRow);
+                    }
+                    await this._indicatorService.loadindicatorsAsync(data);
+                    //await this._mainDBContext.SaveChangesAsync();
+
+                    //param.ParameterName = "@DataImportId";
+                    //param.Value = dataImportId;
+
+                    //await this._mainDBContext.Database.ExecuteSqlRawAsync("exec dbo.DeletePaymentImport @DataImportId", param);
+
+                    //await this._mainDBContext.Database.ExecuteSqlRawAsync("exec dbo.DeletePaymentImportSampling @DataImportId", param);
+                }
+            }
+            catch (IOException ex)
+            {
+                return BadRequest($"Error reading EXCEL file: {ex.Message}");
+            }
+
+            return Ok("File inserted successfully in DB table.");
+        }
+
+
+        [HttpPost("npouploadIndicator/{year}", Name = "NPOUploadIndicator"), DisableRequestSizeLimit]
+        public async Task<IActionResult> NPOUploadIndicators(string year)
+        {
+            SqlParameter param = new SqlParameter();
+            SqlParameter param1 = new SqlParameter();
+
+            var file = Request.Form.Files[0];
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file was uploaded.");
+            }
+
+            FileInfo fileName = new FileInfo(file.FileName);
+
+            try
+            {
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                using (ExcelPackage package = new ExcelPackage(file.OpenReadStream()))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                    int rowCount = worksheet.Dimension.End.Row;
+                    int colCount = worksheet.Dimension.End.Column;
+                    var list = new List<string>();
+                    List<NPOIndicators> rows = new List<NPOIndicators>();
+                    List<List<string>> data1 = new List<List<string>>();
+
+                    string dataImportId = DateTime.Now.ToString("HH:mm:ss").Replace("-", "")
+                       .Replace(" ", "")
+                       .Replace(":", "");
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        List<string> rowValues = new List<string>();
+                        for (int col = 1; col <= colCount; col++)
+                        {
+                            string cellValue = worksheet.Cells[row, col].Value?.ToString() ?? "";
+                            rowValues.Add(cellValue);
+                        }
+                        data1.Add(rowValues);
+                    }
+
+                    var data = new List<NPOIndicators>();
+                    foreach (var r in data1)
+                    {
+                        var dtoRow = new NPOIndicators();
+                        if (!String.IsNullOrEmpty(r.First()))
+                        {
+                            dtoRow.Ccode = (r[0]);
+                            dtoRow.OrganisationName = r[1];
+                            dtoRow.Programme = r[2];
+                            dtoRow.SubprogrammeType = r[3];
+                            dtoRow.IndicatorId = r[4];
+                            dtoRow.Year = r[5];
+                            dtoRow.AnnualTarget = r[6];
+                            dtoRow.Q1 = r[7];
+                            dtoRow.Q2 = r[8];
+                            dtoRow.Q3 = r[9];
+                            dtoRow.Q4 = r[10];
+                            dtoRow.IsActive = Convert.ToBoolean(r[11]);
+                        }
+                        dtoRow.Year = year;
+                        data.Add(dtoRow);
+                    }
+                    await this._indicatorService.loadNPOindicatorsAsync(data);
+                  }
+            }
+            catch (IOException ex)
+            {
+                return BadRequest($"Error reading EXCEL file: {ex.Message}");
+            }
+
+            return Ok("File inserted successfully in DB table.");
+        }
+
+
+
+       
+        #endregion
+    }
 }

@@ -1,4 +1,5 @@
-﻿using NPOMS.Domain.Entities;
+﻿using NPOMS.Domain.Dropdown;
+using NPOMS.Domain.Entities;
 using NPOMS.Domain.Indicator;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -57,5 +58,8 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateIndicatorReportEntity(IndicatorReport model, string currentUserId);
         Task UpdateIndicatorReportEntityQC(IndicatorReport model, int currentUserId);
+        Task loadindicatorsAsync(List<Indicators> data);
+
+        Task loadNPOindicatorsAsync(List<NPOIndicators> data);
     }
 }

@@ -1,0 +1,166 @@
+<p-panel header="File Upload - Staging">
+    <div>
+        <table style="width: 100%; padding-top: 4px; padding-bottom: 4px; border: 1px solid grey;">
+          <tr>
+            <td style="width: 50%;"><b>&nbsp;Sub Programme Types APP indicators</b></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="input-container" style="margin-top: 8px;">
+                <p-dropdown 
+                  [options]="financialYears" 
+                  placeholder="Select a Financial Year" 
+                  optionLabel="name" 
+                  [(ngModel)]="selectedFinancialYear" 
+                  [ngModelOptions]="{standalone: true}" 
+                  style="width: 120%; margin-left: 8px;" 
+                  appendTo="body" 
+                  (onChange)="financialYearChange()">
+                </p-dropdown>      
+              </div>
+            </td>
+            <td>
+              <div class="input-container">
+                <p-fileUpload 
+                  #form 
+                  name="350[]" 
+                  customUpload="true" 
+                  (uploadHandler)="onUploadIndicator($event, form)" 
+                  [showCancelButton]="false" 
+                  chooseLabel="Browse" 
+                  class="align-inputs" 
+                 > 
+                </p-fileUpload>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      
+      <br>
+      
+      <div>
+        <table style="width: 100%; padding-top: 4px; padding-bottom: 4px; border: 1px solid grey;">
+          <tr>
+            <td style="width: 50%;"><b>&nbsp;NPO Level APP indicators</b></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="input-container" style="margin-top: 8px;">
+                <p-dropdown 
+                  [options]="financialYears" 
+                  placeholder="Select a Financial Year" 
+                  optionLabel="name" 
+                  [(ngModel)]="selectedFinancialYear" 
+                  [ngModelOptions]="{standalone: true}" 
+                  style="width: 120%; margin-left: 8px;" 
+                  appendTo="body" 
+                  (onChange)="financialYearChange()">
+                </p-dropdown>      
+              </div>
+            </td>
+            <td>
+              <div class="input-container">
+                <p-fileUpload 
+                  #form 
+                  name="350[]" 
+                  customUpload="true" 
+                  (uploadHandler)="onUploadNPOLevel($event, form)" 
+                  [showCancelButton]="false" 
+                  chooseLabel="Browse" 
+                  class="align-inputs" 
+                  style="margin-right: 16px;"> <!-- Increased margin-right -->
+                </p-fileUpload>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      
+      
+      
+      
+      
+      
+      
+      
+        <div>
+      </div>
+</p-panel>
+
+
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Performance Information">
+    <div style="height: 10px;"></div>
+    <p-tabView>
+        <p-tabPanel header="Low level Indicators">
+            <p-table [rowHover]="true" [columns]="indicatorCols"  [value]="indicators"  styleClass="p-datatable-sm">
+                  <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="width: 5%;"></th>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                    <tr class="default-font">
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td>{{rowData.indicatorValue}}</td>
+                        <td>{{rowData.outputTitle}}</td>
+                        <td>{{rowData.indicatorDesc}}</td>
+                        <td>{{rowData.annualTarget}}</td>
+                        <td>{{rowData.q1}}</td>
+                        <td>{{rowData.q2}}</td>
+                        <td>{{rowData.q3}}</td>
+                        <td>{{rowData.q4}}</td>
+                        <td> {{rowData.shortDefinition}}</td>
+                        <td>{{rowData.purpose}}</td>
+                        <td style="text-align: center;">
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="12" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="NPO Indicators">
+            <p-table [rowHover]="true" [columns]="NPOindicatorCols"  [value]="npoIndicators"  styleClass="p-datatable-sm">
+                  <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="width: 5%;"></th>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                    <tr class="default-font">
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td>{{rowData.ccode}}</td>
+                        <td>{{rowData.organisationName}}</td>
+                        <td>{{rowData.programme}}</td>
+                        <td>{{rowData.subprogrammeType}}</td>
+                        <td> {{rowData.indicatorId}}</td>
+                        <td>{{rowData.year}}</td>
+                        <td>{{rowData.annualTarget}}</td>
+                        <td>{{rowData.q1}}</td>
+                        <td>{{rowData.q2}}</td>
+                        <td>{{rowData.q3}}</td>
+                        <td>{{rowData.q4}}</td>
+                        <td style="text-align: center;">
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="12" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+    </p-tabView>
+</p-panel>

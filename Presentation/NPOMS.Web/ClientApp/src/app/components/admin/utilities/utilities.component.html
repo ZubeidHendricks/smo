@@ -24,3 +24,11 @@
         </a>
     </div>
 </p-panel>
+<p-panel header="Performance Management utilities" [toggleable]="false" [style]="{'font-size':'12px'}">
+    <div class="row">
+        <a class="tile text-dark" *ngFor="let tile of performanceUtilities" (click)="redirectToUtility(tile)">
+            <p class="heading">{{tile.name}}</p>
+            <p>{{tile.description}}</p>
+        </a>
+    </div>
+</p-panel>

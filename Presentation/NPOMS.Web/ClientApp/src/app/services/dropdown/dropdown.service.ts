@@ -227,7 +227,10 @@ export class DropdownService {
       case DropdownTypeEnum.Places:
         data = this._http.get<IPlace[]>(url, httpOptions);
         break;
-        case DropdownTypeEnum.Indicator:
+      case DropdownTypeEnum.Indicator:
+          data = this._http.get<IIndicator[]>(url, httpOptions);
+          break;
+      case DropdownTypeEnum.LowLevelNPO:
           data = this._http.get<IIndicator[]>(url, httpOptions);
           break;
     }

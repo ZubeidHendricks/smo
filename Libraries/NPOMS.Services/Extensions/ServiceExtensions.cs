@@ -91,6 +91,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IManicipalityDemographicRepository, ManicipalityDemographicRepository>();
             services.AddScoped<ISubDistrictDemographicRepository, SubDistrictDemographicRepository>();
             services.AddScoped<IIndicatorRepository, IndicatorRepository>();
+            services.AddScoped<INPOIndicatorRepository, NPOIndicatorRepository>();
             services.AddScoped<IFacilityTypeRepository, FacilityTypeRepository>();
             services.AddScoped<IOrganisationTypeRepository, OrganisationTypeRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();

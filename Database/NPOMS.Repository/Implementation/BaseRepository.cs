@@ -133,11 +133,17 @@ namespace NPOMS.Repository.Implementation
 			await this.RepositoryContext.SaveChangesAsync();
 		}
 
-		public void InsertMultiItemsAsync(List<T> entity)
+		public async Task InsertMultiItemsAsync(List<T> entity)
 		{
-			this.RepositoryContext.Set<T>().AddRange(entity);
-			this.RepositoryContext.SaveChangesAsync();
-		}
+			try {
+                this.RepositoryContext.Set<T>().AddRange(entity);
+                await this.RepositoryContext.SaveChangesAsync();
+            }
+			catch (Exception ex)
+			{
+				return;
+			}
+        }
 
 
 		public async Task UpdateAsync(T entity)

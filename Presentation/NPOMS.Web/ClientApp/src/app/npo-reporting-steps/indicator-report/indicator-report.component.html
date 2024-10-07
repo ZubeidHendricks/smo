@@ -360,16 +360,7 @@
             <input type="text" class="form-text" pInputText [(ngModel)]="actual.adjustedVariance" [ngModelOptions]="{standalone: true}">
         </div>
     </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Click to upload a document</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
-        </div>
-    </div>
+
     <ng-template pTemplate="footer" >
         <button  pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o"  (click)="saveActual(actual)"></button>
        </ng-template>

@@ -90,5 +90,10 @@ namespace NPOMS.Repository.Implementation.Dropdown
         {
             throw new NotImplementedException();
         }
+
+        Task IBaseRepository<SubDistrictDemographic>.InsertMultiItemsAsync(List<SubDistrictDemographic> entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

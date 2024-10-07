@@ -521,6 +521,17 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+        this.buttonItems[0].items.push({
+          label: 'Review Report',
+          target: 'Funded Npo',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('reviewReports/' + this.selectedApplication.id);
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.EditApplication)) {
         this.buttonItems[0].items.push({
           label: 'Edit Application',
@@ -635,7 +646,7 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('Businessplan Indicators'); 
       this.optionItemExists('BusinessPlan Summary');  
       this.optionItemExists('Adjudicate Funded Npo'); 
-      this.optionItemExists('Reports');  
+      this.optionItemExists('Quartery Perfomance Capture');  
       this.optionItemExists('Review Adjudicated Funded Npo');
     }
 
@@ -1080,7 +1091,7 @@ export class ApplicationListComponent implements OnInit {
       // this.IsAuthorized(PermissionsEnum.AdjudicateFundedNpo)
       if (true) {
         this.optionItems[0].items.push({
-          label: 'Reports',
+          label: 'Quartery Perfomance Capture',
           icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl('reports/' + this.selectedApplication.id);

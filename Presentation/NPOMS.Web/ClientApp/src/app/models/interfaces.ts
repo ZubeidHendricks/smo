@@ -536,6 +536,23 @@ export interface IIndicator {
     implementationData: string;
   }
 
+  export interface INPOIndicator {
+    id: number;
+    year: string;
+    ccode: string;
+    organisationName : string;
+    outputTitle : string;
+    annualTarget: number;
+    q1: string;
+    q2: string;
+    q3: string;
+    q4: string;
+    programme: string;
+    subprogrammeType: string;
+    indicatorId: string;
+
+  }
+
   export interface IActuals {
     id: number;
     programmeId: number;

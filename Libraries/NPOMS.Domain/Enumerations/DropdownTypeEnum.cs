@@ -67,6 +67,7 @@
         DemographicManicipality = 63,
         DemographicSubDistrict = 64,
 		Area = 65,
-		Indicator = 66
+		Indicator = 66,
+        LowLevelNPO = 67
     }
 }

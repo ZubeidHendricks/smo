@@ -4,13 +4,13 @@ using NPOMS.Repository.Interfaces.Dropdown;
 
 namespace NPOMS.Repository.Implementation.Dropdown
 {
-    public class IndicatorRepository : BaseRepository<Indicators>, IIndicatorRepository
+    public class NPOIndicatorRepository : BaseRepository<NPOIndicators>, INPOIndicatorRepository
     {
-        public IndicatorRepository(RepositoryContext repositoryContext) : base(repositoryContext)
+        public NPOIndicatorRepository(RepositoryContext repositoryContext) : base(repositoryContext)
         {
         }
 
-        public async Task<IEnumerable<Indicators>> GetEntities(bool returnInactive)
+        public async Task<IEnumerable<NPOIndicators>> GetEntities(bool returnInactive)
         {
             if (returnInactive)
             {
@@ -27,9 +27,9 @@ namespace NPOMS.Repository.Implementation.Dropdown
             }
         }
 
-        public async Task loadindicatorsAsync(List<Indicators> data)
+        public async Task loadindicatorsAsync(List<NPOIndicators> data)
         {
-             await InsertMultiItemsAsync(data);
+            await InsertMultiItemsAsync(data);
         }
     }
 }

@@ -94,6 +94,7 @@ namespace NPOMS.Services.Implementation
         private IManicipalityDemographicRepository _manicipalityDemographicRepository;
         private ISubDistrictDemographicRepository _subDistrictDemographicRepository;
         private IIndicatorRepository _indicatorRepository;
+        private INPOIndicatorRepository _npoindicatorRepository;
         private IQuarterlyPeriodRepository _quarterPeriodRepository;
         private IAreaRepository _areaRepository;
         #endregion
@@ -168,6 +169,7 @@ namespace NPOMS.Services.Implementation
             IFacilitySubStructureRepository facilitySubStructuresRepository,
             IIndicatorRepository indicatorRepository,
             IQuarterlyPeriodRepository quarterPeriodRepository,
+            INPOIndicatorRepository npoindicatorRepository,
             IAreaRepository areaRepository)
         {
             _mapper = mapper;
@@ -238,6 +240,8 @@ namespace NPOMS.Services.Implementation
             _indicatorRepository = indicatorRepository;
             _quarterPeriodRepository = quarterPeriodRepository;
             _areaRepository = areaRepository;
+            _npoindicatorRepository = npoindicatorRepository;
+
         }
 
         #endregion
@@ -1811,8 +1815,13 @@ namespace NPOMS.Services.Implementation
             return results;
         }
 
+        public async Task<IEnumerable<NPOIndicators>> NPOIndicators(bool returnInactive)
+        {
+            var results = await _npoindicatorRepository.GetEntities(returnInactive);
+            return results;
+        }
         #endregion
-        
+
         #endregion
         public async Task<IEnumerable<Area>> Areas(bool returnInactive)
         {

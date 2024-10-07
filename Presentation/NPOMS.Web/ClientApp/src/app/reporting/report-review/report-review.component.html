@@ -1,14 +1,11 @@
- <p-toast></p-toast>
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="NPO Quartely Performance Report">
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="NPO Reporting">
     <div class="p-grid">
         <div class="p-col-fixed"></div>
         <div class="p-col">
         </div>
     </div>
 
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
-        *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
-        <div style="height: 20px;"></div>
     <p-accordion  *ngIf="isApplicationAvailable">
  
         <p-accordionTab header="Section 1: Indicator Report">
@@ -35,10 +32,8 @@
         </p-accordionTab>
 
       
-   
+        <!-- <p-accordionTab header="Quartely SDIP Reporting">
+            <app-quarterly-sdip-reporting-report [application]="application"></app-quarterly-sdip-reporting-report>
+        </p-accordionTab>  -->
     </p-accordion>
-    <div style="height: 20px;"></div>
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
-    *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
-    <div style="height: 10px;"></div>
 </p-panel>

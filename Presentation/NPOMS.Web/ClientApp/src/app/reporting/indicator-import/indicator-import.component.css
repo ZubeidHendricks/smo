@@ -1,0 +1,45 @@
+.input-container {
+    width: 100%; /* Ensures both components take full width */
+    display: flex; /* Use flexbox to control alignment */
+    flex-direction: column; /* Align items vertically */
+  }
+  
+  .align-inputs {
+    width: 100%; /* Ensures both components take full width */
+    box-sizing: border-box; /* Include padding and border in element's total width */
+  }
+  
+  .p-fileupload {
+    width: 100%; /* Ensures file upload takes full width */
+    max-width: 100%; /* Prevents overflow */
+    height: 38px; /* Set a specific height to match the dropdown */
+  }
+  
+  .p-fileupload .p-fileupload-button {
+    height: 38px; /* Ensure button height matches the desired height */
+    line-height: 1; /* Normalize line height */
+  }
+  
+  .p-fileupload .p-fileupload-input {
+    height: 38px; /* Set the height to match your dropdown */
+    width: calc(100% - 16px); /* Adjust width for the padding or borders */
+    padding: 0; /* Remove padding for consistency */
+    box-sizing: border-box; /* Ensure padding is included in width calculation */
+  }
+  
+  /* Ensure both file uploads have consistent margins and paddings */
+  .p-fileupload {
+    margin: 0; /* Adjust this as necessary */
+  }
+
+
+
+  .input-spacing {
+    margin-top: 8px; /* Adjust the value as needed */
+  }
+  
+  
+  
+  
+  
+  

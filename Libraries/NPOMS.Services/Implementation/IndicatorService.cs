@@ -1,8 +1,10 @@
-﻿using NPOMS.Domain.Entities;
+﻿using NPOMS.Domain.Dropdown;
+using NPOMS.Domain.Entities;
 using NPOMS.Domain.Indicator;
 using NPOMS.Repository;
 using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Interfaces.Core;
+using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.Indicator;
 using NPOMS.Services.Interfaces;
@@ -22,7 +24,9 @@ namespace NPOMS.Services.Implementation
 		private IWorkplanCommentRepository _workplanCommentRepository;
 		private IWorkplanActualAuditRepository _workplanActualAuditRepository;
         private IIndicatorReportRepository _indicatorReportRepository;
-        
+        private IIndicatorRepository _indicatorRepository;
+        private INPOIndicatorRepository _npoindicatorRepository;
+
 
         private RepositoryContext _repositoryContext;
 
@@ -37,7 +41,9 @@ namespace NPOMS.Services.Implementation
 			IWorkplanCommentRepository workplanCommentRepository,
 			IWorkplanActualAuditRepository workplanActualAuditRepository,
             IIndicatorReportRepository indicatorReportRepository,
-        RepositoryContext repositoryContext
+            IIndicatorRepository indicatorRepository,
+            INPOIndicatorRepository npoindicatorRepository,
+            RepositoryContext repositoryContext
 			)
 		{
 			_workplanTargetRepository = workplanTargetRepository;
@@ -47,6 +53,8 @@ namespace NPOMS.Services.Implementation
 			_workplanActualAuditRepository = workplanActualAuditRepository;
 			_repositoryContext = repositoryContext;
 			_indicatorReportRepository = indicatorReportRepository;
+            _indicatorRepository = indicatorRepository;
+            _npoindicatorRepository = npoindicatorRepository;
 
         }
 
@@ -204,6 +212,15 @@ namespace NPOMS.Services.Implementation
             throw new NotImplementedException();
         }
 
+        public async Task loadindicatorsAsync(List<Indicators> data)
+        {
+            await _indicatorRepository.loadindicatorsAsync(data);
+        }
+
+        public async Task loadNPOindicatorsAsync(List<NPOIndicators> data)
+        {
+            await _npoindicatorRepository.loadindicatorsAsync(data);
+        }
         #endregion
     }
 }
