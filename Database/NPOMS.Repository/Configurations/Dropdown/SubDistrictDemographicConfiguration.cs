@@ -245,6 +245,12 @@ namespace NPOMS.Repository.Configurations.Dropdown
                      Id = 32,
                      Name = "Swartland Local Municipality",
                      SubSctrcureDemographicId = 9
+                 },
+                 new SubDistrictDemographic
+                 {
+                      Id = 33,
+                      Name = "George Local Municipality",
+                      SubSctrcureDemographicId = 7
                  }
             );
         }
