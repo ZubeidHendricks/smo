@@ -109,8 +109,6 @@ export class QcDocumentUploadComponent implements OnInit {
         this.userId = x.id;
       }
     });
-
-    this._spinner.hide();
     this.documentCols = [
       // { header: 'Id', width: '5%' },
       // { field: 'name', header: 'Document Type', width: '35%' },
@@ -183,7 +181,6 @@ export class QcDocumentUploadComponent implements OnInit {
 
   private getMyContentLinks() {
     if (this.application) {
-    
       this._applicationRepo.getMyContentLinks(Number(this.selectedApplicationId)).subscribe(
         (results) => {
           if(results.length > 0)
@@ -193,7 +190,11 @@ export class QcDocumentUploadComponent implements OnInit {
             this.documents.forEach(item => {
               item.documentType = this.documentTypes.find(x => x.id === item.documentTypeId);
             });
-          }         
+          }
+          else
+          {
+            this.documents = [];
+          }        
 
           this._spinner.hide();
         },
@@ -259,25 +260,26 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   public deleteDocument(document: IMyContentLink) {
-    this.updateDocument(document);
-   // this.getMyContentLinks();   
-    // this._confirmationService.confirm({
-    //   message: 'Are you sure that you want to delete this item?',
-    //   header: 'Confirmation',
-    //   icon: 'pi pi-info-circle',
-    //   accept: () => {
-    //     document.isActive = false;
-    //     this.updateDocument(document);
-    //   },
-    //   reject: () => {
-    //   }
-    // });
+  //   this.updateDocument(document);
+  //  this.getMyContentLinks();   
+    this._confirmationService.confirm({
+      message: 'Are you sure that you want to delete this item?',
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        document.isActive = false;
+        this.updateDocument(document);
+      },
+      reject: () => {
+      }
+    });
   }
 
   private updateDocument(document: IMyContentLink) {
     this._spinner.show();
     this._applicationRepo.updateMyContentLinks(document).subscribe(
       (results) => {
+        this.getMyContentLinks(); 
         this.loadDocumentTypes();
         this.applicationChange.emit(this.application);
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Link successfully deleted.' });

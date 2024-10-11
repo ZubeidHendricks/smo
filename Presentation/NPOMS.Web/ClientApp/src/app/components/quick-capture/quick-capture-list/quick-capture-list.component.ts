@@ -13,6 +13,7 @@ import { ApplicationService } from 'src/app/services/api-services/application/ap
 import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
+import { DepartmentService } from 'src/app/services/Department/department.service';
 
 @Component({
   selector: 'app-quick-capture-list',
@@ -109,7 +110,8 @@ export class QuickCaptureListComponent implements OnInit {
     private _npoProfile: NpoProfileService,
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
-    private _dropdownRepo: DropdownService
+    private _dropdownRepo: DropdownService,
+    private _departmentService: DepartmentService
   ) { }
 
   ngOnInit(): void {
@@ -197,6 +199,7 @@ export class QuickCaptureListComponent implements OnInit {
   selectedDept(id: number = 0)
   {
     this.selectedDepartmentId = id;
+    this._departmentService.selectedDept(id);
   }
 
   onSelectedDepartment() {   
