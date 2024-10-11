@@ -242,7 +242,13 @@ namespace NPOMS.Services.Implementation
 			return await _applicationRepository.GetByNpoIdAndPeriodId(NpoId, applicationPeriodId);
 		}
 
-		public async Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId)
+        public async Task<Application> GetApplicationByNpoIdAndPeriodIdAndYear(int NpoId, int applicationPeriodId, string year)
+        {
+            return await _applicationRepository.GetByNpoIdAndPeriodIdAndYear(NpoId, applicationPeriodId, year);
+        }
+
+
+        public async Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId)
 		{
 			return await _applicationRepository.GetByNpoId(npoId);
 		}
@@ -1629,6 +1635,25 @@ namespace NPOMS.Services.Implementation
 			return await _applicationPeriodRepository.GetById(id);
 		}
 
-		#endregion
-	}
+        public async  Task<IEnumerable<Activity>> AllActivitiesAsync()
+        {
+            var activities = await _activityRepository.GetByAll();
+
+            foreach (var item in activities)
+            {
+                var subProgrammeMappings = await _activitySubProgrammeRepository.GetByActivityId(item.Id, true);
+                item.ActivitySubProgrammes = subProgrammeMappings.ToList();
+
+                var facilityListMappings = await _activityFacilityListRepository.GetByActivityId(item.Id, true);
+                item.ActivityFacilityLists = facilityListMappings.ToList();
+
+                var recipients = await _activityRecipientRepository.GetByActivityId(item.Id);
+                item.ActivityRecipients = recipients.ToList();
+            }
+
+            return activities;
+        }
+
+        #endregion
+    }
 }

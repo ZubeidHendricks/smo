@@ -100,6 +100,11 @@ namespace NPOMS.Repository.Implementation.Entities
             return activity;
         }
 
+        public async Task<IEnumerable<Activity>> GetByAll()
+        {
+            return await FindByCondition(x => x.IsActive).AsNoTracking().ToListAsync();
+        }
+
         //public async Task<Activity> GetById(int id)
         //{
         //    var activity = await FindByCondition(x => x.Id == id)

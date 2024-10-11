@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { IAffiliatedOrganisation, ISourceOfInformation } from 'src/app/models/FinancialMatters';
-import { PermissionsEnum, DropdownTypeEnum, StatusEnum } from 'src/app/models/enums';
+import { PermissionsEnum, DropdownTypeEnum, StatusEnum, DepartmentEnum } from 'src/app/models/enums';
 import { IApplication, IPlace, ISubPlace, IApplicationPeriod, IUser, IDistrictCouncil, IFinancialYear, IDepartment, IProgramme, ISubProgramme, IApplicationType, ILocalMunicipality, IRegion, ISDA, IQuickCaptureDetails, IFundingApplicationDetails, IProjectInformation, IMonitoringAndEvaluation, IFundAppSDADetail, IApplicationDetails, ISubProgrammeType, IProgrammeServiceDelivery, INpo } from 'src/app/models/interfaces';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
@@ -14,6 +14,8 @@ import { FundingApplicationService } from 'src/app/services/api-services/funding
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { DepartmentService } from 'src/app/services/Department/department.service';
+
 
 @Component({
   selector: 'app-qc-application-details',
@@ -56,12 +58,12 @@ export class QcApplicationDetailsComponent implements OnInit {
   profile: IUser;
 
   isDataAvailable: boolean;
-  department: IDepartment;
-  programme: IProgramme;
-  subProgramme: ISubProgramme;
-  subProgrammeType: ISubProgrammeType;
-  applicationType: IApplicationType;
-  financialYear: IFinancialYear;
+  department: IDepartment = {} as IDepartment;
+  programme: IProgramme = {} as IProgramme;
+  subProgramme: ISubProgramme = {} as ISubProgramme;
+  subProgrammeType: ISubProgrammeType = {} as ISubProgrammeType;
+  applicationType: IApplicationType = {} as IApplicationType;
+  financialYear: IFinancialYear = {} as IFinancialYear;
 
   allDistrictCouncils: IDistrictCouncil[];
   selectedDistrictCouncil: IDistrictCouncil;
@@ -87,6 +89,9 @@ export class QcApplicationDetailsComponent implements OnInit {
 
   programDeliveryDetails : IProgrammeServiceDelivery[];
   selectedProgramDeliveryDetails : IProgrammeServiceDelivery[];
+  displayDeliveryDialog: boolean = false;
+  newDeliveryDetail: IProgrammeServiceDelivery = {} as IProgrammeServiceDelivery;
+  selectedDepartmentId: number;
 
   constructor(
     private _router: Router,
@@ -98,16 +103,24 @@ export class QcApplicationDetailsComponent implements OnInit {
     private _messageService: MessageService,
     private _loggerService: LoggerService,
     private _npoProfile: NpoProfileService,
-    private _applicationRepo: ApplicationService
+    private _applicationRepo: ApplicationService,
+    private _departmentService: DepartmentService
   ) { }
 
   ngOnInit(): void {
-
+    this._departmentService.selectedDepartment$.subscribe(id => {
+      this.selectedDepartmentId = id;
+    });
+    
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
 
         this.loadApplicationPeriod();
+        this.loadDistrictCouncils();
+        this.loadServiceDeliveryAreas();
+        this.loadMunicipalities();
+        this.loadRegions();
       }
     });
     
@@ -119,6 +132,74 @@ export class QcApplicationDetailsComponent implements OnInit {
     this.getProgrammeDeliveryDetails();
   }
 
+  addProgrammeServiceDelivery() {
+    // this.isDeliveryInformationEdit = false;
+    // this.isNewDelivery = true;
+
+    // this.selectedDelivery = {
+    //   isActive: true,
+    // } as IProgrammeServiceDelivery;
+  
+    // this.selectedRegions = null;
+    // this.selectedDistrictCouncil = null;
+    // this.selectedLocalMunicipality = null;
+    this.displayDeliveryDialog = true;
+  }
+
+  public saveProgrammeServiceDelivery() {
+    this.newDeliveryDetail = {
+      // npoProfileId : this.npo.id,
+      id: 0,
+      programId: this.programId,
+      subProgrammeId : this.subProgramId,
+      subProgrammeTypeId:this.subProgramTypeId,
+      districtCouncilId: this.selectedDistrictCouncil?.id,
+      localMunicipalityId: this.selectedLocalMunicipality?.id,
+      regions: this.selectedRegions,
+      districtCouncil: this.selectedDistrictCouncil,
+      localMunicipality: this.selectedLocalMunicipality,
+      serviceDeliveryAreas: this.selectedSDAs
+    } as IProgrammeServiceDelivery;
+
+    if(Number(this.newDeliveryDetail.id) === 0)
+    {
+      this.newDeliveryDetail.isSelected = true;
+      this._npoProfile.getNpoProfileByNpoId(this.npo.id).subscribe(
+        (npoProfile) => {
+          this._npoProfile.createProgrammeDeliveryDetails(Number(npoProfile.id), this.newDeliveryDetail).subscribe(
+            (resp) => {
+              this.getProgrammeDeliveryDetails();},
+            (err) => {
+              this._loggerService.logException(err);
+              this._spinner.hide();
+            }
+          );
+        },
+        (err) => {
+          this._loggerService.logException(err);
+          this._spinner.hide();
+        }
+      );
+    }
+    this.displayDeliveryDialog = false;
+
+    this.resetProgrammeServiceDeliveryForm();
+  }
+  
+  public resetProgrammeServiceDeliveryForm() {
+    this.displayDeliveryDialog = false;
+    this.selectedRegions = null;
+    this.selectedDistrictCouncil = null;
+    this.selectedLocalMunicipality = null;
+    this.selectedSDAs = [];
+  }
+  
+
+  disableProgrammeerviceDeliverySave()
+  {
+    return false;
+  }
+
   private loadApplicationPeriod() {
     this._applicationPeriodRepo.getApplicationPeriodById(this.applicationPeriod.id).subscribe(
       (results) => {
@@ -128,7 +209,6 @@ export class QcApplicationDetailsComponent implements OnInit {
         this.subProgrammeType = results.subProgrammeType;
         this.applicationType = results.applicationType;
         this.financialYear = results.financialYear;
-        this.loadDistrictCouncils();
       },
       (err) => {
         this._loggerService.logException(err);  
@@ -154,7 +234,6 @@ export class QcApplicationDetailsComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.LocalMunicipality, false).subscribe(
       (results) => {
         this.allLocalMunicipalities = results;
-        this.loadRegions();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -167,7 +246,6 @@ export class QcApplicationDetailsComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Region, false).subscribe(
       (results) => {
         this.allRegions = results;
-        this.loadServiceDeliveryAreas();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -400,6 +478,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   nextPage() {
+    this._spinner.show();
     if (this.canContinue()) {
       if (!this.fundingApplicationDetails.id) {
         //create funding application details
@@ -461,9 +540,8 @@ export class QcApplicationDetailsComponent implements OnInit {
       
         this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
           (resp) => {
-            this._spinner.hide();
             this.fundingApplicationDetailsChange.emit(resp);
-
+            this._spinner.hide();
             this.activeStep = this.activeStep + 1;
             this.activeStepChange.emit(this.activeStep);
           },
@@ -476,7 +554,7 @@ export class QcApplicationDetailsComponent implements OnInit {
     }
 }
 
-  setValue(event, value) {  
+  setValue(event, delivery) {  
     if(event.target.checked)
       {
         this.isSDASelected = true;
@@ -484,9 +562,9 @@ export class QcApplicationDetailsComponent implements OnInit {
       else
       {
         this.isSDASelected = false;
-      }  
-      
-      this._npoProfile.updateProgrammeDeliveryServiceSelection(value, this.isSDASelected).subscribe(resp => {    
+      } 
+
+      this._npoProfile.updateProgrammeDeliveryServiceSelection(delivery.id, this.isSDASelected).subscribe(resp => {    
         this.getProgrammeDeliveryDetails();    
       },
       (err) => {
@@ -503,11 +581,14 @@ export class QcApplicationDetailsComponent implements OnInit {
   private canContinue() {
     let applicationDetailsError: string[] = [];
 
-    if(this.selectedProgramDeliveryDetails.length === 0)
+    if(this.selectedDepartmentId === DepartmentEnum.DSD)
     {
-      applicationDetailsError.push("Please select a Service Delivery Area");
-    }
-    
+      if(this.selectedProgramDeliveryDetails.length === 0)
+        {
+          applicationDetailsError.push("Please select a Service Delivery Area");
+        }
+    }    
+
     if (!this.amount)
       applicationDetailsError.push("Please specify the Rand amount you applying for");
 
@@ -568,8 +649,27 @@ export class QcApplicationDetailsComponent implements OnInit {
     this.regionsChange.emit(regions);
   }
 
+  public SingleregionDropdownChange(region: IRegion) {
+    this.selectedSDAs = [];
+    this.filteredServiceDeliveryAreas = [];
+  
+    if (region) {
+      // Filter service delivery areas based on the selected region
+      this.filteredServiceDeliveryAreas = this.allServiceDeliveryAreas.filter(
+        sda => sda.regionId === region.id
+      );
+    }
+  
+    //this.regionsChange.emit(region);
+  }
+  
   public sdaDropdownChange(sdas: ISDA[]) {
     this.sdasChange.emit(sdas);
+  }
+
+  public singlesdaDropdownChange(sdas: ISDA) {
+    return;
+    //this.sdasChange.emit(sdas);
   }
 
 

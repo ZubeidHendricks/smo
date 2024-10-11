@@ -210,3 +210,12 @@ showEffect="fade"
     <p-button label="Save" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
 
 </div> -->
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

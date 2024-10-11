@@ -40,7 +40,7 @@
             <ng-template pTemplate="body" let-delivery>
               <tr>
                 <td>
-                      <input type="checkbox" [(ngModel)]="delivery.isSelected" (change)="setValue($event, delivery.id)">
+                <input type="checkbox" [(ngModel)]="delivery.isSelected" (change)="setValue($event, delivery)">
                 </td>
                 <td>{{getNames(delivery?.regions)}}</td>
                 <td>{{delivery.districtCouncil?.name}}</td>
@@ -54,11 +54,17 @@
                   <td colspan="5" style="text-align: center;">No results found.</td>
               </tr>
           </ng-template>
+          <ng-template pTemplate="summary" let-rowData>
+            <button pButton pRipple type="button" class="p-button-text no-space" (click)="addProgrammeServiceDelivery()">
+                <i class="fa fa-plus"></i><span>Add Service Delivery</span>
+              </button>
+              
+    
+          </ng-template>
           </p-table>
         </p-panel>
-        <!-- <br>
-
-        <div class="p-field p-col-12 p-md-3">
+        <br>
+        <!-- <div class="p-field p-col-12 p-md-3">
             <label class="mandatory-content">District Council</label>
             <p-dropdown [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name" [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="districtCouncilDropdownChange($event.value)" [disabled]="readonly()"></p-dropdown>
         </div>
@@ -211,3 +217,72 @@
         <p-button label="Next" (onClick)="nextPage()" icon="fa fa-angle-right" iconPos="right"></p-button>
     </div>
 </p-panel>
+
+
+<p-dialog header="Programme Service Delivery" 
+          [(visible)]="displayDeliveryDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+
+          <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">District Council</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown (onChange)="districtCouncilDropdownChange($event.value)" [options]="allDistrictCouncils" placeholder="Select a District Council" optionLabel="name" [(ngModel)]="selectedDistrictCouncil" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+            </div>
+        </div>
+        
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Local Municipality</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-dropdown (onChange)="localMunicipalityDropdownChange($event.value)" [options]="filteredLocalMunicipalities" 
+                placeholder="Select a Local Municipality" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" 
+                [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+            </div>
+        </div>
+    
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Region</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <!-- <p-dropdown defaultLabel="Choose" optionLabel="name" [options]="filteredRegions"
+                [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body"
+                (onChange)="SingleregionDropdownChange($event.value)" [style]="{'width':'100%'}"
+                ></p-dropdown> -->
+                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredRegions" [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="regionDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
+            </div>
+        </div>
+
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="mandatory-content">Service delivery address</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="filteredServiceDeliveryAreas" [ngModelOptions]="{standalone: true}" appendTo="body" [(ngModel)]="selectedSDAs" (onChange)="sdaDropdownChange($event.value)" [style]="{'width':'100%'}"  [disabled]="readonly()" selectedItemsLabel="{0} items selected"></p-multiSelect>
+                <!-- <p-dropdown defaultLabel="Choose" optionLabel="name" [options]="filteredServiceDeliveryAreas" [(ngModel)]="selectedSDAs"
+                [filter]="true" filterBy="name"
+                [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="singlesdaDropdownChange($event.value)"
+                [style]="{'width':'100%'}"></p-dropdown> -->
+            </div>
+        </div>
+        
+    <ng-template pTemplate="footer">
+        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" (click)="saveProgrammeServiceDelivery()" [disabled]="disableProgrammeerviceDeliverySave()"></button>
+    </ng-template>
+</p-dialog>
+

@@ -139,10 +139,14 @@ export class ApplicationService {
     return this._http.get<IExpenditure[]>(url, httpOptions);
   }
 
-  
   public GetGovernanceReportsByAppid(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/getgovernancereportsbyappid/appid/${application.id}`;
     return this._http.get<IGovernance[]>(url, httpOptions);
+  }
+
+  public getAllActivities1() {
+    const url = `${this._envUrl.urlAddress}/api/applications/allactivities`;
+    return this._http.get<IActivity[]>(url, httpOptions);
   }
 
   public getActivityById(activityId: number) {

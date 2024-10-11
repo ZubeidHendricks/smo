@@ -157,7 +157,7 @@ namespace NPOMS.API.Controllers
                     }
                 }
 
-                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, model.ApplicationPeriod.FinancialYear.Name);
 
                 if (application == null)
                 {
@@ -214,7 +214,7 @@ namespace NPOMS.API.Controllers
                     }
                 }
 
-                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, model.ApplicationPeriod.FinancialYear.Name);
 
                 if (application != null)
                 {
@@ -489,18 +489,18 @@ namespace NPOMS.API.Controllers
                 var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
 
                 var npoProfile = await _npoProfileService.GetByNpoId(model.NpoId);
-                if (model.ApplicationPeriod.ApplicationTypeId == (int)ApplicationTypeEnum.QuickCapture && (applicationPeriod.DepartmentId != (int)DepartmentEnum.DOH))
-                {
-                    var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
-                    if (servicesRendered == null)
-                    {
-                        var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
-                        return Ok(data);
-                    }
-                }
+                //if (model.ApplicationPeriod.ApplicationTypeId == (int)ApplicationTypeEnum.QuickCapture && (applicationPeriod.DepartmentId != (int)DepartmentEnum.DOH))
+                //{
+                //    var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
+                //    if (servicesRendered == null)
+                //    {
+                //        var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
+                //        return Ok(data);
+                //    }
+                //}
                     
 
-                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, model.ApplicationPeriod.FinancialYear.Name);
 
                 if (application != null)
                 {
@@ -1001,6 +1001,22 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("allactivities", Name = "allactivities")]
+        public async Task<IActionResult> allactivities()
+        {
+            try
+            {
+                var results = await _applicationService.AllActivitiesAsync();
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAllActivities action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
         [HttpGet("activityId/{activityId}", Name = "GetActivityById")]
         public async Task<IActionResult> GetActivityById(int activityId)

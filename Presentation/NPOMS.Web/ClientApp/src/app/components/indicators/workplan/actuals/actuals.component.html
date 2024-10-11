@@ -46,18 +46,18 @@
                     <td>{{rowData.activity.activityList.name}}</td>
                     <td>{{rowData.activity.successIndicator}}</td>
                     <td style="text-align: center;">
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Apr">{{rowData.workplanTargets[0].apr}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.May">{{rowData.workplanTargets[0].may}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Jun">{{rowData.workplanTargets[0].jun}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Jul">{{rowData.workplanTargets[0].jul}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Aug">{{rowData.workplanTargets[0].aug}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Sep">{{rowData.workplanTargets[0].sep}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Oct">{{rowData.workplanTargets[0].oct}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Nov">{{rowData.workplanTargets[0].nov}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Dec">{{rowData.workplanTargets[0].dec}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Jan">{{rowData.workplanTargets[0].jan}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Feb">{{rowData.workplanTargets[0].feb}}</span>
-                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Mar">{{rowData.workplanTargets[0].mar}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Apr">{{rowData.workplanTargets[0]?.apr}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.May">{{rowData.workplanTargets[0]?.may}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Jun">{{rowData.workplanTargets[0]?.jun}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Jul">{{rowData.workplanTargets[0]?.jul}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Aug">{{rowData.workplanTargets[0]?.aug}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Sep">{{rowData.workplanTargets[0]?.sep}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Oct">{{rowData.workplanTargets[0]?.oct}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Nov">{{rowData.workplanTargets[0]?.nov}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Dec">{{rowData.workplanTargets[0]?.dec}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Jan">{{rowData.workplanTargets[0]?.jan}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Feb">{{rowData.workplanTargets[0]?.feb}}</span>
+                        <span *ngIf="rowData.workplanActuals[0] && rowData.workplanActuals[0].frequencyPeriodId == FrequencyPeriodEnum.Mar">{{rowData.workplanTargets[0]?.mar}}</span>
                     </td>
                     <td pEditableColumn style="text-align: center;">
                         <p-cellEditor>
