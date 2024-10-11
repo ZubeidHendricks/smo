@@ -8,12 +8,14 @@ namespace NPOMS.Services.Interfaces
 	{
 		Task<IEnumerable<WorkplanTarget>> GetTargetsByActivityId(int activityId);
 
-		/// <summary>
-		/// Get Workplan Targets by Activity, Financial Year and Frequency Id
-		/// </summary>
-		/// <param name="model"></param>
-		/// <returns></returns>
-		Task<WorkplanTarget> GetTargetByIds(WorkplanTarget model);
+        Task<IEnumerable<WorkplanTarget>> GetTargetsByActivityIds(List<int> activityIds);
+        Task<IEnumerable<WorkplanActual>> GetActualsByActivityIds(List<int> activityIds);
+        /// <summary>
+        /// Get Workplan Targets by Activity, Financial Year and Frequency Id
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<WorkplanTarget> GetTargetByIds(WorkplanTarget model);
 
 		Task CreateTarget(WorkplanTarget model, string userIdentifier);
 

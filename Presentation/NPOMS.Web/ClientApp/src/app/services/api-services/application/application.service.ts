@@ -119,6 +119,11 @@ export class ApplicationService {
     return this._http.get<IActivity[]>(url, httpOptions);
   }
 
+  public getAllActivities1() {
+    const url = `${this._envUrl.urlAddress}/api/applications/allactivities`;
+    return this._http.get<IActivity[]>(url, httpOptions);
+  }
+
   public getActivityById(activityId: number) {
     const url = `${this._envUrl.urlAddress}/api/applications/activityId/${activityId}`;
     return this._http.get<IActivity>(url, httpOptions);

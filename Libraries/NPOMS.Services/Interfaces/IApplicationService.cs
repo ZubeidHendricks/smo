@@ -141,5 +141,7 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateMyContentLink(MyContentLink model, string userIdentifier);
 
 		Task<ApplicationPeriod> GetApplicationPeriodById(int id);
-	}
+        Task<IEnumerable<Activity>> AllActivitiesAsync();
+
+    }
 }

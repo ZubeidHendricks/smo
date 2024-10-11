@@ -146,6 +146,16 @@ namespace NPOMS.Services.Implementation
 			return await _workplanActualRepository.GetByIds(activityIds, financialYearId, frequencyPeriodId);
 		}
 
-		#endregion
-	}
+        public async Task<IEnumerable<WorkplanActual>> GetActualsByActivityIds(List<int> activityIds)
+        {
+            return await _workplanActualRepository.GetByActivityIds(activityIds);
+        }
+
+        public async Task<IEnumerable<WorkplanTarget>> GetTargetsByActivityIds(List<int> activityIds)
+        {
+            return await _workplanTargetRepository.GetTargetsByActivityIds(activityIds);
+        }
+
+        #endregion
+    }
 }

@@ -9,5 +9,6 @@ namespace NPOMS.Repository.Interfaces.Indicator
 		Task<IEnumerable<WorkplanTarget>> GetByActivityId(int activityId);
 
 		Task<WorkplanTarget> GetByIds(WorkplanTarget model);
-	}
+        Task<IEnumerable<WorkplanTarget>> GetTargetsByActivityIds(List<int> activityIds);
+    }
 }

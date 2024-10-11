@@ -742,6 +742,22 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("allactivities", Name = "allactivities")]
+        public async Task<IActionResult> allactivities()
+        {
+            try
+            {
+                var results = await _applicationService.AllActivitiesAsync();
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAllActivities action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
         [HttpGet("activityId/{activityId}", Name = "GetActivityById")]
         public async Task<IActionResult> GetActivityById(int activityId)
         {

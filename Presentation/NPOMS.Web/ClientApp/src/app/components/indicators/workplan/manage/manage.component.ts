@@ -113,30 +113,6 @@ export class ManageComponent implements OnInit {
     );
   }
 
-  private loadActivities() {
-    this._spinner.show();
-    this._applicationRepo.getAllActivities(this.application).subscribe(
-      (results) => {
-        this.activities = results.filter(x => x.isActive === true);
-        this.workplanIndicators = [];
-
-        this.activities.forEach(item => {
-          this.workplanIndicators.push({
-            activity: item,
-            workplanTargets: [],
-            workplanActuals: []
-          } as IWorkplanIndicator);
-        });
-
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
   private buildMenu() {
     this.menuActions = [
       {
@@ -178,17 +154,41 @@ export class ManageComponent implements OnInit {
 
   public financialYearChange() {
     this._spinner.show();
-    let application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
-
+    const application = this.applications.find(x => x.applicationPeriod.financialYearId === this.selectedFinancialYear.id);
     this._applicationRepo.getApplicationById(Number(application.id)).subscribe(
-      (results) => {
-        this.application = results;
-        this.loadActivities();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
+        (results) => {
+            this.application = results;
+            if (this.application) {
+                this.loadActivities();
+            }
+        },
+        (err) => {
+            console.error('Error fetching application:', err);
+            this._loggerService.logException(err);
+            this._spinner.hide();
+        },
+        () => {
+            this._spinner.hide();
+        }
     );
-  }
+}
+
+private loadActivities() {
+    this._applicationRepo.getAllActivities(this.application).subscribe(
+        (results) => {
+            this.activities = results.filter(x => x.isActive === true);
+            this.workplanIndicators = this.activities.map(item => ({
+                activity: item,
+                workplanTargets: [],
+                workplanActuals: []
+            } as IWorkplanIndicator));
+            this._spinner.hide();
+        },
+        (err) => {
+            console.error('Failed to load activities:', err);
+            this._loggerService.logException(err);
+            this._spinner.hide();
+        }
+    );
+}
 }
