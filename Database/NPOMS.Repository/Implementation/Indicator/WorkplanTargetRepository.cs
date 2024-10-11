@@ -33,6 +33,14 @@ namespace NPOMS.Repository.Implementation.Indicator
 							.AsNoTracking().FirstOrDefaultAsync();
 		}
 
-		#endregion
-	}
+        public async Task<IEnumerable<WorkplanTarget>> GetTargetsByActivityIds(List<int> activityIds)
+        {
+            return await FindByCondition(x => activityIds.Contains(x.ActivityId))
+                         .Include(x => x.Frequency)
+                         .AsNoTracking()
+                         .ToListAsync();
+        }
+
+        #endregion
+    }
 }

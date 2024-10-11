@@ -26,7 +26,15 @@ namespace NPOMS.Repository.Implementation.Indicator
 							.Include(x => x.FrequencyPeriod).AsNoTracking().ToListAsync();
 		}
 
-		public async Task<IEnumerable<WorkplanActual>> GetByIds(List<int> activityIds, int financialYearId, int frequencyPeriodId)
+        public async Task<IEnumerable<WorkplanActual>> GetByActivityIds(List<int> activityIds)
+        {
+            return await FindByCondition(x => activityIds.Contains(x.ActivityId))
+                                 .Include(x => x.FrequencyPeriod)
+                                 .AsNoTracking()
+                                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<WorkplanActual>> GetByIds(List<int> activityIds, int financialYearId, int frequencyPeriodId)
 		{
 			return await FindByCondition(x => activityIds.Contains(x.ActivityId) && 
 											  x.FinancialYearId.Equals(financialYearId) &&
@@ -41,7 +49,6 @@ namespace NPOMS.Repository.Implementation.Indicator
 											  x.FrequencyPeriodId.Equals(model.FrequencyPeriodId))
 								.AsNoTracking().FirstOrDefaultAsync();
 		}
-
-		#endregion
-	}
+        #endregion
+    }
 }

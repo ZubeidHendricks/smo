@@ -16,6 +16,8 @@ namespace NPOMS.Repository.Interfaces.Entities
 
         Task<Application> GetByNpoIdAndPeriodId(int NpoId, int applicationPeriodId);
 
+        Task<Application> GetByNpoIdAndPeriodIdAndYear(int NpoId, int applicationPeriodId, string year);
+
         Task<IEnumerable<Application>> GetByNpoId(int npoId);
 
         Task<Application> GetByIds(int npoId, int financialYearId, int applicationTypeId);

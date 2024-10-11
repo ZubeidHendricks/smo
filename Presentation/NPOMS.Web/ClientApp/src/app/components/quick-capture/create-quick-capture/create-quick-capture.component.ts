@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { AccessStatusEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum, StaffCategoryEnum, StatusEnum } from 'src/app/models/enums';
+import { AccessStatusEnum, DepartmentEnum, DropdownTypeEnum, PermissionsEnum, RoleEnum, StaffCategoryEnum, StatusEnum } from 'src/app/models/enums';
 import { IApplication, IApplicationPeriod, IContactInformation, IDistrictCouncil, IFundingApplicationDetails, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, IOrganisationType, IPosition, IProgrammeServiceDelivery, IRace, IRegion, IRegistrationStatus, ISDA, IStaffCategory, IStaffMemberProfile, ITitle, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -11,6 +11,7 @@ import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
+import { DepartmentService } from 'src/app/services/Department/department.service';
 
 @Component({
   selector: 'app-create-quick-capture',
@@ -24,6 +25,7 @@ export class CreateQuickCaptureComponent implements OnInit {
   @Input() npo: INpo;
   @Output() npoChange: EventEmitter<INpo> = new EventEmitter<INpo>();
   @Input() applicationPeriod: IApplicationPeriod;
+  selectedDepartmentId: number;
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -126,10 +128,15 @@ export class CreateQuickCaptureComponent implements OnInit {
     private _messageService: MessageService,
     private _applicationRepo: ApplicationService,
     private _fundAppService: FundingApplicationService,
+    private _departmentService: DepartmentService
     // private _addressLookupService: AddressLookupService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {   
+    this._departmentService.selectedDepartment$.subscribe(id => {
+      this.selectedDepartmentId = id;
+    });
+    
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -660,24 +667,31 @@ export class CreateQuickCaptureComponent implements OnInit {
     this.application.subProgrammeTypeId = this.applicationPeriod.subProgrammeTypeId;
     this.application.statusId = StatusEnum.New;
     this.application.applicationPeriod = this.applicationPeriod;
-  
-    this._applicationRepo.validateBeforeCreateQCApplication(this.application).subscribe(
-      (resp) => {
-        if(resp.message === 'Create')
-        {
-          this.addOrganisation();
-        }
-        else{
-          alert(resp.message);
+ 
+    if(this.selectedDepartmentId === DepartmentEnum.DSD)
+    {
+      this.addOrganisation();
+    }
+    else{
+      this._applicationRepo.validateBeforeCreateQCApplication(this.application).subscribe(
+        (resp) => {
+          if(resp.message === 'Create')
+          {
+            this.addOrganisation();
+          }
+          else{
+            alert(resp.message);
+            this._spinner.hide();
+            return false;  
+          }       
+        },
+        (err) => {
+          this._loggerService.logException(err);       
           this._spinner.hide();
-          return false;  
-        }       
-      },
-      (err) => {
-        this._loggerService.logException(err);       
-        this._spinner.hide();
-      }
-    );
+        }
+      );
+    }
+
   }
 
    disableSelect() {
