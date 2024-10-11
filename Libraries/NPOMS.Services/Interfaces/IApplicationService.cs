@@ -15,7 +15,9 @@ namespace NPOMS.Services.Interfaces
 
 		Task<Application> GetApplicationByNpoIdAndPeriodId(int NpoId, int applicationPeriodId);
 
-		Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId);
+        Task<Application> GetApplicationByNpoIdAndPeriodIdAndYear(int NpoId, int applicationPeriodId, string Year);
+
+        Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId);
 
         Task<Application> GetById(int ApplicationId);
 

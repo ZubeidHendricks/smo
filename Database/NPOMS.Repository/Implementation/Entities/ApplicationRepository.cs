@@ -56,6 +56,13 @@ namespace NPOMS.Repository.Implementation.Entities
                             .AsNoTracking().FirstOrDefaultAsync();
         }
 
+        public async Task<Application> GetByNpoIdAndPeriodIdAndYear(int NpoId, int applicationPeriodId, string year)
+        {
+            return await FindByCondition(x => x.NpoId.Equals(NpoId) && x.ApplicationPeriodId.Equals(applicationPeriodId) && x.ApplicationPeriod.FinancialYear.Name.Equals(year) && x.IsActive)
+                            .AsNoTracking().FirstOrDefaultAsync();
+        }
+
+
         public async Task<IEnumerable<Application>> GetByNpoId(int npoId)
         {
             return await FindByCondition(x => x.NpoId.Equals(npoId) && x.IsActive)

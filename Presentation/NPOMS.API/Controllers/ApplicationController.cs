@@ -196,7 +196,7 @@ namespace NPOMS.API.Controllers
                     }
                 }
 
-                var application = await _applicationService.GetApplicationByNpoIdAndPeriodId(model.NpoId, model.ApplicationPeriodId);
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, model.ApplicationPeriod.FinancialYear.Name);
 
                 if (application != null)
                 {

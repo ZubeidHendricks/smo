@@ -242,7 +242,13 @@ namespace NPOMS.Services.Implementation
 			return await _applicationRepository.GetByNpoIdAndPeriodId(NpoId, applicationPeriodId);
 		}
 
-		public async Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId)
+        public async Task<Application> GetApplicationByNpoIdAndPeriodIdAndYear(int NpoId, int applicationPeriodId, string year)
+        {
+            return await _applicationRepository.GetByNpoIdAndPeriodIdAndYear(NpoId, applicationPeriodId, year);
+        }
+
+
+        public async Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId)
 		{
 			return await _applicationRepository.GetByNpoId(npoId);
 		}
