@@ -55,9 +55,11 @@
               </tr>
           </ng-template>
           <ng-template pTemplate="summary" let-rowData>
-            <div style="text-align:left">
-              <button pButton pRipple type="button" label="Add Service Delivery" class="p-button-text" icon="fa fa-plus" (click)="addProgrammeServiceDelivery()"></button>
-            </div>
+            <button pButton pRipple type="button" class="p-button-text no-space" (click)="addProgrammeServiceDelivery()">
+                <i class="fa fa-plus"></i><span>Add Service Delivery</span>
+              </button>
+              
+    
           </ng-template>
           </p-table>
         </p-panel>

@@ -39,4 +39,34 @@
     background-color: grey !important;
     color: white;
   }
+
+  .no-space .fa {
+    margin-right: 0 !important; /* Removes the space between the icon and label */
+    padding-right: 5px; /* Optional: Add small space if needed */
+  }
+  
+  .p-button-text {
+    display: flex;
+    justify-content: flex-start; /* Aligns the content to the left */
+    align-items: center;
+  }
+
+  button.p-button-text.no-space i.fa {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  button.p-button-text.no-space span {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+  
+  button.p-button-text.no-space {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0 !important; /* Ensure there's no gap between icon and text */
+  }
+  
+  
   
