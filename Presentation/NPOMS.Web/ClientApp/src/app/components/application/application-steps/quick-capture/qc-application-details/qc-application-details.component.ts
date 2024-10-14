@@ -580,7 +580,6 @@ export class QcApplicationDetailsComponent implements OnInit {
 
   private canContinue() {
     let applicationDetailsError: string[] = [];
-alert(this.selectedProgramDeliveryDetails.length);
     // if(this.selectedDepartmentId === DepartmentEnum.DSD)
     // {
     //   if(this.selectedProgramDeliveryDetails.length === 0)
@@ -599,7 +598,6 @@ alert(this.selectedProgramDeliveryDetails.length);
     if (applicationDetailsError.length > 0)
       this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
 
-    alert(applicationDetailsError.length);
     return applicationDetailsError.length > 0 ? false : true;
   }
 
