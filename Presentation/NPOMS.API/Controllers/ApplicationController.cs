@@ -139,7 +139,7 @@ namespace NPOMS.API.Controllers
                     }
                 }
 
-                var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, model.ApplicationPeriod.FinancialYear.Name);
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, applicationPeriod.FinancialYear.Name);
 
                 if (application == null)
                 {
@@ -196,7 +196,7 @@ namespace NPOMS.API.Controllers
                     }
                 }
 
-                var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, model.ApplicationPeriod.FinancialYear.Name);
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, applicationPeriod.FinancialYear.Name);
 
                 if (application != null)
                 {
@@ -241,7 +241,7 @@ namespace NPOMS.API.Controllers
                 //}
                     
 
-                var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, model.ApplicationPeriod.FinancialYear.Name);
+                var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, applicationPeriod.FinancialYear.Name);
 
                 if (application != null)
                 {
