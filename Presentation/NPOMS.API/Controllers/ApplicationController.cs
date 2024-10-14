@@ -187,14 +187,6 @@ namespace NPOMS.API.Controllers
                 var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
 
                 var npoProfile = await _npoProfileService.GetByNpoId(model.NpoId);
-                if (model.ApplicationPeriod.ApplicationTypeId == (int)ApplicationTypeEnum.QuickCapture && (applicationPeriod.DepartmentId != (int)DepartmentEnum.DOH)) {
-                    var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
-                    if (servicesRendered == null)
-                    {
-                        var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
-                        return Ok(data);
-                    }
-                }
 
                 var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, applicationPeriod.FinancialYear.Name);
 
@@ -205,12 +197,6 @@ namespace NPOMS.API.Controllers
                 }
                 else
                 {
-                    //await _applicationService.CreateApplication(model, base.GetUserIdentifier());
-                    
-                    //await CreateApplicationAudit(model);
-
-                    //var modelToReturn = application == null ? model : application;
-
                     var data = new { Message = "Create" };
                     return Ok(data);
                 }
@@ -230,22 +216,11 @@ namespace NPOMS.API.Controllers
                 var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.ApplicationPeriodId);
 
                 var npoProfile = await _npoProfileService.GetByNpoId(model.NpoId);
-                //if (model.ApplicationPeriod.ApplicationTypeId == (int)ApplicationTypeEnum.QuickCapture && (applicationPeriod.DepartmentId != (int)DepartmentEnum.DOH))
-                //{
-                //    var servicesRendered = await _npoProfileService.GetServiceRenderedByProperties(npoProfile.Id, model.ProgrammeId, model.SubProgrammeId, model.SubProgrammeTypeId);
-                //    if (servicesRendered == null)
-                //    {
-                //        var data = new { Message = "Please ensure that services rendered under your profile and the required sub sections (i.e. banking detail, contact detail and SDA) are updated, to be able to continue with your application." };
-                //        return Ok(data);
-                //    }
-                //}
-                    
 
                 var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.NpoId, model.ApplicationPeriodId, applicationPeriod.FinancialYear.Name);
 
                 if (application != null)
                 {
-                  //  var data = new { Message = "Application already captured for the selected programme. Please go to 'Submissions' to access this application." };
                     return Ok(application);
                 }
                 else

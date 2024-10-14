@@ -334,7 +334,7 @@ export class QcApplicationDetailsComponent implements OnInit {
     else
       this.GetAffiliatedOrganisation();
   }
-
+//
   private GetAffiliatedOrganisation() {
     this.affliatedOrganisationInfo = [];
 
@@ -478,7 +478,7 @@ export class QcApplicationDetailsComponent implements OnInit {
   }
 
   nextPage() {
-    this._spinner.show();
+   // this._spinner.show();
     if (this.canContinue()) {
       if (!this.fundingApplicationDetails.id) {
         //create funding application details
@@ -580,14 +580,18 @@ export class QcApplicationDetailsComponent implements OnInit {
 
   private canContinue() {
     let applicationDetailsError: string[] = [];
-
-    if(this.selectedDepartmentId === DepartmentEnum.DSD)
+alert(this.selectedProgramDeliveryDetails.length);
+    // if(this.selectedDepartmentId === DepartmentEnum.DSD)
+    // {
+    //   if(this.selectedProgramDeliveryDetails.length === 0)
+    //     {
+    //       applicationDetailsError.push("Please select a Service Delivery Area");
+    //     }
+    // }    
+    if(this.selectedProgramDeliveryDetails.length === 0)
     {
-      if(this.selectedProgramDeliveryDetails.length === 0)
-        {
-          applicationDetailsError.push("Please select a Service Delivery Area");
-        }
-    }    
+      applicationDetailsError.push("Please select a Service Delivery Area");
+    }
 
     if (!this.amount)
       applicationDetailsError.push("Please specify the Rand amount you applying for");
@@ -595,6 +599,7 @@ export class QcApplicationDetailsComponent implements OnInit {
     if (applicationDetailsError.length > 0)
       this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
 
+    alert(applicationDetailsError.length);
     return applicationDetailsError.length > 0 ? false : true;
   }
 
