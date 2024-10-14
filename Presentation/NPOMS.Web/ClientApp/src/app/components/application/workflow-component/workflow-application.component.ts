@@ -429,7 +429,7 @@ export class WorkflowApplicationComponent implements OnInit {
       pnlEvaluation1.style.display = "none";
   }
 }
-
+//
 
 onAdjCheckboxChange(event: any) {
   var pnlAdjudication = document.getElementById("pnlAdjudication");
@@ -733,23 +733,24 @@ onAprCheckboxChange(event: any) {
 
  
 
-  public submit(questionnaire: IQuestionResponseViewModel[], questionCategory: QuestionCategoryEnum) {
+  public submit(questionnaire: IQuestionResponseViewModel[], questionCategory: string) {
     // if (this.canContinue(questionnaire)) {
     //   this._spinner.show();
     //   this.createCapturedResponse(questionCategory);
     // }
-
+    
     this.createCapturedResponse(questionCategory);
   }
 
-  private createCapturedResponse(questionCategoryId: QuestionCategoryEnum) {
-    let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategoryId.toString());
+  private createCapturedResponse(questionCategoryId: string) {
+   
+    let id = this.QuestionCategoryentities.filter(x=> x.name === questionCategoryId);
     let status: number;
     let declaration: boolean;
     let comment: string;
-    let selectedStatus: number
+    let selectedStatus: number;
     switch (questionCategoryId.toString()) {
-      case "PreEvaluation": {
+      case "PreEvaluation": {       
         status = 14;
         comment = this.capturedPreEvaluationComment
         break;
@@ -1284,7 +1285,7 @@ onAprCheckboxChange(event: any) {
       let countReviewed = questions.filter(x => x.isSaved === true).length;
       let commentRequired = questions.filter(x => x.commentRequired === true).length;
       let commentProvided = questions.filter(x => x.comment !== '').length;
-      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation == true) && (this.capturedPreEvaluationComment != (undefined || ''))) ? false : true;      
+      return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && ( this._recommendation == true) && (this.capturedPreEvaluationComment !== '')) ? false : true;      
     }
     else
       return true;
@@ -1298,7 +1299,7 @@ onAprCheckboxChange(event: any) {
     let commentRequired = questions.filter(x => x.commentRequired === true).length;
     let commentProvided = questions.filter(x => x.comment !== '').length;
 
-    return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && (this.capturedEvaluationComment != (undefined || ''))) ? false : true;      
+    return ((questions.length === countReviewed) && (commentProvided >= commentRequired) && (this.capturedEvaluationComment !== '')) ? false : true;      
    // return ((questions.length === countReviewed) && (commentRequired === commentProvided)) ? false : true;  
   }
 
