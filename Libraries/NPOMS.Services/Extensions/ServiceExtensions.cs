@@ -135,6 +135,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IIncomeAndExpenditureRepository, IncomeAndExpenditureRepository>();
             services.AddScoped<IGovernanceRepository, GovernanceRepository>();
             services.AddScoped<IAnyOtherRepository, AnyOtherRepository>();
+            services.AddScoped<ISDIPRepository, SDIPRepository>();
 
             services.AddScoped<IApplicationApprovalRepository, ApplicationApprovalRepository>();
             services.AddScoped<IApplicationAuditRepository, ApplicationAuditRepository>();

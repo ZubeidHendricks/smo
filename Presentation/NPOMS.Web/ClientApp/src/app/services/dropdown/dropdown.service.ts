@@ -230,7 +230,7 @@ export class DropdownService {
       case DropdownTypeEnum.Indicator:
           data = this._http.get<IIndicator[]>(url, httpOptions);
           break;
-      case DropdownTypeEnum.LowLevelNPO:
+      case DropdownTypeEnum.HighLevelNPO:
           data = this._http.get<IIndicator[]>(url, httpOptions);
           break;
     }

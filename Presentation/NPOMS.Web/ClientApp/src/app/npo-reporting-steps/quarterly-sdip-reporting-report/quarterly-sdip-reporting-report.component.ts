@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISDIP, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -65,6 +65,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   selectedDepartmentSummary: IDepartment;
 
   selectedQuartersText: string = '';
+  newSDIP: boolean;
 
   // districts: any[] = [
   //   { name: 'District 1', code: 'D1' },
@@ -190,6 +191,10 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   ManicipalityDemographics: IManicipalityDemographic[];
   selectedManicipalityDemographics: IManicipalityDemographic[];
 
+  
+  sdips: ISDIP[];
+  sdip: ISDIP = {} as ISDIP;
+
   //activeActivities: any[] = []; // All activities
   filteredActivities: any[] = []; // Filtered activities
   filteredData: any[] = [];
@@ -231,45 +236,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     this._spinner.show();
     this.registerCustomFilters();
 
-    // this.filterService.register('custom', (value: any, filter: any) => {
-    //   if (!filter || filter.length === 0) {
-    //       return true; // No filter applied, show all rows
-    //   }
-      
-    //   if (!value) {
-    //       return false; // No value, exclude this row
-    //   }
-    
-    //   // Extract the selected substructures or municipalities from the filter
-    //   const selectedItems = filter.map((item: any) => item.name);
-      
-    //   // Split the row value based on commas or your specific delimiter, and trim extra spaces
-    //   const rowItems = value.split(',').map((item: string) => item.trim());
 
-          
-    //   console.log('FilterdResult', rowItems);
-    
-    //   // Check if any selected item is present in the row data
-    //   const result = selectedItems.some(selectedItem => 
-    //     rowItems.includes(selectedItem)
-    //   );
-
-    //   return result;
-    // });
-    
-    
-  //   this.filterService.register('custom', (value: any, filter: any) => {
-  //     if (!filter || filter.length === 0) {
-  //         return true;
-  //     }
-  //     if (!value) {
-  //         return false; 
-  //     }
-  //     const selectedMunicipalities = filter.map((item: any) => item.name);
-  //     const rowMunicipalities = value.split(',').map((m: string) => m.trim());
-  //     const result = selectedMunicipalities.some(m => rowMunicipalities.includes(m));
-  //     return result;
-  // });
 
 
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
@@ -302,6 +269,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     this.loadProgrammes();
     this.loadSubProgrammes();
     this.loadSubProgrammeTypes();
+    this.loadSDIPs();
 
  
 
@@ -497,26 +465,97 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     );
   }
 
-  // private loadApplicationTypes() {
-  //   this._spinner.show();
-  //   this._dropdownRepo.getEntities(DropdownTypeEnum.ApplicationTypes, false).subscribe(
-  //     (results) => {
+  onBlurAdjustedSDIP(rowdata){
+    //this.saveOtherInfor(rowdata);
+  }
 
-  //       if(this.profile.departments[0].id === DepartmentEnum.DSD)
-  //         this.applicationTypes = results.filter(x => x.systemName === 'FA' || x.systemName === 'QC');
-  //       else if(this.profile.departments[0].id === DepartmentEnum.DOH)
-  //         this.applicationTypes = results.filter(x => x.systemName === 'SP' || x.systemName === 'BP');
-  //       else
-  //       this.applicationTypes = results;
+  saveSDIP(rowData: any) {
+    let sdipobj = {} as ISDIP;
+    sdipobj.applicationId = this.application.id;
+    sdipobj.standardPerformanceArea = rowData.challenges;
+    sdipobj.correctiveAction = rowData.highlights;
+    sdipobj.responsibility = rowData.challenges;
+    sdipobj.targetDate = rowData.highlights;
+    sdipobj.meansOfVerification = rowData.challenges;
+    sdipobj.progress = rowData.highlights;
+    sdipobj.id = rowData.id;
+    sdipobj.isActive = true;
 
-  //       this._spinner.hide();
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
+    if (rowData.id === 0) {
+      this.createSDIP(sdipobj);
+    } else {
+      this.updateSDIP(sdipobj);
+    }
+   }
+
+   updateSDIP(sdip: ISDIP) {
+    this._applicationRepo.updateSDIP(sdip).subscribe(
+      (resp) => {
+        this.loadSDIPs();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
+
+
+  createSDIP(sdip: ISDIP) {
+    this._applicationRepo.createSDIPReport(sdip).subscribe(
+      (resp) => {
+        this.loadSDIPs();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadSDIPs() {
+    this._spinner.show();
+    this._applicationRepo.GetSDIPReportsByAppid(this.application).subscribe(
+      (results) => {
+        console.log('Other',results);
+        this.sdips = results;     
+        });
+        this._spinner.hide();
+      }
+
+  // editAnyOther(data: ISDIP) {
+  //   this.newSDIP = false;
+  //   this.sdip = this.cloneAnyOther(data);
+
   // }
+
+  // private cloneAnyOther(data: ISDIP):  {ISDIP
+  //   let obj = {} as ISDIP;
+
+  //   for (let prop in data)
+  //     obj[prop] = data[prop];
+  //   return obj;
+  // }
+
+
+  addNewRow() {
+    const newRow = {
+      id: 0,
+      standardPerformanceArea: '',
+      correctiveAction: '',
+      responsibility: '',
+      targetDate: '',
+      meansOfVerification: '',
+      progress: '',
+      total: 0,
+      isActive: true,
+      applicationId:0,
+    };
+    
+    this.sdips.push(newRow);  
+  }
 
   departmentChange(department: IDepartment) {
     this.selectedProgramme = null;

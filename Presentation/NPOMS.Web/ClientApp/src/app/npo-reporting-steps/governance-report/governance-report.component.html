@@ -1,42 +1,89 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header=" Governance Report">
     <div style="height: 10px;"></div>
-    <p-table [rowHover]="true" [columns]="governanceCols"  [value]="governances"  styleClass="p-datatable-sm">
+    <p-table [rowHover]="true" [columns]="governanceCols" [value]="governances" styleClass="p-datatable-sm" [editable]="true">
         <ng-template pTemplate="header" let-columns>
-          <tr>
-              <th style="width: 5%;"></th>
-              <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                  {{col.header}}
-              </th>
-              <th style="width: 6%;">Actions</th>
-          </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr class="default-font">
-              <td style="text-align: center;">{{rowIndex + 1}}</td>
-              <td>{{rowData.lastMeetingDate | date: 'yyyy-MM-dd'}}</td>
-              <td>{{rowData.lastSubmissionDateWC| date: 'yyyy-MM-dd'}}</td>
-              <td>{{rowData.lastSubmissionDateNat| date: 'yyyy-MM-dd'}}</td>
-              <td>{{rowData.comments }}</td>
-        <td style="text-align: center;">
-            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editGovernance(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
-            <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteGovernance(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
-            <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
-            <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
-        </td>
-          </tr>
-      </ng-template>
-      <ng-template pTemplate="summary" let-rowData>
-        <div style="text-align:left">
-          <button pButton pRipple type="button" label="Add governance Report" class="p-button-text" icon="fa fa-plus" (click)="displayGovernanceDialog = true"></button>
-        </div>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-          <tr class="default-font">
-              <td colspan="12" style="text-align: center;">No results found</td>
-          </tr>
-      </ng-template>
-  </p-table>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+                <th style="width: 6%;">Actions</th>
+            </tr>
+        </ng-template>
+    
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+
+                <td pEditableColumn>
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <p-calendar [(ngModel)]="rowData.lastMeetingDate" dateFormat="yy-mm-dd" (onSelect)="onBlurAdjustedGov(rowData)" ></p-calendar>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{ rowData.lastMeetingDate | date: 'yyyy-MM-dd' }}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
+    
+                <td pEditableColumn>
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <p-calendar [(ngModel)]="rowData.lastSubmissionDateWC" dateFormat="yy-mm-dd" (onSelect)="onBlurAdjustedGov(rowData)" ></p-calendar>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{ rowData.lastSubmissionDateWC | date: 'yyyy-MM-dd' }}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
+    
+                <td pEditableColumn>
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <p-calendar [(ngModel)]="rowData.lastSubmissionDateNat" dateFormat="yy-mm-dd" (onSelect)="onBlurAdjustedGov(rowData)" ></p-calendar>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{ rowData.lastSubmissionDateNat | date: 'yyyy-MM-dd' }}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
+    
+                <!-- Editable cell for comments -->
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.comments"
+                            (blur)="onBlurAdjustedGov(rowData)"
+                           />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.comments }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+    
+                <td style="text-align: center;">
+                    <!-- Actions buttons for editing, deleting, comments, etc. -->
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editGovernance(rowData)" pTooltip="{{ tooltip }}" tooltipPosition="top"></button>
+                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteGovernance(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                    <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
+                    <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
+                </td>
+            </tr>
+        </ng-template>
+    
+        <ng-template pTemplate="summary" let-rowData>
+            <div style="text-align:left">
+                <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
+            </div>
+        </ng-template>
+    
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="12" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
     <div style="height: 10px;"></div>
     <div class="p-grid p-nogutter p-justify-between">
      
@@ -124,7 +171,7 @@
     </div>
 
     <ng-template pTemplate="footer">
-        <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" (click)="saveGovernance(governance)"></button>
+        <!-- <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" (click)="saveGovernance(governance)"></button> -->
     </ng-template>
 
 </p-dialog>

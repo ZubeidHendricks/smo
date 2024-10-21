@@ -7,11 +7,9 @@
     </div>
 
     <p-accordion  *ngIf="isApplicationAvailable">
- 
         <p-accordionTab header="Section 1: Indicator Report">
             <app-indicator-report [application]="application"></app-indicator-report>
         </p-accordionTab>
-
 
          <p-accordionTab header="Section 2: Post Report">
             <app-post-report [application]="application"></app-post-report>

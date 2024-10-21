@@ -467,6 +467,7 @@ namespace NPOMS.API.Controllers
                             dtoRow.Q3 = r[9];
                             dtoRow.Q4 = r[10];
                             dtoRow.IsActive = Convert.ToBoolean(r[11]);
+                            dtoRow.OutputTitle = r[12];
                         }
                         dtoRow.Year = year;
                         data.Add(dtoRow);

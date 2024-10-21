@@ -507,8 +507,8 @@ export interface IIndicator {
     year: string;
     subProgrammeTypeId: number;
     indicatorValue: string;
-    IndicatorDesc : string;
-    OutputTitle : string;
+    indicatorDesc : string;
+    outputTitle : string;
     annualTarget: number;
     q1: string;
     q2: string;
@@ -543,14 +543,13 @@ export interface IIndicator {
     organisationName : string;
     outputTitle : string;
     annualTarget: number;
-    q1: string;
-    q2: string;
-    q3: string;
-    q4: string;
+    q1: number;
+    q2: number;
+    q3: number;
+    q4: number;
     programme: string;
     subprogrammeType: string;
     indicatorId: string;
-
   }
 
   export interface IActuals {
@@ -578,23 +577,22 @@ export interface IIndicator {
 
  
   export interface IPosts {
+    id: number;
     postClassification: string;
     numberOfPosts: number;
     numberFilled : number;
-    monthsFilled: number;
+    monthsFilled: string;
     vacant : string;
     dateofVacancies : string;
     vacancyReasons: string;
     plans: string;
     applicationId: number;
     isActive: boolean;
-
-
-    
   }
 
     
   export interface IGovernance {
+    id: number;
     lastMeetingDate: string;
     lastSubmissionDateWC : string;
     lastSubmissionDateNat:string;
@@ -605,18 +603,15 @@ export interface IIndicator {
   }
 
   export interface IOtherInfor {
+    id: number;
     highlights: string;
     challenges: string;
     applicationId: number;
     isActive: boolean;
-  
-
   }
 
-
-
-  
   export interface IExpenditure {
+    id: number;
     costDrivers: string;
     income : number;
     expenditure:number;
@@ -624,11 +619,19 @@ export interface IIndicator {
     total: number;
     applicationId: number;
     isActive: boolean;
-
-    
   }
 
-  
+  export interface ISDIP {
+    id: number;
+    standardPerformanceArea: string;
+    correctiveAction : string;
+    responsibility:string;
+    targetDate: string;
+    meansOfVerification: string;
+    applicationId: number;
+    isActive: boolean;
+    progress: string;
+  }
 
 export interface IActivity {
     id: number;

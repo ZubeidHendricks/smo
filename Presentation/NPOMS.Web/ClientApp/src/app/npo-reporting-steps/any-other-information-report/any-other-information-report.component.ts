@@ -407,11 +407,6 @@ export class AnyOtherInformationReportComponent implements OnInit {
   }
 
 
-
-
-
-
-
 preventChange(event: any): void {
   event.originalEvent.preventDefault(); 
   event.value = [...this.selectedFacilities];
@@ -449,23 +444,26 @@ preventChange(event: any): void {
     this.yearRange = `${startYear}:${endYear}`;
   }
 
-  saveOtherInfor(otherInfor: IOtherInfor) {
-    this.otherInfor.applicationId = this.application.id;
-    this.otherInfor.challenges = this.otherInfor.challenges;
-    this.otherInfor.highlights = this.otherInfor.highlights;
-    this.otherInfor.isActive = true;
-    if (this.newOtherInfor) {
-      this.createOtherInfor(otherInfor);
+  saveOtherInfor(rowData: any) {
+    let otherInforobj = {} as IOtherInfor;
+    otherInforobj.applicationId = this.application.id;
+    otherInforobj.challenges = rowData.challenges;
+    otherInforobj.highlights = rowData.highlights;
+    otherInforobj.id = rowData.id;
+    otherInforobj.isActive = true;
+
+    if (rowData.id === 0) {
+      this.createOtherInfor(otherInforobj);
     } else {
-      this.updateOtherInfor(otherInfor);
+      this.updateOtherInfor(otherInforobj);
     }
    }
+
 
   updateOtherInfor(otherInfor: IOtherInfor) {
     this._applicationRepo.updateOtherInfor(otherInfor).subscribe(
       (resp) => {
         this.loadotherInfor();
-        this.displayAnyOtherDialog = false;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -478,7 +476,6 @@ preventChange(event: any): void {
     this._applicationRepo.createOtherInforReport(otherInfor).subscribe(
       (resp) => {
         this.loadotherInfor();
-        this.displayAnyOtherDialog = false;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -486,6 +483,22 @@ preventChange(event: any): void {
       }
     );
   }
+
+  onBlurAdjustedAny(rowdata){
+    this.saveOtherInfor(rowdata);
+  }
+
+addNewRow() {
+  const newRow : IOtherInfor= {
+    id: 0,
+    highlights: '',
+    challenges: '',
+    isActive: true,
+    applicationId:0,
+  };
+  
+  this.otherInfors.push(newRow);  // Add the new row to the expenditures array
+}
 
   private loadotherInfor() {
     this._spinner.show();

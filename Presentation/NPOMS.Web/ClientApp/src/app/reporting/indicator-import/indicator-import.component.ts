@@ -177,7 +177,7 @@ export class IndicatorImportComponent implements OnInit {
 
   private NPOloadIndicators() {
     console.log('Calling the API for Indicators');
-    this._dropdownRepo.getEntities(DropdownTypeEnum.LowLevelNPO, false).subscribe(
+    this._dropdownRepo.getEntities(DropdownTypeEnum.HighLevelNPO, false).subscribe(
       (results) => {
         console.log('Received results:', results);
         this.npoIndicators = results;

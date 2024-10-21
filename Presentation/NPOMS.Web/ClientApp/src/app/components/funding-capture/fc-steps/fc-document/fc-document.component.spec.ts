@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FcDocumentComponent } from './fc-document.component';
+import { FCDocumentComponent } from './fc-document.component';
 
 describe('FcDocumentComponent', () => {
-  let component: FcDocumentComponent;
-  let fixture: ComponentFixture<FcDocumentComponent>;
+  let component: FCDocumentComponent;
+  let fixture: ComponentFixture<FCDocumentComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ FcDocumentComponent ]
+      declarations: [ FCDocumentComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FcDocumentComponent);
+    fixture = TestBed.createComponent(FCDocumentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

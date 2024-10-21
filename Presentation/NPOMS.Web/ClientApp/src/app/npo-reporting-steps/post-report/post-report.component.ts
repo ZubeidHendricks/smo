@@ -190,6 +190,8 @@ export class PostReportComponent implements OnInit {
   ];
 
   selectedQuarters = [];
+
+
   
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
@@ -214,10 +216,6 @@ export class PostReportComponent implements OnInit {
   ngOnInit(): void {
     this._spinner.show();
     this.registerCustomFilters();
-
-
-
-
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -483,34 +481,69 @@ onDemographicSubStructuresChange() {
     return obj;
   }
 
-  savePost(post: IPosts) {
-    // Assign necessary fields
-    this.post.postClassification = this.post.postClassification;
-    this.post.numberOfPosts = this.post.numberOfPosts;
-    this.post.numberFilled = this.post.numberFilled;
-    this.post.monthsFilled = this.post.monthsFilled;
-    this.post.vacant = this.post.vacant;
-    this.post.dateofVacancies = this.post.dateofVacancies;
-    this.post.vacancyReasons = this.post.vacancyReasons;
-    this.post.applicationId = this.application.id;
-    this.post.isActive = true;
+  // savePost1(post: IPosts) {
+  //   // Assign necessary fields
+  //   this.post.postClassification = this.post.postClassification;
+  //   this.post.numberOfPosts = this.post.numberOfPosts;
+  //   this.post.numberFilled = this.post.numberFilled;
+  //   this.post.monthsFilled = this.post.monthsFilled;
+  //   this.post.vacant = this.post.vacant;
+  //   this.post.dateofVacancies = this.post.dateofVacancies;
+  //   this.post.vacancyReasons = this.post.vacancyReasons;
+  //   this.post.applicationId = this.application.id;
+  //   this.post.isActive = true;
   
-    // Check if it's a new post or an update
-    if (this.newPost) {
-      // Create new post
-      this.createPost(post);
-    } else {
-      // Update existing post
-      this.updatePost(post);
-    }
+  //   // Check if it's a new post or an update
+  //   if (this.newPost) {
+  //     // Create new post
+  //     this.createPost(post);
+  //   } else {
+  //     // Update existing post
+  //     this.updatePost(post);
+  //   }
+  // }
+  
+  savePost(rowData: any) {
+  let postobj = {} as IPosts;
+
+  // Assign necessary fields
+  postobj.postClassification = rowData.postClassification
+  postobj.numberOfPosts = rowData.numberOfPosts;
+  postobj.numberFilled = rowData.numberFilled;
+  postobj.vacant = rowData.vacant;
+  postobj.plans = rowData.plans;
+  if (rowData.dateOfVacancies instanceof Date) {
+    const year = rowData.dateOfVacancies.getFullYear();
+    const month = ('0' + (rowData.dateOfVacancies.getMonth() + 1)).slice(-2); // Adding 1 to month as it's 0-based
+    const day = ('0' + rowData.dateOfVacancies.getDate()).slice(-2);
+
+    // Format the date as 'yyyy-MM-dd'
+    postobj.dateofVacancies = `${year}-${month}-${day}`;
   }
+  else {
+    postobj.dateofVacancies = rowData.dateOfVacancies;
+  }
+  postobj.vacancyReasons = rowData.vacancyReasons;
+  postobj.applicationId = this.application.id;
+  postobj.isActive = true;
+  postobj.id = rowData.id
+
+  // Check if it's a new actual or an update
+  if (rowData.id === 0) {
+    // Create new actual
+    this.createPost(postobj);
+  } else {
+    // Update existing actual
+    this.updatePost(postobj);
+  }
+}
   
   // Method to create a new post
   createPost(post: IPosts) {
+    this._spinner.show();
     this._applicationRepo.createPost(post).subscribe(
       (resp) => {
         this.loadPosts();
-        this.displayPostDialog = false;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -524,7 +557,6 @@ onDemographicSubStructuresChange() {
     this._applicationRepo.updatePost(post).subscribe(
       (resp) => {
         this.loadPosts();
-        this.displayPostDialog = false;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -533,23 +565,14 @@ onDemographicSubStructuresChange() {
     );
   }
   
-
   private loadPosts() {
     this._spinner.show();
     this._applicationRepo.getAllPosts(this.application).subscribe(
       (results) => {
-        console.log('Posts',results);
         this.posts = results;
-       
- 
         });
-  
-
         this._spinner.hide();
       }
-
-  
-
 
   onDistrictChange() {
     this.selectedSubDistricts = [];
@@ -662,6 +685,28 @@ onDemographicSubStructuresChange() {
   updateSelectedQuarterText() {
     // Update the text area content with the name of the selected quarter
     this.selectedQuartersText = this.selectedQuarters ? this.selectedQuarters.values.name : '';
+  }
+
+  addNewRow() {
+    const newRow: IPosts = {
+      id: 0,
+      postClassification: '',
+      numberOfPosts: 0,
+      numberFilled: 0,
+      monthsFilled: '',              // Initialized as number
+      vacant: '',                  // Default value could be 'Yes' or 'No'
+      dateofVacancies: '',           // Can be a string in the form of a date, e.g. '2024-10-01'
+      vacancyReasons: '',
+      plans: '',
+      applicationId: 0,
+      isActive: true,                // Default to active
+    };
+
+    this.posts.push(newRow); // Add the new row to the posts array
+  }
+
+  onBlurAdjustedPost(rowData: any) {
+    this.savePost(rowData);
   }
   
 

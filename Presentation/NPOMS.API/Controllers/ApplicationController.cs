@@ -38,6 +38,7 @@ namespace NPOMS.API.Controllers
         private IIncomeAndExpenditureService _incomeAndExpenditureService;
         private IGovernanceService _governanceService;
         private IAnyOtherService _anyOtherService;
+        private ISDIPService _sdipService;
         
         #endregion
 
@@ -56,7 +57,8 @@ namespace NPOMS.API.Controllers
             IPostService postService,
             IIncomeAndExpenditureService incomeAndExpenditureService,
             IGovernanceService governanceService,
-            IAnyOtherService anyOtherService
+            IAnyOtherService anyOtherService,
+            ISDIPService sdipService
             )
         {
             _logger = logger;
@@ -72,6 +74,7 @@ namespace NPOMS.API.Controllers
             _incomeAndExpenditureService = incomeAndExpenditureService;
             _governanceService = governanceService;
             _anyOtherService = anyOtherService;
+            _sdipService = sdipService;
         }
 
         #endregion
@@ -242,6 +245,22 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPost("createSDIPReport", Name = "CreateSDIPReport")]
+        public async Task<IActionResult> CreateSDIPReport(SDIPReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _sdipService.CreateSDIPReportEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateSDIPReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPost("createPostReport", Name = "CreatePostReport")]
         public async Task<IActionResult> CreatePostReport(PostReport model)
         {
@@ -324,6 +343,22 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("updateSDIPReport", Name = "UpdateSDIPReport")]
+        public async Task<IActionResult> UpdateSDIPReport(SDIPReport model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _sdipService.UpdateSDIPReportEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside updatSDIPReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
         [HttpPut("updatIncomeReport", Name = "UpdateIncomeReport")]
         public async Task<IActionResult> UpdateIncomeReport(IncomeAndExpenditureReport model)
@@ -402,6 +437,22 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside GetAnyOtherByAppid action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("getsdipbyappid/appid/{appid}", Name = "GetSDIPByAppid")]
+        public async Task<IActionResult> GetSDIPByAppid(int appid)
+        {
+            try
+            {
+                var results = await _sdipService.GetSDIPReportByPeriodId(appid);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetSDIPByAppid action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
