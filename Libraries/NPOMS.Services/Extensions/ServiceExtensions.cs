@@ -292,6 +292,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IIncomeAndExpenditureService, IncomeAndExpenditureService>();
             services.AddScoped<IGovernanceService, GovernanceService>();
             services.AddScoped<IAnyOtherService, AnyOtherService>();
+            services.AddScoped<ISDIPService, ISDIPService>();
 
             services.AddConfiguration<dtoBlobConfig>(builder.Configuration, "BlobStorageSettings");
             services.AddScoped<IFundingManagementService, FundingManagementService>();
