@@ -49,16 +49,19 @@ namespace NPOMS.Services.Email.EmailTemplates
 				{
 					case StatusEnum.Reviewed:
 						action = "pre-evaluate";
-						users = await userRepository.GetUsersByRoleId((int)RoleEnum.PreEvaluator);
-						break;
+                        //users = await userRepository.GetUsersByRoleId((int)RoleEnum.PreEvaluator);
+                        users = await userRepository.GetUsersByRoleId((int)RoleEnum.Evaluator);
+                        break;
 					case StatusEnum.Evaluated:
 						action = "evaluate";
-						users = await userRepository.GetUsersByRoleId((int)RoleEnum.Evaluator);
-						break;
+                        //users = await userRepository.GetUsersByRoleId((int)RoleEnum.Evaluator);
+                        users = await userRepository.GetUsersByRoleId((int)RoleEnum.Adjudicator);
+                        break;
 					case StatusEnum.Adjudicated:
 						action = "adjudicate";
-						users = await userRepository.GetUsersByRoleId((int)RoleEnum.Adjudicator);
-						break;
+                        //users = await userRepository.GetUsersByRoleId((int)RoleEnum.Adjudicator);
+                        users = await userRepository.GetUsersByRoleId((int)RoleEnum.Approver);
+                        break;
 				}
 
 				foreach (var user in users)

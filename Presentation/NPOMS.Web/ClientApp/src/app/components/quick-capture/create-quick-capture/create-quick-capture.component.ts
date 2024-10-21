@@ -667,12 +667,12 @@ export class CreateQuickCaptureComponent implements OnInit {
     this.application.subProgrammeTypeId = this.applicationPeriod.subProgrammeTypeId;
     this.application.statusId = StatusEnum.New;
     this.application.applicationPeriod = this.applicationPeriod;
- 
-    if(this.selectedDepartmentId === DepartmentEnum.DSD)
-    {
-      this.addOrganisation();
-    }
-    else{
+ //
+    // if(this.selectedDepartmentId === DepartmentEnum.DSD)
+    // {
+    //   this.addOrganisation();
+    // }
+    // else{
       this._applicationRepo.validateBeforeCreateQCApplication(this.application).subscribe(
         (resp) => {
           if(resp.message === 'Create')
@@ -690,7 +690,7 @@ export class CreateQuickCaptureComponent implements OnInit {
           this._spinner.hide();
         }
       );
-    }
+  //  }
 
   }
 
