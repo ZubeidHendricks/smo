@@ -116,8 +116,9 @@ export class ApplicationListComponent implements OnInit {
       { field: 'applicationPeriod.applicationType.name', header: 'Type', width: '8%' },
       { field: 'applicationPeriod.name', header: 'Application Name', width: '11%' },
       { field: 'applicationPeriod.subProgramme.name', header: 'Sub-Programme', width: '10%' },
+      { field: 'applicationPeriod.subProgrammeType.name', header: 'Sub-Programme Type', width: '10%' },
       { field: 'applicationPeriod.financialYear.name', header: 'Financial Year', width: '10%' },
-      { field: 'applicationPeriod.closingDate', header: 'Closing Date', width: '10%' },
+
       { field: 'status.name', header: 'Application Status', width: '11%' }
     ];
 
@@ -233,14 +234,12 @@ export class ApplicationListComponent implements OnInit {
         
         this.allApplications = results;       
         this.canShowOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.AcceptedSLA});
-        this.canShowOtherOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Adjudicated});
+        this.canShowOtherOptions = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved  && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA });
         this.canShowOptionsNpo = this.allApplications.some(function (item) { return item.statusId === StatusEnum.Approved 
           && item.applicationPeriod.applicationTypeId === ApplicationTypeEnum.BP && item.applicationPeriod.departmentId === DepartmentEnum.DOH});
               
-        
         this.buildButtonItems();
         this.buildOptionItems();
-
         this._spinner.hide();
       },
       (err) => {
@@ -640,28 +639,27 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('Initiate Score Card');  
       this.optionItemExists('Conclude Scorecard');  
       this.optionItemExists('Summary');  
-    }
+    }   
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP)
     {
-      this.optionItemExists('Businessplan Indicators'); 
-      this.optionItemExists('BusinessPlan Summary');  
-      this.optionItemExists('Adjudicate Funded Npo'); 
-      this.optionItemExists('Quartery Perfomance Capture');  
-      this.optionItemExists('Review Adjudicated Funded Npo');
-    }
-
-    if (this.selectedApplication.statusId === StatusEnum.Adjudicated)
-      {
-        this.optionItemExists('Manage Indicators');  
-        this.optionItemExists('Capture Scorecard');  
-        this.optionItemExists('Review Score Card');  
-        this.optionItemExists('Initiate Score Card');  
-        this.optionItemExists('Conclude Scorecard');  
-        this.optionItemExists('Summary');  
         this.optionItemExists('Businessplan Indicators'); 
         this.optionItemExists('BusinessPlan Summary');  
         this.optionItemExists('Adjudicate Funded Npo');  
         this.optionItemExists('Review Adjudicated Funded Npo');
+    }
+
+    if (this.selectedApplication.statusId === StatusEnum.Approved && this.selectedApplication.applicationPeriod.departmentId === 7)
+    {
+      this.optionItemExists('Manage Indicators');  
+      this.optionItemExists('Capture Scorecard');  
+      this.optionItemExists('Review Score Card');  
+      this.optionItemExists('Initiate Score Card');  
+      this.optionItemExists('Conclude Scorecard');  
+      this.optionItemExists('Summary');  
+      this.optionItemExists('Businessplan Indicators'); 
+      this.optionItemExists('BusinessPlan Summary');  
+      this.optionItemExists('Adjudicate Funded Npo');  
+      this.optionItemExists('Review Adjudicated Funded Npo');
     }
    
     if (this.selectedApplication.npoUserTrackings.length > 0) {

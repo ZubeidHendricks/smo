@@ -1,10 +1,20 @@
 <p-toast></p-toast>
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Performance Information">
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}"  [header]="'Performance Information - Organisation Name: ' + (npo?.name || '')"  >
     <!-- <p-megaMenu [model]="menuActions" [style]="{'font-size':'14px'}"></p-megaMenu>     -->
-    <div style="height: 10px;"></div>    
-    <p-card [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">        
+    <div style="height: 10px;"></div>
+    <p-card [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
         <div style="margin-top: 0px;" class="p-grid">
             <div class="p-col-6">
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="non-mandatory-content">Organisation</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <input type="text" class="form-text" pInputText  [value]="getOrganisationValue()" [disabled]="true" [ngModelOptions]="{standalone: true}" [readonly]="true">
+                    </div>
+                </div>
                 <div class="p-grid">
                     <div class="p-col-fixed form-label">
                         <div class="box">
@@ -15,7 +25,7 @@
                         <input type="text" class="form-text" pInputText  [value]="getProgramValue()" [disabled]="true" [ngModelOptions]="{standalone: true}" [readonly]="true">
                     </div>
                 </div>
-                
+
                 <div class="p-grid">
                     <div class="p-col-fixed form-label">
                         <div class="box">
@@ -26,7 +36,7 @@
                         <input type="text" class="form-text" pInputText  [value]="getSubProgramValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
                     </div>
                 </div>
-                
+
                 <div class="p-grid">
                     <div class="p-col-fixed form-label">
                         <div class="box">
@@ -40,6 +50,16 @@
             </div>
             <div class="p-col-6">
                 <div class="p-fluid">
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">C-Code</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <input type="text" class="form-text" pInputText [value]="getGroupTypeValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
@@ -70,7 +90,7 @@
                             <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange()"></p-dropdown>
                         </div>
                     </div>
-               
+
                 </div>
             </div>
         </div>
@@ -78,7 +98,7 @@
     <div style="height: 10px;"></div>
     <p-tabView>
         <p-tabPanel header="Targets">
-            <p-table [rowHover]="true" [columns]="indicatorCols"  [value]="indicators"  styleClass="p-datatable-sm">
+            <p-table [rowHover]="true" [columns]="indicatorCols"  [value]="iNPOIndicators"  styleClass="p-datatable-sm">
                   <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th style="width: 5%;"></th>
@@ -147,62 +167,156 @@
                     </div>
                 </div>
             </p-card>
-            <p-table [rowHover]="true" [columns]="actualCols"  [value]="actuals"  styleClass="p-datatable-sm">
-                <ng-template pTemplate="header" let-columns>
-                  <tr>
-                      <th style="width: 5%;"></th>
-                      <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                          {{col.header}}
-                      </th>
-                      <th style="width: 6%;">Actions</th>
-                  </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-                  <tr class="default-font">
-                      <td style="text-align: center;">{{rowIndex + 1}}</td>
-                      <td>{{rowData.outputTitle}}</td>
-                      <td>{{rowData.indicatorId}}</td>
-                      <!-- <td>{{rowData.actual}}</td> -->
-                      <td>{{rowData.targets}}</td>
-                      <td>{{rowData.actual}}</td>
-                      <td>{{rowData.variance}}</td>
-                      <td>{{rowData.deviationReason}}</td>
-                      <td>{{rowData.adjustedActual}}</td>
-                      <td> {{rowData.adjustedVariance}}</td>                       
-                      <!-- <td>{{rowData.evidence}}</td> -->
-                      <td style="text-align: center;">
-                        <button  pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
-                        <button  pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" (click)="uploadDocument(rowData)"></button>
 
-                        <input  type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;">
-                       </td>
-                      
-                <td style="text-align: center;">
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActual(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
-                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActual(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
-                    <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
-                    <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
-                </td>
-                  </tr>
-              </ng-template>
-              <ng-template pTemplate="summary" let-rowData>
-                <div style="text-align:left">
-                  <button [disabled]="disableAdd()" pButton pRipple type="button" label="Add Indicator Report" class="p-button-text" icon="fa fa-plus" (click)="displayActualDialog = true"></button>
-                </div>
-              </ng-template>
-              <ng-template pTemplate="emptymessage">
-                  <tr class="default-font">
-                      <td colspan="12" style="text-align: center;">No results found</td>
-                  </tr>
-              </ng-template>
-          </p-table>
+            <p-table [rowHover]="true" [columns]="actualCols" [value]="mergedList" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="width: 5%;"></th>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                        <th style="width: 6%;">Actions</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                    <tr class="default-font">
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+
+                        <!-- Editable Cell for outputTitle -->
+                        <td >
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText [(ngModel)]="rowData.outputTitle" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{rowData.outputTitle}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+
+                        <!-- Editable Cell for indicatorId -->
+                        <td>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText [(ngModel)]="rowData.indicatorId" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{rowData.indicatorId}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+
+                        <!-- Editable Cell for targets -->
+                        <td >
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText [(ngModel)]="rowData.actuals.targets"/>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{rowData.actuals.targets}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+
+                        <!-- Editable Cell for actual -->
+                       <!-- Editable Cell for actual -->
+                       <!-- <td pEditableColumn>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText [(ngModel)]="rowData.actuals.actual" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{rowData.actuals.actual}}
+                            </ng-template>
+                        </p-cellEditor>
+                        </td> -->
+
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText
+                                           [(ngModel)]="rowData.actuals.actual"
+                                           (blur)="onBlurAdjustedActual(rowData)"
+                                           (keyup)="onKeyUp(rowData, $event)" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData.actuals.actual }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+
+                        <!-- Other non-editable fields -->
+                        <td>{{rowData.actuals.variance}}</td>
+
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText 
+                                    [(ngModel)]="rowData.actuals.deviationReason" 
+                                    (blur)="onBlurAdjustedActual(rowData)" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{rowData.actuals.deviationReason}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText 
+                                           [(ngModel)]="rowData.actuals.adjustedActual" 
+                                           (blur)="onBlurAdjustedActual(rowData)"
+                                           (keyup)="onKeyUpAdjustedActual($event, rowData)" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{rowData.actuals.adjustedActual}}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        
+                        <td>{{rowData.actuals.adjustedVariance}}</td>
+                        
+
+                        <!-- Actions -->
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
+                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" (click)="uploadDocument(rowData)"></button>
+                            <input type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;">
+                        </td>
+
+                        <!-- Edit and Delete Actions -->
+                        <td style="text-align: center;">
+                            <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActual(rowData)" pTooltip="Edit" tooltipPosition="top"></button> -->
+                            <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActual(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                            <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
+                            <button *ngIf="showReviewerSatisfaction" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+
+   
+                <ng-template pTemplate="summary" let-rowData>
+                    <div style="text-align:left">
+                        <!-- <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addOther()"></button> -->
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="12" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
         </p-tabPanel>
     </p-tabView>
 </p-panel>
 
-<p-dialog header="Uploaded Files" 
-          [(visible)]="displayUploadedFilesDialog" 
-          [style]="{width: '70vw'}" 
+<p-dialog header="Uploaded Files"
+          [(visible)]="displayUploadedFilesDialog"
+          [style]="{width: '70vw'}"
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
@@ -219,7 +333,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
-                <tr> 
+                <tr>
                     <td style="text-align: center;">{{rowIndex + 1}}</td>
                     <td>{{document.name}}</td>
                     <td>{{document.fileSize}}</td>
@@ -239,9 +353,9 @@
 </p-dialog>
 
 
-<p-dialog header="Indicator Report" 
-          [(visible)]="displayActualDialog" 
-          [style]="{width: '50vw'}" 
+<p-dialog header="Indicator Report"
+          [(visible)]="displayActualDialog"
+          [style]="{width: '50vw'}"
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
@@ -255,14 +369,14 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown 
-                    [options]="indicators" 
-                    placeholder="Select a Title" 
-                    optionLabel="outputTitle" 
+                <p-dropdown
+                    [options]="iNPOIndicators"
+                    placeholder="Select a Title"
+                    optionLabel="outputTitle"
                     [(ngModel)]="selectedOutputTitle.outputTitle"
-                    [ngModelOptions]="{standalone: true}" 
-                    [style]="{'width':'100%'}" 
-                    appendTo="body" 
+                    [ngModelOptions]="{standalone: true}"
+                    [style]="{'width':'100%'}"
+                    appendTo="body"
                     (onChange)="outputTitleChange($event.value)">
                 </p-dropdown>
             </div>
@@ -279,7 +393,7 @@
         </textarea>
     </div>
 </div>
-        
+
         <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
@@ -291,7 +405,7 @@
                 </textarea>
             </div>
         </div>
-        
+
 
     <div class="p-grid">
         <div class="p-col-fixed form-label">
@@ -310,11 +424,13 @@
             </div>
         </div>
         <div class="p-col">
-            <p-inputNumber 
-            [(ngModel)]="actual.actual" 
-            inputId="integeronly2" 
-            [style]="{'width':'100%'}" 
-            (keyup)="onKeyUp($event)">
+            <p-inputNumber
+            [(ngModel)]="actual.actual"
+            inputId="integeronly2"
+            [style]="{'width':'100%'}"
+           
+            >
+            <!-- (keyup)="onKeyUp($event)" -->
           </p-inputNumber>
         </div>
     </div>
@@ -329,7 +445,7 @@
             <p-inputNumber [disabled]="true" [(ngModel)]="actual.variance" inputId="integeronly3" [style]="{'width':'100%'}" ></p-inputNumber>
         </div>
     </div>
- 
+
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -347,7 +463,7 @@
             </div>
         </div>
         <div class="p-col">
-            <p-inputNumber (keyup)="onKeyUpAdjustedActual($event)" class="form-text" pInputText [(ngModel)]="actual.adjustedActual" [ngModelOptions]="{standalone: true}"></p-inputNumber>
+            <!-- <p-inputNumber (keyup)="onKeyUpAdjustedActual($event)" class="form-text" pInputText [(ngModel)]="actual.adjustedActual" [ngModelOptions]="{standalone: true}"></p-inputNumber> -->
         </div>
     </div>
     <div class="p-grid">
@@ -366,9 +482,9 @@
        </ng-template>
 </p-dialog>
 
-<p-dialog header="Add Comment" 
-          [(visible)]="displayCommentDialog" 
-          [style]="{width: '50vw'}" 
+<p-dialog header="Add Comment"
+          [(visible)]="displayCommentDialog"
+          [style]="{width: '50vw'}"
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
@@ -382,16 +498,16 @@
         <div class="p-col">
             <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="comment" [ngModelOptions]="{standalone: true}"></textarea>
         </div>
-    </div>        
+    </div>
     <ng-template pTemplate="footer">
         <!-- <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
         <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button> -->
     </ng-template>
 </p-dialog>
 
-<p-dialog header="View Comments" 
-          [(visible)]="displayAllCommentDialog" 
-          [style]="{width: '70vw'}" 
+<p-dialog header="View Comments"
+          [(visible)]="displayAllCommentDialog"
+          [style]="{width: '70vw'}"
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
@@ -425,9 +541,9 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Reviewer Satisfaction" 
-          [(visible)]="displayReviewerSatisfactionDialog" 
-          [style]="{width: '50vw'}" 
+<p-dialog header="Reviewer Satisfaction"
+          [(visible)]="displayReviewerSatisfactionDialog"
+          [style]="{width: '50vw'}"
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"
@@ -469,9 +585,9 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Deleted Activities" 
-          [(visible)]="displayDeletedActivityDialog" 
-          [style]="{width: '90vw'}" 
+<p-dialog header="Deleted Activities"
+          [(visible)]="displayDeletedActivityDialog"
+          [style]="{width: '90vw'}"
           [focusOnShow]="false"
           showEffect="fade"
           [transitionOptions]="'0ms'"

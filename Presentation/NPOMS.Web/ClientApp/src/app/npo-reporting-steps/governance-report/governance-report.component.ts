@@ -289,8 +289,53 @@ export class GovernanceReportComponent implements OnInit {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
+  onBlurAdjustedGov(rowData: any) {
+    let govobj = {} as IGovernance;
+    govobj.comments = rowData.comments;
+    govobj.applicationId = this.application.id;
+    govobj.isActive = rowData.isActive;
+    govobj.id = rowData.id;
 
+    if (rowData.lastMeetingDate instanceof Date) {
+      const year = rowData.lastMeetingDate.getFullYear();
+      const month = ('0' + (rowData.lastMeetingDate.getMonth() + 1)).slice(-2);
+      const day = ('0' + rowData.lastMeetingDate.getDate()).slice(-2);
+      govobj.lastMeetingDate = `${year}-${month}-${day}`;
+    }
+    else {
+      govobj.lastMeetingDate = rowData.lastMeetingDate;
+    }
   
+    if (rowData.lastSubmissionDateNat instanceof Date) {
+      const year = rowData.lastSubmissionDateNat.getFullYear();
+      const month = ('0' + (rowData.lastSubmissionDateNat.getMonth() + 1)).slice(-2);
+      const day = ('0' + rowData.lastSubmissionDateNat.getDate()).slice(-2);
+      govobj.lastSubmissionDateNat = `${year}-${month}-${day}`;
+    }
+    else {
+      govobj.lastSubmissionDateNat = rowData.lastSubmissionDateNat;
+    }
+  
+  
+    if (rowData.lastSubmissionDateWC instanceof Date) {
+      const year = rowData.lastSubmissionDateWC.getFullYear();
+      const month = ('0' + (rowData.lastSubmissionDateWC.getMonth() + 1)).slice(-2);
+      const day = ('0' + rowData.lastSubmissionDateWC.getDate()).slice(-2);
+      govobj.lastSubmissionDateWC = `${year}-${month}-${day}`;
+    }
+    else {
+      govobj.lastSubmissionDateWC = rowData.lastSubmissionDateWC;
+    }
+
+    // Check if it's a new actual or an update
+    if (rowData.id === 0) {
+      // Create new actual
+      this.createGovernance(govobj);
+    } else {
+      // Update existing actual
+      this.updateGovernance(govobj);
+    }
+  }
 
   private loadFinancialYears() {
     this._spinner.show();
@@ -349,6 +394,23 @@ preventChange(event: any): void {
     });
   }
 
+  addNewRow() {
+    const newRow: IGovernance = {
+      id: 0,
+      lastMeetingDate: '',
+      lastSubmissionDateWC: '',
+      lastSubmissionDateNat: '',
+      comments: '',
+      isActive: true,
+      applicationId:0,
+    };
+    
+    this.governances.push(newRow);  // Add the new row to the expenditures array
+  }
+
+
+  
+
   disableSaveActivity() {
     let data = this.activity;
 
@@ -371,7 +433,6 @@ preventChange(event: any): void {
   editGovernance(data: IGovernance) {
     this.newGovernance = false;
     this.governance = this.cloneGovernance(data);
-    console.log('Other',this.governance);
     this.displayGovernanceDialog = true;
   }
 
@@ -382,28 +443,12 @@ preventChange(event: any): void {
       obj[prop] = data[prop];
     return obj;
   }
-  saveGovernance(governance: IGovernance) {
-    // Map form values to governance object
-    governance.comments = this.governance.comments;
-    governance.applicationId = this.application.id;
-    governance.lastMeetingDate= this._datepipe.transform(this.governance.lastMeetingDate, 'yyyy-MM-dd');
-    governance.lastSubmissionDateWC= this._datepipe.transform(this.governance.lastSubmissionDateWC, 'yyyy-MM-dd');
-    governance.lastSubmissionDateNat= this._datepipe.transform(this.governance.lastSubmissionDateNat, 'yyyy-MM-dd');
-    governance.isActive = true; 
   
-    // Check if it's a new governance entry or updating an existing one
-    if (this.newGovernance) {
-      this.createGovernance(governance);
-    } else {
-      this.updateGovernance(governance);
-    }
-  }
 
   createGovernance(governance: IGovernance) {
     this._applicationRepo.createGovernanceReport(governance).subscribe(
       (resp) => {
         this.loadGovernance();
-        this.displayGovernanceDialog = false;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -416,7 +461,6 @@ preventChange(event: any): void {
     this._applicationRepo.updateGovernance(governance).subscribe(
       (resp) => {
         this.loadGovernance();
-        this.displayGovernanceDialog = false;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -427,13 +471,9 @@ preventChange(event: any): void {
   
   
   private loadGovernance() {
-    this._spinner.show();
     this._applicationRepo.GetGovernanceReportsByAppid(this.application).subscribe(
       (results) => {
-        console.log('governance',results);
         this.governances = results;
-       
-  
         });
         this._spinner.hide();
       }

@@ -98,7 +98,7 @@ export enum DropdownTypeEnum {
     DemographicSubDistrict = 64,
     Area=65,
     Indicator = 66,
-    LowLevelNPO = 67,
+    HighLevelNPO = 67,
 }
 
 export enum EntityTypeEnum {

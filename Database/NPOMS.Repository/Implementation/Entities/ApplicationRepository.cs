@@ -35,6 +35,8 @@ namespace NPOMS.Repository.Implementation.Entities
                                 .ThenInclude(x => x.FinancialYear)
                             .Include(x => x.ApplicationPeriod)
                                 .ThenInclude(x => x.SubProgramme)
+                            .Include(x => x.ApplicationPeriod)
+                                .ThenInclude(x => x.SubProgrammeType)
                             .Include(x => x.Status)
                             .Where(x => x.Npo.IsActive).AsNoTracking().ToListAsync();
         }

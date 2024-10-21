@@ -190,6 +190,10 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
 
   expenditures: IExpenditure[];
   expenditure: IExpenditure = {} as IExpenditure;
+
+  totalIncome: number = 0;
+  totalExpenditure: number = 0;
+  totalSurplus: number = 0;
   
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
@@ -214,6 +218,8 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   ngOnInit(): void {
     this._spinner.show();
     this.registerCustomFilters();
+    this.initializeSurplus();
+    this.calculateTotals();
 
 
 
@@ -290,6 +296,7 @@ private loadExpenditure() {
       this.expenditures = results;
       if(this.expenditures.length > 0)
       {
+        this.calculateTotals();
         this.calculateEpenditureTotal();
         this.calculateIncomeTotal();
         this.calculateSurplusTotal();
@@ -365,6 +372,29 @@ this.surplusTotal = total;
     );
   }
   
+
+// Component's TypeScript file
+
+onBlurAdjustedInc(rowdata){
+  this.saveExpenditure(rowdata);
+}
+
+
+addNewRow() {
+  const newRow = {
+    id: 0,
+    costDrivers: '',
+    income: null,
+    expenditure: null,
+    surplus: null,
+    total: 0,
+    isActive: true,
+    applicationId:0,
+  };
+  
+  this.expenditures.push(newRow);  // Add the new row to the expenditures array
+}
+
   private loadDemographicSubStructures() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubStructure, false).subscribe(
       (results) => {
@@ -592,24 +622,53 @@ private cloneExpenditure(data: IExpenditure): IExpenditure {
   return obj;
 }
 
-saveExpenditure(expenditure: IExpenditure) {
-  // Assign necessary fields
-  this.expenditure.costDrivers = this.expenditure.costDrivers;
-  this.expenditure.income = this.expenditure.income;
-  this.expenditure.surplus = this.expenditure.surplus;
-  this.expenditure.total = this.expenditure.total;
-  this.expenditure.applicationId = this.application.id;
-  this.expenditure.isActive = true;
 
-  // Check if it's a new expenditure or an update
-  if (this.newExpenditure) {
-    // Create new expenditure
-    this.createExpenditure(expenditure);
+
+saveExpenditure(rowData: any) {
+  let incomeobj = {} as IExpenditure;
+  incomeobj.applicationId = this.application.id;
+  incomeobj.costDrivers = rowData.costDrivers;
+  incomeobj.income = rowData.income;
+  incomeobj.expenditure = rowData.expenditure;
+  incomeobj.id = rowData.id;
+  incomeobj.surplus = rowData.surplus;
+  incomeobj.total = rowData.total;
+  incomeobj.isActive = true;
+
+  if (rowData.id === 0) {
+    this.createExpenditure(incomeobj);
   } else {
-    // Update existing expenditure
-    this.updateExpenditure(expenditure);
+    this.updateExpenditure(incomeobj);
+  }
+ }
+
+
+ onKeyUp(row: any) {
+  row.surplus = row.income - row.expenditure; // Update surplus when income or expenditure changes
+  this.calculateTotals(); // Recalculate totals when values change
+}
+
+// Method to calculate the total income, expenditure, and surplus
+calculateTotals() {
+  this.totalIncome = 0;
+  this.totalExpenditure = 0;
+  this.totalSurplus = 0;
+
+  this.expenditures?.forEach(row => {
+    this.totalIncome += row.income || 0;
+    this.totalExpenditure += row.expenditure || 0;
+    this.totalSurplus += row.surplus || 0;
+  });
+}
+initializeSurplus() {
+  if (this.expenditures && this.expenditures.length) {
+    this.expenditures.forEach(row => {
+      row.surplus = Number(row.income) - Number(row.expenditure);
+    });
   }
 }
+
+
 
 // Method to create a new expenditure report
 createExpenditure(expenditure: IExpenditure) {

@@ -33,9 +33,9 @@ namespace NPOMS.Domain.Entities
 
         public string DeviationReason { get; set; }
 
-        public int? AdjustedActual { get; set; }
+        public int AdjustedActual { get; set; }
 
-        public int? AdjustedVariance { get; set; }
+        public int AdjustedVariance { get; set; }
 
         public int ApplicationId { get; set; }   
 

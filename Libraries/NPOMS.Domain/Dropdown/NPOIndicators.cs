@@ -22,5 +22,6 @@ namespace NPOMS.Domain.Dropdown
             public string Q3 { get; set; }
             public string Q4 { get; set; }
             public bool IsActive { get; set; }
-        }
+            public string OutputTitle { get; set; }
+    }
 }

@@ -4,45 +4,66 @@
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>     -->
     <div style="height: 10px;"></div>
-    <p-table [rowHover]="true" [columns]="anyOtherCols"  [value]="otherInfors"  styleClass="p-datatable-sm">
+    <p-table [rowHover]="true" [columns]="anyOtherCols" [value]="otherInfors" styleClass="p-datatable-sm" [editable]="true">
         <ng-template pTemplate="header" let-columns>
-          <tr>
-              <th style="width: 5%;"></th>
-              <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                  {{col.header}}
-              </th>
-              <th style="width: 6%;">Actions</th>
-          </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-          <tr class="default-font">
-              <td style="text-align: center;">{{rowIndex + 1}}</td>
-              <td>{{rowData.highlights}}</td>
-              <td>{{rowData.challenges }}</td>
-           
-      
-                              
-            
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{ col.header }}
+                </th>
+                <th style="width: 6%;">Actions</th>
+            </tr>
+        </ng-template>
+    
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <!-- Editable cell for Highlights -->
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.highlights" 
+                            (blur)="onBlurAdjustedAny(rowData)"/>
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.highlights }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+    
+                <!-- Editable cell for Challenges -->
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input pInputText [(ngModel)]="rowData.challenges"
+                            (blur)="onBlurAdjustedAny(rowData)" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ rowData.challenges }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
               
-        <td style="text-align: center;">
-            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editAnyOther(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
-            <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteOtherInfor(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
-            <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
-            <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
-        </td>
-          </tr>
-      </ng-template>
-      <ng-template pTemplate="summary" let-rowData>
-        <div style="text-align:left">
-          <button pButton pRipple type="button" label="Add other information" class="p-button-text" icon="fa fa-plus" (click)="displayAnyOtherDialog = true"></button>
-        </div>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-          <tr class="default-font">
-              <td colspan="12" style="text-align: center;">No results found</td>
-          </tr>
-      </ng-template>
-  </p-table>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editAnyOther(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
+                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteOtherInfor(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                    <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
+                    <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
+                </td>
+            </tr>
+        </ng-template>
+    
+        <ng-template pTemplate="summary" let-rowData>
+            <div style="text-align:left">
+                <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
+            </div>
+        </ng-template>
+    
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="12" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
     <div style="height: 10px;"></div>
 
 </p-panel>

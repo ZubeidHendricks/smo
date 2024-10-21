@@ -18,7 +18,7 @@
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" 
     [globalFilterFields]="['refNo','npo.name','applicationPeriod.applicationType.name',
     'applicationPeriod.subProgramme.name','applicationPeriod.financialYear.name', 
-    'applicationPeriod.closingDate', 'status.name']">
+    'applicationPeriod.subProgrammeType.name', 'status.name']">
         <ng-template pTemplate="header" let-columns>
             <tr>
               <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (canShowOptions || canShowOtherOptions)">Options</th>
@@ -39,8 +39,8 @@
                 <th><p-columnFilter type="text" field="applicationPeriod.applicationType.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.subProgramme.name"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="applicationPeriod.subProgrammeType.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.financialYear.name"></p-columnFilter></th>
-                <th><p-columnFilter type="text" field="applicationPeriod.closingDate"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="status.name"></p-columnFilter></th>
                 <th></th>
             </tr>
@@ -50,7 +50,7 @@
                 <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (canShowOptions || canShowOptionsNpo || canShowOtherOptions)">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" 
                     (click)="selectedApplication=rowData; menu.toggle($event); updateOptionItems();" pTooltip="Options" tooltipPosition="right" 
-                    *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (rowData.statusId === StatusEnum.AcceptedSLA || (rowData.statusId === StatusEnum.Approved && rowData.applicationPeriod.departmentId === 11) ||(rowData.statusId === StatusEnum.Adjudicated))"></button>
+                    *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (rowData.statusId === StatusEnum.AcceptedSLA || (rowData.statusId === StatusEnum.Approved && rowData.applicationPeriod.departmentId === 11) ||(rowData.statusId === StatusEnum.Approved && rowData.applicationPeriod.departmentId === 7))"></button>
                     <p-menu #menu [popup]="true" [model]="optionItems" appendTo="body"></p-menu>
                 </td>
                 <td style="text-align: center;">{{rowIndex + 1}}</td>

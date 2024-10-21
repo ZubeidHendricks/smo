@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApplicationWithUsers, IActivity, IActuals, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IExpenditure, IFacilityList, IFinancialYear, IFundingApplicationDetails, IGovernance, IMyContentLink, IObjective, IOtherInfor, IPlace, IPosts, IProjectImplementation, IResource, ISDA, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationWithUsers, IActivity, IActuals, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IExpenditure, IFacilityList, IFinancialYear, IFundingApplicationDetails, IGovernance, IMyContentLink, IObjective, IOtherInfor, IPlace, IPosts, IProjectImplementation, IResource, ISDA, ISDIP, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -134,6 +134,11 @@ export class ApplicationService {
     const url = `${this._envUrl.urlAddress}/api/applications/getanyotherbyappid/appid/${application.id}`;
     return this._http.get<IOtherInfor[]>(url, httpOptions);
   }
+
+  public GetSDIPReportsByAppid(application: IApplication) {
+    const url = `${this._envUrl.urlAddress}/api/applications/getsdipbyappid/appid/${application.id}`;
+    return this._http.get<ISDIP[]>(url, httpOptions);
+  }
   public GetIncomeReportsByAppid(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/getincomereportsbyappid/appid/${application.id}`;
     return this._http.get<IExpenditure[]>(url, httpOptions);
@@ -169,6 +174,11 @@ export class ApplicationService {
   public updateOtherInfor(otherInfor: IOtherInfor) {
     const url = `${this._envUrl.urlAddress}/api/applications/updatAnyOtherReport`;
     return this._http.put<IOtherInfor>(url, otherInfor, httpOptions);
+  }
+
+  public updateSDIP(sdip: ISDIP) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateSDIPReport`;
+    return this._http.put<ISDIP>(url, sdip, httpOptions);
   }
 
   public updateGovernance(governance: IGovernance) {
@@ -371,6 +381,11 @@ public createGovernanceReport(governance: IGovernance) {
 public createOtherInforReport(otherinfor: IOtherInfor) {
   const url = `${this._envUrl.urlAddress}/api/applications/createAnyOther`;
   return this._http.post<IOtherInfor>(url, otherinfor, httpOptions);
+}
+
+public createSDIPReport(sdip: ISDIP) {
+  const url = `${this._envUrl.urlAddress}/api/applications/createSDIPReport`;
+  return this._http.post<ISDIP>(url, sdip, httpOptions);
 }
 
 

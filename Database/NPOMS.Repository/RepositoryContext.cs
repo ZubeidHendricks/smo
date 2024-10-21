@@ -171,7 +171,8 @@ namespace NPOMS.Repository
         public DbSet<IncomeAndExpenditureReport> IncomeAndExpenditureReports { get; set; }
         public DbSet<AnyOtherInformationReport> AnyOtherInformationReports { get; set; }
         public DbSet<GovernanceReport> GovernanceReports { get; set; }
-  
+        public DbSet<SDIPReport> SDIPReports { get; set; }
+
 
 
 
