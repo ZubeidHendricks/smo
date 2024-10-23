@@ -21,8 +21,15 @@ namespace NPOMS.Repository.Configurations.Evaluation
 				new ResponseOption { Id = 5, ResponseTypeId = 2, Name = "2", SystemName = "2" },
 				new ResponseOption { Id = 6, ResponseTypeId = 2, Name = "3", SystemName = "3" },
 				new ResponseOption { Id = 7, ResponseTypeId = 2, Name = "4", SystemName = "4" },
-				new ResponseOption { Id = 8, ResponseTypeId = 2, Name = "5", SystemName = "5" }
-			);
+				new ResponseOption { Id = 8, ResponseTypeId = 2, Name = "5", SystemName = "5" },
+
+				//Assessments & Evaluation
+                new ResponseOption { Id = 50, ResponseTypeId = 10, Name = "Approved", SystemName = "Approved", IsActive=true, CreatedUserId=1, CreatedDateTime=DateTime.Now },
+                new ResponseOption { Id = 51, ResponseTypeId = 10, Name = "Approved with conditions", SystemName = "ApprovedWithConditions" ,IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.Now },
+                new ResponseOption { Id = 52, ResponseTypeId = 10, Name = "No Approved", SystemName = "NotApproved", IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.Now },
+                new ResponseOption { Id = 53, ResponseTypeId = 11, Name = "Approved", SystemName = "Approved", IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.Now },
+                new ResponseOption { Id = 54, ResponseTypeId = 11, Name = "Not Approved", SystemName = "NotApproved", IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.Now }
+            );
 		}
 	}
 }

@@ -25,8 +25,30 @@ namespace NPOMS.Repository.Configurations.Evaluation
 					Id = 2,
 					Name = "Score",
 					Description = "1, 2, 3, 4 and 5"
-				}
-			);
+				},
+                new ResponseType
+                {
+                    Id = 10,
+                    Name = "Approval01",
+                    Description = "Approved, Approved with Conditions, Not Approved"
+                    ,
+                    IsActive = true,
+                    CreatedUserId = 1,
+                    CreatedDateTime = DateTime.Now
+                
+                },
+                  new ResponseType
+                  {
+                      Id = 11,
+                      Name = "Approval02",
+                      Description = "Approved, Not Approved"
+                      ,
+                      IsActive = true,
+                      CreatedUserId = 1,
+                      CreatedDateTime = DateTime.Now
+                  
+                  }
+            );
 		}
 	}
 }

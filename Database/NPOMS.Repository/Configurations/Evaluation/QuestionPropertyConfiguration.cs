@@ -42,8 +42,17 @@ namespace NPOMS.Repository.Configurations.Evaluation
 				new QuestionProperty { Id = 24, QuestionId = 24, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 25 },
 				new QuestionProperty { Id = 25, QuestionId = 25, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 25 },
 				new QuestionProperty { Id = 26, QuestionId = 26, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 25 },
-				new QuestionProperty { Id = 27, QuestionId = 27, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 25 }
-			);
+				new QuestionProperty { Id = 27, QuestionId = 27, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 25 },
+
+
+                //Assessment & Evaluation
+				new QuestionProperty { Id = 102, QuestionId = 102, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+                new QuestionProperty { Id = 104, QuestionId = 104, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+                new QuestionProperty { Id = 107, QuestionId = 107, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+                new QuestionProperty { Id = 109, QuestionId = 109, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+                new QuestionProperty { Id = 113, QuestionId = 113, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+                new QuestionProperty { Id = 115, QuestionId = 115, HasComment = true, CommentRequired = true, HasDocument = false, DocumentRequired = false, Weighting = 0 }
+            );
 		}
 	}
 }

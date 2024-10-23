@@ -936,6 +936,13 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "Delete Funding Capture",
                     SystemName = "FC.Delete",
                     CategoryName = "Funding Capture"
+                },
+                new Permission
+                {
+                    Id = 134,
+                    Name = "View Funding Assessment Menu",
+                    SystemName = "TN.VFAM",
+                    CategoryName = "Top Navigation"
                 }
             );
         }

@@ -1,0 +1,184 @@
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Budget Summary">
+    <div style="height: 10px;"></div>
+    <p-table [value]="_fundingAssessments" *ngIf="_fundingAssessments" [tableStyle]="{ 'min-width': '50rem' }"
+    [rowHover]="true" #dt styleClass="p-datatable-sm"
+    [paginator]="true" [rows]="25" [showCurrentPageReport]="true"  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rowsPerPageOptions]="[25,50,100]" [globalFilterFields]="['organisationName']"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 100px;">#</th>
+                <th>RefNo</th>
+                <th>Organisation</th>
+                <th>Type</th>
+                <th>Financial Year</th>
+                <th>Status</th>
+                <th style="width: 100px;">Actions</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th><p-columnFilter type="text" field="refNo" matchMode="contains"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="organisationName" matchMode="contains"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="organisationType" matchMode="contains"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="financialYearName" matchMode="contains"></p-columnFilter></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-fundingAssessment let-rowIndex="rowIndex">
+            <tr>
+                <td>{{rowIndex + 1}}</td>
+                <td>{{ fundingAssessment.refNo }}</td>
+                <td>{{ fundingAssessment.organisationName }}</td>
+                <td>{{ fundingAssessment.organisationType }}</td>
+                <td>{{ fundingAssessment.financialYearName }}</td>
+                <td></td>
+                <td style="text-align: center;">
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="menu.toggle($event); " pTooltip="Actions" tooltipPosition="left"></button>
+                    <p-menu #menu [popup]="true" [model]="_buttonItems" appendTo="body"></p-menu>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
+
+<p-dialog header="Declaration of interest" [(visible)]="_showDOIDialog" [modal]="true" [style]="{width: '50vw'}"
+    [maximizable]="false" [resizable]="false">
+    <div style="padding: 10px; background-color: lightgray">
+        <p>
+          I, the undersigned, accept that the assessments, recommendations, and discussions
+          regarding the assessment and/or adjudication and/or allocation with respect to
+          applications by NPOs for transfer funding are confidential, and I hereby undertake not to disclose anything related to this.
+        </p>
+        <p><b>I declare that:</b></p>
+        <ul>
+          <li>
+            I will not deliberately favor or prejudice anybody in the decision-making process or the actual assessment and/or adjudication of NPO applications for transfer funding.
+          </li>
+          <li>
+            During the consideration, acceptance, or allocation of transfer funding, no person employed by the Provincial Government or acting on behalf of the Provincial Government may exercise or use his/her discretion, official powers, or position in such a manner as to obtain an unlawful or unauthorized advantage.
+          </li>
+        </ul>
+        <div class="text-right">
+          <p-checkbox formControlName="doiApprover" [(ngModel)]="_doiApprover" binary="true"></p-checkbox>
+        </div>
+      </div>
+    <p-footer>
+        <button type="submit" pButton icon="fa fa-thumbs-o-up" 
+            class="ui-button-success" label="Submit"></button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog header="Funding Assessment" [(visible)]="_showFundingAssessment" [modal]="true" [style]="{width: '50vw'}"
+    [maximizable]="false" [resizable]="false">
+    <div class="row">
+        <div class="col-md-12">
+          <!-- NPO Info Panel -->
+          <p-panel header="NPO Info" [toggleable]="true">
+            <div class="form-group p-fluid grid">
+              <div class="col-md-2">
+                <label for="npoName">NPO</label>
+              </div>
+              <div class="col-md-8">
+                <input pInputText id="npoName" formControlName="NpoName" class="input-xs" [readonly]="true" />
+              </div>
+            </div>
+            <div class="form-group p-fluid grid">
+              <div class="col-md-2">
+                <label for="ccid">CCID</label>
+              </div>
+              <div class="col-md-8">
+                <input pInputText id="ccid" formControlName="CCID" class="input-xs" [readonly]="true" />
+              </div>
+            </div>
+          </p-panel>
+      
+          <!-- Service Delivery Areas -->
+          <p-panel header="Service Delivery Areas" [toggleable]="true">
+            <p-table [value]="subPlaces" responsiveLayout="scroll" class="table-bordered">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Selected</th>
+                  <th>Sub Place</th>
+                  <th>Place</th>
+                  <th>Service Delivery Area</th>
+                  <th>Region</th>
+                  <th>Number of Items</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-row>
+                <tr>
+                  <td>
+                    <p-checkbox formControlName="chkNSP" [(ngModel)]="row.isChecked"></p-checkbox>
+                  </td>
+                  <td>{{ row.Name }}</td>
+                  <td>{{ row.PlaceName }}</td>
+                  <td>{{ row.SDAName }}</td>
+                  <td>{{ row.RegionName }}</td>
+                  <td>{{ row.ItemsRelated }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-panel>
+      
+          <!-- Legislative Compliance Section -->
+          <!-- <p-panel header="{{ question1.PreAssessmentQuestionCategoryText }}" [toggleable]="true">
+            <p-table responsiveLayout="scroll">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>#</th>
+                  <th>Question</th>
+                  <th>Select Option</th>
+                  <th>Rating</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body">
+                <tr>
+                  <td>1</td>
+                  <td>{{ question1.PreAssessmentQuestionText }}</td>
+                  <td>
+                    <p-dropdown formControlName="Question1SelectionList1Value" [options]="question1.SelectList1" placeholder="-- Select Option --"></p-dropdown>
+                  </td>
+                  <td>
+                    <p-dropdown formControlName="Question1RatingValue" [options]="question1.Ratings" placeholder="-- Choose Rating --"></p-dropdown>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>{{ question2.PreAssessmentQuestionText }}</td>
+                  <td>
+                    <p-dropdown formControlName="Question2SelectionList1Value" [options]="question2.SelectList1" placeholder="-- Select Option --"></p-dropdown>
+                  </td>
+                  <td>
+                    <p-dropdown formControlName="Question2RatingValue" [options]="question2.Ratings" placeholder="-- Choose Rating --"></p-dropdown>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table> -->
+      
+            <!-- Analysis of Findings -->
+            <!-- <div class="form-group">
+              <label><b>Analysis of finding (based on evidence as detailed above)</b></label>
+              <textarea pInputTextarea formControlName="LegislativeComplianceFinding" rows="5" placeholder="Free text box for comments"></textarea>
+            </div>
+            <div class="form-group">
+              <label><b>Results Of Findings</b></label>
+            </div>
+            <div class="form-group">
+              <label>Overall Rating on Analysis of findings (1-3)</label>
+              <input pInputText formControlName="LegislativeComplianceOverallRating" class="input-xs" [readonly]="true" />
+            </div>
+          </p-panel> -->
+      
+          <!-- Radio Buttons for Approval Status -->
+          <div class="form-group text-center">
+            <p-radioButton name="LegislativeComplianceApproval" value="1" formControlName="LegislativeComplianceApproval" label="Approved"></p-radioButton>
+            <p-radioButton name="LegislativeComplianceApproval" value="2" formControlName="LegislativeComplianceApproval" label="Approved With Condition"></p-radioButton>
+            <p-radioButton name="LegislativeComplianceApproval" value="3" formControlName="LegislativeComplianceApproval" label="Not Approved"></p-radioButton>
+          </div>
+      
+        </div>
+      </div>
+      
+</p-dialog>

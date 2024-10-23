@@ -249,6 +249,7 @@ export enum PermissionsEnum {
     ViewTrainingMenu = "TN.VTM",
     ViewFundingMenu = "TN.VFM",
     ViewFundingCaptureMenu = "TN.VFCM",
+    ViewFundingAssessmentMenu = "TN.VFAM",
 
     /* USER ADMINISTRATION */
     AddUsers = "UA.AU",

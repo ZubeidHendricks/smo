@@ -112,6 +112,7 @@ import { FundingCaptureListComponent } from './components/funding-capture/fundin
 import { EditFundingCaptureComponent } from './components/funding-capture/edit-funding-capture/edit-funding-capture.component';
 import { ApproveFundingCaptureComponent } from './components/funding-capture/approve-funding-capture/approve-funding-capture.component';
 import { ViewFundingCaptureComponent } from './components/funding-capture/view-funding-capture/view-funding-capture.component';
+import { FundingAssessmentListComponent } from './components/funding-assessment/funding-assessment-list/funding-assessment-list.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -255,6 +256,9 @@ const routes: Routes = [
   { path: 'funding-capture/approve/:id', component: ApproveFundingCaptureComponent },
   { path: 'funding-capture/view/:id', component: ViewFundingCaptureComponent },
   // { path: 'funding-capture/download/:id', component: DownloadFundingCaptureComponent }
+
+    // Funding Assessment
+    { path: 'funding-assessment', component: FundingAssessmentListComponent },
 ];
 
 @NgModule({
