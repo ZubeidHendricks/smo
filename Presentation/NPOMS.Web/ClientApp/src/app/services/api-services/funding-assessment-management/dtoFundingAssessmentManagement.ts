@@ -10,3 +10,32 @@ export interface dtoFundingAssessmentApplicationGet{
     closingDate : string;
     fundingAssessmentStatusName: string;
 }
+
+export interface dtoFundingAssessmentApplicationFormGet{
+    id: number,
+    applicationId: number,
+    organisationName: string,
+    serviceDeliveries: dtoServiceDeliveryAreaGet[]
+    questions: dtoQuestionGet[]
+
+}
+
+export interface dtoServiceDeliveryAreaGet{
+    id: number,
+    name: string,
+    isSelected: boolean
+}
+
+export interface dtoQuestionGet{
+    id: number,
+    name: string,
+    questionSectionName: string,
+    responseOptions: dtoResponseOptionGet[]
+}
+
+export interface dtoResponseOptionGet
+{
+    id: number,
+    name: string,
+    isSelected: boolean
+}

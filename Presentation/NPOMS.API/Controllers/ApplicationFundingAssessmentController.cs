@@ -37,5 +37,20 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("{id}/application/{applicationId}", Name = "GetFundingAssessmentForm")]
+        public async Task<IActionResult> GetAllFundingAssessmentApplications(int id, int applicationId)
+        {
+            try
+            {
+                var results = await this._applicationFundingAssessmentService.GetFundingAssessmentById(id, applicationId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetFundingAssessmentForm action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

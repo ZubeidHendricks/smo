@@ -10,5 +10,6 @@ namespace NPOMS.Services.Interfaces
     public interface IApplicationFundingAssessmentService
     {
        Task<IEnumerable<dtoFundingAssessmentApplicationGet>> GetAllFundingAssessmentApplications(string userIdentifier);
+        Task<dtoFundingAssessmentApplicationFormGet> GetFundingAssessmentById(int Id, int applicationId);
     }
 }

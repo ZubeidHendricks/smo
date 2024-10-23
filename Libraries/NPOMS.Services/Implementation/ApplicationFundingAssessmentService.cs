@@ -35,9 +35,26 @@ namespace NPOMS.Services.Implementation
             return result;
         }
 
-        public async Task GetAssessmentByNpoAndPeriod(int npoId, int financialYearId) { 
-            
+        public async Task<dtoFundingAssessmentApplicationFormGet> GetFundingAssessmentById(int Id, int applicationId) {
 
+            var questions = await this._repositoryContext.Questions
+                                            .Include(x=>x.QuestionSection).ThenInclude(x=>x.QuestionCategory)
+                                            .Include(x=>x.ResponseType)
+                                            .Where(x => x.QuestionSection.QuestionCategory.Name.Equals("Assessment & Evaluation")).
+                                            ToListAsync();
+
+            var responseTypeIds = questions.Select(x=>x.ResponseTypeId).ToList();
+
+            var responseOptions = await this._repositoryContext.ResponseOptions.Where(x => responseTypeIds.Contains(x.ResponseTypeId)).ToListAsync();
+
+            var application = await this._repositoryContext.Applications
+                                                                    .Include(x => x.Npo).ThenInclude(x => x.OrganisationType)
+                                                                    .Include(x => x.ApplicationPeriod)
+                                                                    .FirstOrDefaultAsync(x => x.Id == applicationId);
+
+            dtoFundingAssessmentApplicationFormGet form = new(application, questions, responseOptions);
+
+            return form;
         }
     }
 }

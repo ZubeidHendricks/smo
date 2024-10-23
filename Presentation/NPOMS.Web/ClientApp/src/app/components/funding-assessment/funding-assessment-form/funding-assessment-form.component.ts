@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -7,17 +7,20 @@ import { Table } from 'primeng/table';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { FundingAssessmentManagementService } from 'src/app/services/api-services/funding-assessment-management/funding-assessment-management.service';
 import { PermissionsEnum } from 'src/app/models/enums';
-import { IApplication, IUser } from 'src/app/models/interfaces';
+import { IUser } from 'src/app/models/interfaces';
 import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationGet } from 'src/app/services/api-services/funding-assessment-management/dtoFundingAssessmentManagement';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-funding-assessment-list',
-  templateUrl: './funding-assessment-list.component.html',
-  styleUrls: ['./funding-assessment-list.component.css'],
+  selector: 'app-funding-assessment-form',
+  templateUrl: './funding-assessment-form.component.html',
+  styleUrls: ['./funding-assessment-form.component.css'],
   providers: [MessageService, ConfirmationService]
 })
-export class FundingAssessmentListComponent implements OnInit {
+export class FundingAssessmentFormComponent implements OnInit {
+ @Input() fundingAssessmentForm: dtoFundingAssessmentApplicationFormGet;
+
+
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -31,14 +34,12 @@ export class FundingAssessmentListComponent implements OnInit {
   }
 
   profile: IUser;
-  _selectedApplicationId: number;
 
   _buttonItems: MenuItem[];
   _fundingAssessments: dtoFundingAssessmentApplicationGet[];
-  _fundingAssessmentForm: dtoFundingAssessmentApplicationFormGet;
   _showDOIDialog: boolean = false;
   _doiApprover: boolean = false;
-  _showFundingAssessmentForm: boolean = false;
+  _showFundingAssessment: boolean = false;
 
 
   npoForm: FormGroup;
@@ -72,6 +73,7 @@ export class FundingAssessmentListComponent implements OnInit {
           this._router.navigate(['401']);
       }
 
+      console.log("questions", this.fundingAssessmentForm )
       this.loadFundingAssessments();
       this.buildButtonItems();
 
@@ -130,19 +132,7 @@ export class FundingAssessmentListComponent implements OnInit {
         label: 'Funding Assessment',
         icon: 'fa fa-pencil-square-o',
         command: () => {
-        
-          this._spinner.show();
-          this._repo.getFundingAssessmentApplicationForm(this._selectedApplicationId).subscribe(
-            (result) => {
-              this._fundingAssessmentForm = result;
-              this._showFundingAssessmentForm = true;
-              this._spinner.hide();
-            },
-            (err) => {
-              this._loggerService.logException(err);
-              this._spinner.hide();
-            }
-          );
+          this._showFundingAssessment = true;
         }
       });
 

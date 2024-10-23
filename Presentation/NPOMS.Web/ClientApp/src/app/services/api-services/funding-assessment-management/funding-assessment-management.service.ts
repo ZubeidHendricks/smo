@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import {  } from 'src/app/models/interfaces';
-import { dtoFundingAssessmentApplicationGet } from './dtoFundingAssessmentManagement';
+import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationGet } from './dtoFundingAssessmentManagement';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -15,16 +15,23 @@ const httpOptions = {
 export class FundingAssessmentManagementService {
   private fundingManagementUrl: string;
 
+
   constructor(
     private _envUrl: EnvironmentUrlService,
     private _http: HttpClient
   ) {
     this.fundingManagementUrl = `${this._envUrl.urlAddress}/api/funding-assessments`;
+
   }
 
   public getFundingAssessmentApplications() {
     const url = `${this.fundingManagementUrl}`;
     return this._http.get<dtoFundingAssessmentApplicationGet[]>(url, httpOptions);
+  }
+
+  public getFundingAssessmentApplicationForm(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/funding-assessments/0/application/${applicationId}`;
+    return this._http.get<dtoFundingAssessmentApplicationFormGet>(url, httpOptions);
   }
 
 //   public createFundingCapture(fundingCapture: IFundingCaptureViewModel) {
