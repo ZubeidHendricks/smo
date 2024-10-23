@@ -34,7 +34,7 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public async Task<IEnumerable<PostReport>> GetByPeriodId(int applicationPeriodId)
         {
-            return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
+            return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive).Include(x => x.Status)
                          .AsNoTracking()
                          .ToListAsync();
         }
@@ -42,7 +42,10 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public async Task<IEnumerable<PostReport>> GetEntities()
         {
-            return await FindByCondition(x => x.IsActive).AsNoTracking().ToListAsync();
+            return await FindByCondition(x => x.IsActive)
+                .Include(x =>x.StaffCategory)
+                .Include(x => x.Status)
+                .AsNoTracking().ToListAsync();
         }
 
         public async Task UpdateEntity(PostReport model, int currentUserId)

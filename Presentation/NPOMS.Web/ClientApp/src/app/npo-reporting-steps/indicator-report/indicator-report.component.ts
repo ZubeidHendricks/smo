@@ -3,8 +3,8 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { DepartmentEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { DepartmentEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -226,7 +226,8 @@ disableAdd(): any {
   selectedFrequencyPeriod: IFrequencyPeriod;
   selectedOutputTitle:any={};
   workplanIndicators: IWorkplanIndicator[];
-
+  buttonItems: MenuItem[];
+  selectedActual: IActuals;
   documentTypes: IDocumentType[] = [];
   quartelyPeriods: IQuarterlyPeriod[];
 
@@ -247,6 +248,12 @@ disableAdd(): any {
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
+  public IsAuthorized(permission: PermissionsEnum): boolean {
+    if (this.profile != null && this.profile.permissions.length > 0) {
+      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    }
+  }
+
   constructor(
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
@@ -266,28 +273,37 @@ disableAdd(): any {
   ) { }
 
   ngOnInit(): void {
-    this._spinner.show();
-    this.loadDocumentTypes();
-    this.registerCustomFilters();
-    this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
-      this.application.statusId === StatusEnum.PendingApproval ||
-      this.application.statusId === StatusEnum.ApprovalInProgress ||
-      this.application.statusId === StatusEnum.PendingSLA ||
-      this.application.statusId === StatusEnum.PendingSignedSLA ||
-      this.application.statusId === StatusEnum.DeptComments ||
-      this.application.statusId === StatusEnum.OrgComments)
-      ? false : true;
 
-    this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
-    this.tooltip = this.canEdit ? 'Edit' : 'View';
+    this._authService.profile$.subscribe(profile => {
+      if (profile != null && profile.isActive) {
+        this.profile = profile;
+        this._spinner.show();
+        this.loadDocumentTypes();
+        this.registerCustomFilters();
+        this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
+          this.application.statusId === StatusEnum.PendingApproval ||
+          this.application.statusId === StatusEnum.ApprovalInProgress ||
+          this.application.statusId === StatusEnum.PendingSLA ||
+          this.application.statusId === StatusEnum.PendingSignedSLA ||
+          this.application.statusId === StatusEnum.DeptComments ||
+          this.application.statusId === StatusEnum.OrgComments)
+          ? false : true;
+    
+        this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
+        this.tooltip = this.canEdit ? 'Edit' : 'View';
 
-    this.loadNpo();
-    this.loadProgrammes();
-    this.loadSubProgrammes();
-    this.loadSubProgrammeTypes();   
-    this.loadFinancialYears();
-    this.loadFrequencyPeriods();
-    this.loadIndicators();
+        //this.loadIndicators();
+        this.loadSubIndicators();
+        this.loadNpo();
+        this.loadProgrammes();
+        this.loadSubProgrammes();
+        this.loadSubProgrammeTypes();   
+        this.loadFinancialYears();
+        this.loadFrequencyPeriods();
+        this.buildButtonItems();
+      }
+    });
+
     this.npoName = this.npo?.name;
    // this.GetIndicatorReportsByAppid();
     
@@ -317,6 +333,7 @@ disableAdd(): any {
       { header: 'Adjusted Actual ', width: '10%' },
       { header: 'Adjusted Variance ', width: '10%' },
       { header: 'Evidence', width: '10%' },
+      { header: 'Status', width: '10%' },
     ];
 
     this.commentCols = [
@@ -349,6 +366,19 @@ disableAdd(): any {
     ];
   }
 
+  private loadSubIndicators() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Indicator, false).subscribe(
+      (results) => {
+        this.indicators = results.filter(indicator => indicator.ccode === this.npo?.cCode);
+        //this.GetIndicatorReportsByAppid();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   createMergedList() {
     this.mergedList = this.iNPOIndicators.map(indicator => {
         // Attempt to find the actual data based on criteria
@@ -370,28 +400,16 @@ disableAdd(): any {
         };
     });
 }
-
-  
-  // createMergedList() {
-  //   this.mergedList = this.iNPOIndicators.map(indicator => {
-
-  //     const actualData = this.actuals.find(act => act.indicatorId === +indicator.id && act.financialYear === this.selectedFinancialYear.id && act.qaurterId === this.selectedFrequencyPeriod.id);
-
-  //     this.setTargetsBasedOnFrequency(actualData);
-
-  //     return {
-  //       ...indicator,
-  //       actuals: actualData || this.createEmptyActual(indicator)
-  //     };
-  //   });
-  // }  
-
-  setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
+ 
+status(data: any) {
+  return data?.actuals?.status?.name || 'New';
+}
+ 
+setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
     if (this.selectedFrequencyPeriod) {
        if(this.selectedFrequencyPeriod.name === 'Quarter1')
       {
         actual.targets = indicator.q1;
-        console.log('actual',actual);
       }
       if(this.selectedFrequencyPeriod.name === 'Quarter2')
       {
@@ -431,13 +449,98 @@ disableAdd(): any {
       qaurterId: 0,
       actual: 0,
       documents: [],
-      isActive: true
+      isActive: true,
+      statusId: 0,
+      status: {} as IStatus
     };
+  }
+
+  updateButtonItems() {
+    // Show all buttons
+    this.buttonItems[0].items.forEach(option => {
+      option.visible = true;
+    });
+
+    // switch (this.selectedIndicator.workplanActuals[0].statusId) {
+    //   case StatusEnum.New:
+    //   case StatusEnum.Saved:
+    //   case StatusEnum.AmendmentsRequired: {
+    //     this.buttonItems[0].items[2].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     this.buttonItems[0].items[4].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.PendingReview: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.PendingApproval: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[2].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.Approved: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[2].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     this.buttonItems[0].items[4].visible = false;
+    //     break;
+    //   }
+    // }
+  }
+
+  private buildButtonItems() {
+    this.buttonItems = [];
+    if (this.profile) {
+      this.buttonItems = [{
+        label: 'Options',
+        items: []
+      }];
+
+      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Submit Actual',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateActualData(this.selectedActual, StatusEnum.PendingReview);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Verify Actual',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateActualData(this.selectedActual, StatusEnum.PendingApproval);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Approve Actual',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateActualData(this.selectedActual, StatusEnum.Approved);
+          }
+        });
+      }
+    }
+  }
+
+  
+  private updateActualData(rowData: any, status: number) {
+    rowData.actuals.statusId = status;
+    this.saveActual(rowData);
   }
 
   // Method to save the actuals
   saveActualz(mergedItem: any) {
-    console.log('Saving actual:', mergedItem);
     // Add your save logic here
   }
   private loadProgrammes() {
@@ -685,7 +788,6 @@ disableAdd(): any {
     this._dropdownRepo.getEntities(DropdownTypeEnum.HighLevelNPO, false).subscribe(
       (results) => {
         this.iNPOIndicators = results.filter(indicator => indicator.ccode === this.npo?.cCode);
-        //this.GetIndicatorReportsByAppid();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -899,6 +1001,8 @@ addOther() {
     group: 0,
     indicatorValue: '',
     documents: [],
+    statusId: 0,
+    status: {} as IStatus,
   };
 
   // Add this new row to the actuals array
@@ -911,10 +1015,9 @@ editActual(data: IActuals) {
   this.actual = this.cloneActual(data);
   this.outputTitle(this.actual);
 }
-  outputTitle(actual: IActuals) {
-    this.selectedOutputTitle = this.indicators.find(x => x.id === actual.indicatorId);
-    this.displayActualDialog = true;
-  }
+outputTitle(rowData: any) {
+     return this.indicators.find(x => x.indicatorValue === rowData.indicatorId).outputTitle;
+}
 
 private cloneActual(data: IActuals): IActuals {
   let obj = {} as IActuals;
@@ -930,6 +1033,7 @@ saveActual(rowData: any) {
   // Assign necessary fields
   actualobj.deviationReason = rowData.actuals.deviationReason
   actualobj.id = rowData.actuals.id;
+  actualobj.statusId = rowData.actuals.statusId;
   actualobj.outputTitle = rowData.outputTitle;
   actualobj.financialYear = this.selectedFinancialYear.id;
   actualobj.qaurterId = this.selectedFrequencyPeriod.id;
@@ -1017,6 +1121,7 @@ updateActual(actual: IActuals) {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(
       (results) => {
         this.npo = results;
+        this.loadIndicators();
       },
       (err) => {
         this._loggerService.logException(err);

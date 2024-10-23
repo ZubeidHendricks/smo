@@ -42,6 +42,7 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<IEnumerable<AnyOtherInformationReport>> GetByPeriodId(int applicationPeriodId)
         {
             return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
+                          .Include(x => x.Status)
                          .AsNoTracking()
                          .ToListAsync();
         }

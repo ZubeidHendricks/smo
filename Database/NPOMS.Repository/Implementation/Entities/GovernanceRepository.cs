@@ -38,14 +38,14 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public async Task<IEnumerable<GovernanceReport>> GetByPeriodId(int applicationPeriodId)
         {
-            return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
+            return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive).Include(x => x.Status)
                           .AsNoTracking()
                           .ToListAsync();
         }
 
         public async Task<IEnumerable<GovernanceReport>> GetEntities()
         {
-            return await FindByCondition(x => x.IsActive).AsNoTracking().ToListAsync();
+            return await FindByCondition(x => x.IsActive).Include(x => x.Status).AsNoTracking().ToListAsync();
         }
 
         public async Task UpdateEntity(GovernanceReport model, int currentUserId)

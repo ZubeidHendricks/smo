@@ -4,8 +4,8 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IPosts, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StaffCategoryEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IPosts, IProgramme, IRecipientType, IStaffCategory, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -88,95 +88,68 @@ export class PostReportComponent implements OnInit {
   displayPostDialog: boolean;
   newActivity: boolean;
   newPost: boolean;
-  
-
-  
-
   activity: IActivity = {} as IActivity;
-
   objectives: IObjective[];
   selectedObjective: IObjective;
-
   activityTypes: IActivityType[];
   selectedActivityType: IActivityType;
-
   yearRange: string;
   rowGroupMetadata: any[];
   deletedRowGroupMetadata: any[];
-
   facilities: IFacilityList[];
   facilitiesList: IFacilityList[];
   selectedFacilities: IFacilityList[];
-
-
   filteredFacilities: IFacilityList[] = [];
-
-
   selectedFacilitiesText: string;
-
-
   selectedSubProgrammes: ISubProgramme[];
-
   canEdit: boolean;
   selectedSubProgrammesText: string;
-
   displayAllCommentDialog: boolean;
   displayCommentDialog: boolean;
   comment: string;
   commentCols: any;
   applicationComments: IApplicationComment[] = [];
-
   tooltip: string;
-
   activityList: IActivityList[];
   selectedActivity: IActivityList;
-
   maxChars = 50;
-
   showReviewerSatisfaction: boolean;
   applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[] = [];
   displayReviewerSatisfactionDialog: boolean;
   reviewerSatisfactionCols: any;
-
   displayDeletedActivityDialog: boolean;
-
   npo: INpo;
   recipientTypes: IRecipientType[];
-
   recipients: IActivityRecipient[];
   selectedRecipients: IActivityRecipient[] = [];
   selectedRecipientsText: string;
-
   facilityDistricts: IFacilityDistrict[];
   selectedDistricts: IFacilityDistrict;
-
   allFacilitySubDistricts: IFacilitySubDistrict[];
   facilitySubDistricts: IFacilitySubDistrict[];
   selectedSubDistricts: IFacilitySubDistrict[];
-
   allFacilitySubStructures: IFacilitySubStructure[];
   facilitySubStructures: IFacilitySubStructure[];
   selectedFacilitySubStructures: IFacilitySubStructure;
-
-  
   allIDistrictDemographics: IDistrictDemographic[];
   selectedIDistrictDemographics: IDistrictDemographic;
-
   allSubDistrictDemographics: ISubDistrictDemographic[];
   SubDistrictDemographics: ISubDistrictDemographic[];
   selectedSubDistrictDemographics: ISubDistrictDemographic[];
-
   allSubstructureDemographics: ISubstructureDemographic[];
   SubstructureDemographics: ISubstructureDemographic[];
   selectedSubstructureDemographics: ISubstructureDemographic[];
-
   allManicipalityDemographics: IManicipalityDemographic[];
   ManicipalityDemographics: IManicipalityDemographic[];
   selectedManicipalityDemographics: IManicipalityDemographic[];
-
   //activeActivities: any[] = []; // All activities
   filteredActivities: any[] = []; // Filtered activities
   filteredData: any[] = [];
+  staffCategories: IStaffCategory[];
+
+  public get StaffCategoryEnum(): typeof StaffCategoryEnum {
+    return StaffCategoryEnum;
+  }
 
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
@@ -190,9 +163,6 @@ export class PostReportComponent implements OnInit {
   ];
 
   selectedQuarters = [];
-
-
-  
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -233,6 +203,7 @@ export class PostReportComponent implements OnInit {
 
     this.loadFinancialYears();
     this.loadPosts();
+    this.loadStaffCategories();
 
     this.postCols = [
       { header: 'Post Classification', width: '20%' },
@@ -260,7 +231,11 @@ export class PostReportComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
-  
+
+  status(data: any) {
+    return data?.actuals?.status?.name || 'New';
+  }
+   
   disableQuarters(): boolean {
     // Logic to disable dropdown (return true to disable, false to enable)
     return false;
@@ -469,7 +444,6 @@ onDemographicSubStructuresChange() {
   editPost(data: IPosts) {
     this.newPost = false;
     this.post = this.clonePost(data);
-    console.log('Other',this.post);
     this.displayPostDialog = true;
   }
 
@@ -481,43 +455,19 @@ onDemographicSubStructuresChange() {
     return obj;
   }
 
-  // savePost1(post: IPosts) {
-  //   // Assign necessary fields
-  //   this.post.postClassification = this.post.postClassification;
-  //   this.post.numberOfPosts = this.post.numberOfPosts;
-  //   this.post.numberFilled = this.post.numberFilled;
-  //   this.post.monthsFilled = this.post.monthsFilled;
-  //   this.post.vacant = this.post.vacant;
-  //   this.post.dateofVacancies = this.post.dateofVacancies;
-  //   this.post.vacancyReasons = this.post.vacancyReasons;
-  //   this.post.applicationId = this.application.id;
-  //   this.post.isActive = true;
-  
-  //   // Check if it's a new post or an update
-  //   if (this.newPost) {
-  //     // Create new post
-  //     this.createPost(post);
-  //   } else {
-  //     // Update existing post
-  //     this.updatePost(post);
-  //   }
-  // }
-  
+ 
   savePost(rowData: any) {
   let postobj = {} as IPosts;
-
-  // Assign necessary fields
-  postobj.postClassification = rowData.postClassification
+  postobj.staffCategoryId = rowData.staffCategoryId
   postobj.numberOfPosts = rowData.numberOfPosts;
   postobj.numberFilled = rowData.numberFilled;
   postobj.vacant = rowData.vacant;
+  postobj.statusId = rowData.statusId;
   postobj.plans = rowData.plans;
   if (rowData.dateOfVacancies instanceof Date) {
     const year = rowData.dateOfVacancies.getFullYear();
     const month = ('0' + (rowData.dateOfVacancies.getMonth() + 1)).slice(-2); // Adding 1 to month as it's 0-based
     const day = ('0' + rowData.dateOfVacancies.getDate()).slice(-2);
-
-    // Format the date as 'yyyy-MM-dd'
     postobj.dateofVacancies = `${year}-${month}-${day}`;
   }
   else {
@@ -528,18 +478,14 @@ onDemographicSubStructuresChange() {
   postobj.isActive = true;
   postobj.id = rowData.id
 
-  // Check if it's a new actual or an update
   if (rowData.id === 0) {
-    // Create new actual
     this.createPost(postobj);
   } else {
-    // Update existing actual
     this.updatePost(postobj);
   }
 }
-  
-  // Method to create a new post
-  createPost(post: IPosts) {
+
+createPost(post: IPosts) {
     this._spinner.show();
     this._applicationRepo.createPost(post).subscribe(
       (resp) => {
@@ -552,8 +498,7 @@ onDemographicSubStructuresChange() {
     );
   }
   
-  // Method to update an existing post
-  updatePost(post: IPosts) {
+updatePost(post: IPosts) {
     this._applicationRepo.updatePost(post).subscribe(
       (resp) => {
         this.loadPosts();
@@ -565,7 +510,7 @@ onDemographicSubStructuresChange() {
     );
   }
   
-  private loadPosts() {
+private loadPosts() {
     this._spinner.show();
     this._applicationRepo.getAllPosts(this.application).subscribe(
       (results) => {
@@ -574,7 +519,7 @@ onDemographicSubStructuresChange() {
         this._spinner.hide();
       }
 
-  onDistrictChange() {
+onDistrictChange() {
     this.selectedSubDistricts = [];
     this.selectedFacilitySubStructures  = null;
     
@@ -594,7 +539,7 @@ onDemographicSubStructuresChange() {
   }
   
 
-  private loadNpo() {
+private loadNpo() {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(
       (results) => {
         this.npo = results;
@@ -606,7 +551,7 @@ onDemographicSubStructuresChange() {
     );
   }
 
-  public GetDifference(isNew: boolean) {
+public GetDifference(isNew: boolean) {
     switch (isNew) {
       case undefined:
         return '';
@@ -618,15 +563,15 @@ onDemographicSubStructuresChange() {
   }
 
 
-  private setYearRange() {
+private setYearRange() {
     let currentDate = new Date;
     let startYear = currentDate.getFullYear() - 5;
     let endYear = currentDate.getFullYear() + 5;
 
     this.yearRange = `${startYear}:${endYear}`;
-  }
+}
 
-  nextPage() {
+nextPage() {
     if (this.activeActivities.length > 0) {
       let canContinue: boolean[] = [];
 
@@ -644,14 +589,14 @@ onDemographicSubStructuresChange() {
     }
     else
       this._messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Activity table cannot be empty.' });
-  }
+}
 
-  prevPage() {
+prevPage() {
     this.activeStep = this.activeStep - 1;
     this.activeStepChange.emit(this.activeStep);
-  }
+}
 
-  deletePost(data: IPosts) {
+deletePost(data: IPosts) {
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
@@ -666,31 +611,33 @@ onDemographicSubStructuresChange() {
         this._confirmationService.close();
       }
     });
-  }
+}
 
-  disableSaveActivity() {
+disableSaveActivity() {
     let data = this.activity;
 
     if (!this.selectedObjective || this.selectedSubProgrammes.length === 0 || !data.name || !data.description || !this.selectedActivityType || !data.timelineStartDate || !data.timelineEndDate || !data.target || this.selectedFacilities.length === 0 || this.selectedRecipients.length === 0)
       return true;
 
     return false;
-  }
-  disableProgramme(): boolean {
+}
+
+disableProgramme(): boolean {
     if (this.programmes.length > 0)
       return false;
 
     return true;
-  }
-  updateSelectedQuarterText() {
+}
+updateSelectedQuarterText() {
     // Update the text area content with the name of the selected quarter
     this.selectedQuartersText = this.selectedQuarters ? this.selectedQuarters.values.name : '';
-  }
+}
 
-  addNewRow() {
+addNewRow() {
     const newRow: IPosts = {
       id: 0,
-      postClassification: '',
+      staffCategory: {} as IStaffCategory,
+      staffCategoryId :0,
       numberOfPosts: 0,
       numberFilled: 0,
       monthsFilled: '',              // Initialized as number
@@ -699,123 +646,30 @@ onDemographicSubStructuresChange() {
       vacancyReasons: '',
       plans: '',
       applicationId: 0,
-      isActive: true,                // Default to active
+      isActive: true,  
+      status: {} as IStatus,
+      statusId :0             // Default to active
     };
-
     this.posts.push(newRow); // Add the new row to the posts array
-  }
+}
 
-  onBlurAdjustedPost(rowData: any) {
+onBlurAdjustedPost(rowData: IPosts) {
     this.savePost(rowData);
-  }
-  
+}
 
-
-  disableSubProgrammeType(): boolean {
+disableSubProgrammeType(): boolean {
     if (this.filteredSubProgrammeTypes.length > 0)
       return false;
 
     return true;
-  }
-
-  saveActivity() {
-    this.activity.objective = null;
-    this.activity.activityType = null;
-    this.activity.changesRequired = this.activity.changesRequired == null ? null : false;
-    this.activity.activityList = null;
-
-    this.activity.objectiveId = this.selectedObjective.id;
-    this.activity.activityTypeId = this.selectedActivityType.id;
-    this.activity.isActive = true;
-
-    this.activity.timelineStartDate = this._datepipe.transform(this.activity.timelineStartDate, 'yyyy-MM-dd');
-    this.activity.timelineEndDate = this._datepipe.transform(this.activity.timelineEndDate, 'yyyy-MM-dd');
-
-    // this.activity.activitySubProgrammes = [];
-    // this.selectedSubProgrammes.forEach(item => {
-    //   let activitySubProgramme = {
-    //     activityId: this.activity.id,
-    //     subProgrammeId: item.id,
-    //     isActive: true
-    //   } as IActivitySubProgramme;
-
-    //   this.activity.activitySubProgrammes.push(activitySubProgramme);
-    // });
-
-    this.activity.activityFacilityLists = [];
-    this.selectedFacilities.forEach(item => {
-      let activityFacilityList = {
-        activityId: this.activity.id,
-        facilityListId: item.id,
-        isActive: true
-      } as IActivityFacilityList;
-
-      this.activity.activityFacilityLists.push(activityFacilityList);
-    });
-
-this.activity.activityRecipients = this.selectedRecipients;
-
-// Initialize the array
-this.activity.activityDistrict = [];
-
-//Check if selectedIDistrictDemographics is not null
-if (this.selectedIDistrictDemographics) {
-  // Create the IActivityDistrict object from the selected district
-  let activityDistrict = {
-    demographicDistrictId: this.selectedIDistrictDemographics.id,
-    name: this.selectedIDistrictDemographics.name,
-    isActive: this.selectedIDistrictDemographics.isActive,
-    activityId: this.activity.id
-  } as IActivityDistrict;
-
-//   // Push the object into the array
-  this.activity.activityDistrict.push(activityDistrict);
 }
 
-  this.activity.activityManicipality = [];
-
-  this.selectedManicipalityDemographics.forEach(item => {
-    let activityManicipality = {
-      demographicDistrictId: item.districtDemographicId,
-      name: item.name,
-      isActive: item.isActive,
-      activityId: this.activity.id
-    } as IActivityManicipality;
-
-    this.activity.activityManicipality.push(activityManicipality);
-  });
-  
-  this.activity.activitySubStructure = [];
-  this.selectedSubstructureDemographics.forEach(item => {
-    let selectedSubStructure = {
-      name: item.name,
-      municipalityId: item.manicipalityDemographicId,
-      isActive: item.isActive,
-      activityId: this.activity.id
-    } as IActivitySubStructure;
-
-    this.activity.activitySubStructure.push(selectedSubStructure);
-  });
-  
-  this.activity.activitySubDistrict = [];
-  this.selectedSubDistrictDemographics.forEach(item => {
-    let selectedSubDistrict = {
-      name: item.name,
-      substructureId: item.subSctrcureDemographicId,
-      isActive: item.isActive,
-      activityId: this.activity.id
-    } as IActivitySubDistrict;
-
-    this.activity.activitySubDistrict.push(selectedSubDistrict);
-  });
-  }
-
-  addComment() {
+addComment() {
     this.comment = null;
     this.displayCommentDialog = true;
-  }
+}
 
-  viewComments(data: IActivity, origin: string) {
+viewComments(data: IActivity, origin: string) {
     this.activity = data;
 
     let model = {
@@ -836,16 +690,16 @@ if (this.selectedIDistrictDemographics) {
         this._spinner.hide();
       }
     );
-  }
+}
 
-  disableSaveComment() {
+disableSaveComment() {
     if (!this.comment)
       return true;
 
     return false;
-  }
+}
 
-  saveComment(changesRequired: boolean, origin: string) {
+saveComment(changesRequired: boolean, origin: string) {
     let model = {
       applicationId: this.application.id,
       serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
@@ -868,21 +722,21 @@ if (this.selectedIDistrictDemographics) {
         this._spinner.hide();
       }
     );
-  }
+}
 
-  search(event) {
+search(event) {
     let query = event.query;
     this._dropdownRepo.getActivityByName(query).subscribe((results) => {
       this.activityList = results;
     });
-  }
+}
 
-  selectActivity(item: IActivityList) {
+selectActivity(item: IActivityList) {
     this.activity.name = item.name;
     this.activity.description = item.description;
-  }
+}
 
-  viewReviewerSatisfaction(data: IActivity) {
+viewReviewerSatisfaction(data: IActivity) {
     this.activity = data;
 
     let model = {
@@ -901,9 +755,9 @@ if (this.selectedIDistrictDemographics) {
         this._spinner.hide();
       }
     );
-  }
+}
 
-  createReviewerSatisfaction(isSatisfied: boolean) {
+createReviewerSatisfaction(isSatisfied: boolean) {
     this._confirmationService.confirm({
       message: 'Are you sure that you selected the correct option?',
       header: 'Confirmation',
@@ -936,7 +790,37 @@ if (this.selectedIDistrictDemographics) {
       reject: () => {
       }
     });
-  }
+}
+
+private loadStaffCategories() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.StaffCategory, false).subscribe(
+      (results) => {
+        // Map the results to the format expected by the p-dropdown
+        this.staffCategories = results.map((item: IStaffCategory) => ({
+          label: item.name,   // Display the staff category name in the dropdown
+          value: item.id      // Bind the staff category ID as the value
+        }));
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+}
+
+  // private loadStaffCategories() {
+  //   this._dropdownRepo.getEntities(DropdownTypeEnum.StaffCategory, false).subscribe(
+  //     (results) => {
+  //       this.staffCategories = results;
+  //       console.log('staff', this.staffCategories);
+
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
 
   public getColspan() {
     return this.application.isCloned && this.isReview ? 11 : 14;

@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IExpenditure, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity,IStatus, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IExpenditure, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -14,8 +14,6 @@ import { FilterService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
-
-
 
 @Component({
   selector: 'app-details-of-income-and-and-expenditure-report',
@@ -220,10 +218,6 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
     this.registerCustomFilters();
     this.initializeSurplus();
     this.calculateTotals();
-
-
-
-
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -240,7 +234,6 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
     this.setYearRange();
     this.loadFinancialYears();
     this.loadExpenditure();
-
 
     this.expenditureCols = [
       { header: 'Cost Drivers', width: '40%' },
@@ -264,6 +257,10 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
     ];
   }
   
+  status(data: any) {
+    return data?.actuals?.status?.name || 'New';
+  }
+   
   disableQuarters(): boolean {
     // Logic to disable dropdown (return true to disable, false to enable)
     return false;
@@ -390,6 +387,8 @@ addNewRow() {
     total: 0,
     isActive: true,
     applicationId:0,
+    statusId:0,
+    status: {} as IStatus,
   };
   
   this.expenditures.push(newRow);  // Add the new row to the expenditures array
@@ -610,7 +609,6 @@ addNewRow() {
 editExpenditure(data: IExpenditure) {
   this.newExpenditure = false;
   this.expenditure = this.cloneExpenditure(data);
-  console.log('Other',this.expenditure);
   this.displayExpenditureDialog = true;
 }
 
@@ -622,8 +620,6 @@ private cloneExpenditure(data: IExpenditure): IExpenditure {
   return obj;
 }
 
-
-
 saveExpenditure(rowData: any) {
   let incomeobj = {} as IExpenditure;
   incomeobj.applicationId = this.application.id;
@@ -634,6 +630,7 @@ saveExpenditure(rowData: any) {
   incomeobj.surplus = rowData.surplus;
   incomeobj.total = rowData.total;
   incomeobj.isActive = true;
+  incomeobj.statusId = rowData.statusId;
 
   if (rowData.id === 0) {
     this.createExpenditure(incomeobj);

@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISDIP, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISDIP, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -450,7 +450,6 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     );
   }
 
-  
   private loadSubProgrammeTypes() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
@@ -466,19 +465,20 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   }
 
   onBlurAdjustedSDIP(rowdata){
-    //this.saveOtherInfor(rowdata);
+    this.saveSDIP(rowdata);
   }
 
   saveSDIP(rowData: any) {
     let sdipobj = {} as ISDIP;
     sdipobj.applicationId = this.application.id;
-    sdipobj.standardPerformanceArea = rowData.challenges;
-    sdipobj.correctiveAction = rowData.highlights;
-    sdipobj.responsibility = rowData.challenges;
-    sdipobj.targetDate = rowData.highlights;
-    sdipobj.meansOfVerification = rowData.challenges;
-    sdipobj.progress = rowData.highlights;
+    sdipobj.standardPerformanceArea = rowData.standardPerformanceArea;
+    sdipobj.correctiveAction = rowData.correctiveAction;
+    sdipobj.responsibility = rowData.responsibility;
+    sdipobj.targetDate = rowData.targetDate;
+    sdipobj.meansOfVerification = rowData.meansOfVerification;
+    sdipobj.progress = rowData.progress;
     sdipobj.id = rowData.id;
+    sdipobj.statusId = rowData.statusId;
     sdipobj.isActive = true;
 
     if (rowData.id === 0) {
@@ -500,8 +500,9 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     );
   }
 
-
-
+  status(data: any) {
+    return data?.actuals?.status?.name || 'New';
+}
 
   createSDIP(sdip: ISDIP) {
     this._applicationRepo.createSDIPReport(sdip).subscribe(
@@ -519,7 +520,6 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.GetSDIPReportsByAppid(this.application).subscribe(
       (results) => {
-        console.log('Other',results);
         this.sdips = results;     
         });
         this._spinner.hide();
@@ -541,7 +541,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
 
 
   addNewRow() {
-    const newRow = {
+    const newRow : ISDIP = {
       id: 0,
       standardPerformanceArea: '',
       correctiveAction: '',
@@ -549,9 +549,10 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
       targetDate: '',
       meansOfVerification: '',
       progress: '',
-      total: 0,
       isActive: true,
       applicationId:0,
+      statusId: 0,
+      status: {} as IStatus
     };
     
     this.sdips.push(newRow);  

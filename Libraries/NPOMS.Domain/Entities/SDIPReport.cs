@@ -10,6 +10,7 @@ namespace NPOMS.Domain.Entities
 {
     public class SDIPReport : BaseEntity
     {
+        public int StatusId { get; set; }
 
         public string StandardPerformanceArea { get; set; }
         public string CorrectiveAction { get; set; }
@@ -20,7 +21,6 @@ namespace NPOMS.Domain.Entities
 
         [Column(TypeName = "nvarchar(50)")]
         public string TargetDate { get; set; }
-
 
         public int ApplicationId { get; set; }
 
@@ -39,5 +39,6 @@ namespace NPOMS.Domain.Entities
         public DateTime? ApprovalDateTime { get; set; }
 
         public User CreatedUser { get; set; }
+        public Status Status { get; set; }
     }
 }

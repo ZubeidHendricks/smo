@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -232,6 +232,7 @@ export class GovernanceReportComponent implements OnInit {
       { header: 'Date of last submissionof financial statements to Westerncape DSD', width: '20%' },
       { header: 'Date of last submissionof financial statements to the NPO Directorate of National DSD', width: '20%' },
       { header: 'Comments', width: '40%' },
+      { header: 'Status', width: '5%' }
     ];
 
     this.commentCols = [
@@ -248,7 +249,10 @@ export class GovernanceReportComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
-  
+  status(data: any) {
+    return data?.actuals?.status?.name || 'New';
+  }
+   
   disableQuarters(): boolean {
     // Logic to disable dropdown (return true to disable, false to enable)
     return false;
@@ -295,6 +299,7 @@ export class GovernanceReportComponent implements OnInit {
     govobj.applicationId = this.application.id;
     govobj.isActive = rowData.isActive;
     govobj.id = rowData.id;
+    govobj.statusId = rowData.statusId;
 
     if (rowData.lastMeetingDate instanceof Date) {
       const year = rowData.lastMeetingDate.getFullYear();
@@ -403,13 +408,12 @@ preventChange(event: any): void {
       comments: '',
       isActive: true,
       applicationId:0,
+      statusId: 0,
+      status: {} as IStatus
     };
     
     this.governances.push(newRow);  // Add the new row to the expenditures array
   }
-
-
-  
 
   disableSaveActivity() {
     let data = this.activity;

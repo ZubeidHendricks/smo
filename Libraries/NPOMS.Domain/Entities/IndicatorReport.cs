@@ -10,6 +10,7 @@ namespace NPOMS.Domain.Entities
         public int ProgrammeId { get; set; }
 
         public int SubProgrammeId { get; set; }
+        public int StatusId { get; set; }
 
         public int SubProgrammeTypeId { get; set; }
 
@@ -52,6 +53,8 @@ namespace NPOMS.Domain.Entities
         public DateTime? ApprovalDateTime { get; set; }
 
         public User CreatedUser { get; set; }
+
+        public Status Status { get; set; }
 
     }
 }

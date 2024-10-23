@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IOtherInfor, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IOtherInfor, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -14,8 +14,6 @@ import { FilterService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
-
-
 
 @Component({
   selector: 'app-any-other-information-report',
@@ -62,10 +60,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
   isSystemAdmin: boolean;
   isDepartmentAdmin: boolean;
   selectedDepartmentSummary: IDepartment;
-
   selectedQuartersText: string = '';
-
-
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
   }
@@ -179,8 +174,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
   ];
 
   selectedQuarters = [];
-  
-  // Used for table filtering
+
   @ViewChild('dt') dt: Table | undefined;
 
   constructor(
@@ -222,6 +216,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
     this.anyOtherCols = [
       { header: 'Highlights', width: '50%' },
       { header: 'Challenges', width: '50%' },
+      { header: 'Status', width: '50%' },
     ];
 
     this.commentCols = [
@@ -238,7 +233,11 @@ export class AnyOtherInformationReportComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
-  
+
+  status(data: any) {
+    return data?.actuals?.status?.name || 'New';
+  }
+   
   disableQuarters(): boolean {
     // Logic to disable dropdown (return true to disable, false to enable)
     return false;
@@ -279,41 +278,6 @@ export class AnyOtherInformationReportComponent implements OnInit {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
-  private loadDemographicDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicDistrict, false).subscribe(
-      (results) => {
-        this.allIDistrictDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadDemographicManicipalities() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicManicipality, false).subscribe(
-      (results) => {
-        this.allManicipalityDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-  
-  private loadDemographicSubStructures() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubStructure, false).subscribe(
-      (results) => {
-        this.allSubstructureDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
   private loadFinancialYears() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
@@ -328,101 +292,11 @@ export class AnyOtherInformationReportComponent implements OnInit {
     );
   }
 
-  private loadDepartments1() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-      (results) => {
-        this.departments1 = results;
-        if(this.isSystemAdmin )
-          {
-            this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
-          }
-          else{
-            this.departments1 = results.filter(x => x.id === this.profile.departments[0].id);
-          }
-          this.selectedDepartmentSummary = null;
-          this.selectedDepartmentSummary = this.departments1.find(x => x.id === this.profile.departments[0].id);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadDepartments() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-      (results) => {
-        this.departments = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
-      (results) => {
-        this.allProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadSubProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
-      (results) => {
-        this.allSubProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  
-  private loadSubProgrammeTypes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
-      (results) => {
-        this.AllsubProgrammesTypes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
 
 preventChange(event: any): void {
   event.originalEvent.preventDefault(); 
   event.value = [...this.selectedFacilities];
 }
-
-  private loadDemographicSubDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubDistrict, false).subscribe(
-      (results) => {
-        this.allSubDistrictDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
 
   private loadNpo() {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(
@@ -450,6 +324,7 @@ preventChange(event: any): void {
     otherInforobj.challenges = rowData.challenges;
     otherInforobj.highlights = rowData.highlights;
     otherInforobj.id = rowData.id;
+    otherInforobj.statusId = rowData.statusId;
     otherInforobj.isActive = true;
 
     if (rowData.id === 0) {
@@ -495,6 +370,8 @@ addNewRow() {
     challenges: '',
     isActive: true,
     applicationId:0,
+    statusId: 0,
+    status: {} as IStatus
   };
   
   this.otherInfors.push(newRow);  // Add the new row to the expenditures array
@@ -504,16 +381,14 @@ addNewRow() {
     this._spinner.show();
     this._applicationRepo.GetOtherInforReportsByAppid(this.application).subscribe(
       (results) => {
-        console.log('Other',results);
         this.otherInfors = results;     
         });
         this._spinner.hide();
-      }
+  }
 
   editAnyOther(data: IOtherInfor) {
     this.newOtherInfor = false;
     this.otherInfor = this.cloneAnyOther(data);
-    console.log('Other',this.otherInfor);
     this.displayAnyOtherDialog = true;
   }
 

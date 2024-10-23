@@ -234,6 +234,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                model.StatusId = 1;
                 model.CreatedDateTime = DateTime.Now;
                 await _indicatorService.CreateIndicatorReportEntity(model, base.GetUserIdentifier());
                 return Ok(model);
@@ -250,6 +251,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                model.StatusId = 1;
                 model.CreatedDateTime = DateTime.Now;
                 await _sdipService.CreateSDIPReportEntity(model, base.GetUserIdentifier());
                 return Ok(model);
@@ -266,6 +268,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                model.StatusId = 1;
                 model.CreatedDateTime = DateTime.Now;
                 await _postService.CreatePostReportEntity(model, base.GetUserIdentifier());
                 return Ok(model);
@@ -283,6 +286,7 @@ namespace NPOMS.API.Controllers
             try
             {
                 model.CreatedDateTime = DateTime.Now;
+                model.StatusId = 1;
                 await _governanceService.CreateGovernanceReportEntity(model, base.GetUserIdentifier());
                 return Ok(model);
             }
@@ -298,6 +302,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                model.StatusId = 1;
                 model.CreatedDateTime = DateTime.Now;
                 await _incomeAndExpenditureService.CreateIncomeReportEntity(model, base.GetUserIdentifier());
                 return Ok(model);
@@ -316,6 +321,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                model.StatusId = 1;
                 model.CreatedDateTime = DateTime.Now;
                 await _anyOtherService.CreateEntity(model, base.GetUserIdentifier());
                 return Ok(model);

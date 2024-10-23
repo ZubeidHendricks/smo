@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Entities;
 using NPOMS.Repository.Interfaces.Entities;
+using System.Security.Cryptography.X509Certificates;
 
 namespace NPOMS.Repository.Implementation.Entities
 {
@@ -32,6 +33,7 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<IEnumerable<IndicatorReport>> GetByPeriodId(int applicationPeriodId)
         {
             return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
+                         .Include(x=>x.Status)
                          .AsNoTracking()
                          .ToListAsync();
         }

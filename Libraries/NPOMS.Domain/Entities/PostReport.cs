@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Core;
+using NPOMS.Domain.Dropdown;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,7 +9,8 @@ namespace NPOMS.Domain.Entities
     [Table("PostReports", Schema = "dbo")]
     public class PostReport : BaseEntity
     {
-        public string PostClassification { get; set; }
+        public int StatusId { get; set; }
+        public int StaffCategoryId { get; set; }
         public int NumberOfPosts { get; set; }
 
         public int NumberFilled { get; set; }
@@ -41,5 +43,7 @@ namespace NPOMS.Domain.Entities
 
         public User CreatedUser { get; set; }
 
+        public Status Status { get; set; }
+        public StaffCategory StaffCategory { get; set; }
     }
 }

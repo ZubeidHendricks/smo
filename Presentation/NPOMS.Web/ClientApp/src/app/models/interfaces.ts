@@ -573,12 +573,14 @@ export interface IIndicator {
     actual: number;
     documents: IDocumentStore[];
     isActive: boolean;
+    statusId: number;
+    status: IStatus;
   }
 
  
   export interface IPosts {
     id: number;
-    postClassification: string;
+    staffCategory: IStaffCategory,
     numberOfPosts: number;
     numberFilled : number;
     monthsFilled: string;
@@ -588,8 +590,10 @@ export interface IIndicator {
     plans: string;
     applicationId: number;
     isActive: boolean;
+    statusId: number;
+    status: IStatus;
+    staffCategoryId: number;
   }
-
     
   export interface IGovernance {
     id: number;
@@ -599,7 +603,8 @@ export interface IIndicator {
     comments: string;
     applicationId: number;
     isActive: boolean;
-
+    statusId: number;
+    status: IStatus;
   }
 
   export interface IOtherInfor {
@@ -608,6 +613,8 @@ export interface IIndicator {
     challenges: string;
     applicationId: number;
     isActive: boolean;
+    statusId: number;
+    status: IStatus;
   }
 
   export interface IExpenditure {
@@ -619,6 +626,8 @@ export interface IIndicator {
     total: number;
     applicationId: number;
     isActive: boolean;
+    statusId: number;
+    status: IStatus;
   }
 
   export interface ISDIP {
@@ -631,6 +640,8 @@ export interface IIndicator {
     applicationId: number;
     isActive: boolean;
     progress: string;
+    statusId: number;
+    status: IStatus;
   }
 
 export interface IActivity {

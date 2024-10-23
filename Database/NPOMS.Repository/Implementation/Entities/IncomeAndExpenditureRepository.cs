@@ -76,6 +76,7 @@ namespace NPOMS.Repository.Implementation.Entities
         async Task<IEnumerable<IncomeAndExpenditureReport>> IIncomeAndExpenditureRepository.GetByPeriodId(int applicationPeriodId)
         {
             return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
+                          .Include(x => x.Status)
                           .AsNoTracking()
                           .ToListAsync();
         }

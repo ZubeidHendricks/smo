@@ -19,7 +19,7 @@ namespace NPOMS.Domain.Entities
 
         [Column(TypeName = "nvarchar(50)")]
         public string LastSubmissionDateNat { get; set; }
-
+        public int StatusId { get; set; }
         public string Comments { get; set; }
         public bool IsActive { get; set; } = true;
 
@@ -38,5 +38,6 @@ namespace NPOMS.Domain.Entities
         public DateTime? ApprovalDateTime { get; set; }
 
         public User CreatedUser { get; set; }
+        public Status Status { get; set; }
     }
 }
