@@ -22,6 +22,6 @@ namespace NPOMS.Repository.Interfaces.Entities
         Task CreateEntity(GovernanceReport model);
 
         Task UpdateEntity(GovernanceReport model, int currentUserId);
-      
+        Task CompleteGovernanceReportPost(int applicationId, int finYear, int quarterId, int id);
     }
 }

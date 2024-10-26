@@ -4,6 +4,7 @@ using NPOMS.Repository.Interfaces;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,13 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<AnyOtherInformationReport>> GetEntities()
         {
             return await _anyOtherRepository.GetEntities();
+        }
+
+        public async Task UpdateAnyOtherStatus(BaseCompleteViewModel model, string currentUserId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
+
+            await _anyOtherRepository.UpdateAnyOtherStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
         }
 
         public async Task UpdateEntity(AnyOtherInformationReport model, string currentUserId)

@@ -314,8 +314,6 @@ namespace NPOMS.API.Controllers
             }
         }
 
-
-
         [HttpPost("createAnyOther", Name = "CreateAnyOther")]
         public async Task<IActionResult> CreateAnyOther(AnyOtherInformationReport model)
         {
@@ -349,6 +347,22 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("updateAnyOtherStatus", Name = "UpdateAnyOtherStatus")]
+        public async Task<IActionResult> UpdateAnyOtherStatus(BaseCompleteViewModel model)
+        {
+            try
+            {
+                await _anyOtherService.UpdateAnyOtherStatus(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateReportStatus action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
         [HttpPut("updateSDIPReport", Name = "UpdateSDIPReport")]
         public async Task<IActionResult> UpdateSDIPReport(SDIPReport model)
         {
@@ -365,6 +379,20 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("updateSDIPStatus", Name = "UpdateSDIPStatus")]
+        public async Task<IActionResult> UpdateSDIPStatus(BaseCompleteViewModel model)
+        {
+            try
+            {
+                await _sdipService.UpdateSDIPStatus(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateReportStatus action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpPut("updatIncomeReport", Name = "UpdateIncomeReport")]
         public async Task<IActionResult> UpdateIncomeReport(IncomeAndExpenditureReport model)
@@ -382,6 +410,20 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("updateIncomeReportStatus", Name = "UpdateIncomeReportStatus")]
+        public async Task<IActionResult> UpdateIncomeReportStatus(BaseCompleteViewModel model)
+        {
+            try
+            {
+                await _incomeAndExpenditureService.UpdateIncomeReportStatus(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateReportStatus action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpPut("updatePostReport", Name = "UpdatePostReport")]
         public async Task<IActionResult> UpdatePostReport(PostReport model)
@@ -395,6 +437,21 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside UpdatePostReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("updatePostReportStatus", Name = "UpdatePostReportStatus")]
+        public async Task<IActionResult> UpdatePostReportStatus(BaseCompleteViewModel model)
+        {
+            try
+            {
+                await _postService.CompletePost(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateReportStatus action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -415,6 +472,21 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("updateGovernanceReportStatus", Name = "UpdateGovernanceReportStatus")]
+        public async Task<IActionResult> UpdateGovernanceReportStatus(BaseCompleteViewModel model)
+        {
+            try
+            {
+                await _governanceService.CompleteGovernanceReportPost(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateReportStatus action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPut("updateIndicatorReport", Name = "UpdateIndicatorReport")]
         public async Task<IActionResult> UpdateIndicatorReport(IndicatorReport model)
         {
@@ -431,6 +503,20 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("updateIndicatorReportStatus", Name = "UpdateIndicatorReportStatus")]
+        public async Task<IActionResult> UpdateIndicatorReportStatus(BaseCompleteViewModel model)
+        {
+            try
+            {
+                await _indicatorService.UpdateIndicatorReportStatus(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateReportStatus action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpGet("getanyotherbyappid/appid/{appid}", Name = "GetAnyOtherByAppid")]
         public async Task<IActionResult> GetAnyOtherByAppid(int appid)
@@ -1642,6 +1728,7 @@ namespace NPOMS.API.Controllers
                 _logger.LogError($"Something went wrong inside EvaluationController-ConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
             }
         }
+
 
         private async Task AddworkplanapproversEmails(Application fundingApplication, UserVM[] users)
         {

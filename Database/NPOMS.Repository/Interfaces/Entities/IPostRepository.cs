@@ -23,5 +23,6 @@ namespace NPOMS.Repository.Interfaces.Entities
 
         Task UpdateEntity(PostReport model, int currentUserId);
         Task UpdateEntityQC(PostReport model, int currentUserId);
+        Task CompletePost(int applicationId, int financialId, int quarter, int currentUserId);
     }
 }

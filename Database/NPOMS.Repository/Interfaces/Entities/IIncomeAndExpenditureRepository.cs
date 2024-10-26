@@ -23,5 +23,6 @@ namespace NPOMS.Repository.Interfaces.Entities
 
         Task UpdateEntity(IncomeAndExpenditureReport model, int currentUserId);
         Task UpdateEntityQC(IncomeAndExpenditureReport model, int currentUserId);
+        Task UpdateIncomeReportStatus(int applicationId, int finYear, int quarterId, int id);
     }
 }

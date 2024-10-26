@@ -4,7 +4,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StaffCategoryEnum, StatusEnum } from 'src/app/models/enums';
+import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StaffCategoryEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IPosts, IProgramme, IRecipientType, IStaffCategory, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
@@ -65,8 +65,9 @@ export class PostReportComponent implements OnInit {
 
   selectedQuartersText: string = '';
 
-  posts: IPosts[];
+  posts: IPosts[] = [];
   post: IPosts = {} as IPosts;
+  selectedPost: IPosts;
 
 
   public get RoleEnum(): typeof RoleEnum {
@@ -146,6 +147,7 @@ export class PostReportComponent implements OnInit {
   filteredActivities: any[] = []; // Filtered activities
   filteredData: any[] = [];
   staffCategories: IStaffCategory[];
+  buttonItems: MenuItem[];
 
   public get StaffCategoryEnum(): typeof StaffCategoryEnum {
     return StaffCategoryEnum;
@@ -166,6 +168,12 @@ export class PostReportComponent implements OnInit {
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
+  public IsAuthorized(permission: PermissionsEnum): boolean {
+    if (this.profile != null && this.profile.permissions.length > 0) {
+      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    }
+  }
+
   constructor(
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
@@ -184,27 +192,34 @@ export class PostReportComponent implements OnInit {
   ) {  }
 
   ngOnInit(): void {
-    this._spinner.show();
-    this.registerCustomFilters();
-    this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
-      this.application.statusId === StatusEnum.PendingApproval ||
-      this.application.statusId === StatusEnum.ApprovalInProgress ||
-      this.application.statusId === StatusEnum.PendingSLA ||
-      this.application.statusId === StatusEnum.PendingSignedSLA ||
-      this.application.statusId === StatusEnum.DeptComments ||
-      this.application.statusId === StatusEnum.OrgComments)
-      ? false : true;
 
-    this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
-    this.tooltip = this.canEdit ? 'Edit' : 'View';
-
-    this.loadNpo();
-    this.setYearRange();
-
-    this.loadFinancialYears();
-    this.loadPosts();
-    this.loadStaffCategories();
-
+    this._authService.profile$.subscribe(profile => {
+      if (profile != null && profile.isActive) {
+        this.profile = profile;
+        this._spinner.show();
+        this.registerCustomFilters();
+        this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
+          this.application.statusId === StatusEnum.PendingApproval ||
+          this.application.statusId === StatusEnum.ApprovalInProgress ||
+          this.application.statusId === StatusEnum.PendingSLA ||
+          this.application.statusId === StatusEnum.PendingSignedSLA ||
+          this.application.statusId === StatusEnum.DeptComments ||
+          this.application.statusId === StatusEnum.OrgComments)
+          ? false : true;
+    
+        this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
+        this.tooltip = this.canEdit ? 'Edit' : 'View';
+    
+        this.loadNpo();
+        this.setYearRange();
+    
+        this.loadFinancialYears();
+        this.loadPosts();
+        this.loadStaffCategories();
+        this.buildButtonItems();
+      }
+    });
+    
     this.postCols = [
       { header: 'Post Classification', width: '20%' },
       { header: 'Number of Posts', width: '10%' },
@@ -232,8 +247,69 @@ export class PostReportComponent implements OnInit {
     ];
   }
 
+  private buildButtonItems() {
+    this.buttonItems = [];
+    if (this.profile) {
+      this.buttonItems = [{
+        label: 'Options',
+        items: []
+      }];
+
+      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Submit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updatePostData(this.selectedPost, StatusEnum.PendingReview);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Edit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updatePostData(this.selectedPost, StatusEnum.PendingApproval);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Comments',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updatePostData(this.selectedPost, StatusEnum.Approved);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'View History',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+           this.updatePostData(this.selectedPost, StatusEnum.Approved);
+          }
+        });
+      }
+    }
+  }
+
+  updateButtonItems() {
+    // Show all buttons
+    this.buttonItems[0]?.items.forEach(option => {
+      option.visible = true;
+    });}
+
+    private updatePostData(rowData: IPosts, status: number) {
+      rowData.statusId = status;
+      this.savePost(rowData);
+    }
+
   status(data: any) {
-    return data?.actuals?.status?.name || 'New';
+    return data?.status?.name || 'New';
   }
    
   disableQuarters(): boolean {
@@ -322,6 +398,12 @@ export class PostReportComponent implements OnInit {
     if (subProgramme.id != null) {
       this.filteredSubProgrammeTypes = this.AllsubProgrammesTypes.filter(x => x.subProgrammeId === subProgramme.id);
     }
+  }
+
+  completeAction() {
+    this.posts.forEach(post => {
+      //post.status = 'Completed';
+    });
   }
 
 
@@ -517,7 +599,7 @@ private loadPosts() {
         this.posts = results;
         });
         this._spinner.hide();
-      }
+}
 
 onDistrictChange() {
     this.selectedSubDistricts = [];

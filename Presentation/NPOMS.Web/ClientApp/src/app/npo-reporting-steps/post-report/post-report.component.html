@@ -145,9 +145,8 @@
 
             <!-- Actions column -->
             <td style="text-align: center;">
-              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"></button>
-              <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash"></button>
-            </td>
+              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedPost=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+              <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>        </td>
           </tr>
         </ng-template>
       
@@ -160,8 +159,11 @@
       
       
       <!-- Add "Add Other" button -->
-      <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
-
+      <div class="button-container">
+        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+      </div>
+      
     <div style="height: 10px;"></div>
  
 </p-panel>

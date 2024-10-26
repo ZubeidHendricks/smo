@@ -1,6 +1,7 @@
 ﻿using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Indicator;
+using NPOMS.Services.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -63,5 +64,6 @@ namespace NPOMS.Services.Interfaces
         Task loadindicatorsAsync(List<Indicators> data);
 
         Task loadNPOindicatorsAsync(List<NPOIndicators> data);
+        Task UpdateIndicatorReportStatus(BaseCompleteViewModel model, string userIdentifier);
     }
 }

@@ -15,7 +15,7 @@ namespace NPOMS.Domain.Entities
         public string StandardPerformanceArea { get; set; }
         public string CorrectiveAction { get; set; }
 
-        public int Responsibility { get; set; }
+        public string Responsibility { get; set; }
 
         public string MeansOfVerification { get; set; }
 
@@ -40,5 +40,7 @@ namespace NPOMS.Domain.Entities
 
         public User CreatedUser { get; set; }
         public Status Status { get; set; }
+
+        public int FinancialYearId { get; set; }
     }
 }

@@ -4,7 +4,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity,IStatus, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IExpenditure, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
@@ -187,7 +187,9 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   selectedQuarters = [];
 
   expenditures: IExpenditure[];
+  selectedExpenditure: IExpenditure;
   expenditure: IExpenditure = {} as IExpenditure;
+  buttonItems: MenuItem[];
 
   totalIncome: number = 0;
   totalExpenditure: number = 0;
@@ -196,6 +198,11 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
+  public IsAuthorized(permission: PermissionsEnum): boolean {
+    if (this.profile != null && this.profile.permissions.length > 0) {
+      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    }
+  }
   constructor(
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
@@ -214,26 +221,33 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   ) {  }
 
   ngOnInit(): void {
-    this._spinner.show();
-    this.registerCustomFilters();
-    this.initializeSurplus();
-    this.calculateTotals();
-    this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
-      this.application.statusId === StatusEnum.PendingApproval ||
-      this.application.statusId === StatusEnum.ApprovalInProgress ||
-      this.application.statusId === StatusEnum.PendingSLA ||
-      this.application.statusId === StatusEnum.PendingSignedSLA ||
-      this.application.statusId === StatusEnum.DeptComments ||
-      this.application.statusId === StatusEnum.OrgComments)
-      ? false : true;
 
-    this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
-    this.tooltip = this.canEdit ? 'Edit' : 'View';
-
-    this.loadNpo();
-    this.setYearRange();
-    this.loadFinancialYears();
-    this.loadExpenditure();
+    this._authService.profile$.subscribe(profile => {
+      if (profile != null && profile.isActive) {
+        this.profile = profile;
+        this._spinner.show();
+        this.registerCustomFilters();
+        this.initializeSurplus();
+        this.calculateTotals();
+        this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
+          this.application.statusId === StatusEnum.PendingApproval ||
+          this.application.statusId === StatusEnum.ApprovalInProgress ||
+          this.application.statusId === StatusEnum.PendingSLA ||
+          this.application.statusId === StatusEnum.PendingSignedSLA ||
+          this.application.statusId === StatusEnum.DeptComments ||
+          this.application.statusId === StatusEnum.OrgComments)
+          ? false : true;
+    
+        this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
+        this.tooltip = this.canEdit ? 'Edit' : 'View';
+    
+        this.loadNpo();
+        this.setYearRange();
+        this.loadFinancialYears();
+        this.loadExpenditure();
+        this.buildButtonItems();
+      }
+    });
 
     this.expenditureCols = [
       { header: 'Cost Drivers', width: '40%' },
@@ -256,9 +270,99 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
-  
+
+  private buildButtonItems() {
+    this.buttonItems = [];
+    if (this.profile) {
+      this.buttonItems = [{
+        label: 'Options',
+        items: []
+      }];
+
+      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Submit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateExpenditureData(this.selectedExpenditure, StatusEnum.PendingReview);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Edit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateExpenditureData(this.selectedExpenditure, StatusEnum.PendingApproval);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Comments',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.displayCommentDialog=true;
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'View History',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateExpenditureData(this.selectedExpenditure, StatusEnum.Approved);
+          }
+        });
+      }
+    }
+  }
+  updateButtonItems() {
+    // Show all buttons
+    this.buttonItems[0].items.forEach(option => {
+      option.visible = true;
+    });
+
+    // switch (this.selectedIndicator.workplanActuals[0].statusId) {
+    //   case StatusEnum.New:
+    //   case StatusEnum.Saved:
+    //   case StatusEnum.AmendmentsRequired: {
+    //     this.buttonItems[0].items[2].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     this.buttonItems[0].items[4].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.PendingReview: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.PendingApproval: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[2].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.Approved: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[2].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     this.buttonItems[0].items[4].visible = false;
+    //     break;
+    //   }
+    // }
+  }
+  private updateExpenditureData(rowData: IExpenditure, status: number) {
+  rowData.statusId = status;
+   this.onBlurExpenditure(rowData);
+  }  
   status(data: any) {
-    return data?.actuals?.status?.name || 'New';
+    return data?.status?.name || 'New';
   }
    
   disableQuarters(): boolean {
@@ -372,7 +476,7 @@ this.surplusTotal = total;
 
 // Component's TypeScript file
 
-onBlurAdjustedInc(rowdata){
+onBlurExpenditure(rowdata){
   this.saveExpenditure(rowdata);
 }
 
@@ -381,9 +485,9 @@ addNewRow() {
   const newRow = {
     id: 0,
     costDrivers: '',
-    income: null,
-    expenditure: null,
-    surplus: null,
+    income: 0,
+    expenditure: 0,
+    surplus: 0,
     total: 0,
     isActive: true,
     applicationId:0,

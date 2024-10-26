@@ -56,5 +56,7 @@ namespace NPOMS.Domain.Entities
 
         public Status Status { get; set; }
 
+        public int FinancialYearId { get; set; }
+
     }
 }

@@ -503,7 +503,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
 
       if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
         this.buttonItems[0].items.push({
-          label: 'Submit Actual',
+          label: 'Submit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
             this.updateActualData(this.selectedActual, StatusEnum.PendingReview);
@@ -513,7 +513,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
 
       if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
         this.buttonItems[0].items.push({
-          label: 'Verify Actual',
+          label: 'Edit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
             this.updateActualData(this.selectedActual, StatusEnum.PendingApproval);
@@ -523,7 +523,17 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
 
       if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
         this.buttonItems[0].items.push({
-          label: 'Approve Actual',
+          label: 'Comments',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.displayCommentDialog=true;
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'View History',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
             this.updateActualData(this.selectedActual, StatusEnum.Approved);
@@ -533,11 +543,11 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
     }
   }
 
-  
-  private updateActualData(rowData: any, status: number) {
+ private updateActualData(rowData: any, status: number) {
     rowData.actuals.statusId = status;
     this.saveActual(rowData);
-  }
+  }  
+ 
 
   // Method to save the actuals
   saveActualz(mergedItem: any) {
@@ -605,7 +615,6 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
   
   public onUploadChange = (files) => {
     files[0].documentType = this.documentTypes.find(x => x.location === DocumentUploadLocationsEnum.ReportActuals);
-
     this._documentStore.upload(files, EntityTypeEnum.ReportActuals, Number(this.seletedAactuals.id), EntityEnum.IndicatorReports, this.application.refNo, files[0].documentType.id).subscribe(
       event => {
         if (event.type === HttpEventType.UploadProgress)
@@ -1016,7 +1025,7 @@ editActual(data: IActuals) {
   this.outputTitle(this.actual);
 }
 outputTitle(rowData: any) {
-     return this.indicators.find(x => x.indicatorValue === rowData.indicatorId).outputTitle;
+     return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.outputTitle;
 }
 
 private cloneActual(data: IActuals): IActuals {

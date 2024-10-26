@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Entities;
+using NPOMS.Services.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,5 +21,6 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateEntity(AnyOtherInformationReport model, string currentUserId);
         Task UpdateEntityQC(AnyOtherInformationReport model, string currentUserId);
+        Task UpdateAnyOtherStatus(BaseCompleteViewModel model, string currentUserId);
     }
 }

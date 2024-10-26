@@ -40,5 +40,7 @@ namespace NPOMS.Domain.Entities
         public User CreatedUser { get; set; }
 
         public Status Status { get; set; }
+
+        public int FinancialYearId { get; set; }
     }
 }

@@ -52,5 +52,24 @@ namespace NPOMS.Repository.Implementation.Entities
         {
             await UpdateAsync(null, model, false, currentUserId);
         }
+
+
+        public async Task UpdateSDIPStatus(int applicationId, int financialId, int quarterId, int currentUserId)
+        {
+            // Retrieve the records to be updated
+            var sdiReports = await FindByCondition(x => x.FinancialYearId == financialId && x.ApplicationId == applicationId && x.QaurterId == quarterId)
+                                  .ToListAsync(); // No need for AsNoTracking here, as we want to modify the entities
+
+            // Update the status of each record
+            foreach (var report in sdiReports)
+            {
+                report.UpdatedUserId = currentUserId;
+                report.UpdatedDateTime = DateTime.Now;
+                report.StatusId = 24; // Replace "Status" with the actual property name for status in your entity
+            }
+
+            // Save all changes in one transaction
+            await this.RepositoryContext.SaveChangesAsync();
+        }
     }
 }

@@ -24,7 +24,7 @@
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText [(ngModel)]="rowData.costDrivers"
-                  (blur)="onBlurAdjustedInc(rowData)" />
+                  (blur)="onBlurExpenditure(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.costDrivers }}
@@ -37,7 +37,7 @@
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText [(ngModel)]="rowData.income" type="number"
-                  (blur)="onBlurAdjustedInc(rowData)" 
+                  (blur)="onBlurExpenditure(rowData)" 
                   (keyup)="onKeyUp(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
@@ -51,7 +51,7 @@
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText [(ngModel)]="rowData.expenditure" type="number"
-                  (blur)="onBlurAdjustedInc(rowData)" 
+                  (blur)="onBlurExpenditure(rowData)" 
                   (keyup)="onKeyUp(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
@@ -74,11 +74,16 @@
 
             <td>{{status(rowData)}}</td>
 
-            <!-- Actions column -->
             <td style="text-align: center;">
+                <!-- Actions buttons for editing, deleting, comments, etc. -->
+                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedExpenditure=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+                <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu> 
+            </td>
+            <!-- Actions column -->
+            <!-- <td style="text-align: center;">
               <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"></button>
               <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash"></button>
-            </td>
+            </td> -->
           </tr>
         </ng-template>
       

@@ -65,10 +65,8 @@
 
                 <td style="text-align: center;">
                     <!-- Actions buttons for editing, deleting, comments, etc. -->
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editGovernance(rowData)" pTooltip="{{ tooltip }}" tooltipPosition="top"></button>
-                    <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteGovernance(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
-                    <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
-                    <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedGovernance=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+                    <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu> 
                 </td>
             </tr>
         </ng-template>

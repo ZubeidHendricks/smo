@@ -77,3 +77,10 @@
     cursor: not-allowed;
     background: transparent;
 }
+
+.button-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  
