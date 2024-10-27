@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
@@ -26,57 +26,7 @@ import { group } from 'console';
 
 export class IndicatorReportComponent implements OnInit {
 
-// onKeyUp(event: any) {
-//   const inputValue = event.target.value;
-//   this.actual.actual = inputValue;
-//   this.actual.variance = this.actual.targets - this.actual.actual;
-// }
-
-onKeyUp(rowData: any, event: any) {
-  const inputValue = event.target.value;
-  
-  // Update the actual value
-  rowData.actuals.actual = Number(inputValue); // Ensure it's a number
-
-  // Calculate the variance
-  if (rowData.actuals.targets !== undefined && !isNaN(rowData.actuals.actual)) {
-      rowData.actuals.variance = rowData.actuals.targets - rowData.actuals.actual;
-  } else {
-      rowData.actuals.variance = 0; // Set to zero or handle it as per your requirement
-  }
-}
-
-
-
-// onKeyUpAdjustedActual(event: any) {
-//   const inputValue = event.target.value;
-//   this.actual.adjustedActual = inputValue;
-//   this.actual.adjustedVariance = this.actual.targets - this.actual.adjustedActual;
-// }
-
-onKeyUpAdjustedActual(event: any, rowData: any) {
-  const inputValue = Number(event.target.value); // Convert the input to a number
-  rowData.actuals.adjustedActual = inputValue;
-
-  // Calculate adjusted variance if targets is defined
-  if (rowData.actuals.targets !== undefined) {
-      rowData.actuals.adjustedVariance = rowData.actuals.targets - rowData.actuals.adjustedActual;
-  } else {
-      rowData.actuals.adjustedVariance = 0; // Or handle this case as needed
-  }
-}
-
-onBlurAdjustedActual(rowData: any) {
-  this.saveActual(rowData);
-}
-
-
-disableAdd(): any {
- if(this.qselected === false || this.yearSelected === false)
-    {
-      return true
-    }
-}
+  @Input() selectedQuarter!: number;
 
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
 
@@ -365,6 +315,58 @@ disableAdd(): any {
       { field: 'target', header: 'Target', width: '9%' },
     ];
   }
+
+  
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
+        const quarter = changes['selectedQuarter'].currentValue;
+        this.filterDataByQuarter(quarter);
+    }
+}
+
+filterDataByQuarter(quarter: number) {
+  // year = this.selectedFinancialYear.id;
+  // applicationId = this.selectedFinancialYear.id;
+  console.log('Filtering data for quarter:', quarter);
+}
+
+onKeyUp(rowData: any, event: any) {
+const inputValue = event.target.value;
+
+// Update the actual value
+rowData.actuals.actual = Number(inputValue); // Ensure it's a number
+
+// Calculate the variance
+if (rowData.actuals.targets !== undefined && !isNaN(rowData.actuals.actual)) {
+    rowData.actuals.variance = rowData.actuals.targets - rowData.actuals.actual;
+} else {
+    rowData.actuals.variance = 0; // Set to zero or handle it as per your requirement
+}
+}
+
+onKeyUpAdjustedActual(event: any, rowData: any) {
+const inputValue = Number(event.target.value); // Convert the input to a number
+rowData.actuals.adjustedActual = inputValue;
+
+// Calculate adjusted variance if targets is defined
+if (rowData.actuals.targets !== undefined) {
+    rowData.actuals.adjustedVariance = rowData.actuals.targets - rowData.actuals.adjustedActual;
+} else {
+    rowData.actuals.adjustedVariance = 0; // Or handle this case as needed
+}
+}
+
+onBlurAdjustedActual(rowData: any) {
+this.saveActual(rowData);
+}
+
+
+disableAdd(): any {
+if(this.qselected === false || this.yearSelected === false)
+  {
+    return true
+  }
+}
 
   private loadSubIndicators() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Indicator, false).subscribe(

@@ -1,5 +1,8 @@
  <p-toast></p-toast>
-<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="NPO Quartely Performance Report">
+ <p-panel 
+ [toggleable]="false" 
+ [style]="{'font-size':'12px'}" 
+ [header]="application?.applicationPeriod?.name + ' - Financial year ' + getFinancialYear(application?.applicationPeriod?.financialYear?.startDate)">
     <div class="p-grid">
         <div class="p-col-fixed"></div>
         <div class="p-col">
@@ -10,35 +13,73 @@
         *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
         <div style="height: 20px;"></div>
     <p-accordion  *ngIf="isApplicationAvailable">
- 
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+            <button pButton 
+                    label="Quarter 1" 
+                    [ngClass]="{'p-button-primary': activeButton === 1, 'p-button-secondary': activeButton !== 1}"
+                    (click)="toggleButton(1)">
+            </button>
+            
+            <button pButton 
+                    label="Quarter 2" 
+                    [ngClass]="{'p-button-primary': activeButton === 2, 'p-button-secondary': activeButton !== 2}"
+                    (click)="toggleButton(2)">
+            </button>
+            
+            <button pButton 
+                    label="Quarter 3" 
+                    [ngClass]="{'p-button-primary': activeButton === 3, 'p-button-secondary': activeButton !== 3}"
+                    (click)="toggleButton(3)">
+            </button>
+            
+            <button pButton 
+                    label="Quarter 4" 
+                    [ngClass]="{'p-button-primary': activeButton === 4, 'p-button-secondary': activeButton !== 4}"
+                    (click)="toggleButton(4)">
+            </button>
+        </div>
         <p-accordionTab header="Section 1: Indicator Report">
+            <app-indicator-report [application]="application" [selectedQuarter]="activeButton"></app-indicator-report>
+        </p-accordionTab>
+    
+        <p-accordionTab header="Section 2: Post Report">
+            <app-post-report [application]="application" [selectedQuarter]="activeButton"></app-post-report>
+        </p-accordionTab>
+    
+        <p-accordionTab header="Section 3: Income and Expenditure Report">
+            <app-details-of-income-and-and-expenditure-report [application]="application" [selectedQuarter]="activeButton"></app-details-of-income-and-and-expenditure-report>
+        </p-accordionTab>
+    
+        <p-accordionTab header="Section 4: Governance">
+            <app-governance-report [application]="application" [selectedQuarter]="activeButton"></app-governance-report>
+        </p-accordionTab>
+    
+        <p-accordionTab header="Section 5: Any other information">
+            <app-any-other-information-report [application]="application" [selectedQuarter]="activeButton"></app-any-other-information-report>
+        </p-accordionTab>
+    
+        <p-accordionTab header="Section 6: SDIP">
+            <app-quarterly-sdip-reporting-report [application]="application" [selectedQuarter]="activeButton"></app-quarterly-sdip-reporting-report>
+        </p-accordionTab>
+        <!-- <p-accordionTab header="Section 1: Indicator Report">
             <app-indicator-report [application]="application"></app-indicator-report>
         </p-accordionTab>
-
-
          <p-accordionTab header="Section 2: Post Report">
             <app-post-report [application]="application"></app-post-report>
         </p-accordionTab>
-
-  
         <p-accordionTab header="Section 3: Income and Expenditure Report">
             <app-details-of-income-and-and-expenditure-report [application]="application"></app-details-of-income-and-and-expenditure-report>
         </p-accordionTab>
-
-  
         <p-accordionTab header="Section 4: Governance">
             <app-governance-report [application]="application"></app-governance-report>
         </p-accordionTab>
- 
         <p-accordionTab header="Section 5: Any other information">
             <app-any-other-information-report [application]="application"></app-any-other-information-report>
         </p-accordionTab>
-
         <p-accordionTab header="Section 6: SDIP">
             <app-quarterly-sdip-reporting-report [application]="application"></app-quarterly-sdip-reporting-report>
-        </p-accordionTab>
+        </p-accordionTab> -->
       
-   
     </p-accordion>
     <div style="height: 20px;"></div>
     <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"

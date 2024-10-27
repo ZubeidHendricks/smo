@@ -1,6 +1,6 @@
 
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
@@ -23,7 +23,22 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 
 export class AnyOtherInformationReportComponent implements OnInit {
+  
+  @Input() selectedQuarter!: number;
 
+  ngOnChanges(changes: SimpleChanges) {
+      if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
+          const quarter = changes['selectedQuarter'].currentValue;
+          this.filterDataByQuarter(quarter);
+      }
+  }
+
+  filterDataByQuarter(quarter: number) {
+      // Make API call or filter data based on the quarter value
+      console.log('Filtering data for quarter:', quarter);
+      // Example API call:
+      // this.yourService.getDataByQuarter(quarter).subscribe(data => this.data = data);
+  }
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
 
   menuActions: MenuItem[];

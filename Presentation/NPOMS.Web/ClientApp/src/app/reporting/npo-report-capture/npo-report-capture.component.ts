@@ -85,6 +85,7 @@ export class NpoReportCaptureComponent implements OnInit {
   sustainabilityPlans: ISustainabilityPlan[] = [];
   resources: IResource[] = [];
 
+  activeButton: number | null = null;
 
   fundingApplicationDetails: IFundingApplicationDetails = {
     financialMatters: [],
@@ -109,6 +110,7 @@ export class NpoReportCaptureComponent implements OnInit {
     private _loggerService: LoggerService,
     private _userRepo: UserService
   ) { }
+
   places(place: IPlace[]) {
     this.placeAll = place;
   }
@@ -116,6 +118,7 @@ export class NpoReportCaptureComponent implements OnInit {
   subPlaces(subPlaces: ISubPlace[]) {
     this.subPlacesAll = subPlaces;
   }
+
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       this.id = params.get('id');
@@ -143,6 +146,20 @@ export class NpoReportCaptureComponent implements OnInit {
       }
     });
   }
+
+  getFinancialYear(startDate: string): number | string {
+    if (startDate) {
+        const date = new Date(startDate);
+        if (!isNaN(date.getTime())) { // Check if it's a valid date
+            return date.getFullYear(); // Returns the year
+        }
+    }
+    return 'Unknown Year'; // Handle the case where startDate is invalid or not provided
+}
+
+  toggleButton(buttonId: number) {
+    this.activeButton = this.activeButton === buttonId ? null : buttonId;
+}
 
   getfinFund(event: FinancialMatters) {
     // console.log('event from Edit', JSON.stringify(event));
