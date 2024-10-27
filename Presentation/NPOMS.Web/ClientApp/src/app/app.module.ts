@@ -37,7 +37,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { MenuModule } from 'primeng/menu';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-
+import {RadioButtonModule} from 'primeng/radiobutton';
 
 // B2B / B2C
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
@@ -214,6 +214,7 @@ import { FCFundingDetailComponent } from './components/funding-capture/fc-steps/
 import { FCApprovalComponent } from './components/funding-capture/fc-steps/fc-approval/fc-approval.component';
 import { FundingAssessmentListComponent } from './components/funding-assessment/funding-assessment-list/funding-assessment-list.component';
 import { FundingAssessmentFormComponent } from './components/funding-assessment/funding-assessment-form/funding-assessment-form.component';
+import { FundingAssessmentFormQuestionSectionComponent } from './components/funding-assessment/funding-assessment-form-questionsection/funding-assessment-form-questionsection.component';
 
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
@@ -422,7 +423,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     FCFundingDetailComponent,
     FCApprovalComponent,
     FundingAssessmentListComponent,
-    FundingAssessmentFormComponent
+    FundingAssessmentFormComponent,
+    FundingAssessmentFormQuestionSectionComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
@@ -467,7 +469,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     MenuModule,
     ScrollTopModule,
     EditorModule,
-    ToggleButtonModule
+    ToggleButtonModule,
+    RadioButtonModule
   ],
   providers: [
     {

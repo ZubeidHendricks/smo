@@ -138,4 +138,19 @@ export class FundingAssessmentFormComponent implements OnInit {
 
     }
   }
+
+  getLegislativeCompliance()
+  {
+     return this.fundingAssessmentForm.questions.filter(x=>x.questionSectionName==="Legislative Compliance");
+  }
+
+  getPFMACompliance()
+  {
+     return this.fundingAssessmentForm.questions.filter(x=>x.questionSectionName==="PFMA Compliance");
+  }
+
+  getAnalysisPerformance()
+  {
+     return this.fundingAssessmentForm.questions.filter(x=>x.questionSectionName==="Analysis Performance");
+  }
 }

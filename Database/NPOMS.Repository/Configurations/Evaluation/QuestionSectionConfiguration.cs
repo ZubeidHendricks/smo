@@ -27,7 +27,7 @@ namespace NPOMS.Repository.Configurations.Evaluation
                 //Assessment & Evaluation
                 new QuestionSection { Id = 30, QuestionCategoryId = 20, Name = "Legislative Compliance", SortOrder = 1, IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.Now },
                 new QuestionSection { Id = 31, QuestionCategoryId = 20, Name = "PFMA Compliance", SortOrder = 2, IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.Now },
-                new QuestionSection { Id = 32, QuestionCategoryId = 20, Name = "AnalysisPerformance", SortOrder = 3, IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.Now }
+                new QuestionSection { Id = 32, QuestionCategoryId = 20, Name = "Analysis Performance", SortOrder = 3, IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.Now }
             );
 		}
 	}

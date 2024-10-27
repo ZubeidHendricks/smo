@@ -245,100 +245,91 @@ namespace NPOMS.Repository.Configurations.Evaluation
                 {
                     Id = 100,
                     QuestionSectionId = 30,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 12,
                     Name = "NPO Registration/Public Benefit Org (Section 21) of the Companies Act or Trust",
-                    SortOrder = 1,
+                    SortOrder = 100,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 
                 },
                 new Question
                 {
                     Id = 101,
                     QuestionSectionId = 30,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 13,
                     Name = "If the NPO is required to be legally registered in terms of any specific related legislation  e.g. Children's Act, Older Persons Act, etc. that requires registration then rate the NPO.",
-                    SortOrder = 1,
+                    SortOrder = 101,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
                 new Question
                 {
                     Id = 102,
                     QuestionSectionId = 30,
-                    ResponseTypeId = 2,
-                    Name = "Analysis of FInding",
-                    SortOrder = 1,
+                    ResponseTypeId = 18,
+                    Name = "Analysis of Finding",
+                    SortOrder = 200,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
                 new Question
                 {
                     Id = 103,
                     QuestionSectionId = 30,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 10,
                     Name = "Approval",
-                    SortOrder = 1,
+                    SortOrder = 400,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
                 new Question
                 {
                     Id = 104,
                     QuestionSectionId = 30,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 18,
                     Name = "Final comment",
-                    SortOrder = 1,
+                    SortOrder = 500,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
 
                 new Question
                 {
                     Id = 106,
                     QuestionSectionId = 31,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 14,
                     Name = "Audited or certified financial statement for previous FY submitted",
-                    SortOrder = 1,
+                    SortOrder = 100,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
                 new Question
                 {
                     Id = 107,
                     QuestionSectionId = 31,
-                    ResponseTypeId = 2,
-                    Name = "Analysis of finding",
-                    SortOrder = 1,
+                    ResponseTypeId = 18,
+                    Name = "Analysis of Finding",
+                    SortOrder = 200,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 }, new Question
                 {
                     Id = 108,
                     QuestionSectionId = 31,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 11,
                     Name = "Approval",
-                    SortOrder = 1,
+                    SortOrder = 400,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 }, new Question
                 {
                     Id = 109,
                     QuestionSectionId = 31,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 18,
                     Name = "Final comment",
-                    SortOrder = 1,
+                    SortOrder = 500,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
 
 
@@ -346,68 +337,92 @@ namespace NPOMS.Repository.Configurations.Evaluation
                 {
                     Id = 110,
                     QuestionSectionId = 31,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 15,
                     Name = "Monitoring report (select option from the dropdown list)",
-                    SortOrder = 1,
+                    SortOrder = 101,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
                 new Question
                 {
                     Id = 111,
                     QuestionSectionId = 32,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 16,
                     Name = "Quarterly Progress Report: Current Financial year - ",
-                    SortOrder = 1,
+                    SortOrder = 100,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
                 new Question
                 {
                     Id = 112,
                     QuestionSectionId = 32,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 17,
                     Name = "Quaterly Progress Report from the current or previous financial year. This question maybe answered as \"Not Applicable\"",
-                    SortOrder = 1,
+                    SortOrder = 101,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
                 new Question
                 {
                     Id = 113,
                     QuestionSectionId = 32,
-                    ResponseTypeId = 2,
-                    Name = "Analysis of finding",
-                    SortOrder = 1,
+                    ResponseTypeId = 18,
+                    Name = "Analysis of Finding",
+                    SortOrder = 200,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
                 new Question
                 {
                     Id = 114,
                     QuestionSectionId = 32,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 11,
                     Name = "Approval",
-                    SortOrder = 1,
+                    SortOrder = 400,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
+                    CreatedUserId = 1
                 },
                 new Question
                 {
                     Id = 115,
                     QuestionSectionId = 32,
-                    ResponseTypeId = 2,
+                    ResponseTypeId = 18,
                     Name = "Final comment",
-                    SortOrder = 1,
+                    SortOrder = 500,
                     IsActive = true,
-                    CreatedUserId = 1,
-                    CreatedDateTime = DateTime.Now
-                }
+                    CreatedUserId = 1
+                },
+                new Question
+                {
+                    Id = 116,
+                    QuestionSectionId = 30,
+                    ResponseTypeId = 18,
+                    Name = "Overall Rating on Analysis of findings (1 - 5)",
+                    SortOrder = 300,
+                    IsActive = true,
+                    CreatedUserId = 1
+                },
+                 new Question
+                 {
+                     Id = 117,
+                     QuestionSectionId = 31,
+                     ResponseTypeId = 18,
+                     Name = "Overall Rating on Analysis of findings (1 - 5)",
+                     SortOrder = 300,
+                     IsActive = true,
+                     CreatedUserId = 1
+                 },
+                  new Question
+                  {
+                      Id = 118,
+                      QuestionSectionId = 32,
+                      ResponseTypeId = 18,
+                      Name = "Overall Rating on Analysis of findings (1 - 5)",
+                      SortOrder = 300,
+                      IsActive = true,
+                      CreatedUserId = 1
+                  }
 
             );
         }
