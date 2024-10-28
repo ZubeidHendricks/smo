@@ -336,10 +336,10 @@ namespace NPOMS.Repository.Configurations.Evaluation
                 new Question
                 {
                     Id = 110,
-                    QuestionSectionId = 31,
+                    QuestionSectionId = 32,
                     ResponseTypeId = 15,
                     Name = "Monitoring report (select option from the dropdown list)",
-                    SortOrder = 101,
+                    SortOrder = 100,
                     IsActive = true,
                     CreatedUserId = 1
                 },
@@ -349,7 +349,7 @@ namespace NPOMS.Repository.Configurations.Evaluation
                     QuestionSectionId = 32,
                     ResponseTypeId = 16,
                     Name = "Quarterly Progress Report: Current Financial year - ",
-                    SortOrder = 100,
+                    SortOrder = 101,
                     IsActive = true,
                     CreatedUserId = 1
                 },
@@ -359,7 +359,7 @@ namespace NPOMS.Repository.Configurations.Evaluation
                     QuestionSectionId = 32,
                     ResponseTypeId = 17,
                     Name = "Quaterly Progress Report from the current or previous financial year. This question maybe answered as \"Not Applicable\"",
-                    SortOrder = 101,
+                    SortOrder = 102,
                     IsActive = true,
                     CreatedUserId = 1
                 },

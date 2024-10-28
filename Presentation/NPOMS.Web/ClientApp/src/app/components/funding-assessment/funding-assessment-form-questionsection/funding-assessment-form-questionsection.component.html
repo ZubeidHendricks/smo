@@ -21,7 +21,7 @@
             placeholder="Select an option"
             [style]="{'width':'100%'}">
           </p-dropdown></td>
-          <td></td>
+          <td><div *ngIf="question.hasComment"><input pInputText id="npoName" [(ngModel)]="question.comment"/></div></td>
           <td><p-dropdown 
             [options]="question.responseRatings" 
             optionLabel="name" 

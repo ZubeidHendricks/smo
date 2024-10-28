@@ -26,11 +26,11 @@ namespace NPOMS.Repository.Configurations.Evaluation
 				new ResponseOption { Id = 8, ResponseTypeId = 2, Name = "5", SystemName = "5" },
 
 //Assessments & Evaluation
-new ResponseOption { Id = 50, ResponseTypeId = 10, Name = "Approved", SystemName = "Approved", IsActive = true, CreatedUserId = 1 },
-new ResponseOption { Id = 51, ResponseTypeId = 10, Name = "Approved with conditions", SystemName = "ApprovedWithConditions", IsActive = true, CreatedUserId = 1 },
-new ResponseOption { Id = 52, ResponseTypeId = 10, Name = "No Approved", SystemName = "NotApproved", IsActive = true, CreatedUserId = 1 },
-new ResponseOption { Id = 53, ResponseTypeId = 11, Name = "Approved", SystemName = "Approved", IsActive = true, CreatedUserId = 1 },
-new ResponseOption { Id = 54, ResponseTypeId = 11, Name = "Not Approved", SystemName = "NotApproved", IsActive = true, CreatedUserId = 1 },
+new ResponseOption { Id = 50, ResponseTypeId = 10, Name = "Approved", SystemName = "Option", IsActive = true, CreatedUserId = 1 },
+new ResponseOption { Id = 51, ResponseTypeId = 10, Name = "Approved with conditions", SystemName = "Option", IsActive = true, CreatedUserId = 1 },
+new ResponseOption { Id = 52, ResponseTypeId = 10, Name = "No Approved", SystemName = "Option", IsActive = true, CreatedUserId = 1 },
+new ResponseOption { Id = 53, ResponseTypeId = 11, Name = "Approved", SystemName = "Option", IsActive = true, CreatedUserId = 1 },
+new ResponseOption { Id = 54, ResponseTypeId = 11, Name = "Not Approved", SystemName = "Option", IsActive = true, CreatedUserId = 1 },
 
 new ResponseOption { Id = 55, ResponseTypeId = 12, Name = "Voluntary Association (VA)", SystemName = "Option", IsActive = true, CreatedUserId = 1 },
 new ResponseOption { Id = 56, ResponseTypeId = 12, Name = "Non-Profit Company (NPC)", SystemName = "Option", IsActive = true, CreatedUserId = 1 },
