@@ -565,8 +565,10 @@ export class DropdownService {
 
   }
   public getFacilityByName(searchText: string) {
-    const url = `${this._envUrl.urlAddress}/api/denodo?facilityName=${searchText}&pageSize=25&status=active`;
-    return this._http.get<IDenodoFacilityWrapper>(url, httpOptions);
+   // const url = `${this._envUrl.urlAddress}/api/denodo?facilityName=${searchText}&pageSize=25&status=active`;
+   const url = `${this._envUrl.urlAddress}/api/dropdown/facility/facilityName/${searchText}`;
+  //  return this._http.get<IDenodoFacilityWrapper>(url, httpOptions);
+  return this._http.get<IFacilityList[]>(url, httpOptions);
   }
 
   public getFacilityList(facilityList: IFacilityList) {
