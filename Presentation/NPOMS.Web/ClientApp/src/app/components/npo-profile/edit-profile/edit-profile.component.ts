@@ -103,8 +103,9 @@ export class EditProfileComponent implements OnInit {
   selectedFacilityType: IFacilityType;
 
   denodoFacilities: IDenodoFacility[];
-  selectedDenodoFacility: IDenodoFacility;
+  selectedDenodoFacility: IFacilityList; //IDenodoFacility;
   facilityList: IFacilityList;
+  facilityLists: IFacilityList[];
 
   disableField: boolean = true;
 
@@ -1976,7 +1977,7 @@ private loadTitles() {
     let query = event.query;
     this._dropdownRepo.getFacilityByName(query).subscribe(
       (results) => {
-        this.denodoFacilities = results ? results.elements : [];
+        this.facilityLists = results; // ? results.elements : [];
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1985,11 +1986,12 @@ private loadTitles() {
     );
   }
 
-  selectDenodoFacility(denodoFacility: IDenodoFacility, initialSelect: boolean) {
-    this.selectedDistrict = this.facilityDistricts.find(x => x.name === denodoFacility.district);
+  selectDenodoFacility(denodoFacility: IFacilityList, initialSelect: boolean) {
+    this.selectedDistrict = this.facilityDistricts.find(x => x.id === denodoFacility.facilitySubDistrict.facilityDistrict.id);
     this.districtChange(this.selectedDistrict);
-    this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.name === denodoFacility.sub_district);
-    this.selectedClass = this.facilityClasses.find(x => x.name === denodoFacility.classification);
+    this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.id === denodoFacility.facilitySubDistrictId);
+    this.selectedClass = this.facilityClasses.find(x => x.id === denodoFacility.facilityClassId);
+
     //this.addressLookup = { text: "", magicKey: "" } as IAddressLookup;
 
     this.mapping.facilityList.name = denodoFacility.name;

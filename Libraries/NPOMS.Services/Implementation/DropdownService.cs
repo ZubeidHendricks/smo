@@ -971,7 +971,7 @@ namespace NPOMS.Services.Implementation
             if (facility == null)
             {
                 var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
+                model.IsNew = true;
                 model.CreatedUserId = loggedInUser.Id;
                 model.CreatedDateTime = DateTime.Now;
 
