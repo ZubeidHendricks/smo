@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Entities;
 using NPOMS.Repository.Interfaces.Entities;
+using NPOMS.Repository.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +59,29 @@ namespace NPOMS.Repository.Implementation.Entities
             throw new NotImplementedException();
         }
 
-     Task<IncomeAndExpenditureReport> IIncomeAndExpenditureRepository.GetById(int id)
+        public async Task UpdateIncomeReportStatus(int applicationId, int financialId, int quarterId, int currentUserId)
+        {
+            // Retrieve the records to be updated
+            var incomeReports = await FindByCondition(x => x.FinancialYearId == financialId && x.ApplicationId == applicationId && x.QaurterId == quarterId)
+                                  .ToListAsync(); // No need for AsNoTracking here, as we want to modify the entities
+
+            // Update the status of each record
+            foreach (var report in incomeReports)
+            {
+                report.UpdatedUserId = currentUserId;
+                report.UpdatedDateTime = DateTime.Now;
+                report.StatusId = 24; // Replace "Status" with the actual property name for status in your entity
+            }
+            foreach (var report in incomeReports)
+            {
+                await UpdateAsync(null, report, false, currentUserId);
+            }
+
+            // Save all changes in one transaction
+            //await this.RepositoryContext.SaveChangesAsync();
+        }
+
+        Task<IncomeAndExpenditureReport> IIncomeAndExpenditureRepository.GetById(int id)
         {
             throw new NotImplementedException();
         }
@@ -76,6 +99,7 @@ namespace NPOMS.Repository.Implementation.Entities
         async Task<IEnumerable<IncomeAndExpenditureReport>> IIncomeAndExpenditureRepository.GetByPeriodId(int applicationPeriodId)
         {
             return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
+                          .Include(x => x.Status)
                           .AsNoTracking()
                           .ToListAsync();
         }
@@ -84,5 +108,6 @@ namespace NPOMS.Repository.Implementation.Entities
         {
             throw new NotImplementedException();
         }
+
     }
 }

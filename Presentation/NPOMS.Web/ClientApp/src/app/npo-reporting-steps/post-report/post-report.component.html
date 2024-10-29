@@ -4,7 +4,7 @@
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>     -->
     <div style="height: 10px;"></div>
-    <p-table [value]="posts" [editable]="true" styleClass="p-datatable-sm">
+    <p-table [value]="filteredposts" [editable]="true" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
             <!-- <th>#</th> -->
@@ -16,6 +16,7 @@
             <th>Date of Vacancies</th>
             <th>Vacancy Reasons</th>
             <th>Plans</th>
+            <th>Status</th>
             <th>Actions</th>
           </tr>
         </ng-template>
@@ -23,9 +24,24 @@
         <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
           <tr>
             <!-- <td>{{ rowIndex + 1 }}</td> -->
-      
-            <!-- Editable cell for Post Classification -->
             <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-dropdown [options]="staffCategories" [(ngModel)]="rowData.staffCategoryId" 
+                              (onChange)="onBlurAdjustedPost(rowData)">
+                  </p-dropdown>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  <!-- Render dropdown in the output as well -->
+                  <p-dropdown [options]="staffCategories" [(ngModel)]="rowData.staffCategoryId" 
+                              [disabled]="true" (onChange)="onBlurAdjustedPost(rowData)">
+                  </p-dropdown>
+                </ng-template>
+              </p-cellEditor>
+            </td>
+
+            <!-- Editable cell for Post Classification -->
+            <!-- <td pEditableColumn>
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText [(ngModel)]="rowData.postClassification"
@@ -35,7 +51,7 @@
                   {{ rowData.postClassification }}
                 </ng-template>
               </p-cellEditor>
-            </td>
+            </td> -->
       
             <!-- Editable cell for Number of Posts -->
             <td pEditableColumn>
@@ -124,12 +140,13 @@
                 </ng-template>
               </p-cellEditor>
             </td>
-      
+
+            <td>{{status(rowData)}}</td>
+
             <!-- Actions column -->
             <td style="text-align: center;">
-              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"></button>
-              <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash"></button>
-            </td>
+              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedPost=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+              <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>        </td>
           </tr>
         </ng-template>
       
@@ -139,13 +156,12 @@
           </tr>
         </ng-template>
       </p-table>
-      
-      
       <!-- Add "Add Other" button -->
-      <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
-
+      <div class="button-container">
+        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0"  (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+      </div>
     <div style="height: 10px;"></div>
- 
 </p-panel>
 
 <p-dialog header="Post Report" 
@@ -163,7 +179,7 @@
                 </div>
             </div>
             <div class="p-col">
-                <input type="text" class="form-text" pInputText [(ngModel)]="post.postClassification" [ngModelOptions]="{standalone: true}" >
+                <input type="text" class="form-text" pInputText [(ngModel)]="post.staffCategoryId" [ngModelOptions]="{standalone: true}" >
             </div>
         </div>
         <div class="p-grid">

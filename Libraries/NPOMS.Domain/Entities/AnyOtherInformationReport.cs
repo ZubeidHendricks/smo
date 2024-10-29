@@ -11,6 +11,7 @@ namespace NPOMS.Domain.Entities
     [Table("AnyOtherInformationReports", Schema = "dbo")]
     public  class AnyOtherInformationReport : BaseEntity
     {
+        public int StatusId { get; set; }
         public string Highlights { get; set; }
         public string Challenges { get; set; }
       
@@ -30,5 +31,7 @@ namespace NPOMS.Domain.Entities
 
         public User CreatedUser { get; set; }
         public bool IsActive { get; set;}
+        public Status Status { get; set; }
+        public int FinancialYearId { get; set; }
     }
 }

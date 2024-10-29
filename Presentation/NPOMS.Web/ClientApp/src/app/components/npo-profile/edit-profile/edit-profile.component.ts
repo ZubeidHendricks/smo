@@ -103,8 +103,9 @@ export class EditProfileComponent implements OnInit {
   selectedFacilityType: IFacilityType;
 
   denodoFacilities: IDenodoFacility[];
-  selectedDenodoFacility: IDenodoFacility;
+  selectedDenodoFacility: IFacilityList; //IDenodoFacility;
   facilityList: IFacilityList;
+  facilityLists: IFacilityList[];
 
   disableField: boolean = true;
 
@@ -1817,8 +1818,8 @@ private loadTitles() {
 
     if (this.selectedFacilityType.id === FacilityTypeEnum.Facility && this.mapping.facilityList.facilityFound === false) {
       if (!this.selectedClass || !this.mapping.facilityList.address)
-        return true;
-    }
+          return true;
+      }
 
     return false;
   }
@@ -1834,9 +1835,16 @@ private loadTitles() {
       facilitySubDistrictId: this.mapping.facilityList.facilitySubDistrict.id,
       name: this.mapping.facilityList.name,
       facilityClassId: this.mapping.facilityList.facilityClass.id,
-      latitude: this.mapping.facilityList.facilityFound ? this.facilityList.latitude : this.mapping.facilityList.latitude,
-      longitude: this.mapping.facilityList.facilityFound ? this.facilityList.longitude : this.mapping.facilityList.longitude,
-      address: this.mapping.facilityList.facilityFound ? this.facilityList.address : this.mapping.facilityList.address,
+     // latitude: this.mapping.facilityList.facilityFound ? this.facilityList.latitude : this.mapping.facilityList.latitude,
+     // longitude: this.mapping.facilityList.facilityFound ? this.facilityList.longitude : this.mapping.facilityList.longitude,
+     
+     latitude: this.mapping.facilityList.facilityFound ? null : this.mapping.facilityList.latitude,
+     longitude: this.mapping.facilityList.facilityFound ? null : this.mapping.facilityList.longitude,
+      
+
+     //address: this.mapping.facilityList.facilityFound ? this.facilityList.address : this.mapping.facilityList.address,
+     // below logic need to be optimised
+     address: this.mapping.facilityList.facilityFound ? this.mapping.facilityList.address : this.mapping.facilityList.address, 
       isNew: this.mapping.facilityList.facilityFound ? false : true,
       isActive: true
     } as IFacilityList;
@@ -1942,8 +1950,9 @@ private loadTitles() {
   private cloneFacilityInformation(data: INpoProfileFacilityList) {
     let mapping = {} as INpoProfileFacilityList;
     data.facilityList.facilityFound = !data.facilityList.isNew;
-
-    this.disableField = data.facilityList.facilityFound ? true : false;
+   
+    this.disableField = false; // data.facilityList.facilityFound ? true : false;
+    //this.disableField = data.facilityList.facilityFound ? true : false;
 
     for (let prop in data)
       mapping[prop] = data[prop];
@@ -1953,6 +1962,7 @@ private loadTitles() {
     this.districtChange(this.selectedDistrict);
     this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.id === data.facilityList.facilitySubDistrictId);
     this.selectedClass = data.facilityList.facilityClass;
+    data.facilityList.facilityFound = true;
     //this.addressLookup = { text: data.facilityList.address, magicKey: null };
 
     return mapping;
@@ -1976,7 +1986,7 @@ private loadTitles() {
     let query = event.query;
     this._dropdownRepo.getFacilityByName(query).subscribe(
       (results) => {
-        this.denodoFacilities = results ? results.elements : [];
+        this.facilityLists = results; // ? results.elements : [];
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1985,11 +1995,12 @@ private loadTitles() {
     );
   }
 
-  selectDenodoFacility(denodoFacility: IDenodoFacility, initialSelect: boolean) {
-    this.selectedDistrict = this.facilityDistricts.find(x => x.name === denodoFacility.district);
+  selectDenodoFacility(denodoFacility: IFacilityList, initialSelect: boolean) {
+    this.selectedDistrict = this.facilityDistricts.find(x => x.id === denodoFacility.facilitySubDistrict.facilityDistrict.id);
     this.districtChange(this.selectedDistrict);
-    this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.name === denodoFacility.sub_district);
-    this.selectedClass = this.facilityClasses.find(x => x.name === denodoFacility.classification);
+    this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.id === denodoFacility.facilitySubDistrictId);
+    this.selectedClass = this.facilityClasses.find(x => x.id === denodoFacility.facilityClassId);
+
     //this.addressLookup = { text: "", magicKey: "" } as IAddressLookup;
 
     this.mapping.facilityList.name = denodoFacility.name;
@@ -2006,8 +2017,8 @@ private loadTitles() {
         name: denodoFacility.name,
         facilityClass: this.selectedClass,
         facilityClassId: this.selectedClass.id,
-        latitude: denodoFacility.latitude,
-        longitude: denodoFacility.longitude,
+        latitude:  null, //denodoFacility.latitude,
+        longitude: null, // denodoFacility.longitude,
         address: null,
         isNew: false,
         isActive: true

@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Entities;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,6 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateIncomeReportEntity(IncomeAndExpenditureReport model, string currentUserId);
         Task UpdateIncomeReportEntityQC(IncomeAndExpenditureReport model, int currentUserId);
+        Task UpdateIncomeReportStatus(BaseCompleteViewModel model, string v);
     }
 }

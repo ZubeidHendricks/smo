@@ -4,7 +4,7 @@
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>     -->
     <div style="height: 10px;"></div>
-    <p-table [value]="sdips" [editable]="true" styleClass="p-datatable-sm">
+    <p-table [value]="filteredsdips" [editable]="true" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
             <th>Standard/ Performance Area</th>
@@ -13,17 +13,18 @@
             <th>Target Date</th>
             <th>Means of Verification</th>
             <th>Progress</th>
+            <th>Status</th>
             <th style="width: 6%;">Actions</th>
           </tr>
         </ng-template>
       
         <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
           <tr>
-            <!-- Editable cell for Standard/ Performance Area -->
             <td pEditableColumn>
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input pInputText [(ngModel)]="rowData.standardPerformanceArea" />
+                  <input pInputText [(ngModel)]="rowData.standardPerformanceArea" 
+                  (blur)="onBlurAdjustedSDIP(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.standardPerformanceArea }}
@@ -31,47 +32,47 @@
               </p-cellEditor>
             </td>
       
-            <!-- Editable cell for Corrective Action/Recommendation -->
             <td pEditableColumn>
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input pInputText [(ngModel)]="rowData.correctiveAction" />
+                  <input pInputText [(ngModel)]="rowData.correctiveAction"
+                  (blur)="onBlurAdjustedSDIP(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.correctiveAction }}
                 </ng-template>
               </p-cellEditor>
             </td>
-      
-            <!-- Editable cell for Responsibility -->
+
             <td pEditableColumn>
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input pInputText [(ngModel)]="rowData.responsibility" />
+                  <input pInputText [(ngModel)]="rowData.responsibility"            
+                  (blur)="onBlurAdjustedSDIP(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.responsibility }}
                 </ng-template>
               </p-cellEditor>
             </td>
-      
-            <!-- Editable cell for Target Date -->
+
             <td pEditableColumn>
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input pInputText [(ngModel)]="rowData.targetDate" type="date" />
+                  <input pInputText [(ngModel)]="rowData.targetDate" type="date"
+                  (blur)="onBlurAdjustedSDIP(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.targetDate | date: 'yyyy-MM-dd' }}
                 </ng-template>
               </p-cellEditor>
             </td>
-      
-            <!-- Editable cell for Means of Verification -->
+
             <td pEditableColumn>
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input pInputText [(ngModel)]="rowData.meansOfVerification" />
+                  <input pInputText [(ngModel)]="rowData.meansOfVerification" 
+                  (blur)="onBlurAdjustedSDIP(rowData)"/>
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.meansOfVerification }}
@@ -79,37 +80,44 @@
               </p-cellEditor>
             </td>
       
-            <!-- Editable cell for Progress -->
             <td pEditableColumn>
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input pInputText [(ngModel)]="rowData.progress" />
+                  <input pInputText [(ngModel)]="rowData.progress"
+                  (blur)="onBlurAdjustedSDIP(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.progress }}
                 </ng-template>
               </p-cellEditor>
             </td>
-      
+
+            <td>{{status(rowData)}}</td>
+
             <!-- Actions column -->
             <td style="text-align: center;">
+              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedsdips=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+              <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
+             </td>
+            <!-- <td style="text-align: center;">
               <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"></button>
               <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash"></button>
-            </td>
+            </td> -->
           </tr>
         </ng-template>
       
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="7" style="text-align: center;">No data available</td>
+            <td colspan="8" style="text-align: center;">No data available</td>
           </tr>
         </ng-template>
 
       </p-table>
-
-      <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
-      
-
+      <div class="button-container">
+        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus"  *ngIf="quarterId > 0"  (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+      </div>
+    <div style="height: 10px;"></div>
 </p-panel>
 
 <p-dialog header="Quartely SDIP Reporting" 
@@ -209,11 +217,6 @@
         <!-- <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button> -->
     </ng-template>
 </p-dialog>
-
-
-
-
-
 
 <p-dialog header="Add Comment" 
           [(visible)]="displayCommentDialog" 
@@ -318,42 +321,7 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Deleted Activities" 
-          [(visible)]="displayDeletedActivityDialog" 
-          [style]="{width: '90vw'}" 
-          [focusOnShow]="false"
-          showEffect="fade"
-          [transitionOptions]="'0ms'"
-          [modal]="true">
-    <p-table [rowHover]="true" [columns]="sdipCols" [value]="deletedActivities" styleClass="p-datatable-sm">
-        <ng-template pTemplate="header" let-columns>
-            <tr>
-                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                    {{col.header}}
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-            <tr class="heading">
-                <td *ngIf="deletedRowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
-                    <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
-                </td>
-            </tr>
-            <tr class="default-font">
-                <td>{{rowData.activityList.name}}</td>
-                <td>{{rowData.activityType.name}}</td>
-                <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date: 'yyyy-MM-dd'}}</td>
-                <td>{{rowData.target}}</td>
-                <td>{{rowData.facilityListText}}</td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr class="default-font">
-                <td colspan="5" style="text-align: center;">No results found</td>
-            </tr>
-        </ng-template>
-    </p-table>
-</p-dialog>
+
 
 <div class="content-section implementation">
     <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">

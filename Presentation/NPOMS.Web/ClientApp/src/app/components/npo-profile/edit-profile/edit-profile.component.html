@@ -645,7 +645,7 @@
                         [(ngModel)]="selectedDenodoFacility"
                         [style]="{'width':'100%'}"
                         [inputStyle]="{'width':'100%'}"
-                        [suggestions]="denodoFacilities"
+                        [suggestions]="facilityLists"
                         field="name"
                         (completeMethod)="search($event)"
                         [size]="20"
@@ -674,7 +674,7 @@
                     <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="mapping.facilityList.facilityFound" [ngModelOptions]="{standalone: true}" (onChange)="facilityFoundChange($event.value)" [disabled]="!newFacilityInformation"></p-selectButton>
                 </div>
             </div>
-            <div *ngIf="mapping.facilityList.facilityFound == false">
+            <div *ngIf="mapping.facilityList.facilityFound == false || newFacilityInformation === false">
                 <div class="p-grid">
                     <div class="p-col-fixed form-label">
                         <div class="box">

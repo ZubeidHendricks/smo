@@ -1,11 +1,11 @@
 
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISDIP, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISDIP, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -22,11 +22,33 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   providers: [FilterService]
 })
 
-
-
-
 export class QuarterlySDIPReportingReportComponent implements OnInit {
+  @Input() selectedQuarter!: number;
 
+  @Output() rightHeaderChange = new EventEmitter<string>();
+
+  quarterId: number;
+
+  filteredsdips: ISDIP[];
+
+  ngOnChanges(changes: SimpleChanges) {
+      if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
+          const quarter = changes['selectedQuarter'].currentValue;
+          this.quarterId = quarter;
+          this.filterDataByQuarter(quarter);
+      }
+  }
+
+  filterDataByQuarter(quarter: number) {
+    this.filteredsdips = this.sdips.filter(x => x.qaurterId === quarter);
+    this.rightHeaderChange.emit('Pending');
+    const allComplete = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 24);
+    if (allComplete) {
+      this.rightHeaderChange.emit('Completed');
+    }
+    this.cdr.detectChanges();
+  }
+  
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
 
   menuActions: MenuItem[];
@@ -66,30 +88,6 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
 
   selectedQuartersText: string = '';
   newSDIP: boolean;
-
-  // districts: any[] = [
-  //   { name: 'District 1', code: 'D1' },
-  //   { name: 'District 2', code: 'D2' }
-  // ];
-
-  // subDistricts: any[] = [];
-  // subStructures: any[] = [];
-
-  // allSubDistricts: any[] = [
-  //   { name: 'Sub District 1-1', code: 'SD1', districtCode: 'D1' },
-  //   { name: 'Sub District 1-2', code: 'SD2', districtCode: 'D1' },
-  //   { name: 'Sub District 2-1', code: 'SD3', districtCode: 'D2' }
-  // ];
-
-  // allSubStructures: any[] = [
-  //   { name: 'Sub Structure 1-1-1', code: 'SS1', subDistrictCode: 'SD1' },
-  //   { name: 'Sub Structure 1-1-2', code: 'SS2', subDistrictCode: 'SD1' },
-  //   { name: 'Sub Structure 2-1-1', code: 'SS3', subDistrictCode: 'SD3' }
-  // ];
-
-  // selectedDistricts: any[] = [];
-  // selectedSubDistricts: any[] = [];
-  // selectedSubStructures: any[] = [];
 
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
@@ -175,7 +173,6 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   facilitySubStructures: IFacilitySubStructure[];
   selectedFacilitySubStructures: IFacilitySubStructure;
 
-  
   allIDistrictDemographics: IDistrictDemographic[];
   selectedIDistrictDemographics: IDistrictDemographic;
 
@@ -191,9 +188,12 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   ManicipalityDemographics: IManicipalityDemographic[];
   selectedManicipalityDemographics: IManicipalityDemographic[];
 
-  
+  baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
   sdips: ISDIP[];
+  selectedsdips = {} as ISDIP;
   sdip: ISDIP = {} as ISDIP;
+  buttonItems: MenuItem[];
+
 
   //activeActivities: any[] = []; // All activities
   filteredActivities: any[] = []; // Filtered activities
@@ -214,7 +214,11 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
-
+  public IsAuthorized(permission: PermissionsEnum): boolean {
+    if (this.profile != null && this.profile.permissions.length > 0) {
+      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    }
+  }
   constructor(
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
@@ -227,51 +231,34 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     private filterService: FilterService,
     private _router: Router,
     private _authService: AuthService,
-    private _applicationPeriodRepo: ApplicationPeriodService
-    
-   
+    private _applicationPeriodRepo: ApplicationPeriodService,
+    private cdr: ChangeDetectorRef
   ) {  }
 
   ngOnInit(): void {
-    this._spinner.show();
-    this.registerCustomFilters();
-
-
-
-
-    this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
-      this.application.statusId === StatusEnum.PendingApproval ||
-      this.application.statusId === StatusEnum.ApprovalInProgress ||
-      this.application.statusId === StatusEnum.PendingSLA ||
-      this.application.statusId === StatusEnum.PendingSignedSLA ||
-      this.application.statusId === StatusEnum.DeptComments ||
-      this.application.statusId === StatusEnum.OrgComments)
-      ? false : true;
-
-    this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
-    this.tooltip = this.canEdit ? 'Edit' : 'View';
-
-    this.loadNpo();
-    this.loadActivityTypes();
-    this.loadFacilities();
-    this.setYearRange();
-    this.loadAllSubProgrammes();
-    this.loadFacilityDistricts();
-    this.loadFacilitySubDistricts();
-    this.loadFacilitySubStructures();
-    this.loadDemographicDistricts();
-    this.loadDemographicSubStructures();
-    this.loadDemographicManicipalities();
-    this.loadDemographicSubDistricts();
-    this.loadFinancialYears();
-    this.loadDepartments();
-    //this.loadDepartments1();
-    this.loadProgrammes();
-    this.loadSubProgrammes();
-    this.loadSubProgrammeTypes();
-    this.loadSDIPs();
-
- 
+    this._authService.profile$.subscribe(profile => {
+      if (profile != null && profile.isActive) {
+        this.profile = profile;
+        this._spinner.show();
+        this.registerCustomFilters();
+        this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
+          this.application.statusId === StatusEnum.PendingApproval ||
+          this.application.statusId === StatusEnum.ApprovalInProgress ||
+          this.application.statusId === StatusEnum.PendingSLA ||
+          this.application.statusId === StatusEnum.PendingSignedSLA ||
+          this.application.statusId === StatusEnum.DeptComments ||
+          this.application.statusId === StatusEnum.OrgComments)
+          ? false : true;
+    
+        this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
+        this.tooltip = this.canEdit ? 'Edit' : 'View';
+    
+        this.loadNpo();
+        this.loadFinancialYears();
+        this.loadSDIPs();
+        this.buildButtonItems();
+      }
+    });
 
     this.sdipCols = [
       { header: 'Standard/ Performance Area', width: '10%' },
@@ -297,11 +284,93 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
+
+  completeAction() {
+    this._spinner.show();
+    this.baseCompleteViewModel.applicationId = this.application.id;
+    this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
+
+    this._applicationRepo.completeSDIPAction(this.baseCompleteViewModel).subscribe(
+      (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
+        this.loadSDIPs();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private buildButtonItems() {
+    this.buttonItems = [];
+    if (this.profile) {
+      this.buttonItems = [{
+        label: 'Options',
+        items: []
+      }];
+
+      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Submit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateSelectedsdipsData(this.selectedsdips, StatusEnum.PendingReview);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Edit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateSelectedsdipsData(this.selectedsdips, StatusEnum.PendingApproval);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Comments',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.displayCommentDialog=true;
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'View History',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateSelectedsdipsData(this.selectedsdips, StatusEnum.Approved);
+          }
+        });
+      }
+    }
+  }
+
+  private updateSelectedsdipsData(rowData: ISDIP, status: number) {
+    rowData.statusId = status;
+   this.onBlurAdjustedSDIP(rowData);
+  }  
+
+  updateButtonItems() {
+    // Show all buttons
+    this.buttonItems[0].items.forEach(option => {
+      option.visible = true;
+    });
+
+  }
   
   disableQuarters(): boolean {
     // Logic to disable dropdown (return true to disable, false to enable)
     return false;
   }
+
   registerCustomFilters() {
     this.filterService.register('custom', (value: string, filter: any[]) => {
       // If no filter selected, allow all results (true)
@@ -387,27 +456,6 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     );
   }
 
-  private loadDepartments1() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-      (results) => {
-        this.departments1 = results;
-        if(this.isSystemAdmin )
-          {
-            this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
-          }
-          else{
-            this.departments1 = results.filter(x => x.id === this.profile.departments[0].id);
-          }
-          this.selectedDepartmentSummary = null;
-          this.selectedDepartmentSummary = this.departments1.find(x => x.id === this.profile.departments[0].id);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
   private loadDepartments() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
@@ -450,7 +498,6 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     );
   }
 
-  
   private loadSubProgrammeTypes() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
@@ -466,20 +513,24 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   }
 
   onBlurAdjustedSDIP(rowdata){
-    //this.saveOtherInfor(rowdata);
+    this.saveSDIP(rowdata);
   }
 
   saveSDIP(rowData: any) {
     let sdipobj = {} as ISDIP;
-    sdipobj.applicationId = this.application.id;
-    sdipobj.standardPerformanceArea = rowData.challenges;
-    sdipobj.correctiveAction = rowData.highlights;
-    sdipobj.responsibility = rowData.challenges;
-    sdipobj.targetDate = rowData.highlights;
-    sdipobj.meansOfVerification = rowData.challenges;
-    sdipobj.progress = rowData.highlights;
+
+    sdipobj.standardPerformanceArea = rowData.standardPerformanceArea;
+    sdipobj.correctiveAction = rowData.correctiveAction;
+    sdipobj.responsibility = rowData.responsibility;
+    sdipobj.targetDate = rowData.targetDate;
+    sdipobj.meansOfVerification = rowData.meansOfVerification;
+    sdipobj.progress = rowData.progress;
     sdipobj.id = rowData.id;
+    sdipobj.statusId = rowData.statusId;
     sdipobj.isActive = true;
+    sdipobj.applicationId = this.application.id;
+    sdipobj.financialYearId = this.application.applicationPeriod.financialYear.id;
+    sdipobj.qaurterId = this.quarterId;
 
     if (rowData.id === 0) {
       this.createSDIP(sdipobj);
@@ -500,8 +551,9 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     );
   }
 
-
-
+  status(data: any) {
+    return data?.status?.name || 'New';
+}
 
   createSDIP(sdip: ISDIP) {
     this._applicationRepo.createSDIPReport(sdip).subscribe(
@@ -519,29 +571,17 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.GetSDIPReportsByAppid(this.application).subscribe(
       (results) => {
-        console.log('Other',results);
-        this.sdips = results;     
+        this.sdips = results;   
+        if(this.quarterId > 0)
+          {
+            this.filteredsdips = this.sdips.filter(x => x.qaurterId === this.quarterId);
+          }  
         });
         this._spinner.hide();
       }
 
-  // editAnyOther(data: ISDIP) {
-  //   this.newSDIP = false;
-  //   this.sdip = this.cloneAnyOther(data);
-
-  // }
-
-  // private cloneAnyOther(data: ISDIP):  {ISDIP
-  //   let obj = {} as ISDIP;
-
-  //   for (let prop in data)
-  //     obj[prop] = data[prop];
-  //   return obj;
-  // }
-
-
   addNewRow() {
-    const newRow = {
+    const newRow : ISDIP = {
       id: 0,
       standardPerformanceArea: '',
       correctiveAction: '',
@@ -549,12 +589,15 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
       targetDate: '',
       meansOfVerification: '',
       progress: '',
-      total: 0,
       isActive: true,
       applicationId:0,
+      statusId: 0,
+      qaurterId: 0,
+      financialYearId: 0,
+      status: {} as IStatus
     };
     
-    this.sdips.push(newRow);  
+    this.filteredsdips.push(newRow);  
   }
 
   departmentChange(department: IDepartment) {

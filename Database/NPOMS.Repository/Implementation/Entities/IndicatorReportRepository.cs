@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Entities;
 using NPOMS.Repository.Interfaces.Entities;
+using System.Security.Cryptography.X509Certificates;
 
 namespace NPOMS.Repository.Implementation.Entities
 {
@@ -32,6 +33,7 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<IEnumerable<IndicatorReport>> GetByPeriodId(int applicationPeriodId)
         {
             return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
+                         .Include(x=>x.Status)
                          .AsNoTracking()
                          .ToListAsync();
         }
@@ -49,6 +51,29 @@ namespace NPOMS.Repository.Implementation.Entities
         public async  Task UpdateEntityQC(IndicatorReport model, int currentUserId)
         {
             await UpdateAsync(null, model, false, currentUserId);
+        }
+
+        public async Task UpdateIndicatorReportStatus(int applicationId, int financialId, int quarterId, int currentUserId)
+        {
+            // Retrieve the records to be updated
+            var indicatorReports = await FindByCondition(x => x.FinancialYearId == financialId && x.ApplicationId == applicationId && x.QaurterId == quarterId)
+                                  .ToListAsync(); // No need for AsNoTracking here, as we want to modify the entities
+
+            // Update the status of each record
+            foreach (var report in indicatorReports)
+            {
+                report.UpdatedUserId = currentUserId;
+                report.UpdatedDateTime = DateTime.Now;
+                report.StatusId = 24; // Replace "Status" with the actual property name for status in your entity
+            }
+
+            foreach (var report in indicatorReports)
+            {
+                await UpdateAsync(null, report, false, currentUserId);
+            }
+
+            // Save all changes in one transaction
+            //await this.RepositoryContext.SaveChangesAsync();
         }
     }
 }

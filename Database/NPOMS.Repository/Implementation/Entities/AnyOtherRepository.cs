@@ -42,6 +42,7 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<IEnumerable<AnyOtherInformationReport>> GetByPeriodId(int applicationPeriodId)
         {
             return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
+                          .Include(x => x.Status)
                          .AsNoTracking()
                          .ToListAsync();
         }
@@ -49,6 +50,29 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<IEnumerable<AnyOtherInformationReport>> GetEntities()
         {
             return await FindByCondition(x => x.IsActive).AsNoTracking().ToListAsync();
+        }
+
+        public async Task UpdateAnyOtherStatus(int applicationId, int financialId, int quarterId, int currentUserId)
+        {
+            // Retrieve the records to be updated
+            var anyOtherReports = await FindByCondition(x => x.FinancialYearId == financialId && x.ApplicationId == applicationId && x.QaurterId == quarterId)
+                                  .ToListAsync(); // No need for AsNoTracking here, as we want to modify the entities
+
+            // Update the status of each record
+            foreach (var report in anyOtherReports)
+            {
+                report.UpdatedUserId = currentUserId;
+                report.UpdatedDateTime = DateTime.Now;
+                report.StatusId = 24; // Replace "Status" with the actual property name for status in your entity
+            }
+
+            foreach (var report in anyOtherReports)
+            {
+                await UpdateAsync(null, report, false, currentUserId);
+            }
+
+            // Save all changes in one transaction
+           // await this.RepositoryContext.SaveChangesAsync();
         }
 
         public async Task UpdateEntity(AnyOtherInformationReport model, int currentUserId)

@@ -4,7 +4,7 @@
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>     -->
     <div style="height: 10px;"></div>
-    <p-table [rowHover]="true" [columns]="anyOtherCols" [value]="otherInfors" styleClass="p-datatable-sm" [editable]="true">
+    <p-table [rowHover]="true" [columns]="anyOtherCols" [value]="filteredotherInfors" styleClass="p-datatable-sm" [editable]="true">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -41,20 +41,28 @@
                         </ng-template>
                     </p-cellEditor>
                 </td>
-              
+                
+                <td>{{status(rowData)}}</td>
+
                 <td style="text-align: center;">
+                    <!-- Actions buttons for editing, deleting, comments, etc. -->
+                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedotherInfor=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+                    <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu> 
+                </td>
+                <!-- <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editAnyOther(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
                     <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteOtherInfor(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
                     <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
                     <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
-                </td>
+                </td> -->
             </tr>
         </ng-template>
     
         <ng-template pTemplate="summary" let-rowData>
-            <div style="text-align:left">
-                <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
-            </div>
+            <div class="button-container">
+                <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0"  (click)="addNewRow()"></button>
+                <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+              </div>
         </ng-template>
     
         <ng-template pTemplate="emptymessage">

@@ -2,7 +2,7 @@
 <p-panel [style]="{'font-size':'12px'}" header=" Details of Income and Expenditure for the quarter Report">
 
     <div style="height: 10px;"></div>
-    <p-table [value]="expenditures" [editable]="true" styleClass="p-datatable-sm">
+    <p-table [value]="filteredexpenditure" [editable]="true" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
         
@@ -10,6 +10,7 @@
             <th>Income</th>
             <th>Expenditure</th>
             <th>Surplus</th>
+            <th>Status</th>
             <th style="width: 6%;">Actions</th>
           </tr>
         </ng-template>
@@ -23,7 +24,7 @@
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText [(ngModel)]="rowData.costDrivers"
-                  (blur)="onBlurAdjustedInc(rowData)" />
+                  (blur)="onBlurExpenditure(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.costDrivers }}
@@ -36,7 +37,7 @@
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText [(ngModel)]="rowData.income" type="number"
-                  (blur)="onBlurAdjustedInc(rowData)" 
+                  (blur)="onBlurExpenditure(rowData)" 
                   (keyup)="onKeyUp(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
@@ -50,7 +51,7 @@
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText [(ngModel)]="rowData.expenditure" type="number"
-                  (blur)="onBlurAdjustedInc(rowData)" 
+                  (blur)="onBlurExpenditure(rowData)" 
                   (keyup)="onKeyUp(rowData)" />
                 </ng-template>
                 <ng-template pTemplate="output">
@@ -70,12 +71,19 @@
                 </ng-template>
               </p-cellEditor>
             </td>
-      
-            <!-- Actions column -->
+
+            <td>{{status(rowData)}}</td>
+
             <td style="text-align: center;">
+                <!-- Actions buttons for editing, deleting, comments, etc. -->
+                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedExpenditure=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+                <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu> 
+            </td>
+            <!-- Actions column -->
+            <!-- <td style="text-align: center;">
               <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"></button>
               <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash"></button>
-            </td>
+            </td> -->
           </tr>
         </ng-template>
       
@@ -87,21 +95,30 @@
         <ng-template pTemplate="footer">
             <tr>
               <td><span style="font-weight: bold;">Total</span></td>
-              <td >
+              <td>
                 <span style="font-weight: bold;">{{totalIncome}}</span>
               </td>
-              <td >
+              <td>
                 <span style="font-weight: bold;">{{totalExpenditure}}</span>
               </td>
-              <td >
+              <td>
                 <span style="font-weight: bold;">{{totalSurplus}}</span>
+              </td>
+              <td>
+                <span style="font-weight: bold;"></span>
+              </td>
+              <td>
+                <span style="font-weight: bold;"></span>
               </td>
             </tr>
           </ng-template>
           
       </p-table>
       
-      <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
+      <div class="button-container">
+        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0" (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+    </div>
 
     <div style="height: 10px;"></div>
    

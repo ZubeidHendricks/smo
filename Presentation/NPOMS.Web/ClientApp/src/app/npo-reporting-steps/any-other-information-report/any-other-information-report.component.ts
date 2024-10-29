@@ -1,11 +1,11 @@
 
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IOtherInfor, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IOtherInfor, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -15,8 +15,6 @@ import { Router } from '@angular/router';
 import { ApplicationPeriodService } from 'src/app/services/api-services/application-period/application-period.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
-
-
 @Component({
   selector: 'app-any-other-information-report',
   templateUrl: './any-other-information-report.component.html',
@@ -25,7 +23,31 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 
 export class AnyOtherInformationReportComponent implements OnInit {
+  
+  @Input() selectedQuarter!: number;
 
+  @Output() otherrightHeaderChange = new EventEmitter<string>();
+
+  quarterId: number;
+  filteredotherInfors: IOtherInfor[];
+
+  ngOnChanges(changes: SimpleChanges) {
+      if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
+          const quarter = changes['selectedQuarter'].currentValue;
+          this.quarterId = quarter;
+          this.filterDataByQuarter(quarter);
+      }
+  }
+
+  filterDataByQuarter(quarter: number) {
+     this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === quarter);
+     this.otherrightHeaderChange.emit('Pending');
+     const allComplete = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 24);
+     if (allComplete) {
+       this.otherrightHeaderChange.emit('Completed');
+     }
+     this.cdr.detectChanges();
+  }
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
 
   menuActions: MenuItem[];
@@ -62,10 +84,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
   isSystemAdmin: boolean;
   isDepartmentAdmin: boolean;
   selectedDepartmentSummary: IDepartment;
-
   selectedQuartersText: string = '';
-
-
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
   }
@@ -167,6 +186,10 @@ export class AnyOtherInformationReportComponent implements OnInit {
   otherInfors: IOtherInfor[];
   otherInfor: IOtherInfor = {} as IOtherInfor;
 
+  selectedotherInfor: IOtherInfor;
+  buttonItems: MenuItem[];
+  baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
+
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
@@ -179,11 +202,16 @@ export class AnyOtherInformationReportComponent implements OnInit {
   ];
 
   selectedQuarters = [];
-  
-  // Used for table filtering
+
   @ViewChild('dt') dt: Table | undefined;
+  public IsAuthorized(permission: PermissionsEnum): boolean {
+    if (this.profile != null && this.profile.permissions.length > 0) {
+      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    }
+  }
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
     private _confirmationService: ConfirmationService,
@@ -201,27 +229,37 @@ export class AnyOtherInformationReportComponent implements OnInit {
   ) {  }
 
   ngOnInit(): void {
-    this._spinner.show();
-    this.registerCustomFilters();
-    this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
-      this.application.statusId === StatusEnum.PendingApproval ||
-      this.application.statusId === StatusEnum.ApprovalInProgress ||
-      this.application.statusId === StatusEnum.PendingSLA ||
-      this.application.statusId === StatusEnum.PendingSignedSLA ||
-      this.application.statusId === StatusEnum.DeptComments ||
-      this.application.statusId === StatusEnum.OrgComments)
-      ? false : true;
 
-    this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
-    this.tooltip = this.canEdit ? 'Edit' : 'View';
+    this._authService.profile$.subscribe(profile => {
+      if (profile != null && profile.isActive) {
+        this.profile = profile;
+        this._spinner.show();
+        this.registerCustomFilters();
+        this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
+          this.application.statusId === StatusEnum.PendingApproval ||
+          this.application.statusId === StatusEnum.ApprovalInProgress ||
+          this.application.statusId === StatusEnum.PendingSLA ||
+          this.application.statusId === StatusEnum.PendingSignedSLA ||
+          this.application.statusId === StatusEnum.DeptComments ||
+          this.application.statusId === StatusEnum.OrgComments)
+          ? false : true;
+    
+        this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
+        this.tooltip = this.canEdit ? 'Edit' : 'View';
+    
+        this.loadNpo();
+        this.setYearRange();
+        this.loadFinancialYears();
+        this.loadotherInfor();
+        this.buildButtonItems();
+      }
+    });
 
-    this.loadNpo();
-    this.setYearRange();
-    this.loadFinancialYears();
-    this. loadotherInfor();
+
     this.anyOtherCols = [
       { header: 'Highlights', width: '50%' },
       { header: 'Challenges', width: '50%' },
+      { header: 'Status', width: '50%' },
     ];
 
     this.commentCols = [
@@ -238,7 +276,104 @@ export class AnyOtherInformationReportComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
-  
+
+  private buildButtonItems() {
+    this.buttonItems = [];
+    if (this.profile) {
+      this.buttonItems = [{
+        label: 'Options',
+        items: []
+      }];
+
+      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Submit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateselectedotherInforData(this.selectedotherInfor, StatusEnum.PendingReview);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Edit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateselectedotherInforData(this.selectedotherInfor, StatusEnum.PendingApproval);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Comments',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.displayCommentDialog=true;
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'View History',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateselectedotherInforData(this.selectedotherInfor, StatusEnum.Approved);
+          }
+        });
+      }
+    }
+  }
+
+  updateButtonItems() {
+    // Show all buttons
+    this.buttonItems[0].items.forEach(option => {
+      option.visible = true;
+    });
+
+    // switch (this.selectedIndicator.workplanActuals[0].statusId) {
+    //   case StatusEnum.New:
+    //   case StatusEnum.Saved:
+    //   case StatusEnum.AmendmentsRequired: {
+    //     this.buttonItems[0].items[2].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     this.buttonItems[0].items[4].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.PendingReview: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.PendingApproval: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[2].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.Approved: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[2].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     this.buttonItems[0].items[4].visible = false;
+    //     break;
+    //   }
+    // }
+  }
+
+  private updateselectedotherInforData(rowData: IOtherInfor, status: number) {
+    rowData.statusId = status;
+   this.onBlurAdjustedAny(rowData);
+  }  
+
+  status(data: any) {
+    return data?.status?.name || 'New';
+  }
+   
   disableQuarters(): boolean {
     // Logic to disable dropdown (return true to disable, false to enable)
     return false;
@@ -279,41 +414,6 @@ export class AnyOtherInformationReportComponent implements OnInit {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
-  private loadDemographicDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicDistrict, false).subscribe(
-      (results) => {
-        this.allIDistrictDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadDemographicManicipalities() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicManicipality, false).subscribe(
-      (results) => {
-        this.allManicipalityDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-  
-  private loadDemographicSubStructures() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubStructure, false).subscribe(
-      (results) => {
-        this.allSubstructureDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
   private loadFinancialYears() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
@@ -328,101 +428,11 @@ export class AnyOtherInformationReportComponent implements OnInit {
     );
   }
 
-  private loadDepartments1() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-      (results) => {
-        this.departments1 = results;
-        if(this.isSystemAdmin )
-          {
-            this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
-          }
-          else{
-            this.departments1 = results.filter(x => x.id === this.profile.departments[0].id);
-          }
-          this.selectedDepartmentSummary = null;
-          this.selectedDepartmentSummary = this.departments1.find(x => x.id === this.profile.departments[0].id);
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadDepartments() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-      (results) => {
-        this.departments = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
-      (results) => {
-        this.allProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadSubProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
-      (results) => {
-        this.allSubProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  
-  private loadSubProgrammeTypes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
-      (results) => {
-        this.AllsubProgrammesTypes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
 
 preventChange(event: any): void {
   event.originalEvent.preventDefault(); 
   event.value = [...this.selectedFacilities];
 }
-
-  private loadDemographicSubDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubDistrict, false).subscribe(
-      (results) => {
-        this.allSubDistrictDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
 
   private loadNpo() {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(
@@ -447,9 +457,12 @@ preventChange(event: any): void {
   saveOtherInfor(rowData: any) {
     let otherInforobj = {} as IOtherInfor;
     otherInforobj.applicationId = this.application.id;
+    otherInforobj.qaurterId = this.quarterId;
+    otherInforobj.financialYearId = this.application.applicationPeriod.financialYear.id;
     otherInforobj.challenges = rowData.challenges;
     otherInforobj.highlights = rowData.highlights;
     otherInforobj.id = rowData.id;
+    otherInforobj.statusId = rowData.statusId;
     otherInforobj.isActive = true;
 
     if (rowData.id === 0) {
@@ -489,31 +502,38 @@ preventChange(event: any): void {
   }
 
 addNewRow() {
-  const newRow : IOtherInfor= {
+  const newRow : IOtherInfor = {
     id: 0,
     highlights: '',
     challenges: '',
     isActive: true,
-    applicationId:0,
+    applicationId: 0,
+    statusId: 0,
+    financialYearId: 0,
+    qaurterId: 0,
+    status: {} as IStatus
   };
   
-  this.otherInfors.push(newRow);  // Add the new row to the expenditures array
+  this.filteredotherInfors.push(newRow);  // Add the new row to the expenditures array
 }
 
   private loadotherInfor() {
     this._spinner.show();
     this._applicationRepo.GetOtherInforReportsByAppid(this.application).subscribe(
       (results) => {
-        console.log('Other',results);
-        this.otherInfors = results;     
+        this.otherInfors = results; 
+        if(this.quarterId > 0)
+        {
+            this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === this.quarterId);
+        }
         });
         this._spinner.hide();
-      }
+        
+  }
 
   editAnyOther(data: IOtherInfor) {
     this.newOtherInfor = false;
     this.otherInfor = this.cloneAnyOther(data);
-    console.log('Other',this.otherInfor);
     this.displayAnyOtherDialog = true;
   }
 
@@ -717,6 +737,24 @@ addNewRow() {
       reject: () => {
       }
     });
+  }
+
+  completeAction() {
+    this._spinner.show();
+    this.baseCompleteViewModel.applicationId = this.application.id;
+    this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
+
+    this._applicationRepo.completeOtherInfoAction(this.baseCompleteViewModel).subscribe(
+      (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
+        this.loadotherInfor();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   public getColspan() {

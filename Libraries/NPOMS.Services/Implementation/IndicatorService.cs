@@ -8,6 +8,7 @@ using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.Indicator;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -229,6 +230,13 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<WorkplanTarget>> GetTargetsByActivityIds(List<int> activityIds)
         {
             return await _workplanTargetRepository.GetTargetsByActivityIds(activityIds);
+        }
+
+        public async Task UpdateIndicatorReportStatus(BaseCompleteViewModel model, string currentUserId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
+
+            await _indicatorReportRepository.UpdateIndicatorReportStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
         }
 
         #endregion

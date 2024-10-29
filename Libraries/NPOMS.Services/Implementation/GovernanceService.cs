@@ -3,6 +3,7 @@ using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,6 +72,13 @@ namespace NPOMS.Services.Implementation
         public Task UpdateGovernanceReportEntityQC(GovernanceReport model, int currentUserId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task CompleteGovernanceReportPost(BaseCompleteViewModel model, string currentUserId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
+
+            await _governanceRepository.CompleteGovernanceReportPost(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
         }
     }
 }

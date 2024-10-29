@@ -3,6 +3,7 @@ using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,6 +69,11 @@ namespace NPOMS.Services.Implementation
             await _sdipRepository.UpdateEntity(model, loggedInUser.Id);
         }
 
-   
+        public async Task UpdateSDIPStatus(BaseCompleteViewModel model, string currentUserId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
+
+            await _sdipRepository.UpdateSDIPStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+        }
     }
 }

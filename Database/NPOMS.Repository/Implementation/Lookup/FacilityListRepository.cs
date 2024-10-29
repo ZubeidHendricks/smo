@@ -42,7 +42,9 @@ namespace NPOMS.Repository.Implementation.Lookup
 
 		public async Task<IEnumerable<FacilityList>> SearchByName(string name)
 		{
-			return await FindByCondition(x => x.Name.Contains(name)).AsNoTracking().ToListAsync();
+			return await FindByCondition(x => x.Name.Contains(name))
+				.Include(x => x.FacilitySubDistrict).ThenInclude(x => x.FacilityDistrict)
+				.AsNoTracking().ToListAsync();
 		}
 
 		public async Task CreateEntity(FacilityList model)

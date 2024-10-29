@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Entities;
+using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,6 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdatePostReportEntity(PostReport model, string currentUserId);
         Task UpdatePostReportEntityQC(PostReport model, int currentUserId);
+        Task CompletePost(BaseCompleteViewModel model, string currentUserId);
     }
 }

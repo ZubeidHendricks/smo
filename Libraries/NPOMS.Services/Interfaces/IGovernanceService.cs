@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Entities;
+using NPOMS.Services.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,6 +21,6 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateGovernanceReportEntity(GovernanceReport model, string currentUserId);
         Task UpdateGovernanceReportEntityQC(GovernanceReport model, int currentUserId);
-
+        Task CompleteGovernanceReportPost(BaseCompleteViewModel model, string userIdentifier);
     }
 }

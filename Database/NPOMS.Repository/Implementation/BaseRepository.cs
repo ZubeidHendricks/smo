@@ -100,7 +100,7 @@ namespace NPOMS.Repository.Implementation
 			else
 			{
 				this.RepositoryContext.Set<T>().Update(newEntity);
-				await this.RepositoryContext.SaveChangesAsync();
+                await this.RepositoryContext.SaveChangesAsync();
 			}
 		}
 

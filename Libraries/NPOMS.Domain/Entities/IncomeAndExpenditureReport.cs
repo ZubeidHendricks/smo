@@ -11,6 +11,7 @@ namespace NPOMS.Domain.Entities
     [Table("IncomeAndExpenditureReports", Schema = "dbo")]
     public class IncomeAndExpenditureReport : BaseEntity
     {
+        public int StatusId { get; set; }
 
         public string CostDrivers { get; set; }
         public int Income { get; set; }
@@ -23,7 +24,6 @@ namespace NPOMS.Domain.Entities
 
         public int ApplicationId { get; set; }
         public bool IsActive { get; set; } = true;
-
 
         public int QaurterId { get; set; }
 
@@ -38,5 +38,9 @@ namespace NPOMS.Domain.Entities
         public DateTime? ApprovalDateTime { get; set; }
 
         public User CreatedUser { get; set; }
+
+        public Status Status { get; set; }
+
+        public int FinancialYearId { get; set; }
     }
 }

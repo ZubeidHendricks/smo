@@ -1,11 +1,11 @@
 
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -25,10 +25,32 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 
 export class GovernanceReportComponent implements OnInit {
+  
+  @Input() selectedQuarter!: number;
+  @Output() govnencerightHeaderChange = new EventEmitter<string>();
 
+  quarterId: number;
+  ngOnChanges(changes: SimpleChanges) {
+      if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
+          const quarter = changes['selectedQuarter'].currentValue;
+          this.quarterId = quarter;
+          this.filterDataByQuarter(quarter);
+      }
+  }
+
+  filterDataByQuarter(quarter: number) {
+    this.govnencerightHeaderChange.emit('Pending');
+    this.filteredgov = this.governances.filter(x => x.qaurterId === quarter);
+    const allComplete = this.filteredgov.length > 0 && this.filteredgov.every(dip => dip.statusId === 24);
+    if (allComplete) {
+      this.govnencerightHeaderChange.emit('Completed');
+    }
+  }
+  
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
 
   menuActions: MenuItem[];
+  baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
   profile: IUser;
   validationErrors: Message[];
   filteredProgrammes: IProgramme[] = [];
@@ -64,6 +86,8 @@ export class GovernanceReportComponent implements OnInit {
   selectedDepartmentSummary: IDepartment;
 
   selectedQuartersText: string = '';
+  selectedGovernance: IGovernance;
+  buttonItems: MenuItem[];
 
 
   public get RoleEnum(): typeof RoleEnum {
@@ -186,10 +210,17 @@ export class GovernanceReportComponent implements OnInit {
   
   governances: IGovernance[];
   governance: IGovernance = {} as IGovernance;
+  filteredgov: IGovernance[] = [];
   newGovernance: boolean;
   
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
+
+  public IsAuthorized(permission: PermissionsEnum): boolean {
+    if (this.profile != null && this.profile.permissions.length > 0) {
+      return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
+    }
+  }
 
   constructor(
     private _dropdownRepo: DropdownService,
@@ -209,9 +240,12 @@ export class GovernanceReportComponent implements OnInit {
   ) {  }
 
   ngOnInit(): void {
-    this._spinner.show();
-    this.registerCustomFilters();
-    this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
+    this._authService.profile$.subscribe(profile => {
+    if (profile != null && profile.isActive) {
+      this.profile = profile;
+      this._spinner.show();
+      this.registerCustomFilters();
+      this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
       this.application.statusId === StatusEnum.PendingSLA ||
@@ -227,11 +261,17 @@ export class GovernanceReportComponent implements OnInit {
     this.setYearRange();
     this.loadFinancialYears();
     this.loadGovernance();
+    this. buildButtonItems();
+
+    }
+  });
+
     this.governanceCols = [
       { header: 'Date of Last Board Meeting', width: '20%' },
       { header: 'Date of last submissionof financial statements to Westerncape DSD', width: '20%' },
       { header: 'Date of last submissionof financial statements to the NPO Directorate of National DSD', width: '20%' },
       { header: 'Comments', width: '40%' },
+      { header: 'Status', width: '5%' }
     ];
 
     this.commentCols = [
@@ -248,7 +288,104 @@ export class GovernanceReportComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
-  
+
+  updateButtonItems() {
+    // Show all buttons
+    this.buttonItems[0].items.forEach(option => {
+      option.visible = true;
+    });
+
+    // switch (this.selectedIndicator.workplanActuals[0].statusId) {
+    //   case StatusEnum.New:
+    //   case StatusEnum.Saved:
+    //   case StatusEnum.AmendmentsRequired: {
+    //     this.buttonItems[0].items[2].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     this.buttonItems[0].items[4].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.PendingReview: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.PendingApproval: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[2].visible = false;
+    //     break;
+    //   }
+    //   case StatusEnum.Approved: {
+    //     this.buttonItems[0].items[0].visible = false;
+    //     this.buttonItems[0].items[1].visible = false;
+    //     this.buttonItems[0].items[2].visible = false;
+    //     this.buttonItems[0].items[3].visible = false;
+    //     this.buttonItems[0].items[4].visible = false;
+    //     break;
+    //   }
+    // }
+  }
+
+  private buildButtonItems() {
+    this.buttonItems = [];
+    if (this.profile) {
+      this.buttonItems = [{
+        label: 'Options',
+        items: []
+      }];
+
+      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Submit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateGovernanceData(this.selectedGovernance, StatusEnum.PendingReview);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Edit',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateGovernanceData(this.selectedGovernance, StatusEnum.PendingApproval);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Comments',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.displayCommentDialog=true;
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'View History',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+            this.updateGovernanceData(this.selectedGovernance, StatusEnum.Approved);
+          }
+        });
+      }
+    }
+  }
+
+  private updateGovernanceData(rowData: IGovernance, status: number) {
+    rowData.statusId = status;
+   this.onBlurAdjustedGov(rowData);
+  }  
+ 
+  status(data: any) {
+    return data?.status?.name || 'New';
+  }
+   
   disableQuarters(): boolean {
     // Logic to disable dropdown (return true to disable, false to enable)
     return false;
@@ -293,8 +430,11 @@ export class GovernanceReportComponent implements OnInit {
     let govobj = {} as IGovernance;
     govobj.comments = rowData.comments;
     govobj.applicationId = this.application.id;
+    govobj.qaurterId = this.quarterId;
+    govobj.financialYearId = this.application.applicationPeriod.financialYear.id;
     govobj.isActive = rowData.isActive;
     govobj.id = rowData.id;
+    govobj.statusId = rowData.statusId;
 
     if (rowData.lastMeetingDate instanceof Date) {
       const year = rowData.lastMeetingDate.getFullYear();
@@ -335,6 +475,24 @@ export class GovernanceReportComponent implements OnInit {
       // Update existing actual
       this.updateGovernance(govobj);
     }
+  }
+
+  completeAction() {
+    this._spinner.show();
+    this.baseCompleteViewModel.applicationId = this.application.id;
+    this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
+
+    this._applicationRepo.completeGovAction(this.baseCompleteViewModel).subscribe(
+      (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
+        this.loadGovernance();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private loadFinancialYears() {
@@ -403,13 +561,14 @@ preventChange(event: any): void {
       comments: '',
       isActive: true,
       applicationId:0,
+      statusId: 0,
+      financialYearId: 0,
+      qaurterId: 0,
+      status: {} as IStatus
     };
     
-    this.governances.push(newRow);  // Add the new row to the expenditures array
+    this.filteredgov.push(newRow);  // Add the new row to the expenditures array
   }
-
-
-  
 
   disableSaveActivity() {
     let data = this.activity;
@@ -474,6 +633,10 @@ preventChange(event: any): void {
     this._applicationRepo.GetGovernanceReportsByAppid(this.application).subscribe(
       (results) => {
         this.governances = results;
+        if(this.quarterId > 0)
+          {
+            this.filteredgov= this.governances.filter(x => x.qaurterId === this.quarterId);
+          }
         });
         this._spinner.hide();
       }
