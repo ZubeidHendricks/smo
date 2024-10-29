@@ -103,8 +103,9 @@ export class EditProfileComponent implements OnInit {
   selectedFacilityType: IFacilityType;
 
   denodoFacilities: IDenodoFacility[];
-  selectedDenodoFacility: IDenodoFacility;
+  selectedDenodoFacility: IFacilityList; //IDenodoFacility;
   facilityList: IFacilityList;
+  facilityLists: IFacilityList[];
 
   disableField: boolean = true;
 
@@ -1817,8 +1818,8 @@ private loadTitles() {
 
     if (this.selectedFacilityType.id === FacilityTypeEnum.Facility && this.mapping.facilityList.facilityFound === false) {
       if (!this.selectedClass || !this.mapping.facilityList.address)
-        return true;
-    }
+          return true;
+      }
 
     return false;
   }
@@ -1942,8 +1943,9 @@ private loadTitles() {
   private cloneFacilityInformation(data: INpoProfileFacilityList) {
     let mapping = {} as INpoProfileFacilityList;
     data.facilityList.facilityFound = !data.facilityList.isNew;
-
-    this.disableField = data.facilityList.facilityFound ? true : false;
+   
+    this.disableField = false; // data.facilityList.facilityFound ? true : false;
+    //this.disableField = data.facilityList.facilityFound ? true : false;
 
     for (let prop in data)
       mapping[prop] = data[prop];
@@ -1953,6 +1955,7 @@ private loadTitles() {
     this.districtChange(this.selectedDistrict);
     this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.id === data.facilityList.facilitySubDistrictId);
     this.selectedClass = data.facilityList.facilityClass;
+    data.facilityList.facilityFound = true;
     //this.addressLookup = { text: data.facilityList.address, magicKey: null };
 
     return mapping;
@@ -1976,7 +1979,7 @@ private loadTitles() {
     let query = event.query;
     this._dropdownRepo.getFacilityByName(query).subscribe(
       (results) => {
-        this.denodoFacilities = results ? results.elements : [];
+        this.facilityLists = results; // ? results.elements : [];
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1985,11 +1988,12 @@ private loadTitles() {
     );
   }
 
-  selectDenodoFacility(denodoFacility: IDenodoFacility, initialSelect: boolean) {
-    this.selectedDistrict = this.facilityDistricts.find(x => x.name === denodoFacility.district);
+  selectDenodoFacility(denodoFacility: IFacilityList, initialSelect: boolean) {
+    this.selectedDistrict = this.facilityDistricts.find(x => x.id === denodoFacility.facilitySubDistrict.facilityDistrict.id);
     this.districtChange(this.selectedDistrict);
-    this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.name === denodoFacility.sub_district);
-    this.selectedClass = this.facilityClasses.find(x => x.name === denodoFacility.classification);
+    this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.id === denodoFacility.facilitySubDistrictId);
+    this.selectedClass = this.facilityClasses.find(x => x.id === denodoFacility.facilityClassId);
+
     //this.addressLookup = { text: "", magicKey: "" } as IAddressLookup;
 
     this.mapping.facilityList.name = denodoFacility.name;

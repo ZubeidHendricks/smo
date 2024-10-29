@@ -793,6 +793,21 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("facility/facilityName/{searchText}", Name = "SearchFacilityList")]
+        public async Task<IActionResult> SearchFacilityList(string searchText)
+        {
+            try
+            {
+                var results = await _dropdownService.SearchFacilityByName(searchText);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetFacilityListByModel action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("facility/facilityTypeId/{facilityTypeId}/facilitySubDistrictId/{facilitySubDistrictId}/facilityClassId/{facilityClassId}/name/{name}", Name = "GetFacilityListByModel")]
         public async Task<IActionResult> GetFacilityListByModel(int facilityTypeId, int facilitySubDistrictId, int facilityClassId, string name)
         {

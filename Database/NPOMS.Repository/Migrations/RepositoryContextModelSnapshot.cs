@@ -23103,7 +23103,7 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("ActivityArea");
+                    b.ToTable("ActivityArea", (string)null);
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Mapping.ActivityDistrict", b =>
@@ -23183,7 +23183,7 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("ActivityManicipalities");
+                    b.ToTable("ActivityManicipalities", (string)null);
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Mapping.ActivityRecipient", b =>
@@ -23293,7 +23293,7 @@ namespace NPOMS.Repository.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("ActivitySubStructures");
+                    b.ToTable("ActivitySubStructures", (string)null);
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Mapping.DepartmentRoleMapping", b =>
