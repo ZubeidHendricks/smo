@@ -1835,9 +1835,16 @@ private loadTitles() {
       facilitySubDistrictId: this.mapping.facilityList.facilitySubDistrict.id,
       name: this.mapping.facilityList.name,
       facilityClassId: this.mapping.facilityList.facilityClass.id,
-      latitude: this.mapping.facilityList.facilityFound ? this.facilityList.latitude : this.mapping.facilityList.latitude,
-      longitude: this.mapping.facilityList.facilityFound ? this.facilityList.longitude : this.mapping.facilityList.longitude,
-      address: this.mapping.facilityList.facilityFound ? this.facilityList.address : this.mapping.facilityList.address,
+     // latitude: this.mapping.facilityList.facilityFound ? this.facilityList.latitude : this.mapping.facilityList.latitude,
+     // longitude: this.mapping.facilityList.facilityFound ? this.facilityList.longitude : this.mapping.facilityList.longitude,
+     
+     latitude: this.mapping.facilityList.facilityFound ? null : this.mapping.facilityList.latitude,
+     longitude: this.mapping.facilityList.facilityFound ? null : this.mapping.facilityList.longitude,
+      
+
+     //address: this.mapping.facilityList.facilityFound ? this.facilityList.address : this.mapping.facilityList.address,
+     // below logic need to be optimised
+     address: this.mapping.facilityList.facilityFound ? this.mapping.facilityList.address : this.mapping.facilityList.address, 
       isNew: this.mapping.facilityList.facilityFound ? false : true,
       isActive: true
     } as IFacilityList;
@@ -2010,8 +2017,8 @@ private loadTitles() {
         name: denodoFacility.name,
         facilityClass: this.selectedClass,
         facilityClassId: this.selectedClass.id,
-        latitude: denodoFacility.latitude,
-        longitude: denodoFacility.longitude,
+        latitude:  null, //denodoFacility.latitude,
+        longitude: null, // denodoFacility.longitude,
         address: null,
         isNew: false,
         isActive: true
