@@ -17,7 +17,8 @@ namespace NPOMS.Services.DTOs.FundingAssessments
 
         public int? SelectedResponseOptionId { get; }
         public int? SelectedResponseRatingId { get; }
-        public string Comment { get; }
+        public int? SelectedRatingValue { get; }
+        public string Comment { get; private set; }
 
         private List<dtoResponseOptionGet> _responseOptions { get; set; } = new();
         public IReadOnlyList<dtoResponseOptionGet> ResponseOptions => _responseOptions;
@@ -48,12 +49,18 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             if (responseRating != null)
             {
                 this.SelectedResponseRatingId = responseRating.ResponseOptionId;
+                this.SelectedRatingValue = responseRating.RatingValue;
             }
 
             if (responseComment != null)
             {
                 this.Comment = responseComment.Comment;
             }
+        }
+
+        public void UpdateOverallValue(string value)
+        {
+            this.Comment = $"{value}";
         }
 
     }

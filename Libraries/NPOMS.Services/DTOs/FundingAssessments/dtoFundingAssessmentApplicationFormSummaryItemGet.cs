@@ -10,7 +10,7 @@ namespace NPOMS.Services.DTOs.FundingAssessments
     {
         public string Name { get; }
         public decimal Score { get; }
-        public decimal FinalRating { get; }
+        public int FinalRating { get; }
         public int? IsApproved { get; }
 
         private dtoFundingAssessmentApplicationFormSummaryItemGet()
@@ -18,9 +18,11 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             
         }
 
-        public dtoFundingAssessmentApplicationFormSummaryItemGet(string name)
+        public dtoFundingAssessmentApplicationFormSummaryItemGet(string name, decimal score, int finalRating)
         {
             this.Name = name;
+            this.Score = score; 
+            this.FinalRating = finalRating;
         }
     }
 }

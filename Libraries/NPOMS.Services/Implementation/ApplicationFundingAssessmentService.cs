@@ -132,7 +132,7 @@ namespace NPOMS.Services.Implementation
             }
 
             if (dto.SelectedResponseOptionId == null && dto.SelectedResponseRatingId == null ) {
-                var existingFundingAssessmentFormResponse = fundingAssessmentFormResponses.FirstOrDefault();
+                var existingFundingAssessmentFormResponse = fundingAssessmentFormResponses.FirstOrDefault(x => x.ResponseOptionSystemType == "");
 
                 if (existingFundingAssessmentFormResponse == null)
                 {

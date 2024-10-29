@@ -57,7 +57,7 @@
           <tr>
             <td>{{question.name}}</td>
             <td colspan="3" style="text-align: left;">
-              <input pInputText id="npoName" [readonly]="true" />
+              <input pInputText id="npoName" [readonly]="true" [(ngModel)]="question.comment"/>
             </td>
           </tr>
         </ng-container>
