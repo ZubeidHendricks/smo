@@ -19,7 +19,7 @@ namespace NPOMS.Domain.Entities
 
         public string Vacant { get; set; }
 
-        public int FinancialYear { get; set; }
+        public int FinancialYearId { get; set; }
 
         [Column(TypeName = "nvarchar(50)")]
         public string DateOfVacancies { get; set; }

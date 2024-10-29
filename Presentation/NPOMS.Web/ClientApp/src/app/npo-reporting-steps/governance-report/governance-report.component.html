@@ -1,7 +1,7 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header=" Governance Report">
     <div style="height: 10px;"></div>
-    <p-table [rowHover]="true" [columns]="governanceCols" [value]="governances" styleClass="p-datatable-sm" [editable]="true">
+    <p-table [rowHover]="true" [columns]="governanceCols" [value]="filteredgov" styleClass="p-datatable-sm" [editable]="true">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -72,8 +72,9 @@
         </ng-template>
     
         <ng-template pTemplate="summary" let-rowData>
-            <div style="text-align:left">
-                <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
+            <div class="button-container">
+                <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0"  (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
             </div>
         </ng-template>
     

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Entities;
 using NPOMS.Repository.Interfaces.Entities;
+using NPOMS.Repository.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,9 +72,13 @@ namespace NPOMS.Repository.Implementation.Entities
                 report.UpdatedDateTime = DateTime.Now;
                 report.StatusId = 24; // Replace "Status" with the actual property name for status in your entity
             }
+            foreach (var report in incomeReports)
+            {
+                await UpdateAsync(null, report, false, currentUserId);
+            }
 
             // Save all changes in one transaction
-            await this.RepositoryContext.SaveChangesAsync();
+            //await this.RepositoryContext.SaveChangesAsync();
         }
 
         Task<IncomeAndExpenditureReport> IIncomeAndExpenditureRepository.GetById(int id)

@@ -1,11 +1,11 @@
 
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity,IStatus, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IExpenditure, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity,IStatus, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IExpenditure, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IBaseCompleteViewModel } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -27,18 +27,23 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
 
   @Input() selectedQuarter!: number;
 
+  quarterId: number;
+  @Output() incomerightHeaderChange = new EventEmitter<string>();
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
           const quarter = changes['selectedQuarter'].currentValue;
+          this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
   }
-
   filterDataByQuarter(quarter: number) {
-      // Make API call or filter data based on the quarter value
-      console.log('Filtering data for quarter:', quarter);
-      // Example API call:
-      // this.yourService.getDataByQuarter(quarter).subscribe(data => this.data = data);
+    this.filteredexpenditure = this.expenditures.filter(x => x.qaurterId === quarter);
+    this.incomerightHeaderChange.emit('Pending');
+    const allComplete = this.filteredexpenditure.length > 0 && this.filteredexpenditure.every(dip => dip.statusId === 24);
+    if (allComplete) {
+      this.incomerightHeaderChange.emit('Completed');
+    }
+    this.cdr.detectChanges();
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
@@ -83,8 +88,6 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   incomeTotal: number;
   surplusTotal: number;
 
- 
-
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
   }
@@ -119,58 +122,38 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   facilities: IFacilityList[];
   facilitiesList: IFacilityList[];
   selectedFacilities: IFacilityList[];
-
-
   filteredFacilities: IFacilityList[] = [];
-
-
   selectedFacilitiesText: string;
-
-
   selectedSubProgrammes: ISubProgramme[];
-
   canEdit: boolean;
   selectedSubProgrammesText: string;
-
   displayAllCommentDialog: boolean;
   displayCommentDialog: boolean;
   comment: string;
   commentCols: any;
   applicationComments: IApplicationComment[] = [];
-
   tooltip: string;
-
   activityList: IActivityList[];
   selectedActivity: IActivityList;
-
   maxChars = 50;
-
   showReviewerSatisfaction: boolean;
   applicationReviewerSatisfaction: IApplicationReviewerSatisfaction[] = [];
   displayReviewerSatisfactionDialog: boolean;
   reviewerSatisfactionCols: any;
-
   displayDeletedActivityDialog: boolean;
-
   npo: INpo;
   recipientTypes: IRecipientType[];
-
   recipients: IActivityRecipient[];
   selectedRecipients: IActivityRecipient[] = [];
   selectedRecipientsText: string;
-
   facilityDistricts: IFacilityDistrict[];
   selectedDistricts: IFacilityDistrict;
-
   allFacilitySubDistricts: IFacilitySubDistrict[];
   facilitySubDistricts: IFacilitySubDistrict[];
   selectedSubDistricts: IFacilitySubDistrict[];
-
   allFacilitySubStructures: IFacilitySubStructure[];
   facilitySubStructures: IFacilitySubStructure[];
   selectedFacilitySubStructures: IFacilitySubStructure;
-
-  
   allIDistrictDemographics: IDistrictDemographic[];
   selectedIDistrictDemographics: IDistrictDemographic;
 
@@ -185,6 +168,7 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   allManicipalityDemographics: IManicipalityDemographic[];
   ManicipalityDemographics: IManicipalityDemographic[];
   selectedManicipalityDemographics: IManicipalityDemographic[];
+  baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
 
   //activeActivities: any[] = []; // All activities
   filteredActivities: any[] = []; // Filtered activities
@@ -206,6 +190,7 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
   expenditures: IExpenditure[];
   selectedExpenditure: IExpenditure;
   expenditure: IExpenditure = {} as IExpenditure;
+  filteredexpenditure: IExpenditure[] = [];
   buttonItems: MenuItem[];
 
   totalIncome: number = 0;
@@ -221,6 +206,7 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
     }
   }
   constructor(
+    private cdr: ChangeDetectorRef,
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
     private _confirmationService: ConfirmationService,
@@ -411,21 +397,47 @@ private loadExpenditure() {
   this._spinner.show();
   this._applicationRepo.GetIncomeReportsByAppid(this.application).subscribe(
     (results) => {
+      // this.filteredexpenditure = results;
       this.expenditures = results;
-      if(this.expenditures.length > 0)
-      {
-        this.calculateTotals();
-        this.calculateEpenditureTotal();
-        this.calculateIncomeTotal();
-        this.calculateSurplusTotal();
-      }
+      if(this.quarterId > 0)
+        {
+            this.filteredexpenditure = this.expenditures.filter(x => x.qaurterId === this.quarterId);
+            if(this.filteredexpenditure.length > 0)
+              {
+                this.calculateTotals();
+                this.calculateEpenditureTotal();
+                this.calculateIncomeTotal();
+                this.calculateSurplusTotal();
+              }
+        }
+      
       });
       this._spinner.hide();
-    }
+}
+
+// Method to calculate the total income, expenditure, and surplus
+calculateTotals() {
+  this.totalIncome = 0;
+  this.totalExpenditure = 0;
+  this.totalSurplus = 0;
+
+  this.filteredexpenditure?.forEach(row => {
+    this.totalIncome += row.income || 0;
+    this.totalExpenditure += row.expenditure || 0;
+    this.totalSurplus += row.surplus || 0;
+  });
+}
+initializeSurplus() {
+  if (this.filteredexpenditure && this.filteredexpenditure.length) {
+    this.filteredexpenditure.forEach(row => {
+      row.surplus = Number(row.income) - Number(row.expenditure);
+    });
+  }
+}
 
 calculateEpenditureTotal() {
     let total = 0;
-    for(let expenditure of this.expenditures) {
+    for(let expenditure of this.filteredexpenditure) {
         total += expenditure.expenditure;
     }
 
@@ -434,7 +446,7 @@ calculateEpenditureTotal() {
 
 calculateIncomeTotal() {
     let total = 0;
-    for(let expenditure of this.expenditures) {
+    for(let expenditure of this.filteredexpenditure) {
       total += expenditure.income;
   }
 
@@ -443,7 +455,7 @@ calculateIncomeTotal() {
 
 calculateSurplusTotal() {
   let total = 0;
-  for(let expenditure of this.expenditures) {
+  for(let expenditure of this.filteredexpenditure) {
     total += expenditure.surplus;
 }
 
@@ -509,23 +521,34 @@ addNewRow() {
     isActive: true,
     applicationId:0,
     statusId:0,
+    financialYearId: 0,
+    qaurterId: 0,
     status: {} as IStatus,
   };
   
-  this.expenditures.push(newRow);  // Add the new row to the expenditures array
+  this.filteredexpenditure.push(newRow);  // Add the new row to the expenditures array
 }
 
-  private loadDemographicSubStructures() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubStructure, false).subscribe(
-      (results) => {
-        this.allSubstructureDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
+
+completeAction() {
+  this._spinner.show();
+  this.baseCompleteViewModel.applicationId = this.application.id;
+  this.baseCompleteViewModel.quarterId = this.quarterId;
+  this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
+
+  this._applicationRepo.completeIncomeAction(this.baseCompleteViewModel).subscribe(
+    (resp) => {
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
+      this.loadExpenditure();
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
+
+
   private loadFinancialYears() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
@@ -744,6 +767,8 @@ private cloneExpenditure(data: IExpenditure): IExpenditure {
 saveExpenditure(rowData: any) {
   let incomeobj = {} as IExpenditure;
   incomeobj.applicationId = this.application.id;
+  incomeobj.qaurterId = this.quarterId;
+  incomeobj.financialYearId = this.application.applicationPeriod.financialYear.id;
   incomeobj.costDrivers = rowData.costDrivers;
   incomeobj.income = rowData.income;
   incomeobj.expenditure = rowData.expenditure;
@@ -766,25 +791,6 @@ saveExpenditure(rowData: any) {
   this.calculateTotals(); // Recalculate totals when values change
 }
 
-// Method to calculate the total income, expenditure, and surplus
-calculateTotals() {
-  this.totalIncome = 0;
-  this.totalExpenditure = 0;
-  this.totalSurplus = 0;
-
-  this.expenditures?.forEach(row => {
-    this.totalIncome += row.income || 0;
-    this.totalExpenditure += row.expenditure || 0;
-    this.totalSurplus += row.surplus || 0;
-  });
-}
-initializeSurplus() {
-  if (this.expenditures && this.expenditures.length) {
-    this.expenditures.forEach(row => {
-      row.surplus = Number(row.income) - Number(row.expenditure);
-    });
-  }
-}
 
 
 

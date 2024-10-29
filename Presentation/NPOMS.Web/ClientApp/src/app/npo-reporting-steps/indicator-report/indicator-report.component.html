@@ -57,6 +57,7 @@
                             </div>
                         </div>
                         <div class="p-col">
+        
                             <input type="text" class="form-text" pInputText [value]="getcCodeValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
                         </div>
                     </div>
@@ -87,7 +88,7 @@
                             </div>
                         </div>
                         <div class="p-col">
-                            <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="financialYearChange()"></p-dropdown>
+                            <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
                         </div>
                     </div>
 
@@ -112,15 +113,15 @@
                     <tr class="default-font">
                         <td style="text-align: center;">{{rowIndex + 1}}</td>
                         <td>{{rowData.indicatorId}}</td>
-                        <td>{{rowData.outputTitle}}</td>
-                        <td>{{rowData.indicatorDesc}}</td>
+                        <td>{{IndicatorDescription(rowData)}}</td>
+                        <td>{{outputTitle(rowData)}}</td>
                         <td>{{rowData.annualTarget}}</td>
                         <td>{{rowData.q1}}</td>
                         <td>{{rowData.q2}}</td>
                         <td>{{rowData.q3}}</td>
                         <td>{{rowData.q4}}</td>
-                        <td> {{rowData.shortDefinition}}</td>
-                        <td>{{rowData.purpose}}</td>
+                        <td> {{shortDefination(rowData)}}</td>
+                        <td>{{purpose(rowData)}}</td>
                         <td style="text-align: center;">
                             <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActual(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
                             <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button> -->
@@ -146,7 +147,7 @@
                                     </div>
                                 </div>
                                 <div class="p-col">
-                                    <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
+                                    <input type="text" class="form-text" pInputText [value]="getFinancialYear(application?.applicationPeriod?.financialYearId)" [disabled]="true" [ngModelOptions]="{standalone: true}">
                                 </div>
                             </div>
                         </div>
@@ -160,9 +161,16 @@
                                     </div>
                                 </div>
                                 <div class="p-col">
-                                    <p-dropdown [options]="quartelyPeriods" placeholder="Select a Quarter" optionLabel="name" [(ngModel)]="selectedFrequencyPeriod" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="frequencyPeriodChange()"></p-dropdown>
+                                    <input type="text" 
+                                           class="form-text" 
+                                           pInputText 
+                                           [value]="getQuarterValue()" 
+                                           [disabled]="true" 
+                                           [ngModelOptions]="{standalone: true}">
                                 </div>
                             </div>
+                            
+                            
                         </div>
                     </div>
                 </div>

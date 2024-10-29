@@ -2,7 +2,7 @@
  <p-panel 
  [toggleable]="false" 
  [style]="{'font-size':'12px'}" 
- [header]="application?.applicationPeriod?.name + ' - Financial year ' + getFinancialYear(application?.applicationPeriod?.financialYear?.startDate)">
+ [header]="'Performance Information - Organisation Name: ' + (npo?.name || '')" > 
     <div class="p-grid">
         <div class="p-col-fixed"></div>
         <div class="p-col">
@@ -14,6 +14,11 @@
         <div style="height: 20px;"></div>
     <p-accordion  *ngIf="isApplicationAvailable">
         <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+            <button pButton 
+            [label]="'Financial year: ' + getFinancialYear(application?.applicationPeriod?.financialYearId)" 
+            class="grey-button" 
+            >
+    </button>
             <button pButton 
                     label="Quarter 1" 
                     [ngClass]="{'p-button-primary': activeButton === 1, 'p-button-secondary': activeButton !== 1}"
@@ -38,48 +43,72 @@
                     (click)="toggleButton(4)">
             </button>
         </div>
-        <p-accordionTab header="Section 1: Indicator Report">
+
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <span style="flex: 1;">Section 1: Indicator Report</span>
+                    <!-- <span style="margin-left: auto;">Your Right Header</span> -->
+                </div>
+            </ng-template>
             <app-indicator-report [application]="application" [selectedQuarter]="activeButton"></app-indicator-report>
         </p-accordionTab>
-    
-        <p-accordionTab header="Section 2: Post Report">
-            <app-post-report [application]="application" [selectedQuarter]="activeButton"></app-post-report>
+
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <span style="flex: 1;">Section 2: Post Report</span>
+                    <span style="margin-left: auto;">{{ postdynamicHeaderText }}</span>
+                </div>
+            </ng-template>
+            <app-post-report [application]="application" [selectedQuarter]="activeButton" (rightHeaderChangepost)="postdynamicHeaderText = $event"></app-post-report>
         </p-accordionTab>
-    
-        <p-accordionTab header="Section 3: Income and Expenditure Report">
-            <app-details-of-income-and-and-expenditure-report [application]="application" [selectedQuarter]="activeButton"></app-details-of-income-and-and-expenditure-report>
+        
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <span style="flex: 1;">Section 3: Income and Expenditure Report</span>
+                    <span style="margin-left: auto;">{{ incomedynamicHeaderText }}</span>
+                </div>
+            </ng-template>
+            <app-details-of-income-and-and-expenditure-report [application]="application" [selectedQuarter]="activeButton" (incomerightHeaderChange)="incomedynamicHeaderText = $event"></app-details-of-income-and-and-expenditure-report>
         </p-accordionTab>
-    
-        <p-accordionTab header="Section 4: Governance">
-            <app-governance-report [application]="application" [selectedQuarter]="activeButton"></app-governance-report>
+        
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <span style="flex: 1;">Section 4: Governance</span>
+                    <span style="margin-left: auto;">{{ govnencedynamicHeaderText }}</span>
+                </div>
+            </ng-template>
+            <app-governance-report [application]="application" [selectedQuarter]="activeButton" (govnencerightHeaderChange)="govnencedynamicHeaderText = $event"></app-governance-report>
         </p-accordionTab>
-    
-        <p-accordionTab header="Section 5: Any other information">
-            <app-any-other-information-report [application]="application" [selectedQuarter]="activeButton"></app-any-other-information-report>
+
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <span style="flex: 1;">Section 5: Any other information</span>
+                    <span style="margin-left: auto;">{{ otherdynamicHeaderText }}</span>
+                </div>
+            </ng-template>
+            <app-any-other-information-report [application]="application" [selectedQuarter]="activeButton" (otherrightHeaderChange)="otherdynamicHeaderText = $event"></app-any-other-information-report>
         </p-accordionTab>
+        
     
-        <p-accordionTab header="Section 6: SDIP">
+        <!-- <p-accordionTab header="Section 6: SDIP">
             <app-quarterly-sdip-reporting-report [application]="application" [selectedQuarter]="activeButton"></app-quarterly-sdip-reporting-report>
-        </p-accordionTab>
-        <!-- <p-accordionTab header="Section 1: Indicator Report">
-            <app-indicator-report [application]="application"></app-indicator-report>
-        </p-accordionTab>
-         <p-accordionTab header="Section 2: Post Report">
-            <app-post-report [application]="application"></app-post-report>
-        </p-accordionTab>
-        <p-accordionTab header="Section 3: Income and Expenditure Report">
-            <app-details-of-income-and-and-expenditure-report [application]="application"></app-details-of-income-and-and-expenditure-report>
-        </p-accordionTab>
-        <p-accordionTab header="Section 4: Governance">
-            <app-governance-report [application]="application"></app-governance-report>
-        </p-accordionTab>
-        <p-accordionTab header="Section 5: Any other information">
-            <app-any-other-information-report [application]="application"></app-any-other-information-report>
-        </p-accordionTab>
-        <p-accordionTab header="Section 6: SDIP">
-            <app-quarterly-sdip-reporting-report [application]="application"></app-quarterly-sdip-reporting-report>
         </p-accordionTab> -->
-      
+
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <span style="flex: 1;">Section 6: SDIP</span>
+                    <span style="margin-left: auto;">{{ dynamicHeaderText }}</span>
+                </div>
+            </ng-template>
+            <app-quarterly-sdip-reporting-report [application]="application" [selectedQuarter]="activeButton"  (rightHeaderChange)="dynamicHeaderText = $event"></app-quarterly-sdip-reporting-report>
+        </p-accordionTab>
+        
     </p-accordion>
     <div style="height: 20px;"></div>
     <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"

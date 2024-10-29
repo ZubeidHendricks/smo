@@ -129,14 +129,7 @@ export interface IDocumentType {
     location: string;
 }
 
-export interface IFinancialYear {
-    id: number;
-    name: string;
-    year: number;
-    startDate: Date;
-    endDate: Date;
-    isActive: boolean;
-}
+
 
 export interface IQuarterlyPeriod {
     id: number;
@@ -394,6 +387,11 @@ export interface IServiceType {
     systemName: string,
     isActive: boolean;
 }
+export interface IBaseCompleteViewModel {
+    applicationId: number; // Corresponds to int ApplicationId
+    quarterId: number;     // Corresponds to int QuarterId
+    finYear: number;       // Corresponds to int FinYear
+}
 
 export interface ISubProgramme {
     id: number;
@@ -561,7 +559,7 @@ export interface IIndicator {
     serviceDeliveryArea : string;
     outputTitle : string;
     targets: number;
-    financialYear: number;
+    financialYearId: number;
     indicatorId: number;
     indicatorValue: string;
     variance: number;
@@ -593,6 +591,8 @@ export interface IIndicator {
     statusId: number;
     status: IStatus;
     staffCategoryId: number;
+    qaurterId: number;
+    financialYearId: number;
   }
     
   export interface IGovernance {
@@ -605,6 +605,8 @@ export interface IIndicator {
     isActive: boolean;
     statusId: number;
     status: IStatus;
+    qaurterId: number;
+    financialYearId: number;
   }
 
   export interface IOtherInfor {
@@ -615,6 +617,8 @@ export interface IIndicator {
     isActive: boolean;
     statusId: number;
     status: IStatus;
+    qaurterId: number;
+    financialYearId: number;
   }
 
   export interface IExpenditure {
@@ -628,6 +632,8 @@ export interface IIndicator {
     isActive: boolean;
     statusId: number;
     status: IStatus;
+    qaurterId: number;
+    financialYearId: number;
   }
 
   export interface ISDIP {
@@ -642,6 +648,8 @@ export interface IIndicator {
     progress: string;
     statusId: number;
     status: IStatus;
+    qaurterId: number;
+    financialYearId: number;
   }
 
 export interface IActivity {
@@ -809,7 +817,6 @@ export interface IFinancialYear {
     endDate: Date;
     isActive: boolean;
 }
-
 
 export interface IApplicationApproval {
     id: number;

@@ -24,6 +24,8 @@ namespace NPOMS.Domain.Entities
 
         public int ApplicationId { get; set; }
 
+        public string Progress { get; set; }
+
         public int QaurterId { get; set; }
 
         public bool IsActive { get; set; } = true;

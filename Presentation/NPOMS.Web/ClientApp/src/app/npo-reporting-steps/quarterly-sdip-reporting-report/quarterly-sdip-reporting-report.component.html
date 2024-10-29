@@ -4,7 +4,7 @@
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>     -->
     <div style="height: 10px;"></div>
-    <p-table [value]="sdips" [editable]="true" styleClass="p-datatable-sm">
+    <p-table [value]="filteredsdips" [editable]="true" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
             <th>Standard/ Performance Area</th>
@@ -113,10 +113,11 @@
         </ng-template>
 
       </p-table>
-
-      <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
-      
-
+      <div class="button-container">
+        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus"  *ngIf="quarterId > 0"  (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+      </div>
+    <div style="height: 10px;"></div>
 </p-panel>
 
 <p-dialog header="Quartely SDIP Reporting" 
@@ -216,11 +217,6 @@
         <!-- <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button> -->
     </ng-template>
 </p-dialog>
-
-
-
-
-
 
 <p-dialog header="Add Comment" 
           [(visible)]="displayCommentDialog" 

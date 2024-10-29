@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -27,24 +27,30 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class GovernanceReportComponent implements OnInit {
   
   @Input() selectedQuarter!: number;
+  @Output() govnencerightHeaderChange = new EventEmitter<string>();
 
+  quarterId: number;
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
           const quarter = changes['selectedQuarter'].currentValue;
+          this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
   }
 
   filterDataByQuarter(quarter: number) {
-      // Make API call or filter data based on the quarter value
-      console.log('Filtering data for quarter:', quarter);
-      // Example API call:
-      // this.yourService.getDataByQuarter(quarter).subscribe(data => this.data = data);
+    this.govnencerightHeaderChange.emit('Pending');
+    this.filteredgov = this.governances.filter(x => x.qaurterId === quarter);
+    const allComplete = this.filteredgov.length > 0 && this.filteredgov.every(dip => dip.statusId === 24);
+    if (allComplete) {
+      this.govnencerightHeaderChange.emit('Completed');
+    }
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
 
   menuActions: MenuItem[];
+  baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
   profile: IUser;
   validationErrors: Message[];
   filteredProgrammes: IProgramme[] = [];
@@ -204,6 +210,7 @@ export class GovernanceReportComponent implements OnInit {
   
   governances: IGovernance[];
   governance: IGovernance = {} as IGovernance;
+  filteredgov: IGovernance[] = [];
   newGovernance: boolean;
   
   // Used for table filtering
@@ -423,6 +430,8 @@ export class GovernanceReportComponent implements OnInit {
     let govobj = {} as IGovernance;
     govobj.comments = rowData.comments;
     govobj.applicationId = this.application.id;
+    govobj.qaurterId = this.quarterId;
+    govobj.financialYearId = this.application.applicationPeriod.financialYear.id;
     govobj.isActive = rowData.isActive;
     govobj.id = rowData.id;
     govobj.statusId = rowData.statusId;
@@ -466,6 +475,24 @@ export class GovernanceReportComponent implements OnInit {
       // Update existing actual
       this.updateGovernance(govobj);
     }
+  }
+
+  completeAction() {
+    this._spinner.show();
+    this.baseCompleteViewModel.applicationId = this.application.id;
+    this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
+
+    this._applicationRepo.completeGovAction(this.baseCompleteViewModel).subscribe(
+      (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
+        this.loadGovernance();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private loadFinancialYears() {
@@ -535,10 +562,12 @@ preventChange(event: any): void {
       isActive: true,
       applicationId:0,
       statusId: 0,
+      financialYearId: 0,
+      qaurterId: 0,
       status: {} as IStatus
     };
     
-    this.governances.push(newRow);  // Add the new row to the expenditures array
+    this.filteredgov.push(newRow);  // Add the new row to the expenditures array
   }
 
   disableSaveActivity() {
@@ -604,6 +633,10 @@ preventChange(event: any): void {
     this._applicationRepo.GetGovernanceReportsByAppid(this.application).subscribe(
       (results) => {
         this.governances = results;
+        if(this.quarterId > 0)
+          {
+            this.filteredgov= this.governances.filter(x => x.qaurterId === this.quarterId);
+          }
         });
         this._spinner.hide();
       }

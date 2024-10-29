@@ -4,7 +4,7 @@
         <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
     </div>     -->
     <div style="height: 10px;"></div>
-    <p-table [rowHover]="true" [columns]="anyOtherCols" [value]="otherInfors" styleClass="p-datatable-sm" [editable]="true">
+    <p-table [rowHover]="true" [columns]="anyOtherCols" [value]="filteredotherInfors" styleClass="p-datatable-sm" [editable]="true">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
@@ -59,9 +59,10 @@
         </ng-template>
     
         <ng-template pTemplate="summary" let-rowData>
-            <div style="text-align:left">
-                <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
-            </div>
+            <div class="button-container">
+                <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0"  (click)="addNewRow()"></button>
+                <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+              </div>
         </ng-template>
     
         <ng-template pTemplate="emptymessage">

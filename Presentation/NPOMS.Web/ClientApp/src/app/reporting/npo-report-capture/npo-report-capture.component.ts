@@ -1,18 +1,17 @@
-
-
-
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Console } from 'console';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { FinancialMatters, IFinancialMattersIncome } from 'src/app/models/FinancialMatters';
 import { ApplicationTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, FundingApplicationStepsEnum, NPOReportingStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, 
   IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, 
   IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser,
-  IDistrictCouncil,ILocalMunicipality,IRegion, IFundAppSDADetail } from 'src/app/models/interfaces';
+  IDistrictCouncil,ILocalMunicipality,IRegion, IFundAppSDADetail, 
+  IFinancialYear,
+  INpo} from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -21,6 +20,7 @@ import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
 import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
+import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 
 
 @Component({
@@ -31,6 +31,11 @@ import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo
 })
 export class NpoReportCaptureComponent implements OnInit {
 
+  dynamicHeaderText: string = '';
+  postdynamicHeaderText: string = '';
+  incomedynamicHeaderText: string = '';
+  govnencedynamicHeaderText: string = '';
+  otherdynamicHeaderText: string = '';
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -86,6 +91,8 @@ export class NpoReportCaptureComponent implements OnInit {
   resources: IResource[] = [];
 
   activeButton: number | null = null;
+  financialYears: IFinancialYear[];
+  npo: INpo;
 
   fundingApplicationDetails: IFundingApplicationDetails = {
     financialMatters: [],
@@ -96,6 +103,9 @@ export class NpoReportCaptureComponent implements OnInit {
   } as IFundingApplicationDetails;
 
 
+  private financialYearsSubject = new BehaviorSubject<IFinancialYear[]>([]);
+  private financialYears$ = this.financialYearsSubject.asObservable();
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -103,12 +113,11 @@ export class NpoReportCaptureComponent implements OnInit {
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
-    private _fundAppService: FundingApplicationService,
     private _bidService: BidService,
-    private _npoProfileServie: NpoProfileService,
     private _dropdownRepo: DropdownService,
     private _loggerService: LoggerService,
-    private _userRepo: UserService
+    private _userRepo: UserService,
+    private _npoRepo: NpoService,
   ) { }
 
   places(place: IPlace[]) {
@@ -121,9 +130,11 @@ export class NpoReportCaptureComponent implements OnInit {
 
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+      console.log('params', params);
       this.id = params.get('id');
       this.loadApplication();
       this.loadDocumentTypes();
+      this.loadFinancialYears();
       if (Number(params.get('activeStep')) === 2) {
         this.activeStep = Number(params.get('activeStep'));
       }
@@ -138,44 +149,35 @@ export class NpoReportCaptureComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-
         if (!this.IsAuthorized(PermissionsEnum.EditApplication))
           this._router.navigate(['401']);
-
         this.buildMenu();
       }
     });
   }
 
-  getFinancialYear(startDate: string): number | string {
-    if (startDate) {
-        const date = new Date(startDate);
-        if (!isNaN(date.getTime())) { // Check if it's a valid date
-            return date.getFullYear(); // Returns the year
-        }
-    }
-    return 'Unknown Year'; // Handle the case where startDate is invalid or not provided
-}
+  private loadNpo() {
+    console.log ('this.application', this.application);
+    this._npoRepo.getNpoById(this.application?.npoId).subscribe(
+      (results) => {
+        this.npo = results;
 
-  toggleButton(buttonId: number) {
-    this.activeButton = this.activeButton === buttonId ? null : buttonId;
-}
-
-  getfinFund(event: FinancialMatters) {
-    // console.log('event from Edit', JSON.stringify(event));
+        //this.loadIndicators();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
-  private loadApplication() {
-    this._spinner.show();
-    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
-      (results) => {
-        if (results != null) {
-          this.application = results;
-          this.buildSteps(results.applicationPeriod);
-          this.loadCreatedUser();
-          this.isApplicationAvailable = true;
-        }
 
+  private loadFinancialYears() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
+      (results) => {
+        //this.financialYears = results;
+        this.financialYearsSubject.next(results);
         this._spinner.hide();
       },
       (err) => {
@@ -185,7 +187,42 @@ export class NpoReportCaptureComponent implements OnInit {
     );
   }
 
- 
+getFinancialYear(id: number): string | undefined {
+  const financialYears = this.financialYearsSubject.getValue();
+  const financialYear = financialYears.find(year => year.id === id);
+  return financialYear ? financialYear.name : undefined;
+}
+
+
+
+toggleButton(buttonId: number) {
+    this.activeButton = this.activeButton === buttonId ? null : buttonId;
+}
+
+getfinFund(event: FinancialMatters) {
+    // console.log('event from Edit', JSON.stringify(event));
+}
+
+  private loadApplication() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
+      (results) => {
+        if (results != null) {
+          this.application = results;
+          this.loadNpo();
+          this.buildSteps(results.applicationPeriod);
+          this.loadCreatedUser();
+          this.isApplicationAvailable = true;
+        }
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
 
   private loadCreatedUser() {
     this._userRepo.getUserById(this.application.createdUserId).subscribe(
@@ -282,6 +319,8 @@ export class NpoReportCaptureComponent implements OnInit {
     );
   }
 
+
+
   public loadDocumentTypes() {
     this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.id), false).subscribe(
       (results) => {
@@ -335,27 +374,14 @@ export class NpoReportCaptureComponent implements OnInit {
           label: 'Save',
           icon: 'fa fa-floppy-o',
           command: () => {
-            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
-              this.saveItems(StatusEnum.Saved);
-            }
-
-            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
-              if(this.activeStep !== 5)
-              this.bidForm(StatusEnum.Saved);
-            }
+            this.saveItems(StatusEnum.Saved);
           }
         },
         {
           label: 'Submit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
-              this.saveItems(StatusEnum.PendingReview);
-            }
-
-            if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
-              this.bidForm(StatusEnum.PendingReview);
-            }
+            this.saveItems(StatusEnum.PendingReview);
           },
           disabled: true
         },
@@ -618,29 +644,29 @@ export class NpoReportCaptureComponent implements OnInit {
   }
 
   private saveItems(status: StatusEnum) {
-    if (this.canContinue(status)) {
-      this._spinner.show();
-      this.application.statusId = status;
+    // if (this.canContinue(status)) {
+    //   this._spinner.show();
+    //   this.application.statusId = status;
 
-      this._applicationRepo.updateApplication(this.application).subscribe(
-        (resp) => {
-          if (resp.statusId === StatusEnum.Saved) {
-            this._spinner.hide();
-            this.menuActions[1].visible = false;
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-          }
+    //   this._applicationRepo.updateApplication(this.application).subscribe(
+    //     (resp) => {
+    //       if (resp.statusId === StatusEnum.Saved) {
+    //         this._spinner.hide();
+    //         this.menuActions[1].visible = false;
+    //         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+    //       }
 
-          if (resp.statusId === StatusEnum.PendingReview) {
-            this._spinner.hide();
-            this._router.navigateByUrl('applications');
-          }
-        },
-        (err) => {
-          this._loggerService.logException(err);
-          this._spinner.hide();
-        }
-      );
-    }
+    //       if (resp.statusId === StatusEnum.PendingReview) {
+    //         this._spinner.hide();
+    //         this._router.navigateByUrl('applications');
+    //       }
+    //     },
+    //     (err) => {
+    //       this._loggerService.logException(err);
+    //       this._spinner.hide();
+    //     }
+    //   );
+    // }
   }
 
   private canContinue(status: StatusEnum) {

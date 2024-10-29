@@ -2,7 +2,7 @@
 <p-panel [style]="{'font-size':'12px'}" header=" Details of Income and Expenditure for the quarter Report">
 
     <div style="height: 10px;"></div>
-    <p-table [value]="expenditures" [editable]="true" styleClass="p-datatable-sm">
+    <p-table [value]="filteredexpenditure" [editable]="true" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
         
@@ -115,7 +115,10 @@
           
       </p-table>
       
-      <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" (click)="addNewRow()"></button>
+      <div class="button-container">
+        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0" (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+    </div>
 
     <div style="height: 10px;"></div>
    

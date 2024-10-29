@@ -1,11 +1,11 @@
 
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StaffCategoryEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IPosts, IProgramme, IRecipientType, IStaffCategory, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IPosts, IProgramme, IRecipientType, IStaffCategory, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -25,26 +25,31 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 
 export class PostReportComponent implements OnInit {
-
-
   @Input() selectedQuarter!: number;
+  quarterId: number;
+  @Output() rightHeaderChangepost = new EventEmitter<string>();
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
           const quarter = changes['selectedQuarter'].currentValue;
+          this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
   }
 
   filterDataByQuarter(quarter: number) {
-      // Make API call or filter data based on the quarter value
-      console.log('Filtering data for quarter:', quarter);
-      // Example API call:
-      // this.yourService.getDataByQuarter(quarter).subscribe(data => this.data = data);
+    this.filteredposts = this.posts.filter(x => x.qaurterId === quarter);
+    this.rightHeaderChangepost.emit('Pending');
+    const allComplete = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 24);
+    if (allComplete) {
+      this.rightHeaderChangepost.emit('Completed');
+    }
+  
+    this.cdr.detectChanges();
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
-
+  baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
@@ -83,6 +88,7 @@ export class PostReportComponent implements OnInit {
   selectedQuartersText: string = '';
 
   posts: IPosts[] = [];
+  filteredposts: IPosts[] = [];
   post: IPosts = {} as IPosts;
   selectedPost: IPosts;
 
@@ -203,9 +209,8 @@ export class PostReportComponent implements OnInit {
     private filterService: FilterService,
     private _router: Router,
     private _authService: AuthService,
-    private _applicationPeriodRepo: ApplicationPeriodService
-    
-   
+    private _applicationPeriodRepo: ApplicationPeriodService,
+    private cdr: ChangeDetectorRef
   ) {  }
 
   ngOnInit(): void {
@@ -418,9 +423,21 @@ export class PostReportComponent implements OnInit {
   }
 
   completeAction() {
-    this.posts.forEach(post => {
-      //post.status = 'Completed';
-    });
+    this._spinner.show();
+    this.baseCompleteViewModel.applicationId = this.application.id;
+    this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
+
+    this._applicationRepo.completePostAction(this.baseCompleteViewModel).subscribe(
+      (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
+        this.loadPosts();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
 
@@ -559,6 +576,7 @@ onDemographicSubStructuresChange() {
   let postobj = {} as IPosts;
   postobj.staffCategoryId = rowData.staffCategoryId
   postobj.numberOfPosts = rowData.numberOfPosts;
+  postobj.monthsFilled = rowData.monthsFilled;
   postobj.numberFilled = rowData.numberFilled;
   postobj.vacant = rowData.vacant;
   postobj.statusId = rowData.statusId;
@@ -572,8 +590,13 @@ onDemographicSubStructuresChange() {
   else {
     postobj.dateofVacancies = rowData.dateOfVacancies;
   }
+
   postobj.vacancyReasons = rowData.vacancyReasons;
   postobj.applicationId = this.application.id;
+  console.log('application', this.application);
+  postobj.financialYearId = this.application.applicationPeriod.financialYear.id;
+  postobj.qaurterId = this.quarterId;
+
   postobj.isActive = true;
   postobj.id = rowData.id
 
@@ -614,7 +637,12 @@ private loadPosts() {
     this._applicationRepo.getAllPosts(this.application).subscribe(
       (results) => {
         this.posts = results;
+        if(this.quarterId > 0)
+        {
+          this.filteredposts = this.posts.filter(x => x.qaurterId === this.quarterId);
+        }
         });
+
         this._spinner.hide();
 }
 
@@ -744,12 +772,14 @@ addNewRow() {
       dateofVacancies: '',           // Can be a string in the form of a date, e.g. '2024-10-01'
       vacancyReasons: '',
       plans: '',
+      qaurterId: 0,
+      financialYearId: 0,
       applicationId: 0,
       isActive: true,  
       status: {} as IStatus,
       statusId :0             // Default to active
     };
-    this.posts.push(newRow); // Add the new row to the posts array
+    this.filteredposts.push(newRow); // Add the new row to the posts array
 }
 
 onBlurAdjustedPost(rowData: IPosts) {

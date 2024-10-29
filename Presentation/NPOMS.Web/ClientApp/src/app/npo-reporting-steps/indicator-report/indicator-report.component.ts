@@ -4,7 +4,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -16,6 +16,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { HttpEventType } from '@angular/common/http';
 import { group } from 'console';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-indicator-report',
@@ -27,6 +28,24 @@ import { group } from 'console';
 export class IndicatorReportComponent implements OnInit {
 
   @Input() selectedQuarter!: number;
+
+    
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
+        const quarter = changes['selectedQuarter'].currentValue;
+        this.quarterId = quarter;
+        console.log('Quarter', this.quarterId);
+        this.filterDataByQuarter(quarter);
+    }
+}
+
+filterDataByQuarter(quarter: number) {
+  this.qselected = true;
+     if (this.yearSelected && this.qselected) {
+      this.GetIndicatorReportsByAppid();
+     }
+}
+
 
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
 
@@ -85,6 +104,7 @@ export class IndicatorReportComponent implements OnInit {
   mergedList: any[] = [];
 
   npoName: string;
+  quarterId: number;
 
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
@@ -180,11 +200,14 @@ export class IndicatorReportComponent implements OnInit {
   selectedActual: IActuals;
   documentTypes: IDocumentType[] = [];
   quartelyPeriods: IQuarterlyPeriod[];
+  private financialYearsSubject = new BehaviorSubject<IFinancialYear[]>([]);
+  private financialYears$ = this.financialYearsSubject.asObservable();
+  baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
+
 
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
-
 
   quarters = [
     { name: 'Q1 2024',  id: '1' },
@@ -230,6 +253,7 @@ export class IndicatorReportComponent implements OnInit {
         this._spinner.show();
         this.loadDocumentTypes();
         this.registerCustomFilters();
+        this.loadFinancialYears();
         this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
           this.application.statusId === StatusEnum.PendingApproval ||
           this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -238,7 +262,7 @@ export class IndicatorReportComponent implements OnInit {
           this.application.statusId === StatusEnum.DeptComments ||
           this.application.statusId === StatusEnum.OrgComments)
           ? false : true;
-    
+
         this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
         this.tooltip = this.canEdit ? 'Edit' : 'View';
 
@@ -248,7 +272,7 @@ export class IndicatorReportComponent implements OnInit {
         this.loadProgrammes();
         this.loadSubProgrammes();
         this.loadSubProgrammeTypes();   
-        this.loadFinancialYears();
+
         this.loadFrequencyPeriods();
         this.buildButtonItems();
       }
@@ -272,7 +296,6 @@ export class IndicatorReportComponent implements OnInit {
     
 
     this.actualCols = [
-     
       { header: 'Output Title', width: '10%' },
       { header: 'Indicator Id', width: '10%' },
       // { header: 'Output Description', width: '10%' },
@@ -316,23 +339,8 @@ export class IndicatorReportComponent implements OnInit {
     ];
   }
 
-  
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
-        const quarter = changes['selectedQuarter'].currentValue;
-        this.filterDataByQuarter(quarter);
-    }
-}
-
-filterDataByQuarter(quarter: number) {
-  // year = this.selectedFinancialYear.id;
-  // applicationId = this.selectedFinancialYear.id;
-  console.log('Filtering data for quarter:', quarter);
-}
-
 onKeyUp(rowData: any, event: any) {
 const inputValue = event.target.value;
-
 // Update the actual value
 rowData.actuals.actual = Number(inputValue); // Ensure it's a number
 
@@ -357,7 +365,7 @@ if (rowData.actuals.targets !== undefined) {
 }
 
 onBlurAdjustedActual(rowData: any) {
-this.saveActual(rowData);
+   this.saveActual(rowData);
 }
 
 
@@ -371,7 +379,7 @@ if(this.qselected === false || this.yearSelected === false)
   private loadSubIndicators() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Indicator, false).subscribe(
       (results) => {
-        this.indicators = results.filter(indicator => indicator.ccode === this.npo?.cCode);
+        this.indicators = results;
         //this.GetIndicatorReportsByAppid();
       },
       (err) => {
@@ -386,8 +394,8 @@ if(this.qselected === false || this.yearSelected === false)
         // Attempt to find the actual data based on criteria
         const actualData = this.actuals.find(act => 
             act.indicatorId === +indicator.id && 
-            act.financialYear === this.selectedFinancialYear.id && 
-            act.qaurterId === this.selectedFrequencyPeriod.id
+            act.financialYearId === this.selectedFinancialYear.id && 
+            act.qaurterId === this.quarterId
         );
 
         // Create an actual object if actualData is undefined
@@ -408,24 +416,23 @@ status(data: any) {
 }
  
 setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
-    if (this.selectedFrequencyPeriod) {
-       if(this.selectedFrequencyPeriod.name === 'Quarter1')
+    if (this.quarterId) {
+       if(this.quarterId === 1)
       {
         actual.targets = indicator.q1;
       }
-      if(this.selectedFrequencyPeriod.name === 'Quarter2')
+      if(this.quarterId === 2)
       {
        actual.targets = indicator.q2;
       }
-      if(this.selectedFrequencyPeriod.name === 'Quarter3')
+      if(this.quarterId === 3)
       {
        actual.targets = indicator.q3;
       }
-      if(this.selectedFrequencyPeriod.name === 'Quarter4')
+      if(this.quarterId === 4)
       {
         actual.targets = indicator.q4;
       }
-
     }
    
 }
@@ -440,7 +447,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
       serviceDeliveryArea: '',
       outputTitle: '',
       targets: 0,
-      financialYear: new Date().getFullYear(),
+      financialYearId: new Date().getFullYear(),
       indicatorId: 0,
       indicatorValue: '',
       variance: 0,
@@ -728,6 +735,11 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
   getSDAValue(): string {
     return "This is the value"; 
   }
+
+  getQuarterValue(): string {
+    return `Quarter ${this.quarterId}`; 
+}
+
   
   disableQuarters(): boolean {
     // Logic to disable dropdown (return true to disable, false to enable)
@@ -799,6 +811,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
     this._dropdownRepo.getEntities(DropdownTypeEnum.HighLevelNPO, false).subscribe(
       (results) => {
         this.iNPOIndicators = results.filter(indicator => indicator.ccode === this.npo?.cCode);
+        console.log('APP',this.iNPOIndicators);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -846,7 +859,11 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
       (results) => {
-        this.financialYears = results;
+        this.financialYearsSubject.next(results);
+        const financialYearsdata = this.financialYearsSubject.getValue(); // Get the current value
+        this.financialYears = financialYearsdata;
+        this.selectedFinancialYear = financialYearsdata.find(x => x.id === this.application.applicationPeriod.financialYearId);
+        this.yearSelected = true;
         this._spinner.hide();
       },
       (err) => {
@@ -1007,7 +1024,7 @@ addOther() {
     id: 0,
     qaurterId: 0,
     groupId: '',
-    financialYear: 0,
+    financialYearId: 0,
     serviceDeliveryArea: '',
     group: 0,
     indicatorValue: '',
@@ -1026,8 +1043,25 @@ editActual(data: IActuals) {
   this.actual = this.cloneActual(data);
   this.outputTitle(this.actual);
 }
+
 outputTitle(rowData: any) {
-     return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.outputTitle;
+    return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.outputTitle;
+}
+
+IndicatorDescription(rowData: any) {
+     return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.indicatorDesc;    
+}
+
+shortDefination(rowData: any) {
+     return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.shortDefinition;     
+}
+
+ purpose(rowData: any) {
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.purpose;     
+}
+
+targets(rowData: any) {
+  //return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.;     
 }
 
 private cloneActual(data: IActuals): IActuals {
@@ -1046,8 +1080,7 @@ saveActual(rowData: any) {
   actualobj.id = rowData.actuals.id;
   actualobj.statusId = rowData.actuals.statusId;
   actualobj.outputTitle = rowData.outputTitle;
-  actualobj.financialYear = this.selectedFinancialYear.id;
-  actualobj.qaurterId = this.selectedFrequencyPeriod.id;
+  // actualobj.financialYear = this.selectedFinancialYear.id;
   actualobj.indicatorId = rowData.id;
   actualobj.indicatorValue = rowData.indicatorValue;
   actualobj.variance = rowData.actuals.variance;
@@ -1055,11 +1088,13 @@ saveActual(rowData: any) {
   actualobj.adjustedActual = rowData.actuals.adjustedActual;
   actualobj.adjustedVariance = rowData.actuals.adjustedVariance;
   actualobj.targets = rowData.actuals.targets;
-  actualobj.applicationId = this.application.id;
   actualobj.subProgrammeId = this.application.applicationPeriod.subProgrammeId;
   actualobj.programmeId = this.application.applicationPeriod.programmeId;
   actualobj.subProgrammeTypeId = this.application.applicationPeriod.subProgrammeTypeId;
   actualobj.isActive = true;
+  actualobj.applicationId = this.application.id;
+  actualobj.financialYearId = this.application.applicationPeriod.financialYear.id;
+  actualobj.qaurterId = this.quarterId;
 
   // Check if it's a new actual or an update
   if (rowData.actuals.id === 0) {
@@ -1070,6 +1105,13 @@ saveActual(rowData: any) {
     this.updateActual(actualobj);
   }
 }
+
+getFinancialYear(id: number): string | undefined {
+  const financialYear = this.financialYears?.find(year => year.id === id);
+  return financialYear ? financialYear.name : undefined;
+}
+
+
 
 // Method to create a new actual
 createActual(actual: IActuals) {
@@ -1251,11 +1293,6 @@ updateActual(actual: IActuals) {
   addActuals(){
     this.displayActualDialog = true;
   }
-
-
-
-
-
 
 
   private buildRecipientDropdown(objective: IObjective, activity: IActivity) {
@@ -1504,6 +1541,24 @@ updateActual(actual: IActuals) {
     }
 
     this.displayDeletedActivityDialog = true;
+  }
+
+  completeAction() {
+    this._spinner.show();
+    this.baseCompleteViewModel.applicationId = this.application.id;
+    this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
+
+    this._applicationRepo.completeIndicatorAction(this.baseCompleteViewModel).subscribe(
+      (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
+        this.GetIndicatorReportsByAppid();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   public reviewAllItems() {

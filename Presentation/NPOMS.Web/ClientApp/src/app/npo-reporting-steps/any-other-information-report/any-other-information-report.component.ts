@@ -1,11 +1,11 @@
 
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IOtherInfor, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IOtherInfor, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -26,18 +26,27 @@ export class AnyOtherInformationReportComponent implements OnInit {
   
   @Input() selectedQuarter!: number;
 
+  @Output() otherrightHeaderChange = new EventEmitter<string>();
+
+  quarterId: number;
+  filteredotherInfors: IOtherInfor[];
+
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
           const quarter = changes['selectedQuarter'].currentValue;
+          this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
   }
 
   filterDataByQuarter(quarter: number) {
-      // Make API call or filter data based on the quarter value
-      console.log('Filtering data for quarter:', quarter);
-      // Example API call:
-      // this.yourService.getDataByQuarter(quarter).subscribe(data => this.data = data);
+     this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === quarter);
+     this.otherrightHeaderChange.emit('Pending');
+     const allComplete = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 24);
+     if (allComplete) {
+       this.otherrightHeaderChange.emit('Completed');
+     }
+     this.cdr.detectChanges();
   }
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
 
@@ -179,6 +188,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
 
   selectedotherInfor: IOtherInfor;
   buttonItems: MenuItem[];
+  baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
 
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
@@ -201,6 +211,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
   }
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private _dropdownRepo: DropdownService,
     private _spinner: NgxSpinnerService,
     private _confirmationService: ConfirmationService,
@@ -446,6 +457,8 @@ preventChange(event: any): void {
   saveOtherInfor(rowData: any) {
     let otherInforobj = {} as IOtherInfor;
     otherInforobj.applicationId = this.application.id;
+    otherInforobj.qaurterId = this.quarterId;
+    otherInforobj.financialYearId = this.application.applicationPeriod.financialYear.id;
     otherInforobj.challenges = rowData.challenges;
     otherInforobj.highlights = rowData.highlights;
     otherInforobj.id = rowData.id;
@@ -489,26 +502,33 @@ preventChange(event: any): void {
   }
 
 addNewRow() {
-  const newRow : IOtherInfor= {
+  const newRow : IOtherInfor = {
     id: 0,
     highlights: '',
     challenges: '',
     isActive: true,
-    applicationId:0,
+    applicationId: 0,
     statusId: 0,
+    financialYearId: 0,
+    qaurterId: 0,
     status: {} as IStatus
   };
   
-  this.otherInfors.push(newRow);  // Add the new row to the expenditures array
+  this.filteredotherInfors.push(newRow);  // Add the new row to the expenditures array
 }
 
   private loadotherInfor() {
     this._spinner.show();
     this._applicationRepo.GetOtherInforReportsByAppid(this.application).subscribe(
       (results) => {
-        this.otherInfors = results;     
+        this.otherInfors = results; 
+        if(this.quarterId > 0)
+        {
+            this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === this.quarterId);
+        }
         });
         this._spinner.hide();
+        
   }
 
   editAnyOther(data: IOtherInfor) {
@@ -717,6 +737,24 @@ addNewRow() {
       reject: () => {
       }
     });
+  }
+
+  completeAction() {
+    this._spinner.show();
+    this.baseCompleteViewModel.applicationId = this.application.id;
+    this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
+
+    this._applicationRepo.completeOtherInfoAction(this.baseCompleteViewModel).subscribe(
+      (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
+        this.loadotherInfor();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   public getColspan() {

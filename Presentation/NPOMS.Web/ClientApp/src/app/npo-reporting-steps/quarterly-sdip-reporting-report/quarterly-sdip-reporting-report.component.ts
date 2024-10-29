@@ -1,11 +1,11 @@
 
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISDIP, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISDIP, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -23,22 +23,30 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 
 export class QuarterlySDIPReportingReportComponent implements OnInit {
-  
-
   @Input() selectedQuarter!: number;
+
+  @Output() rightHeaderChange = new EventEmitter<string>();
+
+  quarterId: number;
+
+  filteredsdips: ISDIP[];
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
           const quarter = changes['selectedQuarter'].currentValue;
+          this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
   }
 
   filterDataByQuarter(quarter: number) {
-      // Make API call or filter data based on the quarter value
-      console.log('Filtering data for quarter:', quarter);
-      // Example API call:
-      // this.yourService.getDataByQuarter(quarter).subscribe(data => this.data = data);
+    this.filteredsdips = this.sdips.filter(x => x.qaurterId === quarter);
+    this.rightHeaderChange.emit('Pending');
+    const allComplete = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 24);
+    if (allComplete) {
+      this.rightHeaderChange.emit('Completed');
+    }
+    this.cdr.detectChanges();
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
@@ -80,30 +88,6 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
 
   selectedQuartersText: string = '';
   newSDIP: boolean;
-
-  // districts: any[] = [
-  //   { name: 'District 1', code: 'D1' },
-  //   { name: 'District 2', code: 'D2' }
-  // ];
-
-  // subDistricts: any[] = [];
-  // subStructures: any[] = [];
-
-  // allSubDistricts: any[] = [
-  //   { name: 'Sub District 1-1', code: 'SD1', districtCode: 'D1' },
-  //   { name: 'Sub District 1-2', code: 'SD2', districtCode: 'D1' },
-  //   { name: 'Sub District 2-1', code: 'SD3', districtCode: 'D2' }
-  // ];
-
-  // allSubStructures: any[] = [
-  //   { name: 'Sub Structure 1-1-1', code: 'SS1', subDistrictCode: 'SD1' },
-  //   { name: 'Sub Structure 1-1-2', code: 'SS2', subDistrictCode: 'SD1' },
-  //   { name: 'Sub Structure 2-1-1', code: 'SS3', subDistrictCode: 'SD3' }
-  // ];
-
-  // selectedDistricts: any[] = [];
-  // selectedSubDistricts: any[] = [];
-  // selectedSubStructures: any[] = [];
 
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
@@ -189,7 +173,6 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   facilitySubStructures: IFacilitySubStructure[];
   selectedFacilitySubStructures: IFacilitySubStructure;
 
-  
   allIDistrictDemographics: IDistrictDemographic[];
   selectedIDistrictDemographics: IDistrictDemographic;
 
@@ -205,7 +188,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   ManicipalityDemographics: IManicipalityDemographic[];
   selectedManicipalityDemographics: IManicipalityDemographic[];
 
-  
+  baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
   sdips: ISDIP[];
   selectedsdips = {} as ISDIP;
   sdip: ISDIP = {} as ISDIP;
@@ -248,15 +231,11 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     private filterService: FilterService,
     private _router: Router,
     private _authService: AuthService,
-    private _applicationPeriodRepo: ApplicationPeriodService
-    
-   
+    private _applicationPeriodRepo: ApplicationPeriodService,
+    private cdr: ChangeDetectorRef
   ) {  }
 
   ngOnInit(): void {
-
-
-
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -275,23 +254,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
         this.tooltip = this.canEdit ? 'Edit' : 'View';
     
         this.loadNpo();
-        this.loadActivityTypes();
-        this.loadFacilities();
-        this.setYearRange();
-        this.loadAllSubProgrammes();
-        this.loadFacilityDistricts();
-        this.loadFacilitySubDistricts();
-        this.loadFacilitySubStructures();
-        this.loadDemographicDistricts();
-        this.loadDemographicSubStructures();
-        this.loadDemographicManicipalities();
-        this.loadDemographicSubDistricts();
         this.loadFinancialYears();
-        this.loadDepartments();
-        //this.loadDepartments1();
-        this.loadProgrammes();
-        this.loadSubProgrammes();
-        this.loadSubProgrammeTypes();
         this.loadSDIPs();
         this.buildButtonItems();
       }
@@ -320,6 +283,24 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
       { header: 'Created User', width: '35%' },
       { header: 'Created Date', width: '35%' }
     ];
+  }
+
+  completeAction() {
+    this._spinner.show();
+    this.baseCompleteViewModel.applicationId = this.application.id;
+    this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
+
+    this._applicationRepo.completeSDIPAction(this.baseCompleteViewModel).subscribe(
+      (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
+        this.loadSDIPs();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 
   private buildButtonItems() {
@@ -537,7 +518,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
 
   saveSDIP(rowData: any) {
     let sdipobj = {} as ISDIP;
-    sdipobj.applicationId = this.application.id;
+
     sdipobj.standardPerformanceArea = rowData.standardPerformanceArea;
     sdipobj.correctiveAction = rowData.correctiveAction;
     sdipobj.responsibility = rowData.responsibility;
@@ -547,6 +528,9 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     sdipobj.id = rowData.id;
     sdipobj.statusId = rowData.statusId;
     sdipobj.isActive = true;
+    sdipobj.applicationId = this.application.id;
+    sdipobj.financialYearId = this.application.applicationPeriod.financialYear.id;
+    sdipobj.qaurterId = this.quarterId;
 
     if (rowData.id === 0) {
       this.createSDIP(sdipobj);
@@ -587,25 +571,14 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.GetSDIPReportsByAppid(this.application).subscribe(
       (results) => {
-        this.sdips = results;     
+        this.sdips = results;   
+        if(this.quarterId > 0)
+          {
+            this.filteredsdips = this.sdips.filter(x => x.qaurterId === this.quarterId);
+          }  
         });
         this._spinner.hide();
       }
-
-  // editAnyOther(data: ISDIP) {
-  //   this.newSDIP = false;
-  //   this.sdip = this.cloneAnyOther(data);
-
-  // }
-
-  // private cloneAnyOther(data: ISDIP):  {ISDIP
-  //   let obj = {} as ISDIP;
-
-  //   for (let prop in data)
-  //     obj[prop] = data[prop];
-  //   return obj;
-  // }
-
 
   addNewRow() {
     const newRow : ISDIP = {
@@ -619,10 +592,12 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
       isActive: true,
       applicationId:0,
       statusId: 0,
+      qaurterId: 0,
+      financialYearId: 0,
       status: {} as IStatus
     };
     
-    this.sdips.push(newRow);  
+    this.filteredsdips.push(newRow);  
   }
 
   departmentChange(department: IDepartment) {

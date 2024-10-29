@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApplicationWithUsers, IActivity, IActuals, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IExpenditure, IFacilityList, IFinancialYear, IFundingApplicationDetails, IGovernance, IMyContentLink, IObjective, IOtherInfor, IPlace, IPosts, IProjectImplementation, IResource, ISDA, ISDIP, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationWithUsers, IActivity, IActuals, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IBaseCompleteViewModel, IExpenditure, IFacilityList, IFinancialYear, IFundingApplicationDetails, IGovernance, IMyContentLink, IObjective, IOtherInfor, IPlace, IPosts, IProjectImplementation, IResource, ISDA, ISDIP, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -33,6 +33,36 @@ export class ApplicationService {
   public getApplicationByNpoIdAndPeriodId(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/npoId/${application.npoId}/applicationPeriodId/${application.applicationPeriodId}`;
     return this._http.get<IApplication>(url, httpOptions);
+  }
+
+  public completePostAction(baseCompleteViewModel: IBaseCompleteViewModel) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updatePostReportStatus`;
+    return this._http.put<IApplication>(url, baseCompleteViewModel, httpOptions);
+  }
+
+  public completeGovAction(baseCompleteViewModel: IBaseCompleteViewModel) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateGovernanceReportStatus`;
+    return this._http.put<IApplication>(url, baseCompleteViewModel, httpOptions);
+  }
+
+  public completeOtherInfoAction(baseCompleteViewModel: IBaseCompleteViewModel) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateAnyOtherStatus`;
+    return this._http.put<IApplication>(url, baseCompleteViewModel, httpOptions);
+  }
+
+  public completeIncomeAction(baseCompleteViewModel: IBaseCompleteViewModel) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateIncomeReportStatus`;
+    return this._http.put<IApplication>(url, baseCompleteViewModel, httpOptions);
+  }
+
+  public completeIndicatorAction(baseCompleteViewModel: IBaseCompleteViewModel) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateIndicatorReportStatus`;
+    return this._http.put<IApplication>(url, baseCompleteViewModel, httpOptions);
+  }
+
+  public completeSDIPAction(baseCompleteViewModel: IBaseCompleteViewModel) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateSDIPStatus`;
+    return this._http.put<IApplication>(url, baseCompleteViewModel, httpOptions);
   }
 
   public getApplicationsByNpoId(npoId: number) {

@@ -68,8 +68,15 @@ namespace NPOMS.Repository.Implementation.Entities
                 report.StatusId = 24; // Replace "Status" with the actual property name for status in your entity
             }
 
+            foreach (var report in sdiReports)
+            {
+                await UpdateAsync(null, report, false, currentUserId);
+            }
+
+
+
             // Save all changes in one transaction
-            await this.RepositoryContext.SaveChangesAsync();
+            //await this.RepositoryContext.SaveChangesAsync();
         }
     }
 }
