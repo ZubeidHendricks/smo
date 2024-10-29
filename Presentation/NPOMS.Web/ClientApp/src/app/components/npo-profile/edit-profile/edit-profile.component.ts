@@ -1963,7 +1963,7 @@ private loadTitles() {
     this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.id === data.facilityList.facilitySubDistrictId);
     this.selectedClass = data.facilityList.facilityClass;
     data.facilityList.facilityFound = true;
-    //this.addressLookup = { text: data.facilityList.address, magicKey: null };
+    this.addressLookup = null; // { text: data.facilityList.address, magicKey: null };
 
     return mapping;
   }
