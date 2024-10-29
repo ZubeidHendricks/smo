@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import {  } from 'src/app/models/interfaces';
-import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationGet } from './dtoFundingAssessmentManagement';
+import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationGet, dtoFundingAssessmentFormQuestionResponseUpsert } from './dtoFundingAssessmentManagement';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -34,6 +34,15 @@ export class FundingAssessmentManagementService {
     return this._http.get<dtoFundingAssessmentApplicationFormGet>(url, httpOptions);
   }
 
+  public updateDOICapturer(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/funding-assessments/0/application/${applicationId}/doi-confirm-capturer`;
+    return this._http.put<any>(url, null, httpOptions);
+  }
+
+  public upsertQuestionResponse(dto: dtoFundingAssessmentFormQuestionResponseUpsert) {
+    const url = `${this._envUrl.urlAddress}/api/funding-assessments/${dto.assessmentApplicationFormId}/question/${dto.id}/responses`;
+    return this._http.put<any>(url, dto, httpOptions);
+  }
 //   public createFundingCapture(fundingCapture: IFundingCaptureViewModel) {
 //     const url = `${this.fundingManagementUrl}`;
 //     return this._http.post<IFundingCaptureViewModel>(url, fundingCapture, httpOptions);

@@ -8,7 +8,7 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { FundingAssessmentManagementService } from 'src/app/services/api-services/funding-assessment-management/funding-assessment-management.service';
 import { PermissionsEnum } from 'src/app/models/enums';
 import { IUser } from 'src/app/models/interfaces';
-import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationGet, dtoQuestionGet } from 'src/app/services/api-services/funding-assessment-management/dtoFundingAssessmentManagement';
+import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationGet, dtoFundingAssessmentFormQuestionResponseUpsert, dtoQuestionGet } from 'src/app/services/api-services/funding-assessment-management/dtoFundingAssessmentManagement';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
@@ -19,6 +19,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 })
 export class FundingAssessmentFormQuestionSectionComponent implements OnInit {
  @Input() Questions: dtoQuestionGet;
+ @Input() AssessmentApplicationFormId: number;
  @Input() HeaderName: string;
 
 
@@ -37,8 +38,26 @@ export class FundingAssessmentFormQuestionSectionComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+
+
   }
 
+  onQuestionChange(question: dtoQuestionGet)
+  {
+
+      let response ={
+                    id: question.id, 
+                    assessmentApplicationFormId: this.AssessmentApplicationFormId,
+                    selectedResponseOptionId: question.selectedResponseOptionId,
+                    selectedResponseRatingId: question.selectedResponseRatingId,
+                    comment: question.comment
+                  } as dtoFundingAssessmentFormQuestionResponseUpsert;
+
+      this._repo.upsertQuestionResponse(response).subscribe(x=>{
+
+      });
+  }
   
 
 }

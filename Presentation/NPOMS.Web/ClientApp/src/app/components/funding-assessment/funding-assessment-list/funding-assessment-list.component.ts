@@ -34,6 +34,7 @@ export class FundingAssessmentListComponent implements OnInit {
   _selectedApplicationId: number;
 
   _buttonItems: MenuItem[];
+  _selectedAssessmentApplication: dtoFundingAssessmentApplicationGet;
   _fundingAssessments: dtoFundingAssessmentApplicationGet[];
   _fundingAssessmentForm: dtoFundingAssessmentApplicationFormGet;
   _showDOIDialog: boolean = false;
@@ -145,7 +146,49 @@ export class FundingAssessmentListComponent implements OnInit {
           );
         }
       });
-
     }
+  }
+
+  showDOIDialog(application: dtoFundingAssessmentApplicationGet)
+  {
+    this._selectedApplicationId = application.applicationId;
+    this._selectedAssessmentApplication = application;
+    this._showDOIDialog = true
+  }
+
+  showFundingAssessmentForm(application: dtoFundingAssessmentApplicationGet)
+  {
+    this._selectedApplicationId = application.applicationId;
+    this._selectedAssessmentApplication = application;
+
+    this._spinner.show();
+    this._repo.getFundingAssessmentApplicationForm(this._selectedApplicationId).subscribe(
+      (result) => {
+        this._fundingAssessmentForm = result;
+        this._showFundingAssessmentForm = true;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  onConfirmDOI()
+  {
+    this._spinner.show();
+    this._repo.updateDOICapturer(this._selectedApplicationId).subscribe(
+      (result) => {
+        this._showDOIDialog = false;
+        this._spinner.hide();
+
+        this.showFundingAssessmentForm(this._selectedAssessmentApplication)
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 }

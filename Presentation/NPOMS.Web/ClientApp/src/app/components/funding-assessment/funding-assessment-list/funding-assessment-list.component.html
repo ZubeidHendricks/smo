@@ -35,8 +35,10 @@
                 <td>{{ fundingAssessment.financialYearName }}</td>
                 <td></td>
                 <td style="text-align: center;">
-                    <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="_selectedApplicationId=fundingAssessment.applicationId;menu.toggle($event); " pTooltip="Actions" tooltipPosition="left"></button>
-                    <p-menu #menu [popup]="true" [model]="_buttonItems" appendTo="body"></p-menu>
+                  <button *ngIf="fundingAssessment.fundingAssessmentStatusName === 'Pending DOI Capturer'" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-gavel" (click)="showDOIDialog(fundingAssessment)" pTooltip="DOI" tooltipPosition="left"></button>
+                  <button *ngIf="fundingAssessment.fundingAssessmentStatusName === 'Pending Assessment Capturer'" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="showFundingAssessmentForm(fundingAssessment)" pTooltip="Edit Form" tooltipPosition="left"></button>
+                    <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="_selectedApplicationId=fundingAssessment.applicationId;menu.toggle($event); " pTooltip="Actions" tooltipPosition="left"></button>
+                    <p-menu #menu [popup]="true" [model]="_buttonItems" appendTo="body"></p-menu> -->
                 </td>
             </tr>
         </ng-template>
@@ -66,7 +68,7 @@
       </div>
     <p-footer>
         <button type="submit" pButton icon="fa fa-thumbs-o-up" 
-            class="ui-button-success" label="Submit"></button>
+            class="ui-button-success" label="Submit" (click) = "onConfirmDOI()"></button>
     </p-footer>
 </p-dialog>
 

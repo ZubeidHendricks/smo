@@ -1,5 +1,4 @@
 <div class="mb-3">
-
   <p-panel header="{{HeaderName}}" [toggleable]="true">
     <p-table [value]="Questions">
       <ng-template pTemplate="header">
@@ -13,62 +12,77 @@
       <ng-template pTemplate="body" let-question>
         <tr *ngIf="question.name !== 'Approval' && question.name !== 'Analysis of Finding' && question.name !== 'Final comment' &&  !question.name?.includes('Overall')">
           <td>{{question.name}}</td>
-          <td> <p-dropdown 
-            [options]="question.responseOptions" 
-            optionLabel="name" 
-            optionValue="id" 
-            [(ngModel)]="question.selectedOption1" 
-            placeholder="Select an option"
-            [style]="{'width':'100%'}">
-          </p-dropdown></td>
-          <td><div *ngIf="question.hasComment"><input pInputText id="npoName" [(ngModel)]="question.comment"/></div></td>
-          <td><p-dropdown 
-            [options]="question.responseRatings" 
-            optionLabel="name" 
-            optionValue="id" 
-            [(ngModel)]="question.selectedOption2" 
-            placeholder="Select an option"
-            [style]="{'width':'100%'}">
-          </p-dropdown></td>
-        </tr>
-        <tr *ngIf="question.name === 'Analysis of Finding'">
-        
-          <td>{{question.name}}</td>
-          <td colspan="3">  <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" placeholder="" ></textarea></td>
-        </tr>
-        <ng-container *ngIf="question.name?.includes('Overall')">
-            <tr>
-              <td colspan="4" style="background-color: #F4F4F4; font-weight: 700;">Results of Findings</td>
-            </tr>
-            <tr>
-              <td>{{question.name}}</td>
-              <td colspan="3" style="text-align: left;"> 
-              
-                <input pInputText id="npoName"
-                [readonly]="true" />
-              </td>
-            </tr>
-        </ng-container>
-        
-        <tr *ngIf="question.name === 'Approval'">
-        
-          <td colspan="4" style="text-align: center;"> 
-            <span *ngFor="let option of question.responseOptions" >
-            <p-radioButton 
-              
-              name="option-{{question.id}}" 
-              [value]="option.id" 
-              [(ngModel)]="question.selectedOption1" 
-           
-              label="{{ option.name }}">
-          </p-radioButton> &nbsp; &nbsp;
-        </span>
+          <td> 
+            <p-dropdown 
+              [options]="question.responseOptions" 
+              optionLabel="name" 
+              optionValue="id" 
+              [(ngModel)]="question.selectedResponseOptionId" 
+              placeholder="Select an option"
+              [style]="{'width':'100%'}"
+              (ngModelChange)="onQuestionChange(question)"
+            ></p-dropdown>
+          </td>
+          <td>
+            <div *ngIf="question.hasComment">
+              <input pInputText id="npoName" [(ngModel)]="question.comment" (ngModelChange)="onQuestionChange(question)" />
+            </div>
+          </td>
+          <td>
+            <p-dropdown 
+              [options]="question.responseRatings" 
+              optionLabel="name" 
+              optionValue="id" 
+              [(ngModel)]="question.selectedResponseRatingId" 
+              placeholder="Select an option"
+              [style]="{'width':'100%'}"
+              (ngModelChange)="onQuestionChange(question)"
+            ></p-dropdown>
           </td>
         </tr>
-        <tr *ngIf="question.name === 'Final comment'">
-        
+
+        <!-- Analysis of Finding -->
+        <tr *ngIf="question.name === 'Analysis of Finding'">
           <td>{{question.name}}</td>
-          <td colspan="3">  <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}"></textarea></td>
+          <td colspan="3">
+            <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" placeholder="" (ngModelChange)="onQuestionChange(question)"></textarea>
+          </td>
+        </tr>
+
+        <!-- Overall Section -->
+        <ng-container *ngIf="question.name?.includes('Overall')">
+          <tr>
+            <td colspan="4" style="background-color: #F4F4F4; font-weight: 700;">Results of Findings</td>
+          </tr>
+          <tr>
+            <td>{{question.name}}</td>
+            <td colspan="3" style="text-align: left;">
+              <input pInputText id="npoName" [readonly]="true" />
+            </td>
+          </tr>
+        </ng-container>
+
+        <!-- Approval Section -->
+        <tr *ngIf="question.name === 'Approval'">
+          <td colspan="4" style="text-align: center;">
+            <span *ngFor="let option of question.responseOptions">
+              <p-radioButton 
+                name="option-{{question.id}}" 
+                [value]="option.id" 
+                [(ngModel)]="question.selectedResponseOptionId" 
+                label="{{ option.name }}" 
+                (ngModelChange)="onQuestionChange(question)"
+              ></p-radioButton> &nbsp; &nbsp;
+            </span>
+          </td>
+        </tr>
+
+        <!-- Final Comment Section -->
+        <tr *ngIf="question.name === 'Final comment'">
+          <td>{{question.name}}</td>
+          <td colspan="3">
+            <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" (ngModelChange)="onQuestionChange(question)"></textarea>
+          </td>
         </tr>
       </ng-template>
     </p-table>

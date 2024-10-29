@@ -1,6 +1,7 @@
 ﻿using Azure.Storage.Blobs.Models;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Evaluation;
+using NPOMS.Domain.FundingAssessment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,11 @@ namespace NPOMS.Services.DTOs.FundingAssessments
     public class dtoFundingAssessmentApplicationFormGet
     {
 
-        public int Id { get; }
+        public int? Id { get; }
         public int ApplicationId { get; }
         public string OrganisationName { get; private set; }
+        public bool DOICaptured { get; }
+        public bool DOIApproved { get; }
 
         private List<dtoFundingAssessmentApplicationFormSummaryItemGet> _summaryItems { get; set; } = new();
         public IReadOnlyList<dtoFundingAssessmentApplicationFormSummaryItemGet> SummaryItems => _summaryItems;
@@ -30,16 +33,18 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         private List<dtoFundingAssessmentApplicationFormFinalApproverItemGet> _finalApprovalItems { get; set; } = new();
         public IReadOnlyList<dtoFundingAssessmentApplicationFormFinalApproverItemGet> FinalApprovalItems => _finalApprovalItems;
 
-        public dtoFundingAssessmentApplicationFormGet(Application application, List<Question> questions, List<ResponseOption> responseOptions)
+        public dtoFundingAssessmentApplicationFormGet(Application application, List<Question> questions, List<ResponseOption> responseOptions, FundingAssessmentForm fundingAssessmentForm)
         {
-            this.Id = 0;
+            this.Id = fundingAssessmentForm?.Id;
             this.ApplicationId = application.Id;
             this.OrganisationName = application.Npo.Name;
+            this.DOICaptured = fundingAssessmentForm?.DOICapturerId > 0;
+            this.DOIApproved = (fundingAssessmentForm?.DOIApproverId ?? 0) > 0;
 
             questions.OrderBy(x=>x.SortOrder).ToList().ForEach(question =>
             {
                 var filteredResponseOptions = responseOptions.Where(x=>x.ResponseTypeId == question.ResponseTypeId).ToList();
-                this._questions.Add(new(question, filteredResponseOptions));
+                this._questions.Add(new(question, filteredResponseOptions, fundingAssessmentForm?.FundingAssessmentFormResponses.ToList()));
             });
 
             var questionSections = questions.Select(x => x.QuestionSection.Name).Distinct().ToList();

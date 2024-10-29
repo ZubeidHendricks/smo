@@ -51,15 +51,15 @@
         </p-table>
       </p-panel>
     </div>
-    <app-funding-assessment-form-questionsection [Questions]="getLegislativeCompliance()" [HeaderName]="'Legislative Compliance'">
+    <app-funding-assessment-form-questionsection [Questions]="getLegislativeCompliance()" [AssessmentApplicationFormId] = "fundingAssessmentForm.id" [HeaderName]="'Legislative Compliance'">
 
     </app-funding-assessment-form-questionsection>
 
-    <app-funding-assessment-form-questionsection [Questions]="getPFMACompliance()" [HeaderName]="'PFMA Compliance'">
+    <app-funding-assessment-form-questionsection [Questions]="getPFMACompliance()"  [AssessmentApplicationFormId] = "fundingAssessmentForm.id" [HeaderName]="'PFMA Compliance'">
 
     </app-funding-assessment-form-questionsection>
 
-    <app-funding-assessment-form-questionsection [Questions]="getAnalysisPerformance()" [HeaderName]="'Analysis Performance'">
+    <app-funding-assessment-form-questionsection [Questions]="getAnalysisPerformance()"  [AssessmentApplicationFormId] = "fundingAssessmentForm.id" [HeaderName]="'Analysis Performance'">
 
     </app-funding-assessment-form-questionsection>
 

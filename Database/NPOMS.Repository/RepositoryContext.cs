@@ -9,6 +9,7 @@ using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Evaluation;
+using NPOMS.Domain.FundingAssessment;
 using NPOMS.Domain.FundingManagement;
 using NPOMS.Domain.Indicator;
 using NPOMS.Domain.Lookup;
@@ -234,6 +235,10 @@ namespace NPOMS.Repository
         public DbSet<Domain.FundingManagement.PaymentSchedule> FMPaymentSchedules { get; set; }
         public DbSet<PaymentScheduleItem> PaymentScheduleItems { get; set; }
         public DbSet<SDA> SDAs { get; set; }
+
+        //Funding Assessment
+        public DbSet<FundingAssessmentForm> FundingAssessmentForms { get; set; }
+        public DbSet<FundingAssessmentFormResponse> FundingAssessmentFormResponses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

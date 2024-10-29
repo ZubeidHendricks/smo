@@ -4,6 +4,7 @@ using NPOMS.Services.Implementation;
 using NPOMS.Services.Interfaces;
 using System.Threading.Tasks;
 using System;
+using NPOMS.Services.DTOs.FundingAssessments;
 
 namespace NPOMS.API.Controllers
 {
@@ -49,6 +50,36 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside GetFundingAssessmentForm action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}/application/{applicationId}/doi-confirm-capturer", Name = "ConfirmDOICapturer")]
+        public async Task<IActionResult> ConfirmDOICapturer(int id, int applicationId)
+        {
+            try
+            {
+                await this._applicationFundingAssessmentService.ConfirmDOICapturer(applicationId, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside ConfirmDOICapturer action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}/question/{questionId}/responses", Name = "UpsertQuestionResponse")]
+        public async Task<IActionResult> UpsertQuestionResponse(int id, [FromBody] dtoFundingAssessmentFormQuestionResponseUpsert dto)
+        {
+            try
+            {
+               await this._applicationFundingAssessmentService.UpsertQuestionResponse(dto, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside ConfirmDOICapturer action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

@@ -38,12 +38,21 @@ export interface dtoServiceDeliveryAreaGet{
 export interface dtoQuestionGet{
     id: number,
     name: string,
-    selectedOption1: string,
-    selectedOption2: string,
+    selectedResponseOptionId: string,
+    selectedResponseRatingId: string,
     questionSectionName: string,
     responseOptions: dtoResponseOptionGet[],
     responseRatings: dtoResponseOptionGet[],
     hasComment: boolean,
+    comment: string
+}
+
+export interface dtoFundingAssessmentFormQuestionResponseUpsert
+{
+    id: number,
+    assessmentApplicationFormId: number,
+    selectedResponseOptionId: string,
+    selectedResponseRatingId: string,
     comment: string
 }
 
