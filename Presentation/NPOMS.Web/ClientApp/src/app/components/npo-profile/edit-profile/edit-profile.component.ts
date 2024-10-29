@@ -1818,8 +1818,8 @@ private loadTitles() {
 
     if (this.selectedFacilityType.id === FacilityTypeEnum.Facility && this.mapping.facilityList.facilityFound === false) {
       if (!this.selectedClass || !this.mapping.facilityList.address)
-        return true;
-    }
+          return true;
+      }
 
     return false;
   }
@@ -1943,8 +1943,9 @@ private loadTitles() {
   private cloneFacilityInformation(data: INpoProfileFacilityList) {
     let mapping = {} as INpoProfileFacilityList;
     data.facilityList.facilityFound = !data.facilityList.isNew;
-
-    this.disableField = data.facilityList.facilityFound ? true : false;
+   
+    this.disableField = false; // data.facilityList.facilityFound ? true : false;
+    //this.disableField = data.facilityList.facilityFound ? true : false;
 
     for (let prop in data)
       mapping[prop] = data[prop];
@@ -1954,6 +1955,7 @@ private loadTitles() {
     this.districtChange(this.selectedDistrict);
     this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.id === data.facilityList.facilitySubDistrictId);
     this.selectedClass = data.facilityList.facilityClass;
+    data.facilityList.facilityFound = true;
     //this.addressLookup = { text: data.facilityList.address, magicKey: null };
 
     return mapping;
