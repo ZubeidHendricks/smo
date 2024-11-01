@@ -27,8 +27,7 @@ namespace NPOMS.Services.Implementation
         private IIndicatorReportRepository _indicatorReportRepository;
         private IIndicatorRepository _indicatorRepository;
         private INPOIndicatorRepository _npoindicatorRepository;
-
-
+        private IAuditIndicatorRepository _auditIndicatorRepository;
         private RepositoryContext _repositoryContext;
 
 		#endregion
@@ -44,6 +43,7 @@ namespace NPOMS.Services.Implementation
             IIndicatorReportRepository indicatorReportRepository,
             IIndicatorRepository indicatorRepository,
             INPOIndicatorRepository npoindicatorRepository,
+            IAuditIndicatorRepository auditIndicatorRepository,
             RepositoryContext repositoryContext
 			)
 		{
@@ -56,6 +56,7 @@ namespace NPOMS.Services.Implementation
 			_indicatorReportRepository = indicatorReportRepository;
             _indicatorRepository = indicatorRepository;
             _npoindicatorRepository = npoindicatorRepository;
+            _auditIndicatorRepository = auditIndicatorRepository;
 
         }
 
@@ -237,6 +238,16 @@ namespace NPOMS.Services.Implementation
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
 
             await _indicatorReportRepository.UpdateIndicatorReportStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+        }
+
+        public async Task CreateAudit(IndicatorReportAudit model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.CreatedUser = loggedInUser.FullName;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _auditIndicatorRepository.CreateEntity(model);
         }
 
         #endregion

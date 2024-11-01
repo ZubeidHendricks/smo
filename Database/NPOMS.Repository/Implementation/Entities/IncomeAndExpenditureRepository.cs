@@ -51,6 +51,8 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public  async Task UpdateEntity(IncomeAndExpenditureReport model, int currentUserId)
         {
+            model.UpdatedDateTime = DateTime.Now;
+            model.UpdatedUserId = currentUserId;
             await UpdateAsync(null, model, false, currentUserId);
         }
 
@@ -59,7 +61,7 @@ namespace NPOMS.Repository.Implementation.Entities
             throw new NotImplementedException();
         }
 
-        public async Task UpdateIncomeReportStatus(int applicationId, int financialId, int quarterId, int currentUserId)
+        public async Task<IEnumerable<IncomeAndExpenditureReport>> UpdateIncomeReportStatus(int applicationId, int financialId, int quarterId, int currentUserId)
         {
             // Retrieve the records to be updated
             var incomeReports = await FindByCondition(x => x.FinancialYearId == financialId && x.ApplicationId == applicationId && x.QaurterId == quarterId)
@@ -76,6 +78,7 @@ namespace NPOMS.Repository.Implementation.Entities
             {
                 await UpdateAsync(null, report, false, currentUserId);
             }
+            return incomeReports;
 
             // Save all changes in one transaction
             //await this.RepositoryContext.SaveChangesAsync();
@@ -100,6 +103,7 @@ namespace NPOMS.Repository.Implementation.Entities
         {
             return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
                           .Include(x => x.Status)
+                          .Include(x => x.IncomeReportAudits)
                           .AsNoTracking()
                           .ToListAsync();
         }

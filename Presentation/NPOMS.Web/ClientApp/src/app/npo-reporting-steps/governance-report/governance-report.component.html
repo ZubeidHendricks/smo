@@ -13,53 +13,64 @@
     
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
-
                 <td pEditableColumn>
                     <p-cellEditor>
                       <ng-template pTemplate="input">
-                        <p-calendar [(ngModel)]="rowData.lastMeetingDate" dateFormat="yy-mm-dd" (onSelect)="onBlurAdjustedGov(rowData)" ></p-calendar>
+                        <p-calendar [(ngModel)]="rowData.lastMeetingDate"
+                                    dateFormat="yy-mm-dd"
+                                    (onSelect)="onBlurAdjustedGov(rowData)"
+                                    [disabled]="!rowData.isEditable && !rowData.inEditMode">
+                        </p-calendar>
                       </ng-template>
                       <ng-template pTemplate="output">
                         {{ rowData.lastMeetingDate | date: 'yyyy-MM-dd' }}
                       </ng-template>
                     </p-cellEditor>
                   </td>
-    
-                <td pEditableColumn>
+                  
+                  <td pEditableColumn>
                     <p-cellEditor>
                       <ng-template pTemplate="input">
-                        <p-calendar [(ngModel)]="rowData.lastSubmissionDateWC" dateFormat="yy-mm-dd" (onSelect)="onBlurAdjustedGov(rowData)" ></p-calendar>
+                        <p-calendar [(ngModel)]="rowData.lastSubmissionDateWC"
+                                    dateFormat="yy-mm-dd"
+                                    (onSelect)="onBlurAdjustedGov(rowData)"
+                                    [disabled]="!rowData.isEditable && !rowData.inEditMode">
+                        </p-calendar>
                       </ng-template>
                       <ng-template pTemplate="output">
                         {{ rowData.lastSubmissionDateWC | date: 'yyyy-MM-dd' }}
                       </ng-template>
                     </p-cellEditor>
                   </td>
-    
-                <td pEditableColumn>
+                  
+                  <td pEditableColumn>
                     <p-cellEditor>
                       <ng-template pTemplate="input">
-                        <p-calendar [(ngModel)]="rowData.lastSubmissionDateNat" dateFormat="yy-mm-dd" (onSelect)="onBlurAdjustedGov(rowData)" ></p-calendar>
+                        <p-calendar [(ngModel)]="rowData.lastSubmissionDateNat"
+                                    dateFormat="yy-mm-dd"
+                                    (onSelect)="onBlurAdjustedGov(rowData)"
+                                    [disabled]="!rowData.isEditable && !rowData.inEditMode">
+                        </p-calendar>
                       </ng-template>
                       <ng-template pTemplate="output">
                         {{ rowData.lastSubmissionDateNat | date: 'yyyy-MM-dd' }}
                       </ng-template>
                     </p-cellEditor>
                   </td>
-    
-                <!-- Editable cell for comments -->
-                <td pEditableColumn>
+                  
+                  <td pEditableColumn>
                     <p-cellEditor>
-                        <ng-template pTemplate="input">
-                            <input pInputText [(ngModel)]="rowData.comments"
-                            (blur)="onBlurAdjustedGov(rowData)"
-                           />
-                        </ng-template>
-                        <ng-template pTemplate="output">
-                            {{ rowData.comments }}
-                        </ng-template>
+                      <ng-template pTemplate="input">
+                        <input pInputText [(ngModel)]="rowData.comments"
+                               (blur)="onBlurAdjustedGov(rowData)"
+                               [disabled]="!rowData.isEditable && !rowData.inEditMode">
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{ rowData.comments }}
+                      </ng-template>
                     </p-cellEditor>
-                </td>
+                  </td>
+                  
                 
                 <td>{{status(rowData)}}</td>
 
@@ -195,7 +206,7 @@
     </div>        
     <ng-template pTemplate="footer">
         <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
-        <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button>
+        <!-- <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button> -->
     </ng-template>
 </p-dialog>
 
@@ -311,6 +322,32 @@
         <ng-template pTemplate="emptymessage">
             <tr class="default-font">
                 <td colspan="5" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Audit History" 
+          [(visible)]="displayVieHistoryDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+        <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="selectedGovernance?.governanceAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.statusName}}</td>
+                <td>{{rowData.createdUser}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
             </tr>
         </ng-template>
     </p-table>

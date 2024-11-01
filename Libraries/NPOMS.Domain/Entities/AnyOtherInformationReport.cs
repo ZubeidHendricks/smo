@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NPOMS.Domain.Entities
 {
@@ -33,5 +30,7 @@ namespace NPOMS.Domain.Entities
         public bool IsActive { get; set;}
         public Status Status { get; set; }
         public int FinancialYearId { get; set; }
+        public string Comments { get; set; }
+        public ICollection<AnyOtherReportAudit> AnyOtherReportAudits { get; set; }
     }
 }

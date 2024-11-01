@@ -9,7 +9,9 @@ using NPOMS.Domain.Mapping;
 using NPOMS.Repository;
 using NPOMS.Repository.Implementation.Dropdown;
 using NPOMS.Repository.Implementation.Entities;
+using NPOMS.Repository.Implementation.FundingManagement;
 using NPOMS.Repository.Implementation.Mapping;
+using NPOMS.Repository.Interfaces;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
@@ -17,6 +19,7 @@ using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,6 +72,14 @@ namespace NPOMS.Services.Implementation
         private IProjectImplementationPlaceRepository _implementationPlaceRepository;
         private IProjectImplementationSubPlaceRepository _implementationSubPlaceRepository;
 		private IActivityAreaRepository _areaRepository;
+
+        private IGovernanceRepository _governanceRepository;
+        private IPostRepository _postRepository;
+        private IAnyOtherRepository _anyOtherRepository;
+        private ISDIPRepository _sDIPRepository;
+        private IIndicatorReportRepository _indicatorRepository;
+        private IIncomeAndExpenditureRepository _expenditureRepository;
+
         private RepositoryContext _repositoryContext;
 
 		#endregion
@@ -118,7 +129,13 @@ namespace NPOMS.Services.Implementation
             IActivitySubStructureRepository activitySubStructureRepository,
             IProjectImplementationSubPlaceRepository implementationSubPlaceRepository, 
 			IProjectImplementationPlaceRepository implementationPlaceRepository,
-            IActivityAreaRepository areaRepository
+            IActivityAreaRepository areaRepository,
+			IGovernanceRepository governanceRepository,
+			IPostRepository postRepository,
+			IAnyOtherRepository anyOtherRepository,
+			ISDIPRepository sDIPRepository,
+            IIndicatorReportRepository indicatorRepository,
+			IIncomeAndExpenditureRepository expenditureRepository
             )
 		{
             _applicationRepository = applicationRepository;
@@ -164,6 +181,12 @@ namespace NPOMS.Services.Implementation
             _implementationSubPlaceRepository = implementationSubPlaceRepository;
             _implementationPlaceRepository = implementationPlaceRepository;
             _areaRepository = areaRepository;
+            _governanceRepository = governanceRepository;
+            _postRepository = postRepository;
+            _anyOtherRepository = anyOtherRepository;
+            _sDIPRepository = sDIPRepository;
+            _indicatorRepository = indicatorRepository;
+            _expenditureRepository = expenditureRepository;
         }
 
 		#endregion
@@ -1653,6 +1676,142 @@ namespace NPOMS.Services.Implementation
 
             return activities;
         }
+
+        public async Task SubmitReport(Application model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            // Fetch lists without tracking to avoid attaching entities to the context initially
+            var governanceList = await _governanceRepository.GetByPeriodId(model.Id);
+            var postList = await _postRepository.GetByPeriodId(model.Id);
+            var otherList = await _anyOtherRepository.GetByPeriodId(model.Id);
+            var sdiList = await _sDIPRepository.GetByPeriodId(model.Id);
+            var indicatorReportList = await _indicatorRepository.GetByPeriodId(model.Id);
+            var expenditureList = await _expenditureRepository.GetByPeriodId(model.Id);
+
+            // Batch update status and user ID properties
+            SetStatusAndUserId(governanceList, StatusEnum.Submitted, loggedInUser.Id);
+            SetStatusAndUserId(postList, StatusEnum.Submitted, loggedInUser.Id);
+            SetStatusAndUserId(otherList, StatusEnum.Submitted, loggedInUser.Id);
+            SetStatusAndUserId(sdiList, StatusEnum.Submitted, loggedInUser.Id);
+            SetStatusAndUserId(indicatorReportList, StatusEnum.Submitted, loggedInUser.Id);
+            SetStatusAndUserId(expenditureList, StatusEnum.Submitted, loggedInUser.Id);
+
+			// Batch save each list
+			await _governanceRepository.UpdateRangeAsync(governanceList, loggedInUser.Id);
+			await _postRepository.UpdateRangeAsync(postList, loggedInUser.Id);
+			await _anyOtherRepository.UpdateRangeAsync(otherList, loggedInUser.Id);
+			await _sDIPRepository.UpdateRangeAsync(sdiList, loggedInUser.Id);
+			await _indicatorRepository.UpdateRangeAsync(indicatorReportList, loggedInUser.Id);
+			await _expenditureRepository.UpdateRangeAsync(expenditureList, loggedInUser.Id);
+		}
+
+        // Sets status and user ID for each item in the list
+        private void SetStatusAndUserId<T>(IEnumerable<T> items, StatusEnum statusEnum, int loggedInUserId) where T : class
+        {
+            var statusProperty = typeof(T).GetProperty("StatusId");
+            var userIdProperty = typeof(T).GetProperty("UpdatedUserId");
+            var status = typeof(T).GetProperty("Status");
+
+            if (statusProperty == null || userIdProperty == null)
+                throw new InvalidOperationException($"Properties 'StatusId' or 'UpdatedUserId' do not exist on type {typeof(T).Name}");
+
+            foreach (var item in items)
+            {
+                // Update StatusId and UpdatedUserId
+                statusProperty?.SetValue(item, statusEnum);
+                userIdProperty?.SetValue(item, loggedInUserId);
+                status?.SetValue(item, null);
+            }
+        }
+
+
+        //public async Task SubmitReport(Application model, string userIdentifier)
+        //{
+        //	var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+        //	var governanceList = await _governanceRepository.GetByPeriodId(model.Id);
+        //	var postList = await _postRepository.GetByPeriodId(model.Id);
+        //	var otherList = await _anyOtherRepository.GetByPeriodId(model.Id);
+        //	var sdiList = await _sDIPRepository.GetByPeriodId(model.Id);
+        //	var indicatorReportList = await _indicatorRepository.GetByPeriodId(model.Id);
+        //	var expenditureList = await _expenditureRepository.GetByPeriodId(model.Id);
+
+        //	UpdateStatus(governanceList, StatusEnum.Submitted, loggedInUser.Id);
+        //	UpdateStatus(postList, StatusEnum.Submitted, loggedInUser.Id);
+        //	UpdateStatus(otherList, StatusEnum.Submitted, loggedInUser.Id);
+        //	UpdateStatus(sdiList, StatusEnum.Submitted, loggedInUser.Id);
+        //	UpdateStatus(indicatorReportList, StatusEnum.Submitted, loggedInUser.Id);
+        //	UpdateStatus(expenditureList, StatusEnum.Submitted, loggedInUser.Id);
+
+        //	await _governanceRepository.UpdateRangeAsync(governanceList, loggedInUser.Id);
+        //	await _postRepository.UpdateRangeAsync(postList, loggedInUser.Id);
+        //	await _anyOtherRepository.UpdateRangeAsync(otherList, loggedInUser.Id);
+        //	await _sDIPRepository.UpdateRangeAsync(sdiList, loggedInUser.Id);
+        //	await _indicatorRepository.UpdateRangeAsync(indicatorReportList, loggedInUser.Id);
+        //	await _expenditureRepository.UpdateRangeAsync(expenditureList, loggedInUser.Id);
+        //}
+
+        //public void UpdateStatus<T>(IEnumerable<T> items, StatusEnum statusEnum, int loggedInUserId) where T : class
+        //{
+        //	if (items == null)
+        //		throw new ArgumentNullException(nameof(items));
+
+        //	// Cache property info for performance if needed
+        //	var statusProperty = typeof(T).GetProperty("StatusId");
+        //	var userIdProperty = typeof(T).GetProperty("UpdatedUserId");
+        //          var status = typeof(T).GetProperty("Status");
+
+        //          if (statusProperty == null || userIdProperty == null)
+        //		throw new InvalidOperationException($"Properties 'StatusId' or 'UpdatedUserId' do not exist on type {typeof(T).Name}");
+
+        //	foreach (var item in items)
+        //	{
+        //		if (item == null) continue; // Handle null items if necessary
+
+        //		// Update StatusId
+        //		if (statusProperty.CanWrite)
+        //		{
+        //			try
+        //			{
+        //				statusProperty.SetValue(item, statusEnum);
+        //			}
+        //			catch (Exception ex)
+        //			{
+        //				// Handle any exception that might occur while setting the property
+        //				Console.WriteLine($"Error updating StatusId for {typeof(T).Name}: {ex.Message}");
+        //			}
+        //		}
+
+        //		// Update UpdatedUserId
+        //		if (userIdProperty.CanWrite)
+        //		{
+        //			try
+        //			{
+        //				userIdProperty.SetValue(item, loggedInUserId);
+        //			}
+        //			catch (Exception ex)
+        //			{
+        //				// Handle any exception that might occur while setting the property
+        //				Console.WriteLine($"Error updating UpdatedUserId for {typeof(T).Name}: {ex.Message}");
+        //			}
+        //		}
+
+        //              // Update UpdatedUserId
+        //              if (status.CanWrite)
+        //              {
+        //                  try
+        //                  {
+        //                      status.SetValue(item, null);
+        //                  }
+        //                  catch (Exception ex)
+        //                  {
+        //                      // Handle any exception that might occur while setting the property
+        //                      Console.WriteLine($"Error updating UpdatedUserId for {typeof(T).Name}: {ex.Message}");
+        //                  }
+        //              }
+        //          }
+        //}
 
         #endregion
     }

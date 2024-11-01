@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Entities;
 using NPOMS.Repository.Interfaces.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Implementation.Entities
 {
@@ -15,32 +10,14 @@ namespace NPOMS.Repository.Implementation.Entities
         {
         }
 
-        public async Task CompleteGovernanceReportPost(int applicationId, int financialId, int quarterId, int currentUserId)
-        {
-            // Retrieve the records to be updated
-            var governanceReports = await FindByCondition(x => x.FinancialYearId == financialId && x.ApplicationId == applicationId && x.QaurterId == quarterId)
-                                  .ToListAsync(); // No need for AsNoTracking here, as we want to modify the entities
-
-            // Update the status of each record
-            foreach (var report in governanceReports)
-            {
-                report.UpdatedUserId = currentUserId;
-                report.UpdatedDateTime = DateTime.Now;
-                report.StatusId = 24; // Replace "Status" with the actual property name for status in your entity
-            }
-
-            foreach (var report in governanceReports)
-            {
-                await UpdateAsync(null, report, false, currentUserId);
-            }
-
-            // Save all changes in one transaction
-            //await this.RepositoryContext.SaveChangesAsync();
-        }
-
         public async Task CreateEntity(GovernanceReport model)
         {
             await CreateAsync(model);
+        }
+
+        public Task<IEnumerable<GovernanceReport>> GetByCompleteGovernanceReportPost(int applicationId, int finYear, int quarterId, int id)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<GovernanceReport> GetById(int id)
@@ -62,6 +39,7 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<IEnumerable<GovernanceReport>> GetByPeriodId(int applicationPeriodId)
         {
             return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive).Include(x => x.Status)
+                          .Include(x => x.GovernanceAudits)
                           .AsNoTracking()
                           .ToListAsync();
         }
@@ -73,7 +51,32 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public async Task UpdateEntity(GovernanceReport model, int currentUserId)
         {
+            model.UpdatedDateTime = DateTime.Now;
+            model.UpdatedUserId = currentUserId;
             await UpdateAsync(null, model, false, currentUserId);
         }
+
+       public async  Task<IEnumerable<GovernanceReport>> CompleteGovernanceReportPost(int applicationId, int financialId, int quarterId, int currentUserId)
+        {
+            // Retrieve the records to be updated
+            var govReports = await FindByCondition(x => x.FinancialYearId == financialId && x.ApplicationId == applicationId && x.QaurterId == quarterId)
+                                  .ToListAsync(); // No need for AsNoTracking here, as we want to modify the entities
+
+            // Update the status of each record
+            foreach (var report in govReports)
+            {
+                report.UpdatedUserId = currentUserId;
+                report.UpdatedDateTime = DateTime.Now;
+                report.StatusId = 24; // Replace "Status" with the actual property name for status in your entity
+            }
+
+            foreach (var report in govReports)
+            {
+                await UpdateAsync(null, report, false, currentUserId);
+            }
+
+            return govReports;
+        }
+    
     }
 }

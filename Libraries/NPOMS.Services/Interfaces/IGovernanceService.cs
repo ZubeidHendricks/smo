@@ -21,6 +21,9 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateGovernanceReportEntity(GovernanceReport model, string currentUserId);
         Task UpdateGovernanceReportEntityQC(GovernanceReport model, int currentUserId);
-        Task CompleteGovernanceReportPost(BaseCompleteViewModel model, string userIdentifier);
+
+        Task<IEnumerable<GovernanceReport>> CompleteGovernanceReportPost(BaseCompleteViewModel model, string currentUserId);
+    
+        Task CreateAudit(GovernanceAudit audit, string currentUderId);
     }
 }

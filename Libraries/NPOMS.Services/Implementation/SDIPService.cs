@@ -16,12 +16,23 @@ namespace NPOMS.Services.Implementation
     {
         private ISDIPRepository _sdipRepository;
         private IUserRepository _userRepository;
-        public SDIPService(ISDIPRepository sdipRepository, IUserRepository userRepository)
+        private ISDIPAuditRepository _SDIPAuditRepository;
+        public SDIPService(ISDIPRepository sdipRepository, IUserRepository userRepository, ISDIPAuditRepository SDIPAuditRepository)
         {
             _sdipRepository = sdipRepository;
             _userRepository = userRepository;
+            _SDIPAuditRepository = SDIPAuditRepository;
 
 
+        }
+        public async  Task CreateAudit(SDIPReportAudit model, string currentUderId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUderId);
+
+            model.CreatedUser = loggedInUser.FullName;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _SDIPAuditRepository.CreateEntity(model);
         }
 
         public async Task CreateSDIPReportEntity(SDIPReport model, string userIdentifier)
@@ -69,11 +80,11 @@ namespace NPOMS.Services.Implementation
             await _sdipRepository.UpdateEntity(model, loggedInUser.Id);
         }
 
-        public async Task UpdateSDIPStatus(BaseCompleteViewModel model, string currentUserId)
+        public async Task<IEnumerable<SDIPReport>> UpdateSDIPStatus(BaseCompleteViewModel model, string currentUserId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
 
-            await _sdipRepository.UpdateSDIPStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+            return await _sdipRepository.UpdateSDIPStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
         }
     }
 }

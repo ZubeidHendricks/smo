@@ -13,6 +13,7 @@ using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -237,6 +238,7 @@ namespace NPOMS.API.Controllers
                 model.StatusId = 2;
                 model.CreatedDateTime = DateTime.Now;
                 await _indicatorService.CreateIndicatorReportEntity(model, base.GetUserIdentifier());
+                await CreateIndicatorReportAudit(model);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -254,6 +256,7 @@ namespace NPOMS.API.Controllers
                 model.StatusId = 2;
                 model.CreatedDateTime = DateTime.Now;
                 await _sdipService.CreateSDIPReportEntity(model, base.GetUserIdentifier());
+                await CreateSDIPAudit(model);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -271,12 +274,149 @@ namespace NPOMS.API.Controllers
                 model.StatusId = 2;
                 model.CreatedDateTime = DateTime.Now;
                 await _postService.CreatePostReportEntity(model, base.GetUserIdentifier());
+                await CreatePostAudit(model);
                 return Ok(model);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside CreatePostReport action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("updatePostReportStatus", Name = "UpdatePostReportStatus")]
+        public async Task<IActionResult> UpdatePostReportStatus(BaseCompleteViewModel model)
+        {
+            try
+            {
+                var results = await _postService.CompletePost(model, base.GetUserIdentifier());
+                foreach (var result in results)
+                {
+                    await CreatePostAudit(result);
+                }
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateReportStatus action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        private async Task CreateIndicatorReportAudit(IndicatorReport model)
+        {
+            try
+            {
+                //var applicationAudit = new IndicatorReportAudit { IndicatorReportId = model.Id, StatusId = model.StatusId };
+                var applicationAudit = new IndicatorReportAudit
+                {
+                    IndicatorReportId = model.Id,
+                    StatusName = model.StatusId == (int)StatusEnum.Completed ? StatusEnum.Completed.ToString() : ((StatusEnum)model.StatusId).ToString()
+                };
+
+                await _indicatorService.CreateAudit(applicationAudit, base.GetUserIdentifier());
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateAudit action: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
+        private async Task CreatePostAudit(PostReport model)
+        {
+            try
+            {
+                //var applicationAudit = new PostAudit { PostReportId = model.Id, StatusId = model.StatusId };
+                var applicationAudit = new PostAudit
+                {
+                    PostReportId = model.Id,
+                    StatusName = model.StatusId == (int)StatusEnum.Completed ? StatusEnum.Completed.ToString() : ((StatusEnum)model.StatusId).ToString()
+                };
+
+                await _postService.CreateAudit(applicationAudit, base.GetUserIdentifier());
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateAudit action: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
+
+        private async Task CreateAnyOtherAudit(AnyOtherInformationReport model)
+        {
+            try
+            {
+                //var applicationAudit = new AnyOtherReportAudit { AnyOtherInformationReportId = model.Id, StatusId = model.StatusId };
+                var applicationAudit = new AnyOtherReportAudit
+                {
+                    AnyOtherInformationReportId = model.Id,
+                    StatusName = model.StatusId == (int)StatusEnum.Completed ? StatusEnum.Completed.ToString() : ((StatusEnum)model.StatusId).ToString()
+                };
+
+                await _anyOtherService.CreateAudit(applicationAudit, base.GetUserIdentifier());
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateAudit action: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
+
+        private async Task CreateSDIPAudit(SDIPReport model)
+        {
+            try
+            {
+                //var applicationAudit = new SDIPReportAudit { SDIPReportId = model.Id, StatusId = model.StatusId };
+                var applicationAudit = new SDIPReportAudit
+                {
+                    SDIPReportId = model.Id,
+                    StatusName = model.StatusId == (int)StatusEnum.Completed ? StatusEnum.Completed.ToString() : ((StatusEnum)model.StatusId).ToString()
+                };
+
+                await _sdipService.CreateAudit(applicationAudit, base.GetUserIdentifier());
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateAudit action: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
+
+        private async Task CreateIncomeAudit(IncomeAndExpenditureReport model)
+        {
+            try
+            {
+                //var applicationAudit = new IncomeReportAudit { IncomeAndExpenditureReportId = model.Id, StatusId = model.StatusId };
+                var applicationAudit = new IncomeReportAudit
+                {
+                    IncomeAndExpenditureReportId = model.Id,
+                    StatusName = model.StatusId == (int)StatusEnum.Completed ? StatusEnum.Completed.ToString() : ((StatusEnum)model.StatusId).ToString()
+                };
+
+                await _incomeAndExpenditureService.CreateAudit(applicationAudit, base.GetUserIdentifier());
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateAudit action: {ex.Message} Inner Exception: {ex.InnerException}");
+            }
+        }
+        private async Task CreateGovernaceAudit(GovernanceReport model)
+        {
+            try
+            {
+                //var applicationAudit = new GovernanceAudit { GovernanceReportId = model.Id, StatusId = model.StatusId };
+                var applicationAudit = new GovernanceAudit
+                {
+                    GovernanceReportId = model.Id,
+                    StatusName = model.StatusId == (int)StatusEnum.Completed ? StatusEnum.Completed.ToString() : ((StatusEnum)model.StatusId).ToString()
+                };
+
+                await _governanceService.CreateAudit(applicationAudit, base.GetUserIdentifier());
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateAudit action: {ex.Message} Inner Exception: {ex.InnerException}");
             }
         }
 
@@ -288,6 +428,7 @@ namespace NPOMS.API.Controllers
                 model.CreatedDateTime = DateTime.Now;
                 model.StatusId = 2;
                 await _governanceService.CreateGovernanceReportEntity(model, base.GetUserIdentifier());
+                await CreateGovernaceAudit(model);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -305,6 +446,7 @@ namespace NPOMS.API.Controllers
                 model.StatusId = 2;
                 model.CreatedDateTime = DateTime.Now;
                 await _incomeAndExpenditureService.CreateIncomeReportEntity(model, base.GetUserIdentifier());
+                await CreateIncomeAudit(model);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -322,6 +464,7 @@ namespace NPOMS.API.Controllers
                 model.StatusId = 2;
                 model.CreatedDateTime = DateTime.Now;
                 await _anyOtherService.CreateEntity(model, base.GetUserIdentifier());
+                await CreateAnyOtherAudit(model);
                 return Ok(model);
             }
             catch (Exception ex)
@@ -352,7 +495,10 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                await _anyOtherService.UpdateAnyOtherStatus(model, base.GetUserIdentifier());
+                var result = await _anyOtherService.UpdateAnyOtherStatus(model, base.GetUserIdentifier());
+                foreach (var item in result) {
+                    await CreateAnyOtherAudit(item);
+                }
                 return Ok(model);
             }
             catch (Exception ex)
@@ -361,7 +507,6 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
 
         [HttpPut("updateSDIPReport", Name = "UpdateSDIPReport")]
         public async Task<IActionResult> UpdateSDIPReport(SDIPReport model)
@@ -384,7 +529,11 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                await _sdipService.UpdateSDIPStatus(model, base.GetUserIdentifier());
+                var result =   await _sdipService.UpdateSDIPStatus(model, base.GetUserIdentifier());
+                foreach (var item in result)
+                {
+                   await CreateSDIPAudit(item);
+                }
                 return Ok(model);
             }
             catch (Exception ex)
@@ -415,7 +564,11 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                await _incomeAndExpenditureService.UpdateIncomeReportStatus(model, base.GetUserIdentifier());
+                var results = await _incomeAndExpenditureService.UpdateIncomeReportStatus(model, base.GetUserIdentifier());
+                foreach (var result in results)
+                {
+                    await CreateIncomeAudit(result);
+                }
                 return Ok(model);
             }
             catch (Exception ex)
@@ -432,26 +585,12 @@ namespace NPOMS.API.Controllers
             {
                 model.CreatedDateTime = DateTime.Now;
                 await _postService.UpdatePostReportEntity(model, base.GetUserIdentifier());
+                //await CreatePostAudit(model);
                 return Ok(model);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside UpdatePostReport action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        [HttpPut("updatePostReportStatus", Name = "UpdatePostReportStatus")]
-        public async Task<IActionResult> UpdatePostReportStatus(BaseCompleteViewModel model)
-        {
-            try
-            {
-                await _postService.CompletePost(model, base.GetUserIdentifier());
-                return Ok(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside UpdateReportStatus action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -477,7 +616,11 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                await _governanceService.CompleteGovernanceReportPost(model, base.GetUserIdentifier());
+                var results = await _governanceService.CompleteGovernanceReportPost(model, base.GetUserIdentifier());
+                foreach (var result in results)
+                {
+                    await CreateGovernaceAudit(result);
+                }
                 return Ok(model);
             }
             catch (Exception ex)
@@ -532,7 +675,6 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
 
         [HttpGet("getsdipbyappid/appid/{appid}", Name = "GetSDIPByAppid")]
         public async Task<IActionResult> GetSDIPByAppid(int appid)
@@ -661,6 +803,24 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("submitReport", Name = "SubmitReport")]
+        public async Task<IActionResult> SubmitReport([FromBody] Application model)
+        {
+            try
+            {
+                await _applicationService.SubmitReport(model, base.GetUserIdentifier());
+                //await CreateApplicationAudit(model);
+
+                //await ConfigureEmail(model);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside SubmitReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPut("applicationId/{applicationId}", Name = "DeleteApplicationById")]
         public async Task<IActionResult> DeleteApplicationById(int applicationId)
         {
@@ -688,7 +848,6 @@ namespace NPOMS.API.Controllers
                 _logger.LogError($"Something went wrong inside CreateApplicationAudit action: {ex.Message} Inner Exception: {ex.InnerException}");
             }
         }
-
 
         private async Task ConfigureEmail(Application model)
         {

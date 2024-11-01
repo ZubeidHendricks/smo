@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IOtherInfor, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IOtherInfor, IOtherInforAudit, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -30,6 +30,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
 
   quarterId: number;
   filteredotherInfors: IOtherInfor[];
+  displayVieHistoryDialog: boolean;
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -40,16 +41,20 @@ export class AnyOtherInformationReportComponent implements OnInit {
   }
 
   filterDataByQuarter(quarter: number) {
+    this.loadotherInfor();
      this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === quarter);
      this.otherrightHeaderChange.emit('Pending');
      const allComplete = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 24);
+     const allSubmitted = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 19);
      if (allComplete) {
        this.otherrightHeaderChange.emit('Completed');
-     }
+     } else if (allSubmitted) {
+        this.otherrightHeaderChange.emit('Submitted');
+      }
      this.cdr.detectChanges();
   }
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
-
+  auditCols: any[];
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
@@ -285,22 +290,22 @@ export class AnyOtherInformationReportComponent implements OnInit {
         items: []
       }];
 
-      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
-        this.buttonItems[0].items.push({
-          label: 'Submit',
-          icon: 'fa fa-thumbs-o-up',
-          command: () => {
-            this.updateselectedotherInforData(this.selectedotherInfor, StatusEnum.PendingReview);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Submit',
+      //     icon: 'fa fa-thumbs-o-up',
+      //     command: () => {
+      //       this.updateselectedotherInforData(this.selectedotherInfor, StatusEnum.PendingReview);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
         this.buttonItems[0].items.push({
           label: 'Edit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateselectedotherInforData(this.selectedotherInfor, StatusEnum.PendingApproval);
+            this.enableEditing(this.selectedotherInfor);
           }
         });
       }
@@ -310,7 +315,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
           label: 'Comments',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.displayCommentDialog=true;
+            this.addComment();
           }
         });
       }
@@ -320,11 +325,15 @@ export class AnyOtherInformationReportComponent implements OnInit {
           label: 'View History',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateselectedotherInforData(this.selectedotherInfor, StatusEnum.Approved);
+            this.viewHistory(this.selectedotherInfor);
           }
         });
       }
     }
+  }
+
+  private viewHistory(rowData: IOtherInfor) {
+    this.displayVieHistoryDialog = true;
   }
 
   updateButtonItems() {
@@ -464,6 +473,7 @@ preventChange(event: any): void {
     otherInforobj.id = rowData.id;
     otherInforobj.statusId = rowData.statusId;
     otherInforobj.isActive = true;
+    otherInforobj.comments = rowData.comments;
 
     if (rowData.id === 0) {
       this.createOtherInfor(otherInforobj);
@@ -476,7 +486,8 @@ preventChange(event: any): void {
   updateOtherInfor(otherInfor: IOtherInfor) {
     this._applicationRepo.updateOtherInfor(otherInfor).subscribe(
       (resp) => {
-        this.loadotherInfor();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+      
       },
       (err) => {
         this._loggerService.logException(err);
@@ -488,6 +499,7 @@ preventChange(event: any): void {
   createOtherInfor(otherInfor: IOtherInfor) {
     this._applicationRepo.createOtherInforReport(otherInfor).subscribe(
       (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
         this.loadotherInfor();
       },
       (err) => {
@@ -511,7 +523,10 @@ addNewRow() {
     statusId: 0,
     financialYearId: 0,
     qaurterId: 0,
-    status: {} as IStatus
+    comments: '',
+    status: {} as IStatus,
+    isEditable:true,
+    iOtherInforAudit: {} as IOtherInforAudit[]
   };
   
   this.filteredotherInfors.push(newRow);  // Add the new row to the expenditures array
@@ -562,6 +577,11 @@ addNewRow() {
     });
   }
 
+  enableEditing(rowData: any) {
+    this.filteredotherInfors.forEach(post => post.isEditable = false);
+    rowData.isEditable = true;
+  }
+
   disableSaveActivity() {
     let data = this.activity;
 
@@ -608,8 +628,15 @@ addNewRow() {
   }
 
   addComment() {
-    this.comment = null;
+    if (this.selectedotherInfor.comments != null) {
+      this.comment = this.selectedotherInfor.comments;
+    }
+    else{
+      this.comment= null;
+    }
+  
     this.displayCommentDialog = true;
+    this.canEdit = true;
   }
 
   viewComments(data: IActivity, origin: string) {
@@ -643,30 +670,9 @@ addNewRow() {
   }
 
   saveComment(changesRequired: boolean, origin: string) {
-    let model = {
-      applicationId: this.application.id,
-      serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
-      entityId: this.activity.id,
-      comment: this.comment
-    } as IApplicationComment;
-
-    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
-      (resp) => {
-        //this.loadActivities();
-
-        let entity = {
-          id: model.entityId
-        } as IActivity;
-        this.viewComments(entity, origin);
-
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-        this.displayCommentDialog = false;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+    this.selectedotherInfor.comments = this.comment;
+    this.saveOtherInfor(this.selectedotherInfor);
+    this.displayCommentDialog = false;
   }
 
   search(event) {
@@ -749,6 +755,7 @@ addNewRow() {
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
         this.loadotherInfor();
+        this.filterDataByQuarter(this.quarterId)
       },
       (err) => {
         this._loggerService.logException(err);

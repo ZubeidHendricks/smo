@@ -23,6 +23,9 @@ namespace NPOMS.Services.Interfaces
         Task CreateSDIPReportEntity(SDIPReport model, string userIdentifier);
 
         Task UpdateSDIPReportEntity(SDIPReport model, string currentUserId);
-        Task UpdateSDIPStatus(BaseCompleteViewModel model, string userIdentifier);
+        Task<IEnumerable<SDIPReport>> UpdateSDIPStatus(BaseCompleteViewModel model, string userIdentifier);
+    
+
+        Task CreateAudit(SDIPReportAudit audit, string currentUderId);
     }
 }

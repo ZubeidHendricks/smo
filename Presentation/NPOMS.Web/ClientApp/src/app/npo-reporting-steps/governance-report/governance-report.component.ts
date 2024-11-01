@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IGovernance, IGovernanceAudit, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -30,6 +30,7 @@ export class GovernanceReportComponent implements OnInit {
   @Output() govnencerightHeaderChange = new EventEmitter<string>();
 
   quarterId: number;
+  displayVieHistoryDialog: boolean;
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
           const quarter = changes['selectedQuarter'].currentValue;
@@ -39,16 +40,19 @@ export class GovernanceReportComponent implements OnInit {
   }
 
   filterDataByQuarter(quarter: number) {
+    this.loadGovernance();
     this.govnencerightHeaderChange.emit('Pending');
     this.filteredgov = this.governances.filter(x => x.qaurterId === quarter);
     const allComplete = this.filteredgov.length > 0 && this.filteredgov.every(dip => dip.statusId === 24);
+    const allSubmitted = this.filteredgov.length > 0 && this.filteredgov.every(dip => dip.statusId === 19);
     if (allComplete) {
       this.govnencerightHeaderChange.emit('Completed');
-    }
+    }else if (allSubmitted) {
+      this.govnencerightHeaderChange.emit('Submitted');}
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
-
+  auditCols: any[];
   menuActions: MenuItem[];
   baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
   profile: IUser;
@@ -261,7 +265,7 @@ export class GovernanceReportComponent implements OnInit {
     this.setYearRange();
     this.loadFinancialYears();
     this.loadGovernance();
-    this. buildButtonItems();
+    this.buildButtonItems();
 
     }
   });
@@ -335,22 +339,22 @@ export class GovernanceReportComponent implements OnInit {
         items: []
       }];
 
-      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
-        this.buttonItems[0].items.push({
-          label: 'Submit',
-          icon: 'fa fa-thumbs-o-up',
-          command: () => {
-            this.updateGovernanceData(this.selectedGovernance, StatusEnum.PendingReview);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Submit',
+      //     icon: 'fa fa-thumbs-o-up',
+      //     command: () => {
+      //       this.updateGovernanceData(this.selectedGovernance, StatusEnum.PendingReview);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
         this.buttonItems[0].items.push({
           label: 'Edit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateGovernanceData(this.selectedGovernance, StatusEnum.PendingApproval);
+            this.enableEditing(this.selectedGovernance);
           }
         });
       }
@@ -360,7 +364,7 @@ export class GovernanceReportComponent implements OnInit {
           label: 'Comments',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.displayCommentDialog=true;
+            this.addComment();
           }
         });
       }
@@ -370,13 +374,21 @@ export class GovernanceReportComponent implements OnInit {
           label: 'View History',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateGovernanceData(this.selectedGovernance, StatusEnum.Approved);
+            this.viewHistory(this.selectedGovernance);
           }
         });
       }
     }
   }
 
+  private viewHistory(rowData: IGovernance) {
+    this.displayVieHistoryDialog = true;
+  }
+
+  enableEditing(rowData: any) {
+    this.filteredgov.forEach(post => post.isEditable = false);
+    rowData.isEditable = true;
+  }
   private updateGovernanceData(rowData: IGovernance, status: number) {
     rowData.statusId = status;
    this.onBlurAdjustedGov(rowData);
@@ -435,6 +447,7 @@ export class GovernanceReportComponent implements OnInit {
     govobj.isActive = rowData.isActive;
     govobj.id = rowData.id;
     govobj.statusId = rowData.statusId;
+    govobj.reportComments = rowData.reportComments;
 
     if (rowData.lastMeetingDate instanceof Date) {
       const year = rowData.lastMeetingDate.getFullYear();
@@ -487,6 +500,7 @@ export class GovernanceReportComponent implements OnInit {
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
         this.loadGovernance();
+        this.filterDataByQuarter(this.quarterId)
       },
       (err) => {
         this._loggerService.logException(err);
@@ -564,7 +578,10 @@ preventChange(event: any): void {
       statusId: 0,
       financialYearId: 0,
       qaurterId: 0,
-      status: {} as IStatus
+      reportComments: '', 
+      status: {} as IStatus,
+      isEditable:true,
+      governanceAudits: {} as IGovernanceAudit[]
     };
     
     this.filteredgov.push(newRow);  // Add the new row to the expenditures array
@@ -607,6 +624,7 @@ preventChange(event: any): void {
   createGovernance(governance: IGovernance) {
     this._applicationRepo.createGovernanceReport(governance).subscribe(
       (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
         this.loadGovernance();
       },
       (err) => {
@@ -619,7 +637,8 @@ preventChange(event: any): void {
   updateGovernance(governance: IGovernance) {
     this._applicationRepo.updateGovernance(governance).subscribe(
       (resp) => {
-        this.loadGovernance();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+       //this.loadGovernance();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -668,8 +687,15 @@ preventChange(event: any): void {
   }
 
   addComment() {
-    this.comment = null;
+    if (this.selectedGovernance.reportComments != null) {
+      this.comment = this.selectedGovernance.reportComments;
+    }
+    else{
+      this.comment= null;
+    }
+  
     this.displayCommentDialog = true;
+    this.canEdit = true;
   }
 
   viewComments(data: IActivity, origin: string) {
@@ -703,29 +729,9 @@ preventChange(event: any): void {
   }
 
   saveComment(changesRequired: boolean, origin: string) {
-    let model = {
-      applicationId: this.application.id,
-      serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
-      entityId: this.activity.id,
-      comment: this.comment
-    } as IApplicationComment;
-
-    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
-      (resp) => {
-
-        let entity = {
-          id: model.entityId
-        } as IActivity;
-        this.viewComments(entity, origin);
-
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-        this.displayCommentDialog = false;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+    this.selectedGovernance.reportComments = this.comment; 
+    this.onBlurAdjustedGov(this.selectedGovernance);
+    this.displayCommentDialog = false;
   }
 
   search(event) {

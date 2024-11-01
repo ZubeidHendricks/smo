@@ -7,8 +7,6 @@ using NPOMS.Services.Interfaces;
 using NPOMS.Services.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NPOMS.Services.Implementation
@@ -17,11 +15,12 @@ namespace NPOMS.Services.Implementation
     {
         private IAnyOtherRepository _anyOtherRepository;
         private IUserRepository _userRepository;
-        public AnyOtherService(IAnyOtherRepository anyOtherRepository, IUserRepository userRepository)
+        private IAnyOtherAuditRepository _anyOtherAuditRepository;
+        public AnyOtherService(IAnyOtherRepository anyOtherRepository, IUserRepository userRepository, IAnyOtherAuditRepository anyOtherAuditRepository)
         {
             _anyOtherRepository = anyOtherRepository;
             _userRepository = userRepository;
-
+            _anyOtherAuditRepository = anyOtherAuditRepository;
         }
 
         public async Task CreateEntity(AnyOtherInformationReport model,string userIdentifier)
@@ -59,11 +58,11 @@ namespace NPOMS.Services.Implementation
             return await _anyOtherRepository.GetEntities();
         }
 
-        public async Task UpdateAnyOtherStatus(BaseCompleteViewModel model, string currentUserId)
+        public async  Task<IEnumerable<AnyOtherInformationReport>> UpdateAnyOtherStatus(BaseCompleteViewModel model, string currentUserId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
 
-            await _anyOtherRepository.UpdateAnyOtherStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+           return  await _anyOtherRepository.UpdateAnyOtherStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
         }
 
         public async Task UpdateEntity(AnyOtherInformationReport model, string currentUserId)
@@ -79,6 +78,16 @@ namespace NPOMS.Services.Implementation
         public Task UpdateEntityQC(AnyOtherInformationReport model, string currentUserId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task CreateAudit(AnyOtherReportAudit model, string currentUderId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUderId);
+
+            model.CreatedUser = loggedInUser.FullName;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _anyOtherAuditRepository.CreateEntity(model);
         }
     }
 }

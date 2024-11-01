@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity,IStatus, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IExpenditure, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IBaseCompleteViewModel } from 'src/app/models/interfaces';
+import { IActivity,IStatus, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IDepartment, IDistrictDemographic, IExpenditure, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IBaseCompleteViewModel, IExpenditureAudit } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -29,6 +29,7 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
 
   quarterId: number;
   @Output() incomerightHeaderChange = new EventEmitter<string>();
+displayVieHistoryDialog: any;
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
           const quarter = changes['selectedQuarter'].currentValue;
@@ -37,17 +38,20 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
       }
   }
   filterDataByQuarter(quarter: number) {
+    this.loadExpenditure();
     this.filteredexpenditure = this.expenditures.filter(x => x.qaurterId === quarter);
     this.incomerightHeaderChange.emit('Pending');
     const allComplete = this.filteredexpenditure.length > 0 && this.filteredexpenditure.every(dip => dip.statusId === 24);
+    const allSubmitted = this.filteredexpenditure.length > 0 && this.filteredexpenditure.every(dip => dip.statusId === 19);
     if (allComplete) {
       this.incomerightHeaderChange.emit('Completed');
-    }
+    } else if (allSubmitted) {
+      this.incomerightHeaderChange.emit('Submitted');}
     this.cdr.detectChanges();
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
-
+  auditCols: any[];
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
@@ -282,22 +286,22 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
         items: []
       }];
 
-      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
-        this.buttonItems[0].items.push({
-          label: 'Submit',
-          icon: 'fa fa-thumbs-o-up',
-          command: () => {
-            this.updateExpenditureData(this.selectedExpenditure, StatusEnum.PendingReview);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Submit',
+      //     icon: 'fa fa-thumbs-o-up',
+      //     command: () => {
+      //       this.updateExpenditureData(this.selectedExpenditure, StatusEnum.PendingReview);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
         this.buttonItems[0].items.push({
           label: 'Edit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateExpenditureData(this.selectedExpenditure, StatusEnum.PendingApproval);
+            this.enableEditing(this.selectedExpenditure);
           }
         });
       }
@@ -307,7 +311,7 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
           label: 'Comments',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.displayCommentDialog=true;
+            this.addComment();
           }
         });
       }
@@ -317,11 +321,20 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
           label: 'View History',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateExpenditureData(this.selectedExpenditure, StatusEnum.Approved);
+            this.viewHistory(this.selectedExpenditure);
           }
         });
       }
     }
+  }
+
+  private viewHistory(rowData: IExpenditure) {
+    this.displayVieHistoryDialog = true;
+  }
+
+  enableEditing(rowData: any) {
+    this.filteredexpenditure.forEach(exp => exp.isEditable = false);
+    rowData.isEditable = true;
   }
   updateButtonItems() {
     // Show all buttons
@@ -409,6 +422,9 @@ private loadExpenditure() {
                 this.calculateIncomeTotal();
                 this.calculateSurplusTotal();
               }
+              this.filteredexpenditure.forEach(row => {
+                row.isEditable = !(row.id > 0);
+              });
         }
       
       });
@@ -523,10 +539,13 @@ addNewRow() {
     statusId:0,
     financialYearId: 0,
     qaurterId: 0,
+    comments: '', 
     status: {} as IStatus,
+    isEditable:true,
+    incomeReportAudits: {} as IExpenditureAudit[]
   };
   
-  this.filteredexpenditure.push(newRow);  // Add the new row to the expenditures array
+  this.filteredexpenditure.push(newRow);  
 }
 
 
@@ -540,6 +559,7 @@ completeAction() {
     (resp) => {
       this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
       this.loadExpenditure();
+      this.filterDataByQuarter(this.quarterId)
     },
     (err) => {
       this._loggerService.logException(err);
@@ -777,6 +797,7 @@ saveExpenditure(rowData: any) {
   incomeobj.total = rowData.total;
   incomeobj.isActive = true;
   incomeobj.statusId = rowData.statusId;
+  incomeobj.comments = rowData.comments;  
 
   if (rowData.id === 0) {
     this.createExpenditure(incomeobj);
@@ -791,13 +812,11 @@ saveExpenditure(rowData: any) {
   this.calculateTotals(); // Recalculate totals when values change
 }
 
-
-
-
 // Method to create a new expenditure report
 createExpenditure(expenditure: IExpenditure) {
   this._applicationRepo.createExpenditureReport(expenditure).subscribe(
     (resp) => {
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
       this.loadExpenditure();
       this.displayExpenditureDialog = false;
     },
@@ -812,7 +831,8 @@ createExpenditure(expenditure: IExpenditure) {
 updateExpenditure(expenditure: IExpenditure) {
   this._applicationRepo.updateExpenditure(expenditure).subscribe(
     (resp) => {
-      this.loadExpenditure();
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+      //this.loadExpenditure();
       this.displayExpenditureDialog = false;
     },
     (err) => {
@@ -859,8 +879,15 @@ updateExpenditure(expenditure: IExpenditure) {
   }
 
   addComment() {
-    this.comment = null;
+    if (this.selectedExpenditure.comments != null) {
+      this.comment = this.selectedExpenditure.comments;
+    }
+    else{
+      this.comment= null;
+    }
+  
     this.displayCommentDialog = true;
+    this.canEdit = true;
   }
 
   viewComments(data: IActivity, origin: string) {
@@ -894,29 +921,9 @@ updateExpenditure(expenditure: IExpenditure) {
   }
 
   saveComment(changesRequired: boolean, origin: string) {
-    let model = {
-      applicationId: this.application.id,
-      serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
-      entityId: this.activity.id,
-      comment: this.comment
-    } as IApplicationComment;
-
-    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
-      (resp) => {
-
-        let entity = {
-          id: model.entityId
-        } as IActivity;
-        this.viewComments(entity, origin);
-
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-        this.displayCommentDialog = false;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+    this.selectedExpenditure.comments = this.comment;
+    this.saveExpenditure(this.selectedExpenditure);
+    this.displayCommentDialog = false;
   }
 
   search(event) {

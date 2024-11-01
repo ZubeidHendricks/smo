@@ -4,7 +4,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IActualsAudit, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -28,18 +28,19 @@ import { BehaviorSubject } from 'rxjs';
 export class IndicatorReportComponent implements OnInit {
 
   @Input() selectedQuarter!: number;
+  displayVieHistoryDialog: boolean;
 
     
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
         const quarter = changes['selectedQuarter'].currentValue;
         this.quarterId = quarter;
-        console.log('Quarter', this.quarterId);
         this.filterDataByQuarter(quarter);
     }
 }
 
 filterDataByQuarter(quarter: number) {
+  this.GetIndicatorReportsByAppid();
   this.qselected = true;
      if (this.yearSelected && this.qselected) {
       this.GetIndicatorReportsByAppid();
@@ -48,7 +49,7 @@ filterDataByQuarter(quarter: number) {
 
 
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
-
+  auditCols: any[];
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
@@ -460,7 +461,9 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
       documents: [],
       isActive: true,
       statusId: 0,
-      status: {} as IStatus
+      status: {} as IStatus,
+      comments: '',
+      indicatorReportAudits: {} as IActualsAudit[]
     };
   }
 
@@ -510,22 +513,22 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
         items: []
       }];
 
-      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
-        this.buttonItems[0].items.push({
-          label: 'Submit',
-          icon: 'fa fa-thumbs-o-up',
-          command: () => {
-            this.updateActualData(this.selectedActual, StatusEnum.PendingReview);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Submit',
+      //     icon: 'fa fa-thumbs-o-up',
+      //     command: () => {
+      //       this.updateActualData(this.selectedActual, StatusEnum.PendingReview);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
         this.buttonItems[0].items.push({
           label: 'Edit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateActualData(this.selectedActual, StatusEnum.PendingApproval);
+            this.enableEditing(this.selectedActual);
           }
         });
       }
@@ -535,7 +538,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
           label: 'Comments',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.displayCommentDialog=true;
+           this.addComment();
           }
         });
       }
@@ -545,11 +548,15 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
           label: 'View History',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateActualData(this.selectedActual, StatusEnum.Approved);
+           this.viewHistory(this.selectedActual);
           }
         });
       }
     }
+  }
+
+  private viewHistory(rowData: IActuals) {
+    this.displayVieHistoryDialog = true;
   }
 
  private updateActualData(rowData: any, status: number) {
@@ -697,6 +704,9 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
     });
   }
 
+  
+
+
   private getDocuments(actual: IActuals) {
     this._documentStore.get(Number(actual.id), EntityTypeEnum.ReportActuals).subscribe(
       (resp) => {
@@ -811,7 +821,6 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
     this._dropdownRepo.getEntities(DropdownTypeEnum.HighLevelNPO, false).subscribe(
       (results) => {
         this.iNPOIndicators = results.filter(indicator => indicator.ccode === this.npo?.cCode);
-        console.log('APP',this.iNPOIndicators);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -827,6 +836,9 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
        this.actuals = results;
         this._spinner.hide();
         this.createMergedList();
+        this.mergedList.forEach(row => {
+          row.isEditable = !(row.id > 0);
+        });
       },
       (err) => {
         this._loggerService.logException(err);
@@ -967,6 +979,12 @@ onDemographicDistrictChange() {
 }
 
 
+saveComment(changesRequired: boolean, origin: string) {
+  this.selectedActual.comments = this.comment; 
+  this.onBlurAdjustedActual(this.selectedActual);
+  this.displayCommentDialog = false;
+}
+
 outputTitleChange(event: any) {
   this.selectedOutputTitle = event;
   this.QValue();
@@ -1031,6 +1049,8 @@ addOther() {
     documents: [],
     statusId: 0,
     status: {} as IStatus,
+    comments: '',
+    indicatorReportAudits: [] as IActualsAudit[] 
   };
 
   // Add this new row to the actuals array
@@ -1095,6 +1115,7 @@ saveActual(rowData: any) {
   actualobj.applicationId = this.application.id;
   actualobj.financialYearId = this.application.applicationPeriod.financialYear.id;
   actualobj.qaurterId = this.quarterId;
+  actualobj.comments = rowData.comments;
 
   // Check if it's a new actual or an update
   if (rowData.actuals.id === 0) {
@@ -1117,6 +1138,7 @@ getFinancialYear(id: number): string | undefined {
 createActual(actual: IActuals) {
   this._applicationRepo.createActual(actual).subscribe(
     (resp) => {
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
       this.GetIndicatorReportsByAppid()
       //this.displayActualDialog = false;
     },
@@ -1131,7 +1153,8 @@ createActual(actual: IActuals) {
 updateActual(actual: IActuals) {
   this._applicationRepo.updateActual(actual).subscribe(
     (resp) => {
-      this.GetIndicatorReportsByAppid()
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+      //this.GetIndicatorReportsByAppid()
       //this.displayActualDialog = false;
     },
     (err) => {
@@ -1407,7 +1430,6 @@ updateActual(actual: IActuals) {
 
   objectiveChange(objective: IObjective) {
     this.subProgrammes = [];
-
     const subProgrammeIds = objective.objectiveProgrammes.map(({ subProgrammeId }) => subProgrammeId);
     this.subProgrammes = this.allSubProgrammes.filter(item => subProgrammeIds.includes(item.id));
 
@@ -1415,8 +1437,21 @@ updateActual(actual: IActuals) {
   }
 
   addComment() {
-    this.comment = null;
+      if (this.seletedAactuals?.comments != null) {
+      this.comment = this.seletedAactuals.comments;
+     
+    }
+    else{
+      this.comment= null;
+    }
+  
     this.displayCommentDialog = true;
+    this.canEdit = true;
+  }
+
+  enableEditing(rowData: any) {
+    this.mergedList.forEach(post => post.isEditable = false);
+    rowData.isEditable = true;
   }
 
   viewComments(data: IActivity, origin: string) {

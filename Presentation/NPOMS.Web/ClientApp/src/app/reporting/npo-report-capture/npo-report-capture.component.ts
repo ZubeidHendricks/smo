@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Console } from 'console';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -36,6 +36,13 @@ export class NpoReportCaptureComponent implements OnInit {
   incomedynamicHeaderText: string = '';
   govnencedynamicHeaderText: string = '';
   otherdynamicHeaderText: string = '';
+
+  public govnencedynamicHeaderText$ = new BehaviorSubject<string>(this.govnencedynamicHeaderText);
+  public incomedynamicHeaderText$ = new BehaviorSubject<string>(this.incomedynamicHeaderText);
+  public postdynamicHeaderText$ = new BehaviorSubject<string>(this.postdynamicHeaderText);
+  public otherdynamicHeaderText$ = new BehaviorSubject<string>(this.otherdynamicHeaderText);
+  public dynamicHeaderText$ = new BehaviorSubject<string>(this.dynamicHeaderText);
+
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (this.profile != null && this.profile.permissions.length > 0) {
@@ -118,6 +125,7 @@ export class NpoReportCaptureComponent implements OnInit {
     private _loggerService: LoggerService,
     private _userRepo: UserService,
     private _npoRepo: NpoService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   places(place: IPlace[]) {
@@ -130,7 +138,7 @@ export class NpoReportCaptureComponent implements OnInit {
 
   ngOnInit(): void {
     this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      console.log('params', params);
+      this.subscribeToHeaderTextChanges();
       this.id = params.get('id');
       this.loadApplication();
       this.loadDocumentTypes();
@@ -156,13 +164,49 @@ export class NpoReportCaptureComponent implements OnInit {
     });
   }
 
+  onRightHeaderChange(value: string,  headerType: string) {
+    if (headerType === 'other') {
+      this.otherdynamicHeaderText = value;
+      this.otherdynamicHeaderText$.next(this.otherdynamicHeaderText);
+    } else if (headerType === 'sdip') {
+      this.dynamicHeaderText = value;
+      this.dynamicHeaderText$.next(this.dynamicHeaderText);
+    }
+    else if (headerType === 'post') {
+      this.postdynamicHeaderText = value;
+      this.postdynamicHeaderText$.next(this.postdynamicHeaderText);
+    }
+    else if (headerType === 'income') {
+      this.incomedynamicHeaderText = value;
+      this.incomedynamicHeaderText$.next(this.incomedynamicHeaderText);
+    }else if (headerType === 'govnence') {
+      this.govnencedynamicHeaderText = value;
+      this.govnencedynamicHeaderText$.next(this.govnencedynamicHeaderText);
+    }
+    this.updateHeaderText();
+    this.buildMenu();
+  }
+
+  private updateHeaderText() {
+    this.govnencedynamicHeaderText$.next(this.govnencedynamicHeaderText);
+    this.incomedynamicHeaderText$.next(this.incomedynamicHeaderText);
+    this.postdynamicHeaderText$.next(this.postdynamicHeaderText);
+    this.otherdynamicHeaderText$.next(this.otherdynamicHeaderText);
+    this.dynamicHeaderText$.next(this.dynamicHeaderText);
+  }
+
+  private subscribeToHeaderTextChanges() {
+    this.govnencedynamicHeaderText$.subscribe(() => this.buildMenu());
+    this.incomedynamicHeaderText$.subscribe(() => this.buildMenu());
+    this.postdynamicHeaderText$.subscribe(() => this.buildMenu());
+    this.otherdynamicHeaderText$.subscribe(() => this.buildMenu());
+    this.dynamicHeaderText$.subscribe(() => this.buildMenu());
+  }
+
   private loadNpo() {
-    console.log ('this.application', this.application);
     this._npoRepo.getNpoById(this.application?.npoId).subscribe(
       (results) => {
         this.npo = results;
-
-        //this.loadIndicators();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -176,7 +220,6 @@ export class NpoReportCaptureComponent implements OnInit {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
       (results) => {
-        //this.financialYears = results;
         this.financialYearsSubject.next(results);
         this._spinner.hide();
       },
@@ -200,7 +243,6 @@ toggleButton(buttonId: number) {
 }
 
 getfinFund(event: FinancialMatters) {
-    // console.log('event from Edit', JSON.stringify(event));
 }
 
   private loadApplication() {
@@ -354,6 +396,12 @@ getfinFund(event: FinancialMatters) {
 
   private buildMenu() {
     if (this.profile) {
+      const areAllComplete = 
+      this.govnencedynamicHeaderText === 'Completed' && 
+      this.incomedynamicHeaderText === 'Completed' && 
+      this.postdynamicHeaderText === 'Completed' && 
+      this.otherdynamicHeaderText === 'Completed' && 
+      this.dynamicHeaderText === 'Completed';
       this.menuActions = [
         // {
         //   label: 'Validate',
@@ -370,20 +418,20 @@ getfinFund(event: FinancialMatters) {
           },
           visible: false
         },
-        {
-          label: 'Save',
-          icon: 'fa fa-floppy-o',
-          command: () => {
-            this.saveItems(StatusEnum.Saved);
-          }
-        },
+        // {
+        //   label: 'Save',
+        //   icon: 'fa fa-floppy-o',
+        //   command: () => {
+        //     this.saveItems(StatusEnum.Saved);
+        //   }
+        // },
         {
           label: 'Submit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
             this.saveItems(StatusEnum.PendingReview);
           },
-          disabled: true
+          disabled: !areAllComplete
         },
         {
           label: 'Go Back',
@@ -393,6 +441,8 @@ getfinFund(event: FinancialMatters) {
           }
         }
       ];
+
+      this.cdr.detectChanges();
     }
   }
 
@@ -401,6 +451,7 @@ getfinFund(event: FinancialMatters) {
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
       this.fundingApplicationDetails.implementations = null;
+
       const applicationIdOnBid = this.fundingApplicationDetails;
       this.fundingApplicationDetails.programId = this.application.applicationPeriod.programmeId;
       this.fundingApplicationDetails.subProgramId = this.application.applicationPeriod.subProgrammeId
@@ -642,32 +693,39 @@ getfinFund(event: FinancialMatters) {
     this.validationErrors = [];
     this.menuActions[1].visible = false;
   }
-
   private saveItems(status: StatusEnum) {
-    // if (this.canContinue(status)) {
-    //   this._spinner.show();
-    //   this.application.statusId = status;
-
-    //   this._applicationRepo.updateApplication(this.application).subscribe(
-    //     (resp) => {
-    //       if (resp.statusId === StatusEnum.Saved) {
-    //         this._spinner.hide();
-    //         this.menuActions[1].visible = false;
-    //         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-    //       }
-
-    //       if (resp.statusId === StatusEnum.PendingReview) {
-    //         this._spinner.hide();
-    //         this._router.navigateByUrl('applications');
-    //       }
-    //     },
-    //     (err) => {
-    //       this._loggerService.logException(err);
-    //       this._spinner.hide();
-    //     }
-    //   );
-    // }
+    this._spinner.show();
+    this._applicationRepo.submitReport(this.application).subscribe(
+      (resp) => {
+        this._spinner.hide();
+        this._messageService.add({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Information successfully saved.'
+        });
+        
+        // Reload the page after a successful save
+        window.location.reload();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
+  
+  // private saveItems(status: StatusEnum) {
+  //   this._applicationRepo.submitReport(this.application).subscribe(
+  //     (resp) => {
+  //       this._spinner.hide();
+  //       this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
 
   private canContinue(status: StatusEnum) {
     this.validationErrors = [];

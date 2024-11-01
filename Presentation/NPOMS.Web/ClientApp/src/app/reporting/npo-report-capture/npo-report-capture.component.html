@@ -13,12 +13,12 @@
         *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
         <div style="height: 20px;"></div>
     <p-accordion  *ngIf="isApplicationAvailable">
-        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-            <button pButton 
-            [label]="'Financial year: ' + getFinancialYear(application?.applicationPeriod?.financialYearId)" 
-            class="grey-button" 
-            >
-    </button>
+                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <button pButton 
+                    [label]="'Financial year: ' + getFinancialYear(application?.applicationPeriod?.financialYearId)" 
+                    class="grey-button" 
+                    >
+            </button>
             <button pButton 
                     label="Quarter 1" 
                     [ngClass]="{'p-button-primary': activeButton === 1, 'p-button-secondary': activeButton !== 1}"
@@ -48,7 +48,6 @@
             <ng-template pTemplate="header">
                 <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
                     <span style="flex: 1;">Section 1: Indicator Report</span>
-                    <!-- <span style="margin-left: auto;">Your Right Header</span> -->
                 </div>
             </ng-template>
             <app-indicator-report [application]="application" [selectedQuarter]="activeButton"></app-indicator-report>
@@ -61,7 +60,7 @@
                     <span style="margin-left: auto;">{{ postdynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-post-report [application]="application" [selectedQuarter]="activeButton" (rightHeaderChangepost)="postdynamicHeaderText = $event"></app-post-report>
+            <app-post-report [application]="application" [selectedQuarter]="activeButton" (rightHeaderChangepost)="onRightHeaderChange($event,'post')"></app-post-report>
         </p-accordionTab>
         
         <p-accordionTab>
@@ -71,7 +70,7 @@
                     <span style="margin-left: auto;">{{ incomedynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-details-of-income-and-and-expenditure-report [application]="application" [selectedQuarter]="activeButton" (incomerightHeaderChange)="incomedynamicHeaderText = $event"></app-details-of-income-and-and-expenditure-report>
+            <app-details-of-income-and-and-expenditure-report [application]="application" [selectedQuarter]="activeButton" (incomerightHeaderChange)="onRightHeaderChange($event,'income')"></app-details-of-income-and-and-expenditure-report>
         </p-accordionTab>
         
         <p-accordionTab>
@@ -81,7 +80,7 @@
                     <span style="margin-left: auto;">{{ govnencedynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-governance-report [application]="application" [selectedQuarter]="activeButton" (govnencerightHeaderChange)="govnencedynamicHeaderText = $event"></app-governance-report>
+            <app-governance-report [application]="application" [selectedQuarter]="activeButton" (govnencerightHeaderChange)="onRightHeaderChange($event,'govnence')"></app-governance-report>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -91,13 +90,8 @@
                     <span style="margin-left: auto;">{{ otherdynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-any-other-information-report [application]="application" [selectedQuarter]="activeButton" (otherrightHeaderChange)="otherdynamicHeaderText = $event"></app-any-other-information-report>
+            <app-any-other-information-report [application]="application" [selectedQuarter]="activeButton" (otherrightHeaderChange)="onRightHeaderChange($event,'other')"></app-any-other-information-report>
         </p-accordionTab>
-        
-    
-        <!-- <p-accordionTab header="Section 6: SDIP">
-            <app-quarterly-sdip-reporting-report [application]="application" [selectedQuarter]="activeButton"></app-quarterly-sdip-reporting-report>
-        </p-accordionTab> -->
 
         <p-accordionTab>
             <ng-template pTemplate="header">
@@ -106,7 +100,7 @@
                     <span style="margin-left: auto;">{{ dynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-quarterly-sdip-reporting-report [application]="application" [selectedQuarter]="activeButton"  (rightHeaderChange)="dynamicHeaderText = $event"></app-quarterly-sdip-reporting-report>
+            <app-quarterly-sdip-reporting-report [application]="application" [selectedQuarter]="activeButton" (rightHeaderChange)="onRightHeaderChange($event,'sdip')"></app-quarterly-sdip-reporting-report>
         </p-accordionTab>
         
     </p-accordion>
