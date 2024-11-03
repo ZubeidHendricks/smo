@@ -42,16 +42,6 @@ export class AnyOtherInformationReportComponent implements OnInit {
 
   filterDataByQuarter(quarter: number) {
     this.loadotherInfor();
-     this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === quarter);
-     this.otherrightHeaderChange.emit('Pending');
-     const allComplete = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 24);
-     const allSubmitted = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 19);
-     if (allComplete) {
-       this.otherrightHeaderChange.emit('Completed');
-     } else if (allSubmitted) {
-        this.otherrightHeaderChange.emit('Submitted');
-      }
-     this.cdr.detectChanges();
   }
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
   auditCols: any[];
@@ -526,7 +516,7 @@ addNewRow() {
     comments: '',
     status: {} as IStatus,
     isEditable:true,
-    iOtherInforAudit: {} as IOtherInforAudit[]
+    anyOtherReportAudits: {} as IOtherInforAudit[]
   };
   
   this.filteredotherInfors.push(newRow);  // Add the new row to the expenditures array
@@ -540,6 +530,17 @@ addNewRow() {
         if(this.quarterId > 0)
         {
             this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === this.quarterId);
+
+            // this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === quarter);
+            this.otherrightHeaderChange.emit('Pending');
+            const allComplete = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 24);
+            const allSubmitted = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 19);
+            if (allComplete) {
+              this.otherrightHeaderChange.emit('Completed');
+            } else if (allSubmitted) {
+               this.otherrightHeaderChange.emit('Submitted');
+             }
+            this.cdr.detectChanges();
         }
         });
         this._spinner.hide();
@@ -755,7 +756,7 @@ addNewRow() {
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
         this.loadotherInfor();
-        this.filterDataByQuarter(this.quarterId)
+        //this.filterDataByQuarter(this.quarterId)
       },
       (err) => {
         this._loggerService.logException(err);

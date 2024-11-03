@@ -40,18 +40,6 @@ export class PostReportComponent implements OnInit {
 
   filterDataByQuarter(quarter: number) {
     this.loadPosts();
-    this.filteredposts = this.posts.filter(x => x.qaurterId === quarter);
-    this.rightHeaderChangepost.emit('Pending');
-    const allComplete = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 24);
-    const allSubmitted = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 19);
-    if (allComplete) {
-      this.rightHeaderChangepost.emit('Completed');
-    }
-    if (allSubmitted) {
-      this.rightHeaderChangepost.emit('Submitted');
-    }
-  
-    this.cdr.detectChanges();
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
@@ -450,7 +438,7 @@ export class PostReportComponent implements OnInit {
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
         this.loadPosts();
-        this.filterDataByQuarter(this.quarterId)
+        // this.filterDataByQuarter(this.quarterId)
       },
       (err) => {
         this._loggerService.logException(err);
@@ -617,6 +605,19 @@ private loadPosts() {
           this.filteredposts.forEach(row => {
             row.isEditable = !(row.id > 0);
           });
+          //this.filterDataByQuarter(this.quarterId)
+          this.filteredposts = this.posts.filter(x => x.qaurterId === this.quarterId);
+          this.rightHeaderChangepost.emit('Pending');
+          const allComplete = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 24);
+          const allSubmitted = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 19);
+          if (allComplete) {
+            this.rightHeaderChangepost.emit('Completed');
+          }
+          if (allSubmitted) {
+            this.rightHeaderChangepost.emit('Submitted');
+          }
+        
+          this.cdr.detectChanges();
         }
         });
 

@@ -651,7 +651,7 @@ export interface IPostAudit {
     financialYearId: number;
     comments: string;
     isEditable: boolean;
-    iOtherInforAudit: IOtherInforAudit[];
+    anyOtherReportAudits: IOtherInforAudit[];
   }
 
   export interface IOtherInforAudit {

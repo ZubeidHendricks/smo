@@ -42,17 +42,6 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
 
   filterDataByQuarter(quarter: number) {
     this.loadSDIPs();
-    this.filteredsdips = this.sdips.filter(x => x.qaurterId === quarter);
-    this.rightHeaderChange.emit('Pending');
-    const allComplete = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 24);
-    const allSubmitted = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 19);
-    if (allComplete) {
-      this.rightHeaderChange.emit('Completed');
-    }
-    else if (allSubmitted) {
-      this.rightHeaderChange.emit('Submitted');
-    }
-    this.cdr.detectChanges();
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
@@ -468,7 +457,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
    updateSDIP(sdip: ISDIP) {
     this._applicationRepo.updateSDIP(sdip).subscribe(
       (resp) => {
-        this.loadSDIPs();
+       // this.loadSDIPs();
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully updated.' });
    
       },
@@ -503,11 +492,21 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
         this.sdips = results;  
         if(this.quarterId > 0)
           {
-            this.filteredsdips = this.sdips.filter(x => x.qaurterId === this.quarterId);
+            this.filteredsdips = this.sdips?.filter(x => x.qaurterId === this.quarterId);
             this.filteredsdips.forEach(row => {
               row.isEditable = !(row.id > 0);
             });
-
+            // this.filteredsdips = this.sdips.filter(x => x.qaurterId === quarter);
+            this.rightHeaderChange.emit('Pending');
+            const allComplete = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 24);
+            const allSubmitted = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 19);
+            if (allComplete) {
+              this.rightHeaderChange.emit('Completed');
+            }
+            else if (allSubmitted) {
+              this.rightHeaderChange.emit('Submitted');
+            }
+            this.cdr.detectChanges();
           }  
         });
         this._spinner.hide();

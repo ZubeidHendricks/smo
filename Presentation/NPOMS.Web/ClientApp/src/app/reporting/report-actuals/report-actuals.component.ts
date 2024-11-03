@@ -1,3 +1,4 @@
+
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
@@ -20,13 +21,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-indicator-report',
-  templateUrl: './indicator-report.component.html',
-  styleUrls: ['./indicator-report.component.css'],
+  selector: 'app-report-actuals',
+  templateUrl: './report-actuals.component.html',
+  styleUrls: ['./report-actuals.component.css'],
   providers: [FilterService]
 })
 
-export class IndicatorReportComponent implements OnInit {
+export class ReportActualsComponent implements OnInit {
   @Input() selectedQuarter!: number;
   displayVieHistoryDialog: boolean;
   @Output() rightHeaderIndicatorChange = new EventEmitter<string>();

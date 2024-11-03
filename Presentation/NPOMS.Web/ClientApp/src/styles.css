@@ -11,7 +11,8 @@
     app-header,
     app-footer,
     app-application-list,
-    app-review-scorecard
+    app-review-scorecard,
+    app-npo-report-capture
     {
       display: none;
     }

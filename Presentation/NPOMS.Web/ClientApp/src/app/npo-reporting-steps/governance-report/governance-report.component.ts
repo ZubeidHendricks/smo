@@ -41,14 +41,6 @@ export class GovernanceReportComponent implements OnInit {
 
   filterDataByQuarter(quarter: number) {
     this.loadGovernance();
-    this.govnencerightHeaderChange.emit('Pending');
-    this.filteredgov = this.governances.filter(x => x.qaurterId === quarter);
-    const allComplete = this.filteredgov.length > 0 && this.filteredgov.every(dip => dip.statusId === 24);
-    const allSubmitted = this.filteredgov.length > 0 && this.filteredgov.every(dip => dip.statusId === 19);
-    if (allComplete) {
-      this.govnencerightHeaderChange.emit('Completed');
-    }else if (allSubmitted) {
-      this.govnencerightHeaderChange.emit('Submitted');}
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
@@ -500,7 +492,7 @@ export class GovernanceReportComponent implements OnInit {
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
         this.loadGovernance();
-        this.filterDataByQuarter(this.quarterId)
+        //this.filterDataByQuarter(this.quarterId)
       },
       (err) => {
         this._loggerService.logException(err);
@@ -655,6 +647,15 @@ preventChange(event: any): void {
         if(this.quarterId > 0)
           {
             this.filteredgov= this.governances.filter(x => x.qaurterId === this.quarterId);
+
+            this.govnencerightHeaderChange.emit('Pending');
+            this.filteredgov = this.governances.filter(x => x.qaurterId === this.quarterId);
+            const allComplete = this.filteredgov.length > 0 && this.filteredgov.every(dip => dip.statusId === 24);
+            const allSubmitted = this.filteredgov.length > 0 && this.filteredgov.every(dip => dip.statusId === 19);
+            if (allComplete) {
+              this.govnencerightHeaderChange.emit('Completed');
+            }else if (allSubmitted) {
+              this.govnencerightHeaderChange.emit('Submitted');}
           }
         });
         this._spinner.hide();

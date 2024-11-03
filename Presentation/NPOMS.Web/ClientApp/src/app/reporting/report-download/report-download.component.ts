@@ -11,20 +11,20 @@ import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocu
   IFinancialYear,
   INpo} from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
+import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 
-
 @Component({
-  selector: 'app-npo-report-capture',
-  templateUrl: './npo-report-capture.component.html',
-  styleUrls: ['./npo-report-capture.component.css'],
+  selector: 'app-report-download',
+  templateUrl: './report-download.component.html',
+  styleUrls: ['./report-download.component.css'],
   providers: [MessageService, ConfirmationService]
 })
-export class NpoReportCaptureComponent implements OnInit {
+export class ReportDownloadComponent implements OnInit {
 
   dynamicHeaderText: string = '';
   postdynamicHeaderText: string = '';
@@ -32,9 +32,8 @@ export class NpoReportCaptureComponent implements OnInit {
   govnencedynamicHeaderText: string = '';
   otherdynamicHeaderText: string = '';
   indicatordynamicHeaderText: string = '';
-  selectedYear: string | undefined;
-  downloadEnabled: boolean = false;
-
+  activeIndexes: number[] = [0, 1, 2, 3, 4, 5]; 
+  
   public govnencedynamicHeaderText$ = new BehaviorSubject<string>(this.govnencedynamicHeaderText);
   public indicatordynamicHeaderText$ = new BehaviorSubject<string>(this.indicatordynamicHeaderText);
   public incomedynamicHeaderText$ = new BehaviorSubject<string>(this.incomedynamicHeaderText);
@@ -116,6 +115,7 @@ export class NpoReportCaptureComponent implements OnInit {
     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService,
     private _messageService: MessageService,
+    private _bidService: BidService,
     private _dropdownRepo: DropdownService,
     private _loggerService: LoggerService,
     private _userRepo: UserService,
@@ -132,9 +132,11 @@ export class NpoReportCaptureComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
-      this.subscribeToHeaderTextChanges();
+      this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
+      const quarterNumber = Number(params.get('qtr')) || 0; // Convert to number, default to 0 if invalid
       this.id = params.get('id');
+      this.toggleButton(quarterNumber);
+      this.subscribeToHeaderTextChanges();
       this.loadApplication();
       this.loadDocumentTypes();
       this.loadFinancialYears();
@@ -142,8 +144,6 @@ export class NpoReportCaptureComponent implements OnInit {
 
     var splitUrl = window.location.href.split('/');
     this.headerTitle = splitUrl[5];
-
-    // this.loadfundingSteps();
     this.applicationPeriodId = +this.id;
     this.fundingApplicationDetails.applicationPeriodId = +this.id;
     this._authService.profile$.subscribe(profile => {
@@ -154,6 +154,12 @@ export class NpoReportCaptureComponent implements OnInit {
         this.buildMenu();
       }
     });
+
+    setTimeout(() => {
+      document.title = "Indicator Report";
+      window.print();
+      this._router.navigate([{ outlets: { print: null } }]);
+    }, 2500);
   }
 
   onRightHeaderChange(value: string,  headerType: string) {
@@ -175,6 +181,7 @@ export class NpoReportCaptureComponent implements OnInit {
       this.govnencedynamicHeaderText = value;
       this.govnencedynamicHeaderText$.next(this.govnencedynamicHeaderText);
     }else if (headerType === 'indicator') {
+      console.log('indicator',value);
       this.indicatordynamicHeaderText = value;
       this.indicatordynamicHeaderText$.next(this.indicatordynamicHeaderText);
     }
@@ -230,18 +237,16 @@ export class NpoReportCaptureComponent implements OnInit {
 getFinancialYear(id: number): string | undefined {
   const financialYears = this.financialYearsSubject.getValue();
   const financialYear = financialYears.find(year => year.id === id);
-  this.selectedYear = financialYear ? financialYear.name : undefined;;
   return financialYear ? financialYear.name : undefined;
 }
 
+
 toggleButton(buttonId: number) {
     this.activeButton = this.activeButton === buttonId ? null : buttonId;
-    this.downloadEnabled = true;
 }
 
 getfinFund(event: FinancialMatters) {
 }
-
   private loadApplication() {
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
@@ -252,6 +257,7 @@ getfinFund(event: FinancialMatters) {
           this.buildSteps(results.applicationPeriod);
           this.loadCreatedUser();
           this.isApplicationAvailable = true;
+          console.log('application',this.isApplicationAvailable);
         }
         this._spinner.hide();
       },
@@ -390,7 +396,6 @@ getfinFund(event: FinancialMatters) {
     }
   }
 
-
   private buildMenu() {
     if (this.profile) {
       const areAllComplete = 
@@ -429,7 +434,6 @@ getfinFund(event: FinancialMatters) {
       this.cdr.detectChanges();
     }
   }
-
   private clearMessages() {
     this.validationErrors = [];
     this.menuActions[1].visible = false;
@@ -452,12 +456,6 @@ getfinFund(event: FinancialMatters) {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
-    );
-  }
-
-  onDownload(){
-    this._router.navigate(
-      [{ outlets: { print: ['print', this.application.id, this.selectedYear, this.activeButton, 5] } }]
     );
   }
 }

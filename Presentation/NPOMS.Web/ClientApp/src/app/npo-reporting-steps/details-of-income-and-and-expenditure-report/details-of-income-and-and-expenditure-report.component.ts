@@ -39,15 +39,6 @@ displayVieHistoryDialog: any;
   }
   filterDataByQuarter(quarter: number) {
     this.loadExpenditure();
-    this.filteredexpenditure = this.expenditures.filter(x => x.qaurterId === quarter);
-    this.incomerightHeaderChange.emit('Pending');
-    const allComplete = this.filteredexpenditure.length > 0 && this.filteredexpenditure.every(dip => dip.statusId === 24);
-    const allSubmitted = this.filteredexpenditure.length > 0 && this.filteredexpenditure.every(dip => dip.statusId === 19);
-    if (allComplete) {
-      this.incomerightHeaderChange.emit('Completed');
-    } else if (allSubmitted) {
-      this.incomerightHeaderChange.emit('Submitted');}
-    this.cdr.detectChanges();
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
@@ -425,6 +416,16 @@ private loadExpenditure() {
               this.filteredexpenditure.forEach(row => {
                 row.isEditable = !(row.id > 0);
               });
+
+              //this.filteredexpenditure = this.expenditures.filter(x => x.qaurterId === quarter);
+              this.incomerightHeaderChange.emit('Pending');
+              const allComplete = this.filteredexpenditure.length > 0 && this.filteredexpenditure.every(dip => dip.statusId === 24);
+              const allSubmitted = this.filteredexpenditure.length > 0 && this.filteredexpenditure.every(dip => dip.statusId === 19);
+              if (allComplete) {
+                this.incomerightHeaderChange.emit('Completed');
+              } else if (allSubmitted) {
+                this.incomerightHeaderChange.emit('Submitted');}
+              this.cdr.detectChanges();
         }
       
       });
@@ -559,7 +560,7 @@ completeAction() {
     (resp) => {
       this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
       this.loadExpenditure();
-      this.filterDataByQuarter(this.quarterId)
+     // this.filterDataByQuarter(this.quarterId)
     },
     (err) => {
       this._loggerService.logException(err);
