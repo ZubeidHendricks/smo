@@ -34,6 +34,7 @@ namespace NPOMS.Repository.Implementation.Entities
         {
             return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive)
                          .Include(x=>x.Status)
+                         .Include(x => x.IndicatorReportAudits)
                          .AsNoTracking()
                          .ToListAsync();
         }
@@ -45,6 +46,8 @@ namespace NPOMS.Repository.Implementation.Entities
 
         public async Task UpdateEntity(IndicatorReport model, int currentUserId)
         {
+            model.UpdatedDateTime = DateTime.Now;
+            model.UpdatedUserId = currentUserId;
             await UpdateAsync(null, model, false, currentUserId);
         }
 

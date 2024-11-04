@@ -144,6 +144,6 @@ namespace NPOMS.Services.Interfaces
 
 		Task<ApplicationPeriod> GetApplicationPeriodById(int id);
         Task<IEnumerable<Activity>> AllActivitiesAsync();
-
+        Task SubmitReport(Application model, string userIdentifier);
     }
 }

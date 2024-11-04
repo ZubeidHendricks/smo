@@ -348,20 +348,6 @@ export class DownloadWorkplanComponent implements OnInit {
     );
   }
 
-  // private loadActivities() {
-  //   this._applicationRepo.getAllActivities(this.application).subscribe(
-  //     (results) => {
-  //       this.activities = results.filter(x => x.isActive === true);
-  //       this.getFacilityListText(results);
-  //       this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Activities);
-  //       this.isActivitiesAvailable = true;
-  //     },
-  //     (err) => {
-  //       this._loggerService.logException(err);
-  //       this._spinner.hide();
-  //     }
-  //   );
-  // }
 
   private loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(

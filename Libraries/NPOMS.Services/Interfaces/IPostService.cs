@@ -24,6 +24,7 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdatePostReportEntity(PostReport model, string currentUserId);
         Task UpdatePostReportEntityQC(PostReport model, int currentUserId);
-        Task CompletePost(BaseCompleteViewModel model, string currentUserId);
+        Task<IEnumerable<PostReport>> CompletePost(BaseCompleteViewModel model, string currentUserId);
+        Task CreateAudit(PostAudit audit, string currentUderId);
     }
 }

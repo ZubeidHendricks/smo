@@ -17,11 +17,14 @@ namespace NPOMS.Services.Implementation
     {
         private IGovernanceRepository _governanceRepository;
         private IUserRepository _userRepository;
-        public GovernanceService(IGovernanceRepository governanceRepository, IUserRepository userRepository)
+        private IAuditGovernanceRepository _auditGovernanceRepository;
+        public GovernanceService(IGovernanceRepository governanceRepository, IUserRepository userRepository, IAuditGovernanceRepository auditGovernanceRepository)
         {
             _governanceRepository = governanceRepository;
             _userRepository = userRepository;
-                
+            _auditGovernanceRepository = auditGovernanceRepository;
+
+
         }
 
         public async Task CreateGovernanceReportEntity(GovernanceReport model, string userIdentifier)
@@ -74,11 +77,29 @@ namespace NPOMS.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public async Task CompleteGovernanceReportPost(BaseCompleteViewModel model, string currentUserId)
+        //public async Task CompleteGovernanceReportPost(BaseCompleteViewModel model, string currentUserId)
+        //{
+        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
+
+        //    await _governanceRepository.CompleteGovernanceReportPost(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+        //}
+
+
+        public async Task CreateAudit(GovernanceAudit model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.CreatedUser = loggedInUser.FullName;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _auditGovernanceRepository.CreateEntity(model);
+        }
+
+        public async Task<IEnumerable<GovernanceReport>> CompleteGovernanceReportPost(BaseCompleteViewModel model, string currentUserId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
 
-            await _governanceRepository.CompleteGovernanceReportPost(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+           return await _governanceRepository.CompleteGovernanceReportPost(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
         }
     }
 }

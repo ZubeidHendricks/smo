@@ -1,6 +1,7 @@
 ﻿using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NPOMS.Domain.Entities
@@ -47,5 +48,7 @@ namespace NPOMS.Domain.Entities
 
         public Status Status { get; set; }
         public StaffCategory StaffCategory { get; set; }
+        public string Comments { get; set; }
+        public ICollection<PostAudit> PostAudits { get; set; }
     }
 }

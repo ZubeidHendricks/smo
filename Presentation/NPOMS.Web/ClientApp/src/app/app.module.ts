@@ -223,6 +223,8 @@ import { QuarterlySDIPReportingReportComponent } from './npo-reporting-steps/qua
 import { IndicatorsComponent } from './reporting/indicators/indicators.component';
 import { ReportReviewComponent } from './reporting/report-review/report-review.component';
 import { IndicatorImportComponent } from './reporting/indicator-import/indicator-import.component';
+import { ReportDownloadComponent } from './reporting/report-download/report-download.component';
+import { ReportActualsComponent } from './reporting/report-actuals/report-actuals.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -438,7 +440,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     QuarterlySDIPReportingReportComponent,
     IndicatorsComponent,
     ReportReviewComponent,
-    IndicatorImportComponent
+    IndicatorImportComponent,
+    ReportDownloadComponent,
+    ReportActualsComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

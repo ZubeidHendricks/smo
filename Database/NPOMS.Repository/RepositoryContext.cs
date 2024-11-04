@@ -127,6 +127,8 @@ namespace NPOMS.Repository
         public DbSet<Activity> Activities { get; set; }
         public DbSet<AddressInformation> AddressInformation { get; set; }
         public DbSet<Application> Applications { get; set; }
+        public DbSet<Application> PostAudit { get; set; }
+        
         public DbSet<ApplicationApproval> ApplicationApprovals { get; set; }
         public DbSet<ApplicationAudit> ApplicationAudits { get; set; }
         public DbSet<ApplicationComment> ApplicationComments { get; set; }
@@ -172,10 +174,11 @@ namespace NPOMS.Repository
         public DbSet<AnyOtherInformationReport> AnyOtherInformationReports { get; set; }
         public DbSet<GovernanceReport> GovernanceReports { get; set; }
         public DbSet<SDIPReport> SDIPReports { get; set; }
-
-
-
-
+        public DbSet<SDIPReportAudit> SDIPReportAudits { get; set; }
+        public DbSet<IndicatorReportAudit> IndicatorReportAudits { get; set; }
+        public DbSet<AnyOtherReportAudit> AnyOtherReportAudits { get; set; }
+        public DbSet<IncomeReportAudit> IncomeReportAudit { get; set; }
+        public DbSet<GovernanceAudit> GovernanceAudits { get; set; }
 
         /* Lookup */
         public DbSet<FacilityList> ActivityList { get; set; }

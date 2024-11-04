@@ -573,7 +573,16 @@ export interface IIndicator {
     isActive: boolean;
     statusId: number;
     status: IStatus;
+    comments: string;   
+    indicatorReportAudits: IActualsAudit[];
   }
+
+  export interface IActualsAudit {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
 
  
   export interface IPosts {
@@ -593,7 +602,17 @@ export interface IIndicator {
     staffCategoryId: number;
     qaurterId: number;
     financialYearId: number;
+    comments: string;
+    isEditable: boolean;
+    postAudits: IPostAudit[];
   }
+
+export interface IPostAudit {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
     
   export interface IGovernance {
     id: number;
@@ -607,7 +626,18 @@ export interface IIndicator {
     status: IStatus;
     qaurterId: number;
     financialYearId: number;
+    reportComments:string,
+    isEditable: boolean;
+    governanceAudits: IGovernanceAudit[];
   }
+
+  export interface IGovernanceAudit {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
+
 
   export interface IOtherInfor {
     id: number;
@@ -619,7 +649,18 @@ export interface IIndicator {
     status: IStatus;
     qaurterId: number;
     financialYearId: number;
+    comments: string;
+    isEditable: boolean;
+    anyOtherReportAudits: IOtherInforAudit[];
   }
+
+  export interface IOtherInforAudit {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
+
 
   export interface IExpenditure {
     id: number;
@@ -634,7 +675,18 @@ export interface IIndicator {
     status: IStatus;
     qaurterId: number;
     financialYearId: number;
+    comments: string;
+    isEditable: boolean;
+    incomeReportAudits: IExpenditureAudit[];
   }
+
+  export interface IExpenditureAudit {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
+
 
   export interface ISDIP {
     id: number;
@@ -650,7 +702,17 @@ export interface IIndicator {
     status: IStatus;
     qaurterId: number;
     financialYearId: number;
+    comments: string;   
+    isEditable: boolean;
+    sdipReportAudits: ISDIPAudits[];
   }
+
+  export interface ISDIPAudits {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
 
 export interface IActivity {
     id: number;

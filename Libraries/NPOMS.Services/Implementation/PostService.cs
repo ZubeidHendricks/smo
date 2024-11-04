@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Entities;
+using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Interfaces;
@@ -14,13 +15,14 @@ namespace NPOMS.Services.Implementation
     public  class PostService : IPostService
     {
         private IPostRepository _postRepository;
+        private IAuditPostRepository _auditPostRepository;
         private IUserRepository _userRepository;
-        public PostService(IPostRepository postRepository,
+        public PostService(IPostRepository postRepository, IAuditPostRepository auditPostRepository,
             IUserRepository userRepository)
         {
             _postRepository = postRepository;
             _userRepository = userRepository;
-
+            _auditPostRepository = auditPostRepository;
         }
         public async Task<IEnumerable<PostReport>> GetPostReports()
         {
@@ -77,12 +79,21 @@ namespace NPOMS.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public async Task CompletePost(BaseCompleteViewModel model, string currentUserId)
+        public async Task<IEnumerable<PostReport>> CompletePost(BaseCompleteViewModel model, string currentUserId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
 
-            await _postRepository.CompletePost(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+            return await _postRepository.CompletePost(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
         }
-    }
-    
+
+        public async Task CreateAudit(PostAudit model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            model.CreatedUser = loggedInUser.FullName;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _auditPostRepository.CreateEntity(model);
+        }
+    } 
 }

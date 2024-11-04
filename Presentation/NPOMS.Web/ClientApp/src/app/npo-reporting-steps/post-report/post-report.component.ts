@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StaffCategoryEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IPosts, IProgramme, IRecipientType, IStaffCategory, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IPostAudit, IPosts, IProgramme, IRecipientType, IStaffCategory, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -28,6 +28,7 @@ export class PostReportComponent implements OnInit {
   @Input() selectedQuarter!: number;
   quarterId: number;
   @Output() rightHeaderChangepost = new EventEmitter<string>();
+  displayVieHistoryDialog: boolean;
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -38,14 +39,7 @@ export class PostReportComponent implements OnInit {
   }
 
   filterDataByQuarter(quarter: number) {
-    this.filteredposts = this.posts.filter(x => x.qaurterId === quarter);
-    this.rightHeaderChangepost.emit('Pending');
-    const allComplete = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 24);
-    if (allComplete) {
-      this.rightHeaderChangepost.emit('Completed');
-    }
-  
-    this.cdr.detectChanges();
+    this.loadPosts();
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
@@ -107,9 +101,10 @@ export class PostReportComponent implements OnInit {
   allActivities: IActivity[];
   activeActivities: IActivity[];
   deletedActivities: IActivity[];
-
+  auditCols: any[];
   postCols: any[];
   displayPostDialog: boolean;
+  displayHistory: boolean;
   newActivity: boolean;
   newPost: boolean;
   activity: IActivity = {} as IActivity;
@@ -220,27 +215,21 @@ export class PostReportComponent implements OnInit {
         this.profile = profile;
         this._spinner.show();
         this.registerCustomFilters();
-        this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
-          this.application.statusId === StatusEnum.PendingApproval ||
-          this.application.statusId === StatusEnum.ApprovalInProgress ||
-          this.application.statusId === StatusEnum.PendingSLA ||
-          this.application.statusId === StatusEnum.PendingSignedSLA ||
-          this.application.statusId === StatusEnum.DeptComments ||
-          this.application.statusId === StatusEnum.OrgComments)
-          ? false : true;
-    
-        this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
-        this.tooltip = this.canEdit ? 'Edit' : 'View';
-    
         this.loadNpo();
         this.setYearRange();
-    
         this.loadFinancialYears();
         this.loadPosts();
         this.loadStaffCategories();
         this.buildButtonItems();
       }
     });
+
+    this.auditCols = [
+      { header: '', width: '5%' },
+      { header: 'Status', width: '55%' },
+      { header: 'Created User', width: '20%' },
+      { header: 'Created Date', width: '20%' }
+    ];
     
     this.postCols = [
       { header: 'Post Classification', width: '20%' },
@@ -277,22 +266,22 @@ export class PostReportComponent implements OnInit {
         items: []
       }];
 
-      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
-        this.buttonItems[0].items.push({
-          label: 'Submit',
-          icon: 'fa fa-thumbs-o-up',
-          command: () => {
-            this.updatePostData(this.selectedPost, StatusEnum.PendingReview);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Submit',
+      //     icon: 'fa fa-thumbs-o-up',
+      //     command: () => {
+      //       this.updatePostData(this.selectedPost, StatusEnum.PendingReview);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
         this.buttonItems[0].items.push({
           label: 'Edit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updatePostData(this.selectedPost, StatusEnum.PendingApproval);
+            this.enableEditing(this.selectedPost);
           }
         });
       }
@@ -302,7 +291,13 @@ export class PostReportComponent implements OnInit {
           label: 'Comments',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updatePostData(this.selectedPost, StatusEnum.Approved);
+            this.addComment();
+            // if(this.selectedPost.comments != null)
+            // {
+            //   this.canEdit = true;
+            // };
+
+            //this.updatePostData(this.selectedPost, StatusEnum.Approved);
           }
         });
       }
@@ -312,11 +307,22 @@ export class PostReportComponent implements OnInit {
           label: 'View History',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-           this.updatePostData(this.selectedPost, StatusEnum.Approved);
+           this.viewHistory(this.selectedPost);
           }
         });
       }
     }
+  }
+
+
+  enableEditing(rowData: any) {
+    this.filteredposts.forEach(post => post.isEditable = false);
+    rowData.isEditable = true;
+  }
+
+
+  private viewHistory(rowData: IPosts) {
+    this.displayVieHistoryDialog = true;
   }
 
   updateButtonItems() {
@@ -432,6 +438,7 @@ export class PostReportComponent implements OnInit {
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
         this.loadPosts();
+        // this.filterDataByQuarter(this.quarterId)
       },
       (err) => {
         this._loggerService.logException(err);
@@ -445,18 +452,6 @@ preventChange(event: any): void {
   event.originalEvent.preventDefault(); 
   event.value = [...this.selectedFacilities];
 }
-
-  private loadDemographicSubDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubDistrict, false).subscribe(
-      (results) => {
-        this.allSubDistrictDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
 
 // Method to handle changes when Demographic District is changed
 onDemographicDistrictChange() {
@@ -513,30 +508,6 @@ onDemographicSubStructuresChange() {
   }
 }
 
-  private loadFacilitySubStructures() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubStructure, false).subscribe(
-      (results) => {
-        this.allFacilitySubStructures = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadFacilityDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilityDistricts, false).subscribe(
-      (results) => {
-        this.facilityDistricts = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
   getSubDistrictNames(activityDemoName: any): string {
     if (!activityDemoName || !activityDemoName) {
       return '';
@@ -545,17 +516,6 @@ onDemographicSubStructuresChange() {
     return activityDemoName.map((subDistrict: any) => subDistrict.name).join(', ');
   }
 
-  private loadFacilitySubDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubDistricts, false).subscribe(
-      (results) => {
-        this.allFacilitySubDistricts = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
 
   editPost(data: IPosts) {
     this.newPost = false;
@@ -581,6 +541,7 @@ onDemographicSubStructuresChange() {
   postobj.vacant = rowData.vacant;
   postobj.statusId = rowData.statusId;
   postobj.plans = rowData.plans;
+  postobj.comments = rowData.comments;
   if (rowData.dateOfVacancies instanceof Date) {
     const year = rowData.dateOfVacancies.getFullYear();
     const month = ('0' + (rowData.dateOfVacancies.getMonth() + 1)).slice(-2); // Adding 1 to month as it's 0-based
@@ -593,7 +554,6 @@ onDemographicSubStructuresChange() {
 
   postobj.vacancyReasons = rowData.vacancyReasons;
   postobj.applicationId = this.application.id;
-  console.log('application', this.application);
   postobj.financialYearId = this.application.applicationPeriod.financialYear.id;
   postobj.qaurterId = this.quarterId;
 
@@ -611,6 +571,7 @@ createPost(post: IPosts) {
     this._spinner.show();
     this._applicationRepo.createPost(post).subscribe(
       (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
         this.loadPosts();
       },
       (err) => {
@@ -623,7 +584,8 @@ createPost(post: IPosts) {
 updatePost(post: IPosts) {
     this._applicationRepo.updatePost(post).subscribe(
       (resp) => {
-        this.loadPosts();
+       // this.loadPosts();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully updated.' });
       },
       (err) => {
         this._loggerService.logException(err);
@@ -640,6 +602,22 @@ private loadPosts() {
         if(this.quarterId > 0)
         {
           this.filteredposts = this.posts.filter(x => x.qaurterId === this.quarterId);
+          this.filteredposts.forEach(row => {
+            row.isEditable = !(row.id > 0);
+          });
+          //this.filterDataByQuarter(this.quarterId)
+          this.filteredposts = this.posts.filter(x => x.qaurterId === this.quarterId);
+          this.rightHeaderChangepost.emit('Pending');
+          const allComplete = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 24);
+          const allSubmitted = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 19);
+          if (allComplete) {
+            this.rightHeaderChangepost.emit('Completed');
+          }
+          if (allSubmitted) {
+            this.rightHeaderChangepost.emit('Submitted');
+          }
+        
+          this.cdr.detectChanges();
         }
         });
 
@@ -776,8 +754,11 @@ addNewRow() {
       financialYearId: 0,
       applicationId: 0,
       isActive: true,  
+      comments: '', 
       status: {} as IStatus,
-      statusId :0             // Default to active
+      statusId :0,
+      isEditable:true,
+      postAudits:  {} as IPostAudit[]           // Default to active
     };
     this.filteredposts.push(newRow); // Add the new row to the posts array
 }
@@ -794,8 +775,15 @@ disableSubProgrammeType(): boolean {
 }
 
 addComment() {
-    this.comment = null;
-    this.displayCommentDialog = true;
+  if (this.selectedPost.comments != null) {
+    this.comment = this.selectedPost.comments;
+  }
+  else{
+    this.comment= null;
+  }
+
+  this.displayCommentDialog = true;
+  this.canEdit = true;
 }
 
 viewComments(data: IActivity, origin: string) {
@@ -822,35 +810,16 @@ viewComments(data: IActivity, origin: string) {
 }
 
 disableSaveComment() {
-    if (!this.comment)
-      return true;
+    // if (!this.comment)
+    //   return true;
 
     return false;
 }
 
 saveComment(changesRequired: boolean, origin: string) {
-    let model = {
-      applicationId: this.application.id,
-      serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
-      entityId: this.activity.id,
-      comment: this.comment
-    } as IApplicationComment;
-
-    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
-      (resp) => {
-        let entity = {
-          id: model.entityId
-        } as IActivity;
-        this.viewComments(entity, origin);
-
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-        this.displayCommentDialog = false;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+  this.selectedPost.comments = this.comment;
+  this.savePost(this.selectedPost);
+  this.displayCommentDialog = false;
 }
 
 search(event) {

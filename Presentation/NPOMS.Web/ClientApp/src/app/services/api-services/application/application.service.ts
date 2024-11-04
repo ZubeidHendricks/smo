@@ -97,6 +97,11 @@ export class ApplicationService {
     return this._http.put<IApplication>(url, application, httpOptions);
   }
 
+  public submitReport(application: IApplication) {
+    const url = `${this._envUrl.urlAddress}/api/applications/submitReport`;
+    return this._http.put<IApplication>(url, application, httpOptions);
+  }
+
   public addProjectImplementation(projectImplementation: IProjectImplementation) {
     const url = `${this._envUrl.urlAddress}/api/applications/addProjectImplementation`;
     return this._http.post<IProjectImplementation>(url, projectImplementation, httpOptions);

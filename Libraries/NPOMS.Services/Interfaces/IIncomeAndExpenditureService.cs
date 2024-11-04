@@ -23,7 +23,8 @@ namespace NPOMS.Services.Interfaces
         Task CreateIncomeReportEntity(IncomeAndExpenditureReport model, string userIdentifier);
 
         Task UpdateIncomeReportEntity(IncomeAndExpenditureReport model, string currentUserId);
-        Task UpdateIncomeReportEntityQC(IncomeAndExpenditureReport model, int currentUserId);
-        Task UpdateIncomeReportStatus(BaseCompleteViewModel model, string v);
+        Task<IEnumerable<IncomeAndExpenditureReport>> UpdateIncomeReportStatus(BaseCompleteViewModel model, string userIdentifier);
+
+        Task CreateAudit(IncomeReportAudit audit, string currentUderId);
     }
 }

@@ -42,5 +42,9 @@ namespace NPOMS.Domain.Entities
         public Status Status { get; set; }
 
         public int FinancialYearId { get; set; }
+
+        public string Comments { get; set; }
+
+        public ICollection<IncomeReportAudit> IncomeReportAudits { get; set; }
     }
 }
