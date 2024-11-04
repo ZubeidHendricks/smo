@@ -389,13 +389,10 @@ createMergedList() {
     row.isEditable = !(row.id > 0); // Set the editable state based on row.id
   });
 
-  console.log('this.mergedList', this.mergedList); // Log the final merged list
-  //this.rightHeaderIndicatorChange.emit('Pending');
-
+  this.rightHeaderIndicatorChange.emit('Pending');
   const allComplete = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 24);
   const allSubmitted = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 19);
 
-  console.log('this.allComplete', allComplete);
   if (allComplete) {
       this.rightHeaderIndicatorChange.emit('Completed');
   }

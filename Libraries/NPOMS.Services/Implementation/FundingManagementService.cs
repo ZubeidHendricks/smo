@@ -114,39 +114,45 @@ namespace NPOMS.Services.Implementation
                         var detail = fundingDetails.Where(x => x.FundingCaptureId.Equals(funding.Id) && x.IsActive).FirstOrDefault();
                         var sda = await _sdaRepository.GetByFundingCaptureId(funding.Id);
                         var serviceDeliveryArea = await _serviceDeliveryAreaRepository.GetEntities(true);
-                        var programmeBudget = await _programmeBudgetRepository.GetByIds(detail.Programme.DepartmentId, $"{funding.FinancialYear.Year}/{funding.FinancialYear.Year + 1}", detail.ProgrammeId, detail.SubProgrammeId, detail.SubProgrammeTypeId);
-
-                        var fundingCaptureViewModel = new FundingCaptureViewModel
+                        if (detail != null)
                         {
-                            Id = funding.Id,
-                            RefNo = funding.RefNo,
-                            NpoId = funding.NpoId,
-                            FinancialYearId = funding.FinancialYearId,
-                            FinancialYearName = funding.FinancialYear.Name,
-                            StatusId = funding.StatusId,
-                            StatusName = funding.Status.Name,
-                            IsActive = funding.IsActive,
-                            FundingDetailViewModel = new()
-                            {
-                                Id = detail.Id,
-                                FundingCaptureId = detail.FundingCaptureId,
-                                ProgrammeId = detail.ProgrammeId,
-                                ProgrammeName = detail.Programme.Name,
-                                SubProgrammeTypeId = detail.SubProgrammeTypeId,
-                                SubProgrammeTypeName = detail.SubProgrammeType.Name,
-                                FrequencyId = detail.FrequencyId ?? null,
-                                FrequencyName = detail.Frequency != null ? detail.Frequency.Name : string.Empty,
-                                AmountAwarded = detail.AmountAwarded ?? 0,
-                                ProgrammeBudget = programmeBudget != null ? programmeBudget.OriginalBudgetAmount : Convert.ToDecimal(0)
-                            },
-                            SDAViewModel = new()
-                            {
-                                Id = sda.Id,
-                                ServiceDeliveryAreaName = sda.ServiceDeliveryAreaId != null ? serviceDeliveryArea.FirstOrDefault(x => x.Id.Equals(sda.ServiceDeliveryAreaId)).Name : string.Empty
-                            }
-                        };
+                            if(sda != null) {
+                                var programmeBudget = await _programmeBudgetRepository.GetByIds(detail.Programme.DepartmentId, $"{funding.FinancialYear.Year}/{funding.FinancialYear.Year + 1}", detail.ProgrammeId, detail.SubProgrammeId, detail.SubProgrammeTypeId);
+                                var fundingCaptureViewModel = new FundingCaptureViewModel
+                                {
+                                    Id = funding.Id,
+                                    RefNo = funding.RefNo,
+                                    NpoId = funding.NpoId,
+                                    FinancialYearId = funding.FinancialYearId,
+                                    FinancialYearName = funding.FinancialYear.Name,
+                                    StatusId = funding.StatusId,
+                                    StatusName = funding.Status.Name,
+                                    IsActive = funding.IsActive,
+                                    FundingDetailViewModel = new()
+                                    {
+                                        Id = detail.Id,
+                                        FundingCaptureId = detail.FundingCaptureId,
+                                        ProgrammeId = detail.ProgrammeId,
+                                        ProgrammeName = detail.Programme.Name,
+                                        SubProgrammeTypeId = detail.SubProgrammeTypeId,
+                                        SubProgrammeTypeName = detail.SubProgrammeType.Name,
+                                        FrequencyId = detail.FrequencyId ?? null,
+                                        FrequencyName = detail.Frequency != null ? detail.Frequency.Name : string.Empty,
+                                        AmountAwarded = detail.AmountAwarded ?? 0,
+                                        ProgrammeBudget = programmeBudget != null ? programmeBudget.OriginalBudgetAmount : Convert.ToDecimal(0)
+                                    },
+                                    SDAViewModel = new()
+                                    {
+                                        Id = sda.Id,
+                                        ServiceDeliveryAreaName = sda.ServiceDeliveryAreaId != null ? serviceDeliveryArea.FirstOrDefault(x => x.Id.Equals(sda.ServiceDeliveryAreaId)).Name : string.Empty
+                                    }
+                                };
 
-                        npoViewModel.FundingCaptureViewModels.Add(fundingCaptureViewModel);
+                                npoViewModel.FundingCaptureViewModels.Add(fundingCaptureViewModel);
+                            }
+                        }
+                        
+                       
                     }
                 }
 
