@@ -20,10 +20,21 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         public bool DOICaptured { get; }
         public bool DOIApproved { get; }
 
+        public bool CapturerSubmitted { get; }
+        public bool ApproverSubmitted { get; }
+
+
+
+
+        public bool ContinueWithAssessment { get; }
+        public bool LegislativeComplianceFinalCommentRequired { get; private set; } = false;
+        public bool PFMAComplianceAnalysisCommentRequired { get; private set; } = false;
+        public bool PerformanceAnalysisCommentRequired { get; private set; } = false;
+
         private List<dtoFundingAssessmentApplicationFormSummaryItemGet> _summaryItems { get; set; } = new();
         public IReadOnlyList<dtoFundingAssessmentApplicationFormSummaryItemGet> SummaryItems => _summaryItems;
 
-        
+
 
         private List<dtoServiceDeliveryAreaGet> _serviceDeliveries { get; set; } = new();
         public IReadOnlyList<dtoServiceDeliveryAreaGet> ServiceDeliveries => _serviceDeliveries;
@@ -31,16 +42,18 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         private List<dtoQuestionGet> _questions { get; set; } = new();
         public IReadOnlyList<dtoQuestionGet> Questions => _questions;
 
-        private List<dtoFundingAssessmentApplicationFormFinalApproverItemGet> _finalApprovalItems { get; set; } = new();
-        public IReadOnlyList<dtoFundingAssessmentApplicationFormFinalApproverItemGet> FinalApprovalItems => _finalApprovalItems;
+
+        public dtoFundingAssessmentApplicationFormFinalApproverItemGet FinalApprovalItem { get; }
 
 
         private List<ResponseOption> _orginalResponseOptions { get; } //only used internally
         private List<Question> _originalQuestions { get; }
+        private FundingAssessmentForm _fundingAssessmentForm { get; }
         public dtoFundingAssessmentApplicationFormGet(Application application, List<Question> questions, List<ResponseOption> responseOptions, FundingAssessmentForm fundingAssessmentForm)
         {
             this._orginalResponseOptions = responseOptions;
             this._originalQuestions = questions;
+            this._fundingAssessmentForm = fundingAssessmentForm;
 
             this.Id = fundingAssessmentForm?.Id;
             this.ApplicationId = application.Id;
@@ -50,20 +63,18 @@ namespace NPOMS.Services.DTOs.FundingAssessments
 
             questions.OrderBy(x=>x.SortOrder).ToList().ForEach(question =>
             {
-                var filteredResponseOptions = responseOptions.Where(x=>x.ResponseTypeId == question.ResponseTypeId).ToList();
+                var filteredResponseOptions = _orginalResponseOptions.Where(x=>x.ResponseTypeId == question.ResponseTypeId).ToList();
                 this._questions.Add(new(question, filteredResponseOptions, fundingAssessmentForm?.FundingAssessmentFormResponses.ToList()));
             });
 
-
-           
-           // this._summaryItems.Add(new("Final Score"));
-
-
-            this._finalApprovalItems.Add(new("Recommendation", 1, "", 1, false));
-            this._finalApprovalItems.Add(new("Recommendation Reason", 0, "", 2, true));
+            var approverQuestion = this._originalQuestions.First(x => x.QuestionSection.Name == "Final Approver Section");
+            var approverResponseOptions = _orginalResponseOptions.Where(x => x.ResponseTypeId == approverQuestion.ResponseTypeId).ToList();
+            this.FinalApprovalItem = new(approverQuestion, approverResponseOptions, fundingAssessmentForm?.FundingAssessmentFormResponses.ToList());
+         
 
             this.CalcOverallRatingValue();
             this.CalSummaryByQuestionSection();
+            this.ContinueWithAssessment = this.onContinueWithAssessment();
 
         }
 
@@ -89,7 +100,7 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         private void CalSummaryByQuestionSection()
         {
             var questionSections = this._originalQuestions.Select(x => x.QuestionSection.Name).Distinct().ToList();
-            foreach (var questionSectionName in questionSections)
+            foreach (var questionSectionName in questionSections.Where(x =>  x != "Assessment Summary" && x != "Final Approver Section"))
             {
                 var responseTypeIds = this._originalQuestions.Where(x => x.QuestionSection.Name == questionSectionName).Select(x => x.ResponseTypeId);
                 var ratingOptions = this._orginalResponseOptions.Where(x => responseTypeIds.Contains(x.ResponseTypeId) && x.SystemName == "Rating").ToList();
@@ -137,7 +148,11 @@ namespace NPOMS.Services.DTOs.FundingAssessments
                 score = Math.Round(score, 2);
             }
 
-            this._summaryItems.Add(new(questionSectionName, score, count==0 ? 0 : ratingValue / count));
+            var question = _originalQuestions.First(x => x.Name == questionSectionName);
+            var filteredResponseOptions = _orginalResponseOptions.Where(x => x.ResponseTypeId == question.ResponseTypeId).ToList();
+
+
+            this._summaryItems.Add(new(question, score, count==0 ? 0 : ratingValue / count, filteredResponseOptions, _fundingAssessmentForm?.FundingAssessmentFormResponses.ToList()));
         }
 
         private void CreateSummaryFinalItem()
@@ -170,5 +185,35 @@ namespace NPOMS.Services.DTOs.FundingAssessments
 
             return numbers.Min() == 0;
         }
+
+        public bool onContinueWithAssessment()
+        {
+           // return true;
+
+            var question = this.Questions.FirstOrDefault(x => x.QuestionSectionName == "Legislative Compliance" && x.Name == "Approval");
+
+            if (question == null)
+                return false;
+
+            var selectedResponse = question.ResponseOptions.FirstOrDefault(x => x.Id == question.SelectedResponseOptionId);
+            if (selectedResponse == null) return false;
+
+
+            if (selectedResponse.Name.ToLower().Equals("approved"))
+            {
+                return true;
+            }
+            else if (selectedResponse.Name.ToLower().Equals("approved with condition") && (question.Comment.Length > 0))
+            {
+                LegislativeComplianceFinalCommentRequired = true;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
+
+
 }

@@ -8,7 +8,7 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { FundingAssessmentManagementService } from 'src/app/services/api-services/funding-assessment-management/funding-assessment-management.service';
 import { PermissionsEnum } from 'src/app/models/enums';
 import { IUser } from 'src/app/models/interfaces';
-import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationGet } from 'src/app/services/api-services/funding-assessment-management/dtoFundingAssessmentManagement';
+import { dtoFundingAssessmentApplicationFormFinalApproverItemGet, dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationFormSummaryItemGet, dtoFundingAssessmentApplicationGet, dtoFundingAssessmentFormQuestionResponseUpsert } from 'src/app/services/api-services/funding-assessment-management/dtoFundingAssessmentManagement';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
@@ -72,9 +72,7 @@ export class FundingAssessmentFormComponent implements OnInit {
         if (!this.IsAuthorized(PermissionsEnum.ViewFundingAssessmentMenu))
           this._router.navigate(['401']);
       }
-
-      console.log("questions", this.fundingAssessmentForm )
-      this.loadFundingAssessments();
+  //    this.loadFundingAssessments();
       this.buildButtonItems();
 
       this.npoForm = this.fb.group({
@@ -91,20 +89,20 @@ export class FundingAssessmentFormComponent implements OnInit {
     });
   }
 
-  loadFundingAssessments() {
-    this._spinner.show();
-    this._repo.getFundingAssessmentApplications().subscribe(
-      (result) => {
-        this._fundingAssessments = result;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+  // loadFundingAssessments() {
+  //   this._spinner.show();
+  //   this._repo.getFundingAssessmentApplications().subscribe(
+  //     (result) => {
+  //       this._fundingAssessments = result;
+  //       this._spinner.hide();
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
 
-  }
+  // }
 
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
@@ -151,6 +149,38 @@ export class FundingAssessmentFormComponent implements OnInit {
 
   getAnalysisPerformance()
   {
-     return this.fundingAssessmentForm.questions.filter(x=>x.questionSectionName==="Analysis Performance");
+     return this.fundingAssessmentForm.questions.filter(x=>x.questionSectionName==="Analysis Of Performance");
   }
+
+  onSummaryChange(summaryItem: dtoFundingAssessmentApplicationFormSummaryItemGet){
+
+
+        let response = {
+          id: summaryItem.id,
+          assessmentApplicationFormId: this.fundingAssessmentForm.id,
+          selectedResponseOptionId: summaryItem.selectedResponseOptionId,
+          selectedResponseRatingId: null,
+          comment: null
+        } as dtoFundingAssessmentFormQuestionResponseUpsert;
+    
+        this._repo.upsertQuestionResponse(response).subscribe(x => {
+          
+        });
+  }
+
+  onFinalApproverChange(finalApprovalItem: dtoFundingAssessmentApplicationFormFinalApproverItemGet){
+
+
+    let response = {
+      id: finalApprovalItem.id,
+      assessmentApplicationFormId: this.fundingAssessmentForm.id,
+      selectedResponseOptionId: finalApprovalItem.selectedResponseOptionId,
+      selectedResponseRatingId: null,
+      comment: finalApprovalItem.comment
+    } as dtoFundingAssessmentFormQuestionResponseUpsert;
+
+    this._repo.upsertQuestionResponse(response).subscribe(x => {
+      
+    });
+}
 }

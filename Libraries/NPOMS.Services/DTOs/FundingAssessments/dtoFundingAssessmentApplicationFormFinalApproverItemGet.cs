@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NPOMS.Domain.Evaluation;
+using NPOMS.Domain.FundingAssessment;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,26 +10,32 @@ namespace NPOMS.Services.DTOs.FundingAssessments
 {
     public class dtoFundingAssessmentApplicationFormFinalApproverItemGet
     {
+        public int Id { get; }
         public string Name { get; }
-        public int? RecommendationOptionId { get; }
-        public string RecommendationReason { get; }
-
-        public int SortOrder { get; }
-
-        public bool IsComment { get; }
+        public int? SelectedResponseOptionId { get; }
+        public string Comment { get; private set; }
+        private List<dtoResponseOptionGet> _responseOptions { get; set; } = new();
+        public IReadOnlyList<dtoResponseOptionGet> ResponseOptions => _responseOptions;
 
         private dtoFundingAssessmentApplicationFormFinalApproverItemGet()
         {
             
         }
 
-        public dtoFundingAssessmentApplicationFormFinalApproverItemGet(string name, int recommendationOptionId, string recommendationReason, int sortOrder, bool isComment)
+        public dtoFundingAssessmentApplicationFormFinalApproverItemGet(Question question, List<ResponseOption> responseOptions, List<FundingAssessmentFormResponse> fundingAssessmentFormResponses)
         {
-            this.Name = name;
-            this.RecommendationOptionId = recommendationOptionId;
-            this.RecommendationReason = recommendationReason;
-            this.SortOrder = sortOrder;
-            this.IsComment = isComment;
+            this.Id = question.Id;
+            this.Name = question.Name;
+
+            responseOptions.Where(x => x.SystemName == "Option").ToList().ForEach(responseOption => this._responseOptions.Add(new(responseOption)));
+
+            var responseOption = fundingAssessmentFormResponses?.Where(x => x.QuestionId == this.Id && x.ResponseOptionSystemType == "Option").FirstOrDefault();
+
+            if (responseOption != null)
+            {
+                this.SelectedResponseOptionId = responseOption.ResponseOptionId;
+                this.Comment = responseOption.Comment;
+            }
         }
     }
 }

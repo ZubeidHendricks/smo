@@ -124,7 +124,18 @@ namespace NPOMS.Repository.Configurations.Evaluation
                          CreatedUserId = 1,
                          CreatedDateTime = DateTime.Now
 
-                     }
+                     },
+                       new ResponseType
+                       {
+                           Id = 19,
+                           Name = "Approver",
+                           Description = "Approver - Recommendation"
+,
+                           IsActive = true,
+                           CreatedUserId = 1,
+                           CreatedDateTime = DateTime.Now
+
+                       }
             );
         }
     }

@@ -79,11 +79,15 @@ new ResponseOption { Id = 93, ResponseTypeId = 17, Name = "Q1", SystemName = "Op
 new ResponseOption { Id = 94, ResponseTypeId = 17, Name = "Q2", SystemName = "Option", IsActive = true, CreatedUserId = 1 },
 new ResponseOption { Id = 95, ResponseTypeId = 17, Name = "Q3", SystemName = "Option", IsActive = true, CreatedUserId = 1 },
 new ResponseOption { Id = 96, ResponseTypeId = 17, Name = "Q4", SystemName = "Option", IsActive = true, CreatedUserId = 1 },
-new ResponseOption { Id = 97, ResponseTypeId = 17, Name = "5 - Yes", SystemName = "Rating", IsActive = true, CreatedUserId = 1 },
+new ResponseOption { Id = 97, ResponseTypeId = 17, Name = "0 - Not Applicable", SystemName = "Rating", IsActive = true, CreatedUserId = 1, CreatedDateTime=DateTime.UtcNow },
 new ResponseOption { Id = 98, ResponseTypeId = 17, Name = "1 - No", SystemName = "Rating", IsActive = true, CreatedUserId = 1 },
+new ResponseOption { Id = 99, ResponseTypeId = 17, Name = "5 - Yes", SystemName = "Rating", IsActive = true, CreatedUserId = 1 },
 
-new ResponseOption { Id = 99, ResponseTypeId = 18, Name = "None", SystemName = "None", IsActive = true, CreatedUserId = 1 }
+new ResponseOption { Id = 100, ResponseTypeId = 18, Name = "None", SystemName = "None", IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.UtcNow },
 
+new ResponseOption { Id = 101, ResponseTypeId = 19, Name = "Not Funded", SystemName = "Option", IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.UtcNow },
+new ResponseOption { Id = 102, ResponseTypeId = 19, Name = "Funded with conditions (proceed)", SystemName = "Option", IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.UtcNow },
+new ResponseOption { Id = 103, ResponseTypeId = 19, Name = "Fund NPO (proceed)", SystemName = "Option", IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.UtcNow }
             );
 		}
 	}

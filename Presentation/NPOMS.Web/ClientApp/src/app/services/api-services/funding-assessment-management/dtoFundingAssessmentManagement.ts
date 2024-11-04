@@ -15,18 +15,21 @@ export interface dtoFundingAssessmentApplicationFormGet{
     id: number,
     applicationId: number,
     organisationName: string,
+    continueWithAssessment: boolean,
     serviceDeliveries: dtoServiceDeliveryAreaGet[]
     questions: dtoQuestionGet[]
     summaryItems: dtoFundingAssessmentApplicationFormSummaryItemGet[],
-    finalApprovalItems: dtoFundingAssessmentApplicationFormFinalApproverItemGet[]
+    finalApprovalItem: dtoFundingAssessmentApplicationFormFinalApproverItemGet
 }
 
 export interface dtoFundingAssessmentApplicationFormSummaryItemGet
 {
+    id: number,
     name: string,
     score: number,
     finalRating: number
-    isApproved : number
+    selectedResponseOptionId : number
+    responseOptions: dtoResponseOptionGet[],
 }
 
 export interface dtoServiceDeliveryAreaGet{
@@ -38,8 +41,8 @@ export interface dtoServiceDeliveryAreaGet{
 export interface dtoQuestionGet{
     id: number,
     name: string,
-    selectedResponseOptionId: string,
-    selectedResponseRatingId: string,
+    selectedResponseOptionId: number,
+    selectedResponseRatingId: number,
     questionSectionName: string,
     responseOptions: dtoResponseOptionGet[],
     responseRatings: dtoResponseOptionGet[],
@@ -51,8 +54,8 @@ export interface dtoFundingAssessmentFormQuestionResponseUpsert
 {
     id: number,
     assessmentApplicationFormId: number,
-    selectedResponseOptionId: string,
-    selectedResponseRatingId: string,
+    selectedResponseOptionId: number,
+    selectedResponseRatingId: number,
     comment: string
 }
 
@@ -66,9 +69,9 @@ export interface dtoResponseOptionGet
 
 export interface dtoFundingAssessmentApplicationFormFinalApproverItemGet
 {
+    id: number,
     name: string,
-    recommendationOptionId: number,
-    recommendationReason: string,
-    sortOrder: number,
-    isComment: boolean
+    selectedResponseOptionId: number,
+    responseOptions: dtoResponseOptionGet[],
+    comment: string
 }

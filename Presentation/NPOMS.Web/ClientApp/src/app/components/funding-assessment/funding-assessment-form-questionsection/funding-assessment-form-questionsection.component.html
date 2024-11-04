@@ -45,7 +45,7 @@
         <tr *ngIf="question.name === 'Analysis of Finding'">
           <td>{{question.name}}</td>
           <td colspan="3">
-            <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" placeholder="" (ngModelChange)="onQuestionChange(question)"></textarea>
+            <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" placeholder="" (blur)="onQuestionChange(question)"></textarea>
           </td>
         </tr>
 
@@ -81,10 +81,12 @@
         <tr *ngIf="question.name === 'Final comment'">
           <td>{{question.name}}</td>
           <td colspan="3">
-            <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" (ngModelChange)="onQuestionChange(question)"></textarea>
+            <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" (blur)="onQuestionChange(question)"></textarea>
           </td>
         </tr>
       </ng-template>
     </p-table>
   </p-panel>
+
+
 </div>

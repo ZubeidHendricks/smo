@@ -398,7 +398,7 @@ namespace NPOMS.Repository.Configurations.Evaluation
                     Id = 116,
                     QuestionSectionId = 30,
                     ResponseTypeId = 18,
-                    Name = "Overall Rating on Analysis of findings (1 - 5)",
+                    Name = "Overall Rating on Analysis of findings (1 - 3)",
                     SortOrder = 300,
                     IsActive = true,
                     CreatedUserId = 1
@@ -422,7 +422,51 @@ namespace NPOMS.Repository.Configurations.Evaluation
                       SortOrder = 300,
                       IsActive = true,
                       CreatedUserId = 1
-                  }
+                  },
+                  new Question
+                  {
+                      Id = 119,
+                      QuestionSectionId = 33,
+                      ResponseTypeId = 11,
+                      Name = "Legislative Compliance",
+                      SortOrder = 100,
+                      IsActive = true,
+                      CreatedUserId = 1,
+                      CreatedDateTime= DateTime.UtcNow
+                  },
+                new Question
+                {
+                    Id = 120,
+                    QuestionSectionId = 33,
+                    ResponseTypeId = 11,
+                    Name = "PFMA Compliance",
+                    SortOrder = 101,
+                    IsActive = true,
+                    CreatedUserId = 1,
+                    CreatedDateTime = DateTime.UtcNow
+                },
+                new Question
+                {
+                    Id = 121,
+                    QuestionSectionId = 33,
+                    ResponseTypeId = 11,
+                    Name = "Analysis Of Performance",
+                    SortOrder = 102,
+                    IsActive = true,
+                    CreatedUserId = 1,
+                    CreatedDateTime = DateTime.UtcNow
+                },
+                 new Question
+                 {
+                     Id = 122,
+                     QuestionSectionId = 34,
+                     ResponseTypeId = 19,
+                     Name = "Approver Recommendation",
+                     SortOrder = 100,
+                     IsActive = true,
+                     CreatedUserId = 1,
+                     CreatedDateTime = DateTime.UtcNow
+                 }
 
             );
         }

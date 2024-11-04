@@ -54,7 +54,8 @@ namespace NPOMS.Repository.Configurations.Evaluation
                 new QuestionProperty { Id = 115, QuestionId = 115, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 },
 
                 new QuestionProperty { Id = 110, QuestionId = 110, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 },
-                new QuestionProperty { Id = 112, QuestionId = 112, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 }
+                new QuestionProperty { Id = 112, QuestionId = 112, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+                new QuestionProperty { Id = 122, QuestionId = 122, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 }
             );
 		}
 	}

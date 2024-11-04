@@ -10,6 +10,7 @@ import { PermissionsEnum } from 'src/app/models/enums';
 import { IApplication, IUser } from 'src/app/models/interfaces';
 import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationGet } from 'src/app/services/api-services/funding-assessment-management/dtoFundingAssessmentManagement';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { FundingAssessmentUIEventsService } from '../funding-assessment-ui-events.service';
 
 @Component({
   selector: 'app-funding-assessment-list',
@@ -61,7 +62,8 @@ export class FundingAssessmentListComponent implements OnInit {
     private _loggerService: LoggerService,
     private _confirmationService: ConfirmationService,
     private _messageService: MessageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private uiEvents: FundingAssessmentUIEventsService
   ) { }
 
   ngOnInit(): void {
@@ -76,18 +78,19 @@ export class FundingAssessmentListComponent implements OnInit {
       this.loadFundingAssessments();
       this.buildButtonItems();
 
-      this.npoForm = this.fb.group({
-        NpoName: [''],
-        CCID: [''],
-        Question1SelectionList1Value: [''],
-        Question1RatingValue: [''],
-        Question2SelectionList1Value: [''],
-        Question2RatingValue: [''],
-        LegislativeComplianceFinding: [''],
-        LegislativeComplianceOverallRating: [''],
-        LegislativeComplianceApproval: ['']
-      });
+    // Subscribe to the event from the service
+    this.uiEvents.onResponseChanged$.subscribe(() => {
+      // Code to execute when the event is triggered
+      this._repo.getFundingAssessmentApplicationForm(this._selectedApplicationId).subscribe(
+        (result) => {
+          this._fundingAssessmentForm = result;
+        },
+        (err) => {
+          this._loggerService.logException(err);
+        }
+      );
     });
+  });
   }
 
   loadFundingAssessments() {

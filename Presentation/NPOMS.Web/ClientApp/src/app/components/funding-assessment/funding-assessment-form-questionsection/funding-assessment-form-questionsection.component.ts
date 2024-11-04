@@ -10,6 +10,7 @@ import { PermissionsEnum } from 'src/app/models/enums';
 import { IUser } from 'src/app/models/interfaces';
 import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationGet, dtoFundingAssessmentFormQuestionResponseUpsert, dtoQuestionGet } from 'src/app/services/api-services/funding-assessment-management/dtoFundingAssessmentManagement';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { FundingAssessmentUIEventsService } from '../funding-assessment-ui-events.service';
 
 @Component({
   selector: 'app-funding-assessment-form-questionsection',
@@ -18,9 +19,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   providers: [MessageService, ConfirmationService]
 })
 export class FundingAssessmentFormQuestionSectionComponent implements OnInit {
- @Input() Questions: dtoQuestionGet;
- @Input() AssessmentApplicationFormId: number;
- @Input() HeaderName: string;
+  @Input() Questions: dtoQuestionGet;
+  @Input() AssessmentApplicationFormId: number;
+  @Input() HeaderName: string;
 
 
   // Used for table filtering
@@ -34,7 +35,8 @@ export class FundingAssessmentFormQuestionSectionComponent implements OnInit {
     private _loggerService: LoggerService,
     private _confirmationService: ConfirmationService,
     private _messageService: MessageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private uiEvents: FundingAssessmentUIEventsService
   ) { }
 
   ngOnInit(): void {
@@ -43,21 +45,19 @@ export class FundingAssessmentFormQuestionSectionComponent implements OnInit {
 
   }
 
-  onQuestionChange(question: dtoQuestionGet)
-  {
+  onQuestionChange(question: dtoQuestionGet) {
+    let response = {
+      id: question.id,
+      assessmentApplicationFormId: this.AssessmentApplicationFormId,
+      selectedResponseOptionId: question.selectedResponseOptionId,
+      selectedResponseRatingId: question.selectedResponseRatingId,
+      comment: question.comment
+    } as dtoFundingAssessmentFormQuestionResponseUpsert;
 
-      let response ={
-                    id: question.id, 
-                    assessmentApplicationFormId: this.AssessmentApplicationFormId,
-                    selectedResponseOptionId: question.selectedResponseOptionId,
-                    selectedResponseRatingId: question.selectedResponseRatingId,
-                    comment: question.comment
-                  } as dtoFundingAssessmentFormQuestionResponseUpsert;
-
-      this._repo.upsertQuestionResponse(response).subscribe(x=>{
-
-      });
+    this._repo.upsertQuestionResponse(response).subscribe(x => {
+        this.uiEvents.onResponseChanged();
+    });
   }
-  
+
 
 }
