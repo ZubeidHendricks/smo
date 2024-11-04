@@ -327,6 +327,7 @@ namespace NPOMS.Services.Implementation
                     AllocatedAmount = paymentScheduleItem.AllocatedAmount ?? 0,
                     ApprovedAmount = paymentScheduleItem.ApprovedAmount ?? 0,
                     PaidAmount = paymentScheduleItem.PaidAmount ?? 0,
+                    IsCompliant = paymentScheduleItem.IsCompliant,
                     IsActive = paymentScheduleItem.IsActive
                 });
             }
@@ -485,6 +486,7 @@ namespace NPOMS.Services.Implementation
                     AllocatedAmount = paymentScheduleItem.AllocatedAmount,
                     ApprovedAmount = paymentScheduleItem.ApprovedAmount,
                     PaidAmount = paymentScheduleItem.PaidAmount,
+                    IsCompliant = paymentScheduleItem.IsCompliant,
                     IsActive = paymentScheduleItem.IsActive,
                     CreatedUserId = loggedInUser.Id,
                     CreatedDateTime = DateTime.Now

@@ -2212,7 +2212,10 @@ export interface IPaymentScheduleItemViewModel {
     approvedAmount: string;
     paidAmount: string;
     isActive: boolean;
+    isCompliant: boolean;
 }
+
+
 
 export interface IBankDetailViewModel {
     id: number;

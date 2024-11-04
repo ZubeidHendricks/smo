@@ -42,7 +42,34 @@ export class FCPaymentScheduleComponent implements OnInit {
     return FrequencyEnum;
   }
 
+  showComplianceDialog: boolean = false;
+  showComplianceDetail: boolean = false;
+
+  yesNoOptions: any[] = [
+    {name: 'YES', value: 'YES'},
+    {name: 'NO', value: 'NO'},
+  ];
+
+
+  yesNoValue: any;
+
+  selectedTpaOption: any;
+
+  selectedProgressOption: any;
+
+  selectedNonFinancialOption: any;
+
+  selectedOverrideOption: any;
+
+  selectedComplianceOption: any;
+
+
   cols: any[];
+  compliances: any[];
+  selectedCompliance: any;
+
+  selectedCycleNo: number = 5;
+  selectedTpa:boolean = false;
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -57,8 +84,19 @@ export class FCPaymentScheduleComponent implements OnInit {
       { header: 'Payment Status', width: '15%' },
       { header: 'Allocated Amount', width: '15%' },
       { header: 'Approved Amount', width: '15%' },
-      { header: 'Paid Amount', width: '15%' }
+      { header: 'Paid Amount', width: '15%' },
+      { header: 'Compliance', width: '15%' }
     ];
+
+    this.compliances = [
+      { finyear: '2024 - 2025', complianceCycle: 1, signedTpa: true, progressReport: true, nonFinData: true, isOverridden: true, isCompliant: true},
+      { finyear: '2024 - 2025', complianceCycle: 2, signedTpa: true, progressReport: false, nonFinData: true, isOverridden: false, isCompliant: false},
+      { finyear: '2024 - 2025', complianceCycle: 3, signedTpa: false, progressReport: false, nonFinData: false, isOverridden: false, isCompliant: false},
+      { finyear: '2024 - 2025', complianceCycle: 4, signedTpa: false, progressReport: false, nonFinData: false, isOverridden: false, isCompliant: false}
+
+    ];
+
+    console.log('paymentSchedule',this.paymentSchedule);
   }
 
   private generateFundingPaymentSchedules() {
@@ -75,6 +113,36 @@ export class FCPaymentScheduleComponent implements OnInit {
           this._spinner.hide();
         }
       );
+    }
+  }
+
+  onComplianceChange(){
+
+    console.log(this.showComplianceDialog);
+    this.showComplianceDialog = true;
+  }
+
+  hideComplianceDialog(){
+    this.showComplianceDialog = false;
+  }
+
+  onEditCompliance(selectedCompliance){
+    console.log('onEditCompliance', selectedCompliance);
+    this.showComplianceDialog = false;
+    this.showComplianceDetail = true;
+  }
+
+  onSaveCompliance(){
+    this.showComplianceDetail = false;
+    //this.selectedCompliance
+  }
+
+  onOptionChange(){
+
+    if (this.selectedTpaOption==='YES' && this.selectedProgressOption==='YES' && this.selectedNonFinancialOption === 'YES'){
+      this.selectedComplianceOption = 'YES'
+    } else {
+            this.selectedComplianceOption = 'NO'
     }
   }
 }
