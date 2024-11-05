@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import {  } from 'src/app/models/interfaces';
-import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationGet, dtoFundingAssessmentFormQuestionResponseUpsert } from './dtoFundingAssessmentManagement';
+import { dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationFormSDAUpsert, dtoFundingAssessmentApplicationGet, dtoFundingAssessmentFormQuestionResponseUpsert } from './dtoFundingAssessmentManagement';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -41,6 +41,11 @@ export class FundingAssessmentManagementService {
 
   public upsertQuestionResponse(dto: dtoFundingAssessmentFormQuestionResponseUpsert) {
     const url = `${this._envUrl.urlAddress}/api/funding-assessments/${dto.assessmentApplicationFormId}/question/${dto.id}/responses`;
+    return this._http.put<any>(url, dto, httpOptions);
+  }
+
+  public upsertSDA(formId: number, applicationId: number, dto: dtoFundingAssessmentApplicationFormSDAUpsert) {
+    const url = `${this._envUrl.urlAddress}/api/funding-assessments/${formId}/application/${applicationId}/programeServiceDeliveryArea`;
     return this._http.put<any>(url, dto, httpOptions);
   }
 //   public createFundingCapture(fundingCapture: IFundingCaptureViewModel) {

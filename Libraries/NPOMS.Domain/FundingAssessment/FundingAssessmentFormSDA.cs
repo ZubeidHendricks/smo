@@ -17,6 +17,7 @@ namespace NPOMS.Domain.FundingAssessment
         public bool IsSelected { get; private set; }
 
         public FundingAssessmentForm FundingAssessmentForm { get; }
+        public ProgrameServiceDeliveryArea ProgrameServiceDeliveryArea { get; }
 
         private FundingAssessmentFormSDA()
         {

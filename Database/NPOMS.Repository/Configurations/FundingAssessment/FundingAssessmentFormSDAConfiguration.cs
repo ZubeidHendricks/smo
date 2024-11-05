@@ -14,8 +14,8 @@ namespace NPOMS.Repository.Configurations.FundingAssessment
         public void Configure(EntityTypeBuilder<FundingAssessmentFormSDA> builder)
         {
             builder.HasOne(x => x.FundingAssessmentForm).WithMany().HasForeignKey(x => x.FundingAssessmentFormId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.ProgrameServiceDeliveryArea).WithMany().HasForeignKey(x => x.ProgrameServiceDeliveryAreaId).OnDelete(DeleteBehavior.NoAction);
 
-            builder.Property(x => x.ProgrameServiceDeliveryAreaId).IsRequired(true);
             builder.Property(x => x.IsSelected).IsRequired(true);
 
         }

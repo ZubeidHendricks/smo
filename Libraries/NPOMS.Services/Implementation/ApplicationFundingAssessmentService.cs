@@ -101,6 +101,21 @@ namespace NPOMS.Services.Implementation
             return form;
         }
 
+        public async Task FundingAssessmentApplicationFormSDAUpsert(int fundingAssessmentFormId, dtoFundingAssessmentApplicationFormSDAUpsert dto, string loggedInUsername)
+        {
+            var loggedInUser = await this._repositoryContext.Users.Where(x => x.UserName == loggedInUsername).FirstOrDefaultAsync();
+            var fundingAssessmentForm = await this._repositoryContext.FundingAssessmentForms
+                                    .Include(x=>x.FundingAssessmentFormSDAs)
+                                   .FirstOrDefaultAsync(x => x.Id == fundingAssessmentFormId);
+
+            var programmeServiceDeliveries = await this._repositoryContext.ProgrammeServiceDelivery.Include(x => x.ServiceDeliveryAreas).ToListAsync();
+            var psda = programmeServiceDeliveries.SelectMany(x => x.ServiceDeliveryAreas).FirstOrDefault(x => x.ProgrameServiceDeliveryId == dto.ProgramServiceDeliveryAreaId);
+
+            fundingAssessmentForm.UpsertSDAs(psda, dto.IsSelected);
+            
+            await this._repositoryContext.SaveChangesAsync();
+        }
+
 
         public async Task ConfirmDOICapturer(int applicationId, string loggedInUsername)
         {

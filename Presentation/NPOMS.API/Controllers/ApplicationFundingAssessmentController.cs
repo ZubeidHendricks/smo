@@ -39,13 +39,28 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpGet("{id}/application/{applicationId}", Name = "GetFundingAssessmentForm")]
-        public async Task<IActionResult> GetAllFundingAssessmentApplications(int id, int applicationId)
+        [HttpGet("{id}/application/{applicationId}", Name = "GetFundingAssessmentById")]
+        public async Task<IActionResult> GetFundingAssessmentById(int id, int applicationId)
         {
             try
             {
                 var results = await this._applicationFundingAssessmentService.GetFundingAssessmentById(id, applicationId);
                 return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetFundingAssessmentForm action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}/application/{applicationId}/programeServiceDeliveryArea", Name = "FundingAssessmentApplicationFormSDAUpsert")]
+        public async Task<IActionResult> FundingAssessmentApplicationFormSDAUpsert(int id, int applicationId, [FromBody] dtoFundingAssessmentApplicationFormSDAUpsert dto)
+        {
+            try
+            {
+                await this._applicationFundingAssessmentService.FundingAssessmentApplicationFormSDAUpsert(id, dto, GetUserIdentifier());
+                return Ok();
             }
             catch (Exception ex)
             {

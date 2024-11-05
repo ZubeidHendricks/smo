@@ -1,4 +1,5 @@
 ﻿using NPOMS.Domain.Entities;
+using NPOMS.Domain.Mapping;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -58,6 +59,18 @@ namespace NPOMS.Domain.FundingAssessment
 
             this.UpdatedUserId = loggedInUserId;
             this.UpdatedDateTime    = DateTime.UtcNow;
+        }
+
+        public void UpsertSDAs(ProgrameServiceDeliveryArea programeServiceDeliveryArea, bool isSelected)
+        {
+            var psda = _fundingAssessmentFormSDAs.FirstOrDefault(x => x.ProgrameServiceDeliveryAreaId == programeServiceDeliveryArea.Id);
+            if (psda == null)
+            {
+                this._fundingAssessmentFormSDAs.Add(new(this, programeServiceDeliveryArea));
+            }
+            else {
+                psda.SetIsSelected(isSelected);
+            }
         }
     }
 }

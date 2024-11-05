@@ -20,7 +20,7 @@ export interface dtoFundingAssessmentApplicationFormGet{
     questions: dtoQuestionGet[]
     summaryItems: dtoFundingAssessmentApplicationFormSummaryItemGet[],
     finalApprovalItem: dtoFundingAssessmentApplicationFormFinalApproverItemGet,
-    serviceDeliveries: dtoFundingAssessmentApplicationFormSDAGet
+    serviceDeliveries: dtoFundingAssessmentApplicationFormSDAGet[]
 }
 
 export interface dtoFundingAssessmentApplicationFormSummaryItemGet
@@ -31,6 +31,15 @@ export interface dtoFundingAssessmentApplicationFormSummaryItemGet
     finalRating: number
     selectedResponseOptionId : number
     responseOptions: dtoResponseOptionGet[],
+}
+
+export interface dtoFundingAssessmentApplicationFormSDAUpsert
+{
+    id: number,
+    fundingAssessmentFormId: number,
+    programServiceDeliveryAreaId: number,
+    isSelected: boolean
+
 }
 
 export interface dtoFundingAssessmentApplicationFormSDAGet

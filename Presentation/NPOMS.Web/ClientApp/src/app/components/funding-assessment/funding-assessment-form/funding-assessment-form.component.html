@@ -35,15 +35,15 @@
               <th>Service Delivery Area</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-row>
+          <ng-template pTemplate="body" let-serviceDeliveryArea>
             <tr>
               <td>
-                <p-checkbox formControlName="chkNSP" [(ngModel)]="row.isSelected"></p-checkbox>
+                <p-checkbox binary="true" [(ngModel)]="serviceDeliveryArea.isSelected" (ngModelChange)="onServiceDeliveryAreaModelChange($event, serviceDeliveryArea)"></p-checkbox>
               </td>
-              <td>{{ row.regionName }}</td>
-              <td>{{ row.districtCouncilName }}</td>
-              <td>{{ row.localMunicipalityName }}</td>
-              <td>{{ row.serviceDeliveryAreaName }}</td>
+              <td>{{ serviceDeliveryArea.regionName }}</td>
+              <td>{{ serviceDeliveryArea.districtCouncilName }}</td>
+              <td>{{ serviceDeliveryArea.localMunicipalityName }}</td>
+              <td>{{ serviceDeliveryArea.serviceDeliveryAreaName }}</td>
             </tr>
           </ng-template>
 
