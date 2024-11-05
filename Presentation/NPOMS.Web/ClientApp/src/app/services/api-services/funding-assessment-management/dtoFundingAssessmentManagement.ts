@@ -1,25 +1,26 @@
 export interface dtoFundingAssessmentApplicationGet{
+    id: number;
     applicationId : number;
     organisationI: number;
-    refNo: string;
     organisationName: string;
-    organisationType: string;
-    applicationName: string;
-    subProgrammeName: string;
+    cCode: string;
     financialYearName : string;
-    closingDate : string;
     fundingAssessmentStatusName: string;
+    isCompliant: boolean;
+    preSelected: boolean;
+    selectedAreaCount: number;
 }
 
 export interface dtoFundingAssessmentApplicationFormGet{
     id: number,
     applicationId: number,
     organisationName: string,
+    cCode: string;
     continueWithAssessment: boolean,
-    serviceDeliveries: dtoServiceDeliveryAreaGet[]
     questions: dtoQuestionGet[]
     summaryItems: dtoFundingAssessmentApplicationFormSummaryItemGet[],
-    finalApprovalItem: dtoFundingAssessmentApplicationFormFinalApproverItemGet
+    finalApprovalItem: dtoFundingAssessmentApplicationFormFinalApproverItemGet,
+    serviceDeliveries: dtoFundingAssessmentApplicationFormSDAGet
 }
 
 export interface dtoFundingAssessmentApplicationFormSummaryItemGet
@@ -32,11 +33,17 @@ export interface dtoFundingAssessmentApplicationFormSummaryItemGet
     responseOptions: dtoResponseOptionGet[],
 }
 
-export interface dtoServiceDeliveryAreaGet{
+export interface dtoFundingAssessmentApplicationFormSDAGet
+{
     id: number,
-    name: string,
+    programServiceDeliveryAreaId: number,
+    regionName: string,
+    districtCouncilName: string,
+    localMunicipalityName: string,
+    serviceDeliveryAreaName: string,
     isSelected: boolean
 }
+
 
 export interface dtoQuestionGet{
     id: number,

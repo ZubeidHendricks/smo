@@ -9,31 +9,40 @@
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 100px;">#</th>
-                <th>RefNo</th>
-                <th>Organisation</th>
-                <th>Type</th>
+                <th>NPO Name</th>
+                <th>CCID</th>
+                <th>Subsidy Type</th>
                 <th>Financial Year</th>
+                <th>Is Compliant</th>
+                <th>Preselected</th>
+                <th>Selected Areas</th>
                 <th>Status</th>
                 <th style="width: 100px;">Actions</th>
             </tr>
             <tr>
                 <th></th>
-                <th><p-columnFilter type="text" field="refNo" matchMode="contains"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="organisationName" matchMode="contains"></p-columnFilter></th>
-                <th><p-columnFilter type="text" field="organisationType" matchMode="contains"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="cCOde" matchMode="contains"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="organisationName" matchMode="contains"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="financialYearName" matchMode="contains"></p-columnFilter></th>
                 <th></th>
+                <th></th>
+                <th></th>
+                <th><p-columnFilter type="text" field="fundingAssessmentStatusName" matchMode="contains"></p-columnFilter></th>
                 <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-fundingAssessment let-rowIndex="rowIndex">
             <tr>
                 <td>{{rowIndex + 1}}</td>
-                <td>{{ fundingAssessment.refNo }}</td>
                 <td>{{ fundingAssessment.organisationName }}</td>
-                <td>{{ fundingAssessment.organisationType }}</td>
-                <td>{{ fundingAssessment.financialYearName }}</td>
+                <td>{{ fundingAssessment.cCode }}</td>
                 <td></td>
+                <td>{{ fundingAssessment.financialYearName }}</td>
+                <td>{{fundingAssessment.isCompliant}}</td>
+                <td>{{fundingAssessment.preSelected}}</td>
+                <td>{{fundingAssessment.selectedAreaCount}}</td>
+                <td>{{fundingAssessment.fundingAssessmentStatusName}}</td>
                 <td style="text-align: center;">
                   <button *ngIf="fundingAssessment.fundingAssessmentStatusName === 'Pending DOI Capturer'" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-gavel" (click)="showDOIDialog(fundingAssessment)" pTooltip="DOI" tooltipPosition="left"></button>
                   <button *ngIf="fundingAssessment.fundingAssessmentStatusName === 'Pending Assessment Capturer'" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="showFundingAssessmentForm(fundingAssessment)" pTooltip="Edit Form" tooltipPosition="left"></button>

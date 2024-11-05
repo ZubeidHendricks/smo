@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs.Models;
+using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Evaluation;
 using NPOMS.Domain.FundingAssessment;
@@ -17,6 +18,7 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         public int? Id { get; }
         public int ApplicationId { get; }
         public string OrganisationName { get; private set; }
+        public string CCode { get; private set; }
         public bool DOICaptured { get; }
         public bool DOIApproved { get; }
 
@@ -36,8 +38,8 @@ namespace NPOMS.Services.DTOs.FundingAssessments
 
 
 
-        private List<dtoServiceDeliveryAreaGet> _serviceDeliveries { get; set; } = new();
-        public IReadOnlyList<dtoServiceDeliveryAreaGet> ServiceDeliveries => _serviceDeliveries;
+        private List<dtoFundingAssessmentApplicationFormSDAGet> _serviceDeliveries { get; set; } = new();
+        public IReadOnlyList<dtoFundingAssessmentApplicationFormSDAGet> ServiceDeliveries => _serviceDeliveries;
 
         private List<dtoQuestionGet> _questions { get; set; } = new();
         public IReadOnlyList<dtoQuestionGet> Questions => _questions;
@@ -49,15 +51,21 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         private List<ResponseOption> _orginalResponseOptions { get; } //only used internally
         private List<Question> _originalQuestions { get; }
         private FundingAssessmentForm _fundingAssessmentForm { get; }
-        public dtoFundingAssessmentApplicationFormGet(Application application, List<Question> questions, List<ResponseOption> responseOptions, FundingAssessmentForm fundingAssessmentForm)
+        private List<ServicesRendered> _servicesRendered { get; }
+        private List<ProgrammeServiceDelivery> _programServiceDeliveries { get; }
+        
+        public dtoFundingAssessmentApplicationFormGet(Application application, List<Question> questions, List<ResponseOption> responseOptions, FundingAssessmentForm fundingAssessmentForm, NpoProfile npoProfile, List<ServicesRendered> servicesRendered, List<ProgrammeServiceDelivery> programServiceDeliveries)
         {
             this._orginalResponseOptions = responseOptions;
             this._originalQuestions = questions;
             this._fundingAssessmentForm = fundingAssessmentForm;
+            this._servicesRendered = servicesRendered;
+            this._programServiceDeliveries = programServiceDeliveries;
 
             this.Id = fundingAssessmentForm?.Id;
             this.ApplicationId = application.Id;
-            this.OrganisationName = application.Npo.Name;
+            this.OrganisationName = npoProfile.Npo.Name;
+            this.CCode = npoProfile.Npo.CCode;
             this.DOICaptured = fundingAssessmentForm?.DOICapturerId > 0;
             this.DOIApproved = (fundingAssessmentForm?.DOIApproverId ?? 0) > 0;
 
@@ -70,7 +78,8 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             var approverQuestion = this._originalQuestions.First(x => x.QuestionSection.Name == "Final Approver Section");
             var approverResponseOptions = _orginalResponseOptions.Where(x => x.ResponseTypeId == approverQuestion.ResponseTypeId).ToList();
             this.FinalApprovalItem = new(approverQuestion, approverResponseOptions, fundingAssessmentForm?.FundingAssessmentFormResponses.ToList());
-         
+
+            this.AddServiceDeliveryAreas();
 
             this.CalcOverallRatingValue();
             this.CalSummaryByQuestionSection();
@@ -213,6 +222,26 @@ namespace NPOMS.Services.DTOs.FundingAssessments
                 return false;
             }
         }
+    
+
+        private void AddServiceDeliveryAreas() {
+
+            if (this._programServiceDeliveries.Count() == 0)
+                return;
+
+            foreach (var servicesRendered in this._servicesRendered)
+            {
+                var programServiceDelivery = this._programServiceDeliveries.FirstOrDefault(x => x.SubProgrammeTypeId == servicesRendered.SubProgrammeTypeId && x.SubProgrammeId == servicesRendered.SubProgrammeId);
+
+                if (programServiceDelivery != null)
+                { 
+                    programServiceDelivery.ServiceDeliveryAreas.ToList().ForEach(x => this._serviceDeliveries.Add(new(x, programServiceDelivery, this._fundingAssessmentForm)));
+                }
+            
+            }
+
+        }
+    
     }
 
 

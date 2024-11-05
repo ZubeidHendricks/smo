@@ -32,6 +32,9 @@ namespace NPOMS.Domain.FundingAssessment
         private List<FundingAssessmentFormResponse> _responses { get; set; } = new();
         public IReadOnlyList<FundingAssessmentFormResponse> FundingAssessmentFormResponses => _responses;
 
+        private List<FundingAssessmentFormSDA> _fundingAssessmentFormSDAs { get; set; } = new();
+        public IReadOnlyList<FundingAssessmentFormSDA> FundingAssessmentFormSDAs => _fundingAssessmentFormSDAs;
+
 
         public Application Application { get; }
         private FundingAssessmentForm()

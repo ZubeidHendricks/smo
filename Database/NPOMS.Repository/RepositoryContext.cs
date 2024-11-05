@@ -239,6 +239,7 @@ namespace NPOMS.Repository
         //Funding Assessment
         public DbSet<FundingAssessmentForm> FundingAssessmentForms { get; set; }
         public DbSet<FundingAssessmentFormResponse> FundingAssessmentFormResponses { get; set; }
+        public DbSet<FundingAssessmentFormSDA> FundingAssessmentFormSDAs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
