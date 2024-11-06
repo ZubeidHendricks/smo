@@ -1,0 +1,88 @@
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}" header="Funding Assessments">
+    <div style="height: 10px;"></div>
+    <p-table [value]="_fundingAssessments" *ngIf="_fundingAssessments" [tableStyle]="{ 'min-width': '50rem' }"
+    [rowHover]="true" #dt styleClass="p-datatable-sm"
+    [paginator]="true" [rows]="25" [showCurrentPageReport]="true"  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rowsPerPageOptions]="[25,50,100]" [globalFilterFields]="['organisationName']"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 100px;">#</th>
+                <th>NPO Name</th>
+                <th>CCID</th>
+                <th>Subsidy Type</th>
+                <th>Financial Year</th>
+                <th>Is Compliant</th>
+                <th>Preselected</th>
+                <th>Selected Areas</th>
+                <th>Status</th>
+                <th style="width: 100px;">Actions</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th><p-columnFilter type="text" field="organisationName" matchMode="contains"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="cCOde" matchMode="contains"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="organisationName" matchMode="contains"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="financialYearName" matchMode="contains"></p-columnFilter></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th><p-columnFilter type="text" field="fundingAssessmentStatusName" matchMode="contains"></p-columnFilter></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-fundingAssessment let-rowIndex="rowIndex">
+            <tr>
+                <td>{{rowIndex + 1}}</td>
+                <td>{{ fundingAssessment.organisationName }}</td>
+                <td>{{ fundingAssessment.cCode }}</td>
+                <td></td>
+                <td>{{ fundingAssessment.financialYearName }}</td>
+                <td>{{fundingAssessment.isCompliant}}</td>
+                <td>{{fundingAssessment.preSelected}}</td>
+                <td>{{fundingAssessment.selectedAreaCount}}</td>
+                <td>{{fundingAssessment.fundingAssessmentStatusName}}</td>
+                <td style="text-align: center;">
+                  <button *ngIf="fundingAssessment.fundingAssessmentStatusName === 'Pending DOI Capturer'" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-gavel" (click)="showDOIDialog(fundingAssessment)" pTooltip="DOI" tooltipPosition="left"></button>
+                  <button *ngIf="fundingAssessment.fundingAssessmentStatusName === 'Pending Assessment Capturer'" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="showFundingAssessmentForm(fundingAssessment)" pTooltip="Edit Form" tooltipPosition="left"></button>
+                    <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="_selectedApplicationId=fundingAssessment.applicationId;menu.toggle($event); " pTooltip="Actions" tooltipPosition="left"></button>
+                    <p-menu #menu [popup]="true" [model]="_buttonItems" appendTo="body"></p-menu> -->
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-panel>
+
+<p-dialog header="Declaration of interest" [(visible)]="_showDOIDialog" [modal]="true" [style]="{width: '50vw'}"
+    [maximizable]="false" [resizable]="false">
+    <div style="padding: 10px; background-color: lightgray">
+        <p>
+          I, the undersigned, accept that the assessments, recommendations, and discussions
+          regarding the assessment and/or adjudication and/or allocation with respect to
+          applications by NPOs for transfer funding are confidential, and I hereby undertake not to disclose anything related to this.
+        </p>
+        <p><b>I declare that:</b></p>
+        <ul>
+          <li>
+            I will not deliberately favor or prejudice anybody in the decision-making process or the actual assessment and/or adjudication of NPO applications for transfer funding.
+          </li>
+          <li>
+            During the consideration, acceptance, or allocation of transfer funding, no person employed by the Provincial Government or acting on behalf of the Provincial Government may exercise or use his/her discretion, official powers, or position in such a manner as to obtain an unlawful or unauthorized advantage.
+          </li>
+        </ul>
+        <div class="text-right">
+          <p-checkbox formControlName="doiApprover" [(ngModel)]="_doiApprover" binary="true"></p-checkbox>
+        </div>
+      </div>
+    <p-footer>
+        <button type="submit" pButton icon="fa fa-thumbs-o-up" 
+            class="ui-button-success" label="Submit" (click) = "onConfirmDOI()"></button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog header="Funding Assessment" [(visible)]="_showFundingAssessmentForm" [modal]="true" [style]="{width: '75vw'}"
+    [maximizable]="false" [resizable]="false" *ngIf="_fundingAssessmentForm">
+    <app-funding-assessment-form [fundingAssessmentForm]="_fundingAssessmentForm"   > </app-funding-assessment-form>
+      
+</p-dialog>

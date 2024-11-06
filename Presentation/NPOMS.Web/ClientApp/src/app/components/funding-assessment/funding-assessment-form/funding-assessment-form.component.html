@@ -1,0 +1,174 @@
+<div class="row" *ngIf="fundingAssessmentForm">
+
+  <div class="col-md-12">
+    <div class="mb-3">
+      <p-panel header="NPO Info" [toggleable]="true">
+        <div class="form-group p-fluid grid">
+          <div class="col-md-2">
+            <label for="npoName">NPO</label>
+          </div>
+          <div class="col-md-8">
+            <input pInputText id="npoName" [(ngModel)]="fundingAssessmentForm.organisationName" class="input-xs"
+            disabled />
+          </div>
+        </div>
+        <div class="form-group p-fluid grid">
+          <div class="col-md-2">
+            <label for="ccid">CCID</label>
+          </div>
+          <div class="col-md-8">
+            <input pInputText id="ccid" [(ngModel)]="fundingAssessmentForm.cCode"  class="input-xs" disabled/>
+          </div>
+        </div>
+      </p-panel>
+
+    </div>
+    <div class="mb-3">
+      <p-panel header="Service Delivery Areas" [toggleable]="true">
+        <p-table [value]="fundingAssessmentForm.serviceDeliveries">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Selected</th>
+              <th>Region</th>
+              <th>District Council</th>
+              <th>Local Municipality</th>
+              <th>Service Delivery Area</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-serviceDeliveryArea>
+            <tr>
+              <td>
+                <p-checkbox binary="true" [(ngModel)]="serviceDeliveryArea.isSelected" (ngModelChange)="onServiceDeliveryAreaModelChange($event, serviceDeliveryArea)"></p-checkbox>
+              </td>
+              <td>{{ serviceDeliveryArea.regionName }}</td>
+              <td>{{ serviceDeliveryArea.districtCouncilName }}</td>
+              <td>{{ serviceDeliveryArea.localMunicipalityName }}</td>
+              <td>{{ serviceDeliveryArea.serviceDeliveryAreaName }}</td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="5" style="text-align: center;">No Service Delivery Areas are found</td>
+            </tr>
+        </ng-template>
+        </p-table>
+      </p-panel>
+    </div>
+    <app-funding-assessment-form-questionsection [Questions]="getLegislativeCompliance()"
+      [AssessmentApplicationFormId]="fundingAssessmentForm.id" [HeaderName]="'Legislative Compliance'">
+
+    </app-funding-assessment-form-questionsection>
+
+    <ng-container *ngIf="fundingAssessmentForm.continueWithAssessment === true">
+      <app-funding-assessment-form-questionsection [Questions]="getPFMACompliance()"
+        [AssessmentApplicationFormId]="fundingAssessmentForm.id" [HeaderName]="'PFMA Compliance'">
+
+      </app-funding-assessment-form-questionsection>
+
+      <app-funding-assessment-form-questionsection [Questions]="getAnalysisPerformance()"
+        [AssessmentApplicationFormId]="fundingAssessmentForm.id" [HeaderName]="'Analysis Of Performance'">
+
+      </app-funding-assessment-form-questionsection>
+
+      <div class="mb-3">
+        <p-panel header="Summary" [toggleable]="true">
+          <p-table [value]="fundingAssessmentForm.summaryItems">
+            <ng-template pTemplate="header">
+              <tr>
+
+                <th>Summary of Assessment</th>
+                <th>% Score</th>
+                <th>Final Score</th>
+                <th>Approved / Not Approved</th>
+
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-summaryItem>
+              <tr>
+
+                <td>{{ summaryItem.name }}</td>
+                <td>{{ summaryItem.score }}&nbsp;%</td>
+                <td>{{ summaryItem.finalRating }}</td>
+                <td>
+
+                  <span *ngFor="let option of summaryItem.responseOptions">
+                    <p-radioButton name="option-{{summaryItem.id}}" [value]="option.id"
+                      [(ngModel)]="summaryItem.selectedResponseOptionId" label="{{ option.name }}"
+                      (ngModelChange)="onSummaryChange(summaryItem)"></p-radioButton> &nbsp; &nbsp;
+                  </span>
+                </td>
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-panel>
+      </div>
+    </ng-container>
+    <div class="mb-3">
+      <p-panel header="Final Approver Section" [toggleable]="true">
+
+          <div class="form-group p-fluid grid">
+            <div class="col-md-2">
+              <label for="recommendation">Recommendation</label>
+            </div>
+            <div class="col-md-8">
+              <p-dropdown 
+                [options]="fundingAssessmentForm.finalApprovalItem.responseOptions" 
+                optionLabel="name" 
+                optionValue="id" 
+                [(ngModel)]="fundingAssessmentForm.finalApprovalItem.selectedResponseOptionId" 
+                placeholder="Select an option"
+                [style]="{'width':'100%'}"
+                (ngModelChange)="onFinalApproverChange(fundingAssessmentForm.finalApprovalItem)"
+              ></p-dropdown>
+            </div>
+          </div>
+          <div class="form-group p-fluid grid">
+            <div class="col-md-2">
+              <label for="ccid">Recommendation Reason</label>
+            </div>
+            <div class="col-md-8">
+              <textarea [(ngModel)]="fundingAssessmentForm.finalApprovalItem.comment" rows="3" [style]="{'width':'100%'}" placeholder="" (blur)="onFinalApproverChange(fundingAssessmentForm.finalApprovalItem)"></textarea>
+            </div>
+          </div>
+
+
+        <div style="padding: 10px; background-color: lightgray">
+          <p>
+            I, the undersigned, accept that the assessments, recommendations, and discussions
+            regarding the assessment and/or adjudication and/or allocation with respect to
+            applications by NPOs for transfer funding are confidential, and I hereby undertake not to disclose anything
+            related to this.
+          </p>
+          <p><b>I declare that:</b></p>
+          <ul>
+            <li>
+              I will not deliberately favor or prejudice anybody in the decision-making process or the actual assessment
+              and/or adjudication of NPO applications for transfer funding.
+            </li>
+            <li>
+              During the consideration, acceptance, or allocation of transfer funding, no person employed by the
+              Provincial Government or acting on behalf of the Provincial Government may exercise or use his/her
+              discretion, official powers, or position in such a manner as to obtain an unlawful or unauthorized
+              advantage.
+            </li>
+          </ul>
+          <div class="text-right">
+            <p-checkbox binary="true"></p-checkbox>
+          </div>
+        </div>
+      </p-panel>
+      <br/>
+      <!-- Submit Button -->
+      <p-panel>
+        <div style="text-align: right; margin-top: 10px;">
+          <button pButton type="button" label="Submit" icon="pi pi-check"></button>
+
+        </div>
+      </p-panel>
+    </div>
+  </div>
+
+
+</div>
