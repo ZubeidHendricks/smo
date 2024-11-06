@@ -22,7 +22,7 @@ export class FundingAssessmentFormQuestionSectionComponent implements OnInit {
   @Input() Questions: dtoQuestionGet;
   @Input() AssessmentApplicationFormId: number;
   @Input() HeaderName: string;
-
+  @Input() FinalCommentRequired: boolean = false;
 
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;

@@ -78,7 +78,8 @@
         </tr>
 
         <!-- Final Comment Section -->
-        <tr *ngIf="question.name === 'Final comment'">
+        <tr *ngIf="question.name === 'Final comment'"
+          [ngStyle]="{'background-color': FinalCommentRequired === true ? '#ffcccc' : 'transparent'}">
           <td>{{question.name}}</td>
           <td colspan="3">
             <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" (blur)="onQuestionChange(question)"></textarea>
